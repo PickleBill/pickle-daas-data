@@ -1,0 +1,146 @@
+You are an expert pickleball analyst, sports scientist, brand intelligence researcher, and entertainment writer. Analyze this pickleball highlight video clip completely.
+
+Return ONLY a single valid JSON object — no markdown, no explanation, no code fences. Every field below must appear. Use null for fields you cannot determine confidently.
+
+{
+  "analyzed_at": "<ISO timestamp>",
+  "model_used": "gemini-2.5-flash",
+
+  "clip_meta": {
+    "duration_seconds": <number>,
+    "clip_quality_score": <1-10, combines production quality + play quality>,
+    "viral_potential_score": <1-10, how shareable is this on social media?>,
+    "watchability_score": <1-10, would someone rewatch this?>,
+    "cinematic_score": <1-10, camera angle, lighting, framing quality>
+  },
+
+  "players_detected": [
+    {
+      "approximate_position": "left|right|center|unknown",
+      "side": "near|far|both_sides",
+      "dominance_in_clip": "primary|secondary|background",
+      "estimated_skill_level": "beginner|intermediate|advanced|pro|elite",
+      "energy_level": "calm|moderate|high|intense|electric",
+      "handedness": "left|right|unknown",
+      "height_estimate": "short|medium|tall|unknown",
+      "movement_style": "smooth|explosive|defensive|methodical|reactive|unknown",
+      "apparel_summary": "<brief description of what they're wearing>"
+    }
+  ],
+
+  "shot_analysis": {
+    "shots": [
+      {
+        "shot_type": "dink|drive|lob|drop|volley|erne|atp|reset|overhead|smash|serve|return|speed_up|block|roll|flick|tweener|scorpion|other",
+        "player_position": "kitchen|transition|mid_court|baseline|in_air",
+        "quality_score": <1-10>,
+        "difficulty_score": <1-10>,
+        "outcome": "winner|error|forced_error|rally_continues|unknown",
+        "wow_factor": <1-10>,
+        "timestamp_approximate_seconds": <number or null>
+      }
+    ],
+    "dominant_shot_type": "<string>",
+    "total_shots_estimated": <number>,
+    "rally_length_estimated": <number of total shots in the rally>,
+    "longest_exchange_type": "kitchen_battle|driving|mixed|unknown"
+  },
+
+  "skill_indicators": {
+    "court_coverage_rating": <1-10>,
+    "kitchen_mastery_rating": <1-10>,
+    "power_game_rating": <1-10>,
+    "touch_and_feel_rating": <1-10>,
+    "athleticism_rating": <1-10>,
+    "creativity_rating": <1-10>,
+    "court_iq_rating": <1-10>,
+    "consistency_rating": <1-10>,
+    "composure_under_pressure": <1-10>,
+    "paddle_control_rating": <1-10, based on shot quality and touch>,
+    "grip_pressure_estimate": "loose|medium|firm — inferred from shot outcomes",
+    "aggression_style": "aggressive|balanced|defensive|counter_puncher",
+    "play_style_tags": ["<e.g. kitchen specialist, banger, lefty, baseliner, net rusher, scrambler>"],
+    "signature_move_detected": "<describe any signature or recurring move, or null>",
+    "tactical_tendencies": ["<observable patterns in shot selection or positioning>"],
+    "physical_descriptors": ["<handedness, movement economy, athleticism markers>"],
+    "improvement_opportunities": ["<what would make this player better based on this clip>"]
+  },
+
+  "brand_detection": {
+    "brands": [
+      {
+        "brand_name": "<brand name>",
+        "category": "paddle|shoes|apparel_top|apparel_bottom|hat|headwear|sunglasses|bag|wristband|court_surface|net|ball|sponsor_banner|other",
+        "confidence": "high|medium|low",
+        "player_side": "left|right|both|court_equipment|unknown",
+        "visibility_quality": "clear|partial|blurry|brief_flash",
+        "estimated_visible_seconds": <number or null>,
+        "color_scheme_noted": "<dominant colors, useful for brand matching>"
+      }
+    ],
+    "total_brands_detected": <number>,
+    "unidentified_equipment_notes": "<notes on gear that's visible but brand unidentifiable>",
+    "sponsorship_whitespace": ["<brands that would be natural sponsors but aren't visibly present>"]
+  },
+
+  "paddle_intel": {
+    "paddle_brand": "<brand name if detectable, e.g. Selkirk, JOOLA, Engage, HEAD, Paddletek, Franklin, Onix, Gearbox, Six Zero>",
+    "paddle_model_estimate": "<specific model if visible, or null>",
+    "paddle_color_scheme": "<dominant colors>",
+    "paddle_shape_estimate": "elongated|standard|wide_body|unknown",
+    "paddle_grip_style_observed": "two_handed|one_handed|continental|eastern|western|unknown",
+    "grip_color": "<if visible>",
+    "overgrip_present": "<boolean or null>",
+    "lead_tape_visible": "<boolean — players who customize paddles are serious>",
+    "confidence": "high|medium|low",
+    "notes": "<any other observable paddle details>"
+  },
+
+  "storytelling": {
+    "story_arc": "comeback|dominant_performance|clutch_moment|creative_play|athletic_highlight|teaching_moment|pure_fun|grind_rally|error_highlight|unknown",
+    "emotional_tone": "intense|celebratory|focused|casual|competitive|playful|grinding|triumphant",
+    "defining_moment_timestamp_seconds": <number or null>,
+    "crowd_energy_detected": <boolean>,
+    "player_celebration_detected": <boolean>,
+    "trash_talk_detected": <boolean>,
+    "turning_point_visible": <boolean>,
+    "narrative_arc_summary": "<1 sentence: the story of this clip>"
+  },
+
+  "badge_intelligence": {
+    "predicted_badges": [
+      {
+        "badge_name": "<match to Courtana taxonomy: Epic Rally, Erne Machine, Around the Post, Lob Genius, Tweener, Kitchen King, Wall of Hands, Momentum Shift, Clutch Performer, Airborne, Scorpion Tail, etc.>",
+        "confidence": "high|medium|low",
+        "reasoning": "<why this badge applies>"
+      }
+    ],
+    "badge_trigger_moments": ["<describe specific moments that triggered or could trigger badges>"],
+    "highlight_reel_worthy": <boolean>,
+    "top_10_play_candidate": <boolean>
+  },
+
+  "commentary": {
+    "neutral_announcer_espn": "<2-3 sentence ESPN broadcast style>",
+    "hype_announcer_charged": "<2-3 sentence high-energy TNT/NBA-style call>",
+    "coaching_breakdown": "<what a coach would say analyzing this tactically>",
+    "social_media_caption": "<perfect Instagram/TikTok caption, under 100 chars>",
+    "social_media_hashtags": ["#pickleball", "<5 relevant hashtags>"],
+    "ron_burgundy_voice": "<Stay classy, San Diego — full Ron Burgundy energy, 2-3 sentences>",
+    "chuck_norris_voice": "<third person, legendary, 1-2 sentences>",
+    "color_commentator_banter": "<what the color commentator would riff on>",
+    "crowd_chant_if_epic": "<what the crowd would chant, or null if not epic enough>",
+    "trash_talk_friendly": "<playful banter-style commentary from one player to the other>",
+    "announcement_text_for_tts": "<clean text optimized for text-to-speech voice generation, no special chars>"
+  },
+
+  "daas_signals": {
+    "highlight_category": "top_play|teaching_moment|funny|athletic|strategic|social_play|gear_showcase|comeback",
+    "clip_summary_one_sentence": "<what happened: factual, specific, under 20 words>",
+    "search_tags": ["<10-15 specific, searchable tags>"],
+    "content_use_cases": ["social_media", "coaching_tool", "player_recruitment", "venue_marketing", "sponsor_pitch", "investor_demo", "fan_engagement"],
+    "estimated_player_rating_dupr": "<estimated DUPR rating range of primary player, e.g. '4.0-4.5', or null>",
+    "match_context_inferred": "casual|competitive|tournament|drill|warmup|unknown",
+    "data_richness_score": <1-10, how much useful data could be extracted from this clip?>
+  }
+}
