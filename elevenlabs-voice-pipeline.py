@@ -55,6 +55,52 @@ VOICE_PRESETS = {
         "stability": 0.65,
         "similarity_boost": 0.8,
     },
+    # === TMNT CHARACTER PACK ===
+    "tmnt_leonardo": {
+        "voice_id": "IKne3meq5aSn9XLyUdCD",
+        "description": "Leonardo — disciplined leader, calm authority",
+        "stability": 0.65,
+        "similarity_boost": 0.8,
+        "character_prompt": "You are Leonardo, leader of the Ninja Turtles. You analyze plays with the precision of a katana strike. You speak with calm authority, referencing discipline, teamwork, and strategy. You occasionally say 'We strike as one' or reference Master Splinter's teachings.",
+        "background_audio": "tmnt_theme",
+    },
+    "tmnt_raphael": {
+        "voice_id": "SOYHLrjzK2X1ezoPC6cr",
+        "description": "Raphael — hot-headed brawler, intense energy",
+        "stability": 0.35,
+        "similarity_boost": 0.85,
+        "character_prompt": "You are Raphael, the toughest Ninja Turtle. You commentate with raw intensity. Every play is either wimpy or CRUSHING. You say things like 'That's what I'm talkin about!' and 'You call that a shot? My SHELL hits harder.' Brooklyn energy.",
+        "background_audio": "tmnt_theme",
+    },
+    "tmnt_donatello": {
+        "voice_id": "pqHfZKP75CvOlQylNhV4",
+        "description": "Donatello — tech genius, analytical breakdown",
+        "stability": 0.7,
+        "similarity_boost": 0.75,
+        "character_prompt": "You are Donatello, the brains of the Ninja Turtles. You break down plays with scientific precision — angles, velocity vectors, biomechanics. You say things like 'Fascinating! The paddle trajectory was precisely 37 degrees' and 'My calculations show that shot had a 94.7% success probability.'",
+        "background_audio": "tmnt_theme",
+    },
+    "tmnt_michelangelo": {
+        "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+        "description": "Michelangelo — party dude, cowabunga energy",
+        "stability": 0.3,
+        "similarity_boost": 0.85,
+        "character_prompt": "You are Michelangelo, the party dude Ninja Turtle. Everything is AWESOME and RADICAL. You commentate like a surfer watching the gnarliest wave. Say 'COWABUNGA!', 'Dude, that was totally tubular!', 'Pizza break after that one!' and 'Booyakasha!'",
+        "background_audio": "tmnt_theme",
+    },
+    "tmnt_splinter": {
+        "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+        "description": "Master Splinter — wise sensei, warm storyteller",
+        "stability": 0.75,
+        "similarity_boost": 0.7,
+        "character_prompt": "You are Master Splinter, the wise sensei of the Ninja Turtles. You see the deeper meaning in every play. You speak with warmth and ancient wisdom. You say things like 'My students, observe...' and 'In this moment, I see the way of the warrior.' British-tinged gravitas.",
+        "background_audio": "tmnt_theme",
+    },
+}
+
+VOICE_PACKS = {
+    "classic": ["espn", "hype", "ron_burgundy", "chuck_norris"],
+    "tmnt": ["tmnt_leonardo", "tmnt_raphael", "tmnt_donatello", "tmnt_michelangelo", "tmnt_splinter"],
 }
 
 COMMENTARY_FIELD_MAP = {
@@ -63,6 +109,11 @@ COMMENTARY_FIELD_MAP = {
     "ron_burgundy": "ron_burgundy_voice",
     "chuck_norris": "chuck_norris_voice",
     "tts": "announcement_text_for_tts",
+    "tmnt_leonardo": "tmnt_leonardo_voice",
+    "tmnt_raphael": "tmnt_raphael_voice",
+    "tmnt_donatello": "tmnt_donatello_voice",
+    "tmnt_michelangelo": "tmnt_michelangelo_voice",
+    "tmnt_splinter": "tmnt_splinter_voice",
 }
 
 MODEL_DEFAULT = "eleven_monolingual_v1"
@@ -182,8 +233,9 @@ def main():
     input_group.add_argument("--batch",    help="Directory containing analysis JSON files (batch mode)")
 
     # Voice selection
-    parser.add_argument("--voice",       default="espn", choices=list(VOICE_PRESETS.keys()), help="Voice preset (ignored when --all-voices)")
-    parser.add_argument("--all-voices",  action="store_true", help="Generate all 4 voice presets for each clip")
+    parser.add_argument("--voice",       default="espn", choices=list(VOICE_PRESETS.keys()), help="Voice preset (ignored when --all-voices or --pack)")
+    parser.add_argument("--all-voices",  action="store_true", help="Generate all voice presets for each clip")
+    parser.add_argument("--pack",        default=None, choices=list(VOICE_PACKS.keys()), help="Generate all voices in a named pack (e.g. tmnt, classic)")
 
     # Output
     parser.add_argument("--merge-video",       action="store_true", help="Merge generated audio with original video via FFmpeg")
@@ -221,7 +273,12 @@ def main():
             sys.exit(1)
         print(f"Batch mode: found {len(paths)} analysis files in {batch_dir}")
 
-    voices_to_run = list(VOICE_PRESETS.keys()) if args.all_voices else [args.voice]
+    if args.all_voices:
+        voices_to_run = list(VOICE_PRESETS.keys())
+    elif args.pack:
+        voices_to_run = VOICE_PACKS[args.pack]
+    else:
+        voices_to_run = [args.voice]
 
     manifest_clips = []
 
