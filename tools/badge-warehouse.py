@@ -43,7 +43,10 @@ ANALYSIS_DIRS = [
     "output/test-001",
     "output/broadcast",
     "output/v1.2-reprocess",
+    "output/badged-clips-analysis",
+    "output/v1.3-badged-analysis",
 ]
+BADGED_CLIPS_DIR = "output/badged-clips"
 
 
 def get_db():
@@ -101,7 +104,7 @@ def get_db():
         CREATE TABLE IF NOT EXISTS cross_references (
             id                  INTEGER PRIMARY KEY AUTOINCREMENT,
             clip_id             TEXT,
-            asset_uuid          TEXT NOT NULL,
+            asset_uuid          TEXT,
             video_url           TEXT,
             highlight_group_id  TEXT,
             predicted_badge     TEXT,
@@ -202,56 +205,77 @@ def ingest_taxonomy(conn):
 
 
 def ingest_ground_truth(conn):
-    """Load highlight-badge linkage from Courtana ground truth."""
-    path = os.path.join(GROUND_TRUTH_DIR, "highlight-badge-linkage.json")
-    if not os.path.exists(path):
-        print("  Skip: highlight-badge-linkage.json not found")
-        return 0
+    """Load highlight-badge linkage from ALL ground truth sources.
 
-    with open(path) as f:
-        linkage = json.load(f)
-
+    Source 1: courtana-ground-truth/highlight-badge-linkage.json (auth endpoint, 4000+ groups)
+    Source 2: badged-clips/ground-truth.json (anon endpoint, curated badged clips)
+    """
     count = 0
-    for group in linkage:
-        group_id = group.get("group_id", "")
-        video_urls = group.get("video_urls", [])
 
-        for award in group.get("badge_awards", []):
-            # Try to get asset UUID from the award's highlight_file first
-            highlight_file = award.get("highlight_file", "")
-            asset_uuid = extract_asset_uuid(highlight_file)
+    # Source 1: Auth endpoint linkage (existing)
+    path1 = os.path.join(GROUND_TRUTH_DIR, "highlight-badge-linkage.json")
+    if os.path.exists(path1):
+        with open(path1) as f:
+            linkage = json.load(f)
+        for group in linkage:
+            count += _ingest_group_awards(conn, group)
 
-            # Fallback: try video_urls from the group
-            if not asset_uuid:
-                for vurl in video_urls:
-                    asset_uuid = extract_asset_uuid(vurl)
-                    if asset_uuid:
-                        break
-
-            try:
-                conn.execute("""
-                    INSERT OR IGNORE INTO ground_truth_awards
-                    (badge_name, badge_slug, badge_tier, profile_username,
-                     highlight_group_id, highlight_file_url, asset_uuid,
-                     gemini_reason, awarded_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    award.get("badge_name", ""),
-                    award.get("badge_slug", ""),
-                    award.get("badge_tier", ""),
-                    award.get("profile_username", ""),
-                    group_id,
-                    highlight_file,
-                    asset_uuid,
-                    award.get("gemini_reason", ""),
-                    award.get("awarded_at", ""),
-                ))
-                count += 1
-            except Exception as e:
-                pass  # UNIQUE constraint violations expected on re-runs
+    # Source 2: Badged clips ground truth (new - from anon endpoint)
+    path2 = os.path.join(BADGED_CLIPS_DIR, "ground-truth.json")
+    if os.path.exists(path2):
+        with open(path2) as f:
+            gt_data = json.load(f)
+        for group in gt_data:
+            count += _ingest_group_awards(conn, group)
 
     conn.commit()
     print(f"  Ground truth awards: {count} badge awards loaded")
+    return count
+
+
+def _ingest_group_awards(conn, group):
+    """Ingest badge awards from a single highlight group."""
+    count = 0
+    group_id = group.get("group_id", "")
+    video_urls = group.get("video_urls", [])
+    primary_url = group.get("primary_url", "")
+
+    for award in group.get("badge_awards", []):
+        # Try to get asset UUID from the award's highlight_file first
+        highlight_file = award.get("highlight_file", "")
+        asset_uuid = extract_asset_uuid(highlight_file)
+
+        # Fallback: try primary_url, then video_urls from the group
+        if not asset_uuid and primary_url:
+            asset_uuid = extract_asset_uuid(primary_url)
+        if not asset_uuid:
+            for vurl in video_urls:
+                asset_uuid = extract_asset_uuid(vurl)
+                if asset_uuid:
+                    break
+
+        try:
+            conn.execute("""
+                INSERT OR IGNORE INTO ground_truth_awards
+                (badge_name, badge_slug, badge_tier, profile_username,
+                 highlight_group_id, highlight_file_url, asset_uuid,
+                 gemini_reason, awarded_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                award.get("badge_name", ""),
+                award.get("badge_slug", ""),
+                award.get("badge_tier", ""),
+                award.get("profile_username", ""),
+                group_id,
+                highlight_file,
+                asset_uuid,
+                award.get("gemini_reason", ""),
+                award.get("awarded_at", ""),
+            ))
+            count += 1
+        except Exception:
+            pass  # UNIQUE constraint violations expected on re-runs
+
     return count
 
 
@@ -317,31 +341,29 @@ def ingest_uuid_group_map(conn):
 
     Source 1: working-set JSONs (anon endpoint clips with group_id)
     Source 2: highlight-badge-linkage JSON (auth endpoint video_urls per group)
-
-    Our analyses used video URLs from the anon endpoint. The asset UUID in those
-    URLs may differ from the highlight_file in badge awards. But both belong to
-    the same highlight-group. We build the mapping from all available sources.
+    Source 3: badged-clips/clip-manifest.json (curated badged clips with group_id)
+    Source 4: badged-clips/ground-truth.json (video_urls per group)
     """
     count = 0
 
+    def _insert(uuid, gid):
+        nonlocal count
+        if uuid and gid:
+            try:
+                conn.execute(
+                    "INSERT OR IGNORE INTO uuid_group_map (asset_uuid, highlight_group_id) VALUES (?, ?)",
+                    (uuid, gid)
+                )
+                count += 1
+            except Exception:
+                pass
+
     # Source 1: working-set JSONs
-    map_files = glob.glob("output/working-set-*.json")
-    for fpath in map_files:
+    for fpath in glob.glob("output/working-set-*.json"):
         with open(fpath) as f:
             items = json.load(f)
         for item in items:
-            file_url = item.get("file", "")
-            group_id = item.get("group_id", "")
-            asset_uuid = extract_asset_uuid(file_url)
-            if asset_uuid and group_id:
-                try:
-                    conn.execute(
-                        "INSERT OR IGNORE INTO uuid_group_map (asset_uuid, highlight_group_id) VALUES (?, ?)",
-                        (asset_uuid, group_id)
-                    )
-                    count += 1
-                except Exception:
-                    pass
+            _insert(extract_asset_uuid(item.get("file", "")), item.get("group_id", ""))
 
     # Source 2: highlight-badge-linkage (all video URLs per group)
     linkage_path = os.path.join(GROUND_TRUTH_DIR, "highlight-badge-linkage.json")
@@ -349,18 +371,28 @@ def ingest_uuid_group_map(conn):
         with open(linkage_path) as f:
             linkage = json.load(f)
         for group in linkage:
-            group_id = group.get("group_id", "")
+            gid = group.get("group_id", "")
             for url in group.get("video_urls", []):
-                asset_uuid = extract_asset_uuid(url)
-                if asset_uuid and group_id:
-                    try:
-                        conn.execute(
-                            "INSERT OR IGNORE INTO uuid_group_map (asset_uuid, highlight_group_id) VALUES (?, ?)",
-                            (asset_uuid, group_id)
-                        )
-                        count += 1
-                    except Exception:
-                        pass
+                _insert(extract_asset_uuid(url), gid)
+
+    # Source 3: badged-clips/clip-manifest.json (KEY for Sprint 4)
+    manifest_path = os.path.join(BADGED_CLIPS_DIR, "clip-manifest.json")
+    if os.path.exists(manifest_path):
+        with open(manifest_path) as f:
+            manifest = json.load(f)
+        for item in manifest:
+            _insert(extract_asset_uuid(item.get("url", "")), item.get("group_id", ""))
+
+    # Source 4: badged-clips/ground-truth.json (video_urls per group)
+    gt_path = os.path.join(BADGED_CLIPS_DIR, "ground-truth.json")
+    if os.path.exists(gt_path):
+        with open(gt_path) as f:
+            gt_data = json.load(f)
+        for group in gt_data:
+            gid = group.get("group_id", "")
+            _insert(extract_asset_uuid(group.get("primary_url", "")), gid)
+            for url in group.get("video_urls", []):
+                _insert(extract_asset_uuid(url), gid)
 
     conn.commit()
     print(f"  UUID→group map: {count} entries")
@@ -530,7 +562,7 @@ def cmd_analyze(conn):
                      predicted_confidence, predicted_reasoning, courtana_reasoning)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
-                    None, None, gt.get("highlight_file_url"), group_id,
+                    None, None, gt["highlight_file_url"], group_id,
                     None, gt["badge_name"], "false_negative",
                     None, None, gt["gemini_reason"],
                 ))
@@ -551,6 +583,102 @@ def cmd_analyze(conn):
     print(f"  F1 Score:        {f1:.1%}")
 
     return {"tp": tp, "fp": fp, "fn": fn, "precision": precision, "recall": recall, "f1": f1}
+
+
+# ============================================================
+# CO-OCCURRENCE ANALYSIS
+# ============================================================
+
+def compute_cooccurrence(conn):
+    """Badge co-occurrence: which badges appear together and which should but don't.
+
+    Returns:
+      cooccurrence: list of dicts {badge_a, badge_b, together_count, a_without_b, b_without_a}
+      quality_flags: list of dicts {group_id, flag, badge, reasoning}
+    """
+    # Get all ground truth awards grouped by highlight_group_id
+    awards_by_group = defaultdict(set)
+    reasons_by_group_badge = {}
+    for row in conn.execute(
+        "SELECT highlight_group_id, badge_name, gemini_reason FROM ground_truth_awards"
+    ).fetchall():
+        gid = row["highlight_group_id"]
+        bname = row["badge_name"]
+        awards_by_group[gid].add(bname)
+        reasons_by_group_badge[(gid, bname)] = row["gemini_reason"] or ""
+
+    # Count co-occurrences
+    pair_together = Counter()
+    badge_total = Counter()
+
+    for gid, badges in awards_by_group.items():
+        for b in badges:
+            badge_total[b] += 1
+        for b1 in badges:
+            for b2 in badges:
+                if b1 < b2:
+                    pair_together[(b1, b2)] += 1
+
+    # Build co-occurrence table
+    cooccurrence = []
+    for (b1, b2), together in sorted(pair_together.items(), key=lambda x: -x[1])[:50]:
+        cooccurrence.append({
+            "badge_a": b1,
+            "badge_b": b2,
+            "together_count": together,
+            "a_total": badge_total[b1],
+            "b_total": badge_total[b2],
+            "a_without_b": badge_total[b1] - together,
+            "b_without_a": badge_total[b2] - together,
+            "lift": round(together / (badge_total[b1] * badge_total[b2] / max(len(awards_by_group), 1)), 2)
+            if badge_total[b1] > 0 and badge_total[b2] > 0 else 0,
+        })
+
+    # Quality flags: check if reasoning mentions a badge that wasn't awarded
+    # This is Bill's "tweener without tweener badge" scenario
+    quality_flags = []
+    badge_keywords = {}
+    for row in conn.execute("SELECT name, slug FROM badges").fetchall():
+        # Build keyword map: badge name words → badge name
+        words = row["name"].lower().split()
+        for w in words:
+            if len(w) >= 4:  # Skip short words like "the", "a"
+                badge_keywords[w] = row["name"]
+
+    for gid, badges in awards_by_group.items():
+        badges_lower = {b.lower() for b in badges}
+        # Check each badge's reasoning for mentions of other badges
+        for badge_name in badges:
+            reason = reasons_by_group_badge.get((gid, badge_name), "").lower()
+            if not reason:
+                continue
+            # Look for badge name keywords in reasoning that aren't awarded
+            for keyword, implied_badge in badge_keywords.items():
+                if keyword in reason and implied_badge.lower() not in badges_lower:
+                    # Avoid flagging system badges
+                    system_badges = {"game on", "new look", "bronze level up", "first session",
+                                     "button masher", "rare find", "badge collector", "fresh fit",
+                                     "exclusive club", "century club", "one of a kind", "social butterfly",
+                                     "trophy case", "top 10", "regular", "legendary look"}
+                    if implied_badge.lower() not in system_badges:
+                        quality_flags.append({
+                            "group_id": gid,
+                            "flag": "missing_implied",
+                            "awarded_badge": badge_name,
+                            "implied_badge": implied_badge,
+                            "reasoning_excerpt": reason[:200],
+                        })
+
+    # Deduplicate quality flags per group+implied_badge
+    seen = set()
+    unique_flags = []
+    for f in quality_flags:
+        key = (f["group_id"], f["implied_badge"])
+        if key not in seen:
+            seen.add(key)
+            unique_flags.append(f)
+
+    return cooccurrence, unique_flags[:100]  # Cap at 100 flags
 
 
 # ============================================================
@@ -677,6 +805,9 @@ def cmd_dashboard(conn):
         LIMIT 20
     """).fetchall()
 
+    # Co-occurrence analysis
+    cooccurrence, quality_flags = compute_cooccurrence(conn)
+
     # Build HTML
     html = _generate_dashboard_html(
         badge_count=badge_count, gt_count=gt_count, pred_count=pred_count,
@@ -686,6 +817,8 @@ def cmd_dashboard(conn):
         pred_freq=pred_freq, gt_freq=gt_freq,
         confusion=[dict(r) for r in confusion],
         mismatches=[dict(r) for r in mismatches],
+        cooccurrence=cooccurrence,
+        quality_flags=quality_flags,
     )
 
     out_path = "output/badge-analytics-dashboard.html"
@@ -701,6 +834,8 @@ def _generate_dashboard_html(**data):
     criteria_gap_json = json.dumps(data["criteria_gap"][:50])  # Top 50 for display
     pred_freq_json = json.dumps(data["pred_freq"])
     gt_freq_json = json.dumps(data["gt_freq"])
+    cooccurrence = data.get("cooccurrence", [])
+    quality_flags = data.get("quality_flags", [])
 
     badges_not_in_prompt = sum(1 for c in data["criteria_gap"] if not c["in_our_prompt"])
 
@@ -752,6 +887,45 @@ def _generate_dashboard_html(**data):
             <td style="color:{r_color}">{bm['recall']:.0%}</td>
             <td>{bm['f1']:.0%}</td>
         </tr>"""
+
+    # Build co-occurrence rows
+    cooccurrence_rows = ""
+    for co in cooccurrence[:30]:
+        cooccurrence_rows += f"""<tr>
+            <td>{co['badge_a']}</td>
+            <td>{co['badge_b']}</td>
+            <td>{co['together_count']}</td>
+            <td>{co['a_total']}</td>
+            <td>{co['b_total']}</td>
+            <td>{co['a_without_b']}</td>
+            <td>{co['b_without_a']}</td>
+            <td>{co['lift']}</td>
+        </tr>"""
+
+    # Build quality flag rows
+    quality_flag_rows = ""
+    for qf in quality_flags[:30]:
+        quality_flag_rows += f"""<tr>
+            <td>{qf['group_id'][:12]}</td>
+            <td style="color:var(--yellow)">{qf['awarded_badge']}</td>
+            <td style="color:var(--red)">{qf['implied_badge']}</td>
+            <td style="font-size:0.8em;color:#aaa">{qf['reasoning_excerpt'][:150]}</td>
+        </tr>"""
+
+    # Build dynamic alert HTML
+    if data["tp"] > 0:
+        insight_alert = (
+            f'<div class="insight"><strong>Results:</strong> {data["tp"]} true positives, '
+            f'{data["fp"]} false positives, {data["fn"]} false negatives across '
+            f'{data["clips_linked"]} linked clips.</div>'
+        )
+    else:
+        insight_alert = (
+            f'<div class="alert-warn" style="background:rgba(255,193,7,0.1);border:1px solid '
+            f'var(--yellow);border-radius:8px;padding:16px;margin:16px 0"><strong>Over-prediction '
+            f'finding:</strong> Our model predicted {data["fp"]} badges as false positives. '
+            f'The criteria gap table below shows what Courtana&#39;s Gemini looks for.</div>'
+        )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -808,13 +982,7 @@ def _generate_dashboard_html(**data):
   Injecting Courtana's criteria text into our prompt is the single biggest improvement available.
 </div>
 
-<div class="alert-warn" style="background:rgba(255,193,7,0.1);border:1px solid var(--yellow);border-radius:8px;padding:16px;margin:16px 0">
-  <strong>Over-prediction finding:</strong> All {data['clips_linked']} analyzed clips came from highlight groups where Courtana awarded <strong>zero badges</strong>.
-  Our model predicted {data['fp']} badges on these clips — all false positives. This means our model predicts badges too aggressively.
-  <br><br>
-  <strong>Next step:</strong> Analyze clips from groups that DO have badge awards (630 available) to compute recall and get true positive data.
-  The criteria gap table below shows what Courtana's Gemini looks for — these criteria should make our model more selective.
-</div>
+{insight_alert}
 
 <!-- Per-Badge Metrics -->
 <h2>Per-Badge Precision & Recall</h2>
@@ -856,12 +1024,34 @@ def _generate_dashboard_html(**data):
   </table>
 </div>
 
+<!-- Badge Co-occurrence Analysis -->
+<h2>Badge Co-occurrence — Which Badges Appear Together?</h2>
+<p style="color:var(--dim);margin-bottom:12px">When Badge A is awarded, how often is Badge B also awarded? High "lift" means they co-occur more than chance. Missing co-occurrences may indicate badges that should have been awarded.</p>
+<div class="card" style="max-height:500px;overflow-y:auto">
+  <table>
+    <thead><tr><th>Badge A</th><th>Badge B</th><th>Together</th><th>A Total</th><th>B Total</th><th>A w/o B</th><th>B w/o A</th><th>Lift</th></tr></thead>
+    <tbody>{cooccurrence_rows or '<tr><td colspan="8" style="color:var(--dim)">No co-occurrence data yet — need ground truth awards from badged clips</td></tr>'}</tbody>
+  </table>
+</div>
+
+<!-- Quality Flags — Missing Implied Badges -->
+<h2>Quality Flags — Missing Implied Badges</h2>
+<p style="color:var(--dim);margin-bottom:12px">Cases where Courtana's reasoning for one badge implies another badge should also have been awarded, but wasn't. This is the "tweener without tweener badge" pattern.</p>
+<div class="card" style="max-height:500px;overflow-y:auto">
+  <table>
+    <thead><tr><th>Group</th><th>Awarded Badge</th><th>Implied (Missing) Badge</th><th>Reasoning Excerpt</th></tr></thead>
+    <tbody>{quality_flag_rows or '<tr><td colspan="4" style="color:var(--dim)">No quality flags detected</td></tr>'}</tbody>
+  </table>
+</div>
+
 <!-- Reinforcement Loop Status -->
 <h2>Reinforcement Loop Status</h2>
 <div class="card">
-  <p><strong>Current prompt:</strong> 18 badge names, no criteria text</p>
   <p><strong>Courtana taxonomy:</strong> {data['badge_count']} badges, each with explicit criteria</p>
-  <p><strong>Next step:</strong> Run <code>python tools/badge-warehouse.py feedback</code> to generate a prompt reinforcement patch with Courtana's criteria injected.</p>
+  <p><strong>Clips analyzed:</strong> {data['clips_analyzed']} | <strong>Linked to ground truth:</strong> {data['clips_linked']}</p>
+  <p><strong>True Positives:</strong> {data['tp']} | <strong>False Positives:</strong> {data['fp']} | <strong>False Negatives:</strong> {data['fn']}</p>
+  <p><strong>Co-occurrence patterns:</strong> {len(cooccurrence)} badge pairs analyzed</p>
+  <p><strong>Quality flags:</strong> {len(quality_flags)} potential missing badge awards detected</p>
   <p style="margin-top:12px;color:var(--dim)">The loop: Predict → Compare → Patch prompt → Re-predict → Compare again</p>
 </div>
 

@@ -32,18 +32,18 @@
 <body>
 
 <h1>Badge Analytics Warehouse</h1>
-<p class="subtitle">Cross-referencing our model's badge predictions against Courtana's ground truth | Generated 2026-04-09 07:47</p>
+<p class="subtitle">Cross-referencing our model's badge predictions against Courtana's ground truth | Generated 2026-04-09 11:36</p>
 
 <!-- KPIs -->
 <div class="kpi-grid">
   <div class="kpi"><div class="value" style="color:var(--blue)">229</div><div class="label">Courtana Badges</div></div>
-  <div class="kpi"><div class="value" style="color:var(--purple)">3520</div><div class="label">Ground Truth Awards</div></div>
-  <div class="kpi"><div class="value">62</div><div class="label">Our Predictions</div></div>
-  <div class="kpi"><div class="value">22</div><div class="label">Clips Analyzed</div></div>
-  <div class="kpi"><div class="value" style="color:var(--green)">22</div><div class="label">Clips Linked to GT</div></div>
-  <div class="kpi"><div class="value" style="color:var(--red)">0%</div><div class="label">Precision</div></div>
-  <div class="kpi"><div class="value" style="color:var(--yellow)">0%</div><div class="label">Recall</div></div>
-  <div class="kpi"><div class="value" style="color:var(--red)">0%</div><div class="label">F1 Score</div></div>
+  <div class="kpi"><div class="value" style="color:var(--purple)">4619</div><div class="label">Ground Truth Awards</div></div>
+  <div class="kpi"><div class="value">67</div><div class="label">Our Predictions</div></div>
+  <div class="kpi"><div class="value">23</div><div class="label">Clips Analyzed</div></div>
+  <div class="kpi"><div class="value" style="color:var(--green)">23</div><div class="label">Clips Linked to GT</div></div>
+  <div class="kpi"><div class="value" style="color:var(--red)">3%</div><div class="label">Precision</div></div>
+  <div class="kpi"><div class="value" style="color:var(--yellow)">15%</div><div class="label">Recall</div></div>
+  <div class="kpi"><div class="value" style="color:var(--red)">5%</div><div class="label">F1 Score</div></div>
 </div>
 
 <!-- Key Insights -->
@@ -53,13 +53,7 @@
   Injecting Courtana's criteria text into our prompt is the single biggest improvement available.
 </div>
 
-<div class="alert-warn" style="background:rgba(255,193,7,0.1);border:1px solid var(--yellow);border-radius:8px;padding:16px;margin:16px 0">
-  <strong>Over-prediction finding:</strong> All 22 analyzed clips came from highlight groups where Courtana awarded <strong>zero badges</strong>.
-  Our model predicted 62 badges on these clips — all false positives. This means our model predicts badges too aggressively.
-  <br><br>
-  <strong>Next step:</strong> Analyze clips from groups that DO have badge awards (630 available) to compute recall and get true positive data.
-  The criteria gap table below shows what Courtana's Gemini looks for — these criteria should make our model more selective.
-</div>
+<div class="insight"><strong>Results:</strong> 2 true positives, 64 false positives, 11 false negatives across 23 linked clips.</div>
 
 <!-- Per-Badge Metrics -->
 <h2>Per-Badge Precision & Recall</h2>
@@ -68,16 +62,16 @@
     <thead><tr><th>Badge</th><th>TP</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
     <tbody><tr>
             <td>Kitchen King</td>
+            <td>2</td>
+            <td>13</td>
             <td>0</td>
-            <td>15</td>
-            <td>0</td>
-            <td style="color:#FF5252">0%</td>
-            <td style="color:#FFC107">0%</td>
-            <td>0%</td>
+            <td style="color:#FF5252">13%</td>
+            <td style="color:#00E676">100%</td>
+            <td>24%</td>
         </tr><tr>
             <td>Wall of Hands</td>
             <td>0</td>
-            <td>9</td>
+            <td>10</td>
             <td>0</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
@@ -85,7 +79,7 @@
         </tr><tr>
             <td>Epic Rally</td>
             <td>0</td>
-            <td>6</td>
+            <td>7</td>
             <td>0</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
@@ -99,17 +93,9 @@
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Teaching Moment</td>
-            <td>0</td>
-            <td>3</td>
-            <td>0</td>
-            <td style="color:#FF5252">0%</td>
-            <td style="color:#FFC107">0%</td>
-            <td>0%</td>
-        </tr><tr>
             <td>Speed Demon</td>
             <td>0</td>
-            <td>3</td>
+            <td>4</td>
             <td>0</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
@@ -123,9 +109,9 @@
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Error Highlight</td>
+            <td>Teaching Moment</td>
             <td>0</td>
-            <td>2</td>
+            <td>3</td>
             <td>0</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
@@ -139,15 +125,7 @@
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Momentum Shift</td>
-            <td>0</td>
-            <td>2</td>
-            <td>0</td>
-            <td style="color:#FF5252">0%</td>
-            <td style="color:#FFC107">0%</td>
-            <td>0%</td>
-        </tr><tr>
-            <td>Athletic Highlight</td>
+            <td>Error Highlight</td>
             <td>0</td>
             <td>2</td>
             <td>0</td>
@@ -163,34 +141,50 @@
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Aggressive Driver</td>
+            <td>Athletic Highlight</td>
             <td>0</td>
-            <td>1</td>
-            <td>0</td>
-            <td style="color:#FF5252">0%</td>
-            <td style="color:#FFC107">0%</td>
-            <td>0%</td>
-        </tr><tr>
-            <td>Overhead Dominance</td>
-            <td>0</td>
-            <td>1</td>
+            <td>2</td>
             <td>0</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Kitchen Queen</td>
+            <td>Momentum Shift</td>
             <td>0</td>
-            <td>1</td>
+            <td>2</td>
             <td>0</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Consistency Master</td>
+            <td>Fresh Fit</td>
             <td>0</td>
-            <td>1</td>
             <td>0</td>
+            <td>2</td>
+            <td style="color:#FF5252">0%</td>
+            <td style="color:#FFC107">0%</td>
+            <td>0%</td>
+        </tr><tr>
+            <td>Steady Eddie</td>
+            <td>0</td>
+            <td>0</td>
+            <td>2</td>
+            <td style="color:#FF5252">0%</td>
+            <td style="color:#FFC107">0%</td>
+            <td>0%</td>
+        </tr><tr>
+            <td>New Look</td>
+            <td>0</td>
+            <td>0</td>
+            <td>2</td>
+            <td style="color:#FF5252">0%</td>
+            <td style="color:#FFC107">0%</td>
+            <td>0%</td>
+        </tr><tr>
+            <td>Rally Master</td>
+            <td>0</td>
+            <td>0</td>
+            <td>2</td>
             <td style="color:#FF5252">0%</td>
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
@@ -211,7 +205,7 @@
             <td style="color:#FFC107">0%</td>
             <td>0%</td>
         </tr><tr>
-            <td>Grind Rally</td>
+            <td>Overhead Dominance</td>
             <td>0</td>
             <td>1</td>
             <td>0</td>
@@ -498,32 +492,25 @@
   <table>
     <thead><tr><th>Clip</th><th>Type</th><th>We Predicted</th><th>Courtana Awarded</th><th>Our Reasoning</th><th>Courtana's Reasoning</th></tr></thead>
     <tbody><tr>
-            <td>c30b464e</td>
+            <td>ce00696b</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Error Highlight</td>
+            <td>Airborne</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The clip showcases multiple poor shots and an unforced error to end the point.</td>
+            <td style="font-size:0.8em;color:#aaa">The player jumps significantly high for the overhead smash.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>c30b464e</td>
+            <td>ce00696b</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Teaching Moment</td>
+            <td>Smash Master</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The video itself provides explicit coaching feedback on footwork, paddle readiness, and shot selection, making it an ide</td>
+            <td style="font-size:0.8em;color:#aaa">The overhead smash is powerful and effective, leading to a winner.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>f415729c</td>
+            <td>ce00696b</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Teaching Moment</td>
+            <td>Shot of the Day</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The video provides clear commentary and analysis for player improvement.</td>
-            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
-        </tr><tr>
-            <td>f415729c</td>
-            <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Aggressive Driver</td>
-            <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The red shirt player attempts a strong 3rd shot drive, showing aggressive intent.</td>
+            <td style="font-size:0.8em;color:#aaa">The video explicitly titles the clip as 'Shot of the Day' and the audio reinforces it.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
             <td>0ec3d983</td>
@@ -561,82 +548,529 @@
             <td style="font-size:0.8em;color:#aaa">Players demonstrate quick reflexes and paddle control during rapid-fire volleys at the net.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>6cf49d96</td>
-            <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Kitchen King</td>
-            <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">Player 1 demonstrates consistent and controlled dinks from the kitchen line.</td>
-            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
-        </tr><tr>
-            <td>6cf49d96</td>
-            <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Kitchen Queen</td>
-            <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">Player 2 demonstrates consistent and controlled dinks from the kitchen line.</td>
-            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
-        </tr><tr>
-            <td>6cf49d96</td>
-            <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Consistency Master</td>
-            <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">Both players maintain a long dink rally with very few errors.</td>
-            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
-        </tr><tr>
-            <td>e7340a11</td>
-            <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Teaching Moment</td>
-            <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The clip demonstrates a common error in pickleball (third shot drop into the net), providing a learning opportunity.</td>
-            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
-        </tr><tr>
-            <td>eb168c8c</td>
-            <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Kitchen King</td>
-            <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">Players demonstrate continuous, consistent dinking from the kitchen line.</td>
-            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
-        </tr><tr>
-            <td>eb168c8c</td>
+            <td>ea5f58c0</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
             <td>Wall of Hands</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The extended dinking rally shows good paddle control and defensive consistency at the net.</td>
+            <td style="font-size:0.8em;color:#aaa">The far team successfully blocked multiple aggressive speed-ups from the near team.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>08932731</td>
+            <td>ea5f58c0</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
             <td>Kitchen King</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The clip features an extended and consistent volley exchange at the kitchen line by all four players.</td>
+            <td style="font-size:0.8em;color:#aaa">The rally started with several well-placed dinks in the kitchen before escalating.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>91a764f8</td>
+            <td>b18ca113</td>
+            <td><span style="color:#FF5252">Over-predicted</span></td>
+            <td>Epic Rally</td>
+            <td>—</td>
+            <td style="font-size:0.8em;color:#aaa">The clip features a sustained rally with multiple shots and exchanges.</td>
+            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr><tr>
+            <td>b18ca113</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
             <td>Kitchen King</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The majority of the rally takes place at the kitchen line with consistent dinking.</td>
+            <td style="font-size:0.8em;color:#aaa">A significant portion of the rally involved dinking in the kitchen.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>ce00696b</td>
+            <td>b18ca113</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Airborne</td>
+            <td>Dink Machine</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The player jumps significantly high for the overhead smash.</td>
+            <td style="font-size:0.8em;color:#aaa">The clip features a prolonged sequence of dinks and soft volleys at the kitchen line.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>ce00696b</td>
+            <td>b18ca113</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Smash Master</td>
+            <td>Speed Demon</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The overhead smash is powerful and effective, leading to a winner.</td>
+            <td style="font-size:0.8em;color:#aaa">Player 1 attempts a powerful speed-up shot to end the rally.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
         </tr><tr>
-            <td>ce00696b</td>
+            <td>e1454b14</td>
             <td><span style="color:#FF5252">Over-predicted</span></td>
-            <td>Shot of the Day</td>
+            <td>Kitchen King</td>
             <td>—</td>
-            <td style="font-size:0.8em;color:#aaa">The video explicitly titles the clip as 'Shot of the Day' and the audio reinforces it.</td>
+            <td style="font-size:0.8em;color:#aaa">The clip features a sustained exchange of dinks at the kitchen line.</td>
             <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr><tr>
+            <td>e1454b14</td>
+            <td><span style="color:#FF5252">Over-predicted</span></td>
+            <td>Error Highlight</td>
+            <td>—</td>
+            <td style="font-size:0.8em;color:#aaa">The rally ends with an unforced error, making it a highlight of a mistake.</td>
+            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr><tr>
+            <td>2615847e</td>
+            <td><span style="color:#FF5252">Over-predicted</span></td>
+            <td>Net Cord Ninja</td>
+            <td>—</td>
+            <td style="font-size:0.8em;color:#aaa">The final shot hit the top of the net and rolled over, landing in the kitchen for a winner.</td>
+            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr><tr>
+            <td>2615847e</td>
+            <td><span style="color:#FF5252">Over-predicted</span></td>
+            <td>Lucky Shot</td>
+            <td>—</td>
+            <td style="font-size:0.8em;color:#aaa">The net cord winner was clearly a stroke of luck, changing the trajectory of the ball significantly.</td>
+            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr><tr>
+            <td>8ade4e4e</td>
+            <td><span style="color:#FF5252">Over-predicted</span></td>
+            <td>Epic Rally</td>
+            <td>—</td>
+            <td style="font-size:0.8em;color:#aaa">The rally involved 14 shots after the serve return, showcasing sustained effort and multiple exchanges.</td>
+            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr><tr>
+            <td>8ade4e4e</td>
+            <td><span style="color:#FF5252">Over-predicted</span></td>
+            <td>Kitchen King</td>
+            <td>—</td>
+            <td style="font-size:0.8em;color:#aaa">The majority of the rally took place in the kitchen, with players demonstrating good dinking and volley skills.</td>
+            <td style="font-size:0.8em;color:#aaa">(Courtana awarded no badges for this highlight group)</td>
+        </tr></tbody>
+  </table>
+</div>
+
+<!-- Badge Co-occurrence Analysis -->
+<h2>Badge Co-occurrence — Which Badges Appear Together?</h2>
+<p style="color:var(--dim);margin-bottom:12px">When Badge A is awarded, how often is Badge B also awarded? High "lift" means they co-occur more than chance. Missing co-occurrences may indicate badges that should have been awarded.</p>
+<div class="card" style="max-height:500px;overflow-y:auto">
+  <table>
+    <thead><tr><th>Badge A</th><th>Badge B</th><th>Together</th><th>A Total</th><th>B Total</th><th>A w/o B</th><th>B w/o A</th><th>Lift</th></tr></thead>
+    <tbody><tr>
+            <td>Rally Master</td>
+            <td>Steady Eddie</td>
+            <td>268</td>
+            <td>384</td>
+            <td>441</td>
+            <td>116</td>
+            <td>173</td>
+            <td>1.26</td>
+        </tr><tr>
+            <td>New Look</td>
+            <td>Rally Master</td>
+            <td>175</td>
+            <td>201</td>
+            <td>384</td>
+            <td>26</td>
+            <td>209</td>
+            <td>1.81</td>
+        </tr><tr>
+            <td>New Look</td>
+            <td>Steady Eddie</td>
+            <td>165</td>
+            <td>201</td>
+            <td>441</td>
+            <td>36</td>
+            <td>276</td>
+            <td>1.49</td>
+        </tr><tr>
+            <td>Fresh Fit</td>
+            <td>Steady Eddie</td>
+            <td>131</td>
+            <td>144</td>
+            <td>441</td>
+            <td>13</td>
+            <td>310</td>
+            <td>1.65</td>
+        </tr><tr>
+            <td>Net Magnet</td>
+            <td>Steady Eddie</td>
+            <td>117</td>
+            <td>185</td>
+            <td>441</td>
+            <td>68</td>
+            <td>324</td>
+            <td>1.14</td>
+        </tr><tr>
+            <td>Steady Eddie</td>
+            <td>Two Up Pressure</td>
+            <td>98</td>
+            <td>441</td>
+            <td>144</td>
+            <td>343</td>
+            <td>46</td>
+            <td>1.23</td>
+        </tr><tr>
+            <td>Rally Master</td>
+            <td>Two Up Pressure</td>
+            <td>98</td>
+            <td>384</td>
+            <td>144</td>
+            <td>286</td>
+            <td>46</td>
+            <td>1.41</td>
+        </tr><tr>
+            <td>Fresh Fit</td>
+            <td>Rally Master</td>
+            <td>98</td>
+            <td>144</td>
+            <td>384</td>
+            <td>46</td>
+            <td>286</td>
+            <td>1.41</td>
+        </tr><tr>
+            <td>Net Magnet</td>
+            <td>Rally Master</td>
+            <td>89</td>
+            <td>185</td>
+            <td>384</td>
+            <td>96</td>
+            <td>295</td>
+            <td>1.0</td>
+        </tr><tr>
+            <td>Epic Rally</td>
+            <td>Rally Master</td>
+            <td>83</td>
+            <td>91</td>
+            <td>384</td>
+            <td>8</td>
+            <td>301</td>
+            <td>1.9</td>
+        </tr><tr>
+            <td>Kitchen King</td>
+            <td>Rally Master</td>
+            <td>75</td>
+            <td>81</td>
+            <td>384</td>
+            <td>6</td>
+            <td>309</td>
+            <td>1.92</td>
+        </tr><tr>
+            <td>Epic Rally</td>
+            <td>Steady Eddie</td>
+            <td>73</td>
+            <td>91</td>
+            <td>441</td>
+            <td>18</td>
+            <td>368</td>
+            <td>1.45</td>
+        </tr><tr>
+            <td>Fresh Fit</td>
+            <td>New Look</td>
+            <td>71</td>
+            <td>144</td>
+            <td>201</td>
+            <td>73</td>
+            <td>130</td>
+            <td>1.96</td>
+        </tr><tr>
+            <td>Net Magnet</td>
+            <td>New Look</td>
+            <td>69</td>
+            <td>185</td>
+            <td>201</td>
+            <td>116</td>
+            <td>132</td>
+            <td>1.48</td>
+        </tr><tr>
+            <td>Kitchen King</td>
+            <td>Steady Eddie</td>
+            <td>66</td>
+            <td>81</td>
+            <td>441</td>
+            <td>15</td>
+            <td>375</td>
+            <td>1.47</td>
+        </tr><tr>
+            <td>Paddle Tap Celebration</td>
+            <td>Steady Eddie</td>
+            <td>64</td>
+            <td>77</td>
+            <td>441</td>
+            <td>13</td>
+            <td>377</td>
+            <td>1.5</td>
+        </tr><tr>
+            <td>At Least You Showed Up</td>
+            <td>Steady Eddie</td>
+            <td>63</td>
+            <td>93</td>
+            <td>441</td>
+            <td>30</td>
+            <td>378</td>
+            <td>1.23</td>
+        </tr><tr>
+            <td>New Look</td>
+            <td>Two Up Pressure</td>
+            <td>60</td>
+            <td>201</td>
+            <td>144</td>
+            <td>141</td>
+            <td>84</td>
+            <td>1.65</td>
+        </tr><tr>
+            <td>Quick Reflexes</td>
+            <td>Rally Master</td>
+            <td>60</td>
+            <td>64</td>
+            <td>384</td>
+            <td>4</td>
+            <td>324</td>
+            <td>1.95</td>
+        </tr><tr>
+            <td>Spike!</td>
+            <td>Steady Eddie</td>
+            <td>58</td>
+            <td>66</td>
+            <td>441</td>
+            <td>8</td>
+            <td>383</td>
+            <td>1.59</td>
+        </tr><tr>
+            <td>Rally Master</td>
+            <td>Third Shot Drop Artist</td>
+            <td>56</td>
+            <td>384</td>
+            <td>101</td>
+            <td>328</td>
+            <td>45</td>
+            <td>1.15</td>
+        </tr><tr>
+            <td>Quick Reflexes</td>
+            <td>Steady Eddie</td>
+            <td>55</td>
+            <td>64</td>
+            <td>441</td>
+            <td>9</td>
+            <td>386</td>
+            <td>1.56</td>
+        </tr><tr>
+            <td>Steady Eddie</td>
+            <td>Third Shot Drop Artist</td>
+            <td>51</td>
+            <td>441</td>
+            <td>101</td>
+            <td>390</td>
+            <td>50</td>
+            <td>0.91</td>
+        </tr><tr>
+            <td>New Look</td>
+            <td>Paddle Tap Celebration</td>
+            <td>51</td>
+            <td>201</td>
+            <td>77</td>
+            <td>150</td>
+            <td>26</td>
+            <td>2.63</td>
+        </tr><tr>
+            <td>Paddle Tap Celebration</td>
+            <td>Rally Master</td>
+            <td>51</td>
+            <td>77</td>
+            <td>384</td>
+            <td>26</td>
+            <td>333</td>
+            <td>1.38</td>
+        </tr><tr>
+            <td>Firefight Victor</td>
+            <td>Rally Master</td>
+            <td>49</td>
+            <td>53</td>
+            <td>384</td>
+            <td>4</td>
+            <td>335</td>
+            <td>1.92</td>
+        </tr><tr>
+            <td>Firefight Victor</td>
+            <td>Steady Eddie</td>
+            <td>48</td>
+            <td>53</td>
+            <td>441</td>
+            <td>5</td>
+            <td>393</td>
+            <td>1.64</td>
+        </tr><tr>
+            <td>Epic Rally</td>
+            <td>New Look</td>
+            <td>46</td>
+            <td>91</td>
+            <td>201</td>
+            <td>45</td>
+            <td>155</td>
+            <td>2.01</td>
+        </tr><tr>
+            <td>Kitchen King</td>
+            <td>New Look</td>
+            <td>44</td>
+            <td>81</td>
+            <td>201</td>
+            <td>37</td>
+            <td>157</td>
+            <td>2.16</td>
+        </tr><tr>
+            <td>Rally Master</td>
+            <td>Spike!</td>
+            <td>44</td>
+            <td>384</td>
+            <td>66</td>
+            <td>340</td>
+            <td>22</td>
+            <td>1.39</td>
+        </tr></tbody>
+  </table>
+</div>
+
+<!-- Quality Flags — Missing Implied Badges -->
+<h2>Quality Flags — Missing Implied Badges</h2>
+<p style="color:var(--dim);margin-bottom:12px">Cases where Courtana's reasoning for one badge implies another badge should also have been awarded, but wasn't. This is the "tweener without tweener badge" pattern.</p>
+<div class="card" style="max-height:500px;overflow-y:auto">
+  <table>
+    <thead><tr><th>Group</th><th>Awarded Badge</th><th>Implied (Missing) Badge</th><th>Reasoning Excerpt</th></tr></thead>
+    <tbody><tr>
+            <td>cfNQODqkaV0W</td>
+            <td style="color:var(--yellow)">Two Up Pressure</td>
+            <td style="color:var(--red)">Kitchen King</td>
+            <td style="font-size:0.8em;color:#aaa">bill and his partner both advanced to the kitchen line and maintained pressure to win the point.</td>
+        </tr><tr>
+            <td>cfNQODqkaV0W</td>
+            <td style="color:var(--yellow)">Two Up Pressure</td>
+            <td style="color:var(--red)">Break Point Clutch</td>
+            <td style="font-size:0.8em;color:#aaa">bill and his partner both advanced to the kitchen line and maintained pressure to win the point.</td>
+        </tr><tr>
+            <td>cfNQODqkaV0W</td>
+            <td style="color:var(--yellow)">Rally Master</td>
+            <td style="color:var(--red)">Smart Play</td>
+            <td style="font-size:0.8em;color:#aaa">the players sustained a rally of 14 shots, which is well above the 8-shot requirement for this badge.</td>
+        </tr><tr>
+            <td>cfNQODqkaV0W</td>
+            <td style="color:var(--yellow)">Rally Master</td>
+            <td style="color:var(--red)">Passing Shot Artist</td>
+            <td style="font-size:0.8em;color:#aaa">the players sustained a rally of 14 shots, which is well above the 8-shot requirement for this badge.</td>
+        </tr><tr>
+            <td>cfNQODqkaV0W</td>
+            <td style="color:var(--yellow)">Rally Master</td>
+            <td style="color:var(--red)">Power Player</td>
+            <td style="font-size:0.8em;color:#aaa">the players sustained a rally of 14 shots, which is well above the 8-shot requirement for this badge.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Smart Play</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 plays through the entire rally without making an unforced error.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Kick Serve King</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 plays through the entire rally without making an unforced error.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Power Player</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 plays through the entire rally without making an unforced error.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Epic Rally</td>
+            <td style="color:var(--red)">Passing Shot Artist</td>
+            <td style="font-size:0.8em;color:#aaa">the rally consists of 15 consecutive shots, meeting the criteria for an epic rally.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Reset Wizard</td>
+            <td style="color:var(--red)">Kitchen King</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 successfully resets a hard-driven overhead smash into a soft dink in the kitchen at 00:18.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Reset Wizard</td>
+            <td style="color:var(--red)">Dink Master</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 successfully resets a hard-driven overhead smash into a soft dink in the kitchen at 00:18.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Reset Wizard</td>
+            <td style="color:var(--red)">Drive Master</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 successfully resets a hard-driven overhead smash into a soft dink in the kitchen at 00:18.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Reset Wizard</td>
+            <td style="color:var(--red)">Smash King</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 successfully resets a hard-driven overhead smash into a soft dink in the kitchen at 00:18.</td>
+        </tr><tr>
+            <td>o84MsiLZnHxM</td>
+            <td style="color:var(--yellow)">Reset Wizard</td>
+            <td style="color:var(--red)">Full Rip</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 successfully resets a hard-driven overhead smash into a soft dink in the kitchen at 00:18.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Net Magnet</td>
+            <td style="color:var(--red)">Edge Ball Luck</td>
+            <td style="font-size:0.8em;color:#aaa">james hits the ball into the net while attempting to return a lob at the end of the rally.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Knuckleball Serve</td>
+            <td style="font-size:0.8em;color:#aaa">bill plays through the entire rally without making any unforced errors, contributing a serve, a drive, and a strategic lob.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Smart Play</td>
+            <td style="font-size:0.8em;color:#aaa">bill plays through the entire rally without making any unforced errors, contributing a serve, a drive, and a strategic lob.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Kick Serve King</td>
+            <td style="font-size:0.8em;color:#aaa">bill plays through the entire rally without making any unforced errors, contributing a serve, a drive, and a strategic lob.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Steady Eddie</td>
+            <td style="color:var(--red)">Drive Master</td>
+            <td style="font-size:0.8em;color:#aaa">bill plays through the entire rally without making any unforced errors, contributing a serve, a drive, and a strategic lob.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Rally Master</td>
+            <td style="color:var(--red)">Passing Shot Artist</td>
+            <td style="font-size:0.8em;color:#aaa">the players sustained a rally of 12 consecutive shots from the serve at 00:07 until the ball hit the net at 00:19.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Rally Master</td>
+            <td style="color:var(--red)">Power Player</td>
+            <td style="font-size:0.8em;color:#aaa">the players sustained a rally of 12 consecutive shots from the serve at 00:07 until the ball hit the net at 00:19.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Two Up Pressure</td>
+            <td style="color:var(--red)">Kitchen King</td>
+            <td style="font-size:0.8em;color:#aaa">bill and his partner both advance to the kitchen line and maintain pressure to win the point.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Two Up Pressure</td>
+            <td style="color:var(--red)">Break Point Clutch</td>
+            <td style="font-size:0.8em;color:#aaa">bill and his partner both advance to the kitchen line and maintain pressure to win the point.</td>
+        </tr><tr>
+            <td>cJuObQ98TKXN</td>
+            <td style="color:var(--yellow)">Nice Try</td>
+            <td style="color:var(--red)">Good Game</td>
+            <td style="font-size:0.8em;color:#aaa">james makes a good effort to reach and return a difficult lob, although the shot ultimately hits the net.</td>
+        </tr><tr>
+            <td>ur03wh9CdKUy</td>
+            <td style="color:var(--yellow)">Serve Returner</td>
+            <td style="color:var(--red)">You Thought That Was Out?</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 hits a deep return of serve at 00:09 that pushes the opponents back.</td>
+        </tr><tr>
+            <td>ur03wh9CdKUy</td>
+            <td style="color:var(--yellow)">Serve Returner</td>
+            <td style="color:var(--red)">Back Wall Save</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 hits a deep return of serve at 00:09 that pushes the opponents back.</td>
+        </tr><tr>
+            <td>ur03wh9CdKUy</td>
+            <td style="color:var(--yellow)">Serve Returner</td>
+            <td style="color:var(--red)">Knuckleball Serve</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 hits a deep return of serve at 00:09 that pushes the opponents back.</td>
+        </tr><tr>
+            <td>ur03wh9CdKUy</td>
+            <td style="color:var(--yellow)">Serve Returner</td>
+            <td style="color:var(--red)">Smart Play</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 hits a deep return of serve at 00:09 that pushes the opponents back.</td>
+        </tr><tr>
+            <td>ur03wh9CdKUy</td>
+            <td style="color:var(--yellow)">Serve Returner</td>
+            <td style="color:var(--red)">Power Player</td>
+            <td style="font-size:0.8em;color:#aaa">player 4 hits a deep return of serve at 00:09 that pushes the opponents back.</td>
+        </tr><tr>
+            <td>ur03wh9CdKUy</td>
+            <td style="color:var(--yellow)">Spin Doctor</td>
+            <td style="color:var(--red)">Break Point Clutch</td>
+            <td style="font-size:0.8em;color:#aaa">bill spins his paddle in a showy fashion before the point starts at 00:03.</td>
         </tr></tbody>
   </table>
 </div>
@@ -644,15 +1078,17 @@
 <!-- Reinforcement Loop Status -->
 <h2>Reinforcement Loop Status</h2>
 <div class="card">
-  <p><strong>Current prompt:</strong> 18 badge names, no criteria text</p>
   <p><strong>Courtana taxonomy:</strong> 229 badges, each with explicit criteria</p>
-  <p><strong>Next step:</strong> Run <code>python tools/badge-warehouse.py feedback</code> to generate a prompt reinforcement patch with Courtana's criteria injected.</p>
+  <p><strong>Clips analyzed:</strong> 23 | <strong>Linked to ground truth:</strong> 23</p>
+  <p><strong>True Positives:</strong> 2 | <strong>False Positives:</strong> 64 | <strong>False Negatives:</strong> 11</p>
+  <p><strong>Co-occurrence patterns:</strong> 50 badge pairs analyzed</p>
+  <p><strong>Quality flags:</strong> 100 potential missing badge awards detected</p>
   <p style="margin-top:12px;color:var(--dim)">The loop: Predict → Compare → Patch prompt → Re-predict → Compare again</p>
 </div>
 
 <script>
 // Per-badge metrics chart
-const badgeMetrics = [{"slug": "pb-kitchen-king", "name": "Kitchen King", "tp": 0, "fp": 15, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "wall-of-hands", "name": "Wall of Hands", "tp": 0, "fp": 9, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "epic-rally", "name": "Epic Rally", "tp": 0, "fp": 6, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "dink-machine", "name": "Dink Machine", "tp": 0, "fp": 4, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "teaching-moment", "name": "Teaching Moment", "tp": 0, "fp": 3, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "pp-speed-demon", "name": "Speed Demon", "tp": 0, "fp": 3, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "clutch-performer", "name": "Clutch Performer", "tp": 0, "fp": 3, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "error-highlight", "name": "Error Highlight", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "pb-airborne", "name": "Airborne", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "momentum-shift", "name": "Momentum Shift", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "athletic-highlight", "name": "Athletic Highlight", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "consistency-king", "name": "Consistency King", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "aggressive-driver", "name": "Aggressive Driver", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "overhead-dominance", "name": "Overhead Dominance", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "kitchen-queen", "name": "Kitchen Queen", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "consistency-master", "name": "Consistency Master", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "smash-master", "name": "Smash Master", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "shot-of-the-day", "name": "Shot Of The Day", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "grind-rally", "name": "Grind Rally", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "net-cord-ninja", "name": "Net Cord Ninja", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "lucky-shot", "name": "Lucky Shot", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}];
+const badgeMetrics = [{"slug": "pb-kitchen-king", "name": "Kitchen King", "tp": 2, "fp": 13, "fn": 0, "precision": 0.133, "recall": 1.0, "f1": 0.235}, {"slug": "wall-of-hands", "name": "Wall of Hands", "tp": 0, "fp": 10, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "epic-rally", "name": "Epic Rally", "tp": 0, "fp": 7, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "dink-machine", "name": "Dink Machine", "tp": 0, "fp": 4, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "pp-speed-demon", "name": "Speed Demon", "tp": 0, "fp": 4, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "clutch-performer", "name": "Clutch Performer", "tp": 0, "fp": 3, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "teaching-moment", "name": "Teaching Moment", "tp": 0, "fp": 3, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "pb-airborne", "name": "Airborne", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "error-highlight", "name": "Error Highlight", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "consistency-king", "name": "Consistency King", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "athletic-highlight", "name": "Athletic Highlight", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "momentum-shift", "name": "Momentum Shift", "tp": 0, "fp": 2, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "general-fresh-fit", "name": "Fresh Fit", "tp": 0, "fp": 0, "fn": 2, "precision": 0, "recall": 0.0, "f1": 0}, {"slug": "steady-eddie", "name": "Steady Eddie", "tp": 0, "fp": 0, "fn": 2, "precision": 0, "recall": 0.0, "f1": 0}, {"slug": "general-new-look", "name": "New Look", "tp": 0, "fp": 0, "fn": 2, "precision": 0, "recall": 0.0, "f1": 0}, {"slug": "rally-master", "name": "Rally Master", "tp": 0, "fp": 0, "fn": 2, "precision": 0, "recall": 0.0, "f1": 0}, {"slug": "smash-master", "name": "Smash Master", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "shot-of-the-day", "name": "Shot Of The Day", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "overhead-dominance", "name": "Overhead Dominance", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "net-cord-ninja", "name": "Net Cord Ninja", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "lucky-shot", "name": "Lucky Shot", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "aggressive-driver", "name": "Aggressive Driver", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "grind-rally", "name": "Grind Rally", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "kitchen-queen", "name": "Kitchen Queen", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "consistency-master", "name": "Consistency Master", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "high-flyer", "name": "High Flyer", "tp": 0, "fp": 1, "fn": 0, "precision": 0.0, "recall": 0, "f1": 0}, {"slug": "two-up-pressure", "name": "Two Up Pressure", "tp": 0, "fp": 0, "fn": 1, "precision": 0, "recall": 0.0, "f1": 0}, {"slug": "firefight-victor", "name": "Firefight Victor", "tp": 0, "fp": 0, "fn": 1, "precision": 0, "recall": 0.0, "f1": 0}, {"slug": "pb-third-shot-drop", "name": "Third Shot Drop Artist", "tp": 0, "fp": 0, "fn": 1, "precision": 0, "recall": 0.0, "f1": 0}];
 if (badgeMetrics.length > 0) {
   new Chart(document.getElementById('badgeMetricsChart'), {
     type: 'bar',
@@ -677,8 +1113,8 @@ if (badgeMetrics.length > 0) {
 }
 
 // Distribution chart
-const predFreq = {"Kitchen King": 15, "Wall of Hands": 9, "Epic Rally": 6, "Dink Machine": 4, "Teaching Moment": 3, "Speed Demon": 3, "Clutch Performer": 3, "Momentum Shift": 2, "Error Highlight": 2, "Consistency King": 2, "Athletic Highlight": 2, "Airborne": 2, "Smash Master": 1, "Shot of the Day": 1, "Overhead Dominance": 1, "Net Cord Ninja": 1, "Lucky Shot": 1, "Kitchen Queen": 1, "Grind Rally": 1, "Consistency Master": 1, "Aggressive Driver": 1};
-const gtFreq = {"Rally Master": 757, "Steady Eddie": 479, "Two Up Pressure": 231, "New Look": 198, "Net Magnet": 167, "Epic Rally": 142, "Third Shot Drop Artist": 125, "Serve Returner": 122, "Fresh Fit": 119, "Crowd Pleaser": 97, "At Least You Showed Up": 97, "Kitchen King": 96, "Paddle Tap Celebration": 79, "Speed Up Specialist": 77, "Hustler": 61, "Quick Reflexes": 55, "Spike!": 52, "Good Game": 49, "Baby Steps": 49, "Smart Play": 46, "Tag Team Takedown": 45, "Nice Try": 45, "Firefight Victor": 42, "Reset Wizard": 26, "Highlight Reel": 24, "Spin Doctor": 21, "Out of Bounds": 19, "Rare Find": 18, "Legendary Look": 15, "Momentum Shift": 12, "Coverage Duo": 12, "Poach King": 11, "Exclusive Club": 10, "Dink Master": 10, "Dance Break": 9, "Clutch Performer": 9, "Backhand Assassin": 9, "Iron Wall": 8, "Lob Genius": 7, "Stacking Pro": 6, "Fist Pump": 6, "Airborne": 6, "Transition Zone Warrior": 5, "Point to the Sky": 5, "Body Bagger": 5, "Wall of Hands": 4, "One of a Kind": 4, "Double Reset": 4, "Lob Recovery Duo": 3, "You Thought That Was Out?": 2, "Victory Spin": 2, "Tweener": 2, "Paddle Flip": 2, "One-Handed Backhand": 2, "Chest Bump": 2, "That Was Easy": 1, "Teach Me How to Dougie": 1, "Scorpion Tail": 1, "Lucky Bounce": 1, "Lob Perfecto": 1, "Flex": 1, "Erne Machine": 1, "Drop Volley Touch": 1, "Bandeja Boss": 1, "Around the Post": 1};
+const predFreq = {"Kitchen King": 16, "Wall of Hands": 10, "Epic Rally": 7, "Speed Demon": 4, "Dink Machine": 4, "Teaching Moment": 3, "Clutch Performer": 3, "Momentum Shift": 2, "Error Highlight": 2, "Consistency King": 2, "Athletic Highlight": 2, "Airborne": 2, "Smash Master": 1, "Shot of the Day": 1, "Overhead Dominance": 1, "Net Cord Ninja": 1, "Lucky Shot": 1, "Kitchen Queen": 1, "High Flyer": 1, "Grind Rally": 1, "Consistency Master": 1, "Aggressive Driver": 1};
+const gtFreq = {"Rally Master": 1026, "Steady Eddie": 639, "New Look": 295, "Two Up Pressure": 277, "Epic Rally": 262, "Net Magnet": 190, "Fresh Fit": 160, "Crowd Pleaser": 148, "Kitchen King": 135, "Third Shot Drop Artist": 133, "Serve Returner": 123, "Paddle Tap Celebration": 116, "At Least You Showed Up": 115, "Good Game": 103, "Speed Up Specialist": 84, "Quick Reflexes": 73, "Hustler": 68, "Spike!": 66, "Firefight Victor": 57, "Baby Steps": 55, "Tag Team Takedown": 49, "Nice Try": 49, "Smart Play": 46, "Legendary Look": 36, "Reset Wizard": 28, "Highlight Reel": 25, "Out of Bounds": 24, "Spin Doctor": 23, "Rare Find": 19, "Iron Wall": 17, "Coverage Duo": 16, "Momentum Shift": 12, "Poach King": 11, "Exclusive Club": 11, "Dink Master": 11, "Clutch Performer": 10, "Dance Break": 9, "Backhand Assassin": 9, "Fist Pump": 8, "Wall of Hands": 7, "Lob Genius": 7, "Stacking Pro": 6, "One of a Kind": 6, "Airborne": 6, "Transition Zone Warrior": 5, "Point to the Sky": 5, "Body Bagger": 5, "Victory Spin": 4, "Double Reset": 4, "Paddle Flip": 3, "Lob Recovery Duo": 3, "You Thought That Was Out?": 2, "Tweener": 2, "One-Handed Backhand": 2, "Chest Bump": 2, "That Was Easy": 1, "Teach Me How to Dougie": 1, "Switch Play": 1, "Serve and Setup": 1, "Scorpion Tail": 1, "Lucky Bounce": 1, "Lob Perfecto": 1, "Flex": 1, "Erne Machine": 1, "Drop Volley Touch": 1, "Bandeja Boss": 1, "Around the Post": 1};
 const allBadgeNames = [...new Set([...Object.keys(predFreq), ...Object.keys(gtFreq)])].sort((a,b) => (gtFreq[b]||0) - (gtFreq[a]||0)).slice(0, 20);
 if (allBadgeNames.length > 0) {
   new Chart(document.getElementById('distributionChart'), {

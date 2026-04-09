@@ -1,15 +1,15 @@
 # Badge Reinforcement Patch
-**Generated:** 2026-04-09 07:47
-**Source:** Cross-reference of 62 predictions vs 3520 ground truth awards
+**Generated:** 2026-04-09 11:36
+**Source:** Cross-reference of 67 predictions vs 4619 ground truth awards
 
 ---
 
 ## Summary
 
 - **Total Courtana badges:** 229
-- **Badges our model knows about:** 21
+- **Badges our model knows about:** 22
 - **Badges missing from our prompt:** 222
-- **Feedback records generated:** 243
+- **Feedback records generated:** 251
 
 ---
 
@@ -50,6 +50,9 @@
 - **'Kitchen Queen' over-predicted 1 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Kitchen Queen". Courtana criteria: "No criteria found"
 
+- **'High Flyer' over-predicted 1 times. Model triggers this badge too easily.**
+  Fix: Tighten criteria for "High Flyer". Courtana criteria: "No criteria found"
+
 - **'Grind Rally' over-predicted 1 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Grind Rally". Courtana criteria: "No criteria found"
 
@@ -59,14 +62,17 @@
 - **'Aggressive Driver' over-predicted 1 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Aggressive Driver". Courtana criteria: "No criteria found"
 
-- **'Kitchen King' over-predicted 15 times. Model triggers this badge too easily.**
+- **'Kitchen King' over-predicted 13 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Kitchen King". Courtana criteria: "Player executes 3 or more quality dinks at the kitchen line in a single rally"
 
-- **'Wall of Hands' over-predicted 9 times. Model triggers this badge too easily.**
+- **'Wall of Hands' over-predicted 10 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Wall of Hands". Courtana criteria: "Both partners defend a flurry of speed ups together at the kitchen line, resetting or winning the point as a unit"
 
-- **'Epic Rally' over-predicted 6 times. Model triggers this badge too easily.**
+- **'Epic Rally' over-predicted 7 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Epic Rally". Courtana criteria: "Both sides sustain a rally of 15 or more consecutive shots back and forth"
+
+- **'Speed Demon' over-predicted 4 times. Model triggers this badge too easily.**
+  Fix: Tighten criteria for "Speed Demon". Courtana criteria: "Player wins a rapid-fire close-to-the-table exchange with quick hands and reflexes"
 
 - **'Dink Machine' over-predicted 4 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Dink Machine". Courtana criteria: "No criteria found"
@@ -74,11 +80,31 @@
 - **'Teaching Moment' over-predicted 3 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Teaching Moment". Courtana criteria: "No criteria found"
 
-- **'Speed Demon' over-predicted 3 times. Model triggers this badge too easily.**
-  Fix: Tighten criteria for "Speed Demon". Courtana criteria: "Player wins a rapid-fire close-to-the-table exchange with quick hands and reflexes"
-
 - **'Clutch Performer' over-predicted 3 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Clutch Performer". Courtana criteria: "Player executes an excellent shot or play during a high-pressure moment or turning point"
+
+### Missed Badges (Add or Emphasize)
+
+- **'Steady Eddie' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Steady Eddie" is in prompt. Courtana criteria: "Player goes through the entire clip without making an unforced error"
+
+- **'Rally Master' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Rally Master" is in prompt. Courtana criteria: "Players sustain a rally of 8 or more consecutive shots without an error"
+
+- **'New Look' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "New Look" is in prompt. Courtana criteria: "No criteria found"
+
+- **'Fresh Fit' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Fresh Fit" is in prompt. Courtana criteria: "No criteria found"
+
+- **'Two Up Pressure' missed 1 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Two Up Pressure" is in prompt. Courtana criteria: "Both partners advance to the kitchen line together and win the point with coordinated net play"
+
+- **'Third Shot Drop Artist' missed 1 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Third Shot Drop Artist" is in prompt. Courtana criteria: "No criteria found"
+
+- **'Firefight Victor' missed 1 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Firefight Victor" is in prompt. Courtana criteria: "Player wins a fast hands battle at the kitchen line with quick reflexes and shot selection"
 
 ### Missing Badges — Not in Our Prompt (222 total, 48 high-priority)
 

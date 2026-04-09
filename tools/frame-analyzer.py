@@ -101,6 +101,8 @@ IMPORTANT:
 - JOOLA nets are very common in competitive pickleball courts
 - Paddle brands are the highest-value detection — look carefully at paddle face/throat
 - Report color_pattern_only when you see branded colors but no readable logo
+- Actively scan for brands BEYOND pickleball: drinks on the sideline, shoes, sunglasses, fitness trackers, bags, venue signage, sponsor banners, vehicle logos in parking lots visible through fences, clothing brands on spectators
+- False positives are acceptable — the goal is maximum brand capture, not minimum false alarms
 - If no brands are visible, return empty brands_detected array"""
 
 

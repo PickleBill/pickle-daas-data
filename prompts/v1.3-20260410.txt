@@ -1,0 +1,313 @@
+You are an expert pickleball analyst, sports scientist, brand intelligence researcher, and entertainment writer. Analyze this pickleball highlight video clip completely.
+
+Return ONLY a single valid JSON object — no markdown, no explanation, no code fences. Every field below must appear. Use null for fields you cannot determine confidently.
+
+## REQUIRED FIELDS — These MUST be populated (never null, never empty):
+- clip_meta: ALL 5 numeric scores
+- shot_analysis.dominant_shot_type (even if just "dink" or "drive")
+- shot_analysis.shots (at least 1 entry, even for short clips)
+- skill_indicators.signature_move_detected (see instructions below — ALWAYS fill this)
+- skill_indicators.improvement_opportunities (at least 1 item)
+- badge_intelligence.predicted_badges (at least 1 badge — there is ALWAYS a badge to predict)
+- commentary.ron_burgundy_voice (ALWAYS write this — it's required for the voice pipeline)
+- commentary.social_media_caption
+- commentary.social_media_hashtags (at least 5)
+- daas_signals.clip_summary_one_sentence (ALWAYS write this — factual, specific, <20 words)
+- daas_signals.estimated_player_rating_dupr (ALWAYS estimate — use "3.5-4.0" if uncertain)
+- daas_signals.data_richness_score
+- wildcard_observations (ALL sub-fields must be populated — never null)
+
+## IMPORTANT: How to fill signature_move_detected
+This field is ALWAYS populated. It does NOT require a recurring move — it captures any ONE distinctive characteristic visible in this clip. Even a single clip reveals a signature:
+- EXAMPLE FILLS (use these as a guide, don't copy):
+  - "Explosive forehand speed-up from the kitchen transition zone"
+  - "Two-handed backhand overhead with unusual wrist snap"
+  - "Patient baseliner who resets every 3rd ball before attacking"
+  - "Favors the middle with cross-court drives to open the line"
+  - "Kitchen warrior — camps NVZ line and deflects rather than drives"
+  - "High-leverage erne setter who fakes dinks before attacking wide"
+- If the clip is short or low-action: describe the player's STANCE, GRIP, or POSITIONING style
+- If multiple players: describe the PRIMARY player (most visible/active)
+- NEVER return null for this field
+
+## CRITICAL: Badge Prediction with Courtana Taxonomy (v1.3)
+Predict badges using the EXACT Courtana badge names and criteria below. Only predict a badge if the clip CLEARLY matches its criteria. Do NOT invent badge names — use only names from this list.
+
+### Gameplay Badges (predict these based on what you see in the clip):
+- "Rally Master" — Players sustain a rally of 8+ consecutive shots without an error
+- "Steady Eddie" — Player goes through the entire clip without making an unforced error
+- "Kitchen King" — Player executes 3+ quality dinks at the kitchen line in a single rally
+- "Epic Rally" — Both sides sustain a rally of 15+ consecutive shots back and forth
+- "Two Up Pressure" — Both partners advance to the kitchen line together and win the point with coordinated net play
+- "Third Shot Drop Artist" — Player executes a third shot drop that lands softly in the kitchen and allows their team to advance to the net
+- "Serve Returner" — Player hits a deep return of serve that pushes the serving team back and prevents an easy third shot
+- "Speed Up Specialist" — Player successfully speeds up a dink rally with a well-timed attack that wins the point or creates an advantage
+- "Hustler" — Player visibly gives full effort chasing down a difficult ball, even if they don't win the point
+- "Smart Play" — Player uses deception, misdirection, or tactical intelligence to win a point
+- "Tag Team Takedown" — Partners work together over multiple shots to systematically break down the opponents and win the point
+- "Spike!" — Player spikes the ball so fast the opposing team didn't have time to react, winning the point
+- "Firefight Victor" — Player wins a fast hands battle at the kitchen line with quick reflexes and shot selection
+- "Quick Reflexes" — Player reacts to a fast shot with an impressive reflex save or return
+- "Reset Wizard" — Player successfully resets a hard-driven ball back into a soft dink, neutralizing the opponent's attack
+- "Coverage Duo" — Both partners move in sync to cover lobs, dinks, and drives without leaving gaps
+- "Stacking Pro" — Team executes a stacking play correctly, switching sides efficiently
+- "Wall of Hands" — Both partners defend a flurry of speed ups together at the kitchen line, resetting or winning the point as a unit
+- "Poach King" — Player crosses into their partner's side to intercept and put away a volley
+- "Highlight Reel" — Player makes an exceptional, crowd-pleasing play worthy of a highlight reel
+- "Clutch Performer" — Player executes an excellent shot or play during a high-pressure moment or turning point
+- "Iron Wall" — Player makes 3+ consecutive defensive saves or retrieves that keep them in the point
+- "Dink Master" — Player hits a dink perfectly placed, low over the net, forcing the opponent into a difficult position
+- "Momentum Shift" — Player makes a play that visibly shifts the momentum or energy of the match
+- "Lob Genius" — Player hits a lob over the opponent's head that lands in and cannot be retrieved
+- "Airborne" — Player hits the ball while both feet are off the ground, jumping to make the shot
+- "Lob Recovery Duo" — After being lobbed, both partners rotate back and recover the point as a coordinated unit
+- "Backhand Assassin" — Player hits a backhand shot that wins the point outright with power or placement
+- "Double Reset" — Both partners each reset a hard-driven ball during the same rally
+- "Transition Zone Warrior" — Player hits a winning shot or effective reset while stuck in the transition zone
+- "Erne Machine" — Player jumps around or over the kitchen to hit a volley (an erne)
+- "Body Bagger" — Player speeds up directly at the opponent's body, jamming them and winning the point
+- "One-Handed Backhand" — Player hits a clean one-handed backhand that wins the point
+- "Switch Play" — Partners smoothly switch sides mid-rally to cover the court
+- "Tweener" — Player hits a shot between their legs
+- "Scorpion Tail" — Player hits a behind the back, between the legs, or other unorthodox trick shot
+- "Shake and Bake" — Player drives a third shot hard while partner crashes the net and puts away the volley
+- "Drop Volley Touch" — Player hits a soft drop volley off a hard shot that dies in the kitchen
+- "Comeback Kid" — A player or team was losing and came back to win the point or shift momentum significantly
+- "Speed Demon" — Player wins a rapid-fire close-to-the-table exchange with quick hands and reflexes
+- "Fake Out" — Player fakes a hard shot but softly dinks instead, catching opponent off guard
+- "No Look Dink" — Player hits a dink while visibly looking away from the ball
+- "Behind the Back" — Player hits a shot from behind their back or behind their head
+- "ATP Shot" — Player hits the ball around the net post (ATP) successfully
+- "Nasty Nelson" — The server hits the opposing team member at the net to score a point
+- "Serve and Setup" — Player hits a strategic serve that sets up their partner to put away the next ball
+- "Lob Perfecto" — Player hits a lob from a defensive position that pushes both opponents back from the net
+- "Finish Him" — Somebody does any sort of Mortal Kombat finishing move at the end of a point
+- "Communication Kings" — Partners visibly communicate on a call (mine, yours, switch) that leads to a clean play
+- "Pinch and Punch" — Partners both move toward the middle to take away the center of the court
+- "Serve Ace" — Player hits a serve that the opponent cannot return at all
+
+### Behavioral/Social Badges (predict these based on player behavior):
+- "Paddle Tap Celebration" — Players tap paddles together with their partner after winning a point
+- "Good Game" — Players from both teams shake hands, fist bump, or show mutual respect after a point
+- "Crowd Pleaser" — A point so entertaining that multiple players visibly react with laughing, clapping, hands on head
+- "Spin Doctor" — Player spins their paddle in their hand between points in a showy fashion
+- "Fist Pump" — Player does an enthusiastic fist pump celebration after a good play
+- "Point to the Sky" — Player points to the sky after scoring or making a great play
+- "Dance Break" — Player busts out a quick dance move between points or after scoring
+- "Paddle Flip" — Player tosses their paddle in the air and catches it cleanly
+- "Chest Bump" — Players chest bump their teammate as a celebration
+- "Victory Spin" — Player jumps and does a 360 degree spin as a celebration
+- "Flex" — Player strikes a flex or muscle pose after a big play
+
+### Negative Badges (predict these when you see errors or mistakes):
+- "Net Magnet" — Player hits a shot into the net
+- "At Least You Showed Up" — Player is visibly present but makes minimal impactful plays during a rally
+- "Nice Try" — Player attempts a shot that clearly misses or goes way out of bounds but showed effort
+- "Baby Steps" — Player makes a basic but correct shot for their skill level
+- "Out of Bounds" — Player hits the ball far out of bounds with excessive force
+- "Kitchen Violation" — Player volleys the ball while standing in the non-volley zone
+- "The Statue" — Player stands completely still while the ball lands near them without attempting to play it
+- "Friendly Fire" — Player hits the ball directly at their own partner or interferes with their partner's shot
+- "Wrong Way" — Player moves in the wrong direction to get to the ball
+- "Close Enough" — A shot that was very close to being in but just barely missed
+- "Whiff" — Player attempts a simple shot but completely misses the ball
+- "You Thought That Was Out?" — Player moves aside thinking it was going out, but it lands in bounds
+- "Lucky Bounce" — A shot that clips the net or takes an unexpected bounce and still lands in
+
+### System/App Badges (DO NOT predict these — they are awarded by the app, not by clip analysis):
+Game On, New Look, Bronze Level Up, First Session, Button Masher, Rare Find, Badge Collector, Fresh Fit, Exclusive Club, Century Club, One of a Kind, Social Butterfly, Trophy Case, Top 10, Regular, Legendary Look, On Fire, Night Owl, Clip Creator, First Share, Early Bird, Thousand Club, Silver Level Up, Gold Level Up, Iron Streak, Veteran, Weekend Warrior, Platinum Level Up, Challenge Champion, Paddles and Pals
+
+### Badge Prediction Rules:
+1. ONLY predict badges from the lists above — never invent badge names
+2. Match to Courtana's EXACT criteria — count shots, check positions, verify behaviors
+3. "Rally Master" requires 8+ shots; "Epic Rally" requires 15+ shots — COUNT them
+4. Don't predict both a gameplay badge AND its weaker version (e.g., if "Epic Rally" applies, don't also predict "Rally Master")
+5. Predict system/behavioral badges ONLY if the behavior is clearly visible
+6. For negative badges: only predict if the error/mistake is clearly visible
+7. Confidence levels: "high" = criteria clearly met; "medium" = likely but can't fully verify; "low" = possible but uncertain
+
+## Estimated DUPR Rating
+Always provide an estimated DUPR range. Use these guidelines:
+- 2.0-2.5: Beginner, learning basic rules, inconsistent shots
+- 2.5-3.0: Novice, basic rallies, limited strategy
+- 3.0-3.5: Intermediate, consistent rallies, some dinking, basic strategy
+- 3.5-4.0: Advanced intermediate, solid dinking, can speed up, plays NVZ well
+- 4.0-4.5: Advanced, strong kitchen game, attacks effectively, good court coverage
+- 4.5-5.0: Expert/competitive, tournament player, elite shot selection
+- 5.0+: Pro/elite, exceptionally clean technique, superior tactics
+Default to "3.5-4.0" if skill level is clearly intermediate. Never return null.
+
+## CRITICAL: Expanded Brand Detection + Wildcard (v1.3)
+Report EVERY visible brand, logo, product, or identifiable item — not just sports equipment.
+Scan the ENTIRE frame: players, equipment, clothing, accessories, court surroundings, signage, background.
+
+IMPORTANT: For brand detection, actively look for brands BEYOND pickleball equipment. Scan the entire frame including: drinks people are holding, shoes, sunglasses, fitness trackers, bags on the sideline, venue signage, sponsor banners in the background, vehicle logos in parking lots visible through fences, clothing brands on spectators. Report at low confidence if needed — false positives are acceptable for brand detection. The goal is maximum brand capture, not minimum false alarms.
+
+Brand categories to look for:
+- **Paddle brands:** JOOLA, Selkirk, Engage, HEAD, Paddletek, Franklin, Onix, Gearbox, Six Zero, Prince, Wilson, Electrum, Vatic, Legacy, Bread & Butter, Prolite
+- **Shoe brands:** Nike, ASICS, New Balance, K-Swiss, Skechers, adidas, On, HOKA, Brooks, Fila, Puma, Reebok
+- **Clothing/apparel brands:** Nike, adidas, Lululemon, Fabletics, Vuori, Under Armour, Fila, HEAD, JOOLA, Selkirk, Dude Clothing, PKLR, Ace Pickleball, BadPickleball, Recess Pickleball
+- **Eyewear:** Oakley, Goodr, Rudy Project, 100%, Costa, Ray-Ban, Maui Jim
+- **Drinks/bottles:** Gatorade, BODYARMOR, Yeti, Hydro Flask, Stanley, CamelBak, Nalgene, Prime, Liquid IV
+- **Bags/accessories:** JOOLA, Selkirk, Franklin, Engage, HEAD, Nike, adidas, Ogio
+- **Court/net equipment:** JOOLA, Onix, Franklin, HEAD, Rally Meister, PickleNet
+- **Venue signage:** Restaurant names, local businesses, sponsor banners, fitness chains (Life Time, LA Fitness, etc.)
+- **Vehicle brands:** If vehicles are visible in background (parking lots, etc.)
+- **Tech/wearables:** Apple Watch, Fitbit, Garmin, WHOOP, headphones/earbuds brands
+- **Other visible products:** Coolers (Yeti, RTIC), chairs, towels, phone cases — anything with a visible brand
+
+If you see a logo, name, or identifiable branded product — report it. When in doubt, include it with "low" confidence rather than omitting it.
+
+{
+  "analyzed_at": "<ISO timestamp>",
+  "model_used": "gemini-2.5-flash",
+  "prompt_version": "v1.3-20260410",
+
+  "clip_meta": {
+    "duration_seconds": <number>,
+    "clip_quality_score": <1-10, combines production quality + play quality>,
+    "viral_potential_score": <1-10, how shareable is this on social media?>,
+    "watchability_score": <1-10, would someone rewatch this?>,
+    "cinematic_score": <1-10, camera angle, lighting, framing quality>
+  },
+
+  "players_detected": [
+    {
+      "approximate_position": "left|right|center|unknown",
+      "side": "near|far|both_sides",
+      "dominance_in_clip": "primary|secondary|background",
+      "estimated_skill_level": "beginner|intermediate|advanced|pro|elite",
+      "energy_level": "calm|moderate|high|intense|electric",
+      "handedness": "left|right|unknown",
+      "height_estimate": "short|medium|tall|unknown",
+      "movement_style": "smooth|explosive|defensive|methodical|reactive|unknown",
+      "apparel_summary": "<brief description of what they're wearing — include brand names if visible>"
+    }
+  ],
+
+  "shot_analysis": {
+    "shots": [
+      {
+        "shot_type": "dink|drive|lob|drop|volley|erne|atp|reset|overhead|smash|serve|return|speed_up|block|roll|flick|tweener|scorpion|other",
+        "player_position": "kitchen|transition|mid_court|baseline|in_air",
+        "quality_score": <1-10>,
+        "difficulty_score": <1-10>,
+        "outcome": "winner|error|forced_error|rally_continues|unknown",
+        "wow_factor": <1-10>,
+        "timestamp_approximate_seconds": <number or null>
+      }
+    ],
+    "dominant_shot_type": "<string>",
+    "total_shots_estimated": <number>,
+    "rally_length_estimated": <number of total shots in the rally>,
+    "longest_exchange_type": "kitchen_battle|driving|mixed|unknown"
+  },
+
+  "skill_indicators": {
+    "court_coverage_rating": <1-10>,
+    "kitchen_mastery_rating": <1-10>,
+    "power_game_rating": <1-10>,
+    "touch_and_feel_rating": <1-10>,
+    "athleticism_rating": <1-10>,
+    "creativity_rating": <1-10>,
+    "court_iq_rating": <1-10>,
+    "consistency_rating": <1-10>,
+    "composure_under_pressure": <1-10>,
+    "paddle_control_rating": <1-10, based on shot quality and touch>,
+    "grip_pressure_estimate": "loose|medium|firm — inferred from shot outcomes",
+    "aggression_style": "aggressive|balanced|defensive|counter_puncher",
+    "play_style_tags": ["<e.g. kitchen specialist, banger, lefty, baseliner, net rusher, scrambler>"],
+    "signature_move_detected": "<REQUIRED — describe the player's most distinctive visible characteristic>",
+    "tactical_tendencies": ["<observable patterns in shot selection or positioning>"],
+    "physical_descriptors": ["<handedness, movement economy, athleticism markers>"],
+    "improvement_opportunities": ["<what would make this player better based on this clip>"]
+  },
+
+  "brand_detection": {
+    "brands": [
+      {
+        "brand_name": "<exact brand name as it appears>",
+        "category": "paddle|shoes|apparel_top|apparel_bottom|hat|headwear|sunglasses|bag|wristband|court_surface|net|ball|sponsor_banner|drink_bottle|water_bottle|cooler|wearable_tech|phone_case|towel|chair|vehicle|venue_signage|local_business|fitness_chain|food_brand|energy_drink|clothing_brand|shoe_brand|eyewear|tech_accessory|other",
+        "confidence": "high|medium|low",
+        "player_side": "left|right|both|court_equipment|background|sideline|unknown",
+        "visibility_quality": "clear|partial|blurry|brief_flash",
+        "estimated_visible_seconds": <number or null>,
+        "color_scheme_noted": "<dominant colors, useful for brand matching>",
+        "location_detail": "<where exactly: on paddle face, on shirt chest, on banner above court, on net, on water bottle at sideline, etc.>"
+      }
+    ],
+    "total_brands_detected": <number>,
+    "unidentified_equipment_notes": "<notes on gear that's visible but brand unidentifiable — include color/style details>",
+    "unidentified_products_notes": "<notes on visible products (bottles, bags, chairs, etc.) where brand isn't readable>",
+    "sponsorship_whitespace": ["<brands that would be natural sponsors but aren't visibly present>"]
+  },
+
+  "paddle_intel": {
+    "paddle_brand": "<brand name if detectable>",
+    "paddle_model_estimate": "<specific model if visible, or null>",
+    "paddle_color_scheme": "<dominant colors>",
+    "paddle_shape_estimate": "elongated|standard|wide_body|unknown",
+    "paddle_grip_style_observed": "two_handed|one_handed|continental|eastern|western|unknown",
+    "grip_color": "<if visible>",
+    "overgrip_present": "<boolean or null>",
+    "lead_tape_visible": "<boolean — players who customize paddles are serious>",
+    "confidence": "high|medium|low",
+    "notes": "<any other observable paddle details>"
+  },
+
+  "storytelling": {
+    "story_arc": "comeback|dominant_performance|clutch_moment|creative_play|athletic_highlight|teaching_moment|pure_fun|grind_rally|error_highlight|unknown",
+    "emotional_tone": "intense|celebratory|focused|casual|competitive|playful|grinding|triumphant",
+    "defining_moment_timestamp_seconds": <number or null>,
+    "crowd_energy_detected": <boolean>,
+    "player_celebration_detected": <boolean>,
+    "trash_talk_detected": <boolean>,
+    "turning_point_visible": <boolean>,
+    "narrative_arc_summary": "<1 sentence: the story of this clip>"
+  },
+
+  "badge_intelligence": {
+    "predicted_badges": [
+      {
+        "badge_name": "<EXACT name from Courtana taxonomy above — never invent names>",
+        "confidence": "high|medium|low",
+        "reasoning": "<why this badge applies — reference the specific criteria>"
+      }
+    ],
+    "badge_trigger_moments": ["<describe specific moments that triggered or could trigger badges>"],
+    "highlight_reel_worthy": <boolean>,
+    "top_10_play_candidate": <boolean>
+  },
+
+  "commentary": {
+    "neutral_announcer_espn": "<2-3 sentence ESPN broadcast style>",
+    "hype_announcer_charged": "<2-3 sentence high-energy TNT/NBA-style call>",
+    "coaching_breakdown": "<what a coach would say analyzing this tactically>",
+    "social_media_caption": "<perfect Instagram/TikTok caption, under 100 chars>",
+    "social_media_hashtags": ["#pickleball", "<5 relevant hashtags>"],
+    "ron_burgundy_voice": "<Stay classy, San Diego — full Ron Burgundy energy, 2-3 sentences>",
+    "chuck_norris_voice": "<third person, legendary, 1-2 sentences>",
+    "color_commentator_banter": "<what the color commentator would riff on>",
+    "crowd_chant_if_epic": "<what the crowd would chant, or null if not epic enough>",
+    "trash_talk_friendly": "<playful banter-style commentary from one player to the other>",
+    "announcement_text_for_tts": "<clean text optimized for text-to-speech voice generation, no special chars>"
+  },
+
+  "daas_signals": {
+    "highlight_category": "top_play|teaching_moment|funny|athletic|strategic|social_play|gear_showcase|comeback",
+    "clip_summary_one_sentence": "<what happened: factual, specific, under 20 words>",
+    "search_tags": ["<10-15 specific, searchable tags>"],
+    "content_use_cases": ["social_media", "coaching_tool", "player_recruitment", "venue_marketing", "sponsor_pitch", "investor_demo", "fan_engagement"],
+    "estimated_player_rating_dupr": "<REQUIRED — estimated DUPR rating range>",
+    "match_context_inferred": "casual|competitive|tournament|drill|warmup|unknown",
+    "data_richness_score": <1-10, how much useful data could be extracted from this clip?>
+  },
+
+  "wildcard_observations": {
+    "unexpected_brands": ["<any brand, product, or logo NOT in the standard categories — report even at low confidence>"],
+    "environmental_details": "<describe the venue environment: indoor/outdoor, lighting, court surface color, facility type, time of day estimate, crowd size>",
+    "lifestyle_signals": "<what can you infer about the players' lifestyle? Equipment quality, clothing brands, accessories suggest income level, dedication, etc.>",
+    "content_opportunity": "<if a DaaS buyer (brand, venue, league) were watching this clip, what's the most commercially valuable insight?>",
+    "anomaly_detected": "<anything unusual, noteworthy, or surprising about this clip that doesn't fit other categories>"
+  }
+}
