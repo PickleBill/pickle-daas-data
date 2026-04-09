@@ -1,15 +1,15 @@
 # Badge Reinforcement Patch
-**Generated:** 2026-04-09 11:36
-**Source:** Cross-reference of 67 predictions vs 4619 ground truth awards
+**Generated:** 2026-04-09 13:28
+**Source:** Cross-reference of 70 predictions vs 4619 ground truth awards
 
 ---
 
 ## Summary
 
 - **Total Courtana badges:** 229
-- **Badges our model knows about:** 22
-- **Badges missing from our prompt:** 222
-- **Feedback records generated:** 251
+- **Badges our model knows about:** 23
+- **Badges missing from our prompt:** 220
+- **Feedback records generated:** 254
 
 ---
 
@@ -32,6 +32,9 @@
 - **'Airborne' over-predicted 2 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Airborne". Courtana criteria: "Player hits the ball while both feet are off the ground, jumping to make the shot"
 
+- **'Social Butterfly' over-predicted 1 times. Model triggers this badge too easily.**
+  Fix: Tighten criteria for "Social Butterfly". Courtana criteria: "Awarded by the app when a user has played matches against 5 unique opponents"
+
 - **'Smash Master' over-predicted 1 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Smash Master". Courtana criteria: "No criteria found"
 
@@ -50,9 +53,6 @@
 - **'Kitchen Queen' over-predicted 1 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Kitchen Queen". Courtana criteria: "No criteria found"
 
-- **'High Flyer' over-predicted 1 times. Model triggers this badge too easily.**
-  Fix: Tighten criteria for "High Flyer". Courtana criteria: "No criteria found"
-
 - **'Grind Rally' over-predicted 1 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Grind Rally". Courtana criteria: "No criteria found"
 
@@ -65,34 +65,43 @@
 - **'Kitchen King' over-predicted 13 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Kitchen King". Courtana criteria: "Player executes 3 or more quality dinks at the kitchen line in a single rally"
 
-- **'Wall of Hands' over-predicted 10 times. Model triggers this badge too easily.**
+- **'Wall of Hands' over-predicted 9 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Wall of Hands". Courtana criteria: "Both partners defend a flurry of speed ups together at the kitchen line, resetting or winning the point as a unit"
 
-- **'Epic Rally' over-predicted 7 times. Model triggers this badge too easily.**
+- **'Epic Rally' over-predicted 6 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Epic Rally". Courtana criteria: "Both sides sustain a rally of 15 or more consecutive shots back and forth"
 
-- **'Speed Demon' over-predicted 4 times. Model triggers this badge too easily.**
-  Fix: Tighten criteria for "Speed Demon". Courtana criteria: "Player wins a rapid-fire close-to-the-table exchange with quick hands and reflexes"
-
-- **'Dink Machine' over-predicted 4 times. Model triggers this badge too easily.**
+- **'Dink Machine' over-predicted 6 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Dink Machine". Courtana criteria: "No criteria found"
 
 - **'Teaching Moment' over-predicted 3 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Teaching Moment". Courtana criteria: "No criteria found"
+
+- **'Speed Demon' over-predicted 3 times. Model triggers this badge too easily.**
+  Fix: Tighten criteria for "Speed Demon". Courtana criteria: "Player wins a rapid-fire close-to-the-table exchange with quick hands and reflexes"
 
 - **'Clutch Performer' over-predicted 3 times. Model triggers this badge too easily.**
   Fix: Tighten criteria for "Clutch Performer". Courtana criteria: "Player executes an excellent shot or play during a high-pressure moment or turning point"
 
 ### Missed Badges (Add or Emphasize)
 
+- **'Third Shot Drop Artist' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Third Shot Drop Artist" is in prompt. Courtana criteria: "No criteria found"
+
 - **'Steady Eddie' missed 2 times. Courtana awarded it but our model didn't predict it.**
   Fix: Ensure "Steady Eddie" is in prompt. Courtana criteria: "Player goes through the entire clip without making an unforced error"
 
-- **'Rally Master' missed 2 times. Courtana awarded it but our model didn't predict it.**
-  Fix: Ensure "Rally Master" is in prompt. Courtana criteria: "Players sustain a rally of 8 or more consecutive shots without an error"
+- **'Paddle Tap Celebration' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Paddle Tap Celebration" is in prompt. Courtana criteria: "No criteria found"
 
 - **'New Look' missed 2 times. Courtana awarded it but our model didn't predict it.**
   Fix: Ensure "New Look" is in prompt. Courtana criteria: "No criteria found"
+
+- **'Legendary Look' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Legendary Look" is in prompt. Courtana criteria: "No criteria found"
+
+- **'Hustler' missed 2 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Hustler" is in prompt. Courtana criteria: "Player visibly gives full effort chasing down a difficult ball, even if they don't win the point"
 
 - **'Fresh Fit' missed 2 times. Courtana awarded it but our model didn't predict it.**
   Fix: Ensure "Fresh Fit" is in prompt. Courtana criteria: "No criteria found"
@@ -100,13 +109,19 @@
 - **'Two Up Pressure' missed 1 times. Courtana awarded it but our model didn't predict it.**
   Fix: Ensure "Two Up Pressure" is in prompt. Courtana criteria: "Both partners advance to the kitchen line together and win the point with coordinated net play"
 
-- **'Third Shot Drop Artist' missed 1 times. Courtana awarded it but our model didn't predict it.**
-  Fix: Ensure "Third Shot Drop Artist" is in prompt. Courtana criteria: "No criteria found"
+- **'Quick Reflexes' missed 1 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Quick Reflexes" is in prompt. Courtana criteria: "Player reacts to a fast shot with an impressive reflex save or return"
+
+- **'Nice Try' missed 1 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Nice Try" is in prompt. Courtana criteria: "Player attempts a shot that clearly misses or goes way out of bounds but showed effort"
 
 - **'Firefight Victor' missed 1 times. Courtana awarded it but our model didn't predict it.**
   Fix: Ensure "Firefight Victor" is in prompt. Courtana criteria: "Player wins a fast hands battle at the kitchen line with quick reflexes and shot selection"
 
-### Missing Badges — Not in Our Prompt (222 total, 48 high-priority)
+- **'Rally Master' missed 3 times. Courtana awarded it but our model didn't predict it.**
+  Fix: Ensure "Rally Master" is in prompt. Courtana criteria: "Players sustain a rally of 8 or more consecutive shots without an error"
+
+### Missing Badges — Not in Our Prompt (220 total, 46 high-priority)
 
 **High-priority (>5% player rarity):**
 
@@ -122,16 +137,16 @@
 - Add to badge taxonomy: "Exclusive Club" — Criteria: "Awarded by the app when a player earns a badge that fewer than 3% of players have"
 - Add to badge taxonomy: "Two Up Pressure" — Criteria: "Both partners advance to the kitchen line together and win the point with coordinated net play"
 - Add to badge taxonomy: "Century Club" — Criteria: "Awarded by the app when a user has created 100 total highlights"
-- Add to badge taxonomy: "Steady Eddie" — Criteria: "Player goes through the entire clip without making an unforced error"
 - Add to badge taxonomy: "Third Shot Drop Artist" — Criteria: "Player executes a third shot drop that lands softly in the kitchen and allows their team to advance to the net"
 - Add to badge taxonomy: "Serve Returner" — Criteria: "Player hits a deep return of serve that pushes the serving team back and prevents an easy third shot"
 - Add to badge taxonomy: "One of a Kind" — Criteria: "Awarded by the app when a player earns a badge that fewer than 1% of players have"
 - Add to badge taxonomy: "Speed Up Specialist" — Criteria: "Player successfully speeds up a dink rally with a well-timed attack that wins the point or creates an advantage"
-- Add to badge taxonomy: "Social Butterfly" — Criteria: "Awarded by the app when a user has played matches against 5 unique opponents"
 - Add to badge taxonomy: "Net Magnet" — Criteria: "Player hits a shot into the net."
 - Add to badge taxonomy: "At Least You Showed Up" — Criteria: "Player is visibly present on the court but makes minimal impactful plays during a rally"
+- Add to badge taxonomy: "Paddle Tap Celebration" — Criteria: "Players tap paddles together with their partner after winning a point"
+- Add to badge taxonomy: "Good Game" — Criteria: "Players from both teams shake hands, fist bump, or show mutual respect after a point or at the end of a game"
 
-...and 28 more high-priority badges
+...and 26 more high-priority badges
 
 
 ---

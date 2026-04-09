@@ -585,6 +585,8 @@ def post_process_batch(results: list) -> list:
     scored.sort(key=lambda x: x[1]["clip_meta"]["clip_quality_score"], reverse=True)
 
     for rank, (original_idx, _) in enumerate(scored, 1):
+        if "daas_signals" not in results[original_idx]:
+            results[original_idx]["daas_signals"] = {}
         results[original_idx]["daas_signals"]["clip_rank_in_batch"] = rank
         score = results[original_idx]["clip_meta"]["clip_quality_score"]
         avg = sum(r["clip_meta"].get("clip_quality_score", 0) for r in results if r.get("clip_meta")) / len(results)
