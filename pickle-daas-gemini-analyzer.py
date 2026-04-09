@@ -68,7 +68,132 @@ GEMINI_MODEL_COMPARE = "gemini-2.5-pro"    # Used for --compare-models
 COURTANA_API_BASE = "https://api.courtana.com/private-api/v1"
 
 # ---------------------------------------------------------------------------
-# THE ANALYSIS PROMPT — Go crazy. Each field is an experiment.
+# TIER 1: DISCOVERY SWEEP — Open-ended, let Gemini run loose
+# ---------------------------------------------------------------------------
+
+DISCOVERY_PROMPT = """You are a senior sports intelligence analyst who consults for hedge funds, health insurance actuaries, CPG brand managers, facility operators, and sports media companies. You are watching a pickleball highlight clip.
+
+Your job is NOT to fill out a standard scouting report. Your job is to extract EVERY commercially valuable observation from this video — things that someone would PAY to know. Think deeply about what each type of buyer cares about:
+
+**HEALTH INSURER / BIOMETRICS BUYER wants:**
+- Visible injury risk indicators (knee braces, movement compensations, favoring one side)
+- Biomechanical stress patterns (how players load their joints, trunk rotation quality)
+- Estimated player age range, fitness level, body composition observations
+- Recovery behavior between points (bent over? hands on knees? immediate readiness?)
+- Protective equipment usage (knee braces, compression sleeves, ankle supports)
+- Movement efficiency — do they look like they've been playing for hours or just started?
+
+**HEDGE FUND / BETTING ANALYST wants:**
+- Fatigue progression indicators (compare start vs end of clip — posture degradation, slower reaction)
+- Consistency patterns (does shot quality vary? are errors random or fatigue-driven?)
+- Emotional regulation tells (frustration gestures, celebration style, composure after errors)
+- Performance under pressure markers (does anything suggest this is a high-stakes point?)
+- Momentum indicators (who has the energy? who looks deflated?)
+- Decision-making quality — did they choose the right shot given the situation?
+
+**CPG / EQUIPMENT BRAND MANAGER wants:**
+- EVERY visible brand at MODEL-LEVEL specificity. Not "paddle visible" — what brand, what model line, what colorway? Compare to known products from JOOLA, Selkirk, Engage, HEAD, Paddletek, Franklin, Onix, Gearbox, Six Zero, Electrum, ProKennex, Vulcan
+- Apparel brands and specific product lines if identifiable — Nike Dri-FIT, lululemon, Under Armour, Adidas, Fila, etc.
+- Shoe brands and models — are these court-specific shoes or running shoes? Brand?
+- Accessories: hats, visors, sunglasses, wristbands, headbands — brands?
+- Equipment condition — new/pristine or well-worn? This indicates usage frequency
+- What is NOT branded? Where are sponsorship opportunities? (court surface, net, clothing, accessories)
+- Overgrip color and condition, lead tape visible on paddles (indicates serious player who customizes)
+
+**FACILITY OPERATOR wants:**
+- Court surface type, condition, color, any damage visible
+- Net brand and condition
+- Facility name from any visible signage
+- All sponsor banners/signs with estimated visibility duration and readability
+- Lighting quality and type (indoor/outdoor, time of day if outdoor)
+- Spectator presence and engagement level
+- Number of courts visible, occupancy
+- Background details: parking lot, adjacent businesses, venue type
+
+**MEDIA / CONTENT BUYER wants:**
+- Cinematic quality moments (dramatic angles, great lighting, peak action freeze-frames)
+- Narrative potential (comeback energy, dominant display, teaching moment, viral fail)
+- Audio quality observations if audio is present (crowd noise, ball impact sounds, player communication)
+- Social media clip-ability — what 3-second segment would go viral?
+
+BE OBSESSIVELY DETAILED. "Red shirt" is worthless. "Nike Dri-FIT Court Victory polo in Team Crimson with mesh ventilation panels, size appears XL based on fit" is valuable. The deeper you go, the more we can sell.
+
+Report 20-50 observations. More is better. If you see something that doesn't fit any category, REPORT IT ANYWAY.
+
+Return ONLY valid JSON with this structure:
+
+{
+  "clip_duration_seconds": <number>,
+  "observation_count": <number>,
+  "observations": [
+    {
+      "timestamp_seconds": <number or null>,
+      "category": "<free text category name>",
+      "observation": "<detailed free text — be specific, be granular>",
+      "buyer_relevance": ["health_insurer", "hedge_fund", "cpg_brand", "facility_operator", "media"],
+      "confidence": "high|medium|low",
+      "commercial_value_note": "<1 sentence: why would someone pay for this?>",
+      "data_type": "quantitative|qualitative|spatial|temporal|behavioral"
+    }
+  ],
+  "player_profiles": [
+    {
+      "position": "<where on court>",
+      "estimated_age_range": "<e.g. 35-45>",
+      "estimated_skill_level": "<with reasoning>",
+      "full_apparel_breakdown": {
+        "top": "<brand if possible, type, color, fit, condition>",
+        "bottom": "<brand if possible, type, color, length>",
+        "shoes": "<brand and model if possible, type, color, court-specific?>",
+        "hat_visor": "<brand, color, style or null>",
+        "accessories": ["<each item with brand if visible>"],
+        "paddle": "<brand, model guess, colorway, shape, grip details, overgrip, lead tape>"
+      },
+      "biomechanics_notes": "<movement quality, any compensations, athletic observations>",
+      "fatigue_indicators": "<any signs of fatigue or peak freshness>"
+    }
+  ],
+  "equipment_deep_dive": {
+    "paddles_visible": [
+      {
+        "player": "<which player>",
+        "brand": "<best guess>",
+        "model_line_guess": "<if possible>",
+        "shape": "elongated|standard|wide_body",
+        "face_color": "<dominant color>",
+        "edge_guard_color": "<if visible>",
+        "grip_details": "<overgrip color, condition, tape visible>",
+        "confidence": "high|medium|low",
+        "reasoning": "<what visual cues led to this identification>"
+      }
+    ],
+    "balls_visible": "<brand if identifiable, color>",
+    "net_brand": "<if visible>"
+  },
+  "facility_intelligence": {
+    "venue_name_from_signage": "<or null>",
+    "sponsor_banners": [{"text": "<>", "visibility_seconds": <>, "readability": "clear|partial|blurry"}],
+    "court_surface": "<type, color, condition>",
+    "estimated_setting": "indoor_club|outdoor_public|outdoor_private|tournament|recreation_center",
+    "background_observations": ["<anything visible: businesses, vehicles, other courts, spectators>"]
+  },
+  "audio_observations": {
+    "has_meaningful_audio": <boolean>,
+    "paddle_impact_sounds": "<describe if audible>",
+    "player_communication": "<any verbal exchanges heard>",
+    "crowd_ambient": "<spectator noise level>"
+  },
+  "meta_insights": {
+    "biggest_surprise": "<most unexpected observation>",
+    "highest_value_signal": "<single most commercially valuable thing you spotted>",
+    "data_gaps": ["<what COULD NOT be determined from this angle/clip>"],
+    "recommended_follow_up_questions": ["<specific questions to ask on a second pass>"],
+    "cross_reference_opportunities": ["<what other data sources would multiply the value of this analysis>"]
+  }
+}"""
+
+# ---------------------------------------------------------------------------
+# THE ANALYSIS PROMPT (TIER 2) — Structured extraction. Each field is an experiment.
 # ---------------------------------------------------------------------------
 
 ANALYSIS_PROMPT = """You are an expert pickleball analyst, sports scientist, brand intelligence researcher, and entertainment writer. Analyze this pickleball highlight video clip completely.
@@ -270,11 +395,11 @@ def upload_to_gemini(local_path: str) -> Optional[object]:
         return None
 
 
-def analyze_video(model, video_file, extra_context: dict = None) -> Optional[dict]:
+def analyze_video(model, video_file, extra_context: dict = None, prompt_override: str = None, temperature: float = 0.3) -> Optional[dict]:
     """Run analysis prompt against an uploaded Gemini video file."""
     model_name = getattr(model, 'model_name', GEMINI_MODEL)
     print(f"  Running Gemini analysis ({model_name})...")
-    prompt = ANALYSIS_PROMPT
+    prompt = prompt_override or ANALYSIS_PROMPT
 
     if extra_context:
         context_str = "\n\nADDITIONAL CONTEXT FROM COURTANA API:\n" + json.dumps(extra_context, indent=2)
@@ -284,8 +409,8 @@ def analyze_video(model, video_file, extra_context: dict = None) -> Optional[dic
         response = model.generate_content(
             [video_file, prompt],
             generation_config=genai.GenerationConfig(
-                temperature=0.3,         # Lower = more consistent JSON
-                max_output_tokens=8192,
+                temperature=temperature,
+                max_output_tokens=12288,
             )
         )
         raw_text = response.text.strip()
@@ -307,7 +432,16 @@ def analyze_video(model, video_file, extra_context: dict = None) -> Optional[dic
         # Remove trailing commas before } or ] (common Gemini JSON quirk)
         raw_text = re.sub(r',\s*([}\]])', r'\1', raw_text)
 
-        result = json.loads(raw_text)
+        try:
+            result = json.loads(raw_text)
+        except json.JSONDecodeError:
+            # Fallback: use json-repair for malformed Gemini responses
+            try:
+                from json_repair import repair_json
+                result = json.loads(repair_json(raw_text))
+                print("  (used json-repair fallback for malformed response)")
+            except Exception:
+                raise
         return result
 
     except json.JSONDecodeError as e:
@@ -519,7 +653,8 @@ def compare_models(video_url: str, output_dir: str):
 # ---------------------------------------------------------------------------
 
 def analyze_url(model, video_url: str, highlight_meta: dict = None, use_supabase: bool = False,
-                output_dir: str = ".", voice_pipeline: str = None) -> Optional[dict]:
+                output_dir: str = ".", voice_pipeline: str = None,
+                prompt_override: str = None, temperature: float = 0.3, tier_label: str = None) -> Optional[dict]:
     """Full pipeline: download → upload → analyze → save."""
     print(f"\n{'='*60}")
     print(f"Analyzing: {video_url[-60:]}")
@@ -545,7 +680,8 @@ def analyze_url(model, video_url: str, highlight_meta: dict = None, use_supabase
             "platform": "Courtana (courtana.com)",
             "sport": "pickleball"
         }
-        result = analyze_video(model, video_file, extra_context)
+        result = analyze_video(model, video_file, extra_context,
+                               prompt_override=prompt_override, temperature=temperature)
 
         # 4. Cleanup Gemini file
         cleanup_gemini_file(video_file)
@@ -554,10 +690,13 @@ def analyze_url(model, video_url: str, highlight_meta: dict = None, use_supabase
             # Add source metadata
             result["_source_url"] = video_url
             result["_highlight_meta"] = highlight_meta or {}
+            if tier_label:
+                result["_tier"] = tier_label
 
             # 5. Save JSON locally
             safe_name = video_url.split("/")[-1].replace(".mp4", "")
-            out_path = Path(output_dir) / f"analysis_{safe_name}_{int(time.time())}.json"
+            prefix = f"discovery_{safe_name}" if tier_label == "discovery" else f"analysis_{safe_name}"
+            out_path = Path(output_dir) / f"{prefix}_{int(time.time())}.json"
             with open(out_path, "w") as f:
                 json.dump(result, f, indent=2)
             print(f"  Saved: {out_path}")
@@ -621,12 +760,27 @@ def main():
     parser.add_argument("--voice-pipeline", default=None, metavar="VOICE",
                         help="After analysis, auto-run elevenlabs-voice-pipeline.py with this voice preset (e.g. espn, ron_burgundy)")
 
+    # Tier selection
+    parser.add_argument("--tier", default="standard", choices=["standard", "discovery"],
+                        help="Prompt tier: 'discovery' = open-ended extraction, 'standard' = structured analysis (default)")
+
     args = parser.parse_args()
 
     # Setup
     if args.model:
         GEMINI_MODEL = args.model
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+
+    # Resolve prompt and temperature from tier
+    if args.tier == "discovery":
+        active_prompt = DISCOVERY_PROMPT
+        active_temp = 0.7
+        tier_label = "discovery"
+        print(f"\n*** TIER 1: DISCOVERY SWEEP — Open-ended extraction, temp={active_temp} ***\n")
+    else:
+        active_prompt = None  # use default ANALYSIS_PROMPT
+        active_temp = 0.3
+        tier_label = None
 
     # ---- Compare models mode ----
     if args.compare_models:
@@ -639,7 +793,8 @@ def main():
     # ---- Single URL ----
     if args.url:
         result = analyze_url(model, args.url, use_supabase=args.supabase, output_dir=args.output_dir,
-                             voice_pipeline=args.voice_pipeline)
+                             voice_pipeline=args.voice_pipeline,
+                             prompt_override=active_prompt, temperature=active_temp, tier_label=tier_label)
         if result:
             results.append(result)
 
@@ -659,7 +814,8 @@ def main():
 
             if url:
                 result = analyze_url(model, url, highlight_meta=meta, use_supabase=args.supabase,
-                                     output_dir=args.output_dir, voice_pipeline=args.voice_pipeline)
+                                     output_dir=args.output_dir, voice_pipeline=args.voice_pipeline,
+                                     prompt_override=active_prompt, temperature=active_temp, tier_label=tier_label)
                 if result:
                     results.append(result)
                 time.sleep(2)  # Be gentle with Gemini rate limits
@@ -693,7 +849,8 @@ def main():
 
                 if url:
                     result = analyze_url(model, url, highlight_meta=meta, use_supabase=args.supabase,
-                                         output_dir=args.output_dir, voice_pipeline=args.voice_pipeline)
+                                         output_dir=args.output_dir, voice_pipeline=args.voice_pipeline,
+                                         prompt_override=active_prompt, temperature=active_temp, tier_label=tier_label)
                     if result:
                         results.append(result)
                     time.sleep(2)
@@ -711,7 +868,8 @@ def main():
             if not video_url:
                 continue
             result = analyze_url(model, video_url, highlight_meta=h, use_supabase=args.supabase,
-                                 output_dir=args.output_dir, voice_pipeline=args.voice_pipeline)
+                                 output_dir=args.output_dir, voice_pipeline=args.voice_pipeline,
+                                 prompt_override=active_prompt, temperature=active_temp, tier_label=tier_label)
             if result:
                 results.append(result)
             time.sleep(2)
