@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Dashboard Portal</title>
+<style>
+  :root { --bg: #0A0E17; --card: #151B2B; --border: #1E2A3A; --text: #E8EAED;
+           --dim: #8892A0; --green: #00E676; --blue: #448AFF; --purple: #B388FF; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; padding:32px; max-width:960px; margin:0 auto; }
+  h1 { font-size:2em; margin-bottom:4px; }
+  .subtitle { color:var(--dim); margin-bottom:32px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; text-decoration:none; color:var(--text); transition:all 0.2s; display:block; }
+  .card:hover { border-color:var(--blue); transform:translateY(-2px); box-shadow:0 8px 24px rgba(68,138,255,0.1); }
+  .card h3 { font-size:1.1em; margin-bottom:8px; }
+  .card p { font-size:0.85em; color:var(--dim); line-height:1.5; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7em; font-weight:600; margin-top:12px; }
+  .tag-investor { background:rgba(179,136,255,0.2); color:var(--purple); }
+  .tag-analytics { background:rgba(0,230,118,0.2); color:var(--green); }
+  .tag-product { background:rgba(68,138,255,0.2); color:var(--blue); }
+  .tag-player { background:rgba(255,193,7,0.2); color:#FFC107; }
+  .tag-fun { background:rgba(255,82,82,0.2); color:#FF5252; }
+  .footer { margin-top:48px; padding-top:24px; border-top:1px solid var(--border); color:var(--dim); font-size:0.8em; }
+  .stat { display:inline-block; margin-right:24px; }
+  .stat .num { font-size:1.4em; font-weight:700; color:var(--green); }
+</style>
+</head>
+<body>
+
+<h1>Pickle DaaS</h1>
+<p class="subtitle">Data-as-a-Service Intelligence Platform for Pickleball | Powered by Courtana + Gemini</p>
+
+<div style="margin-bottom:32px">
+  <div class="stat"><div class="num">8,125</div>Highlight Groups</div>
+  <div class="stat"><div class="num">229</div>Badge Types</div>
+  <div class="stat"><div class="num">$0.0054</div>Per Clip</div>
+  <div class="stat"><div class="num">29</div>Players Tracked</div>
+</div>
+
+<div class="grid">
+
+  <a class="card" href="pickle-daas-investor-demo.html">
+    <h3>Investor Demo</h3>
+    <p>Full pitch deck with proof points, cost model, market analysis, and live data examples from the pipeline.</p>
+    <span class="tag tag-investor">INVESTOR</span>
+  </a>
+
+  <a class="card" href="command-center.html">
+    <h3>Command Center</h3>
+    <p>Master dashboard — pipeline status, clip analysis queue, model performance, batch monitoring.</p>
+    <span class="tag tag-analytics">ANALYTICS</span>
+  </a>
+
+  <a class="card" href="badge-analytics-dashboard.html">
+    <h3>Badge Analytics</h3>
+    <p>Badge prediction vs Courtana ground truth. Precision/recall, co-occurrence matrix, quality flags, reinforcement loop.</p>
+    <span class="tag tag-analytics">ANALYTICS</span>
+  </a>
+
+<a class="card" href="pickle-daas-master-dashboard.html">
+    <h3>Master Dashboard</h3>
+    <p>Aggregated analytics across all analyzed clips — shot types, brands, skill levels, content scores.</p>
+    <span class="tag tag-analytics">ANALYTICS</span>
+  </a>
+
+  <a class="card" href="picklebill-intel-card.html">
+    <h3>PickleBill Intel Card</h3>
+    <p>Player DNA profile card — skill ratings, shot tendencies, brand associations, coaching insights.</p>
+    <span class="tag tag-player">PLAYER</span>
+  </a>
+
+  <a class="card" href="brand-intelligence-report-sample.html">
+    <h3>Brand Intelligence</h3>
+    <p>Brand detection aggregation — what brands appear, where, how often, sponsorship whitespace analysis.</p>
+    <span class="tag tag-product">PRODUCT</span>
+  </a>
+
+  <a class="card" href="coaching-profile-picklebill.html">
+    <h3>Coaching Profile</h3>
+    <p>AI-generated coaching breakdown — strengths, improvement areas, tactical tendencies, drill recommendations.</p>
+    <span class="tag tag-player">PLAYER</span>
+  </a>
+
+<a class="card" href="model-monitor-dashboard.html">
+    <h3>Model Monitor</h3>
+    <p>Gemini model performance tracking — response quality, cost per clip, error rates, version comparison.</p>
+    <span class="tag tag-analytics">ANALYTICS</span>
+  </a>
+
+<a class="card" href="tmnt-broadcast-dashboard.html">
+    <h3>TMNT Broadcast</h3>
+    <p>Teenage Mutant Ninja Turtles character commentary — fun voice pack demo with personality-driven analysis.</p>
+    <span class="tag tag-fun">FUN</span>
+  </a>
+
+</div>
+
+<div class="footer">
+  <p>Pickle DaaS by PickleBill | Data pipeline: Courtana API &rarr; Gemini 2.5 Flash &rarr; Structured JSON &rarr; Dashboards</p>
+  <p style="margin-top:8px">GitHub: <a href="https://github.com/PickleBill/pickle-daas-data" style="color:var(--blue)">PickleBill/pickle-daas-data</a></p>
+</div>
+
+</body>
+</html>
