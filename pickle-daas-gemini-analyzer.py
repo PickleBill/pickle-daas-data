@@ -63,8 +63,10 @@ from google.genai import types
 # CONFIG
 # ---------------------------------------------------------------------------
 
-GEMINI_MODEL         = "gemini-2.5-flash"  # Switch to "gemini-2.5-pro" for deeper analysis
+GEMINI_MODEL         = "gemini-2.5-flash"  # Primary model
+GEMINI_MODEL_LITE    = "gemini-2.5-flash-lite"  # Fallback when primary is 503
 GEMINI_MODEL_COMPARE = "gemini-2.5-pro"    # Used for --compare-models
+GEMINI_MODEL_CASCADE = [GEMINI_MODEL, GEMINI_MODEL_LITE]  # Try in order
 
 COURTANA_API_BASE = "https://api.courtana.com/private-api/v1"
 
@@ -670,14 +672,110 @@ def compare_models(video_url: str, output_dir: str):
 
 
 # ---------------------------------------------------------------------------
+# MODEL CASCADE: Try models in order, fall back on 503
+# ---------------------------------------------------------------------------
+
+_model_blacklist = set()  # Models confirmed down this session — skip instantly
+
+def probe_models(client):
+    """Quick text probe to find which models are alive. Call once at batch start."""
+    alive = []
+    for model_name in GEMINI_MODEL_CASCADE:
+        try:
+            resp = client.models.generate_content(
+                model=model_name,
+                contents="Reply OK",
+                config=types.GenerateContentConfig(temperature=0, max_output_tokens=10),
+            )
+            alive.append(model_name)
+            print(f"  Model probe: {model_name} — ALIVE")
+        except Exception as e:
+            _model_blacklist.add(model_name)
+            print(f"  Model probe: {model_name} — DOWN ({str(e)[:40]})")
+    return alive
+
+
+def _analyze_with_cascade(client, video_part, prompt: str, temperature: float = 0.3) -> Optional[dict]:
+    """Try GEMINI_MODEL_CASCADE in order (skipping blacklisted). Inline bytes, no File API.
+    Returns parsed JSON dict or None."""
+    import re
+
+    for model_name in GEMINI_MODEL_CASCADE:
+        if model_name in _model_blacklist:
+            continue
+        print(f"  Trying {model_name} (inline)...")
+        t_start = time.time()
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=[video_part, prompt],
+                config=types.GenerateContentConfig(
+                    temperature=temperature,
+                    max_output_tokens=12288,
+                ),
+            )
+            elapsed = time.time() - t_start
+            print(f"  Analysis complete ({model_name}) in {elapsed:.1f}s")
+
+            raw_text = response.text
+            if not raw_text:
+                print(f"  WARNING: Empty response from {model_name}, trying next model...")
+                continue
+            raw_text = raw_text.strip()
+
+            # Strip markdown code fences
+            if raw_text.startswith("```"):
+                lines = raw_text.split("\n")
+                raw_text = "\n".join(lines[1:-1]).strip()
+
+            # Extract JSON object
+            brace_match = re.search(r'\{.*\}', raw_text, re.DOTALL)
+            if brace_match:
+                raw_text = brace_match.group(0)
+
+            # Clean common Gemini JSON quirks
+            raw_text = re.sub(r'//[^\n]*', '', raw_text)
+            raw_text = re.sub(r',\s*([}\]])', r'\1', raw_text)
+
+            try:
+                result = json.loads(raw_text)
+            except json.JSONDecodeError:
+                try:
+                    from json_repair import repair_json
+                    result = json.loads(repair_json(raw_text))
+                    print("  (used json-repair fallback)")
+                except Exception:
+                    print(f"  ERROR: Could not parse JSON from {model_name}")
+                    continue
+
+            result["_model_used"] = model_name
+            return result
+
+        except Exception as e:
+            elapsed = time.time() - t_start
+            err = str(e)
+            if "503" in err or "UNAVAILABLE" in err or "429" in err or "RESOURCE_EXHAUSTED" in err:
+                print(f"  {model_name} unavailable ({elapsed:.1f}s), trying next...")
+                continue
+            else:
+                print(f"  ERROR ({model_name}): {err[:100]}")
+                continue
+
+    print("  ALL MODELS UNAVAILABLE — skipping this clip")
+    return None
+
+
+# ---------------------------------------------------------------------------
 # CORE PIPELINE: ANALYZE ONE VIDEO URL
 # ---------------------------------------------------------------------------
 
 def analyze_url(client_model, video_url: str, highlight_meta: dict = None, use_supabase: bool = False,
                 output_dir: str = ".", voice_pipeline: str = None,
                 prompt_override: str = None, temperature: float = 0.3, tier_label: str = None,
-                max_file_mb: float = 20.0) -> Optional[dict]:
-    """Full pipeline: download → upload → analyze → save.
+                max_file_mb: float = 20.0, use_inline: bool = True) -> Optional[dict]:
+    """Full pipeline: download → analyze → save.
+    Uses inline bytes by default (skips File API upload for 3x speed).
+    Falls back through model cascade (2.5-flash → 2.5-flash-lite) on 503.
     Skips clips larger than max_file_mb to avoid timeouts on huge videos."""
     client = client_model[0]
 
@@ -699,23 +797,30 @@ def analyze_url(client_model, video_url: str, highlight_meta: dict = None, use_s
             print(f"  SKIP: {size_mb:.1f} MB exceeds {max_file_mb} MB limit")
             return None
 
-        # 2. Upload to Gemini
-        video_file = upload_to_gemini(client, tmp_path)
-        if not video_file:
-            return None
-
-        # 3. Analyze
+        # 2. Build prompt
+        prompt = prompt_override or ANALYSIS_PROMPT
         extra_context = {
             "video_url": video_url,
             "highlight_metadata": highlight_meta or {},
             "platform": "Courtana (courtana.com)",
             "sport": "pickleball"
         }
-        result = analyze_video(client_model, video_file, extra_context,
-                               prompt_override=prompt_override, temperature=temperature)
+        if extra_context:
+            context_str = "\n\nADDITIONAL CONTEXT FROM COURTANA API:\n" + json.dumps(extra_context, indent=2)
+            prompt += context_str + "\n\nUse the above context to fill in player IDs, badge history, etc. where applicable."
 
-        # 4. Cleanup Gemini file
-        cleanup_gemini_file(client, video_file)
+        # 3. Analyze — inline bytes with model cascade (skip File API for speed)
+        if use_inline:
+            video_bytes = Path(tmp_path).read_bytes()
+            video_part = types.Part.from_bytes(data=video_bytes, mime_type="video/mp4")
+            result = _analyze_with_cascade(client, video_part, prompt, temperature)
+        else:
+            # Legacy File API path (for very large files or when inline fails)
+            video_file = upload_to_gemini(client, tmp_path)
+            if not video_file:
+                return None
+            result = analyze_video(client_model, video_file, prompt_override=prompt_override, temperature=temperature)
+            cleanup_gemini_file(client, video_file)
 
         if result:
             # Add source metadata
@@ -829,6 +934,16 @@ def main():
         return
 
     model = init_gemini()
+    client = model[0]
+
+    # Probe which models are alive before starting batch (avoids 50s timeouts per clip)
+    print("Probing Gemini model availability...")
+    alive = probe_models(client)
+    if not alive:
+        print("ERROR: No Gemini models available. Try again later.")
+        sys.exit(1)
+    print(f"Using model cascade: {' → '.join(m for m in GEMINI_MODEL_CASCADE if m not in _model_blacklist)}\n")
+
     results = []
 
     # ---- Single URL ----
