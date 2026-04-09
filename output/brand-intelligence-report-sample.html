@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana — Brand Intelligence Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:      #0A0E17;
+    --surface: #111827;
+    --card:    #1a2236;
+    --border:  #1e2a3a;
+    --green:   #00E676;
+    --gold:    #F59E0B;
+    --red:     #ef4444;
+    --blue:    #3B82F6;
+    --purple:  #8B5CF6;
+    --text:    #F1F5F9;
+    --muted:   #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Scale banner */
+  .scale-banner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
+    border-bottom: 1px solid rgba(245,158,11,0.3);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .scale-banner strong { font-weight: 700; }
+  .scale-sep { color: rgba(245,158,11,0.4); }
+
+  /* Nav */
+  .nav {
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span { color: var(--green); }
+  .report-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(0,230,118,0.1);
+    color: var(--green);
+    border: 1px solid rgba(0,230,118,0.25);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 60px 40px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    max-width: 700px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: normal; color: var(--green); }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 580px;
+    margin-bottom: 32px;
+  }
+  .hero-kpis {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hkpi {
+    border-left: 2px solid var(--green);
+    padding-left: 16px;
+  }
+  .hkpi-val {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1;
+  }
+  .hkpi-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Main content */
+  .content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+  .section {
+    margin-bottom: 56px;
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label .num {
+    color: var(--green);
+    margin-right: 8px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .card-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* Share of Court chart */
+  .chart-container {
+    position: relative;
+    height: 280px;
+    margin-bottom: 20px;
+  }
+
+  /* Brand rows */
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-row:last-child { border-bottom: none; }
+  .brand-name {
+    width: 140px;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .brand-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .brand-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1.2s ease;
+  }
+  .brand-pct {
+    width: 40px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .brand-count {
+    width: 70px;
+    text-align: right;
+    font-size: 10px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* Skill tier table */
+  table.skill-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .skill-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 12px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+  .skill-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .skill-table tr:last-child td { border-bottom: none; }
+  .tier-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tier-badge.high { background: rgba(0,230,118,0.12); color: var(--green); }
+  .tier-badge.mid  { background: rgba(59,130,246,0.12); color: var(--blue); }
+  .tier-badge.low  { background: rgba(100,116,139,0.12); color: var(--muted); }
+
+  /* Whitespace heatmap */
+  .whitespace-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .ws-brand {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .ws-brand.present {
+    border-color: rgba(0,230,118,0.3);
+    background: rgba(0,230,118,0.05);
+  }
+  .ws-brand.absent {
+    border-color: rgba(239,68,68,0.2);
+    background: rgba(239,68,68,0.04);
+  }
+  .ws-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .ws-status {
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .ws-status.present { color: var(--green); }
+  .ws-status.absent  { color: var(--red); }
+  .ws-pct {
+    font-size: 18px;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* Selkirk spotlight */
+  .spotlight {
+    background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03));
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 14px;
+    padding: 28px;
+  }
+  .spotlight-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .spotlight-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: rgba(239,68,68,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .spotlight-title { font-size: 20px; font-weight: 800; }
+  .spotlight-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .spotlight-stat {
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .spotlight-stat-label { font-size: 12px; color: var(--muted); }
+  .at-scale-box {
+    background: rgba(0,230,118,0.06);
+    border: 1px solid rgba(0,230,118,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 13px;
+  }
+  .at-scale-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* Scale projection */
+  .scale-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .scale-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .scale-card:hover { border-color: var(--green); }
+  .scale-card.highlight {
+    border-color: rgba(0,230,118,0.4);
+    background: linear-gradient(135deg, rgba(0,230,118,0.06), var(--card));
+  }
+  .scale-clips { font-size: 20px; font-weight: 800; color: var(--text); }
+  .scale-venues { font-size: 11px; color: var(--muted); margin: 2px 0 10px; }
+  .scale-brands { font-size: 15px; font-weight: 700; color: var(--green); }
+  .scale-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, rgba(0,230,118,0.08), rgba(59,130,246,0.06));
+    border: 1px solid rgba(0,230,118,0.2);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+  }
+  .cta-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+  .cta-sub { font-size: 15px; color: var(--muted); margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .cta-btn {
+    display: inline-block;
+    background: var(--green);
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+  }
+  .cta-note { font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 40px 20px 30px; }
+    .hero h1 { font-size: 28px; }
+    .content { padding: 0 20px 60px; }
+    .two-col, .three-col, .scale-grid { grid-template-columns: 1fr; }
+    .whitespace-grid { grid-template-columns: repeat(3, 1fr); }
+    .nav { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Scale Banner -->
+<div class="scale-banner">
+  <strong>⚡ Early Access Report</strong>
+  <span class="scale-sep">|</span>
+  Current corpus: <strong>18 analyzed clips</strong>
+  <span class="scale-sep">|</span>
+  At scale: <strong>50,000+ clips across 50+ venues</strong> — here's what that means for your brand
+  <span class="scale-sep">|</span>
+  <span style="color: rgba(245,158,11,0.7);">Data grows weekly</span>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+  <div class="logo"><span>Court</span>ana</div>
+  <div style="display:flex; align-items:center; gap: 12px;">
+    <span style="font-size:11px; color: var(--muted)">Brand Intelligence Report · April 2026</span>
+    <span class="report-badge">Sample</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">Brand Intelligence · Share-of-Court Report</div>
+  <h1>Your brand's <em>real presence</em><br>on every court we cover</h1>
+  <p class="hero-sub">
+    We analyze every point, every shot, every logo that appears on camera —
+    automatically, at $0.005 per clip. This is what your sponsorship dollars actually buy.
+  </p>
+  <div class="hero-kpis">
+    <div class="hkpi">
+      <div class="hkpi-val">18</div>
+      <div class="hkpi-label">Clips Analyzed</div>
+    </div>
+    <div class="hkpi">
+      <div class="hkpi-val">2</div>
+      <div class="hkpi-label">Venues</div>
+    </div>
+    <div class="hkpi">
+      <div class="hkpi-val">7</div>
+      <div class="hkpi-label">Brands Detected</div>
+    </div>
+    <div class="hkpi">
+      <div class="hkpi-val">$0.005</div>
+      <div class="hkpi-label">Cost Per Clip</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Section 1: Share of Court -->
+  <div class="section">
+    <div class="section-label"><span class="num">01</span> Share-of-Court Rankings</div>
+    <div class="card">
+      <div class="card-title">Brand Visibility in Competitive Play</div>
+      <div class="card-sub">% of analyzed clips where brand is visibly detected · current corpus (18 clips)</div>
+
+      <div class="chart-container">
+        <canvas id="shareChart"></canvas>
+      </div>
+
+      <div id="brandRows"></div>
+    </div>
+  </div>
+
+  <!-- Section 2: Skill tier correlation -->
+  <div class="section">
+    <div class="section-label"><span class="num">02</span> Brand × Player Skill Tier</div>
+    <div class="card">
+      <div class="card-title">Which Brands Do High-Skill Players Use?</div>
+      <div class="card-sub">Brand appearances segmented by estimated DUPR rating. High = 4.0+, Mid = 3.5-3.9, Low = &lt;3.5</div>
+      <table class="skill-table">
+        <thead>
+          <tr>
+            <th>Brand</th>
+            <th>High Skill (4.0+)</th>
+            <th>Mid Skill (3.5-3.9)</th>
+            <th>Low Skill (&lt;3.5)</th>
+            <th>Total Appearances</th>
+          </tr>
+        </thead>
+        <tbody id="skillTable"></tbody>
+      </table>
+      <div style="margin-top:14px; padding: 12px 14px; background: rgba(0,230,118,0.06); border-radius: 8px; font-size: 12px; color: var(--muted);">
+        💡 <strong style="color:var(--text)">Why this matters:</strong> A brand appearing in 4.0+ player clips signals product adoption by serious players — the most influential segment for peer recommendations and social sharing.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Sponsorship Whitespace -->
+  <div class="section">
+    <div class="section-label"><span class="num">03</span> Sponsorship Whitespace</div>
+    <div class="card">
+      <div class="card-title">Major Brands by Court Presence</div>
+      <div class="card-sub">The brands that SHOULD be here. Red = missing from all current clips.</div>
+      <div class="whitespace-grid" id="whitespaceGrid"></div>
+      <div style="margin-top:16px; font-size:12px; color: var(--muted);">
+        * Presence rates shown are from current 18-clip sample. At 50K clips, statistical significance increases dramatically.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Selkirk Spotlight -->
+  <div class="section">
+    <div class="section-label"><span class="num">04</span> Brand Deep Dive — Selkirk</div>
+    <div class="spotlight">
+      <div class="spotlight-header">
+        <div class="spotlight-icon">🏓</div>
+        <div>
+          <div class="spotlight-title">Selkirk Sport</div>
+          <div class="spotlight-sub">One of pickleball's largest paddle brands — and largely invisible in our data so far</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
+        <div>
+          <div class="spotlight-stat" style="color: var(--red);">6%</div>
+          <div class="spotlight-stat-label">Current share-of-court<br>(1 of 18 clips)</div>
+        </div>
+        <div>
+          <div class="spotlight-stat" style="color: var(--gold);">22%</div>
+          <div class="spotlight-stat-label">JOOLA's share-of-court<br>(4 of 18 clips)</div>
+        </div>
+        <div>
+          <div class="spotlight-stat" style="color: var(--muted);">0</div>
+          <div class="spotlight-stat-label">High-skill clips (4.0+)<br>with Selkirk visible</div>
+        </div>
+      </div>
+
+      <div style="font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 16px;">
+        In our current corpus, JOOLA appears 4× more often than Selkirk. More telling: Selkirk has
+        <strong>zero appearances in high-skill (4.0+) player clips</strong>, while JOOLA appears in 2.
+        This suggests either lower adoption among competitive players, or the clips we have don't yet
+        represent Selkirk's core market — both of which are things a brand partnership could address.
+      </div>
+
+      <div class="at-scale-box">
+        <div class="at-scale-label">🚀 What this looks like at 50K clips</div>
+        <p style="font-size: 13px; color: var(--text);">
+          At 50,000 clips across 50 venues: if Selkirk's 6% rate holds, that's
+          <strong style="color:var(--text)">3,000 clip appearances per corpus cycle</strong>.
+          If a brand partnership moves that to 15%, it's <strong>7,500 appearances</strong> —
+          a measurable, auditable sponsorship outcome. For the first time in pickleball, you'd have
+          receipts for every dollar of sponsorship spend.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Scale projections -->
+  <div class="section">
+    <div class="section-label"><span class="num">05</span> Scale Projections</div>
+    <div class="card">
+      <div class="card-title">Brand Intelligence at Scale</div>
+      <div class="card-sub">What the data product looks like as we grow. Each row = one corpus expansion milestone.</div>
+      <div class="scale-grid">
+        <div class="scale-card">
+          <div class="scale-clips">18</div>
+          <div class="scale-venues">Current · 2 venues</div>
+          <div class="scale-brands">7 brands</div>
+          <div class="scale-label">detected</div>
+          <div style="margin-top: 10px; font-size: 10px; color: var(--muted);">Sample signal</div>
+        </div>
+        <div class="scale-card">
+          <div class="scale-clips">5,000</div>
+          <div class="scale-venues">6 months · 5 venues</div>
+          <div class="scale-brands">~35 brands</div>
+          <div class="scale-label">statistically significant</div>
+          <div style="margin-top: 10px; font-size: 10px; color: var(--gold);">Sellable product</div>
+        </div>
+        <div class="scale-card highlight">
+          <div class="scale-clips">50,000</div>
+          <div class="scale-venues">12 months · 50 venues</div>
+          <div class="scale-brands">~75 brands</div>
+          <div class="scale-label">national coverage</div>
+          <div style="margin-top: 10px; font-size: 10px; color: var(--green);">⭐ Defensible moat</div>
+        </div>
+        <div class="scale-card">
+          <div class="scale-clips">830K+</div>
+          <div class="scale-venues">2 years · 1,000 venues</div>
+          <div class="scale-brands">Full brand map</div>
+          <div class="scale-label">all major markets</div>
+          <div style="margin-top: 10px; font-size: 10px; color: var(--purple);">Platform play</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: How it works -->
+  <div class="section">
+    <div class="section-label"><span class="num">06</span> How Courtana Captures Brand Data</div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">The Analysis Pipeline</div>
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 16px;">
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,230,118,0.12); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:var(--green); flex-shrink:0;">1</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Court cameras capture every point</div>
+              <div style="font-size:12px; color:var(--muted);">Multiple angles per court, continuous recording</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,230,118,0.12); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:var(--green); flex-shrink:0;">2</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Gemini 2.5 Flash analyzes each clip</div>
+              <div style="font-size:12px; color:var(--muted);">Shot types, brands, player skill, badge triggers — $0.005/clip</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,230,118,0.12); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:var(--green); flex-shrink:0;">3</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Frame-level brand detection</div>
+              <div style="font-size:12px; color:var(--muted);">Per-frame logo detection with timestamp + confidence + position</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(0,230,118,0.12); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:var(--green); flex-shrink:0;">4</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Brand API delivers insights</div>
+              <div style="font-size:12px; color:var(--muted);">Monthly reports + real-time dashboard + trend alerts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">What You Get as a Brand Partner</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+          <div style="display: flex; gap: 10px; font-size: 13px;">
+            <span style="color: var(--green);">✓</span>
+            <span>Monthly <strong>Share-of-Court report</strong> by venue, region, skill tier</span>
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 13px;">
+            <span style="color: var(--green);">✓</span>
+            <span><strong>Competitive benchmarking</strong> — your brand vs. Selkirk vs. JOOLA vs. Engage</span>
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 13px;">
+            <span style="color: var(--green);">✓</span>
+            <span><strong>Player profile correlation</strong> — who uses your paddle (DUPR, age, style)</span>
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 13px;">
+            <span style="color: var(--green);">✓</span>
+            <span><strong>Viral clip detection</strong> — when your gear stars in a shareable moment</span>
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 13px;">
+            <span style="color: var(--green);">✓</span>
+            <span><strong>Sponsorship ROI tracking</strong> — did your pro sponsorship move the court-presence needle?</span>
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 13px;">
+            <span style="color: var(--green);">✓</span>
+            <span>API access for custom analysis and brand safety monitoring</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">Get in before the data exists at scale</div>
+    <p class="cta-sub">
+      Early brand partners help shape what we measure — and get the first look at
+      every new venue we launch. The window to be first is now.
+    </p>
+    <a href="mailto:bill@courtana.com" class="cta-btn">Request Early Access → bill@courtana.com</a>
+    <div class="cta-note">Founding partner pricing available for brands that commit before 50K clips. No obligation call.</div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <span>Courtana · courtana.com · bill@courtana.com</span>
+  <span>Brand Intelligence Report · Sample — April 2026 · Based on 18 analyzed clips</span>
+</div>
+
+<script>
+// Brand data from real analysis corpus
+const brands = [
+  { name: 'JOOLA',             pct: 22, clips: 4, high: 2, mid: 2, low: 0, color: '#00E676' },
+  { name: 'The Underground',   pct: 17, clips: 3, high: 1, mid: 1, low: 1, color: '#3B82F6' },
+  { name: 'Recovery Cave',     pct: 17, clips: 3, high: 1, mid: 2, low: 0, color: '#8B5CF6' },
+  { name: 'LIFE TIME PB',      pct: 17, clips: 3, high: 1, mid: 2, low: 0, color: '#F59E0B' },
+  { name: 'ONIX',              pct: 11, clips: 2, high: 0, mid: 2, low: 0, color: '#EC4899' },
+  { name: 'Selkirk',           pct:  6, clips: 1, high: 0, mid: 1, low: 0, color: '#EF4444' },
+  { name: 'HEAD',              pct:  6, clips: 1, high: 0, mid: 1, low: 0, color: '#64748B' },
+];
+
+const whitespace = [
+  { name: 'JOOLA',     pct: 22, present: true },
+  { name: 'Selkirk',   pct:  6, present: true },
+  { name: 'ONIX',      pct: 11, present: true },
+  { name: 'HEAD',      pct:  6, present: true },
+  { name: 'Engage',    pct:  0, present: false },
+  { name: 'Franklin',  pct:  0, present: false },
+  { name: 'Paddletek', pct:  0, present: false },
+  { name: 'Six Zero',  pct:  0, present: false },
+  { name: 'Gearbox',   pct:  0, present: false },
+  { name: 'Wilson',    pct:  0, present: false },
+];
+
+// Share-of-court bar chart
+const ctx = document.getElementById('shareChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: brands.map(b => b.name),
+    datasets: [{
+      label: 'Share of Court (%)',
+      data: brands.map(b => b.pct),
+      backgroundColor: brands.map(b => b.color + '22'),
+      borderColor: brands.map(b => b.color),
+      borderWidth: 2,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#1e2a3a' } },
+      y: { ticks: { color: '#94a3b8', callback: v => v + '%', font: { size: 11 } }, grid: { color: '#1e2a3a' }, max: 30 },
+    },
+    plugins: { legend: { display: false } },
+  }
+});
+
+// Brand rows
+const rows = document.getElementById('brandRows');
+brands.forEach(b => {
+  const pct = b.pct;
+  rows.innerHTML += `
+    <div class="brand-row">
+      <span class="brand-name">${b.name}</span>
+      <div class="brand-bar-wrap">
+        <div class="brand-bar" style="width:${pct * 3}%;background:${b.color}"></div>
+      </div>
+      <span class="brand-pct" style="color:${b.color}">${pct}%</span>
+      <span class="brand-count">${b.clips} clip${b.clips !== 1 ? 's' : ''}</span>
+    </div>`;
+});
+
+// Skill table
+const table = document.getElementById('skillTable');
+brands.forEach(b => {
+  const total = b.high + b.mid + b.low;
+  table.innerHTML += `
+    <tr>
+      <td style="font-weight:600">${b.name}</td>
+      <td>${b.high > 0 ? `<span class="tier-badge high">${b.high} clip${b.high !== 1 ? 's' : ''}</span>` : '<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+      <td>${b.mid > 0 ? `<span class="tier-badge mid">${b.mid} clip${b.mid !== 1 ? 's' : ''}</span>` : '<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+      <td>${b.low > 0 ? `<span class="tier-badge low">${b.low} clip${b.low !== 1 ? 's' : ''}</span>` : '<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+      <td style="font-weight:700; color: ${b.color}">${total}</td>
+    </tr>`;
+});
+
+// Whitespace grid
+const wsGrid = document.getElementById('whitespaceGrid');
+whitespace.forEach(w => {
+  const cls = w.present ? 'present' : 'absent';
+  const status = w.present ? `✓ Present` : `✗ Zero presence`;
+  wsGrid.innerHTML += `
+    <div class="ws-brand ${cls}">
+      <div class="ws-name">${w.name}</div>
+      <span class="ws-pct" style="color:${w.present ? 'var(--green)' : 'var(--red)'}">${w.pct}%</span>
+      <div class="ws-status ${cls}">${status}</div>
+    </div>`;
+});
+
+// Animate bars on load
+setTimeout(() => {
+  document.querySelectorAll('.brand-bar').forEach(bar => {
+    const target = bar.style.width;
+    bar.style.width = '0';
+    setTimeout(() => { bar.style.width = target; bar.style.transition = 'width 1s ease'; }, 100);
+  });
+}, 300);
+</script>
+</body>
+</html>

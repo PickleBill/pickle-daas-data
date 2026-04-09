@@ -5,8 +5,9 @@
 | v1.0 | 2026-03-28 | Initial prompt — all fields: clip_meta, players_detected, shot_analysis, skill_indicators, brand_detection, storytelling, badge_intelligence, commentary, daas_signals | 0 | TBD | TBD |
 | v1.2 | 2026-03-28 | Added paddle_intel sub-object (brand, model, shape, grip, lead tape), added paddle_control_rating + grip_pressure_estimate to skill_indicators | 0 | TBD | TBD |
 | **v1.1** | **2026-04-10** | Added REQUIRED FIELDS block at top. Fixed `signature_move_detected` (9%→~95%) — expanded from "recurring move" to "any distinctive characteristic." Fixed `predicted_badges` (73%→~98%) — added full 18-badge taxonomy + always-predict rule. Fixed `estimated_player_rating_dupr` (82%→~99%) — added DUPR scale with default "3.5-4.0". Fixed `ron_burgundy_voice` (82%→~99%) — marked required. | 11 | 7.4/10 | signature_move(9%), badges(73%), dupr(82%), ron_burgundy(82%) |
+| **v1.2** | **2026-04-10** | **Expanded brand detection to ALL visible brands.** Added `prompt_version` field to output. Expanded `brand_detection.brands[].category` from 14 to 30+ categories (drinks, vehicles, venue signage, wearable tech, fitness chains, local businesses, etc.). Added `location_detail` field per brand. Added `unidentified_products_notes`. Expanded `sponsorship_whitespace` beyond sports. Updated frame-analyzer `FRAME_BRAND_PROMPT` to match. Explicit instruction: "Report EVERY visible logo, brand name, or identifiable product." | 0 | TBD | TBD — reprocessing top 5 clips for before/after comparison |
 
-**Predicted improvement on next batch: +60-80% fill rate for previously weak fields.**
+**v1.2 purpose:** Bill's feedback: "Think beyond the obvious — clothing, shoes, what people are drinking, sunglasses, everything." v1.1 only detected pickleball equipment. v1.2 scans entire frame for ANY brand.
 
 ## How to Update This Log
 

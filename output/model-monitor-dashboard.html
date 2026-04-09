@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Model Quality Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0A0E17; --surface: #111827; --card: #1a2236;
+    --border: #1e2a3a; --green: #00E676; --gold: #F59E0B;
+    --red: #ef4444; --blue: #3B82F6; --text: #F1F5F9; --muted: #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .subtitle { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+
+  .kpi-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+         padding: 16px 20px; flex: 1; min-width: 120px; }
+  .kpi-val { font-size: 28px; font-weight: 800; color: var(--green); line-height: 1; }
+  .kpi-label { font-size: 10px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .section { margin-bottom: 28px; }
+  .section-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+                   letter-spacing: 1px; margin-bottom: 14px; }
+
+  .alerts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .alert { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+           border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #fca5a5; }
+  .ok { background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.2);
+        border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--green); }
+
+  .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .chart-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+                 letter-spacing: 1px; margin-bottom: 16px; }
+
+  table { width: 100%; border-collapse: collapse; background: var(--surface);
+           border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  th { background: var(--card); font-size: 10px; font-weight: 700; color: var(--muted);
+       text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; text-align: left; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  .field-name { color: var(--text); font-weight: 500; }
+  td.rate { text-align: center; font-weight: 700; font-size: 11px; }
+  td.rate.good { color: #4ade80; }
+  td.rate.warn { color: #fbbf24; }
+  td.rate.bad  { color: #f87171; }
+
+  .footer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 24px; }
+  @media (max-width: 600px) { .charts-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Model Quality Monitor</h1>
+  <div class="subtitle">Pickle DaaS · Gemini 2.5 Flash · Generated 2026-04-09 05:37</div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-val">3</div><div class="kpi-label">Batches</div></div>
+    <div class="kpi"><div class="kpi-val">18</div><div class="kpi-label">Total Clips</div></div>
+    <div class="kpi"><div class="kpi-val">3</div><div class="kpi-label">Regressions</div></div>
+    <div class="kpi"><div class="kpi-val">7.2</div><div class="kpi-label">Avg Quality</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Alerts</div>
+    <div class="alerts"><div class="alert">⚠️ <strong>Signature Move ⚡</strong>: batch-30-daas (9%) → picklebill-batch-001 (0%) — dropped 9%</div><div class="alert">⚠️ <strong>Predicted Badges ⚡</strong>: batch-30-daas (73%) → picklebill-batch-001 (67%) — dropped 6%</div><div class="alert">⚠️ <strong>Predicted Badges ⚡</strong>: picklebill-batch-001 (67%) → picklebill-batch-20260410 (50%) — dropped 17%</div></div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Key Field Fill Rates by Batch (%)</div>
+      <canvas id="fillChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Avg Quality Score</div>
+      <canvas id="qualityChart" height="220"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">All Field Fill Rates</div>
+    <table>
+      <thead><tr><th>Field</th><th>batch-30-daas</th><th>picklebill-batch-001</th><th>picklebill-batch-20260410</th></tr></thead>
+      <tbody><tr><td class="field-name">Clip Quality Score</td><td class="rate good">100%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Viral Potential Score</td><td class="rate good">100%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Watchability Score</td><td class="rate good">100%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Kitchen Mastery</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Court IQ</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Athleticism</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Signature Move ⚡</td><td class="rate bad">9%</td><td class="rate bad">0%</td><td class="rate bad">0%</td></tr>
+<tr><td class="field-name">Improvement Opps</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Play Style Tags</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Predicted Badges ⚡</td><td class="rate warn">73%</td><td class="rate bad">67%</td><td class="rate bad">50%</td></tr>
+<tr><td class="field-name">Ron Burgundy Voice ⚡</td><td class="rate warn">82%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Social Caption</td><td class="rate warn">82%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Coaching Breakdown</td><td class="rate warn">82%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">DUPR Estimate ⚡</td><td class="rate warn">82%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">One-Sentence Summary ⚡</td><td class="rate warn">82%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Data Richness</td><td class="rate warn">82%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Brand Detections</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Story Arc</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+<tr><td class="field-name">Narrative Summary</td><td class="rate good">91%</td><td class="rate good">100%</td><td class="rate good">100%</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    Pickle DaaS · courtana.com · Run after every batch to track model health
+  </div>
+</div>
+
+<script>
+const batchNames = ["batch-30-daas", "picklebill-batch-001", "picklebill-batch-20260410"];
+const datasets   = [{"label": "batch-30-daas", "data": [9.1, 72.7, 81.8, 81.8, 81.8, 90.9, 90.9], "backgroundColor": "rgba(100,116,139,0.7)", "borderColor": "rgba(100,116,139,1)", "borderWidth": 1}, {"label": "picklebill-batch-001", "data": [0.0, 66.7, 100.0, 100.0, 100.0, 100.0, 100.0], "backgroundColor": "rgba(59,130,246,0.8)", "borderColor": "rgba(59,130,246,1)", "borderWidth": 1}, {"label": "picklebill-batch-20260410", "data": [0.0, 50.0, 100.0, 100.0, 100.0, 100.0, 100.0], "backgroundColor": "rgba(0,230,118,0.9)", "borderColor": "rgba(0,230,118,1)", "borderWidth": 1}];
+const keyLabels  = ["Signature Move", "Predicted Badges", "DUPR Estimate", "Ron Burgundy Voice", "One-Sentence Summary", "Kitchen Mastery", "Brand Detections"];
+const qualityData = [7.5, 7.0, 7.2];
+const brandData  = [1.3, 2.0, 2.2];
+
+// Fill rates grouped bar chart
+new Chart(document.getElementById('fillChart'), {
+  type: 'bar',
+  data: { labels: keyLabels, datasets: datasets },
+  options: {
+    responsive: true,
+    scales: {
+      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 30 }, grid: { color: '#1e2a3a' } },
+      y: { min: 0, max: 100, ticks: { color: '#64748b', callback: v => v + '%', font: { size: 9 } }, grid: { color: '#1e2a3a' } }
+    },
+    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } }
+  }
+});
+
+// Quality line chart
+new Chart(document.getElementById('qualityChart'), {
+  type: 'line',
+  data: {
+    labels: batchNames,
+    datasets: [{
+      label: 'Avg Quality',
+      data: qualityData,
+      borderColor: '#00E676',
+      backgroundColor: 'rgba(0,230,118,0.1)',
+      pointBackgroundColor: '#00E676',
+      tension: 0.3,
+      fill: true,
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 20 }, grid: { color: '#1e2a3a' } },
+      y: { min: 0, max: 10, ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e2a3a' } }
+    },
+    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } }
+  }
+});
+</script>
+</body>
+</html>

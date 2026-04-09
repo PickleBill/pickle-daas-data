@@ -764,6 +764,10 @@ def main():
     parser.add_argument("--tier", default="standard", choices=["standard", "discovery"],
                         help="Prompt tier: 'discovery' = open-ended extraction, 'standard' = structured analysis (default)")
 
+    # Prompt override from file (e.g. prompts/v1.2-20260410.txt)
+    parser.add_argument("--prompt-file", default=None,
+                        help="Load analysis prompt from a text file instead of using the built-in prompt")
+
     args = parser.parse_args()
 
     # Setup
@@ -772,7 +776,13 @@ def main():
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     # Resolve prompt and temperature from tier
-    if args.tier == "discovery":
+    if args.prompt_file:
+        with open(args.prompt_file) as pf:
+            active_prompt = pf.read()
+        active_temp = 0.3
+        tier_label = os.path.basename(args.prompt_file).replace('.txt', '')
+        print(f"\n*** CUSTOM PROMPT: {args.prompt_file} ***\n")
+    elif args.tier == "discovery":
         active_prompt = DISCOVERY_PROMPT
         active_temp = 0.7
         tier_label = "discovery"
