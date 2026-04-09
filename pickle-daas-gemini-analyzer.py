@@ -56,7 +56,8 @@ try:
 except ImportError:
     pass  # python-dotenv optional — export vars manually if not installed
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 # ---------------------------------------------------------------------------
 # CONFIG
@@ -353,8 +354,9 @@ def init_gemini(model_name: str = None):
         print("ERROR: GEMINI_API_KEY environment variable not set.")
         print("Get one at: https://aistudio.google.com/app/apikey")
         sys.exit(1)
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel(model_name or GEMINI_MODEL)
+    client = genai.Client(api_key=api_key)
+    # Return (client, model_name) tuple — new API uses client.models.generate_content()
+    return client, (model_name or GEMINI_MODEL)
 
 
 def download_video(url: str, dest_path: str) -> bool:
@@ -375,17 +377,17 @@ def download_video(url: str, dest_path: str) -> bool:
         return False
 
 
-def upload_to_gemini(local_path: str) -> Optional[object]:
+def upload_to_gemini(client, local_path: str) -> Optional[object]:
     """Upload a video file to Gemini File API."""
     print(f"  Uploading to Gemini File API...")
     try:
-        video_file = genai.upload_file(path=local_path, mime_type="video/mp4")
-        # Wait for processing
-        while video_file.state.name == "PROCESSING":
+        video_file = client.files.upload(file=local_path)
+        # Wait for processing (new API uses .state as a string)
+        while video_file.state == "PROCESSING":
             print("  Gemini processing video...", end="\r")
             time.sleep(3)
-            video_file = genai.get_file(video_file.name)
-        if video_file.state.name == "FAILED":
+            video_file = client.files.get(name=video_file.name)
+        if video_file.state == "FAILED":
             print("  ERROR: Gemini file processing failed.")
             return None
         print(f"  Upload complete: {video_file.name}")
@@ -395,9 +397,9 @@ def upload_to_gemini(local_path: str) -> Optional[object]:
         return None
 
 
-def analyze_video(model, video_file, extra_context: dict = None, prompt_override: str = None, temperature: float = 0.3) -> Optional[dict]:
+def analyze_video(client_model, video_file, extra_context: dict = None, prompt_override: str = None, temperature: float = 0.3) -> Optional[dict]:
     """Run analysis prompt against an uploaded Gemini video file."""
-    model_name = getattr(model, 'model_name', GEMINI_MODEL)
+    client, model_name = client_model
     print(f"  Running Gemini analysis ({model_name})...")
     prompt = prompt_override or ANALYSIS_PROMPT
 
@@ -406,13 +408,31 @@ def analyze_video(model, video_file, extra_context: dict = None, prompt_override
         prompt += context_str + "\n\nUse the above context to fill in player IDs, badge history, etc. where applicable."
 
     try:
-        response = model.generate_content(
-            [video_file, prompt],
-            generation_config=genai.GenerationConfig(
-                temperature=temperature,
-                max_output_tokens=12288,
-            )
-        )
+        # Retry up to 3 times on transient errors (503, rate limit)
+        last_error = None
+        for attempt in range(3):
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=[video_file, prompt],
+                    config=types.GenerateContentConfig(
+                        temperature=temperature,
+                        max_output_tokens=12288,
+                    ),
+                )
+                break  # Success
+            except Exception as e:
+                last_error = e
+                err_str = str(e)
+                if "503" in err_str or "UNAVAILABLE" in err_str or "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                    wait = 10 * (attempt + 1)
+                    print(f"  Gemini overloaded (attempt {attempt+1}/3), waiting {wait}s...")
+                    time.sleep(wait)
+                else:
+                    raise  # Non-retryable error
+        else:
+            raise last_error  # All retries failed
+
         raw_text = response.text.strip()
 
         # Strip markdown code fences if model adds them anyway
@@ -453,10 +473,10 @@ def analyze_video(model, video_file, extra_context: dict = None, prompt_override
         return None
 
 
-def cleanup_gemini_file(video_file):
+def cleanup_gemini_file(client, video_file):
     """Delete uploaded file from Gemini to save quota."""
     try:
-        genai.delete_file(video_file.name)
+        client.files.delete(name=video_file.name)
         print(f"  Cleaned up Gemini file: {video_file.name}")
     except Exception:
         pass  # Non-critical
@@ -581,8 +601,9 @@ def compare_models(video_url: str, output_dir: str):
     print(f"COMPARE MODELS: {GEMINI_MODEL} vs {GEMINI_MODEL_COMPARE}")
     print(f"{'='*60}")
 
-    model_flash = init_gemini(GEMINI_MODEL)
-    model_pro   = init_gemini(GEMINI_MODEL_COMPARE)
+    client_flash = init_gemini(GEMINI_MODEL)
+    client_pro   = init_gemini(GEMINI_MODEL_COMPARE)
+    client = client_flash[0]  # Same client, different model names
 
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
         tmp_path = tmp.name
@@ -592,19 +613,19 @@ def compare_models(video_url: str, output_dir: str):
             return
 
         # Upload once, analyze twice
-        video_file = upload_to_gemini(tmp_path)
+        video_file = upload_to_gemini(client, tmp_path)
         if not video_file:
             return
 
         extra_context = {"video_url": video_url, "platform": "Courtana", "sport": "pickleball"}
 
         print(f"\n--- Running {GEMINI_MODEL} ---")
-        result_flash = analyze_video(model_flash, video_file, extra_context)
+        result_flash = analyze_video(client_flash, video_file, extra_context)
 
         print(f"\n--- Running {GEMINI_MODEL_COMPARE} ---")
-        result_pro   = analyze_video(model_pro,   video_file, extra_context)
+        result_pro   = analyze_video(client_pro, video_file, extra_context)
 
-        cleanup_gemini_file(video_file)
+        cleanup_gemini_file(client, video_file)
 
         if not result_flash or not result_pro:
             print("ERROR: One or both models failed to return results.")
@@ -652,10 +673,14 @@ def compare_models(video_url: str, output_dir: str):
 # CORE PIPELINE: ANALYZE ONE VIDEO URL
 # ---------------------------------------------------------------------------
 
-def analyze_url(model, video_url: str, highlight_meta: dict = None, use_supabase: bool = False,
+def analyze_url(client_model, video_url: str, highlight_meta: dict = None, use_supabase: bool = False,
                 output_dir: str = ".", voice_pipeline: str = None,
-                prompt_override: str = None, temperature: float = 0.3, tier_label: str = None) -> Optional[dict]:
-    """Full pipeline: download → upload → analyze → save."""
+                prompt_override: str = None, temperature: float = 0.3, tier_label: str = None,
+                max_file_mb: float = 20.0) -> Optional[dict]:
+    """Full pipeline: download → upload → analyze → save.
+    Skips clips larger than max_file_mb to avoid timeouts on huge videos."""
+    client = client_model[0]
+
     print(f"\n{'='*60}")
     print(f"Analyzing: {video_url[-60:]}")
     print(f"{'='*60}")
@@ -668,8 +693,14 @@ def analyze_url(model, video_url: str, highlight_meta: dict = None, use_supabase
         if not download_video(video_url, tmp_path):
             return None
 
+        # 1b. Skip oversized files
+        size_mb = Path(tmp_path).stat().st_size / (1024 * 1024)
+        if size_mb > max_file_mb:
+            print(f"  SKIP: {size_mb:.1f} MB exceeds {max_file_mb} MB limit")
+            return None
+
         # 2. Upload to Gemini
-        video_file = upload_to_gemini(tmp_path)
+        video_file = upload_to_gemini(client, tmp_path)
         if not video_file:
             return None
 
@@ -680,11 +711,11 @@ def analyze_url(model, video_url: str, highlight_meta: dict = None, use_supabase
             "platform": "Courtana (courtana.com)",
             "sport": "pickleball"
         }
-        result = analyze_video(model, video_file, extra_context,
+        result = analyze_video(client_model, video_file, extra_context,
                                prompt_override=prompt_override, temperature=temperature)
 
         # 4. Cleanup Gemini file
-        cleanup_gemini_file(video_file)
+        cleanup_gemini_file(client, video_file)
 
         if result:
             # Add source metadata
