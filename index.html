@@ -25,6 +25,10 @@
   --gold:          oklch(58% 0.14 85);
   --gold-bg:       oklch(95% 0.04 85);
 
+  --hero-bg:       oklch(22% 0.06 155);
+  --hero-text:     oklch(98% 0.005 155);
+  --hero-muted:    oklch(75% 0.03 155);
+
   /* Section accent colors by audience type */
   --investor-bg:     oklch(95% 0.03 155);
   --investor-border: oklch(84% 0.06 155);
@@ -93,69 +97,105 @@ header {
   color: var(--text-muted);
 }
 
+/* HERO */
+.hero {
+  background: var(--hero-bg);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 28px,
+      oklch(100% 0 0 / 0.05) 28px,
+      oklch(100% 0 0 / 0.05) 29px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 28px,
+      oklch(100% 0 0 / 0.05) 28px,
+      oklch(100% 0 0 / 0.05) 29px
+    );
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 40px 0;
+  position: relative;
+}
+.hero h1 {
+  font-family: var(--ff-display);
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--hero-text);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.hero-sub {
+  font-family: var(--ff-body);
+  font-size: 1.05rem;
+  color: var(--hero-muted);
+  line-height: 1.5;
+  max-width: 460px;
+}
+
+/* HERO STATS */
+.hero-stats {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 36px 40px 48px;
+  position: relative;
+  display: flex;
+  gap: 48px;
+}
+.hero-stat-num {
+  font-family: var(--ff-display);
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--hero-text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat-label {
+  font-family: var(--ff-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hero-muted);
+}
+
 /* MAIN CONTENT */
 main {
   max-width: 1040px; margin: 0 auto;
   padding: 56px 40px 80px;
 }
 
-/* INTRO */
-.portal-intro { margin-bottom: 56px; }
-.portal-title {
-  font-family: var(--ff-display);
-  font-size: 2rem; font-weight: 700;
-  letter-spacing: -0.025em;
-  color: var(--text);
-  margin-bottom: 10px;
-}
-.portal-sub {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  max-width: 520px;
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-
-/* STATS ROW */
-.stats-row {
-  display: flex; gap: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  max-width: 680px;
-}
-.stat {
-  flex: 1;
-  padding: 14px 20px;
-  background: var(--surface);
-}
-.stat + .stat { border-left: 1px solid var(--border); }
-.stat-num {
-  font-family: var(--ff-display);
-  font-size: 1.35rem; font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-label {
-  font-family: var(--ff-display);
-  font-size: 0.68rem; font-weight: 500;
-  text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
 /* SECTION GROUP */
 .section-group { margin-bottom: 48px; }
 .section-group-label {
   font-family: var(--ff-display);
-  font-size: 0.7rem; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--text-muted);
+  font-size: 1rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--text-secondary);
   margin-bottom: 16px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 3px solid var(--border);
 }
+.section-group-label.label-investor  { border-bottom-color: var(--investor-accent); }
+.section-group-label.label-analytics { border-bottom-color: var(--analytics-accent); }
+.section-group-label.label-product   { border-bottom-color: var(--product-accent); }
+.section-group-label.label-player    { border-bottom-color: var(--player-accent); }
+.section-group-label.label-fun       { border-bottom-color: var(--fun-accent); }
 
 /* CARD GRID */
 .card-grid {
@@ -177,51 +217,70 @@ main {
   position: relative;
 }
 .card:hover {
-  box-shadow: var(--shadow);
-  transform: translateY(-2px);
+  transform: translateY(-4px) scale(1.01);
   text-decoration: none;
 }
 
-/* Audience-specific card tints */
+/* Audience-specific card tints + hover shadows */
 .card-investor {
   background: var(--investor-bg);
   border-color: var(--investor-border);
 }
-.card-investor:hover { border-color: var(--investor-accent); }
+.card-investor:hover {
+  border-color: var(--investor-accent);
+  box-shadow: 0 8px 24px oklch(42% 0.14 155 / 0.15);
+}
 .card-investor .card-tag { background: var(--investor-bg); border-color: var(--investor-border); color: var(--investor-accent); }
 .card-investor .card-arrow { color: var(--investor-accent); }
+.card-investor .card-dot { background: var(--investor-accent); }
 
 .card-analytics {
   background: var(--analytics-bg);
   border-color: var(--analytics-border);
 }
-.card-analytics:hover { border-color: var(--analytics-accent); }
+.card-analytics:hover {
+  border-color: var(--analytics-accent);
+  box-shadow: 0 8px 24px oklch(50% 0.18 250 / 0.15);
+}
 .card-analytics .card-tag { background: var(--analytics-bg); border-color: var(--analytics-border); color: var(--analytics-accent); }
 .card-analytics .card-arrow { color: var(--analytics-accent); }
+.card-analytics .card-dot { background: var(--analytics-accent); }
 
 .card-product {
   background: var(--product-bg);
   border-color: var(--product-border);
 }
-.card-product:hover { border-color: var(--product-accent); }
+.card-product:hover {
+  border-color: var(--product-accent);
+  box-shadow: 0 8px 24px oklch(46% 0.14 170 / 0.15);
+}
 .card-product .card-tag { background: var(--product-bg); border-color: var(--product-border); color: var(--product-accent); }
 .card-product .card-arrow { color: var(--product-accent); }
+.card-product .card-dot { background: var(--product-accent); }
 
 .card-player {
   background: var(--player-bg);
   border-color: var(--player-border);
 }
-.card-player:hover { border-color: var(--player-accent); }
+.card-player:hover {
+  border-color: var(--player-accent);
+  box-shadow: 0 8px 24px oklch(58% 0.14 85 / 0.15);
+}
 .card-player .card-tag { background: var(--player-bg); border-color: var(--player-border); color: var(--player-accent); }
 .card-player .card-arrow { color: var(--player-accent); }
+.card-player .card-dot { background: var(--player-accent); }
 
 .card-fun {
   background: var(--fun-bg);
   border-color: var(--fun-border);
 }
-.card-fun:hover { border-color: var(--fun-accent); }
+.card-fun:hover {
+  border-color: var(--fun-accent);
+  box-shadow: 0 8px 24px oklch(50% 0.16 320 / 0.15);
+}
 .card-fun .card-tag { background: var(--fun-bg); border-color: var(--fun-border); color: var(--fun-accent); }
 .card-fun .card-arrow { color: var(--fun-accent); }
+.card-fun .card-dot { background: var(--fun-accent); }
 
 /* CARD INTERNALS */
 .card-top {
@@ -229,9 +288,21 @@ main {
   justify-content: space-between;
   margin-bottom: 8px;
 }
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 .card-title {
   font-family: var(--ff-display);
-  font-size: 1rem; font-weight: 600;
+  font-size: 1.1rem; font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--text);
   line-height: 1.25;
@@ -283,11 +354,14 @@ footer {
 
 @media (max-width: 640px) {
   header { padding: 0 20px; }
+  .hero-inner { padding: 36px 20px 0; }
+  .hero h1 { font-size: 2.2rem; }
+  .hero-stats { padding: 28px 20px 36px; gap: 24px; flex-wrap: wrap; }
+  .hero-stat { min-width: 40%; }
+  .hero-stat-num { font-size: 2.2rem; }
   main { padding: 40px 20px 64px; }
   footer { padding: 20px; }
   .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
-  .stats-row { flex-wrap: wrap; }
-  .stat { min-width: 50%; }
 }
 </style>
 </head>
@@ -301,38 +375,44 @@ footer {
   <div class="header-meta">Data Intelligence Platform &middot; Courtana &middot; April 2026</div>
 </header>
 
-<main>
-  <div class="portal-intro">
-    <h1 class="portal-title">Dashboard Portal</h1>
-    <p class="portal-sub">Pickle DaaS intelligence dashboards — organized by audience. Investor views are for external sharing. Analytics and internal views are for the pipeline team.</p>
-
-    <div class="stats-row">
-      <div class="stat">
-        <div class="stat-num">8,125</div>
-        <div class="stat-label">Highlight Groups</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">229</div>
-        <div class="stat-label">Badge Types</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">$0.0054</div>
-        <div class="stat-label">Per Clip</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">29</div>
-        <div class="stat-label">Players Tracked</div>
-      </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Pickleball Intelligence Platform</h1>
+    <p class="hero-sub">AI-powered data intelligence from every court</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">8,125</div>
+      <div class="hero-stat-label">Highlight Clips</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">229</div>
+      <div class="hero-stat-label">Badge Types</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">$0.0054</div>
+      <div class="hero-stat-label">Per Clip</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">29</div>
+      <div class="hero-stat-label">Players Tracked</div>
     </div>
   </div>
+</section>
+
+<main>
 
   <!-- INVESTOR -->
   <div class="section-group">
-    <div class="section-group-label">Investor &amp; External</div>
+    <div class="section-group-label label-investor">Investor &amp; External</div>
     <div class="card-grid">
       <a class="card card-investor" href="output/pickle-daas-investor-demo.html">
         <div class="card-top">
-          <div class="card-title">Investor Demo</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Investor Demo</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Full pitch — market opportunity, live clip analysis, unit economics calculator, Ron Burgundy commentary. The shareable version.</p>
@@ -343,11 +423,14 @@ footer {
 
   <!-- ANALYTICS -->
   <div class="section-group">
-    <div class="section-group-label">Analytics &amp; Pipeline</div>
+    <div class="section-group-label label-analytics">Analytics &amp; Pipeline</div>
     <div class="card-grid">
       <a class="card card-analytics" href="output/command-center.html">
         <div class="card-top">
-          <div class="card-title">Command Center</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Command Center</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Master dashboard — pipeline status, clip analysis queue, model performance, batch monitoring.</p>
@@ -356,7 +439,10 @@ footer {
 
       <a class="card card-analytics" href="output/badge-analytics-dashboard.html">
         <div class="card-top">
-          <div class="card-title">Badge Analytics</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Badge Analytics</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Badge prediction vs Courtana ground truth. Precision/recall, co-occurrence matrix, quality flags, reinforcement loop.</p>
@@ -365,7 +451,10 @@ footer {
 
       <a class="card card-analytics" href="output/pickle-daas-master-dashboard.html">
         <div class="card-top">
-          <div class="card-title">Master Dashboard</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Master Dashboard</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Aggregated analytics across all analyzed clips — shot types, brands, skill levels, content scores.</p>
@@ -374,7 +463,10 @@ footer {
 
       <a class="card card-analytics" href="output/model-monitor-dashboard.html">
         <div class="card-top">
-          <div class="card-title">Model Monitor</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Model Monitor</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Gemini model performance tracking — response quality, cost per clip, error rates, version comparison.</p>
@@ -385,11 +477,14 @@ footer {
 
   <!-- PRODUCT / BUYER-FACING -->
   <div class="section-group">
-    <div class="section-group-label">Product &amp; Buyer-Facing</div>
+    <div class="section-group-label label-product">Product &amp; Buyer-Facing</div>
     <div class="card-grid">
       <a class="card card-product" href="output/brand-intelligence-report-sample.html">
         <div class="card-top">
-          <div class="card-title">Brand Intelligence</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Brand Intelligence</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Brand detection aggregation — what brands appear, where, how often, sponsorship whitespace analysis.</p>
@@ -400,11 +495,14 @@ footer {
 
   <!-- PLAYER -->
   <div class="section-group">
-    <div class="section-group-label">Player Intelligence</div>
+    <div class="section-group-label label-player">Player Intelligence</div>
     <div class="card-grid">
       <a class="card card-player" href="output/picklebill-intel-card.html">
         <div class="card-top">
-          <div class="card-title">PickleBill Intel Card</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">PickleBill Intel Card</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Player DNA profile card — skill ratings, shot tendencies, brand associations, coaching insights.</p>
@@ -413,7 +511,10 @@ footer {
 
       <a class="card card-player" href="output/coaching-profile-picklebill.html">
         <div class="card-top">
-          <div class="card-title">Coaching Profile</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">Coaching Profile</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">AI-generated coaching breakdown — strengths, improvement areas, tactical tendencies, drill recommendations.</p>
@@ -424,11 +525,14 @@ footer {
 
   <!-- FUN -->
   <div class="section-group">
-    <div class="section-group-label">Experimental</div>
+    <div class="section-group-label label-fun">Experimental</div>
     <div class="card-grid">
       <a class="card card-fun" href="output/tmnt-broadcast-dashboard.html">
         <div class="card-top">
-          <div class="card-title">TMNT Broadcast</div>
+          <div class="card-title-row">
+            <span class="card-dot"></span>
+            <div class="card-title">TMNT Broadcast</div>
+          </div>
           <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Teenage Mutant Ninja Turtles character commentary — fun voice pack demo with personality-driven analysis.</p>
