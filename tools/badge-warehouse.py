@@ -45,6 +45,9 @@ ANALYSIS_DIRS = [
     "output/v1.2-reprocess",
     "output/badged-clips-analysis",
     "output/v1.3-badged-analysis",
+    "output/fast-batch-20",
+    "output/fast-batch-40",
+    "output/speed-test",
 ]
 BADGED_CLIPS_DIR = "output/badged-clips"
 
