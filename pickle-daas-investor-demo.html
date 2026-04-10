@@ -107,13 +107,40 @@ nav {
   color: var(--accent);
   margin-bottom: 20px;
 }
+
+/* HERO HEADLINE — massive punch */
 .hero-headline {
   font-family: var(--ff-display);
-  font-size: 3.5rem; font-weight: 800;
-  line-height: 1.1; letter-spacing: -0.03em;
+  font-size: 4.5rem; font-weight: 800;
+  line-height: 1.08; letter-spacing: -0.03em;
   color: var(--text);
   margin-bottom: 24px;
 }
+.hero-headline .punch {
+  display: inline-block;
+  position: relative;
+}
+.hero-headline .punch::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 120px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Hero entrance animation */
+.hero-headline {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeUp 0.6s ease forwards;
+}
+@keyframes heroFadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .hero-sub {
   font-size: 1.15rem; font-weight: 400;
   color: var(--text-secondary);
@@ -122,10 +149,10 @@ nav {
   margin-bottom: 48px;
 }
 
-/* Ron Burgundy card */
+/* Ron Burgundy card — POP */
 .burgundy-card {
-  background: var(--surface);
-  border: 1px solid var(--accent-border);
+  background: oklch(94% 0.04 155);
+  border: 1px solid oklch(84% 0.06 155);
   border-radius: var(--radius-lg);
   padding: 28px 32px;
   max-width: 620px;
@@ -142,7 +169,7 @@ nav {
 }
 .burgundy-quote {
   font-family: var(--ff-body);
-  font-size: 1.1rem; font-style: italic;
+  font-size: 1.15rem; font-style: italic;
   color: var(--text);
   line-height: 1.6;
   min-height: 3.4em;
@@ -168,7 +195,7 @@ nav {
 }
 .burgundy-dot.active { background: var(--accent); }
 
-/* Hero KPIs */
+/* Hero KPIs — big numbers */
 .hero-kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -185,7 +212,7 @@ nav {
 }
 .hero-kpi-num {
   font-family: var(--ff-display);
-  font-size: 1.75rem; font-weight: 700;
+  font-size: 2.5rem; font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--accent);
   line-height: 1;
@@ -201,7 +228,7 @@ nav {
 
 /* ===================== SECTION SHELL ===================== */
 section {
-  border-top: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
 }
 .section-inner {
   max-width: 960px; margin: 0 auto;
@@ -505,7 +532,7 @@ section {
 }
 
 /* ===================== ECONOMICS SECTION ===================== */
-.econ-bg { background: var(--bg-alt); }
+.econ-bg { background: oklch(96% 0.02 155); }
 .calc-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -656,6 +683,7 @@ input[type=range]::-webkit-slider-thumb {
 /* ===================== CTA SECTION ===================== */
 .cta-section {
   background: oklch(18% 0.04 155);
+  border-top: 4px solid var(--accent);
 }
 .cta-inner {
   max-width: 960px; margin: 0 auto;
@@ -701,16 +729,22 @@ input[type=range]::-webkit-slider-thumb {
 .cta-btn {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--ff-display);
-  font-size: 0.9rem; font-weight: 600;
+  font-size: 1rem; font-weight: 600;
   background: var(--accent);
   color: var(--surface);
-  padding: 14px 28px;
+  padding: 16px 32px;
   border-radius: var(--radius);
   transition: background 0.2s ease;
+  animation: ctaPulse 3s ease-in-out infinite;
 }
 .cta-btn:hover {
   background: var(--accent-mid);
   text-decoration: none;
+  animation: none;
+}
+@keyframes ctaPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 /* ===================== VIDEO MODAL ===================== */
@@ -761,8 +795,9 @@ input[type=range]::-webkit-slider-thumb {
 @media (max-width: 768px) {
   nav { padding: 0 20px; }
   .hero { padding: 60px 20px 56px; }
-  .hero-headline { font-size: 2.25rem; }
+  .hero-headline { font-size: 2.5rem; }
   .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+  .hero-kpi-num { font-size: 2rem; }
   .section-inner { padding: 56px 20px; }
   .clip-grid { grid-template-columns: 1fr; }
   .calc-split { grid-template-columns: 1fr; }
@@ -791,12 +826,12 @@ input[type=range]::-webkit-slider-thumb {
 <!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow fade-in">Courtana &middot; Data-as-a-Service</div>
-  <h1 class="hero-headline fade-in">Pickleball has<br>36 million players.<br>Zero Statcast.</h1>
+  <h1 class="hero-headline">Pickleball has<br>36 million players.<br><span class="punch">Zero Statcast.</span></h1>
   <p class="hero-sub fade-in">Pickle DaaS turns every match clip into structured intelligence — player DNA, badge predictions, brand detection, coaching signals — at <strong>$0.0054 per clip</strong>.</p>
 
   <!-- Ron Burgundy rotating card -->
   <div class="burgundy-card fade-in" id="burgundyCard">
-    <div class="burgundy-label">Actual AI commentary — real match, real Gemini 2.5 Flash output</div>
+    <div class="burgundy-label"><span style="color:var(--accent)">&#10022;</span> Actual AI commentary — real match, real Gemini 2.5 Flash output</div>
     <blockquote class="burgundy-quote" id="burgundyQuote"></blockquote>
     <div class="burgundy-attribution">— Ron Burgundy Voice Pack &middot; Courtana DaaS</div>
     <div class="burgundy-dots" id="burgundyDots"></div>
