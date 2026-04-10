@@ -9,18 +9,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      oklch(97% 0.008 240);
+  --bg:      oklch(97.5% 0.008 145);
   --surface: oklch(100% 0 0);
-  --border:  oklch(88% 0.012 240);
+  --border:  oklch(88% 0.012 155);
 
-  --text:          oklch(18% 0.015 240);
-  --text-secondary:oklch(44% 0.016 240);
-  --text-muted:    oklch(62% 0.01 240);
+  --text:          oklch(18% 0.015 155);
+  --text-secondary:oklch(44% 0.016 155);
+  --text-muted:    oklch(62% 0.01 155);
+
+  --accent:        oklch(42% 0.14 155);
+  --accent-mid:    oklch(52% 0.12 155);
+  --accent-subtle: oklch(95% 0.03 155);
+  --accent-border: oklch(84% 0.06 155);
+
+  --gold:          oklch(58% 0.14 85);
+  --gold-bg:       oklch(95% 0.04 85);
 
   /* Section accent colors by audience type */
-  --investor-bg:     oklch(97% 0.018 80);
-  --investor-border: oklch(86% 0.06 80);
-  --investor-accent: oklch(52% 0.15 55);
+  --investor-bg:     oklch(95% 0.03 155);
+  --investor-border: oklch(84% 0.06 155);
+  --investor-accent: oklch(42% 0.14 155);
 
   --analytics-bg:     oklch(96% 0.015 240);
   --analytics-border: oklch(86% 0.06 250);
@@ -30,9 +38,9 @@
   --product-border: oklch(86% 0.06 170);
   --product-accent: oklch(46% 0.14 170);
 
-  --player-bg:     oklch(97% 0.018 55);
-  --player-border: oklch(86% 0.07 45);
-  --player-accent: oklch(52% 0.17 40);
+  --player-bg:     oklch(95% 0.04 85);
+  --player-border: oklch(86% 0.07 85);
+  --player-accent: oklch(58% 0.14 85);
 
   --fun-bg:     oklch(97.5% 0.014 320);
   --fun-border: oklch(86% 0.06 320);
@@ -68,7 +76,17 @@ header {
   letter-spacing: -0.01em;
   color: var(--text);
 }
-.header-brand span { color: var(--analytics-accent); }
+.header-brand span { color: var(--accent); }
+.header-left {
+  display: flex; align-items: center; gap: 16px;
+}
+.header-back {
+  font-family: var(--ff-display);
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.header-back:hover { color: var(--accent); }
 .header-meta {
   font-family: var(--ff-display);
   font-size: 0.75rem; font-weight: 500;
@@ -261,7 +279,7 @@ footer {
   font-size: 0.78rem;
   color: var(--text-muted);
 }
-.footer-right a { color: var(--analytics-accent); }
+.footer-right a { color: var(--accent); }
 
 @media (max-width: 640px) {
   header { padding: 0 20px; }
@@ -276,8 +294,11 @@ footer {
 <body>
 
 <header>
-  <div class="header-brand">Pickle <span>DaaS</span></div>
-  <div class="header-meta">Data Intelligence Platform · Courtana · April 2026</div>
+  <div class="header-left">
+    <a class="header-back" href="index.html">&larr; Portal</a>
+    <div class="header-brand">Pickle <span>DaaS</span></div>
+  </div>
+  <div class="header-meta">Data Intelligence Platform &middot; Courtana &middot; April 2026</div>
 </header>
 
 <main>
@@ -309,10 +330,10 @@ footer {
   <div class="section-group">
     <div class="section-group-label">Investor &amp; External</div>
     <div class="card-grid">
-      <a class="card card-investor" href="pickle-daas-investor-demo.html">
+      <a class="card card-investor" href="output/pickle-daas-investor-demo.html">
         <div class="card-top">
           <div class="card-title">Investor Demo</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Full pitch — market opportunity, live clip analysis, unit economics calculator, Ron Burgundy commentary. The shareable version.</p>
         <span class="card-tag">Investor</span>
@@ -324,37 +345,37 @@ footer {
   <div class="section-group">
     <div class="section-group-label">Analytics &amp; Pipeline</div>
     <div class="card-grid">
-      <a class="card card-analytics" href="command-center.html">
+      <a class="card card-analytics" href="output/command-center.html">
         <div class="card-top">
           <div class="card-title">Command Center</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Master dashboard — pipeline status, clip analysis queue, model performance, batch monitoring.</p>
         <span class="card-tag">Analytics</span>
       </a>
 
-      <a class="card card-analytics" href="badge-analytics-dashboard.html">
+      <a class="card card-analytics" href="output/badge-analytics-dashboard.html">
         <div class="card-top">
           <div class="card-title">Badge Analytics</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Badge prediction vs Courtana ground truth. Precision/recall, co-occurrence matrix, quality flags, reinforcement loop.</p>
         <span class="card-tag">Analytics</span>
       </a>
 
-      <a class="card card-analytics" href="pickle-daas-master-dashboard.html">
+      <a class="card card-analytics" href="output/pickle-daas-master-dashboard.html">
         <div class="card-top">
           <div class="card-title">Master Dashboard</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Aggregated analytics across all analyzed clips — shot types, brands, skill levels, content scores.</p>
         <span class="card-tag">Analytics</span>
       </a>
 
-      <a class="card card-analytics" href="model-monitor-dashboard.html">
+      <a class="card card-analytics" href="output/model-monitor-dashboard.html">
         <div class="card-top">
           <div class="card-title">Model Monitor</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Gemini model performance tracking — response quality, cost per clip, error rates, version comparison.</p>
         <span class="card-tag">Analytics</span>
@@ -366,10 +387,10 @@ footer {
   <div class="section-group">
     <div class="section-group-label">Product &amp; Buyer-Facing</div>
     <div class="card-grid">
-      <a class="card card-product" href="brand-intelligence-report-sample.html">
+      <a class="card card-product" href="output/brand-intelligence-report-sample.html">
         <div class="card-top">
           <div class="card-title">Brand Intelligence</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Brand detection aggregation — what brands appear, where, how often, sponsorship whitespace analysis.</p>
         <span class="card-tag">Product</span>
@@ -381,19 +402,19 @@ footer {
   <div class="section-group">
     <div class="section-group-label">Player Intelligence</div>
     <div class="card-grid">
-      <a class="card card-player" href="picklebill-intel-card.html">
+      <a class="card card-player" href="output/picklebill-intel-card.html">
         <div class="card-top">
           <div class="card-title">PickleBill Intel Card</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Player DNA profile card — skill ratings, shot tendencies, brand associations, coaching insights.</p>
         <span class="card-tag">Player</span>
       </a>
 
-      <a class="card card-player" href="coaching-profile-picklebill.html">
+      <a class="card card-player" href="output/coaching-profile-picklebill.html">
         <div class="card-top">
           <div class="card-title">Coaching Profile</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">AI-generated coaching breakdown — strengths, improvement areas, tactical tendencies, drill recommendations.</p>
         <span class="card-tag">Player</span>
@@ -405,10 +426,10 @@ footer {
   <div class="section-group">
     <div class="section-group-label">Experimental</div>
     <div class="card-grid">
-      <a class="card card-fun" href="tmnt-broadcast-dashboard.html">
+      <a class="card card-fun" href="output/tmnt-broadcast-dashboard.html">
         <div class="card-top">
           <div class="card-title">TMNT Broadcast</div>
-          <div class="card-arrow">→</div>
+          <div class="card-arrow">&rarr;</div>
         </div>
         <p class="card-desc">Teenage Mutant Ninja Turtles character commentary — fun voice pack demo with personality-driven analysis.</p>
         <span class="card-tag">Fun</span>
@@ -421,7 +442,7 @@ footer {
 <footer>
   <div class="footer-inner">
     <div class="footer-left">
-      <strong>Pickle DaaS</strong> by PickleBill · Pipeline: Courtana API → Gemini 2.5 Flash → Structured JSON
+      <strong>Pickle DaaS</strong> by PickleBill &middot; Pipeline: Courtana API &rarr; Gemini 2.5 Flash &rarr; Structured JSON
     </div>
     <div class="footer-right">
       <a href="mailto:bill@courtana.com">bill@courtana.com</a>

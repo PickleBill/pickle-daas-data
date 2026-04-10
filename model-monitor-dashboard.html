@@ -9,12 +9,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #0A0E17; --surface: #111827; --card: #1a2236;
-    --border: #1e2a3a; --green: #00E676; --gold: #F59E0B;
-    --red: #ef4444; --blue: #3B82F6; --text: #F1F5F9; --muted: #64748B;
+    --bg: oklch(95% 0.008 250); --surface: #111827; --card: oklch(98% 0.004 250);
+    --border: oklch(98% 0.004 250); --green: oklch(45% 0.2 265); --gold: oklch(52% 0.14 75);
+    --red: oklch(48% 0.18 25); --blue: oklch(50% 0.18 260); --text: #F1F5F9; --muted: oklch(55% 0.015 250);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px; }
+  body { font-family: 'Bricolage Grotesque', sans-serif; background: var(--bg); color: var(--text); padding: 24px 16px; }
   .wrap { max-width: 1100px; margin: 0 auto; }
 
   h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
@@ -33,7 +33,7 @@
   .alerts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
   .alert { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
            border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #fca5a5; }
-  .ok { background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.2);
+  .ok { background: oklch(45% 0.2 265 / 0.08); border: 1px solid oklch(45% 0.2 265 / 0.2);
         border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--green); }
 
   .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
@@ -56,8 +56,8 @@
   .footer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 24px; }
   @media (max-width: 600px) { .charts-row { grid-template-columns: 1fr; } }
 </style>
-</head>
-<body>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet"></head>
+<body><div style="background:oklch(98% 0.004 250);border-bottom:1px solid oklch(88% 0.012 250);padding:8px 24px;font-family:Bricolage Grotesque,system-ui,sans-serif;font-size:0.78rem"><a href="index.html" style="color:oklch(45% 0.2 265);text-decoration:none">← Portal</a></div>
 <div class="wrap">
   <h1>Model Quality Monitor</h1>
   <div class="subtitle">Pickle DaaS · Gemini 2.5 Flash · Generated 2026-04-09 05:37</div>
@@ -119,7 +119,7 @@
 
 <script>
 const batchNames = ["batch-30-daas", "picklebill-batch-001", "picklebill-batch-20260410"];
-const datasets   = [{"label": "batch-30-daas", "data": [9.1, 72.7, 81.8, 81.8, 81.8, 90.9, 90.9], "backgroundColor": "rgba(100,116,139,0.7)", "borderColor": "rgba(100,116,139,1)", "borderWidth": 1}, {"label": "picklebill-batch-001", "data": [0.0, 66.7, 100.0, 100.0, 100.0, 100.0, 100.0], "backgroundColor": "rgba(59,130,246,0.8)", "borderColor": "rgba(59,130,246,1)", "borderWidth": 1}, {"label": "picklebill-batch-20260410", "data": [0.0, 50.0, 100.0, 100.0, 100.0, 100.0, 100.0], "backgroundColor": "rgba(0,230,118,0.9)", "borderColor": "rgba(0,230,118,1)", "borderWidth": 1}];
+const datasets   = [{"label": "batch-30-daas", "data": [9.1, 72.7, 81.8, 81.8, 81.8, 90.9, 90.9], "backgroundColor": "rgba(100,116,139,0.7)", "borderColor": "rgba(100,116,139,1)", "borderWidth": 1}, {"label": "picklebill-batch-001", "data": [0.0, 66.7, 100.0, 100.0, 100.0, 100.0, 100.0], "backgroundColor": "rgba(59,130,246,0.8)", "borderColor": "rgba(59,130,246,1)", "borderWidth": 1}, {"label": "picklebill-batch-20260410", "data": [0.0, 50.0, 100.0, 100.0, 100.0, 100.0, 100.0], "backgroundColor": "oklch(45% 0.2 265 / 0.9)", "borderColor": "oklch(45% 0.2 265 / 1)", "borderWidth": 1}];
 const keyLabels  = ["Signature Move", "Predicted Badges", "DUPR Estimate", "Ron Burgundy Voice", "One-Sentence Summary", "Kitchen Mastery", "Brand Detections"];
 const qualityData = [7.5, 7.0, 7.2];
 const brandData  = [1.3, 2.0, 2.2];
@@ -131,8 +131,8 @@ new Chart(document.getElementById('fillChart'), {
   options: {
     responsive: true,
     scales: {
-      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 30 }, grid: { color: '#1e2a3a' } },
-      y: { min: 0, max: 100, ticks: { color: '#64748b', callback: v => v + '%', font: { size: 9 } }, grid: { color: '#1e2a3a' } }
+      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 30 }, grid: { color: 'oklch(98% 0.004 250)' } },
+      y: { min: 0, max: 100, ticks: { color: '#64748b', callback: v => v + '%', font: { size: 9 } }, grid: { color: 'oklch(98% 0.004 250)' } }
     },
     plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } }
   }
@@ -146,9 +146,9 @@ new Chart(document.getElementById('qualityChart'), {
     datasets: [{
       label: 'Avg Quality',
       data: qualityData,
-      borderColor: '#00E676',
-      backgroundColor: 'rgba(0,230,118,0.1)',
-      pointBackgroundColor: '#00E676',
+      borderColor: 'oklch(45% 0.2 265)',
+      backgroundColor: 'oklch(45% 0.2 265 / 0.1)',
+      pointBackgroundColor: 'oklch(45% 0.2 265)',
       tension: 0.3,
       fill: true,
     }]
@@ -156,8 +156,8 @@ new Chart(document.getElementById('qualityChart'), {
   options: {
     responsive: true,
     scales: {
-      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 20 }, grid: { color: '#1e2a3a' } },
-      y: { min: 0, max: 10, ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: '#1e2a3a' } }
+      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 20 }, grid: { color: 'oklch(98% 0.004 250)' } },
+      y: { min: 0, max: 10, ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: 'oklch(98% 0.004 250)' } }
     },
     plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } }
   }

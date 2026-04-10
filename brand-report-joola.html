@@ -7,13 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg: oklch(97% 0.008 240);
-    --bg-card: oklch(99% 0.004 240);
-    --accent: oklch(52% 0.185 250);
-    --accent-light: oklch(92% 0.04 250);
-    --text: oklch(18% 0.015 240);
-    --text-muted: oklch(45% 0.02 240);
-    --border: oklch(88% 0.015 240);
+    --bg: oklch(97.5% 0.008 145);
+    --bg-card: oklch(99.5% 0.004 145);
+    --accent: oklch(42% 0.14 155);
+    --accent-light: oklch(92% 0.04 155);
+    --text: oklch(18% 0.015 145);
+    --text-muted: oklch(45% 0.02 145);
+    --border: oklch(88% 0.015 145);
     --gold: oklch(75% 0.15 85);
     --silver: oklch(70% 0.02 240);
     --bronze: oklch(65% 0.1 55);
@@ -38,6 +38,18 @@ h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
 h2 { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; color: var(--accent); }
 h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
 .subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2rem; }
+.nav-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+.nav-bar a { color: var(--accent); text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -46,7 +58,7 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
     margin-bottom: 1rem;
     transition: box-shadow 0.2s;
 }
-.card:hover { box-shadow: 0 4px 16px oklch(18% 0.015 240 / 0.08); }
+.card:hover { box-shadow: 0 4px 16px oklch(18% 0.015 145 / 0.08); }
 .grid { display: grid; gap: 1rem; }
 .grid-2 { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 .grid-3 { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
@@ -66,8 +78,6 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
 table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
 th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); }
 th { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.thumb { width: 120px; height: 68px; border-radius: 6px; object-fit: cover; background: var(--border); }
-.thumb-placeholder { width: 120px; height: 68px; border-radius: 6px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .footer {
@@ -85,9 +95,36 @@ a:hover { text-decoration: underline; }
 .gold { color: var(--gold); }
 .silver { color: var(--silver); }
 .bronze { color: var(--bronze); }
+.cta-block {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    text-align: center;
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+}
+.cta-block h3 { color: var(--accent); margin-bottom: 0.5rem; }
+.cta-block a {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.6rem 1.5rem;
+    background: var(--accent);
+    color: oklch(99% 0 0);
+    border-radius: 8px;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+.cta-block a:hover { opacity: 0.9; text-decoration: none; }
 </style>
 </head>
 <body>
+
+    <nav class="nav-bar">
+        <a href="index.html">&larr; Portal</a>
+        <a href="data-explorer.html">Data Explorer</a>
+    </nav>
 
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
         <div>
@@ -118,7 +155,7 @@ a:hover { text-decoration: underline; }
     <div style="overflow-x:auto;">
     <table>
     <tr><th>#</th><th>Brand</th><th>Clips</th><th>Share</th><th>Distribution</th></tr>
-    
+
         <tr style="font-weight:700;color:var(--accent);">
             <td>1</td>
             <td>&#127941; JOOLA</td>
@@ -462,7 +499,7 @@ a:hover { text-decoration: underline; }
     <div style="overflow-x:auto;">
     <table>
     <tr><th>Arc</th><th>JOOLA Clips</th><th>Total Clips</th><th>JOOLA %</th><th>Penetration</th></tr>
-    
+
         <tr>
             <td>grind_rally</td>
             <td>44</td>
@@ -537,14 +574,14 @@ a:hover { text-decoration: underline; }
     <div style="overflow-x:auto;">
     <table>
     <tr><th>#</th><th>Watch</th><th>Quality</th><th>Arc</th><th>Player</th><th>Caption</th></tr>
-    
+
         <tr>
             <td>1</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.mp4" target="_blank">&#9654; Watch</a></td>
             <td>8</td>
             <td><span class="badge-pill accent-pill">grind_rally</span></td>
             <td>unknown</td>
-            <td style="font-size:0.85rem;">Dink battle royale! Who's got the softest hands? 🤯...</td>
+            <td style="font-size:0.85rem;">Dink battle royale! Who's got the softest hands? ...</td>
         </tr>
         <tr>
             <td>2</td>
@@ -552,7 +589,7 @@ a:hover { text-decoration: underline; }
             <td>8</td>
             <td><span class="badge-pill accent-pill">athletic_highlight</span></td>
             <td>unknown</td>
-            <td style="font-size:0.85rem;">Kitchen battle to a 🔥 speed-up winner!...</td>
+            <td style="font-size:0.85rem;">Kitchen battle to a speed-up winner!...</td>
         </tr>
         <tr>
             <td>3</td>
@@ -560,7 +597,7 @@ a:hover { text-decoration: underline; }
             <td>8</td>
             <td><span class="badge-pill accent-pill">pure_fun</span></td>
             <td>unknown</td>
-            <td style="font-size:0.85rem;">Serve & Return perfection! 🎾 #Pickleball...</td>
+            <td style="font-size:0.85rem;">Serve &amp; Return perfection! #Pickleball...</td>
         </tr>
         <tr>
             <td>4</td>
@@ -568,7 +605,7 @@ a:hover { text-decoration: underline; }
             <td>8</td>
             <td><span class="badge-pill accent-pill">athletic_highlight</span></td>
             <td>unknown</td>
-            <td style="font-size:0.85rem;">Airborne for the WIN! 🚀 #Pickleball...</td>
+            <td style="font-size:0.85rem;">Airborne for the WIN! #Pickleball...</td>
         </tr>
         <tr>
             <td>5</td>
@@ -576,7 +613,7 @@ a:hover { text-decoration: underline; }
             <td>8</td>
             <td><span class="badge-pill accent-pill">athletic_highlight</span></td>
             <td>unknown</td>
-            <td style="font-size:0.85rem;">Dink, dink, BANG! 💥 What a finish!...</td>
+            <td style="font-size:0.85rem;">Dink, dink, BANG! What a finish!...</td>
         </tr>
     </table>
     </div>
@@ -604,7 +641,13 @@ a:hover { text-decoration: underline; }
             <p style="font-size:0.88rem;color:var(--text-muted);">Direct CDN links to every clip featuring your brand for social amplification</p>
         </div>
     </div>
-    
+
+    <div class="cta-block">
+        <h3>Want this for your brand?</h3>
+        <p style="font-size:0.95rem;color:var(--text-muted);max-width:480px;margin:0 auto;">Get a custom brand intelligence report with market share, whitespace alerts, and clip library access.</p>
+        <a href="mailto:bill@courtana.com">Request your brand's custom report &rarr; bill@courtana.com</a>
+    </div>
+
 
 <div class="footer">
     Powered by <strong>Pickle DaaS</strong> &middot; bill@courtana.com<br>

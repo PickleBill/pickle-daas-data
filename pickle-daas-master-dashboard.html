@@ -8,13 +8,13 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0a0f1a;
+    --bg: oklch(95% 0.008 250);
     --card: #131d2e;
     --card2: #1a2535;
-    --green: #00E676;
-    --text: #e0eaf8;
+    --green: oklch(45% 0.2 265);
+    --text: oklch(25% 0.02 250);
     --muted: #5a7090;
-    --gold: #FFD600;
+    --gold: oklch(52% 0.14 75);
     --border: #1e2d42;
     --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
@@ -41,8 +41,8 @@
     font-family: var(--font); font-size: 12px; font-weight: 600; transition: all 0.15s;
   }
   .btn-outline { background: transparent; border: 1px solid var(--green); color: var(--green); }
-  .btn-outline:hover { background: rgba(0,230,118,0.1); }
-  .btn-solid { background: var(--green); color: #0a0f1a; }
+  .btn-outline:hover { background: oklch(45% 0.2 265 / 0.1); }
+  .btn-solid { background: var(--green); color: oklch(95% 0.008 250); }
   .btn-solid:hover { background: #00c864; }
 
   /* BODY */
@@ -63,7 +63,7 @@
     border: 1px solid transparent;
   }
   .clip-item:hover { background: var(--card2); }
-  .clip-item.active { background: rgba(0,230,118,0.08); border-color: rgba(0,230,118,0.3); }
+  .clip-item.active { background: oklch(45% 0.2 265 / 0.08); border-color: oklch(45% 0.2 265 / 0.3); }
   .clip-icon { font-size: 18px; flex-shrink: 0; }
   .clip-meta { flex: 1; min-width: 0; }
   .clip-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -71,7 +71,7 @@
   .clip-arc { font-size: 10px; color: var(--muted); margin-top: 1px; }
   .q-chip {
     padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 700;
-    background: rgba(0,230,118,0.15); color: var(--green); flex-shrink: 0;
+    background: oklch(45% 0.2 265 / 0.15); color: var(--green); flex-shrink: 0;
   }
 
   /* MAIN */
@@ -88,7 +88,7 @@
   .broadcast-caption { font-size: 15px; font-weight: 700; color: #fff; }
   .broadcast-badge {
     display: inline-block; margin-top: 5px; padding: 3px 10px;
-    background: var(--green); color: #0a0f1a; border-radius: 4px;
+    background: var(--green); color: oklch(95% 0.008 250); border-radius: 4px;
     font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
   }
 
@@ -102,7 +102,7 @@
     display: flex; align-items: center; gap: 6px; padding: 5px 12px;
     border-radius: 20px; font-size: 12px; font-weight: 700;
   }
-  .score-badge.quality  { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .score-badge.quality  { background: oklch(45% 0.2 265 / 0.12); color: var(--green); border: 1px solid oklch(45% 0.2 265 / 0.3); }
   .score-badge.viral    { background: rgba(255,82,82,0.12); color: #ff5252; border: 1px solid rgba(255,82,82,0.3); }
   .score-badge.watch    { background: rgba(100,181,246,0.12); color: #64b5f6; border: 1px solid rgba(100,181,246,0.3); }
   .score-badge.cinema   { background: rgba(255,214,0,0.12); color: var(--gold); border: 1px solid rgba(255,214,0,0.3); }
@@ -127,7 +127,7 @@
   .voice-controls { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
   .play-btn {
     padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer;
-    background: var(--green); color: #0a0f1a; font-weight: 700; font-size: 13px;
+    background: var(--green); color: oklch(95% 0.008 250); font-weight: 700; font-size: 13px;
     font-family: var(--font); transition: background 0.15s; display: flex; align-items: center; gap: 6px;
   }
   .play-btn:hover { background: #00c864; }
@@ -163,7 +163,7 @@
     white-space: nowrap;
   }
   .chip-brand { background: rgba(255,214,0,0.08); color: var(--gold); border: 1px solid rgba(255,214,0,0.35); }
-  .chip-badge { background: rgba(0,230,118,0.08); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .chip-badge { background: oklch(45% 0.2 265 / 0.08); color: var(--green); border: 1px solid oklch(45% 0.2 265 / 0.3); }
   .chip-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 0; }
 
   /* HASHTAGS */
@@ -174,7 +174,7 @@
     cursor: pointer; transition: all 0.15s; position: relative;
   }
   .hashtag:hover { background: rgba(100,181,246,0.18); }
-  .hashtag.copied { background: rgba(0,230,118,0.15); color: var(--green); border-color: var(--green); }
+  .hashtag.copied { background: oklch(45% 0.2 265 / 0.15); color: var(--green); border-color: var(--green); }
 
   /* ANALYTICS GRID */
   .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -224,7 +224,7 @@
   /* TOAST */
   .toast {
     position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-    background: var(--green); color: #0a0f1a; padding: 10px 18px;
+    background: var(--green); color: oklch(95% 0.008 250); padding: 10px 18px;
     border-radius: 8px; font-weight: 700; font-size: 13px;
     opacity: 0; transform: translateY(10px); transition: all 0.25s;
     pointer-events: none;
@@ -246,8 +246,8 @@
     .card, .analytics-card, .chip-section, .hashtag-row, .table-wrap { border: 1px solid #ccc !important; }
   }
 </style>
-</head>
-<body>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet"></head>
+<body><div style="background:oklch(98% 0.004 250);border-bottom:1px solid oklch(88% 0.012 250);padding:8px 24px;font-family:Bricolage Grotesque,system-ui,sans-serif;font-size:0.78rem"><a href="index.html" style="color:oklch(45% 0.2 265);text-decoration:none">← Portal</a></div>
 
 <div class="app">
 
@@ -255,7 +255,7 @@
   <header class="header">
     <div class="header-left">
       <img src="https://cdn.courtana.com/assets/logos/fulllogo-dark-transparent-grad.svg" height="32"
-        onerror="this.outerHTML='<span style=color:#00E676;font-weight:800;font-size:18px>Courtana</span>'">
+        onerror="this.outerHTML='<span style=color:oklch(45% 0.2 265);font-weight:800;font-size:18px>Courtana</span>'">
     </div>
     <div class="header-center">
       <div class="title">Pickle DaaS</div>
@@ -608,7 +608,7 @@ function buildTable() {
       <td class="tbl-q">${clip.quality}/10</td>
       <td style="color:#ff5252;font-weight:700">${clip.viral}/10</td>
       <td class="tbl-arc">${arcLabel(clip.arc)}</td>
-      <td style="font-size:11px;color:#FFD600">${clip.brands.join(', ')}</td>
+      <td style="font-size:11px;color:oklch(52% 0.14 75)">${clip.brands.join(', ')}</td>
       <td class="tbl-ron">${clip.ron.substring(0, 90)}…</td>
       <td><button class="jump-link" onclick="loadClip(${i}); document.querySelector('.main').scrollTo({top:0,behavior:'smooth'})">Load ↑</button></td>
     `;

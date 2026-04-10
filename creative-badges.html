@@ -7,17 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg: oklch(97% 0.008 240);
-    --bg-card: oklch(99% 0.004 240);
-    --accent: oklch(52% 0.185 250);
-    --accent-light: oklch(92% 0.04 250);
-    --text: oklch(18% 0.015 240);
-    --text-muted: oklch(45% 0.02 240);
-    --border: oklch(88% 0.015 240);
+    --bg: oklch(97% 0.012 70);
+    --bg-card: oklch(99.5% 0.006 70);
+    --accent: oklch(55% 0.2 50);
+    --accent-subtle: oklch(95% 0.04 50);
+    --accent-border: oklch(84% 0.08 50);
+    --text: oklch(18% 0.015 50);
+    --text-muted: oklch(45% 0.02 50);
+    --border: oklch(88% 0.015 50);
     --gold: oklch(75% 0.15 85);
     --silver: oklch(70% 0.02 240);
     --bronze: oklch(65% 0.1 55);
-    --green: oklch(55% 0.17 150);
+    --positive: oklch(45% 0.15 155);
     --red: oklch(55% 0.2 25);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,16 +39,32 @@ h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
 h2 { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; color: var(--accent); }
 h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
 .subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2rem; }
-.card {
+.nav-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+.nav-bar a { color: var(--accent); text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
+.trading-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
+    border-radius: 14px;
+    padding: 1.5rem;
     margin-bottom: 1rem;
-    transition: box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px oklch(18% 0.015 50 / 0.06);
 }
-.card:hover { box-shadow: 0 4px 16px oklch(18% 0.015 240 / 0.08); }
-.grid { display: grid; gap: 1rem; }
+.trading-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px oklch(18% 0.015 50 / 0.1);
+}
+.grid { display: grid; gap: 1.25rem; }
 .grid-2 { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 .grid-3 { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .badge-pill {
@@ -58,7 +75,7 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
     font-weight: 500;
     font-family: 'Bricolage Grotesque', system-ui, sans-serif;
 }
-.accent-pill { background: var(--accent-light); color: var(--accent); }
+.accent-pill { background: var(--accent-subtle); color: var(--accent); }
 .stat { font-size: 2rem; font-weight: 700; font-family: 'Bricolage Grotesque', system-ui, sans-serif; color: var(--accent); }
 .stat-label { font-size: 0.85rem; color: var(--text-muted); }
 .stat-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
@@ -66,8 +83,6 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
 table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
 th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); }
 th { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.thumb { width: 120px; height: 68px; border-radius: 6px; object-fit: cover; background: var(--border); }
-.thumb-placeholder { width: 120px; height: 68px; border-radius: 6px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .footer {
@@ -78,9 +93,6 @@ a:hover { text-decoration: underline; }
     font-size: 0.85rem;
     color: var(--text-muted);
 }
-.bar-bg { background: var(--accent-light); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
-.bar-fill { background: var(--accent); height: 100%; border-radius: 4px; min-width: 2px; }
-.bar-label { position: absolute; right: 6px; top: 2px; font-size: 0.75rem; font-weight: 600; color: var(--text); }
 .rank-num { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 1.3rem; width: 2rem; }
 .gold { color: var(--gold); }
 .silver { color: var(--silver); }
@@ -88,6 +100,12 @@ a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
+
+    <nav class="nav-bar">
+        <a href="index.html">&larr; Portal</a>
+        <a href="data-explorer.html">Data Explorer</a>
+        <a href="leaderboards.html">Leaderboards</a>
+    </nav>
 
     <h1>Creative Badge Discovery</h1>
     <p class="subtitle">20 data-driven badges invented from 90 clips across the Pickle DaaS corpus</p>
@@ -101,10 +119,10 @@ a:hover { text-decoration: underline; }
 
     <h2>All Badges</h2>
     <div class="grid grid-2">
-    
-        <div class="card">
+
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#129430;</span>
+                <span style="font-size:2.4rem;">&#129430;</span>
                 <div>
                     <h3 style="margin:0;">Arc Chameleon</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Featured in 3+ different story arcs</span>
@@ -116,9 +134,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#9889;</span>
+                <span style="font-size:2.4rem;">&#9889;</span>
                 <div>
                     <h3 style="margin:0;">Athletic Freak</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Athletic highlight clip with quality >= 7</span>
@@ -130,9 +148,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#129522;</span>
+                <span style="font-size:2.4rem;">&#129522;</span>
                 <div>
                     <h3 style="margin:0;">Brand Magnet</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Featured alongside 3+ unique brands</span>
@@ -144,9 +162,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, Ironvarr, Pmcintosh, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127909;</span>
+                <span style="font-size:2.4rem;">&#127909;</span>
                 <div>
                     <h3 style="margin:0;">Camera Magnet</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Appeared in 15+ clips</span>
@@ -158,9 +176,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#129348;</span>
+                <span style="font-size:2.4rem;">&#129348;</span>
                 <div>
                     <h3 style="margin:0;">Clutch Performer</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Featured in a clutch_moment arc clip</span>
@@ -172,9 +190,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128736;</span>
+                <span style="font-size:2.4rem;">&#128736;</span>
                 <div>
                     <h3 style="margin:0;">Consistency Machine</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">All clips rated quality >= 6 with 5+ clips</span>
@@ -186,9 +204,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, Ironvarr, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127955;</span>
+                <span style="font-size:2.4rem;">&#127955;</span>
                 <div>
                     <h3 style="margin:0;">Dink Master</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Dominant shot is dink in 10+ clips</span>
@@ -200,9 +218,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127937;</span>
+                <span style="font-size:2.4rem;">&#127937;</span>
                 <div>
                     <h3 style="margin:0;">Drive Specialist</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Dominant shot is drive in 3+ clips</span>
@@ -214,9 +232,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128300;</span>
+                <span style="font-size:2.4rem;">&#128300;</span>
                 <div>
                     <h3 style="margin:0;">Error Analyst</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">2+ clips analyzing errors</span>
@@ -228,9 +246,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#9889;</span>
+                <span style="font-size:2.4rem;">&#9889;</span>
                 <div>
                     <h3 style="margin:0;">Highlight Factory</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">5+ clips with quality >= 7</span>
@@ -242,9 +260,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127941;</span>
+                <span style="font-size:2.4rem;">&#127941;</span>
                 <div>
                     <h3 style="margin:0;">JOOLA Ambassador</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Featured in 5+ clips containing JOOLA branding</span>
@@ -256,9 +274,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, Ironvarr, Pmcintosh, Santinofuntila, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127775;</span>
+                <span style="font-size:2.4rem;">&#127775;</span>
                 <div>
                     <h3 style="margin:0;">Multi-Brand MVP</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Featured alongside 5+ unique brands</span>
@@ -270,9 +288,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128095;</span>
+                <span style="font-size:2.4rem;">&#128095;</span>
                 <div>
                     <h3 style="margin:0;">Nike Warrior</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Featured in 3+ clips with Nike branding</span>
@@ -284,9 +302,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> Ironvarr</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127881;</span>
+                <span style="font-size:2.4rem;">&#127881;</span>
                 <div>
                     <h3 style="margin:0;">Pure Fun Vibes</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">2+ clips with pure_fun arc</span>
@@ -298,9 +316,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127922;</span>
+                <span style="font-size:2.4rem;">&#127922;</span>
                 <div>
                     <h3 style="margin:0;">Shot Variety Pack</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">3+ different dominant shot types across clips</span>
@@ -312,9 +330,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, Santinofuntila, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128170;</span>
+                <span style="font-size:2.4rem;">&#128170;</span>
                 <div>
                     <h3 style="margin:0;">The Grinder</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">10+ clips with grind_rally arc</span>
@@ -326,9 +344,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, Ironvarr, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128142;</span>
+                <span style="font-size:2.4rem;">&#128142;</span>
                 <div>
                     <h3 style="margin:0;">Triple Threat</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Quality + Viral + Watchability >= 22 on a single clip</span>
@@ -340,9 +358,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128293;</span>
+                <span style="font-size:2.4rem;">&#128293;</span>
                 <div>
                     <h3 style="margin:0;">Viral Sensation</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">At least 1 clip with viral score >= 7</span>
@@ -354,9 +372,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> David, unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#127919;</span>
+                <span style="font-size:2.4rem;">&#127919;</span>
                 <div>
                     <h3 style="margin:0;">Volley Sniper</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Dominant shot is volley in 2+ clips</span>
@@ -368,9 +386,9 @@ a:hover { text-decoration: underline; }
             </div>
             <div style="font-size:0.9rem;"><strong>Earned by:</strong> unknown</div>
         </div>
-        <div class="card">
+        <div class="trading-card">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
-                <span style="font-size:2rem;">&#128081;</span>
+                <span style="font-size:2.4rem;">&#128081;</span>
                 <div>
                     <h3 style="margin:0;">Watchability King</h3>
                     <span style="font-size:0.85rem;color:var(--text-muted);">Average watchability >= 5.5 across 8+ clips</span>
@@ -387,11 +405,11 @@ a:hover { text-decoration: underline; }
     <h2>Leaderboard: Most Badges Per Player</h2>
     <table>
     <tr><th>#</th><th>Player</th><th>Badges Earned</th><th>Badge Types</th></tr>
-    <tr><td class="rank-num gold">1</td><td><strong>unknown</strong></td><td>19</td><td style="font-size:0.85rem;">Arc Chameleon, Athletic Freak, Brand Magnet, Camera Magnet, Clutch Performer, Consistency Machine, Dink Master, Drive Specialist, Error Analyst, Highlight Factory, JOOLA Ambassador, Multi-Brand MVP, Pure Fun Vibes, Shot Variety Pack, The Grinder, Triple Threat, Viral Sensation, Volley Sniper, Watchability King</td></tr>
-<tr><td class="rank-num silver">2</td><td><strong>David</strong></td><td>13</td><td style="font-size:0.85rem;">Brand Magnet, Camera Magnet, Consistency Machine, Dink Master, Drive Specialist, Highlight Factory, JOOLA Ambassador, Multi-Brand MVP, Shot Variety Pack, The Grinder, Triple Threat, Viral Sensation, Watchability King</td></tr>
-<tr><td class="rank-num bronze">3</td><td><strong>Ironvarr</strong></td><td>5</td><td style="font-size:0.85rem;">Brand Magnet, Consistency Machine, JOOLA Ambassador, Nike Warrior, The Grinder</td></tr>
-<tr><td class="rank-num ">4</td><td><strong>Pmcintosh</strong></td><td>2</td><td style="font-size:0.85rem;">Brand Magnet, JOOLA Ambassador</td></tr>
-<tr><td class="rank-num ">5</td><td><strong>Santinofuntila</strong></td><td>2</td><td style="font-size:0.85rem;">JOOLA Ambassador, Shot Variety Pack</td></tr>
+    <tr><td class="rank-num gold">1st</td><td><strong>unknown</strong></td><td>19</td><td style="font-size:0.85rem;">Arc Chameleon, Athletic Freak, Brand Magnet, Camera Magnet, Clutch Performer, Consistency Machine, Dink Master, Drive Specialist, Error Analyst, Highlight Factory, JOOLA Ambassador, Multi-Brand MVP, Pure Fun Vibes, Shot Variety Pack, The Grinder, Triple Threat, Viral Sensation, Volley Sniper, Watchability King</td></tr>
+<tr><td class="rank-num silver">2nd</td><td><strong>David</strong></td><td>13</td><td style="font-size:0.85rem;">Brand Magnet, Camera Magnet, Consistency Machine, Dink Master, Drive Specialist, Highlight Factory, JOOLA Ambassador, Multi-Brand MVP, Shot Variety Pack, The Grinder, Triple Threat, Viral Sensation, Watchability King</td></tr>
+<tr><td class="rank-num bronze">3rd</td><td><strong>Ironvarr</strong></td><td>5</td><td style="font-size:0.85rem;">Brand Magnet, Consistency Machine, JOOLA Ambassador, Nike Warrior, The Grinder</td></tr>
+<tr><td class="rank-num ">4th</td><td><strong>Pmcintosh</strong></td><td>2</td><td style="font-size:0.85rem;">Brand Magnet, JOOLA Ambassador</td></tr>
+<tr><td class="rank-num ">5th</td><td><strong>Santinofuntila</strong></td><td>2</td><td style="font-size:0.85rem;">JOOLA Ambassador, Shot Variety Pack</td></tr>
 </table>
 
 <div class="footer">

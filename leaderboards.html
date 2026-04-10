@@ -7,17 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg: oklch(97% 0.008 240);
-    --bg-card: oklch(99% 0.004 240);
-    --accent: oklch(52% 0.185 250);
-    --accent-light: oklch(92% 0.04 250);
-    --text: oklch(18% 0.015 240);
-    --text-muted: oklch(45% 0.02 240);
-    --border: oklch(88% 0.015 240);
+    --bg: oklch(97% 0.012 70);
+    --bg-card: oklch(99.5% 0.006 70);
+    --accent: oklch(55% 0.2 50);
+    --accent-subtle: oklch(95% 0.04 50);
+    --accent-border: oklch(84% 0.08 50);
+    --text: oklch(18% 0.015 50);
+    --text-muted: oklch(45% 0.02 50);
+    --border: oklch(88% 0.015 50);
     --gold: oklch(75% 0.15 85);
     --silver: oklch(70% 0.02 240);
     --bronze: oklch(65% 0.1 55);
-    --green: oklch(55% 0.17 150);
+    --positive: oklch(45% 0.15 155);
     --red: oklch(55% 0.2 25);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,6 +39,18 @@ h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
 h2 { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; color: var(--accent); }
 h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
 .subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2rem; }
+.nav-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+.nav-bar a { color: var(--accent); text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -46,7 +59,7 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
     margin-bottom: 1rem;
     transition: box-shadow 0.2s;
 }
-.card:hover { box-shadow: 0 4px 16px oklch(18% 0.015 240 / 0.08); }
+.card:hover { box-shadow: 0 4px 16px oklch(18% 0.015 50 / 0.08); }
 .grid { display: grid; gap: 1rem; }
 .grid-2 { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 .grid-3 { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
@@ -58,7 +71,7 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
     font-weight: 500;
     font-family: 'Bricolage Grotesque', system-ui, sans-serif;
 }
-.accent-pill { background: var(--accent-light); color: var(--accent); }
+.accent-pill { background: var(--accent-subtle); color: var(--accent); }
 .stat { font-size: 2rem; font-weight: 700; font-family: 'Bricolage Grotesque', system-ui, sans-serif; color: var(--accent); }
 .stat-label { font-size: 0.85rem; color: var(--text-muted); }
 .stat-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
@@ -66,8 +79,7 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
 table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
 th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); }
 th { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.thumb { width: 120px; height: 68px; border-radius: 6px; object-fit: cover; background: var(--border); }
-.thumb-placeholder { width: 120px; height: 68px; border-radius: 6px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.thumb-placeholder { width: 120px; height: 68px; border-radius: 6px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .footer {
@@ -78,16 +90,22 @@ a:hover { text-decoration: underline; }
     font-size: 0.85rem;
     color: var(--text-muted);
 }
-.bar-bg { background: var(--accent-light); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+.bar-bg { background: var(--accent-subtle); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
 .bar-fill { background: var(--accent); height: 100%; border-radius: 4px; min-width: 2px; }
 .bar-label { position: absolute; right: 6px; top: 2px; font-size: 0.75rem; font-weight: 600; color: var(--text); }
-.rank-num { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 1.3rem; width: 2rem; }
+.rank-num { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 1.3rem; width: 2.5rem; }
 .gold { color: var(--gold); }
 .silver { color: var(--silver); }
 .bronze { color: var(--bronze); }
 </style>
 </head>
 <body>
+
+    <nav class="nav-bar">
+        <a href="index.html">&larr; Portal</a>
+        <a href="data-explorer.html">Data Explorer</a>
+        <a href="creative-badges.html">Badges</a>
+    </nav>
 
     <h1>Clip Rankings & Leaderboards</h1>
     <p class="subtitle">The best clips, players, and patterns from 90 analyzed highlights</p>
@@ -103,9 +121,9 @@ a:hover { text-decoration: underline; }
     <div style="overflow-x:auto;">
     <table>
     <tr><th>#</th><th>Clip</th><th>Quality</th><th>Viral</th><th>Watch</th><th>Arc</th><th>Brands</th><th>Player</th></tr>
-    
+
         <tr>
-            <td class="rank-num gold">1</td>
+            <td class="rank-num gold">1st</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>9</strong></td>
             <td>6</td>
@@ -115,7 +133,7 @@ a:hover { text-decoration: underline; }
             <td>David</td>
         </tr>
         <tr>
-            <td class="rank-num silver">2</td>
+            <td class="rank-num silver">2nd</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -125,7 +143,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num bronze">3</td>
+            <td class="rank-num bronze">3rd</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -135,7 +153,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">4</td>
+            <td class="rank-num ">4th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0026ad09-1943-4ed0-9761-37f4d57fed04.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -145,7 +163,7 @@ a:hover { text-decoration: underline; }
             <td>David</td>
         </tr>
         <tr>
-            <td class="rank-num ">5</td>
+            <td class="rank-num ">5th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0e197020-5ad8-4a36-9ddc-75f21fcdab51.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -155,7 +173,7 @@ a:hover { text-decoration: underline; }
             <td>David</td>
         </tr>
         <tr>
-            <td class="rank-num ">6</td>
+            <td class="rank-num ">6th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -165,7 +183,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">7</td>
+            <td class="rank-num ">7th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -175,7 +193,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">8</td>
+            <td class="rank-num ">8th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -185,7 +203,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">9</td>
+            <td class="rank-num ">9th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>7</td>
@@ -195,7 +213,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">10</td>
+            <td class="rank-num ">10th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>8</strong></td>
             <td>6</td>
@@ -211,9 +229,9 @@ a:hover { text-decoration: underline; }
     <div style="overflow-x:auto;">
     <table>
     <tr><th>#</th><th>Clip</th><th>Brands</th><th>Brand Names</th><th>Quality</th><th>Arc</th><th>Player</th></tr>
-    
+
         <tr>
-            <td class="rank-num gold">1</td>
+            <td class="rank-num gold">1st</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>4</strong></td>
             <td style="font-size:0.85rem;">Courtana, Franklin, JOOLA, Selkirk</td>
@@ -222,7 +240,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num silver">2</td>
+            <td class="rank-num silver">2nd</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4d33f546-bdf6-4aa4-8085-2db162235e8a.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>3</strong></td>
             <td style="font-size:0.85rem;">JOOLA, Nike, Onix</td>
@@ -231,7 +249,7 @@ a:hover { text-decoration: underline; }
             <td>Ironvarr</td>
         </tr>
         <tr>
-            <td class="rank-num bronze">3</td>
+            <td class="rank-num bronze">3rd</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>3</strong></td>
             <td style="font-size:0.85rem;">CRBN, Courtana, JOOLA</td>
@@ -240,7 +258,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">4</td>
+            <td class="rank-num ">4th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">PICKLEBALL, Skull Logo</td>
@@ -249,7 +267,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">5</td>
+            <td class="rank-num ">5th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e7340a11-5037-478c-9065-6e6f52d3e74c.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">ONIX, RECOVERY CAVE</td>
@@ -258,7 +276,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">6</td>
+            <td class="rank-num ">6th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/597f6bf5-ece9-4a4c-8a6c-98b33f41edf9.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">Pickleball, Skull Logo</td>
@@ -267,7 +285,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">7</td>
+            <td class="rank-num ">7th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">Courtana, JOOLA</td>
@@ -276,7 +294,7 @@ a:hover { text-decoration: underline; }
             <td>unknown</td>
         </tr>
         <tr>
-            <td class="rank-num ">8</td>
+            <td class="rank-num ">8th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0a491741-7438-409c-8846-bcf82d1af27c.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">Courtana, SMASHWORKS</td>
@@ -285,7 +303,7 @@ a:hover { text-decoration: underline; }
             <td>David</td>
         </tr>
         <tr>
-            <td class="rank-num ">9</td>
+            <td class="rank-num ">9th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4110e228-53cb-4a0e-8ca4-32d70935a0c5.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">JOOLA, Nike</td>
@@ -294,7 +312,7 @@ a:hover { text-decoration: underline; }
             <td>Adam</td>
         </tr>
         <tr>
-            <td class="rank-num ">10</td>
+            <td class="rank-num ">10th</td>
             <td><a href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0d3e6a2f-0c50-47f1-9a6b-e2e8c9ceb8b0.mp4" target="_blank"><div class="thumb-placeholder">&#9654;</div></a></td>
             <td><strong>2</strong></td>
             <td style="font-size:0.85rem;">STRONGSIDE, STRONGSIDE PICKLEBALL</td>
@@ -309,9 +327,9 @@ a:hover { text-decoration: underline; }
     <div style="overflow-x:auto;">
     <table>
     <tr><th>#</th><th>Player</th><th>Avg Quality</th><th>Clips</th><th>Badges</th><th>Unique Brands</th></tr>
-    
+
         <tr>
-            <td class="rank-num gold">1</td>
+            <td class="rank-num gold">1st</td>
             <td><strong>khamille06</strong></td>
             <td>8.0</td>
             <td>1</td>
@@ -319,7 +337,7 @@ a:hover { text-decoration: underline; }
             <td>2</td>
         </tr>
         <tr>
-            <td class="rank-num silver">2</td>
+            <td class="rank-num silver">2nd</td>
             <td><strong>unknown</strong></td>
             <td>7.5</td>
             <td>30</td>
@@ -327,7 +345,7 @@ a:hover { text-decoration: underline; }
             <td>17</td>
         </tr>
         <tr>
-            <td class="rank-num bronze">3</td>
+            <td class="rank-num bronze">3rd</td>
             <td><strong>David</strong></td>
             <td>6.8</td>
             <td>29</td>
@@ -335,7 +353,7 @@ a:hover { text-decoration: underline; }
             <td>13</td>
         </tr>
         <tr>
-            <td class="rank-num ">4</td>
+            <td class="rank-num ">4th</td>
             <td><strong>Ironvarr</strong></td>
             <td>6.2</td>
             <td>10</td>
@@ -343,7 +361,7 @@ a:hover { text-decoration: underline; }
             <td>3</td>
         </tr>
         <tr>
-            <td class="rank-num ">5</td>
+            <td class="rank-num ">5th</td>
             <td><strong>Pmcintosh</strong></td>
             <td>6.0</td>
             <td>10</td>
@@ -351,7 +369,7 @@ a:hover { text-decoration: underline; }
             <td>3</td>
         </tr>
         <tr>
-            <td class="rank-num ">6</td>
+            <td class="rank-num ">6th</td>
             <td><strong>Adam</strong></td>
             <td>6.0</td>
             <td>1</td>
@@ -359,7 +377,7 @@ a:hover { text-decoration: underline; }
             <td>2</td>
         </tr>
         <tr>
-            <td class="rank-num ">7</td>
+            <td class="rank-num ">7th</td>
             <td><strong>Riccj</strong></td>
             <td>6.0</td>
             <td>1</td>
@@ -367,7 +385,7 @@ a:hover { text-decoration: underline; }
             <td>1</td>
         </tr>
         <tr>
-            <td class="rank-num ">8</td>
+            <td class="rank-num ">8th</td>
             <td><strong>Santinofuntila</strong></td>
             <td>5.9</td>
             <td>8</td>
@@ -379,7 +397,7 @@ a:hover { text-decoration: underline; }
 
     <h2>Arc Distribution</h2>
     <div class="card" style="padding:1.5rem;">
-    
+
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
             <div style="width:160px;font-weight:500;font-size:0.9rem;">grind_rally</div>
             <div class="bar-bg" style="flex:1;">
@@ -426,7 +444,7 @@ a:hover { text-decoration: underline; }
 
     <h2>Shot Distribution</h2>
     <div class="card" style="padding:1.5rem;">
-    
+
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.6rem;">
             <div style="width:160px;font-weight:500;font-size:0.9rem;">dink</div>
             <div class="bar-bg" style="flex:1;">
@@ -498,7 +516,7 @@ a:hover { text-decoration: underline; }
             </div>
         </div>
     </div>
-    
+
 
 <div class="footer">
     Powered by <strong>Pickle DaaS</strong> &middot; bill@courtana.com<br>

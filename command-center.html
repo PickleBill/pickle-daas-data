@@ -10,27 +10,27 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0A0E17;
+  --bg: oklch(95% 0.008 250);
   --surface: #111827;
-  --card: #1a2236;
-  --border: #1e2a3a;
-  --green: #00E676;
-  --green-dim: rgba(0, 230, 118, 0.15);
-  --green-glow: rgba(0, 230, 118, 0.3);
-  --gold: #F59E0B;
+  --card: oklch(98% 0.004 250);
+  --border: oklch(98% 0.004 250);
+  --green: oklch(45% 0.2 265);
+  --green-dim: oklch(45% 0.2 265 /  0.15);
+  --green-glow: oklch(45% 0.2 265 /  0.3);
+  --gold: oklch(52% 0.14 75);
   --gold-dim: rgba(245, 158, 11, 0.15);
-  --muted: #64748B;
+  --muted: oklch(55% 0.015 250);
   --text: #E2E8F0;
-  --text-bright: #F8FAFC;
-  --red: #EF4444;
-  --blue: #3B82F6;
-  --purple: #A855F7;
-  --cyan: #06B6D4;
+  --text-bright: oklch(15% 0.02 250);
+  --red: oklch(48% 0.18 25);
+  --blue: oklch(50% 0.18 260);
+  --purple: oklch(55% 0.15 300);
+  --cyan: oklch(50% 0.14 200);
   --pink: #EC4899;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
@@ -303,9 +303,9 @@ body {
   position: relative;
 }
 .clip-card:hover {
-  border-color: rgba(0, 230, 118, 0.3);
+  border-color: oklch(45% 0.2 265 /  0.3);
   transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(0, 230, 118, 0.1);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px oklch(45% 0.2 265 /  0.1);
 }
 
 /* Thumbnail + Video */
@@ -313,7 +313,7 @@ body {
   position: relative;
   width: 100%;
   aspect-ratio: 16/9;
-  background: linear-gradient(135deg, #1a2236, #0f1724);
+  background: linear-gradient(135deg, oklch(98% 0.004 250), #0f1724);
   cursor: pointer;
   overflow: hidden;
 }
@@ -454,7 +454,7 @@ body {
 .cat-court_surface .brand-dot { background: var(--cyan); }
 .cat-court_surface { background: rgba(6,182,212,0.12); color: #67E8F9; }
 .cat-ball .brand-dot { background: var(--green); }
-.cat-ball { background: rgba(0,230,118,0.12); color: #6EE7B7; }
+.cat-ball { background: oklch(45% 0.2 265 / 0.12); color: #6EE7B7; }
 .cat-apparel .brand-dot { background: var(--pink); }
 .cat-apparel { background: rgba(236,72,153,0.12); color: #F9A8D4; }
 
@@ -581,7 +581,7 @@ body {
   border-bottom: 1px solid rgba(30,42,58,0.5);
   color: var(--text);
 }
-.brand-table tr:hover td { background: rgba(0,230,118,0.03); }
+.brand-table tr:hover td { background: oklch(45% 0.2 265 / 0.03); }
 
 .whitespace-callout {
   background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
@@ -763,8 +763,8 @@ body {
   line-height: 1.5;
 }
 .feedback-recommendations {
-  background: linear-gradient(135deg, rgba(0,230,118,0.05), transparent);
-  border: 1px solid rgba(0,230,118,0.15);
+  background: linear-gradient(135deg, oklch(45% 0.2 265 / 0.05), transparent);
+  border: 1px solid oklch(45% 0.2 265 / 0.15);
   border-radius: 12px;
   padding: 18px;
   margin-top: 16px;
@@ -877,8 +877,8 @@ body {
 .section-nav a:hover { color: var(--text); background: var(--surface); }
 .section-nav a.active { color: var(--green); background: var(--green-dim); }
 </style>
-</head>
-<body>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet"></head>
+<body><div style="background:oklch(98% 0.004 250);border-bottom:1px solid oklch(88% 0.012 250);padding:8px 24px;font-family:Bricolage Grotesque,system-ui,sans-serif;font-size:0.78rem"><a href="index.html" style="color:oklch(45% 0.2 265);text-decoration:none">← Portal</a></div>
 
 <div class="container">
   <!-- HEADER -->
@@ -1764,8 +1764,8 @@ function renderBrandIntel() {
       datasets: [{
         label: 'Clip Appearances',
         data: data,
-        backgroundColor: 'rgba(0, 230, 118, 0.4)',
-        borderColor: 'rgba(0, 230, 118, 0.8)',
+        backgroundColor: 'oklch(45% 0.2 265 /  0.4)',
+        borderColor: 'oklch(45% 0.2 265 /  0.8)',
         borderWidth: 1,
         borderRadius: 4
       }]
@@ -1777,21 +1777,21 @@ function renderBrandIntel() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#1a2236',
+          backgroundColor: 'oklch(98% 0.004 250)',
           titleColor: '#E2E8F0',
-          bodyColor: '#94A3B8',
-          borderColor: '#1e2a3a',
+          bodyColor: 'oklch(45% 0.015 250)',
+          borderColor: 'oklch(98% 0.004 250)',
           borderWidth: 1
         }
       },
       scales: {
         x: {
           grid: { color: 'rgba(30,42,58,0.5)' },
-          ticks: { color: '#64748B', font: { family: 'Inter', size: 11 } }
+          ticks: { color: 'oklch(55% 0.015 250)', font: { family: 'Bricolage Grotesque', size: 11 } }
         },
         y: {
           grid: { display: false },
-          ticks: { color: '#E2E8F0', font: { family: 'Inter', size: 11, weight: '600' } }
+          ticks: { color: '#E2E8F0', font: { family: 'Bricolage Grotesque', size: 11, weight: '600' } }
         }
       }
     }

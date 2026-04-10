@@ -6,26 +6,32 @@
 <title>PickleBill — Courtana Coaching Profile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg:      #0A0E17;
-    --surface: #111827;
-    --card:    #1a2236;
-    --border:  #1e2a3a;
-    --green:   #00E676;
-    --gold:    #F59E0B;
-    --blue:    #3B82F6;
-    --text:    #F1F5F9;
-    --muted:   #64748B;
-    --up:      #22c55e;
-    --down:    #ef4444;
-    --flat:    #94a3b8;
+    --bg: oklch(97% 0.012 70);
+    --surface: oklch(100% 0 0);
+    --card: oklch(99.5% 0.006 70);
+    --border: oklch(88% 0.015 50);
+    --accent: oklch(55% 0.2 50);
+    --accent-subtle: oklch(95% 0.04 50);
+    --accent-border: oklch(84% 0.08 50);
+    --gold: oklch(75% 0.15 85);
+    --blue: oklch(52% 0.18 255);
+    --text: oklch(18% 0.015 50);
+    --text-sec: oklch(44% 0.016 50);
+    --muted: oklch(55% 0.01 50);
+    --positive: oklch(45% 0.15 155);
+    --negative: oklch(55% 0.2 25);
+    --flat: oklch(55% 0.01 50);
+    --ff-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --ff-body: 'Literata', Georgia, serif;
+    --ff-mono: 'Azeret Mono', monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--ff-body);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -39,6 +45,19 @@
     gap: 20px;
   }
 
+  /* Nav */
+  .nav-bar {
+    display: flex;
+    gap: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--ff-display);
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+  .nav-bar a { color: var(--accent); text-decoration: none; }
+  .nav-bar a:hover { text-decoration: underline; }
+
   /* Header */
   .profile-header {
     background: var(--surface);
@@ -51,13 +70,6 @@
     position: relative;
     overflow: hidden;
   }
-  .profile-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0,230,118,0.06) 0%, transparent 60%);
-    pointer-events: none;
-  }
   .avatar-wrap {
     position: relative;
     flex-shrink: 0;
@@ -65,16 +77,17 @@
   .avatar {
     width: 80px; height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1a2236, #0f172a);
+    background: var(--accent-subtle);
     border: 3px solid var(--gold);
     display: flex; align-items: center; justify-content: center;
-    font-size: 28px; font-weight: 900; color: var(--gold);
-    box-shadow: 0 0 24px rgba(245,158,11,0.4);
+    font-family: var(--ff-display);
+    font-size: 28px; font-weight: 800; color: var(--gold);
   }
   .rank-badge {
     position: absolute; bottom: -4px; right: -4px;
     background: var(--gold);
-    color: #000;
+    color: oklch(18% 0 0);
+    font-family: var(--ff-display);
     font-size: 9px; font-weight: 800;
     padding: 2px 5px;
     border-radius: 4px;
@@ -82,7 +95,8 @@
   }
   .player-info { flex: 1; }
   .player-name {
-    font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+    font-family: var(--ff-display);
+    font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
     color: var(--text);
   }
   .player-sub {
@@ -90,14 +104,15 @@
   }
   .player-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
   .player-tag {
+    font-family: var(--ff-display);
     font-size: 11px; font-weight: 600;
     padding: 3px 10px; border-radius: 20px;
-    background: rgba(0,230,118,0.12); color: var(--green);
-    border: 1px solid rgba(0,230,118,0.25);
+    background: var(--accent-subtle); color: var(--accent);
+    border: 1px solid var(--accent-border);
   }
   .player-tag.gold {
-    background: rgba(245,158,11,0.12); color: var(--gold);
-    border-color: rgba(245,158,11,0.25);
+    background: oklch(95% 0.04 85); color: var(--gold);
+    border-color: oklch(84% 0.08 85);
   }
   .header-stats {
     display: flex; gap: 20px;
@@ -105,11 +120,12 @@
   }
   .hstat { text-align: center; }
   .hstat-val {
+    font-family: var(--ff-display);
     font-size: 22px; font-weight: 800;
-    color: var(--green);
+    color: var(--accent);
     line-height: 1;
   }
-  .hstat-label { font-size: 10px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .hstat-label { font-family: var(--ff-display); font-size: 10px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
 
   /* Grid layout */
   .two-col {
@@ -132,13 +148,14 @@
     padding: 24px;
   }
   .card-title {
+    font-family: var(--ff-display);
     font-size: 11px; font-weight: 700;
     color: var(--muted);
     text-transform: uppercase; letter-spacing: 1px;
     margin-bottom: 18px;
     display: flex; align-items: center; gap: 8px;
   }
-  .card-title .accent { color: var(--green); }
+  .card-title .accent-marker { color: var(--accent); }
 
   /* Radar chart */
   .radar-wrap {
@@ -153,6 +170,7 @@
   }
   .legend-item {
     display: flex; align-items: center; gap: 6px;
+    font-family: var(--ff-display);
     font-size: 11px; color: var(--muted);
   }
   .legend-dot {
@@ -166,6 +184,7 @@
     margin-bottom: 10px;
   }
   .trend-label {
+    font-family: var(--ff-display);
     font-size: 12px; color: var(--muted);
     width: 110px; flex-shrink: 0;
   }
@@ -178,41 +197,44 @@
   }
   .trend-bar {
     height: 100%;
-    background: linear-gradient(90deg, #00E676, #00b248);
+    background: var(--accent);
     border-radius: 3px;
     transition: width 1s ease;
   }
   .trend-score {
-    font-size: 12px; font-weight: 700;
+    font-family: var(--ff-mono);
+    font-size: 12px; font-weight: 500;
     color: var(--text);
     width: 28px; text-align: right;
     flex-shrink: 0;
   }
   .trend-arrow {
-    font-size: 11px; font-weight: 700;
+    font-family: var(--ff-mono);
+    font-size: 11px; font-weight: 500;
     width: 48px; flex-shrink: 0; text-align: right;
   }
-  .trend-arrow.up   { color: var(--up); }
-  .trend-arrow.down { color: var(--down); }
+  .trend-arrow.up   { color: var(--positive); }
+  .trend-arrow.down { color: var(--negative); }
   .trend-arrow.flat { color: var(--flat); }
 
   /* AI Narrative */
   .narrative-card {
-    background: linear-gradient(135deg, rgba(0,230,118,0.06), rgba(59,130,246,0.06));
-    border: 1px solid rgba(0,230,118,0.2);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
     border-radius: 14px;
     padding: 24px;
   }
   .narrative-label {
+    font-family: var(--ff-display);
     font-size: 10px; font-weight: 700;
-    color: var(--green);
+    color: var(--accent);
     text-transform: uppercase; letter-spacing: 1.5px;
     margin-bottom: 12px;
     display: flex; align-items: center; gap: 6px;
   }
   .ai-pulse {
     width: 8px; height: 8px; border-radius: 50%;
-    background: var(--green);
+    background: var(--accent);
     animation: pulse 2s infinite;
     flex-shrink: 0;
   }
@@ -229,13 +251,14 @@
   /* Badges */
   .badges-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
   .badge-pill {
+    font-family: var(--ff-display);
     font-size: 11px; font-weight: 600;
     padding: 5px 12px; border-radius: 20px;
-    background: rgba(245,158,11,0.1); color: var(--gold);
-    border: 1px solid rgba(245,158,11,0.25);
+    background: oklch(95% 0.04 85); color: var(--gold);
+    border: 1px solid oklch(84% 0.08 85);
   }
   .badge-count {
-    background: rgba(245,158,11,0.25);
+    background: oklch(90% 0.06 85);
     border-radius: 10px;
     padding: 1px 6px;
     font-size: 10px;
@@ -263,12 +286,12 @@
     display: flex; gap: 5px;
   }
   .thumb-arc, .thumb-quality {
+    font-family: var(--ff-display);
     font-size: 9px; font-weight: 700;
     padding: 2px 6px; border-radius: 4px;
-    backdrop-filter: blur(8px);
   }
-  .thumb-arc { background: rgba(0,0,0,0.6); color: var(--text); }
-  .thumb-quality { background: rgba(0,230,118,0.9); color: #000; }
+  .thumb-arc { background: oklch(18% 0 0 / 0.6); color: oklch(96% 0 0); }
+  .thumb-quality { background: var(--accent); color: oklch(100% 0 0); }
   .thumb-caption {
     font-size: 10px; color: var(--muted);
     padding: 6px 8px;
@@ -288,10 +311,11 @@
   /* Play tags */
   .play-tag {
     display: inline-block;
+    font-family: var(--ff-display);
     font-size: 11px; font-weight: 600;
     padding: 3px 10px; border-radius: 4px;
-    background: rgba(59,130,246,0.12); color: #93c5fd;
-    border: 1px solid rgba(59,130,246,0.2);
+    background: oklch(95% 0.04 255); color: oklch(52% 0.18 255);
+    border: 1px solid oklch(84% 0.08 255);
     margin: 2px;
   }
 
@@ -299,16 +323,18 @@
   .profile-footer {
     text-align: center;
     padding: 16px;
+    font-family: var(--ff-display);
     font-size: 11px; color: var(--muted);
   }
-  .profile-footer a { color: var(--green); text-decoration: none; }
+  .profile-footer a { color: var(--accent); text-decoration: none; }
 
   /* Data label */
   .data-caveat {
-    background: rgba(245,158,11,0.08);
-    border: 1px solid rgba(245,158,11,0.2);
+    background: oklch(95% 0.04 85);
+    border: 1px solid oklch(84% 0.08 85);
     border-radius: 8px;
     padding: 8px 14px;
+    font-family: var(--ff-display);
     font-size: 11px; color: var(--gold);
     margin-bottom: 8px;
   }
@@ -316,6 +342,13 @@
 </head>
 <body>
 <div class="page-wrap">
+
+  <!-- Nav -->
+  <nav class="nav-bar">
+    <a href="index.html">&larr; Portal</a>
+    <a href="data-explorer.html">Data Explorer</a>
+    <a href="leaderboards.html">Leaderboards</a>
+  </nav>
 
   <!-- Header -->
   <div class="profile-header">
@@ -325,7 +358,7 @@
     </div>
     <div class="player-info">
       <div class="player-name">PickleBill</div>
-      <div class="player-sub">Courtana Coaching Profile · 18 Clips Analyzed</div>
+      <div class="player-sub">Courtana Coaching Profile &middot; 18 Clips Analyzed</div>
       <div class="player-tags">
         <span class="player-tag gold">Gold III</span>
         <span class="player-tag gold">Level 18</span>
@@ -348,45 +381,45 @@
     </div>
   </div>
 
-  
+
 
   <!-- AI Narrative -->
   <div class="narrative-card">
     <div class="narrative-label">
       <div class="ai-pulse"></div>
-      AI Coaching Analysis · Gemini 2.5 Flash
+      AI Coaching Analysis &middot; Gemini 2.5 Flash
     </div>
-    <p class="narrative-text">"Your evolution across these 18 clips is notable, especially in your Kitchen Game, which significantly improved from 5.5 to 6.4, and your Touch & Feel, which soared from 5.5 to an impressive 6.6. Although your Power rating saw a slight decline from 5.5 to 5.3, your consistent 'Wall of Hands' badge and improved Court IQ (5.6 to 6.0) highlight your defensive strengths, which are ripe for conversion into more offensive counter-attacks. To build on this, consistently practice a 'Defensive Block to Offensive Reset/Drive' drill, where after blocking a hard shot, your immediate focus is placing the next ball aggressively or to gain court position."</p>
+    <p class="narrative-text">"Your evolution across these 18 clips is notable, especially in your Kitchen Game, which significantly improved from 5.5 to 6.4, and your Touch &amp; Feel, which soared from 5.5 to an impressive 6.6. Although your Power rating saw a slight decline from 5.5 to 5.3, your consistent 'Wall of Hands' badge and improved Court IQ (5.6 to 6.0) highlight your defensive strengths, which are ripe for conversion into more offensive counter-attacks. To build on this, consistently practice a 'Defensive Block to Offensive Reset/Drive' drill, where after blocking a hard shot, your immediate focus is placing the next ball aggressively or to gain court position."</p>
   </div>
 
   <!-- Radar + Trends -->
   <div class="two-col">
     <div class="card">
-      <div class="card-title"><span class="accent">◆</span> Performance DNA — Evolution</div>
+      <div class="card-title"><span class="accent-marker">&#9670;</span> Performance DNA -- Evolution</div>
       <div class="radar-wrap">
         <canvas id="radarChart"></canvas>
       </div>
       <div class="radar-legend">
         <div class="legend-item">
-          <div class="legend-dot" style="background:#00E676;opacity:0.5"></div>
+          <div class="legend-dot" style="background:oklch(55% 0.2 50 / 0.4)"></div>
           <span>Early clips</span>
         </div>
         <div class="legend-item">
-          <div class="legend-dot" style="background:#00E676"></div>
+          <div class="legend-dot" style="background:oklch(55% 0.2 50)"></div>
           <span>Recent clips</span>
         </div>
       </div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="accent">◆</span> Skill Trends</div>
-      
+      <div class="card-title"><span class="accent-marker">&#9670;</span> Skill Trends</div>
+
         <div class="trend-row">
             <span class="trend-label">Kitchen Game</span>
             <div class="trend-bar-wrap">
                 <div class="trend-bar" style="width:64%"></div>
             </div>
             <span class="trend-score">6.4</span>
-            <span class="trend-arrow up">↑ +0.9</span>
+            <span class="trend-arrow up">+0.9</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Court IQ</span>
@@ -394,7 +427,7 @@
                 <div class="trend-bar" style="width:60%"></div>
             </div>
             <span class="trend-score">6.0</span>
-            <span class="trend-arrow flat">→ +0.4</span>
+            <span class="trend-arrow flat">+0.4</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Athleticism</span>
@@ -402,7 +435,7 @@
                 <div class="trend-bar" style="width:59%"></div>
             </div>
             <span class="trend-score">5.9</span>
-            <span class="trend-arrow flat">→ 0.0</span>
+            <span class="trend-arrow flat">0.0</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Power</span>
@@ -410,15 +443,15 @@
                 <div class="trend-bar" style="width:53%"></div>
             </div>
             <span class="trend-score">5.3</span>
-            <span class="trend-arrow flat">→ -0.2</span>
+            <span class="trend-arrow flat">-0.2</span>
         </div>
         <div class="trend-row">
-            <span class="trend-label">Touch & Feel</span>
+            <span class="trend-label">Touch &amp; Feel</span>
             <div class="trend-bar-wrap">
                 <div class="trend-bar" style="width:66%"></div>
             </div>
             <span class="trend-score">6.6</span>
-            <span class="trend-arrow up">↑ +1.1</span>
+            <span class="trend-arrow up">+1.1</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Creativity</span>
@@ -426,7 +459,7 @@
                 <div class="trend-bar" style="width:43%"></div>
             </div>
             <span class="trend-score">4.3</span>
-            <span class="trend-arrow flat">→ +0.3</span>
+            <span class="trend-arrow flat">+0.3</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Consistency</span>
@@ -434,7 +467,7 @@
                 <div class="trend-bar" style="width:72%"></div>
             </div>
             <span class="trend-score">7.2</span>
-            <span class="trend-arrow up">↑ +1.3</span>
+            <span class="trend-arrow up">+1.3</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Composure</span>
@@ -442,7 +475,7 @@
                 <div class="trend-bar" style="width:71%"></div>
             </div>
             <span class="trend-score">7.1</span>
-            <span class="trend-arrow up">↑ +0.7</span>
+            <span class="trend-arrow up">+0.7</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Court Coverage</span>
@@ -450,7 +483,7 @@
                 <div class="trend-bar" style="width:61%"></div>
             </div>
             <span class="trend-score">6.1</span>
-            <span class="trend-arrow flat">→ +0.2</span>
+            <span class="trend-arrow flat">+0.2</span>
         </div>
         <div class="trend-row">
             <span class="trend-label">Paddle Control</span>
@@ -458,7 +491,7 @@
                 <div class="trend-bar" style="width:70%"></div>
             </div>
             <span class="trend-score">7.0</span>
-            <span class="trend-arrow up">↑ +0.9</span>
+            <span class="trend-arrow up">+0.9</span>
         </div>
     </div>
   </div>
@@ -466,32 +499,32 @@
   <!-- Badges + Top Clips -->
   <div class="two-col">
     <div class="card">
-      <div class="card-title"><span class="accent">◆</span> Most Earned Badges</div>
+      <div class="card-title"><span class="accent-marker">&#9670;</span> Most Earned Badges</div>
       <div class="badges-wrap">
-        <span class="badge-pill">Kitchen King <span class="badge-count">×8</span></span>
-<span class="badge-pill">Wall of Hands <span class="badge-count">×4</span></span>
-<span class="badge-pill">Teaching Moment <span class="badge-count">×3</span></span>
-<span class="badge-pill">Epic Rally <span class="badge-count">×2</span></span>
-<span class="badge-pill">Momentum Shift <span class="badge-count">×2</span></span>
-<span class="badge-pill">Clutch Performer <span class="badge-count">×2</span></span>
+        <span class="badge-pill">Kitchen King <span class="badge-count">x8</span></span>
+<span class="badge-pill">Wall of Hands <span class="badge-count">x4</span></span>
+<span class="badge-pill">Teaching Moment <span class="badge-count">x3</span></span>
+<span class="badge-pill">Epic Rally <span class="badge-count">x2</span></span>
+<span class="badge-pill">Momentum Shift <span class="badge-count">x2</span></span>
+<span class="badge-pill">Clutch Performer <span class="badge-count">x2</span></span>
 
       </div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="accent">◆</span> Growth Opportunities</div>
+      <div class="card-title"><span class="accent-marker">&#9670;</span> Growth Opportunities</div>
       <ul>
-        <li class="improvement-item">💡 near team could work on offensive counter-attacks from blocks</li>
-<li class="improvement-item">💡 near team could vary dink placement more</li>
-<li class="improvement-item">💡 add more variety to volleys</li>
+        <li class="improvement-item">Near team could work on offensive counter-attacks from blocks</li>
+<li class="improvement-item">Near team could vary dink placement more</li>
+<li class="improvement-item">Add more variety to volleys</li>
 
       </ul>
     </div>
   </div>
 
   <!-- Top Clips -->
-  <div class="card"><div class="card-title"><span class="accent">◆</span> Best Clips</div><div class="thumbs-grid">
+  <div class="card"><div class="card-title"><span class="accent-marker">&#9670;</span> Best Clips</div><div class="thumbs-grid">
         <div class="thumb-card">
-            <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg" alt="Athletic Highlight" onerror="this.style.background='#1e2a3a';this.src=''">
+            <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg" alt="Athletic Highlight" onerror="this.style.background='var(--border)';this.src=''">
             <div class="thumb-overlay">
                 <span class="thumb-arc">Athletic Highlight</span>
                 <span class="thumb-quality">Q:8</span>
@@ -499,7 +532,7 @@
             <p class="thumb-caption">A pickleball rally culminates in an athletic jump smash for a winner after a kit</p>
         </div>
         <div class="thumb-card">
-            <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="Athletic Highlight" onerror="this.style.background='#1e2a3a';this.src=''">
+            <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="Athletic Highlight" onerror="this.style.background='var(--border)';this.src=''">
             <div class="thumb-overlay">
                 <span class="thumb-arc">Athletic Highlight</span>
                 <span class="thumb-quality">Q:8</span>
@@ -507,7 +540,7 @@
             <p class="thumb-caption">A patient dink rally ends with an explosive forehand speed-up for a decisive win</p>
         </div>
         <div class="thumb-card">
-            <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.jpeg" alt="Pure Fun" onerror="this.style.background='#1e2a3a';this.src=''">
+            <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.jpeg" alt="Pure Fun" onerror="this.style.background='var(--border)';this.src=''">
             <div class="thumb-overlay">
                 <span class="thumb-arc">Pure Fun</span>
                 <span class="thumb-quality">Q:8</span>
@@ -517,8 +550,8 @@
 
   <!-- Footer -->
   <div class="profile-footer">
-    Generated by <a href="https://courtana.com">Courtana</a> · Powered by Gemini 2.5 Flash ·
-    April 09, 2026 · <a href="https://courtana.com">courtana.com</a>
+    Generated by <a href="https://courtana.com">Courtana</a> &middot; Powered by Gemini 2.5 Flash &middot;
+    April 09, 2026 &middot; <a href="https://courtana.com">courtana.com</a>
   </div>
 
 </div>
@@ -527,6 +560,12 @@
 const radarLabels = ["Kitchen Game", "Court IQ", "Athleticism", "Power", "Touch & Feel", "Creativity"];
 const earlyData   = [5.5, 5.6, 5.9, 5.5, 5.5, 4.0];
 const recentData  = [6.4, 6.0, 5.9, 5.3, 6.6, 4.3];
+
+const accentColor = 'oklch(55% 0.2 50)';
+const accentRGBA = 'rgba(210, 115, 50, 1)';
+const accentRGBALight = 'rgba(210, 115, 50, 0.4)';
+const accentRGBABg = 'rgba(210, 115, 50, 0.15)';
+const accentRGBABgLight = 'rgba(210, 115, 50, 0.06)';
 
 const ctx = document.getElementById('radarChart').getContext('2d');
 new Chart(ctx, {
@@ -537,19 +576,19 @@ new Chart(ctx, {
       {
         label: 'Early',
         data: earlyData,
-        borderColor: 'rgba(0,230,118,0.4)',
-        backgroundColor: 'rgba(0,230,118,0.08)',
+        borderColor: accentRGBALight,
+        backgroundColor: accentRGBABgLight,
         borderWidth: 1.5,
-        pointBackgroundColor: 'rgba(0,230,118,0.4)',
+        pointBackgroundColor: accentRGBALight,
         pointRadius: 3,
       },
       {
         label: 'Recent',
         data: recentData,
-        borderColor: 'rgba(0,230,118,1)',
-        backgroundColor: 'rgba(0,230,118,0.18)',
+        borderColor: accentRGBA,
+        backgroundColor: accentRGBABg,
         borderWidth: 2,
-        pointBackgroundColor: '#00E676',
+        pointBackgroundColor: accentRGBA,
         pointRadius: 4,
       },
     ]
@@ -560,10 +599,10 @@ new Chart(ctx, {
     scales: {
       r: {
         min: 0, max: 10,
-        ticks: { stepSize: 2, color: '#64748B', font: { size: 9 } },
-        grid: { color: 'rgba(255,255,255,0.06)' },
-        angleLines: { color: 'rgba(255,255,255,0.08)' },
-        pointLabels: { color: '#94a3b8', font: { size: 10, weight: '600' } },
+        ticks: { stepSize: 2, color: 'oklch(55% 0.01 50)', font: { size: 9 } },
+        grid: { color: 'oklch(88% 0.015 50)' },
+        angleLines: { color: 'oklch(88% 0.015 50)' },
+        pointLabels: { color: 'oklch(55% 0.01 50)', font: { size: 10, weight: '600' } },
       }
     }
   }
