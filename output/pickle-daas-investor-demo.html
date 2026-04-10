@@ -11,20 +11,23 @@
 <style>
 /* ===================== TOKENS ===================== */
 :root {
-  --bg:            oklch(97% 0.008 240);
-  --bg-alt:        oklch(94.5% 0.012 240);
+  --bg:            oklch(97.5% 0.008 145);
+  --bg-alt:        oklch(94.5% 0.012 145);
   --surface:       oklch(100% 0 0);
-  --border:        oklch(88% 0.012 240);
-  --border-soft:   oklch(92% 0.008 240);
+  --border:        oklch(88% 0.012 155);
+  --border-soft:   oklch(92% 0.008 155);
 
-  --text:          oklch(18% 0.015 240);
-  --text-secondary:oklch(44% 0.016 240);
-  --text-muted:    oklch(62% 0.01 240);
+  --text:          oklch(18% 0.015 155);
+  --text-secondary:oklch(44% 0.016 155);
+  --text-muted:    oklch(62% 0.01 155);
 
-  --accent:        oklch(52% 0.185 250);
-  --accent-mid:    oklch(62% 0.16 250);
-  --accent-subtle: oklch(95.5% 0.04 250);
-  --accent-border: oklch(86% 0.06 250);
+  --accent:        oklch(42% 0.14 155);
+  --accent-mid:    oklch(52% 0.12 155);
+  --accent-subtle: oklch(95% 0.03 155);
+  --accent-border: oklch(84% 0.06 155);
+
+  --gold:          oklch(58% 0.14 85);
+  --gold-bg:       oklch(95% 0.04 85);
 
   --data-positive: oklch(50% 0.14 160);
   --data-positive-bg: oklch(96% 0.04 160);
@@ -79,6 +82,12 @@ nav {
   border-radius: 999px;
 }
 .nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-back {
+  font-family: var(--ff-display);
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary);
+}
+.nav-back:hover { color: var(--accent); text-decoration: none; }
 .nav-contact {
   font-family: var(--ff-display);
   font-size: 0.85rem; font-weight: 500;
@@ -116,7 +125,7 @@ nav {
 /* Ron Burgundy card */
 .burgundy-card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent-border);
   border-radius: var(--radius-lg);
   padding: 28px 32px;
   max-width: 620px;
@@ -646,7 +655,7 @@ input[type=range]::-webkit-slider-thumb {
 
 /* ===================== CTA SECTION ===================== */
 .cta-section {
-  background: var(--text);
+  background: oklch(18% 0.04 155);
 }
 .cta-inner {
   max-width: 960px; margin: 0 auto;
@@ -664,7 +673,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 .cta-sub {
   font-size: 1rem;
-  color: oklch(70% 0.01 240);
+  color: oklch(70% 0.01 155);
   line-height: 1.6;
 }
 .cta-right { }
@@ -672,16 +681,16 @@ input[type=range]::-webkit-slider-thumb {
   font-family: var(--ff-display);
   font-size: 0.7rem; font-weight: 600;
   letter-spacing: 0.08em; text-transform: uppercase;
-  color: oklch(55% 0.01 240);
+  color: oklch(55% 0.01 155);
   margin-bottom: 16px;
 }
 .cta-bullets { list-style: none; margin-bottom: 32px; }
 .cta-bullets li {
   font-size: 0.92rem;
-  color: oklch(78% 0.01 240);
+  color: oklch(78% 0.01 155);
   padding: 8px 0;
   display: flex; align-items: flex-start; gap: 10px;
-  border-bottom: 1px solid oklch(30% 0.01 240);
+  border-bottom: 1px solid oklch(30% 0.02 155);
 }
 .cta-bullets li:last-child { border-bottom: none; }
 .cta-bullet-dot {
@@ -714,7 +723,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal-box {
-  background: oklch(10% 0.01 240);
+  background: oklch(10% 0.01 155);
   border-radius: var(--radius-lg);
   overflow: hidden;
   max-width: 900px; width: 92vw;
@@ -727,14 +736,14 @@ input[type=range]::-webkit-slider-thumb {
   position: absolute; top: 12px; right: 12px; z-index: 10;
   width: 32px; height: 32px;
   border-radius: 50%;
-  background: oklch(20% 0.01 240);
-  border: 1px solid oklch(30% 0.01 240);
-  color: oklch(80% 0.01 240);
+  background: oklch(20% 0.01 155);
+  border: 1px solid oklch(30% 0.01 155);
+  color: oklch(80% 0.01 155);
   font-size: 14px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.2s;
 }
-.modal-close:hover { background: oklch(30% 0.01 240); }
+.modal-close:hover { background: oklch(30% 0.01 155); }
 .modal-video { width: 100%; display: block; max-height: 80vh; }
 
 /* ===================== FADE-IN ===================== */
@@ -770,8 +779,9 @@ input[type=range]::-webkit-slider-thumb {
 <!-- NAV -->
 <nav>
   <div style="display:flex; align-items:center; gap:16px;">
+    <a class="nav-back" href="index.html">&larr; Portal</a>
     <div class="nav-brand">Pickle <span>DaaS</span></div>
-    <div class="nav-badge">Investor Demo · April 2026</div>
+    <div class="nav-badge">Investor Demo &middot; April 2026</div>
   </div>
   <div class="nav-right">
     <a class="nav-contact" href="mailto:bill@courtana.com">bill@courtana.com</a>
@@ -780,7 +790,7 @@ input[type=range]::-webkit-slider-thumb {
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow fade-in">Courtana · Data-as-a-Service</div>
+  <div class="hero-eyebrow fade-in">Courtana &middot; Data-as-a-Service</div>
   <h1 class="hero-headline fade-in">Pickleball has<br>36 million players.<br>Zero Statcast.</h1>
   <p class="hero-sub fade-in">Pickle DaaS turns every match clip into structured intelligence — player DNA, badge predictions, brand detection, coaching signals — at <strong>$0.0054 per clip</strong>.</p>
 
@@ -788,7 +798,7 @@ input[type=range]::-webkit-slider-thumb {
   <div class="burgundy-card fade-in" id="burgundyCard">
     <div class="burgundy-label">Actual AI commentary — real match, real Gemini 2.5 Flash output</div>
     <blockquote class="burgundy-quote" id="burgundyQuote"></blockquote>
-    <div class="burgundy-attribution">— Ron Burgundy Voice Pack · Courtana DaaS</div>
+    <div class="burgundy-attribution">— Ron Burgundy Voice Pack &middot; Courtana DaaS</div>
     <div class="burgundy-dots" id="burgundyDots"></div>
   </div>
 
@@ -815,7 +825,7 @@ input[type=range]::-webkit-slider-thumb {
 <!-- SECTION 2: PROOF -->
 <section>
 <div class="section-inner">
-  <div class="section-eyebrow fade-in">Real Pipeline · Real Data</div>
+  <div class="section-eyebrow fade-in">Real Pipeline &middot; Real Data</div>
   <h2 class="section-title fade-in">This is what the data looks like</h2>
   <p class="section-sub fade-in">Every clip analyzed by Gemini 2.5 Flash. Click any clip to watch. The commentary is real AI output — not scripted.</p>
 
@@ -842,7 +852,7 @@ input[type=range]::-webkit-slider-thumb {
   <div class="featured-clip fade-in" id="featuredClip">
     <div class="featured-thumb-wrap">
       <img class="featured-thumb" id="featuredThumb" src="" alt="Featured clip">
-      <div class="featured-play"><div class="featured-play-btn">▶</div></div>
+      <div class="featured-play"><div class="featured-play-btn">&#9654;</div></div>
       <div class="featured-quality" id="featuredScore"></div>
     </div>
     <div class="featured-body">
@@ -864,14 +874,14 @@ input[type=range]::-webkit-slider-thumb {
     <div class="buyer-sample-header" onclick="toggleBuyerSample(this)">
       <div>
         <div class="buyer-sample-title">What a data buyer actually receives</div>
-        <div class="buyer-sample-sub">One clip → one structured JSON object. Every clip in the corpus.</div>
+        <div class="buyer-sample-sub">One clip &rarr; one structured JSON object. Every clip in the corpus.</div>
       </div>
-      <div class="buyer-sample-toggle" id="buyerToggleLabel">Show data →</div>
+      <div class="buyer-sample-toggle" id="buyerToggleLabel">Show data &rarr;</div>
     </div>
     <div class="buyer-sample-body" id="buyerSampleBody">
       <p class="buyer-sample-intro">Every analyzed clip produces a structured JSON object like this one. Brand monitoring companies plug into brand detection. Coaching apps plug into skill metrics. Content platforms use viral scores and captions. Leagues use badge predictions for gamification.</p>
       <div class="json-block"><pre id="jsonSample"></pre></div>
-      <div class="buyer-framing">Every clip → this JSON → your product. The corpus is the moat.</div>
+      <div class="buyer-framing">Every clip &rarr; this JSON &rarr; your product. The corpus is the moat.</div>
     </div>
   </div>
 </div>
@@ -937,7 +947,7 @@ input[type=range]::-webkit-slider-thumb {
           <tr><td>1,000 venues</td><td>33,280,000 <span class="projected">est.</span></td><td>~$200,000</td></tr>
         </tbody>
       </table>
-      <p class="calc-note">Gemini 2.5 Flash at $0.006/clip. Competitive alternatives cost 10–40× more. Analysis cost is a rounding error at scale — the corpus value is the business.</p>
+      <p class="calc-note">Gemini 2.5 Flash at $0.006/clip. Competitive alternatives cost 10&ndash;40&times; more. Analysis cost is a rounding error at scale — the corpus value is the business.</p>
     </div>
   </div>
 
@@ -946,12 +956,12 @@ input[type=range]::-webkit-slider-thumb {
       <div class="corpus-num" data-count="15">0</div>
       <div class="corpus-label">Clips analyzed today</div>
     </div>
-    <div class="corpus-arrow">→</div>
+    <div class="corpus-arrow">&rarr;</div>
     <div class="corpus-block">
       <div class="corpus-num">8,125</div>
       <div class="corpus-label">Clips <strong>available now</strong> in the corpus</div>
     </div>
-    <div class="corpus-arrow">→</div>
+    <div class="corpus-arrow">&rarr;</div>
     <div class="corpus-block">
       <div class="corpus-num">36M+</div>
       <div class="corpus-label">Players. <strong>Zero Statcast equivalent exists.</strong></div>
@@ -975,7 +985,7 @@ input[type=range]::-webkit-slider-thumb {
       <li><span class="cta-bullet-dot"></span>Player DNA profiles: skill ratings, tendencies, predicted coaching interventions</li>
       <li><span class="cta-bullet-dot"></span>Brand intelligence: exposure frequency, venue mapping, sponsorship whitespace analysis</li>
     </ul>
-    <a class="cta-btn" href="mailto:bill@courtana.com">Talk to us → bill@courtana.com</a>
+    <a class="cta-btn" href="mailto:bill@courtana.com">Talk to us &rarr; bill@courtana.com</a>
   </div>
 </div>
 </section>
@@ -983,7 +993,7 @@ input[type=range]::-webkit-slider-thumb {
 <!-- VIDEO MODAL -->
 <div class="modal-overlay" id="videoModal">
   <div class="modal-box">
-    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <button class="modal-close" id="modalClose" aria-label="Close">&#10005;</button>
     <video class="modal-video" id="modalVideo" controls playsinline></video>
   </div>
 </div>
@@ -991,10 +1001,10 @@ input[type=range]::-webkit-slider-thumb {
 <script>
 // ===================== DATA =====================
 const CLIPS = [
-  {uuid:"6cf49d96-ad41-47a1-a1c2-c5f8b57fd346",quality:8,viral:5,arc:"Athletic Highlight",summary:"A spectacular overhead smash ends a contested rally in decisive fashion.",ron_burgundy:"Sweet fancy Moses! That overhead was hit with the force of a thousand suns. The opponent had no answer. None whatsoever.",social_caption:"BOOM! Overhead of the year candidate? 💪",dominant_shot:"Overhead",court_coverage:8,kitchen_mastery:7,creativity:8,athleticism:9,court_iq:7,power_game:8,badges_predicted:["Smash King","High Flyer"],brands:["Recovery Cave"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.mp4",top_10:true},
-  {uuid:"139453f3-8ac3-4687-922e-214cc15490df",quality:8,viral:7,arc:"Athletic Highlight",summary:"A patient dink rally ends with an explosive forehand speed-up for a decisive winner.",ron_burgundy:"Good heavens, what a display of athletic prowess! The dinks were as delicate as a butterfly's kiss, until a thunderous forehand erupted, leaving the opposition utterly flummoxed. Simply magnificent!",social_caption:"Dink, dink, BANG! 💥 What a finish!",dominant_shot:"Dink",court_coverage:8,kitchen_mastery:9,creativity:7,athleticism:8,court_iq:8,power_game:7,badges_predicted:["Dink Master","Clutch Player"],brands:["JOOLA","LIFE TIME PICKLEBALL"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4"},
-  {uuid:"6ee49439-c28a-452f-9bc3-ccea303d3330",quality:8,viral:6,arc:"Creative",summary:"A creative dink sequence featuring an unexpected erne attempt and quick recovery.",ron_burgundy:"I love lamp. And I love THIS shot. The erne attempt had me on the edge of my seat. This is journalism!",social_caption:"That erne attempt tho 😍 #pickleballlife #erne",dominant_shot:"Dink",court_coverage:8,kitchen_mastery:9,creativity:9,athleticism:8,court_iq:8,power_game:6,badges_predicted:["Creative Genius","Erne Artist"],brands:["Recovery Cave","The Underground"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea603d3330.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea603d3330.mp4"},
-  {uuid:"a4e8f830-35cc-4303-bec0-06b4cdeddfa7",quality:8,viral:7,arc:"Grind Rally",summary:"Elite cross-court drive exchange demonstrates championship-level consistency under pressure.",ron_burgundy:"By Odin's raven, these drives are LEGENDARY! Back and forth, neither yielding. This is what separates the champions from the mere mortals.",social_caption:"When the drives just don't stop 😤 Consistency is king.",dominant_shot:"Drive",court_coverage:9,kitchen_mastery:6,creativity:6,athleticism:8,court_iq:8,power_game:9,badges_predicted:["Baseline Beast","Consistency King"],brands:["JOOLA"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.mp4"}
+  {uuid:"6cf49d96-ad41-47a1-a1c2-c5f8b57fd346",quality:8,viral:5,arc:"Athletic Highlight",summary:"A spectacular overhead smash ends a contested rally in decisive fashion.",ron_burgundy:"Sweet fancy Moses! That overhead was hit with the force of a thousand suns. The opponent had no answer. None whatsoever.",social_caption:"BOOM! Overhead of the year candidate? \u{1F4AA}",dominant_shot:"Overhead",court_coverage:8,kitchen_mastery:7,creativity:8,athleticism:9,court_iq:7,power_game:8,badges_predicted:["Smash King","High Flyer"],brands:["Recovery Cave"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.mp4",top_10:true},
+  {uuid:"139453f3-8ac3-4687-922e-214cc15490df",quality:8,viral:7,arc:"Athletic Highlight",summary:"A patient dink rally ends with an explosive forehand speed-up for a decisive winner.",ron_burgundy:"Good heavens, what a display of athletic prowess! The dinks were as delicate as a butterfly's kiss, until a thunderous forehand erupted, leaving the opposition utterly flummoxed. Simply magnificent!",social_caption:"Dink, dink, BANG! \u{1F4A5} What a finish!",dominant_shot:"Dink",court_coverage:8,kitchen_mastery:9,creativity:7,athleticism:8,court_iq:8,power_game:7,badges_predicted:["Dink Master","Clutch Player"],brands:["JOOLA","LIFE TIME PICKLEBALL"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4"},
+  {uuid:"6ee49439-c28a-452f-9bc3-ccea303d3330",quality:8,viral:6,arc:"Creative",summary:"A creative dink sequence featuring an unexpected erne attempt and quick recovery.",ron_burgundy:"I love lamp. And I love THIS shot. The erne attempt had me on the edge of my seat. This is journalism!",social_caption:"That erne attempt tho \u{1F60D} #pickleballlife #erne",dominant_shot:"Dink",court_coverage:8,kitchen_mastery:9,creativity:9,athleticism:8,court_iq:8,power_game:6,badges_predicted:["Creative Genius","Erne Artist"],brands:["Recovery Cave","The Underground"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea603d3330.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea603d3330.mp4"},
+  {uuid:"a4e8f830-35cc-4303-bec0-06b4cdeddfa7",quality:8,viral:7,arc:"Grind Rally",summary:"Elite cross-court drive exchange demonstrates championship-level consistency under pressure.",ron_burgundy:"By Odin's raven, these drives are LEGENDARY! Back and forth, neither yielding. This is what separates the champions from the mere mortals.",social_caption:"When the drives just don't stop \u{1F624} Consistency is king.",dominant_shot:"Drive",court_coverage:9,kitchen_mastery:6,creativity:6,athleticism:8,court_iq:8,power_game:9,badges_predicted:["Baseline Beast","Consistency King"],brands:["JOOLA"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.mp4"}
 ];
 
 const BURGUNDY_QUOTES = CLIPS.map(c => c.ron_burgundy);
@@ -1053,7 +1063,7 @@ function buildFeaturedClip() {
   thumb.src = clip.thumbnail;
   thumb.onerror = () => { thumb.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYwIiBoZWlnaHQ9IjU0MCIgdmlld0JveD0iMCAwIDk2MCA1NDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9Ijk2MCIgaGVpZ2h0PSI1NDAiIGZpbGw9IiNlOGVkZjIiLz48dGV4dCB4PSI0ODAiIHk9IjI3NiIgZm9udC1mYW1pbHk9InN5c3RlbS11aSIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q2xpcCBUaHVtYm5haWw8L3RleHQ+PC9zdmc+'; };
   score.textContent = clip.quality + '/10';
-  quoteEl.innerHTML = '"' + clip.ron_burgundy + '"<cite>— Ron Burgundy Voice Pack · Clip ' + clip.uuid.slice(0, 8) + ' · Gemini 2.5 Flash</cite>';
+  quoteEl.innerHTML = '"' + clip.ron_burgundy + '"<cite>\u2014 Ron Burgundy Voice Pack \u00b7 Clip ' + clip.uuid.slice(0, 8) + ' \u00b7 Gemini 2.5 Flash</cite>';
   arcEl.textContent = clip.arc;
 
   clip.badges_predicted.forEach(b => {
@@ -1085,7 +1095,7 @@ function buildClipGrid() {
       <div class="clip-thumb-wrap">
         <img class="clip-thumb" src="${clip.thumbnail}" alt="${clip.arc}" loading="lazy"
           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMyMCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNlOGVkZjIiLz48dGV4dCB4PSIxNjAiIHk9Ijk2IiBmb250LWZhbWlseT0ic3lzdGVtLXVpIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTRhM2I4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DbGlwPC90ZXh0Pjwvc3ZnPg=='" />
-        <div class="clip-play"><div class="clip-play-btn">▶</div></div>
+        <div class="clip-play"><div class="clip-play-btn">\u25B6</div></div>
         <div class="clip-score">${clip.quality}/10</div>
       </div>
       <div class="clip-body">
@@ -1106,7 +1116,7 @@ function buildJsonSample() {
   if (!pre) return;
   pre.innerHTML =
 `<span class="json-key">"clip_uuid"</span>: <span class="json-str">"${clip.uuid}"</span>, <span class="json-ann">unique identifier</span>
-<span class="json-key">"quality_score"</span>: <span class="json-num">${clip.quality}</span>, <span class="json-ann">0–10 · AI-assessed</span>
+<span class="json-key">"quality_score"</span>: <span class="json-num">${clip.quality}</span>, <span class="json-ann">0\u201310 \u00b7 AI-assessed</span>
 <span class="json-key">"viral_potential"</span>: <span class="json-num">${clip.viral}</span>,
 <span class="json-key">"story_arc"</span>: <span class="json-str">"${clip.arc}"</span>, <span class="json-ann">content classification</span>
 <span class="json-key">"dominant_shot"</span>: <span class="json-str">"${clip.dominant_shot}"</span>,
@@ -1120,7 +1130,7 @@ function buildJsonSample() {
 <span class="json-key">"brands_detected"</span>: <span class="json-str">["${clip.brands.join('", "')}"</span>], <span class="json-ann">sponsorship intelligence</span>
 <span class="json-key">"social_caption"</span>: <span class="json-str">"${clip.social_caption}"</span>, <span class="json-ann">content ready</span>
 <span class="json-key">"ron_burgundy_commentary"</span>: <span class="json-str">"${clip.ron_burgundy.slice(0,60)}..."</span>,
-<span class="json-key">"video_url"</span>: <span class="json-str">"cdn.courtana.com/..."</span>, <span class="json-ann">CDN link · public</span>
+<span class="json-key">"video_url"</span>: <span class="json-str">"cdn.courtana.com/..."</span>, <span class="json-ann">CDN link \u00b7 public</span>
 <span class="json-key">"highlight_reel_worthy"</span>: <span class="json-bool">true</span>`;
 }
 
@@ -1129,7 +1139,7 @@ function toggleBuyerSample(headerEl) {
   const label = document.getElementById('buyerToggleLabel');
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
-  label.textContent = isOpen ? 'Show data →' : 'Hide ↑';
+  label.textContent = isOpen ? 'Show data \u2192' : 'Hide \u2191';
 }
 
 // ===================== CALCULATOR =====================

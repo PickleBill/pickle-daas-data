@@ -10,24 +10,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: oklch(97% 0.008 240);
+  --bg: oklch(97% 0.012 70);
   --surface: oklch(100% 0 0);
-  --border: oklch(88% 0.012 240);
-  --text: oklch(18% 0.015 240);
-  --text-sec: oklch(44% 0.016 240);
-  --text-muted: oklch(62% 0.01 240);
-  --accent: oklch(52% 0.185 250);
-  --accent-bg: oklch(95.5% 0.04 250);
-  --accent-border: oklch(86% 0.06 250);
-  --positive: oklch(50% 0.14 160);
-  --positive-bg: oklch(96% 0.04 160);
+  --border: oklch(88% 0.015 50);
+  --text: oklch(18% 0.015 50);
+  --text-sec: oklch(44% 0.016 50);
+  --text-muted: oklch(62% 0.01 50);
+  --accent: oklch(55% 0.2 50);
+  --accent-bg: oklch(95% 0.04 50);
+  --accent-border: oklch(84% 0.08 50);
+  --positive: oklch(45% 0.15 155);
+  --positive-bg: oklch(96% 0.04 155);
   --ff-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --ff-body: 'Literata', Georgia, serif;
   --ff-mono: 'Azeret Mono', monospace;
   --radius: 14px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); font-family: var(--ff-body); color: var(--text); padding: 32px; display: flex; justify-content: center; }
+body { background: var(--bg); font-family: var(--ff-body); color: var(--text); padding: 32px; display: flex; flex-direction: column; align-items: center; }
+.nav-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--ff-display);
+    font-size: 0.88rem;
+    font-weight: 500;
+    width: 100%;
+    max-width: 560px;
+}
+.nav-bar a { color: var(--accent); text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
 .card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); max-width: 560px; width: 100%;
@@ -90,7 +104,7 @@ body { background: var(--bg); font-family: var(--ff-body); color: var(--text); p
 .brand-pill {
   font-family: var(--ff-display); font-size: 0.7rem; font-weight: 600;
   padding: 4px 10px; border-radius: 999px;
-  background: var(--positive-bg); border: 1px solid oklch(86% 0.06 160);
+  background: var(--positive-bg); border: 1px solid oklch(86% 0.06 155);
   color: var(--positive);
 }
 .clips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -110,9 +124,25 @@ body { background: var(--bg); font-family: var(--ff-body); color: var(--text); p
   display: flex; justify-content: space-between;
 }
 .card-footer a { color: var(--accent); }
+.share-link {
+  display: block;
+  text-align: center;
+  padding: 12px 32px;
+  font-family: var(--ff-display);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--accent);
+  border-top: 1px solid var(--border);
+}
+.share-link:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
+<nav class="nav-bar">
+    <a href="../index.html">&larr; Portal</a>
+    <a href="../data-explorer.html">Data Explorer</a>
+    <a href="../leaderboards.html">Leaderboards</a>
+</nav>
 <div class="card">
   <div class="card-header">
     <div class="player-name">PickleBill</div>
@@ -125,7 +155,7 @@ body { background: var(--bg); font-family: var(--ff-body); color: var(--text); p
 
   <div class="card-section">
     <div class="section-label">Skill Profile</div>
-    
+
       <div class="skill-row">
         <span class="skill-label">Court Coverage</span>
         <div class="skill-track"><div class="skill-fill" style="width:0%"></div></div>
@@ -188,26 +218,28 @@ body { background: var(--bg); font-family: var(--ff-body); color: var(--text); p
 
   <div class='card-section'><div class='section-label'>Top Clips</div><div class='clips-grid'>
       <div class="clip-mini">
-        <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.jpeg" alt="grind_rally" onerror="this.style.background='oklch(92% 0.01 240)'" loading="lazy">
+        <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.jpeg" alt="grind_rally" onerror="this.style.background='oklch(92% 0.01 50)'" loading="lazy">
         <div class="clip-mini-meta">
           <span class="clip-mini-score">9/10</span>
           <span class="clip-mini-arc">grind_rally</span>
         </div>
       </div>
       <div class="clip-mini">
-        <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.jpeg" alt="grind_rally" onerror="this.style.background='oklch(92% 0.01 240)'" loading="lazy">
+        <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.jpeg" alt="grind_rally" onerror="this.style.background='oklch(92% 0.01 50)'" loading="lazy">
         <div class="clip-mini-meta">
           <span class="clip-mini-score">8/10</span>
           <span class="clip-mini-arc">grind_rally</span>
         </div>
       </div>
       <div class="clip-mini">
-        <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.jpeg" alt="grind_rally" onerror="this.style.background='oklch(92% 0.01 240)'" loading="lazy">
+        <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.jpeg" alt="grind_rally" onerror="this.style.background='oklch(92% 0.01 50)'" loading="lazy">
         <div class="clip-mini-meta">
           <span class="clip-mini-score">8/10</span>
           <span class="clip-mini-arc">grind_rally</span>
         </div>
       </div></div></div>
+
+  <a class="share-link" href="javascript:void(0)" onclick="navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='Link copied!')">Share this card</a>
 
   <div class="card-footer">
     <span>Generated Apr 10, 2026 by Pickle DaaS</span>
