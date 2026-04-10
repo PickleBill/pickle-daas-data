@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Data Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(97% 0.008 240);
+  --surface: oklch(100% 0 0);
+  --border: oklch(88% 0.012 240);
+  --border-soft: oklch(92% 0.008 240);
+  --text: oklch(18% 0.015 240);
+  --text-sec: oklch(44% 0.016 240);
+  --text-muted: oklch(62% 0.01 240);
+  --accent: oklch(52% 0.185 250);
+  --accent-bg: oklch(95.5% 0.04 250);
+  --accent-border: oklch(86% 0.06 250);
+  --positive: oklch(50% 0.14 160);
+  --positive-bg: oklch(96% 0.04 160);
+  --warn: oklch(56% 0.15 50);
+  --warn-bg: oklch(96% 0.04 50);
+  --ff-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ff-body: 'Literata', Georgia, serif;
+  --ff-mono: 'Azeret Mono', monospace;
+  --radius: 12px;
+  --shadow: 0 4px 16px oklch(0% 0 0 / 0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-body);line-height:1.5}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:var(--ff-display);font-size:0.95rem;font-weight:700;color:var(--text)}
+.nav-brand span{color:var(--accent)}
+.nav-count{font-family:var(--ff-mono);font-size:0.78rem;color:var(--text-muted)}
+
+/* TOOLBAR */
+.toolbar{max-width:1200px;margin:0 auto;padding:20px 32px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.search-box{flex:1;min-width:200px;font-family:var(--ff-body);font-size:0.88rem;padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none}
+.search-box:focus{border-color:var(--accent)}
+.search-box::placeholder{color:var(--text-muted)}
+.filter-select{font-family:var(--ff-display);font-size:0.8rem;padding:7px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer}
+.sort-btn{font-family:var(--ff-display);font-size:0.78rem;font-weight:600;padding:7px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text-sec);cursor:pointer;transition:all 0.15s}
+.sort-btn:hover,.sort-btn.active{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent)}
+.export-btn{font-family:var(--ff-display);font-size:0.78rem;font-weight:600;padding:7px 14px;border:1px solid var(--accent-border);border-radius:8px;background:var(--accent);color:white;cursor:pointer;margin-left:auto}
+.export-btn:hover{opacity:0.9}
+
+/* STATS BAR */
+.stats-bar{max-width:1200px;margin:0 auto;padding:12px 32px;display:flex;gap:20px;font-family:var(--ff-display);font-size:0.78rem;color:var(--text-muted)}
+.stats-bar strong{color:var(--text);font-weight:700}
+
+/* GRID */
+.grid{max-width:1200px;margin:0 auto;padding:0 32px 48px;display:grid;grid-template-columns:1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.clip-row{background:var(--surface);display:grid;grid-template-columns:120px 1fr 70px 100px 160px 140px 48px;gap:0;align-items:center;cursor:pointer;transition:background 0.1s}
+.clip-row:hover{background:var(--bg)}
+.clip-row.expanded{background:oklch(97.5% 0.01 250)}
+.clip-cell{padding:12px 14px;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Header row */
+.clip-header{background:var(--bg);cursor:default}
+.clip-header:hover{background:var(--bg)}
+.clip-header .clip-cell{font-family:var(--ff-display);font-size:0.68rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);padding:10px 14px;cursor:pointer;user-select:none}
+.clip-header .clip-cell:hover{color:var(--accent)}
+
+/* Thumbnail */
+.clip-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;display:block;background:var(--bg)}
+
+/* Quality */
+.q-high{color:var(--positive);font-weight:700;font-family:var(--ff-mono);font-size:0.85rem}
+.q-mid{color:var(--warn);font-weight:600;font-family:var(--ff-mono);font-size:0.85rem}
+.q-low{color:var(--text-muted);font-family:var(--ff-mono);font-size:0.85rem}
+
+/* Arc pill */
+.arc-pill{display:inline-block;font-family:var(--ff-display);font-size:0.68rem;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:var(--text-sec);white-space:nowrap}
+
+/* Brand/badge pills */
+.pill{display:inline-block;font-family:var(--ff-display);font-size:0.65rem;font-weight:600;padding:2px 7px;border-radius:999px;margin:1px 2px}
+.pill-brand{background:var(--positive-bg);border:1px solid oklch(86% 0.06 160);color:var(--positive)}
+.pill-badge{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent)}
+
+/* Expand arrow */
+.expand-arrow{text-align:center;color:var(--text-muted);font-size:0.8rem;transition:transform 0.2s}
+.clip-row.expanded .expand-arrow{transform:rotate(90deg);color:var(--accent)}
+
+/* Expanded detail panel */
+.clip-detail{display:none;background:var(--surface);border-top:1px solid var(--border-soft);padding:24px;grid-column:1/-1}
+.clip-row.expanded + .clip-detail{display:block}
+.detail-grid{display:grid;grid-template-columns:320px 1fr;gap:24px}
+.detail-video{width:100%;border-radius:8px;background:oklch(10% 0.01 240)}
+.detail-play-wrap{position:relative;cursor:pointer}
+.detail-play-wrap img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:block}
+.detail-play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.detail-play-btn span{width:48px;height:48px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:var(--shadow)}
+.detail-right{min-width:0}
+.detail-section{margin-bottom:20px}
+.detail-label{font-family:var(--ff-display);font-size:0.68rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.detail-quote{font-style:italic;color:var(--text-sec);font-size:0.9rem;line-height:1.6;margin-bottom:4px}
+.detail-cite{font-family:var(--ff-mono);font-size:0.68rem;color:var(--text-muted)}
+.detail-summary{font-size:0.9rem;color:var(--text-sec);line-height:1.5}
+.detail-pills{display:flex;flex-wrap:wrap;gap:5px}
+.skill-mini{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.skill-mini-label{font-family:var(--ff-display);font-size:0.75rem;color:var(--text-sec);width:80px}
+.skill-mini-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;max-width:120px}
+.skill-mini-fill{height:100%;background:var(--accent);border-radius:2px}
+.skill-mini-val{font-family:var(--ff-mono);font-size:0.72rem;color:var(--text-muted);width:24px}
+.detail-json-toggle{font-family:var(--ff-display);font-size:0.75rem;font-weight:600;color:var(--accent);cursor:pointer;margin-top:8px;display:inline-block}
+.detail-json{display:none;margin-top:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:var(--ff-mono);font-size:0.72rem;line-height:1.6;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+.detail-json.open{display:block}
+
+/* Video modal */
+.modal{position:fixed;inset:0;z-index:1000;background:oklch(0% 0 0 / 0.75);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal.open{opacity:1;pointer-events:all}
+.modal-box{background:oklch(10% 0.01 240);border-radius:14px;overflow:hidden;max-width:900px;width:92vw;position:relative}
+.modal-close{position:absolute;top:10px;right:10px;z-index:10;width:30px;height:30px;border-radius:50%;background:oklch(20% 0.01 240);border:1px solid oklch(30% 0.01 240);color:oklch(80% 0.01 240);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.modal video{width:100%;display:block;max-height:80vh}
+
+/* Empty state */
+.empty{text-align:center;padding:80px 20px;grid-column:1/-1;background:var(--surface)}
+.empty-title{font-family:var(--ff-display);font-size:1.2rem;font-weight:600;color:var(--text-sec);margin-bottom:8px}
+.empty-sub{font-size:0.88rem;color:var(--text-muted)}
+
+@media(max-width:900px){
+  .clip-row{grid-template-columns:80px 1fr 50px 80px 48px}
+  .clip-cell:nth-child(5),.clip-cell:nth-child(6){display:none}
+  .clip-header .clip-cell:nth-child(5),.clip-header .clip-cell:nth-child(6){display:none}
+  .detail-grid{grid-template-columns:1fr}
+  .toolbar{padding:16px 20px 0}
+  .stats-bar,.grid{padding-left:20px;padding-right:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Pickle <span>DaaS</span> — Data Explorer</div>
+  <div class="nav-count" id="navCount">Loading...</div>
+</nav>
+
+<div class="toolbar">
+  <input class="search-box" id="search" type="text" placeholder="Search clips, brands, arcs, badges...">
+  <select class="filter-select" id="arcFilter"><option value="">All Arcs</option></select>
+  <select class="filter-select" id="qualityFilter">
+    <option value="">All Quality</option>
+    <option value="8">8+ (High)</option>
+    <option value="7">7+ (Good)</option>
+    <option value="6">6+ (Above Avg)</option>
+  </select>
+  <button class="sort-btn active" data-sort="quality" id="sortQuality">Quality ↓</button>
+  <button class="sort-btn" data-sort="viral" id="sortViral">Viral</button>
+  <button class="sort-btn" data-sort="brands" id="sortBrands">Brands</button>
+  <button class="export-btn" id="exportBtn">Export JSON</button>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="grid" id="grid">
+  <div class="clip-row clip-header">
+    <div class="clip-cell">Clip</div>
+    <div class="clip-cell">Summary</div>
+    <div class="clip-cell">Score</div>
+    <div class="clip-cell">Arc</div>
+    <div class="clip-cell">Brands</div>
+    <div class="clip-cell">Badges</div>
+    <div class="clip-cell"></div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+    <video id="modalVideo" controls playsinline></video>
+  </div>
+</div>
+
+<script>
+let CORPUS = [];
+let currentSort = 'quality';
+let sortDir = -1;
+
+async function loadCorpus() {
+  try {
+    const resp = await fetch('corpus-export.json');
+    CORPUS = await resp.json();
+  } catch {
+    // Try relative path variations
+    try {
+      const resp2 = await fetch('./corpus-export.json');
+      CORPUS = await resp2.json();
+    } catch {
+      CORPUS = [];
+    }
+  }
+  document.getElementById('navCount').textContent = CORPUS.length + ' clips in corpus';
+  populateFilters();
+  render();
+}
+
+function populateFilters() {
+  const arcs = [...new Set(CORPUS.map(c => c.arc).filter(Boolean))].sort();
+  const sel = document.getElementById('arcFilter');
+  arcs.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    sel.appendChild(opt);
+  });
+}
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const arc = document.getElementById('arcFilter').value;
+  const minQ = parseInt(document.getElementById('qualityFilter').value) || 0;
+
+  let filtered = CORPUS.filter(c => {
+    if (arc && c.arc !== arc) return false;
+    if (c.quality < minQ) return false;
+    if (q) {
+      const haystack = [c.summary, c.arc, c.dominant_shot, c.ron_burgundy, c.social_caption,
+        ...c.brands, ...c.badges].join(' ').toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    if (currentSort === 'quality') return (b.quality - a.quality) * sortDir;
+    if (currentSort === 'viral') return (b.viral - a.viral) * sortDir;
+    if (currentSort === 'brands') return (b.brands.length - a.brands.length) * sortDir;
+    return 0;
+  });
+
+  return filtered;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const grid = document.getElementById('grid');
+
+  // Keep header
+  const header = grid.querySelector('.clip-header');
+  grid.innerHTML = '';
+  grid.appendChild(header);
+
+  // Stats
+  const totalBrands = [...new Set(filtered.flatMap(c => c.brands))].length;
+  const avgQ = filtered.length ? (filtered.reduce((s, c) => s + c.quality, 0) / filtered.length).toFixed(1) : 0;
+  document.getElementById('statsBar').innerHTML =
+    `Showing <strong>${filtered.length}</strong> clips · Avg quality: <strong>${avgQ}</strong> · ` +
+    `Unique brands: <strong>${totalBrands}</strong> · ` +
+    `Total badges predicted: <strong>${filtered.reduce((s, c) => s + c.badges.length, 0)}</strong>`;
+
+  if (!filtered.length) {
+    grid.innerHTML += '<div class="empty"><div class="empty-title">No clips match your filters</div><div class="empty-sub">Try broadening your search or resetting filters</div></div>';
+    return;
+  }
+
+  filtered.forEach((clip, i) => {
+    const qClass = clip.quality >= 8 ? 'q-high' : clip.quality >= 7 ? 'q-mid' : 'q-low';
+    const brandPills = clip.brands.slice(0, 3).map(b => `<span class="pill pill-brand">${b}</span>`).join('');
+    const badgePills = clip.badges.slice(0, 2).map(b => `<span class="pill pill-badge">${b}</span>`).join('');
+
+    const row = document.createElement('div');
+    row.className = 'clip-row';
+    row.dataset.idx = i;
+    row.innerHTML = `
+      <div class="clip-cell"><img class="clip-thumb" src="${clip.thumbnail}" alt="${clip.arc}" loading="lazy" onerror="this.style.background='var(--border)'"></div>
+      <div class="clip-cell" style="white-space:normal;font-size:0.82rem;color:var(--text-sec);line-height:1.4">${clip.summary || clip.social_caption || '—'}</div>
+      <div class="clip-cell ${qClass}">${clip.quality}/10</div>
+      <div class="clip-cell"><span class="arc-pill">${clip.arc || '—'}</span></div>
+      <div class="clip-cell">${brandPills || '<span style="color:var(--text-muted);font-size:0.75rem">none</span>'}</div>
+      <div class="clip-cell">${badgePills || '<span style="color:var(--text-muted);font-size:0.75rem">none</span>'}</div>
+      <div class="clip-cell expand-arrow">→</div>
+    `;
+    row.addEventListener('click', () => toggleExpand(row, clip));
+    grid.appendChild(row);
+
+    // Detail panel (hidden)
+    const detail = document.createElement('div');
+    detail.className = 'clip-detail';
+    detail.id = 'detail-' + i;
+    grid.appendChild(detail);
+  });
+}
+
+function toggleExpand(row, clip) {
+  const wasExpanded = row.classList.contains('expanded');
+  // Collapse all
+  document.querySelectorAll('.clip-row.expanded').forEach(r => r.classList.remove('expanded'));
+
+  if (wasExpanded) return;
+
+  row.classList.add('expanded');
+  const detail = row.nextElementSibling;
+  if (!detail || !detail.classList.contains('clip-detail')) return;
+
+  const skills = clip.skills || {};
+  const skillHTML = Object.entries({
+    'Coverage': skills.court_coverage,
+    'Kitchen': skills.kitchen,
+    'Creative': skills.creativity,
+    'Athletic': skills.athleticism,
+    'Court IQ': skills.court_iq,
+    'Power': skills.power,
+  }).map(([k, v]) => {
+    const pct = (v || 0) * 10;
+    return `<div class="skill-mini"><span class="skill-mini-label">${k}</span><div class="skill-mini-bar"><div class="skill-mini-fill" style="width:${pct}%"></div></div><span class="skill-mini-val">${v || '—'}</span></div>`;
+  }).join('');
+
+  const allBrands = clip.brands.map(b => `<span class="pill pill-brand">${b}</span>`).join('');
+  const allBadges = clip.badges.map(b => `<span class="pill pill-badge">${b}</span>`).join('');
+  const detailIdx = row.dataset.idx;
+
+  detail.innerHTML = `
+    <div class="detail-grid">
+      <div>
+        <div class="detail-play-wrap" onclick="playVideo('${clip.video_url}')">
+          <img src="${clip.thumbnail}" alt="Play" onerror="this.style.background='var(--border)'">
+          <div class="detail-play-btn"><span>▶</span></div>
+        </div>
+        <div class="detail-section" style="margin-top:16px">
+          <div class="detail-label">Skills</div>
+          ${skillHTML}
+        </div>
+      </div>
+      <div class="detail-right">
+        ${clip.ron_burgundy ? `<div class="detail-section"><div class="detail-label">Ron Burgundy Commentary</div><div class="detail-quote">"${clip.ron_burgundy}"</div><div class="detail-cite">— AI Voice Pack · Gemini ${clip.model || '2.5 Flash'}</div></div>` : ''}
+        <div class="detail-section"><div class="detail-label">Summary</div><div class="detail-summary">${clip.summary || '—'}</div></div>
+        <div class="detail-section"><div class="detail-label">Brands Detected</div><div class="detail-pills">${allBrands || '<span style="font-size:0.82rem;color:var(--text-muted)">None</span>'}</div></div>
+        <div class="detail-section"><div class="detail-label">Badges Predicted</div><div class="detail-pills">${allBadges || '<span style="font-size:0.82rem;color:var(--text-muted)">None</span>'}</div></div>
+        <div class="detail-section">
+          <div class="detail-label">Clip ID</div>
+          <span style="font-family:var(--ff-mono);font-size:0.75rem;color:var(--text-muted)">${clip.uuid}</span>
+        </div>
+        <span class="detail-json-toggle" onclick="toggleJson(this, ${detailIdx})">View raw JSON →</span>
+        <div class="detail-json" id="json-${detailIdx}"></div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleJson(el, idx) {
+  const jsonDiv = document.getElementById('json-' + idx);
+  if (jsonDiv.classList.contains('open')) {
+    jsonDiv.classList.remove('open');
+    el.textContent = 'View raw JSON →';
+  } else {
+    const filtered = getFiltered();
+    jsonDiv.textContent = JSON.stringify(filtered[idx], null, 2);
+    jsonDiv.classList.add('open');
+    el.textContent = 'Hide JSON ↑';
+  }
+}
+
+// Sort
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sort = btn.dataset.sort;
+    if (currentSort === sort) { sortDir *= -1; }
+    else { currentSort = sort; sortDir = -1; }
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    btn.textContent = btn.dataset.sort.charAt(0).toUpperCase() + btn.dataset.sort.slice(1) + (sortDir === -1 ? ' ↓' : ' ↑');
+    render();
+  });
+});
+
+// Filters
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('arcFilter').addEventListener('change', render);
+document.getElementById('qualityFilter').addEventListener('change', render);
+
+// Export
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = JSON.stringify(getFiltered(), null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pickle-daas-export.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Video modal
+function playVideo(url) {
+  const modal = document.getElementById('modal');
+  const video = document.getElementById('modalVideo');
+  video.src = url; modal.classList.add('open');
+  video.play().catch(() => {});
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  const modal = document.getElementById('modal');
+  const video = document.getElementById('modalVideo');
+  modal.classList.remove('open'); video.pause(); video.src = '';
+  document.body.style.overflow = '';
+}
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Init
+loadCorpus();
+</script>
+</body>
+</html>

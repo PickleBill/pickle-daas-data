@@ -63,10 +63,10 @@ from google.genai import types
 # CONFIG
 # ---------------------------------------------------------------------------
 
-GEMINI_MODEL         = "gemini-2.5-flash"  # Primary model
-GEMINI_MODEL_LITE    = "gemini-2.5-flash-lite"  # Fallback when primary is 503
+GEMINI_MODEL         = "gemini-2.5-flash-lite"  # Fast + reliable. Switch to "gemini-2.5-flash" when it's stable.
+GEMINI_MODEL_LITE    = "gemini-2.5-flash-lite"
 GEMINI_MODEL_COMPARE = "gemini-2.5-pro"    # Used for --compare-models
-GEMINI_MODEL_CASCADE = [GEMINI_MODEL, GEMINI_MODEL_LITE]  # Try in order
+GEMINI_MODEL_CASCADE = [GEMINI_MODEL]  # Single model = no probe waste. Add fallbacks if needed.
 
 COURTANA_API_BASE = "https://api.courtana.com/private-api/v1"
 
