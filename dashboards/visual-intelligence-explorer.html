@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS Intelligence Explorer</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#07071a;--surface:#111130;--card:#161645;--border:#252560;--green:#00E676;--green-dim:#00E67633;--green-glow:#00E67644;--text:#e8e8f0;--text-dim:#8888aa;--accent2:#7c4dff;--accent3:#ff6090;--accent4:#ffab40;--orange:#ff6d00;--radius:14px}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;overflow-x:hidden}
+a{color:var(--green);text-decoration:none}
+.container{max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* Hero */
+.hero{text-align:center;padding:60px 20px 40px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,var(--green-dim) 0%,transparent 60%);animation:heroGlow 8s ease-in-out infinite alternate}
+@keyframes heroGlow{0%{opacity:.3;transform:scale(1)}100%{opacity:.6;transform:scale(1.1)}}
+.hero h1{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--green) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;z-index:1}
+.hero .subtitle{color:var(--text-dim);font-size:1.1rem;margin-top:8px;position:relative;z-index:1}
+.hero .subtitle span{color:var(--green);font-weight:700}
+.stat-row{display:flex;justify-content:center;gap:40px;margin-top:30px;flex-wrap:wrap;position:relative;z-index:1}
+.stat-box{text-align:center}
+.stat-num{font-size:2.4rem;font-weight:800;color:var(--green);font-variant-numeric:tabular-nums}
+.stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--text-dim)}
+
+/* Section headers */
+.section{padding:50px 0}
+.section-title{font-size:1.6rem;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.section-title .icon{width:32px;height:32px;background:var(--green-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.filter-pill{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:.85rem;transition:all .25s}
+.filter-pill:hover,.filter-pill.active{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+
+/* Clip grid */
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.clip-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:all .3s;aspect-ratio:16/9}
+.clip-card:hover{transform:translateY(-4px);border-color:var(--green);box-shadow:0 8px 32px var(--green-glow)}
+.clip-card img{width:100%;height:100%;object-fit:cover;display:block}
+.clip-card .overlay{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,.85));display:flex;gap:6px;align-items:flex-end}
+.badge{padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge-quality{background:#00E67633;color:#00E676}
+.badge-viral{background:#7c4dff33;color:#7c4dff}
+.badge-arc{background:#ff609033;color:#ff6090}
+.clip-card .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
+.clip-card:hover .play-btn{opacity:1}
+.play-btn::after{content:'';border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;margin-left:4px}
+
+/* Charts row */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:768px){.charts-row{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative}
+.chart-card h3{margin-bottom:16px;font-size:1.1rem}
+
+/* Heatmap */
+.heatmap-wrap{overflow-x:auto}
+.heatmap{border-collapse:separate;border-spacing:4px;width:100%}
+.heatmap th{padding:8px 6px;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);white-space:nowrap}
+.heatmap td{padding:10px 6px;text-align:center;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .25s;min-width:60px}
+.heatmap td:hover{transform:scale(1.1);box-shadow:0 0 12px var(--green-glow)}
+
+/* Brand cards */
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.brand-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;transition:all .3s}
+.brand-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 4px 20px var(--green-glow)}
+.brand-card .brand-name{font-weight:700;font-size:1rem;margin-bottom:4px}
+.brand-card .brand-count{color:var(--green);font-size:1.4rem;font-weight:800}
+.brand-card .brand-label{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+
+/* Arc cards */
+.arc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.arc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.arc-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.arc-card:hover{border-color:var(--green);transform:translateY(-2px)}
+.arc-card .arc-name{font-weight:700;font-size:1rem;margin-bottom:4px;text-transform:capitalize}
+.arc-card .arc-count{color:var(--green);font-size:1.8rem;font-weight:800}
+.arc-card .arc-label{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.arc-color-0::before{background:#00E676}
+.arc-color-1::before{background:#7c4dff}
+.arc-color-2::before{background:#ff6090}
+.arc-color-3::before{background:#ffab40}
+.arc-color-4::before{background:#40c4ff}
+.arc-color-5::before{background:#69f0ae}
+.arc-color-6::before{background:#ea80fc}
+
+/* AI Says */
+.ai-quote-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;gap:20px;align-items:center;margin-bottom:16px;cursor:pointer;transition:all .3s}
+.ai-quote-card:hover{border-color:var(--green);box-shadow:0 4px 20px var(--green-glow)}
+.ai-quote-thumb{width:160px;min-width:160px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;position:relative}
+.ai-quote-thumb img{width:100%;height:100%;object-fit:cover}
+.ai-quote-text{flex:1}
+.ai-quote-text .label{font-size:.7rem;color:var(--green);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:700}
+.ai-quote-text blockquote{font-style:italic;color:var(--text);font-size:.95rem;line-height:1.5}
+.ai-quote-text .caption{margin-top:8px;font-size:.8rem;color:var(--text-dim)}
+@media(max-width:600px){.ai-quote-card{flex-direction:column}.ai-quote-thumb{width:100%;min-width:unset}}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.modal-overlay.active{display:flex}
+.modal-content{max-width:960px;width:100%;display:flex;gap:24px;position:relative}
+@media(max-width:768px){.modal-content{flex-direction:column}}
+.modal-video{flex:1.5;border-radius:var(--radius);overflow:hidden;background:#000}
+.modal-video video{width:100%;display:block;border-radius:var(--radius)}
+.modal-info{flex:1;display:flex;flex-direction:column;gap:12px}
+.modal-info .info-label{font-size:.7rem;color:var(--green);text-transform:uppercase;letter-spacing:2px;font-weight:700}
+.modal-info .info-text{font-size:.9rem;color:var(--text);line-height:1.5}
+.modal-close{position:absolute;top:-40px;right:0;width:36px;height:36px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.modal-close:hover{background:var(--green);color:var(--bg)}
+
+/* Active filter indicator */
+.active-filter{background:var(--green-dim);border:1px solid var(--green);border-radius:var(--radius);padding:12px 20px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between}
+.active-filter.show{display:flex}
+.active-filter span{color:var(--green);font-weight:600;font-size:.9rem}
+.clear-filter{padding:4px 12px;border-radius:8px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;font-size:.8rem;transition:all .25s}
+.clear-filter:hover{background:var(--green);color:var(--bg)}
+
+/* Loading shimmer */
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,var(--card) 25%,var(--border) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+
+/* Scroll animations */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* Footer */
+.footer{text-align:center;padding:40px 20px;color:var(--text-dim);font-size:.8rem;border-top:1px solid var(--border)}
+.footer span{color:var(--green)}
+
+/* Count animation */
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.count-animate{animation:countUp .6s ease-out}
+
+/* Responsive tweaks */
+@media(max-width:600px){
+ .stat-row{gap:20px}
+ .stat-num{font-size:1.6rem}
+ .clip-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+ .section{padding:30px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+ <h1>Pickle DaaS Intelligence Explorer</h1>
+ <p class="subtitle">AI-Powered Pickleball Analytics &mdash; <span id="clipCount">0</span> Clips Analyzed</p>
+ <div class="stat-row">
+  <div class="stat-box"><div class="stat-num" id="statBrands">0</div><div class="stat-label">Brands Detected</div></div>
+  <div class="stat-box"><div class="stat-num" id="statArcs">0</div><div class="stat-label">Story Arcs</div></div>
+  <div class="stat-box"><div class="stat-num" id="statShots">0</div><div class="stat-label">Shot Types</div></div>
+  <div class="stat-box"><div class="stat-num" id="statAvgQ">0</div><div class="stat-label">Avg Quality</div></div>
+ </div>
+</div>
+
+<div class="container">
+
+<!-- Active filter bar -->
+<div class="active-filter" id="activeFilter">
+ <span id="filterLabel">Filtering...</span>
+ <button class="clear-filter" onclick="clearFilter()">Clear Filter</button>
+</div>
+
+<!-- Featured Clips -->
+<div class="section fade-in">
+ <div class="section-title"><div class="icon">&#127909;</div> Featured Clips</div>
+ <div class="filter-bar" id="shotFilterBar"></div>
+ <div class="clip-grid" id="clipGrid"></div>
+</div>
+
+<!-- Charts Row: Shot Distribution + Quality/Viral Scatter -->
+<div class="section fade-in">
+ <div class="charts-row">
+  <div class="chart-card">
+   <h3>Shot Type Distribution</h3>
+   <canvas id="shotDonut" height="280"></canvas>
+  </div>
+  <div class="chart-card">
+   <h3>Quality vs Viral Potential</h3>
+   <canvas id="qualityViral" height="280"></canvas>
+  </div>
+ </div>
+</div>
+
+<!-- Skill Heatmap -->
+<div class="section fade-in">
+ <div class="section-title"><div class="icon">&#127919;</div> Skill Heatmap by Shot Type</div>
+ <div class="heatmap-wrap">
+  <table class="heatmap" id="heatmapTable"></table>
+ </div>
+</div>
+
+<!-- Brand Presence -->
+<div class="section fade-in">
+ <div class="section-title"><div class="icon">&#128717;</div> Brand Intelligence</div>
+ <div class="brand-grid" id="brandGrid"></div>
+</div>
+
+<!-- Story Arc Explorer -->
+<div class="section fade-in">
+ <div class="section-title"><div class="icon">&#127916;</div> Story Arc Explorer</div>
+ <div class="arc-grid" id="arcGrid"></div>
+</div>
+
+<!-- AI Says -->
+<div class="section fade-in">
+ <div class="section-title"><div class="icon">&#129302;</div> AI Commentary</div>
+ <div id="aiQuotes"></div>
+ <div style="text-align:center;margin-top:16px">
+  <button class="filter-pill" onclick="loadQuotes()" style="border-color:var(--green);color:var(--green)">&#8635; Shuffle Quotes</button>
+ </div>
+</div>
+
+</div>
+
+<!-- Video Modal -->
+<div class="modal-overlay" id="videoModal">
+ <div class="modal-content">
+  <button class="modal-close" onclick="closeModal()">&times;</button>
+  <div class="modal-video">
+   <video id="modalVideo" controls playsinline></video>
+  </div>
+  <div class="modal-info" id="modalInfo"></div>
+ </div>
+</div>
+
+<div class="footer">
+ <p>Pickle DaaS Intelligence Explorer &mdash; <span>PickleBill</span> &copy; 2026</p>
+ <p style="margin-top:4px">Powered by Courtana + Gemini AI &bull; 96 clips in corpus</p>
+</div>
+
+<script>
+const CORPUS = [{"uuid":"8ade4e4e-42df-4c74-9343-f144bac993a2","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"By the beard of Zeus, what a dink-fest! These gentlemen are engaged in a ballet of precision, a veritable symphony of soft touches, until, alas, a bold attempt sails just beyond the pale. Truly magnificent!","social_caption":"Dink battle royale! Who's got the softest hands? \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"f4df1bb4-196e-4588-bfee-cd2ca367d138","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["PICKLEBALL","Skull Logo"],"badges":[],"ron_burgundy":"Great Scott, what a spectacle! Multiple courts, multiple battles, all unfolding with the grace of a gazelle and the ferocity of a... well, a very determined pickleball player. Truly, a magnificent display of athleticism and paddle prowess.","social_caption":"Dink battles and good vibes! \ud83c\udfd3 #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"8fe77353-44ee-4f8f-b7dd-36029797c8bd","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.jpeg","quality":8,"viral":6,"watchability":7,"arc":"athletic_highlight","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, I'll be a pickle! That was a rather spirited exchange of volleys, culminating in a rather decisive, dare I say, *powerful* strike. Truly a magnificent display of athleticism, folks. Stay classy, pickleball world!","social_caption":"Kitchen battle to a \ud83d\udd25 speed-up winner!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"b18ca113-c853-4811-b486-ab7f56472851","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"volley","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Great Scott, that was a rally of epic proportions! The ball danced like a gazelle on a hot tin roof, only to be met with a thunderous, albeit slightly wayward, strike. Truly a magnificent display of human endeavor, if I do say so myself.","social_caption":"Kitchen battle heats up! \ud83d\udd25 Who do you think won this point?","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"2615847e-82b0-4ec6-866e-fe81fe9c5fec","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg","quality":8,"viral":7,"watchability":8,"arc":"clutch_moment","summary":"","dominant_shot":"dink","total_shots":0,"brands":["PICKLEBALL"],"badges":[],"ron_burgundy":"Well, that was quite the spectacle, wasn't it? A veritable ballet of paddles and plastic, culminating in a most audacious, dare I say, *fortuitous* bounce. Truly, a moment of pure, unadulterated pickleball poetry, much like my own news reports.","social_caption":"When the pickleball gods are on your side! \ud83c\udf40 #NetCordMagic","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"ea5f58c0-8d07-4eed-8393-22218dc0b4fc","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ea5f58c0-8d07-4eed-8393-22218dc0b4fc.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ea5f58c0-8d07-4eed-8393-22218dc0b4fc.jpeg","quality":8,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink_to_speed_up","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"By the beard of Zeus, what a display of athletic prowess on the pickleball court! The dinks, so delicate, yet the ensuing volleys, a veritable tempest of power and precision. A truly magnificent, if ultimately errant, conclusion to this spirited exchange.","social_caption":"Dink, dink, BANG! \ud83d\udca5 Kitchen battle heats up!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"ac0e1a1b-d8a6-4c6e-8148-4660e819a486","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.jpeg","quality":8,"viral":2,"watchability":3,"arc":"pure_fun","summary":"","dominant_shot":"serve","total_shots":0,"brands":["Courtana","Franklin","Selkirk","JOOLA"],"badges":[],"ron_burgundy":"Well, that was a serve. And then, a return. Truly, a masterclass in the foundational elements of this... *pickleball* sport. Remarkable. Simply remarkable.","social_caption":"Serve & Return perfection! \ud83c\udfbe #Pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"ce00696b-9f9b-465a-971c-dbf1334e556c","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg","quality":8,"viral":7,"watchability":8,"arc":"athletic_highlight","summary":"","dominant_shot":"overhead","total_shots":0,"brands":["Courtana","JOOLA"],"badges":[],"ron_burgundy":"By the beard of Zeus, that was a shot of pure, unadulterated power! The ball, much like a fine aged scotch, was delivered with precision and a robust finish. Simply delightful.","social_caption":"Airborne for the WIN! \ud83d\ude80 #Pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"c8a11ae6-a90f-4d5c-afe9-1a95c0a9646f","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c8a11ae6-a90f-4d5c-afe9-1a95c0a9646f.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c8a11ae6-a90f-4d5c-afe9-1a95c0a9646f.jpeg","quality":8,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["STRENGTHHOUSE"],"badges":[],"ron_burgundy":"Well, that was certainly a pickleball rally of some... duration. The ball, a vibrant yellow, traversed the court with a certain... vigor, only to find its final resting place just beyond the designated boundary. Remarkable.","social_caption":"Drive it like you mean it! \ud83d\udcaa #PickleballRally","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"cf1e048f-f1cf-47e8-a55e-c99abb6c6c36","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg","quality":8,"viral":7,"watchability":7,"arc":"athletic_highlight","summary":"","dominant_shot":"dink","total_shots":0,"brands":["Recovery Cave","The Underground"],"badges":[],"ron_burgundy":"By the beard of Zeus, what a display! The tactical ballet at the net, the sudden burst of power, culminating in an aerial assault that would make a bald eagle weep with pride. Truly, a moment of sporting grandeur!","social_caption":"Kitchen battle to an airborne smash! \ud83d\udd25 #Pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"d2171138-f847-4272-803a-39115e86bd2b","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d2171138-f847-4272-803a-39115e86bd2b.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d2171138-f847-4272-803a-39115e86bd2b.jpeg","quality":8,"viral":5,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"volley","total_shots":0,"brands":["A100"],"badges":[],"ron_burgundy":"","social_caption":"","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"3df45199-1d8c-4d6a-a076-637a059c9621","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.jpeg","quality":8,"viral":7,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"volley","total_shots":0,"brands":["The Ground","Pickleball"],"badges":[],"ron_burgundy":"By the beard of Zeus, that was a rally for the ages! The ball danced upon the net like a graceful gazelle, only to be met with a thunderous strike that left the opposition utterly flummoxed. Simply put, it was a triumph of human endeavor.","social_caption":"Kitchen battle to a speed-up winner! \ud83d\udd25 #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"42520eda-1392-45bc-9b0c-c3c491e32cfd","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["APPLA"],"badges":[],"ron_burgundy":"Well, that was a pickleball rally of epic proportions, a true ballet of paddles and plastic. The dinking, oh the dinking, a delicate dance before the thunderous conclusion. Simply magnificent.","social_caption":"Dink, dink, dink... SMASH! \ud83d\udd25 What a rally!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"139453f3-8ac3-4687-922e-214cc15490df","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg","quality":8,"viral":7,"watchability":8,"arc":"athletic_highlight","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Good heavens, what a display of athletic prowess! The dinks were as delicate as a butterfly's kiss, until, that is, a thunderous forehand erupted, leaving the opposition utterly flummoxed. Simply magnificent, San Diego!","social_caption":"Dink, dink, BANG! \ud83d\udca5 What a finish!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"0ec3d983-c439-4126-ae11-d659c4c5e379","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"","dominant_shot":"overhead","total_shots":0,"brands":["JOOLA","CRBN"],"badges":[],"ron_burgundy":"By the beard of Zeus, that was a pickleball point of considerable vigor! The far team, with their powerful overheads, demonstrated a mastery of the aerial assault, leaving their opponents bewildered and, dare I say, slightly deflated. Truly a spectacle for the ages.","social_caption":"Overhead for the win! \ud83d\udca5 #pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"70043064-c6c3-4f60-8744-5671a1f85e35","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.jpeg","quality":8,"viral":7,"watchability":8,"arc":"grind_rally","summary":"","dominant_shot":"volley","total_shots":0,"brands":["Courtana","JOOLA","CRBN"],"badges":[],"ron_burgundy":"By the beard of Zeus, that was a rally of epic proportions! The players, with their paddles poised like gladiators, engaged in a ballet of dinks and volleys. And then, a decisive overhead, a shot so magnificent, it could only be described as pure, unadulterated pickleball poetry. Stay classy, pickleballers.","social_caption":"Kitchen battle royale! \ud83d\udd25 What a rally! #pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"c9aa41f3-74d2-4289-b9e7-7796f38c609b","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9aa41f3-74d2-4289-b9e7-7796f38c609b.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9aa41f3-74d2-4289-b9e7-7796f38c609b.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather intense pickleball match unfolding. The players are engaged in what can only be described as a spirited volley of small, yellow balls. One player, with remarkable composure, has just executed a maneuver that has apparently ended the current skirmish. Stay classy, pickleball fans.","social_caption":"Kitchen battle perfection! \ud83d\udcaf Patience pays off with a killer speed-up!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"e7340a11-5037-478c-9065-6e6f52d3e74c","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e7340a11-5037-478c-9065-6e6f52d3e74c.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e7340a11-5037-478c-9065-6e6f52d3e74c.jpeg","quality":7,"viral":2,"watchability":3,"arc":"error_highlight","summary":"","dominant_shot":"drop","total_shots":0,"brands":["RECOVERY CAVE","ONIX"],"badges":[],"ron_burgundy":"Well, that was a pickleball rally of... brevity. The third shot, a valiant effort, alas, found its watery grave before the net. Remarkable.","social_caption":"Oops! 3rd shot drop gone wrong! \ud83d\ude05 #pickleballfails","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"e1454b14-12b9-4955-b07b-81642fddb8e3","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e1454b14-12b9-4955-b07b-81642fddb8e3.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e1454b14-12b9-4955-b07b-81642fddb8e3.jpeg","quality":7,"viral":6,"watchability":6,"arc":"error_highlight","summary":"","dominant_shot":"dink","total_shots":0,"brands":["ACRYL"],"badges":[],"ron_burgundy":"By the beard of Zeus, what a display of finesse and... oh, a miscalculation! The ball, alas, found its watery grave in the net. Truly a moment of both grace and, dare I say, mild disappointment.","social_caption":"Dink battle gone wrong! \ud83d\ude2c #pickleball #fail #kitchenline","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"597f6bf5-ece9-4a4c-8a6c-98b33f41edf9","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/597f6bf5-ece9-4a4c-8a6c-98b33f41edf9.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/597f6bf5-ece9-4a4c-8a6c-98b33f41edf9.jpeg","quality":7,"viral":3,"watchability":6,"arc":"pure_fun","summary":"","dominant_shot":"drive","total_shots":0,"brands":["Skull Logo","Pickleball"],"badges":[],"ron_burgundy":"Ah, the glorious spectacle of pickleball, played with such casual intensity across these magnificent courts. A true testament to the human spirit's desire for paddle-based camaraderie. Stay classy, pickleballers.","social_caption":"Pickleball paradise! \ud83e\udd29 Four courts, endless fun! #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"eb168c8c-cd17-4f06-b2ff-64335723dbc7","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/eb168c8c-cd17-4f06-b2ff-64335723dbc7.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/eb168c8c-cd17-4f06-b2ff-64335723dbc7.jpeg","quality":7,"viral":2,"watchability":3,"arc":"pure_fun","summary":"","dominant_shot":"dink","total_shots":0,"brands":["PICKLEBALL"],"badges":[],"ron_burgundy":"Ah, the subtle art of the dink. A dance of precision, a ballet of the paddle. These two, with their unwavering focus, are truly staying classy on the pickleball court. Remarkable, simply remarkable.","social_caption":"Dink drill perfection! \ud83c\udfaf #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"f949e679-378f-4eab-8f80-d7f619702b07","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f949e679-378f-4eab-8f80-d7f619702b07.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f949e679-378f-4eab-8f80-d7f619702b07.jpeg","quality":7,"viral":2,"watchability":3,"arc":"error_highlight","summary":"","dominant_shot":"volley","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Well, that escalated quickly, then de-escalated even quicker. A valiant effort at the net, but alas, the ball had other plans, much like my weekend schedule. Stay classy, pickleball fans.","social_caption":"Rally ends with a speed-up error! \ud83d\ude2c #Pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"8e5d3ea1-3384-4919-8fb0-30988c2c81ca","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8e5d3ea1-3384-4919-8fb0-30988c2c81ca.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8e5d3ea1-3384-4919-8fb0-30988c2c81ca.jpeg","quality":7,"viral":5,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a display of... pickleball. The players are hitting the ball back and forth, with a remarkable lack of urgency. It's like watching paint dry, but with paddles. Truly a spectacle for the ages.","social_caption":"Kitchen DINK battle! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"0026ad09-1943-4ed0-9761-37f4d57fed04","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0026ad09-1943-4ed0-9761-37f4d57fed04.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0026ad09-1943-4ed0-9761-37f4d57fed04.jpeg","quality":7,"viral":5,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well, look at these fine athletes engaging in a spirited game of pickleball. It's a real test of skill and, dare I say, finesse. Stay classy, pickleballers.","social_caption":"Kitchen control and a winning volley!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"e48580ea-5f5a-42bb-97c4-d78dcce254f5","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. The players are hitting the ball back and forth, which is, you know, the objective. It's a real nail-biter, folks. Or, you know, a paddle-biter. Whatever they call it.","social_caption":"Rally on! \ud83d\udca5","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"849fed56-36d2-4737-b338-18c5046f66e6","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/849fed56-36d2-4737-b338-18c5046f66e6.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/849fed56-36d2-4737-b338-18c5046f66e6.jpeg","quality":7,"viral":5,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a display of... pickleball. The players are engaged in a prolonged exchange of what I believe are called 'dinks.' It's a very... measured approach. Stay classy, pickleball court.","social_caption":"Kitchen battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"6ca0d423-1ca7-493a-8960-d76f48725b21","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ca0d423-1ca7-493a-8960-d76f48725b21.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ca0d423-1ca7-493a-8960-d76f48725b21.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["PKLR","JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather lengthy pickleball rally unfolding. The players are engaged in a spirited exchange, demonstrating a remarkable level of sustained effort. It's quite... pickleball-y.","social_caption":"Extended rally with some sweet kitchen play! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"3a564f4c-591e-4932-863d-b7a4e9411277","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.jpeg","quality":7,"viral":5,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"Well, it appears we have a spirited game of pickleball underway. The players are engaged, the ball is being struck with a certain vigor. It's a testament to the human spirit's desire to\u2026 hit a small, perforated ball over a net. Stay classy, pickleballers.","social_caption":"Pickleball rally: Drive and dink!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"0d3e6a2f-0c50-47f1-9a6b-e2e8c9ceb8b0","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0d3e6a2f-0c50-47f1-9a6b-e2e8c9ceb8b0.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0d3e6a2f-0c50-47f1-9a6b-e2e8c9ceb8b0.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match in progress. The players are hitting the ball back and forth, which is, you know, the objective. It's a real nail-biter, folks. Or perhaps a paddle-biter. Either way, it's happening.","social_caption":"Kitchen battles and transition zone drives! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg","quality":7,"viral":5,"watchability":6,"arc":"athletic_highlight","summary":"","dominant_shot":"reset","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is just a masterclass in pickleball. The players are moving with the grace of a thousand swans, and their shots are as precise as a Swiss watch. It's truly a sight to behold, and I'm sure the people watching are having a grand old time.","social_caption":"Kitchen resets and a killer finish! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"68ee7493-af3c-4da8-a21c-916a33a2d674","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/68ee7493-af3c-4da8-a21c-916a33a2d674.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/68ee7493-af3c-4da8-a21c-916a33a2d674.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a lot of dinking. It's like watching paint dry, but with paddles. Still, it's a sport, and people seem to enjoy it. Stay classy, pickleball fans.","social_caption":"Kitchen battle for the ages! \ud83e\udd75","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"0e197020-5ad8-4a36-9ddc-75f21fcdab51","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0e197020-5ad8-4a36-9ddc-75f21fcdab51.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0e197020-5ad8-4a36-9ddc-75f21fcdab51.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather spirited game of pickleball underway. The players are engaged in a series of delicate volleys, a true test of their mettle. One might even say, they're playing with the grace of a thousand swans... or perhaps just very determined individuals.","social_caption":"Patient dinks lead to a decisive speed-up!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"a4e8f830-35cc-4303-bec0-06b4cdeddfa7","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.jpeg","quality":7,"viral":2,"watchability":3,"arc":"pure_fun","summary":"","dominant_shot":"drive","total_shots":0,"brands":["ONIX"],"badges":[],"ron_burgundy":"Well, I'll be a pickleball paddle! These two are engaged in what can only be described as a rather agreeable exchange of volleys. The sheer consistency, the unwavering commitment to the baseline, it's a symphony of... well, pickleball. Stay classy, San Diego.","social_caption":"Just grinding out those baseline drives! \ud83c\udfbe #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"08932731-03ab-4c3d-9558-a2cfc5273dad","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.jpeg","quality":7,"viral":3,"watchability":5,"arc":"pure_fun","summary":"","dominant_shot":"volley","total_shots":0,"brands":["Recovery Cave"],"badges":[],"ron_burgundy":"Well, I'll be a pickle! This, my friends, is a veritable ballet of paddles and plastic, a true testament to the human spirit's desire for... well, for pickleball. Stay classy, pickleballers!","social_caption":"Kitchen line battle! \ud83d\udca5 Who's winning this volley exchange?","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"472bcafa-4c30-49f5-a6b1-ea23007f94c9","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/472bcafa-4c30-49f5-a6b1-ea23007f94c9.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/472bcafa-4c30-49f5-a6b1-ea23007f94c9.jpeg","quality":7,"viral":4,"watchability":6,"arc":"","summary":"","dominant_shot":"","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"","social_caption":"","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"6ee49439-c28a-452f-9bc3-ccea303d3330","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea303d3330.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea303d3330.jpeg","quality":7,"viral":2,"watchability":3,"arc":"error_highlight","summary":"","dominant_shot":"serve","total_shots":0,"brands":["The Underground"],"badges":[],"ron_burgundy":"Well, that's certainly one way to win a point, isn't it? A magnificent display of... well, of the ball going out. Truly a testament to the unpredictable nature of this glorious sport. Stay classy, pickleball fans!","social_caption":"Double trouble on the returns! \ud83d\ude05 #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"91a764f8-4093-4dd0-afb8-ca31b5bf72c5","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/91a764f8-4093-4dd0-afb8-ca31b5bf72c5.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/91a764f8-4093-4dd0-afb8-ca31b5bf72c5.jpeg","quality":7,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["RECOVERY CAVE"],"badges":[],"ron_burgundy":"Well, that was a rather... deliberate exchange of the pickleball. The dinks, they just kept coming, like a well-oiled machine, until, alas, the final shot, a valiant effort, found itself outside the confines of the playing field. Stay classy, pickleballers.","social_caption":"Dink battle at the kitchen! Who's got the touch? \ud83e\udd14 #pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"c30b464e-25b4-4029-ba30-49b1f3877f42","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.jpeg","quality":7,"viral":8,"watchability":7,"arc":"error_highlight","summary":"","dominant_shot":"volley","total_shots":0,"brands":["JOOLA","LIFE TIME PICKLEBALL"],"badges":[],"ron_burgundy":"Well, that was certainly a pickleball rally. Not quite a symphony of dinks, nor a ballet of volleys, but a rally nonetheless. I'm Ron Burgundy, and that's the way the pickleball bounces.","social_caption":"When the rally is short but the lessons are long. \ud83d\ude02 #PickleballFails","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"f415729c-153e-4024-bdc3-9a9836752e4e","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f415729c-153e-4024-bdc3-9a9836752e4e.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f415729c-153e-4024-bdc3-9a9836752e4e.jpeg","quality":7,"viral":3,"watchability":5,"arc":"teaching_moment","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA","LIFE TIME PICKLEBALL"],"badges":[],"ron_burgundy":"Good heavens, what a display of athleticism and paddle prowess! The serve, a veritable symphony of spin and precision, was met with a return of\u2026 well, let's just say it was returned. Then, a drive of such ferocity, it could curdle milk! Truly, a pickleball ballet unfolding before our very eyes.","social_caption":"Drive, drop, dink! Pickleball strategy in action. #PickleballTips","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"0b225575-5bd7-4e7b-ac84-8b59a86cb811","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0b225575-5bd7-4e7b-ac84-8b59a86cb811.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0b225575-5bd7-4e7b-ac84-8b59a86cb811.jpeg","quality":7,"viral":3,"watchability":5,"arc":"pure_fun","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA","LIFE TIME PICKLEBALL"],"badges":[],"ron_burgundy":"By the beard of Zeus, this pickleball contest is a symphony of precision and power! The players, with their unwavering focus, deliver a spectacle of athletic prowess that truly defines 'stay classy, San Diego' on the court.","social_caption":"Just a casual day on the court! \ud83c\udfbe #PickleballLife","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"94000a16-30aa-4576-b177-15f247004d14","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/94000a16-30aa-4576-b177-15f247004d14.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/94000a16-30aa-4576-b177-15f247004d14.jpeg","quality":7,"viral":5,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"Well, it appears we have a rather... *delicate* exchange happening here. It's not exactly the high-octane action one might expect, but there's a certain... *finesse* to it. Like watching two very polite gentlemen discuss the weather, but with paddles.","social_caption":"Patience is a virtue at the net! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"3a5506e8-3ef7-4848-8965-4b0f458ab677","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a5506e8-3ef7-4848-8965-4b0f458ab677.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a5506e8-3ef7-4848-8965-4b0f458ab677.jpeg","quality":7,"viral":5,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. People are hitting a ball back and forth over a net. It's... a sport. I'm Ron Burgundy? Stay classy, San Diego.","social_caption":"Kitchen battles and perfect resets! \ud83d\udd25","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"4c657b22-6294-4418-88f5-cfc555784824","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4c657b22-6294-4418-88f5-cfc555784824.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4c657b22-6294-4418-88f5-cfc555784824.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. Lots of little balls going back and forth. It's quite\u2026 strategic. I'm not sure I fully understand it, but it's happening. Stay classy, pickleball fans.","social_caption":"Patience is a virtue! \ud83d\udcaf Epic dink rally!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"c9f8620c-a0a4-4bb7-8dfd-03afe0e94661","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9f8620c-a0a4-4bb7-8dfd-03afe0e94661.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9f8620c-a0a4-4bb7-8dfd-03afe0e94661.jpeg","quality":7,"viral":4,"watchability":6,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Well, it appears these individuals are engaged in a spirited game of pickleball. The ball is being struck with considerable vigor, and the players are exhibiting remarkable agility for their age. It's truly a spectacle of athletic prowess, or at least, a very enthusiastic pastime.","social_caption":"Epic dink battle! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"bccb8b27-3b6c-4189-86b4-d6677798a50a","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.jpeg","quality":7,"viral":6,"watchability":6,"arc":"teaching_moment","summary":"","dominant_shot":"other","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"By the beard of Zeus, these young gladiators of the ice are a sight to behold! Their stickhandling, a symphony of skill amidst the winter's embrace. Truly, a magnificent display of frozen artistry.","social_caption":"Snow day hockey! \ud83c\udfd2\ud83e\udd45 #YouthHockey","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"dc7e80e0-e646-40d1-b664-9b7e532d65df","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/dc7e80e0-e646-40d1-b664-9b7e532d65df.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/dc7e80e0-e646-40d1-b664-9b7e532d65df.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 spirited\u2026 exchange of what I believe are called 'dinks.' The players are exhibiting a remarkable level of focus, perhaps even more focus than I have when I'm deciding which tie to wear. It's a real testament to the human spirit, and the human ability to hit a small ball over a net.","social_caption":"Kitchen battle! \u2694\ufe0f Patience pays off in this dink exchange.","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"7c349719-a671-42a3-ab13-c7165b555cb4","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7c349719-a671-42a3-ab13-c7165b555cb4.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7c349719-a671-42a3-ab13-c7165b555cb4.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is quite the pickleball exhibition. Lots of little balls going back and forth. It's like watching a very polite, very intense game of ping pong, but with bigger paddles. Stay classy, pickleball fans.","social_caption":"Patient dink battle leads to a forced error! \ud83c\udfbe","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"0a491741-7438-409c-8846-bcf82d1af27c","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0a491741-7438-409c-8846-bcf82d1af27c.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0a491741-7438-409c-8846-bcf82d1af27c.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 *intense* game of pickleball unfolding. The players are engaged in what can only be described as a strategic ballet of paddle-to-ball contact. It's quite\u2026 *fascinating*.","social_caption":"Kitchen battles and dink mastery! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"4110e228-53cb-4a0e-8ca4-32d70935a0c5","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4110e228-53cb-4a0e-8ca4-32d70935a0c5.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4110e228-53cb-4a0e-8ca4-32d70935a0c5.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"Well, well, well. It appears we have a rather... *delicate* exchange happening at the net. Lots of little taps. It's like a tiny, very athletic ballet. Fascinating. Truly, a testament to the human spirit's ability to hit small yellow balls with paddles.","social_caption":"Kitchen battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"8f105d85-2616-4fbc-87b9-88acabf9c12d","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8f105d85-2616-4fbc-87b9-88acabf9c12d.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8f105d85-2616-4fbc-87b9-88acabf9c12d.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well, look at these fine athletes engaging in the sport of pickleball. It's a game of strategy, finesse, and, dare I say, a little bit of grit. They're keeping it classy out there, much like San Diego.","social_caption":"Rally and win! \ud83d\udca5","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"4c6bee45-15f4-424c-9934-0cac0755362e","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4c6bee45-15f4-424c-9934-0cac0755362e.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4c6bee45-15f4-424c-9934-0cac0755362e.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well. Look at these fine athletes, engaged in a vigorous pickleball contest. It's a real barn burner, folks, a true test of wills. Stay classy, San Diego, and keep those paddles swinging.","social_caption":"Kitchen battle royale! \u2694\ufe0f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"42b2f14e-7a29-4140-ace5-2944e1f46748","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42b2f14e-7a29-4140-ace5-2944e1f46748.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42b2f14e-7a29-4140-ace5-2944e1f46748.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather spirited exchange of pickleball. The players are engaged in a prolonged series of... well, hitting the ball. It's quite the spectacle, really. Stay classy, pickleball fans.","social_caption":"Drive rally from the transition zone!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"c6b0ed59-9a8e-430b-944e-1cb224778b59","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c6b0ed59-9a8e-430b-944e-1cb224778b59.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c6b0ed59-9a8e-430b-944e-1cb224778b59.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well, look at this. People playing pickleball. It's a sport, apparently. They're hitting a ball back and forth. Fascinating. Truly, a spectacle for the ages. Stay classy, San Diego.","social_caption":"Patient dinks and strategic drives. \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"fc185d74-4601-4355-97a9-3b12f82dd6fb","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well, look at this pickleball spectacle. It's a real nail-biter, folks, a real nail-biter. These players are really... playing pickleball. Stay classy, San Diego.","social_caption":"Steady rally action! \ud83c\udfbe","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"ab81ef59-9e34-4f5e-8b03-a3024c22d2f0","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ab81ef59-9e34-4f5e-8b03-a3024c22d2f0.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ab81ef59-9e34-4f5e-8b03-a3024c22d2f0.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a display of... pickleball. The players are engaged in a prolonged series of soft taps. It's like watching a very intense, very quiet game of indoor tennis. Stay classy, San Diego.","social_caption":"Kitchen battle royale! \ud83d\udc51","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"228415df-afd0-43a1-942d-ac0df43a7f31","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/228415df-afd0-43a1-942d-ac0df43a7f31.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/228415df-afd0-43a1-942d-ac0df43a7f31.jpeg","quality":6,"viral":3,"watchability":5,"arc":"dominant_performance","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match on our hands. The players are hitting the ball with what I can only describe as 'enthusiasm.' It's quite the spectacle, really. Stay classy, San Diego.","social_caption":"Baseline battle! \ud83d\udca5","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"5e39c5c6-919c-46bc-8f9b-f1559ad2d46b","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/5e39c5c6-919c-46bc-8f9b-f1559ad2d46b.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/5e39c5c6-919c-46bc-8f9b-f1559ad2d46b.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["Outdoor"],"badges":[],"ron_burgundy":"Well, well, well, look at these fine athletes engaging in a spirited game of pickleball. It's a real testament to the human spirit, wouldn't you say? Stay classy, pickleball fans.","social_caption":"Rally for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"a6071737-38bf-4ca8-9790-76ff73122fd6","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a6071737-38bf-4ca8-9790-76ff73122fd6.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a6071737-38bf-4ca8-9790-76ff73122fd6.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather extended exchange of what the youngsters call 'dinks.' It's a delicate dance, much like a tango, but with paddles. Stay classy, pickleball fans.","social_caption":"Kitchen battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"2db44b3c-47b8-40c4-9a17-1f3791afab17","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2db44b3c-47b8-40c4-9a17-1f3791afab17.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2db44b3c-47b8-40c4-9a17-1f3791afab17.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["On"],"badges":[],"ron_burgundy":"Well, this is certainly a display of... pickleball. The players are engaged in a rather prolonged exchange of what appears to be small, plastic balls. It's quite the spectacle, if you're into that sort of thing. Stay classy, pickleball fans.","social_caption":"Dink battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"6cf49d96-ad41-47a1-a1c2-c5f8b57fd346","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is quite the display of pickleball prowess. It's like watching two statues carefully nudge a small ball back and forth. Fascinating. Truly, a testament to the human spirit's ability to engage in prolonged, low-impact activities.","social_caption":"Patient dink battle at the net! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"150ee3e3-964e-4203-bb04-9de3d75b0da3","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/150ee3e3-964e-4203-bb04-9de3d75b0da3.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/150ee3e3-964e-4203-bb04-9de3d75b0da3.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. There are people playing, and a ball is being hit. It's a real nail-biter, folks. Stay classy, San Diego.","social_caption":"Rally for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"3af6b75a-0325-4397-996f-31e451fd2f82","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3af6b75a-0325-4397-996f-31e451fd2f82.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3af6b75a-0325-4397-996f-31e451fd2f82.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. Lots of people are hitting a small ball with paddles. It's quite the spectacle, really. I'm Ron Burgundy? No, wait. This is pickleball. Stay classy, San Diego.","social_caption":"Kitchen battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"d3c7ccff-318b-4de4-a901-8ff2fc63e7e2","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d3c7ccff-318b-4de4-a901-8ff2fc63e7e2.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d3c7ccff-318b-4de4-a901-8ff2fc63e7e2.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well, look at these two gladiators of the pickleball court. They're dinking it out, a true test of patience and precision. It's like a very, very slow-motion ballet, but with paddles. Stay classy, pickleball fans.","social_caption":"Kitchen battle! \u2694\ufe0f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"dec35bf1-4069-4af0-ac2f-94cff024043f","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/dec35bf1-4069-4af0-ac2f-94cff024043f.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/dec35bf1-4069-4af0-ac2f-94cff024043f.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a display of... pickleball. The players are hitting the ball back and forth, which I understand is the objective. It's a real nail-biter, or perhaps a paddle-biter, if you will. Stay classy, pickleball fans.","social_caption":"Kitchen dink battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"8493342b-95d0-4f9a-8491-5eed014a37ec","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8493342b-95d0-4f9a-8491-5eed014a37ec.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8493342b-95d0-4f9a-8491-5eed014a37ec.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather prolonged exchange of small, soft shots. It's like watching two very polite gentlemen discuss the weather, but with paddles. Fascinating, in its own way. Stay classy, pickleball court.","social_caption":"Kitchen dink battle for the ages! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"9b6fe1e3-b794-4dd7-a8a7-ff566215d61d","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/9b6fe1e3-b794-4dd7-a8a7-ff566215d61d.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/9b6fe1e3-b794-4dd7-a8a7-ff566215d61d.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather spirited game of pickleball unfolding. The players are engaged in a prolonged exchange of what I believe are called 'dinks.' It's quite\u2026 athletic. Stay classy, pickleball fans.","social_caption":"Kitchen battle! \u2694\ufe0f Rally for days!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"d29f69be-a64e-4eba-84fa-6447ac6d38bc","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d29f69be-a64e-4eba-84fa-6447ac6d38bc.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d29f69be-a64e-4eba-84fa-6447ac6d38bc.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears some individuals are engaging in a vigorous game of pickleball. The ball is being struck with considerable force, and the players are moving with a certain... athletic grace. It's quite the spectacle, really.","social_caption":"Pickleball rally perfection! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"9cc99648-a797-4425-8687-85c511915268","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/9cc99648-a797-4425-8687-85c511915268.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/9cc99648-a797-4425-8687-85c511915268.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match underway. The players are engaged in what I can only describe as a vigorous exchange of\u2026 well, hitting a ball back and forth. It's quite the spectacle, really. Stay classy, pickleball fans.","social_caption":"Kitchen battle! \ud83c\udfd3","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"52f6ee3d-c53c-4038-90d9-8ca92edd2a7a","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/52f6ee3d-c53c-4038-90d9-8ca92edd2a7a.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/52f6ee3d-c53c-4038-90d9-8ca92edd2a7a.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match on our hands. The players are engaged in a rather spirited exchange of what I believe they call 'dinks.' It's a real nail-biter, folks. Stay classy, San Diego.","social_caption":"Kitchen battle for the ages!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"d2271027-acc7-4b01-afb9-27f60b9f6e97","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d2271027-acc7-4b01-afb9-27f60b9f6e97.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d2271027-acc7-4b01-afb9-27f60b9f6e97.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a lot of... dinking. It's like watching two very polite people have a very long, very quiet conversation with paddles. Fascinating. Truly. I'm Ron Burgundy? No, wait, that's not right. Stay classy, pickleball fans.","social_caption":"Kitchen battle royale! \ud83d\udc51 Dink, dink, dink... who wins?","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"bb227ec8-4954-44c1-8bda-84ea678c70c3","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bb227ec8-4954-44c1-8bda-84ea678c70c3.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bb227ec8-4954-44c1-8bda-84ea678c70c3.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather prolonged exchange of what the youngsters call 'dinks.' It's a delicate dance, much like a jazz solo, but with less saxophone and more plastic paddles. Truly a spectacle for the ages, or at least for the next twenty seconds.","social_caption":"Patient dink rally! \ud83e\udd2f #pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"4d33f546-bdf6-4aa4-8085-2db162235e8a","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4d33f546-bdf6-4aa4-8085-2db162235e8a.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4d33f546-bdf6-4aa4-8085-2db162235e8a.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike","Onix"],"badges":[],"ron_burgundy":"Well, well, well. Look at these two gentlemen, engaged in a spirited game of pickleball. It's a real nail-biter, folks, a true test of endurance and, dare I say, finesse. Stay classy, pickleball court.","social_caption":"Kitchen dink battle! \u2694\ufe0f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"c8abc6e0-9a09-4a5d-8328-c8094fdfa51f","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c8abc6e0-9a09-4a5d-8328-c8094fdfa51f.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c8abc6e0-9a09-4a5d-8328-c8094fdfa51f.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears some individuals are engaged in a vigorous paddle-based activity. The ball is being struck with considerable force, and occasionally, it does not go where intended. Fascinating.","social_caption":"Kitchen battles and forced errors! \ud83d\udca5","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"35b5311b-1f81-4b89-aca4-eb3af4c03770","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/35b5311b-1f81-4b89-aca4-eb3af4c03770.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/35b5311b-1f81-4b89-aca4-eb3af4c03770.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, well, well. It appears we have a pickleball match on our hands. The players are hitting the ball, and it's going back and forth. Some might call it a 'rally.' I call it Tuesday. Stay classy, pickleball fans.","social_caption":"Patient rally with a sweet reset!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"b15ddb97-b69e-4967-a0e5-33a8770dc133","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b15ddb97-b69e-4967-a0e5-33a8770dc133.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b15ddb97-b69e-4967-a0e5-33a8770dc133.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match. People are hitting a ball back and forth over a net. It's quite the spectacle, really. I'm Ron Burgundy, and this has been... pickleball.","social_caption":"Kitchen battles and consistent rallies! \ud83c\udfd3","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"743d5ace-5aae-4338-8568-13e65c398104","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/743d5ace-5aae-4338-8568-13e65c398104.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/743d5ace-5aae-4338-8568-13e65c398104.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match. Some gentlemen are hitting a ball back and forth over a net. It's... quite the spectacle. I'm Ron Burgundy? And that's all I've got.","social_caption":"Kitchen battle: Dinks for days!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"b45114b2-8b53-45bc-a17e-2f96d235ca5a","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b45114b2-8b53-45bc-a17e-2f96d235ca5a.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b45114b2-8b53-45bc-a17e-2f96d235ca5a.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match unfolding before our very eyes. The players are engaged in a spirited rally, demonstrating a level of skill that is, frankly, astounding. Stay classy, San Diego, and keep those paddles moving.","social_caption":"Kitchen control and a decisive speed-up!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"8ec44f0a-c3bd-460b-824c-9c433f781863","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ec44f0a-c3bd-460b-824c-9c433f781863.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ec44f0a-c3bd-460b-824c-9c433f781863.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather intense, yet controlled, pickleball match unfolding. The players are engaged in what can only be described as a 'dink-off,' a true test of nerve and precision. Stay classy, pickleball fans.","social_caption":"Kitchen DINK BATTLE! \u2694\ufe0f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"db83990c-1ac5-4877-af37-d2baf97f3676","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/db83990c-1ac5-4877-af37-d2baf97f3676.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/db83990c-1ac5-4877-af37-d2baf97f3676.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather... *extended* exchange of the pickleball. It's quite the display of... *dinking*. Truly, a testament to the human spirit's ability to, you know, hit a ball back and forth. Stay classy, pickleball court.","social_caption":"Patience is a virtue in this epic dink rally! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"1fe6f036-970f-43be-986f-884ebe2e1ccb","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1fe6f036-970f-43be-986f-884ebe2e1ccb.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1fe6f036-970f-43be-986f-884ebe2e1ccb.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"drive","total_shots":0,"brands":["Nike"],"badges":[],"ron_burgundy":"Well, it appears we have a spirited exchange of pickleball. The players are engaged, the ball is in motion, and the net remains... a net. Truly a spectacle for the ages. Stay classy, pickleball fans.","social_caption":"Driving it home! \ud83d\udca5","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"e28091b0-c77f-4a1a-a6cc-85d278e5246b","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e28091b0-c77f-4a1a-a6cc-85d278e5246b.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e28091b0-c77f-4a1a-a6cc-85d278e5246b.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"You know, watching these two gentlemen dink the pickleball back and forth is like watching a very slow, very strategic ballet. It's not exactly the Super Bowl, but it's... something. Stay classy, pickleball court.","social_caption":"Patience is a virtue! \ud83d\udcaf #Pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"b63bc674-1074-4707-989e-105c58b2bb68","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b63bc674-1074-4707-989e-105c58b2bb68.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b63bc674-1074-4707-989e-105c58b2bb68.jpeg","quality":6,"viral":3,"watchability":4,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 *intense* exchange of small, bouncy objects happening at the net. It's a real test of\u2026 *finesse*. I'm not sure what they're trying to achieve, but they're certainly very good at it. Stay classy, pickleball fans.","social_caption":"Kitchen DINK battle! \ud83e\udd2f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"185d9919-6be2-4780-b034-238c446ceafc","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/185d9919-6be2-4780-b034-238c446ceafc.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/185d9919-6be2-4780-b034-238c446ceafc.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a situation here. A group of gentlemen are engaged in a spirited game of pickleball. The ball is being hit back and forth with a surprising amount of vigor. It's a real spectacle, folks. Truly, a spectacle.","social_caption":"Kitchen battle royale! \u2694\ufe0f","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"4a863cab-f72b-4d3c-b8ac-5f1f5dcd8639","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4a863cab-f72b-4d3c-b8ac-5f1f5dcd8639.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4a863cab-f72b-4d3c-b8ac-5f1f5dcd8639.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 protracted exchange of small, bouncy objects. The players are demonstrating remarkable restraint, a quality I admire. It's like watching two statues politely nudge a ball back and forth. Truly\u2026 something.","social_caption":"Kitchen battle! \u2694\ufe0f Patience wins.","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"2e5afa1a-4d35-4cf2-b56e-3a2cdeb4b94d","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2e5afa1a-4d35-4cf2-b56e-3a2cdeb4b94d.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2e5afa1a-4d35-4cf2-b56e-3a2cdeb4b94d.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is just a delightful display of pickleball prowess. The players are engaged in a spirited exchange of... well, whatever those little balls are called. It's a real nail-biter, folks. Stay classy, pickleball fans.","social_caption":"Net battle perfection! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"f32a6658-38c7-44da-bdb5-a41d494b2f31","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f32a6658-38c7-44da-bdb5-a41d494b2f31.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f32a6658-38c7-44da-bdb5-a41d494b2f31.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"reset","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a lot of dinking. It's like watching two very polite people have a very long conversation with paddles. Fascinating, in its own way. Stay classy, pickleball court.","social_caption":"Kitchen control: The art of the reset. \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"9e641e0a-d2b0-4e1e-a1ed-2b0aa499b054","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/9e641e0a-d2b0-4e1e-a1ed-2b0aa499b054.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/9e641e0a-d2b0-4e1e-a1ed-2b0aa499b054.jpeg","quality":6,"viral":3,"watchability":5,"arc":"athletic_highlight","summary":"","dominant_shot":"drive","total_shots":0,"brands":["JOOLA","Adidas"],"badges":[],"ron_burgundy":"Well, it appears we witnessed a rather spirited exchange of the pickleball. One player, in particular, demonstrated a rather forceful application of the paddle, resulting in a decisive victory. Stay classy, pickleball court.","social_caption":"Transition zone power play wins the point! \ud83d\udcaa","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"93844e6e-1ff5-4aad-b7c9-40020ce9557b","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/93844e6e-1ff5-4aad-b7c9-40020ce9557b.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/93844e6e-1ff5-4aad-b7c9-40020ce9557b.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather spirited game of pickleball unfolding. The players are engaged in what can only be described as a highly strategic exchange of... small, bouncy objects. It's quite the spectacle, really. Stay classy, pickleball fans.","social_caption":"Dink battle for the ages! \ud83d\udcaf","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"fe82d4ec-1ecf-4e08-b2f6-c1b15d672d4d","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fe82d4ec-1ecf-4e08-b2f6-c1b15d672d4d.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fe82d4ec-1ecf-4e08-b2f6-c1b15d672d4d.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 *intense* exchange of soft, bouncy balls. It\u2019s like watching two very polite gentlemen have a conversation with paddles. Fascinating. Truly, a spectacle for the ages.","social_caption":"Patience is a virtue! \ud83c\udfd3","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"a0eacc8c-c703-4115-bc45-775d2d9a1dbb","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a0eacc8c-c703-4115-bc45-775d2d9a1dbb.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a0eacc8c-c703-4115-bc45-775d2d9a1dbb.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 *intense* exchange of small, bouncy balls happening at the net. It's a real test of endurance, much like trying to find a decent parking spot in this town. Stay classy, pickleball fans.","social_caption":"Kitchen line patience: The art of the dink rally.","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"1b6047ba-6b01-4682-a151-db7be439283e","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1b6047ba-6b01-4682-a151-db7be439283e.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1b6047ba-6b01-4682-a151-db7be439283e.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather\u2026 prolonged exchange of soft projectiles. It's like watching two statues politely ask each other to hit the ball. Fascinating. Truly.  Stay classy, pickleball fans.","social_caption":"Patience is a virtue in pickleball! \ud83e\udd52","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"f9623820-2f99-4a10-a6f4-25f78e5accef","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f9623820-2f99-4a10-a6f4-25f78e5accef.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f9623820-2f99-4a10-a6f4-25f78e5accef.jpeg","quality":6,"viral":4,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. People are hitting a ball over a net. It's quite the spectacle. I'm Ron Burgundy? No, that's not right. Anyway, good dinking.","social_caption":"Kitchen battle for the ages! \u2694\ufe0f Dinks, speed-ups, and a point well won!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"480f63cc-ab38-4d02-a445-1e81f5e88f1c","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/480f63cc-ab38-4d02-a445-1e81f5e88f1c.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/480f63cc-ab38-4d02-a445-1e81f5e88f1c.jpeg","quality":6,"viral":3,"watchability":5,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, it appears we have a rather intense pickleball match unfolding. The players are engaged in a delicate dance of dinks, a true test of finesse. It's a real nail-biter, folks, a real nail-biter.","social_caption":"Kitchen dink battle for the win!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"96f9f529-d92e-4ab4-a675-0305a8b0b9ea","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.jpeg","quality":6,"viral":4,"watchability":5,"arc":"pure_fun","summary":"","dominant_shot":null,"total_shots":0,"brands":[],"badges":[],"ron_burgundy":"Ah, the crisp night air, the gentle snowfall, and the unmistakable sound of young champions forging their destiny on the ice. Truly, a magnificent display of athleticism and youthful exuberance. Stay classy, San Diego.","social_caption":"Snowy night, hockey lights! \ud83c\udfd2\u2744\ufe0f Pure fun on ice!","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash"},{"uuid":"2a33bff7-6a3c-4d6c-abb0-3f8eb31c6ccc","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2a33bff7-6a3c-4d6c-abb0-3f8eb31c6ccc.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2a33bff7-6a3c-4d6c-abb0-3f8eb31c6ccc.jpeg","quality":5,"viral":2,"watchability":3,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA","Nike"],"badges":[],"ron_burgundy":"Well, it appears we have a pickleball match happening. The players are hitting a ball back and forth over a net. Some of them are wearing athletic attire. It's quite the spectacle, really. Stay classy, San Diego.","social_caption":"Patience is a virtue! \ud83d\udcaf #pickleball","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"},{"uuid":"1164c89b-20e8-4389-8029-ce95af007887","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1164c89b-20e8-4389-8029-ce95af007887.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1164c89b-20e8-4389-8029-ce95af007887.jpeg","quality":5,"viral":2,"watchability":4,"arc":"grind_rally","summary":"","dominant_shot":"dink","total_shots":0,"brands":["JOOLA"],"badges":[],"ron_burgundy":"Well, this is certainly a pickleball match. The players are hitting the ball, and it's going over the net. Some might call it 'action.' I call it 'Tuesday.' Stay classy, pickleball fans.","social_caption":"Steady rally action! \ud83c\udfd3","skills":{"court_coverage":0,"kitchen":0,"creativity":0,"athleticism":0,"court_iq":0,"power":0},"model":"gemini-2.5-flash-lite"}];
+
+// Globals
+let currentFilter = null;
+let filteredClips = [...CORPUS];
+const ARC_COLORS = ['#00E676','#7c4dff','#ff6090','#ffab40','#40c4ff','#69f0ae','#ea80fc','#ff8a65'];
+const SHOT_COLORS = {'dink':'#00E676','volley':'#7c4dff','drive':'#ff6090','drop':'#ffab40','serve':'#40c4ff','dink_to_speed_up':'#69f0ae','overhead':'#ea80fc','reset':'#ff8a65','other':'#90a4ae','':'#546e7a'};
+
+// Utils
+function getThumbnail(clip) {
+  return clip.thumbnail || clip.video_url.replace('.mp4','.jpeg');
+}
+function formatArc(a) {
+  if (!a) return 'Unknown';
+  return a.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+}
+function formatShot(s) {
+  if (!s) return 'Unknown';
+  return s.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+}
+
+// Animated counter
+function animateCount(el, target, suffix='', duration=1200) {
+  const start = 0;
+  const startTime = performance.now();
+  const isFloat = String(target).includes('.');
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = start + (target - start) * eased;
+    el.textContent = (isFloat ? current.toFixed(1) : Math.round(current)) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// Init stats
+function initStats() {
+  const brands = new Set();
+  CORPUS.forEach(c => (c.brands||[]).forEach(b => brands.add(b)));
+  const arcs = new Set(CORPUS.map(c=>c.arc).filter(Boolean));
+  const shots = new Set(CORPUS.map(c=>c.dominant_shot).filter(Boolean));
+  const avgQ = CORPUS.reduce((s,c)=>s+(c.quality||0),0)/CORPUS.length;
+
+  animateCount(document.getElementById('clipCount'), CORPUS.length);
+  animateCount(document.getElementById('statBrands'), brands.size);
+  animateCount(document.getElementById('statArcs'), arcs.size);
+  animateCount(document.getElementById('statShots'), shots.size);
+  animateCount(document.getElementById('statAvgQ'), parseFloat(avgQ.toFixed(1)), '', 1200);
+}
+
+// Clip grid
+function renderClips(clips) {
+  const grid = document.getElementById('clipGrid');
+  const show = clips.slice(0, 24);
+  grid.innerHTML = show.map((c,i) => `
+    <div class="clip-card" onclick="openModal('${c.uuid}')" style="animation-delay:${i*40}ms">
+      <img src="${getThumbnail(c)}" alt="Clip" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22><rect fill=%22%23111130%22 width=%22320%22 height=%22180%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%2300E676%22 font-size=%2214%22 text-anchor=%22middle%22 dy=%22.3em%22>No Preview</text></svg>'">
+      <div class="overlay">
+        <span class="badge badge-quality">Q${c.quality||'?'}</span>
+        <span class="badge badge-viral">V${c.viral||'?'}</span>
+        ${c.arc ? '<span class="badge badge-arc">'+formatArc(c.arc)+'</span>' : ''}
+      </div>
+      <div class="play-btn"></div>
+    </div>
+  `).join('');
+  if (clips.length > 24) {
+    grid.innerHTML += '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--text-dim)">Showing 24 of '+clips.length+' clips</div>';
+  }
+}
+
+// Shot filter pills
+function initShotFilters() {
+  const shots = {};
+  CORPUS.forEach(c => {
+    const s = c.dominant_shot || 'unknown';
+    shots[s] = (shots[s]||0) + 1;
+  });
+  const bar = document.getElementById('shotFilterBar');
+  bar.innerHTML = '<button class="filter-pill active" data-shot="all" onclick="filterByShot('all',this)">All ('+CORPUS.length+')</button>';
+  Object.entries(shots).sort((a,b)=>b[1]-a[1]).forEach(([shot,count]) => {
+    bar.innerHTML += '<button class="filter-pill" data-shot="'+shot+'" onclick="filterByShot(\''+shot+'\',this)">'+formatShot(shot)+' ('+count+')</button>';
+  });
+}
+
+function filterByShot(shot, el) {
+  document.querySelectorAll('#shotFilterBar .filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  if (shot === 'all') {
+    filteredClips = [...CORPUS];
+    hideFilter();
+  } else {
+    filteredClips = CORPUS.filter(c => (c.dominant_shot||'unknown') === shot);
+    showFilter('Shot: ' + formatShot(shot) + ' (' + filteredClips.length + ' clips)');
+  }
+  renderClips(filteredClips);
+}
+
+function showFilter(label) {
+  const el = document.getElementById('activeFilter');
+  document.getElementById('filterLabel').textContent = label;
+  el.classList.add('show');
+}
+function hideFilter() {
+  document.getElementById('activeFilter').classList.remove('show');
+  currentFilter = null;
+}
+function clearFilter() {
+  filteredClips = [...CORPUS];
+  hideFilter();
+  renderClips(filteredClips);
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-shot="all"]')?.classList.add('active');
+}
+
+// Shot donut chart
+function initShotDonut() {
+  const shots = {};
+  CORPUS.forEach(c => {
+    const s = formatShot(c.dominant_shot || 'unknown');
+    shots[s] = (shots[s]||0) + 1;
+  });
+  const labels = Object.keys(shots).sort((a,b)=>shots[b]-shots[a]);
+  const values = labels.map(l=>shots[l]);
+  const colors = labels.map((_,i)=>ARC_COLORS[i%ARC_COLORS.length]);
+
+  new Chart(document.getElementById('shotDonut'), {
+    type:'doughnut',
+    data:{labels,datasets:[{data:values,backgroundColor:colors,borderWidth:0,hoverOffset:8}]},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'right',labels:{color:'#8888aa',font:{size:11},padding:12,usePointStyle:true,pointStyleWidth:10}},
+        tooltip:{backgroundColor:'#111130',titleColor:'#00E676',bodyColor:'#e8e8f0',borderColor:'#252560',borderWidth:1,cornerRadius:8}
+      },
+      onClick:(e,els)=>{
+        if(els.length){
+          const idx=els[0].index;
+          const shot=labels[idx];
+          filteredClips=CORPUS.filter(c=>formatShot(c.dominant_shot||'unknown')===shot);
+          showFilter('Shot: '+shot+' ('+filteredClips.length+' clips)');
+          renderClips(filteredClips);
+          document.getElementById('clipGrid').scrollIntoView({behavior:'smooth'});
+        }
+      }
+    }
+  });
+}
+
+// Quality vs Viral scatter
+function initScatter() {
+  const data = CORPUS.map(c => ({x:c.quality||0, y:c.viral||0, uuid:c.uuid, arc:c.arc}));
+  const arcSet = [...new Set(CORPUS.map(c=>c.arc).filter(Boolean))];
+  const datasets = arcSet.map((arc,i) => ({
+    label:formatArc(arc),
+    data:data.filter(d=>d.arc===arc),
+    backgroundColor:ARC_COLORS[i%ARC_COLORS.length]+'88',
+    borderColor:ARC_COLORS[i%ARC_COLORS.length],
+    borderWidth:1,
+    pointRadius:6,
+    pointHoverRadius:9
+  }));
+
+  new Chart(document.getElementById('qualityViral'), {
+    type:'scatter',
+    data:{datasets},
+    options:{
+      responsive:true,
+      scales:{
+        x:{title:{display:true,text:'Quality Score',color:'#8888aa'},grid:{color:'#252560'},ticks:{color:'#8888aa'},min:0,max:10},
+        y:{title:{display:true,text:'Viral Potential',color:'#8888aa'},grid:{color:'#252560'},ticks:{color:'#8888aa'},min:0,max:10}
+      },
+      plugins:{
+        legend:{position:'bottom',labels:{color:'#8888aa',font:{size:10},usePointStyle:true,padding:10}},
+        tooltip:{backgroundColor:'#111130',titleColor:'#00E676',bodyColor:'#e8e8f0',borderColor:'#252560',borderWidth:1,cornerRadius:8,
+          callbacks:{label:ctx=>`Q:${ctx.parsed.x} V:${ctx.parsed.y} (${formatArc(ctx.raw.arc)})`}
+        }
+      },
+      onClick:(e,els)=>{
+        if(els.length){
+          const pt=els[0];
+          const uuid=datasets[pt.datasetIndex].data[pt.index].uuid;
+          openModal(uuid);
+        }
+      }
+    }
+  });
+}
+
+// Skill heatmap
+function initHeatmap() {
+  const skillKeys = ['court_coverage','kitchen','creativity','athleticism','court_iq','power'];
+  const shots = {};
+  CORPUS.forEach(c => {
+    const s = c.dominant_shot || 'unknown';
+    if(!shots[s]) shots[s] = {count:0, skills:{}};
+    shots[s].count++;
+    skillKeys.forEach(k => {
+      shots[s].skills[k] = (shots[s].skills[k]||0) + ((c.skills||{})[k]||0);
+    });
+  });
+  // Avg
+  Object.values(shots).forEach(s => {
+    skillKeys.forEach(k => { s.skills[k] = s.count > 0 ? (s.skills[k] / s.count) : 0; });
+  });
+
+  const table = document.getElementById('heatmapTable');
+  let html = '<thead><tr><th></th>' + skillKeys.map(k=>'<th>'+k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())+'</th>').join('') + '<th>Clips</th></tr></thead><tbody>';
+  const shotNames = Object.keys(shots).sort((a,b)=>shots[b].count-shots[a].count);
+  shotNames.forEach(shot => {
+    html += '<tr><td style="text-align:left;font-weight:600;color:var(--text)">'+formatShot(shot)+'</td>';
+    skillKeys.forEach(k => {
+      const v = shots[shot].skills[k];
+      const intensity = Math.min(v / 10, 1);
+      const bg = v === 0 ? 'var(--surface)' : `rgba(0,230,118,${0.15 + intensity * 0.6})`;
+      html += `<td style="background:${bg};color:${v>0?'#fff':'var(--text-dim)'}" onclick="filterByShot('${shot}',document.querySelector('[data-shot=\\'${shot}\\']'))">${v>0?v.toFixed(1):'-'}</td>`;
+    });
+    html += '<td style="color:var(--green);font-weight:700">'+shots[shot].count+'</td></tr>';
+  });
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+// Brand cards
+function initBrands() {
+  const brands = {};
+  CORPUS.forEach(c => (c.brands||[]).forEach(b => { brands[b] = (brands[b]||0) + 1; }));
+  const sorted = Object.entries(brands).sort((a,b)=>b[1]-a[1]);
+  const grid = document.getElementById('brandGrid');
+  grid.innerHTML = sorted.map(([name,count]) => `
+    <div class="brand-card" onclick="filterByBrand('${name.replace(/'/g,"\\'")}')">
+      <div class="brand-name">${name}</div>
+      <div class="brand-count">${count}</div>
+      <div class="brand-label">appearances</div>
+    </div>
+  `).join('');
+}
+
+function filterByBrand(brand) {
+  filteredClips = CORPUS.filter(c => (c.brands||[]).includes(brand));
+  showFilter('Brand: ' + brand + ' (' + filteredClips.length + ' clips)');
+  renderClips(filteredClips);
+  document.getElementById('clipGrid').scrollIntoView({behavior:'smooth'});
+}
+
+// Arc cards
+function initArcs() {
+  const arcs = {};
+  CORPUS.forEach(c => {
+    const a = c.arc || 'unknown';
+    arcs[a] = (arcs[a]||0) + 1;
+  });
+  const sorted = Object.entries(arcs).sort((a,b)=>b[1]-a[1]);
+  const grid = document.getElementById('arcGrid');
+  grid.innerHTML = sorted.map(([arc,count],i) => `
+    <div class="arc-card arc-color-${i%7}" onclick="filterByArc('${arc}')">
+      <div class="arc-name">${formatArc(arc)}</div>
+      <div class="arc-count">${count}</div>
+      <div class="arc-label">clips</div>
+    </div>
+  `).join('');
+}
+
+function filterByArc(arc) {
+  filteredClips = CORPUS.filter(c => (c.arc||'unknown') === arc);
+  showFilter('Arc: ' + formatArc(arc) + ' (' + filteredClips.length + ' clips)');
+  renderClips(filteredClips);
+  document.getElementById('clipGrid').scrollIntoView({behavior:'smooth'});
+}
+
+// AI Quotes
+function loadQuotes() {
+  const withQuotes = CORPUS.filter(c => c.ron_burgundy || c.social_caption);
+  const shuffled = [...withQuotes].sort(() => Math.random() - 0.5).slice(0, 4);
+  const container = document.getElementById('aiQuotes');
+  container.innerHTML = shuffled.map(c => `
+    <div class="ai-quote-card" onclick="openModal('${c.uuid}')">
+      <div class="ai-quote-thumb">
+        <img src="${getThumbnail(c)}" alt="Clip" loading="lazy" onerror="this.style.background='var(--surface)'">
+      </div>
+      <div class="ai-quote-text">
+        ${c.ron_burgundy ? '<div class="label">Ron Burgundy Says</div><blockquote>'+c.ron_burgundy+'</blockquote>' : ''}
+        ${c.social_caption ? '<div class="caption">'+c.social_caption+'</div>' : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Modal
+function openModal(uuid) {
+  const clip = CORPUS.find(c => c.uuid === uuid);
+  if (!clip) return;
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  const info = document.getElementById('modalInfo');
+  video.src = clip.video_url;
+  video.load();
+
+  let infoHtml = '';
+  if (clip.arc) infoHtml += '<div><span class="info-label">Story Arc</span><div class="info-text">'+formatArc(clip.arc)+'</div></div>';
+  if (clip.dominant_shot) infoHtml += '<div><span class="info-label">Dominant Shot</span><div class="info-text">'+formatShot(clip.dominant_shot)+'</div></div>';
+  infoHtml += '<div><span class="info-label">Scores</span><div class="info-text">Quality: '+clip.quality+' / Viral: '+clip.viral+' / Watch: '+clip.watchability+'</div></div>';
+  if (clip.brands && clip.brands.length) infoHtml += '<div><span class="info-label">Brands</span><div class="info-text">'+clip.brands.join(', ')+'</div></div>';
+  if (clip.ron_burgundy) infoHtml += '<div><span class="info-label">Ron Burgundy</span><div class="info-text" style="font-style:italic">'+clip.ron_burgundy+'</div></div>';
+  if (clip.social_caption) infoHtml += '<div><span class="info-label">Social Caption</span><div class="info-text">'+clip.social_caption+'</div></div>';
+  infoHtml += '<div><span class="info-label">AI Model</span><div class="info-text">'+clip.model+'</div></div>';
+
+  info.innerHTML = infoHtml;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  video.play().catch(()=>{});
+}
+
+function closeModal() {
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  video.pause();
+  video.src = '';
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('videoModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Scroll animations
+function initScrollObserver() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+// Boot
+document.addEventListener('DOMContentLoaded', () => {
+  initStats();
+  initShotFilters();
+  renderClips(CORPUS);
+  initShotDonut();
+  initScatter();
+  initHeatmap();
+  initBrands();
+  initArcs();
+  loadQuotes();
+  initScrollObserver();
+});
+</script>
+</body>
+</html>
