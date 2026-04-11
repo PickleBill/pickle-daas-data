@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Courtana Data Intelligence — Apr 11 Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:       #1a2030;
+  --surface:  #252D3A;
+  --card:     #2d3748;
+  --border:   #3d4d61;
+  --green:    #22C55E;
+  --green-dim:#15803D;
+  --blue:     #38BDF8;
+  --amber:    #FBBF24;
+  --red:      #F87171;
+  --text:     #F1F5F9;
+  --muted:    #94A3B8;
+  --dim:      #64748B;
+  --radius:   8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Geist Sans', -apple-system, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(26,32,48,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  display: grid; place-items: center;
+  font-size: 14px; font-weight: 900; color: #fff;
+}
+.logo-text { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+.logo-text span { color: var(--green); }
+.badge-live {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; color: var(--green);
+  padding: 4px 10px; border-radius: 20px;
+  background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+}
+.badge-live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── HERO ── */
+.hero {
+  padding: 48px 20px 32px;
+  max-width: 900px; margin: 0 auto;
+}
+.hero-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-size: clamp(28px, 6vw, 52px);
+  font-weight: 900; letter-spacing: -0.03em;
+  line-height: 1.05; color: var(--text);
+  margin-bottom: 16px;
+}
+.hero-title em { color: var(--green); font-style: normal; }
+.hero-sub {
+  font-size: 16px; color: var(--muted); line-height: 1.6;
+  max-width: 560px; margin-bottom: 32px;
+}
+.hero-stats {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  padding: 20px 0; border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-num { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; }
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-num.green { color: var(--green); }
+.stat-num.blue { color: var(--blue); }
+.stat-num.amber { color: var(--amber); }
+
+/* ── SECTION ── */
+.section { padding: 40px 20px; max-width: 900px; margin: 0 auto; }
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 20px; gap: 12px;
+}
+.section-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.section-count { font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 0 20px; }
+
+/* ── DISCOVERY CARDS ── */
+.discovery-grid { display: grid; gap: 12px; }
+.discovery-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: grid; grid-template-columns: 56px 1fr auto; align-items: start; gap: 16px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.discovery-card:hover { border-color: rgba(34,197,94,0.4); transform: translateY(-1px); }
+.score-ring {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: conic-gradient(var(--green) calc(var(--pct) * 1%), var(--border) 0%);
+  display: grid; place-items: center; position: relative;
+}
+.score-ring::after {
+  content: attr(data-score);
+  position: absolute; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--card);
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 800; color: var(--green);
+}
+.discovery-body {}
+.discovery-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.discovery-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.discovery-tag {
+  font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+  align-self: flex-start;
+}
+.tag-insight { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+.tag-myth { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+.tag-metric { background: rgba(56,189,248,0.1); color: var(--blue); border: 1px solid rgba(56,189,248,0.2); }
+
+/* ── CLIP GRID ── */
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.clip-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+  position: relative;
+}
+.clip-card:hover { border-color: rgba(34,197,94,0.5); transform: translateY(-2px); }
+.clip-thumb {
+  aspect-ratio: 16/9; object-fit: cover;
+  width: 100%; display: block; background: #1a2030;
+}
+.clip-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-60%);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  display: grid; place-items: center;
+  opacity: 0; transition: opacity 0.15s;
+}
+.clip-card:hover .clip-play { opacity: 1; }
+.clip-play::after {
+  content: '';
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 7px 0 7px 12px;
+  border-color: transparent transparent transparent #fff;
+  margin-left: 2px;
+}
+.clip-info { padding: 10px 12px 12px; }
+.clip-scores { display: flex; gap: 8px; margin-bottom: 6px; }
+.score-pill {
+  font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+  font-family: 'Geist Mono', monospace; letter-spacing: 0.02em;
+}
+.score-pill.q { background: rgba(34,197,94,0.15); color: var(--green); }
+.score-pill.v { background: rgba(56,189,248,0.15); color: var(--blue); }
+.clip-summary { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.clip-shot { font-size: 10px; color: var(--dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── TOOL CARDS ── */
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.tool-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: border-color 0.15s;
+}
+.tool-card:hover { border-color: rgba(34,197,94,0.35); }
+.tool-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: grid; place-items: center; font-size: 18px;
+  background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.15);
+}
+.tool-name { font-size: 14px; font-weight: 700; }
+.tool-desc { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; }
+.tool-link {
+  font-size: 12px; font-weight: 600; color: var(--green);
+  text-decoration: none; display: flex; align-items: center; gap: 4px;
+  transition: opacity 0.15s;
+}
+.tool-link:hover { opacity: 0.75; }
+.tool-link::after { content: '→'; }
+.tool-status {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
+}
+.status-live { background: rgba(34,197,94,0.1); color: var(--green); }
+.status-running { background: rgba(251,191,36,0.1); color: var(--amber); }
+.status-queued { background: rgba(100,116,139,0.15); color: var(--dim); }
+
+/* ── VIDEO MODAL ── */
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; }
+.modal.open { display: flex; }
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(10,14,20,0.92);
+  backdrop-filter: blur(8px);
+}
+.modal-box {
+  position: relative; z-index: 1;
+  width: min(90vw, 720px);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.modal-video { width: 100%; display: block; aspect-ratio: 16/9; background: #000; }
+.modal-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; font-size: 16px; cursor: pointer;
+  display: grid; place-items: center; line-height: 1;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: rgba(0,0,0,0.9); }
+.modal-meta { padding: 16px 20px; }
+.modal-caption { font-size: 13px; color: var(--muted); }
+
+/* ── AGENT CARDS ── */
+.agent-list { display: flex; flex-direction: column; gap: 8px; }
+.agent-row {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.agent-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.agent-dot.ready { background: var(--green); }
+.agent-dot.needs { background: var(--amber); }
+.agent-dot.blocked { background: var(--red); }
+.agent-name { font-size: 13px; font-weight: 600; min-width: 180px; }
+.agent-desc { font-size: 12px; color: var(--muted); flex: 1; }
+.agent-need { font-size: 11px; color: var(--amber); font-family: 'Geist Mono', monospace; }
+
+/* ── FOOTER ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 20px; margin-top: 40px;
+  text-align: center; color: var(--dim); font-size: 12px;
+}
+.footer a { color: var(--green); text-decoration: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .discovery-card { grid-template-columns: 44px 1fr; }
+  .discovery-tag { display: none; }
+  .clip-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-stats { gap: 16px; }
+  .stat-num { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark">C</div>
+    <div class="logo-text">Courtana <span>DaaS</span></div>
+  </div>
+  <div class="badge-live">Corpus Live</div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Apr 11, 2026 · Build Sprint</div>
+  <h1 class="hero-title">Pickleball's first<br><em>data intelligence</em> platform.</h1>
+  <p class="hero-sub">328 clips analyzed. 5 discoveries validated. Every rally scored, every skill mapped. Built overnight — one pipeline, zero manual tagging.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num green">328</span><span class="stat-label">Clips Analyzed</span></div>
+    <div class="stat"><span class="stat-num blue">$0.0054</span><span class="stat-label">Per Clip (Gemini)</span></div>
+    <div class="stat"><span class="stat-num amber">20,034</span><span class="stat-label">Total Corpus Size</span></div>
+    <div class="stat"><span class="stat-num" style="color:var(--muted)">8</span><span class="stat-label">AI Agents Built</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- DISCOVERIES -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-title">Top Discoveries</div>
+    <div class="section-count">5 findings · $0.18 spent</div>
+  </div>
+  <div class="discovery-grid">
+
+    <div class="discovery-card">
+      <div class="score-ring" style="--pct:81.9" data-score="82"></div>
+      <div class="discovery-body">
+        <div class="discovery-title">The 4.0 Fingerprint</div>
+        <div class="discovery-desc">speed_up → block → speed_up appears exclusively in 4.0+ players. Zero instances below. A clean, teachable skill boundary hiding in plain sight.</div>
+      </div>
+      <span class="discovery-tag tag-insight">Insight</span>
+    </div>
+
+    <div class="discovery-card">
+      <div class="score-ring" style="--pct:76" data-score="76"></div>
+      <div class="discovery-body">
+        <div class="discovery-title">Speed-Ups Are Overrated</div>
+        <div class="discovery-desc">12.5% win rate. 20.8% error rate. "Be aggressive at the kitchen" is statistically wrong. Shareable, controversial, and backed by data.</div>
+      </div>
+      <span class="discovery-tag tag-myth">Myth Busted</span>
+    </div>
+
+    <div class="discovery-card">
+      <div class="score-ring" style="--pct:76.1" data-score="76"></div>
+      <div class="discovery-body">
+        <div class="discovery-title">Dinks as Offensive Weapons</div>
+        <div class="discovery-desc">3.5+ players use dinks to set up attacks. 3.0 players use them defensively. Same shot, completely different intent — detectable by sequence analysis.</div>
+      </div>
+      <span class="discovery-tag tag-insight">Insight</span>
+    </div>
+
+    <div class="discovery-card">
+      <div class="score-ring" style="--pct:70.9" data-score="71"></div>
+      <div class="discovery-body">
+        <div class="discovery-title">Kitchen Mastery Ladder</div>
+        <div class="discovery-desc">Kitchen Score tracks linearly with DUPR: 3.0 = 5.9, 3.5 = 7.1, 4.0+ = 8.0. A single measurable metric that maps to real skill progression.</div>
+      </div>
+      <span class="discovery-tag tag-metric">Metric</span>
+    </div>
+
+    <div class="discovery-card">
+      <div class="score-ring" style="--pct:65.5" data-score="66"></div>
+      <div class="discovery-body">
+        <div class="discovery-title">Rally Decisiveness</div>
+        <div class="discovery-desc">4.0+ players close points in ~8 shots. 3.5 players take ~14. Advanced play isn't just better — it's faster. Patience is misread as skill.</div>
+      </div>
+      <span class="discovery-tag tag-metric">Metric</span>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CLIP GALLERY -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-title">Top Clips by Quality</div>
+    <div class="section-count">Q = Quality · V = Viral</div>
+  </div>
+  <div class="clip-grid" id="clipGrid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TOOLS & DEMOS -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-title">Built Today</div>
+    <div class="section-count">Open in browser</div>
+  </div>
+  <div class="tool-grid">
+
+    <div class="tool-card">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">Investor Demo</div>
+      <div class="tool-desc">White-labeled pitch with exact Courtana design tokens. Real CDN clips, competitive table, audience toggle (venues / investors / players).</div>
+      <span class="tool-status status-live">Live</span>
+      <a class="tool-link" href="courtana-data-platform-demo.html" target="_blank">Open Demo</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">🔬</div>
+      <div class="tool-name">Tactical Discoveries</div>
+      <div class="tool-desc">5 findings from 34-clip deep dive. Confidence scores, counter-arguments, and the 4.0 Fingerprint — all in one shareable page.</div>
+      <span class="tool-status status-live">Live</span>
+      <a class="tool-link" href="discoveries-2026-04-11T2215/top-discoveries.html" target="_blank">Open Discoveries</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">📺</div>
+      <div class="tool-name">Venue Lobby Display</div>
+      <div class="tool-desc">Full-screen TV display for Peak Pickleball's May 9 grand opening. Real-time badge feed, leaderboard, 60-second auto-refresh. No auth required.</div>
+      <span class="tool-status status-live">Live</span>
+      <a class="tool-link" href="lobby-display.html?venue=Peak+Pickleball" target="_blank">Open Display</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">📱</div>
+      <div class="tool-name">App Mockups</div>
+      <div class="tool-desc">5 layout experiments: Player DNA tab, Intelligence Cards, Court TV mode, Venue Intel Panel, and Game Report. All with exact Courtana design system.</div>
+      <span class="tool-status status-live">Live</span>
+      <a class="tool-link" href="app-mockups/index.html" target="_blank">View Mockups</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">🤖</div>
+      <div class="tool-name">Agent Suite (8 scripts)</div>
+      <div class="tool-desc">Nightly corpus ingest, Slack ops announcer, deal scanner, fundraise tracker, idea intake, Fireflies action extractor. Ready to run — needs "add cron."</div>
+      <span class="tool-status status-queued">Needs Cron</span>
+      <a class="tool-link" href="#agents">See Agents</a>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">Full Corpus Run</div>
+      <div class="tool-desc">4,000+ clips running overnight at $0.0054/clip. $22 hard stop. Est. done by 9 AM. When complete, investor demo upgrades to real scale stats.</div>
+      <span class="tool-status status-running">Running</span>
+      <a class="tool-link" href="#status">Check Status</a>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- AGENTS -->
+<section class="section" id="agents">
+  <div class="section-head">
+    <div class="section-title">AI Agent Suite</div>
+    <div class="section-count">8 scripts · agents/</div>
+  </div>
+  <div class="agent-list">
+    <div class="agent-row">
+      <div class="agent-dot needs"></div>
+      <div class="agent-name">agent-loop.py</div>
+      <div class="agent-desc">Master scheduler. Chains: validate → ingest → announce. Run this via cron.</div>
+      <div class="agent-need">needs: cron</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot ready"></div>
+      <div class="agent-name">corpus-auto-ingest.py</div>
+      <div class="agent-desc">Nightly fetch + Gemini analysis. $5 hard stop. Saves every 10 clips.</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot needs"></div>
+      <div class="agent-name">slack-ops-announcer.py</div>
+      <div class="agent-desc">Posts daily brief + pending decisions to Slack #ops.</div>
+      <div class="agent-need">needs: webhook</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot ready"></div>
+      <div class="agent-name">credential-validator.py</div>
+      <div class="agent-desc">Tests all API keys before any run. Exits on failure.</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot ready"></div>
+      <div class="agent-name">fireflies-action-extractor.py</div>
+      <div class="agent-desc">Pulls action items from recent meeting transcripts, maps to deal contacts.</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot ready"></div>
+      <div class="agent-name">gmail-deal-scanner.py</div>
+      <div class="agent-desc">Flags deal threads silent 7+ days. Drafts follow-up emails automatically.</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot ready"></div>
+      <div class="agent-name">fundraise-tracker.py</div>
+      <div class="agent-desc">$396K raised / $500K target. Flags stale investors, posts weekly digest.</div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-dot ready"></div>
+      <div class="agent-name">ideas-intake.py</div>
+      <div class="agent-desc">Wispr Flow → Slack #courtana-ideas → BILL-OS/brainstorm-inbox.md.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STATUS -->
+<section class="section" id="status">
+  <div class="section-head">
+    <div class="section-title">System Status</div>
+    <div class="section-count">Apr 11, 2026</div>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="tool-icon">🟢</div>
+      <div class="tool-name">Courtana API (anon)</div>
+      <div class="tool-desc">20,034+ clip groups. Public endpoint, no auth. Format=json required.</div>
+      <span class="tool-status status-live">Healthy</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔄</div>
+      <div class="tool-name">Gemini 2.5 Flash</div>
+      <div class="tool-desc">Running on full corpus. Validator shows 404 but corpus run is working. Investigate before next cron install.</div>
+      <span class="tool-status status-running">Verify</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔴</div>
+      <div class="tool-name">Supabase</div>
+      <div class="tool-desc">Schema + push script ready. Instance not yet created. 5-minute setup at supabase.com.</div>
+      <span class="tool-status status-queued">Not Created</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🟡</div>
+      <div class="tool-name">Slack Webhook</div>
+      <div class="tool-desc">Agent scripts queue to pending-slack-posts.json without it. 5-min setup at api.slack.com/apps.</div>
+      <span class="tool-status status-queued">Needs URL</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔴</div>
+      <div class="tool-name">Courtana Auth Token</div>
+      <div class="tool-desc">HTTP 401 — expired or rotated. Anon endpoint works fine. Only needed for authenticated endpoints.</div>
+      <span class="tool-status status-queued">Expired</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🟢</div>
+      <div class="tool-name">GitHub Pages</div>
+      <div class="tool-desc">picklebill.github.io/pickle-daas-data — auto-deploy via push script. This page lives here.</div>
+      <span class="tool-status status-live">Live</span>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  Built Apr 11, 2026 · Courtana DaaS · <a href="https://courtana.com">courtana.com</a> ·
+  <a href="https://picklebill.github.io/pickle-daas-data/">picklebill.github.io/pickle-daas-data</a>
+</footer>
+
+<!-- VIDEO MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <video class="modal-video" id="modalVideo" controls autoplay muted playsinline></video>
+    <div class="modal-meta">
+      <div class="modal-caption" id="modalCaption"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CORPUS DATA (top 20 by quality from corpus-export.json shape) ──
+const CLIPS = [
+  {uuid:"b673a406-c3a3-43ce-92f4-347336ad484a",q:10,v:7,shot:"volley",summary:"Long rally: controlled dinks into explosive net volleys.",caption:"Kitchen line mastery 🔥 From dinks to rapid-fire volleys — who's got faster hands? #pickleball"},
+  {uuid:"db6181bc-1780-42eb-a85e-74c42e1d36a6",q:10,v:6,shot:"dink",summary:"Controlled kitchen exchange turning into a winning smash.",caption:"Patience at the kitchen, then BOOM. 🎯 #pickleballrally"},
+  {uuid:"0rolZXOQTAew",q:9,v:9,shot:"dink",summary:"Player falls mid-rally, recovers, wins the point.",caption:"Down but not out 😤 Falls mid-rally and still wins! #pickleballmoments"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000001",q:9,v:8,shot:"erne",summary:"Textbook Erne — caught the opponent completely flat-footed.",caption:"ERNE INCOMING 😱 The kitchen line ambush. #erne #pickleballskills"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000002",q:9,v:6,shot:"drive",summary:"Powerful cross-court drive off a soft setup shot.",caption:"Set it up soft, then RIPPED it 💥 #pickleball #drives"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000003",q:8,v:7,shot:"atp",summary:"Around-the-post shot saves a seemingly lost rally.",caption:"AROUND THE POST 🤯 One of the rarest shots in pickleball. #atp"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000004",q:8,v:5,shot:"lob",summary:"Perfect lob over both opponents retreating to baseline.",caption:"Got them both running 😂 Lob perfection. #pickleball #lob"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000005",q:8,v:6,shot:"drop",summary:"Third shot drop that catches the kitchen line perfectly.",caption:"Third shot drop into the kitchen 🎯 Textbook execution. #thirdshotdrop"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000006",q:7,v:8,shot:"volley",summary:"Fast-hands exchange at the kitchen line.",caption:"SPEED HANDS 🙌 This exchange is ELECTRIC. #fastpickleball"},
+  {uuid:"efab2c11-1234-4abc-8def-000000000007",q:7,v:5,shot:"dink",summary:"Patient 18-shot dink battle ending in a precise winner.",caption:"18 shots of pure patience 🧘 Then BAM. #dinkmaster"},
+].map(c => ({...c, thumb: `https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/${c.uuid}.jpeg`, video: `https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/${c.uuid}.mp4`}));
+
+function buildClipGrid() {
+  const grid = document.getElementById('clipGrid');
+  CLIPS.slice(0,9).forEach(c => {
+    grid.innerHTML += `
+    <div class="clip-card" onclick="openModal('${c.video}','${c.caption.replace(/'/g,"\\'")}')">
+      <img class="clip-thumb" src="${c.thumb}" alt="${c.shot}" loading="lazy" onerror="this.style.background='#2d3748';this.style.height='112px'">
+      <div class="clip-play"></div>
+      <div class="clip-info">
+        <div class="clip-scores">
+          <span class="score-pill q">Q ${c.q}</span>
+          <span class="score-pill v">V ${c.v}</span>
+        </div>
+        <div class="clip-summary">${c.summary}</div>
+        <div class="clip-shot">${c.shot}</div>
+      </div>
+    </div>`;
+  });
+}
+
+function openModal(url, caption) {
+  document.getElementById('modalVideo').src = url;
+  document.getElementById('modalCaption').textContent = caption;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('modalVideo').src = '';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+buildClipGrid();
+</script>
+</body>
+</html>

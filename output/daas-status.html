@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Courtana DaaS — Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@400;500;600;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #1a2030;
+  --surface: #252D3A;
+  --card:    #2d3748;
+  --border:  #3d4d61;
+  --green:   #22C55E;
+  --blue:    #38BDF8;
+  --amber:   #FBBF24;
+  --red:     #F87171;
+  --text:    #F1F5F9;
+  --muted:   #94A3B8;
+  --dim:     #64748B;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Geist Sans',-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* HEADER */
+.header{
+  background:rgba(26,32,48,0.95);
+  backdrop-filter:blur(16px);
+  padding:14px 16px 12px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:10;
+}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo-mark{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#22C55E,#16A34A);display:grid;place-items:center;font-size:12px;font-weight:900;color:#fff;}
+.logo-text{font-size:14px;font-weight:700;letter-spacing:-0.02em;}
+.logo-text span{color:var(--green);}
+.timestamp{font-size:11px;color:var(--dim);font-family:'Geist Mono',monospace;}
+
+/* SCROLL CONTAINER */
+.scroll{padding:12px 12px 24px;}
+
+/* BIG NUMBER CARD */
+.hero-card{
+  background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.03));
+  border:1px solid rgba(34,197,94,0.25);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.hero-num{font-size:40px;font-weight:900;letter-spacing:-0.04em;line-height:1;color:var(--green);}
+.hero-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-top:4px;}
+.hero-sub{font-size:11px;color:var(--dim);margin-top:2px;}
+
+/* SECTION */
+.section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin:16px 0 8px 4px;}
+
+/* STATUS ROW CARDS */
+.status-stack{display:flex;flex-direction:column;gap:8px;}
+.status-row{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.dot-green{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,0.5);}
+.dot-amber{background:var(--amber);}
+.dot-red{background:var(--red);}
+.dot-blue{background:var(--blue);}
+.dot-pulse{background:var(--green);animation:dpulse 1.5s infinite;}
+@keyframes dpulse{0%,100%{opacity:1;box-shadow:0 0 6px rgba(34,197,94,0.5)}50%{opacity:.5;box-shadow:0 0 12px rgba(34,197,94,0.8)}}
+.status-body{flex:1;min-width:0;}
+.status-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.status-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.status-val{font-size:12px;font-weight:700;font-family:'Geist Mono',monospace;flex-shrink:0;}
+.val-green{color:var(--green);}
+.val-amber{color:var(--amber);}
+.val-red{color:var(--red);}
+.val-blue{color:var(--blue);}
+.val-dim{color:var(--dim);}
+
+/* PROGRESS BAR CARD */
+.progress-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px;
+  margin-bottom:8px;
+}
+.progress-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.progress-name{font-size:13px;font-weight:600;}
+.progress-pct{font-size:12px;font-weight:700;font-family:'Geist Mono',monospace;color:var(--amber);}
+.progress-track{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--amber),rgba(251,191,36,0.6));transition:width 1s ease;}
+.progress-meta{display:flex;justify-content:space-between;margin-top:6px;}
+.progress-meta span{font-size:10px;color:var(--dim);font-family:'Geist Mono',monospace;}
+
+/* DISCOVERY CARD */
+.discovery-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px;
+  margin-bottom:8px;
+}
+.disc-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.disc-score{
+  font-size:11px;font-weight:800;font-family:'Geist Mono',monospace;
+  color:var(--green);
+  background:rgba(34,197,94,0.1);
+  border:1px solid rgba(34,197,94,0.2);
+  padding:2px 7px;border-radius:4px;
+  flex-shrink:0;
+}
+.disc-title{font-size:13px;font-weight:700;}
+.disc-body{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* ACTION ITEMS */
+.action-stack{display:flex;flex-direction:column;gap:8px;}
+.action-row{
+  background:rgba(34,197,94,0.05);
+  border:1px solid rgba(34,197,94,0.2);
+  border-radius:10px;
+  padding:12px 14px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+.action-icon{font-size:18px;flex-shrink:0;line-height:1.2;}
+.action-body{}
+.action-cmd{
+  font-size:12px;font-weight:700;font-family:'Geist Mono',monospace;
+  color:var(--green);margin-bottom:3px;
+}
+.action-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* DEAL ROW */
+.deal-stack{display:flex;flex-direction:column;gap:8px;}
+.deal-row{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.deal-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.deal-body{flex:1;}
+.deal-name{font-size:13px;font-weight:600;}
+.deal-next{font-size:11px;color:var(--muted);margin-top:2px;}
+.deal-badge{
+  font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:4px;
+  text-transform:uppercase;letter-spacing:0.04em;
+  white-space:nowrap;flex-shrink:0;
+}
+.badge-hot{background:rgba(34,197,94,0.1);color:var(--green);}
+.badge-wait{background:rgba(251,191,36,0.1);color:var(--amber);}
+.badge-meet{background:rgba(56,189,248,0.1);color:var(--blue);}
+
+/* LINKS */
+.link-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:4px;
+}
+.link-pill{
+  font-size:11px;font-weight:600;
+  color:var(--green);
+  background:rgba(34,197,94,0.06);
+  border:1px solid rgba(34,197,94,0.2);
+  border-radius:20px;
+  padding:6px 12px;
+  text-decoration:none;
+  transition:all 0.15s;
+}
+.link-pill:hover{background:rgba(34,197,94,0.15);}
+
+/* COST CARD */
+.cost-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cost-cell{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:12px;
+  text-align:center;
+}
+.cost-num{font-size:20px;font-weight:800;letter-spacing:-0.03em;font-family:'Geist Mono',monospace;}
+.cost-label{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);margin-top:3px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">C</div>
+    <div class="logo-text">DaaS <span>Status</span></div>
+  </div>
+  <div class="timestamp" id="ts"></div>
+</div>
+
+<div class="scroll">
+
+  <!-- CORPUS SIZE -->
+  <div class="hero-card">
+    <div>
+      <div class="hero-num">328</div>
+      <div class="hero-label">Clips Analyzed</div>
+      <div class="hero-sub">master corpus</div>
+    </div>
+    <div>
+      <div class="hero-num" style="color:var(--blue)">20,034</div>
+      <div class="hero-label">Total Available</div>
+      <div class="hero-sub">courtana.com</div>
+    </div>
+  </div>
+
+  <!-- ACTIVE RUNS -->
+  <div class="section-label">Active Runs</div>
+
+  <div class="progress-card">
+    <div class="progress-header">
+      <div class="progress-name">Full Corpus Run</div>
+      <div class="progress-pct" id="corpusPct">~1.2%</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="corpusBar" style="width:1.2%"></div>
+    </div>
+    <div class="progress-meta">
+      <span id="corpusDone">49 / 4,074 clips</span>
+      <span>$0.16 / $22.00</span>
+    </div>
+  </div>
+
+  <div class="status-stack">
+    <div class="status-row">
+      <div class="status-dot dot-pulse"></div>
+      <div class="status-body">
+        <div class="status-name">corpus-auto-ingest.py</div>
+        <div class="status-desc">Running · PID 90677 · Est. done ~9 AM Apr 12</div>
+      </div>
+      <div class="status-val val-amber">running</div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot dot-green"></div>
+      <div class="status-body">
+        <div class="status-name">500-clip sample</div>
+        <div class="status-desc">Done · 119 successful · $2.70 total</div>
+      </div>
+      <div class="status-val val-green">done</div>
+    </div>
+  </div>
+
+  <!-- LATEST DISCOVERY -->
+  <div class="section-label">Latest Discovery</div>
+
+  <div class="discovery-card">
+    <div class="disc-header">
+      <div class="disc-score">81.9</div>
+      <div class="disc-title">The 4.0 Fingerprint</div>
+    </div>
+    <div class="disc-body">speed_up → block → speed_up sequence appears exclusively in 4.0+ players. Zero instances below. Clean teachable skill boundary.</div>
+  </div>
+  <div class="discovery-card">
+    <div class="disc-header">
+      <div class="disc-score">76.0</div>
+      <div class="disc-title">Speed-Ups Are Overrated</div>
+    </div>
+    <div class="disc-body">12.5% win rate. 20.8% error rate. "Be aggressive" is wrong advice at the 3.5–4.0 level. Shareable and controversial.</div>
+  </div>
+
+  <!-- SYSTEMS -->
+  <div class="section-label">System Health</div>
+
+  <div class="status-stack">
+    <div class="status-row">
+      <div class="status-dot dot-green"></div>
+      <div class="status-body">
+        <div class="status-name">Courtana API (anon)</div>
+        <div class="status-desc">20,034+ clips · format=json required</div>
+      </div>
+      <div class="status-val val-green">healthy</div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot dot-amber"></div>
+      <div class="status-body">
+        <div class="status-name">Gemini 2.5 Flash</div>
+        <div class="status-desc">Corpus run working · validator shows 404 · investigate</div>
+      </div>
+      <div class="status-val val-amber">verify</div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot dot-green"></div>
+      <div class="status-body">
+        <div class="status-name">GitHub Pages</div>
+        <div class="status-desc">picklebill.github.io/pickle-daas-data</div>
+      </div>
+      <div class="status-val val-green">live</div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot dot-red"></div>
+      <div class="status-body">
+        <div class="status-name">Supabase</div>
+        <div class="status-desc">Schema ready · instance not created yet</div>
+      </div>
+      <div class="status-val val-red">needed</div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot dot-amber"></div>
+      <div class="status-body">
+        <div class="status-name">Slack Webhook</div>
+        <div class="status-desc">Agents queue locally · 5 min setup</div>
+      </div>
+      <div class="status-val val-amber">queued</div>
+    </div>
+    <div class="status-row">
+      <div class="status-dot dot-amber"></div>
+      <div class="status-body">
+        <div class="status-name">Nightly Cron</div>
+        <div class="status-desc">agents/run-nightly.sh ready · not yet installed</div>
+      </div>
+      <div class="status-val val-amber">say "add cron"</div>
+    </div>
+  </div>
+
+  <!-- COST -->
+  <div class="section-label">Cost Tracker</div>
+  <div class="cost-grid">
+    <div class="cost-cell">
+      <div class="cost-num" style="color:var(--green)">$2.86</div>
+      <div class="cost-label">Spent today</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-num" style="color:var(--blue)">$0.0054</div>
+      <div class="cost-label">Per clip</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-num" style="color:var(--amber)">$22</div>
+      <div class="cost-label">Tonight budget</div>
+    </div>
+    <div class="cost-cell">
+      <div class="cost-num" style="color:var(--muted)">$108</div>
+      <div class="cost-label">Full corpus</div>
+    </div>
+  </div>
+
+  <!-- DEAL STATUS -->
+  <div class="section-label">Deal Status</div>
+
+  <div class="deal-stack">
+    <div class="deal-row">
+      <div class="deal-dot" style="background:var(--green)"></div>
+      <div class="deal-body">
+        <div class="deal-name">Peak Pickleball</div>
+        <div class="deal-next">Send lobby display to Chris Kepko · Grand opening May 9</div>
+      </div>
+      <div class="deal-badge badge-hot">Active</div>
+    </div>
+    <div class="deal-row">
+      <div class="deal-dot" style="background:var(--blue)"></div>
+      <div class="deal-body">
+        <div class="deal-name">Concord</div>
+        <div class="deal-next">Chris W. back Apr 14 · ROI brief queued for David</div>
+      </div>
+      <div class="deal-badge badge-meet">Apr 14</div>
+    </div>
+    <div class="deal-row">
+      <div class="deal-dot" style="background:var(--amber)"></div>
+      <div class="deal-body">
+        <div class="deal-name">Court Kings — $250–500K</div>
+        <div class="deal-next">Rich back ~Apr 24 · Deploy Kings Court demo first</div>
+      </div>
+      <div class="deal-badge badge-wait">Apr 24</div>
+    </div>
+    <div class="deal-row">
+      <div class="deal-dot" style="background:var(--dim)"></div>
+      <div class="deal-body">
+        <div class="deal-name">Fundraise</div>
+        <div class="deal-next">$396K / $500K · $104K gap · Scot McClintic follow-up</div>
+      </div>
+      <div class="deal-badge badge-wait">$104K gap</div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="section-label">Your Two Actions</div>
+
+  <div class="action-stack">
+    <div class="action-row">
+      <div class="action-icon">💬</div>
+      <div class="action-body">
+        <div class="action-cmd">"send David"</div>
+        <div class="action-desc">Posts Concord ROI brief to #commercial. David needs it before the Apr 14 Chris W. meeting.</div>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="action-icon">⏰</div>
+      <div class="action-body">
+        <div class="action-cmd">"add cron"</div>
+        <div class="action-desc">Installs nightly 2 AM analysis job. ~$1–2/day, corpus grows while you sleep.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="section-label">Open in Browser</div>
+
+  <div class="link-row">
+    <a class="link-pill" href="daas-gallery.html">Gallery</a>
+    <a class="link-pill" href="daas-query.html">Query Interface</a>
+    <a class="link-pill" href="courtana-data-platform-demo.html">Investor Demo</a>
+    <a class="link-pill" href="lobby-display.html?venue=Peak+Pickleball">Lobby Display</a>
+    <a class="link-pill" href="discoveries-2026-04-11T2215/top-discoveries.html">Discoveries</a>
+    <a class="link-pill" href="app-mockups/index.html">App Mockups</a>
+  </div>
+
+  <div class="section-label" style="margin-top:20px;">External Links</div>
+  <div class="link-row">
+    <a class="link-pill" href="https://picklebill.github.io/pickle-daas-data/" target="_blank">gh-pages</a>
+    <a class="link-pill" href="https://courtana.com" target="_blank">courtana.com</a>
+    <a class="link-pill" href="https://docsend.com/v/qkdkk/courtanapitch2026" target="_blank">Pitch Deck</a>
+    <a class="link-pill" href="https://courtana.com/player/bGLx1SV3k1lT/" target="_blank">Your Profile</a>
+  </div>
+
+</div>
+
+<script>
+// Live clock
+function tick() {
+  const now = new Date();
+  document.getElementById('ts').textContent = now.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
+}
+tick(); setInterval(tick, 30000);
+
+// Animate progress bar on load
+setTimeout(() => {
+  document.getElementById('corpusBar').style.width = '1.2%';
+}, 200);
+</script>
+</body>
+</html>

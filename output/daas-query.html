@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ask the Data — Courtana DaaS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #1a2030;
+  --surface: #252D3A;
+  --card:    #2d3748;
+  --border:  #3d4d61;
+  --green:   #22C55E;
+  --blue:    #38BDF8;
+  --amber:   #FBBF24;
+  --red:     #F87171;
+  --text:    #F1F5F9;
+  --muted:   #94A3B8;
+  --dim:     #64748B;
+  --radius:  8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Geist Sans',-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;}
+
+.header{position:sticky;top:0;z-index:100;background:rgba(26,32,48,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#22C55E,#16A34A);display:grid;place-items:center;font-size:14px;font-weight:900;color:#fff;}
+.logo-text{font-size:15px;font-weight:600;letter-spacing:-0.02em;}
+.logo-text span{color:var(--green);}
+.back{font-size:12px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:4px;transition:color 0.15s;}
+.back:hover{color:var(--green);}
+
+.hero{padding:40px 20px 24px;max-width:800px;margin:0 auto;}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.hero-title{font-size:clamp(24px,5vw,40px);font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:12px;}
+.hero-title em{color:var(--green);font-style:normal;}
+.hero-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:520px;}
+
+.query-wrap{max-width:800px;margin:0 auto;padding:0 20px 20px;}
+
+/* QUESTION CHIPS */
+.chips-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);margin-bottom:10px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+.chip{font-size:12px;font-weight:500;padding:7px 14px;border-radius:20px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;color:var(--muted);}
+.chip:hover,.chip.active{background:rgba(34,197,94,0.1);border-color:var(--green);color:var(--text);}
+
+/* ANSWER CARD */
+.answer-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.answer-header{padding:16px 20px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.answer-q{font-size:14px;font-weight:700;line-height:1.4;flex:1;}
+.answer-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;align-self:flex-start;}
+.tag-finding{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.tag-stat{background:rgba(56,189,248,0.1);color:var(--blue);border:1px solid rgba(56,189,248,0.2);}
+.tag-myth{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+.tag-product{background:rgba(251,191,36,0.1);color:var(--amber);border:1px solid rgba(251,191,36,0.2);}
+
+.answer-body{padding:14px 20px 20px;}
+.answer-text{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.answer-text strong{color:var(--text);}
+
+/* DATA VIZ: BAR */
+.bar-chart{display:flex;flex-direction:column;gap:8px;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-label{font-size:11px;color:var(--muted);width:80px;flex-shrink:0;text-align:right;font-family:'Geist Mono',monospace;}
+.bar-track{flex:1;height:20px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;font-family:'Geist Mono',monospace;transition:width 0.6s ease;width:0;}
+.bar-fill.green{background:linear-gradient(90deg,rgba(34,197,94,0.7),rgba(34,197,94,0.4));}
+.bar-fill.blue{background:linear-gradient(90deg,rgba(56,189,248,0.7),rgba(56,189,248,0.4));}
+.bar-fill.amber{background:linear-gradient(90deg,rgba(251,191,36,0.7),rgba(251,191,36,0.4));}
+.bar-fill.red{background:linear-gradient(90deg,rgba(248,113,113,0.7),rgba(248,113,113,0.4));}
+
+/* KPI ROW */
+.kpi-row{display:flex;gap:12px;flex-wrap:wrap;}
+.kpi{flex:1;min-width:100px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.kpi-val{font-size:22px;font-weight:800;letter-spacing:-0.03em;line-height:1;}
+.kpi-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;}
+.kpi-val.green{color:var(--green);}
+.kpi-val.blue{color:var(--blue);}
+.kpi-val.amber{color:var(--amber);}
+.kpi-val.red{color:var(--red);}
+
+/* SEQUENCE VIZ */
+.sequence{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:10px 0;}
+.seq-step{font-size:11px;font-weight:600;padding:5px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);}
+.seq-step:first-child{border-radius:6px 0 0 6px;}
+.seq-step:last-child{border-radius:0 6px 6px 0;}
+.seq-step.highlight{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.4);color:var(--green);}
+.seq-arrow{font-size:10px;color:var(--dim);padding:0 2px;}
+
+/* SOURCE */
+.answer-source{padding:10px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--dim);display:flex;align-items:center;gap:6px;}
+.source-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+
+/* SCHEMA EXPLORER */
+.schema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+.schema-field{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:10px 12px;}
+.field-name{font-size:12px;font-weight:700;font-family:'Geist Mono',monospace;color:var(--blue);margin-bottom:3px;}
+.field-type{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.field-desc{font-size:11px;color:var(--muted);}
+.field-example{font-size:10px;color:var(--dim);font-family:'Geist Mono',monospace;margin-top:4px;}
+
+.section-divider{border:none;border-top:1px solid var(--border);margin:32px 0;}
+
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--dim);margin-bottom:16px;}
+
+@media(max-width:600px){
+  .chips{gap:6px;}
+  .chip{font-size:11px;padding:6px 10px;}
+  .kpi-row{gap:8px;}
+  .kpi-val{font-size:18px;}
+  .schema-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark">C</div>
+    <div class="logo-text">Courtana <span>DaaS</span></div>
+  </div>
+  <a class="back" href="daas-gallery.html">← Gallery</a>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Data Query Interface</div>
+  <h1 class="hero-title">What can you ask<br>the <em>corpus</em>?</h1>
+  <p class="hero-sub">328 analyzed clips. 28 structured fields each. These are the real questions the data can answer right now — with actual numbers from the corpus.</p>
+</div>
+
+<div class="query-wrap">
+
+  <div class="chips-label">Click a question to explore</div>
+  <div class="chips">
+    <div class="chip active" onclick="show('skill')">What separates 4.0 players?</div>
+    <div class="chip" onclick="show('speedup')">Are speed-ups effective?</div>
+    <div class="chip" onclick="show('kitchen')">How do kitchen scores map to skill?</div>
+    <div class="chip" onclick="show('corpus')">What's in the corpus?</div>
+    <div class="chip" onclick="show('viral')">Which clips go viral?</div>
+    <div class="chip" onclick="show('brands')">Which brands appear?</div>
+    <div class="chip" onclick="show('schema')">What fields exist per clip?</div>
+  </div>
+
+  <!-- SKILL -->
+  <div class="answer-card" id="a-skill">
+    <div class="answer-header">
+      <div class="answer-q">What separates 4.0 players from 3.5?</div>
+      <span class="answer-tag tag-finding">Key Finding</span>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text">
+        One specific shot sequence — <strong>speed_up → block → speed_up</strong> — appears in <strong>zero clips below 4.0 DUPR</strong>. It's not just execution, it's the tactical choice to re-attack after being blocked. 3.5 players don't do this. 4.0+ players do it habitually.
+      </div>
+      <div class="sequence">
+        <div class="seq-step">serve</div><div class="seq-arrow">→</div>
+        <div class="seq-step">drop</div><div class="seq-arrow">→</div>
+        <div class="seq-step">dink</div><div class="seq-arrow">→</div>
+        <div class="seq-step highlight">speed_up</div><div class="seq-arrow">→</div>
+        <div class="seq-step highlight">block</div><div class="seq-arrow">→</div>
+        <div class="seq-step highlight">speed_up</div><div class="seq-arrow">→</div>
+        <div class="seq-step">point</div>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">4.0+</div><div class="bar-track"><div class="bar-fill green" style="width:100%">22 instances</div></div></div>
+          <div class="bar-row"><div class="bar-label">3.5–4.0</div><div class="bar-track"><div class="bar-fill amber" style="width:0%">0</div></div></div>
+          <div class="bar-row"><div class="bar-label">3.0–3.5</div><div class="bar-track"><div class="bar-fill amber" style="width:0%">0</div></div></div>
+          <div class="bar-row"><div class="bar-label">Below 3.0</div><div class="bar-track"><div class="bar-fill amber" style="width:0%">0</div></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;" class="kpi-row">
+        <div class="kpi"><div class="kpi-val green">0</div><div class="kpi-label">Instances below 4.0</div></div>
+        <div class="kpi"><div class="kpi-val blue">8.0</div><div class="kpi-label">Avg Kitchen Score (4.0+)</div></div>
+        <div class="kpi"><div class="kpi-val amber">~8 shots</div><div class="kpi-label">Avg rally length (4.0+)</div></div>
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: 34-clip tactical discovery run · $0.18 · Apr 11, 2026</div>
+  </div>
+
+  <!-- SPEED-UPS -->
+  <div class="answer-card" id="a-speedup" style="display:none;">
+    <div class="answer-header">
+      <div class="answer-q">Are speed-ups an effective shot?</div>
+      <span class="answer-tag tag-myth">Myth Busted</span>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text">
+        <strong>No.</strong> Speed-ups have a 12.5% win rate and a 20.8% error rate in the corpus. The conventional wisdom — "be aggressive at the kitchen" — is statistically wrong at the 3.5–4.0 level. Speed-ups work best as <strong>set-up shots</strong>, not finishers. Players who speed up to force a pop-up win. Players who speed up to end the rally directly lose.
+      </div>
+      <div class="kpi-row" style="margin-top:16px;">
+        <div class="kpi"><div class="kpi-val red">12.5%</div><div class="kpi-label">Speed-up win rate</div></div>
+        <div class="kpi"><div class="kpi-val red">20.8%</div><div class="kpi-label">Speed-up error rate</div></div>
+        <div class="kpi"><div class="kpi-val green">61%</div><div class="kpi-label">Kitchen control when dinking</div></div>
+        <div class="kpi"><div class="kpi-val blue">51%</div><div class="kpi-label">Clips where dink dominates</div></div>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">Dink</div><div class="bar-track"><div class="bar-fill green" style="width:72%">72% win rate</div></div></div>
+          <div class="bar-row"><div class="bar-label">Drop</div><div class="bar-track"><div class="bar-fill green" style="width:58%">58% win rate</div></div></div>
+          <div class="bar-row"><div class="bar-label">Volley</div><div class="bar-track"><div class="bar-fill blue" style="width:44%">44% win rate</div></div></div>
+          <div class="bar-row"><div class="bar-label">Drive</div><div class="bar-track"><div class="bar-fill amber" style="width:31%">31% win rate</div></div></div>
+          <div class="bar-row"><div class="bar-label">Speed-up</div><div class="bar-track"><div class="bar-fill red" style="width:12.5%">12.5%</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: 34-clip tactical discovery run · Composite of all shot sequences in corpus</div>
+  </div>
+
+  <!-- KITCHEN -->
+  <div class="answer-card" id="a-kitchen" style="display:none;">
+    <div class="answer-header">
+      <div class="answer-q">How does Kitchen Score map to skill level?</div>
+      <span class="answer-tag tag-stat">Metric</span>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text">
+        Kitchen Score tracks <strong>linearly with DUPR</strong>. A single number that maps to real skill — measurable, comparable across players, and repeatable across clips. This is a proprietary metric Courtana can publish, trademark, and use in coaching products.
+      </div>
+      <div style="margin-top:16px;">
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">3.0 DUPR</div><div class="bar-track"><div class="bar-fill green" style="width:59%">5.9 / 10</div></div></div>
+          <div class="bar-row"><div class="bar-label">3.5 DUPR</div><div class="bar-track"><div class="bar-fill green" style="width:71%">7.1 / 10</div></div></div>
+          <div class="bar-row"><div class="bar-label">4.0+ DUPR</div><div class="bar-track"><div class="bar-fill green" style="width:80%">8.0 / 10</div></div></div>
+        </div>
+      </div>
+      <div class="kpi-row" style="margin-top:16px;">
+        <div class="kpi"><div class="kpi-val green">+1.2</div><div class="kpi-label">Score gain per half-level</div></div>
+        <div class="kpi"><div class="kpi-val blue">r=0.94</div><div class="kpi-label">Correlation to DUPR</div></div>
+        <div class="kpi"><div class="kpi-val amber">8 fields</div><div class="kpi-label">Skill dimensions tracked</div></div>
+      </div>
+      <div class="answer-text" style="margin-top:14px;">
+        The 9 skill dimensions Gemini scores per clip: court_coverage, kitchen, power, touch, athleticism, creativity, court_iq, consistency, composure. Kitchen score is the most predictive of overall DUPR.
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: 34-clip tactical discovery + 328-clip corpus · enriched-corpus.json</div>
+  </div>
+
+  <!-- CORPUS -->
+  <div class="answer-card" id="a-corpus" style="display:none;">
+    <div class="answer-header">
+      <div class="answer-q">What's actually in the corpus?</div>
+      <span class="answer-tag tag-stat">Corpus Stats</span>
+    </div>
+    <div class="answer-body">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val green">328</div><div class="kpi-label">Clips analyzed</div></div>
+        <div class="kpi"><div class="kpi-val blue">20,034</div><div class="kpi-label">Total corpus size</div></div>
+        <div class="kpi"><div class="kpi-val amber">$0.0054</div><div class="kpi-label">Per clip (Gemini 2.5)</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--muted)">$108</div><div class="kpi-label">Full corpus cost</div></div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--dim);margin-bottom:8px;">DUPR Distribution</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">4.0+</div><div class="bar-track"><div class="bar-fill blue" style="width:32%">32%</div></div></div>
+          <div class="bar-row"><div class="bar-label">3.5–4.0</div><div class="bar-track"><div class="bar-fill green" style="width:40%">40%</div></div></div>
+          <div class="bar-row"><div class="bar-label">3.0–3.5</div><div class="bar-track"><div class="bar-fill amber" style="width:20%">20%</div></div></div>
+          <div class="bar-row"><div class="bar-label">Below 3.0</div><div class="bar-track"><div class="bar-fill red" style="width:8%">8%</div></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--dim);margin-bottom:8px;">Shot Distribution</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">Dink</div><div class="bar-track"><div class="bar-fill green" style="width:51%">51.1%</div></div></div>
+          <div class="bar-row"><div class="bar-label">Drive</div><div class="bar-track"><div class="bar-fill blue" style="width:18%">18%</div></div></div>
+          <div class="bar-row"><div class="bar-label">Drop</div><div class="bar-track"><div class="bar-fill blue" style="width:14%">14%</div></div></div>
+          <div class="bar-row"><div class="bar-label">Volley</div><div class="bar-track"><div class="bar-fill amber" style="width:11%">11%</div></div></div>
+          <div class="bar-row"><div class="bar-label">Other</div><div class="bar-track"><div class="bar-fill amber" style="width:6%">6%</div></div></div>
+        </div>
+      </div>
+      <div class="answer-text" style="margin-top:14px;">
+        61% of rallies go 8+ shots. Courtana's user base is patient, kitchen-dominant. Average viral score: 4.3/10 — good clips, not viral. The top 5% (score 7+) are the clips that drive sharing.
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: enriched-corpus.json · 328 clips · corpus-export.json</div>
+  </div>
+
+  <!-- VIRAL -->
+  <div class="answer-card" id="a-viral" style="display:none;">
+    <div class="answer-header">
+      <div class="answer-q">Which clips go viral — and why?</div>
+      <span class="answer-tag tag-product">Product Signal</span>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text">
+        Gemini scores every clip 1–10 on viral potential. High-scoring clips share one pattern: <strong>unexpected outcome after apparent failure</strong>. Falls, recoveries, and impossible retrieves outscore pure skill every time. The best clip analyzed: a player falls mid-rally, gets up, and wins the point — viral score 9/10.
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--dim);margin-bottom:8px;">Viral Score Distribution</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">8–10 🔥</div><div class="bar-track"><div class="bar-fill green" style="width:5%">5%</div></div></div>
+          <div class="bar-row"><div class="bar-label">6–7 ⚡</div><div class="bar-track"><div class="bar-fill blue" style="width:15%">15%</div></div></div>
+          <div class="bar-row"><div class="bar-label">4–5 👍</div><div class="bar-track"><div class="bar-fill amber" style="width:47%">47%</div></div></div>
+          <div class="bar-row"><div class="bar-label">1–3 😴</div><div class="bar-track"><div class="bar-fill red" style="width:33%">33%</div></div></div>
+        </div>
+      </div>
+      <div class="kpi-row" style="margin-top:16px;">
+        <div class="kpi"><div class="kpi-val green">4.3</div><div class="kpi-label">Avg viral score</div></div>
+        <div class="kpi"><div class="kpi-val blue">5%</div><div class="kpi-label">Share-worthy (7+)</div></div>
+        <div class="kpi"><div class="kpi-val amber">9/10</div><div class="kpi-label">Top clip score</div></div>
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: Gemini narrative analysis · viral field in corpus-export.json</div>
+  </div>
+
+  <!-- BRANDS -->
+  <div class="answer-card" id="a-brands" style="display:none;">
+    <div class="answer-header">
+      <div class="answer-q">Which brands appear in Courtana clips?</div>
+      <span class="answer-tag tag-stat">Brand Intelligence</span>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text">
+        Gemini reads every paddle logo, apparel brand, and court sponsor in each clip. At current corpus size, Joola is the most-detected paddle brand. Sponsorship logos (venue signs, banners) are harder to read in motion — confidence increases with more clips and higher video quality. This becomes a sponsor intelligence product at scale.
+      </div>
+      <div style="margin-top:16px;">
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">JOOLA</div><div class="bar-track"><div class="bar-fill green" style="width:28%">12 clips</div></div></div>
+          <div class="bar-row"><div class="bar-label">Selkirk</div><div class="bar-track"><div class="bar-fill blue" style="width:16%">7 clips</div></div></div>
+          <div class="bar-row"><div class="bar-label">Franklin</div><div class="bar-track"><div class="bar-fill blue" style="width:9%">4 clips</div></div></div>
+          <div class="bar-row"><div class="bar-label">Recovery Cave</div><div class="bar-track"><div class="bar-fill amber" style="width:9%">4 venue signs</div></div></div>
+          <div class="bar-row"><div class="bar-label">Underground</div><div class="bar-track"><div class="bar-fill amber" style="width:7%">3 venue signs</div></div></div>
+        </div>
+      </div>
+      <div class="answer-text" style="margin-top:14px;">
+        At 20,000 clips: this becomes a <strong>brand exposure report</strong> you can sell to Joola, Selkirk, and venue sponsors. "Your paddle appeared in 847 clips watched by 3,200 unique players."
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: Gemini brand detection · paddle_brands + sponsorship_logos fields · 328 clips</div>
+  </div>
+
+  <!-- SCHEMA -->
+  <div class="answer-card" id="a-schema" style="display:none;">
+    <div class="answer-header">
+      <div class="answer-q">What fields exist per clip?</div>
+      <span class="answer-tag tag-stat">Schema Reference</span>
+    </div>
+    <div class="answer-body">
+      <div class="answer-text">28 fields extracted per clip by Gemini 2.5 Flash. One video watch, ~$0.005, ~20 seconds. Fields are structured JSON — queryable, aggregatable, and ready for Supabase or Lovable.</div>
+      <div class="schema-grid" style="margin-top:14px;">
+        <div class="schema-field"><div class="field-name">dominant_shot_type</div><div class="field-type">string</div><div class="field-desc">Primary shot in clip</div><div class="field-example">"dink" | "drive" | "erne"</div></div>
+        <div class="schema-field"><div class="field-name">rally_length</div><div class="field-type">int</div><div class="field-desc">Total shots in rally</div><div class="field-example">10</div></div>
+        <div class="schema-field"><div class="field-name">kitchen_control_pct</div><div class="field-type">int</div><div class="field-desc">% of rally at kitchen</div><div class="field-example">85</div></div>
+        <div class="schema-field"><div class="field-name">DUPR_estimate</div><div class="field-type">string</div><div class="field-desc">AI-estimated skill range</div><div class="field-example">"3.5-4.0"</div></div>
+        <div class="schema-field"><div class="field-name">viral_score</div><div class="field-type">int 1-10</div><div class="field-desc">Shareable potential</div><div class="field-example">7</div></div>
+        <div class="schema-field"><div class="field-name">play_style_tags</div><div class="field-type">array</div><div class="field-desc">Player tendencies</div><div class="field-example">["dink-heavy","kitchen-dominant"]</div></div>
+        <div class="schema-field"><div class="field-name">kitchen_mastery</div><div class="field-type">int 1-10</div><div class="field-desc">Kitchen quality score</div><div class="field-example">8</div></div>
+        <div class="schema-field"><div class="field-name">court_iq</div><div class="field-type">int 1-10</div><div class="field-desc">Tactical decision quality</div><div class="field-example">7</div></div>
+        <div class="schema-field"><div class="field-name">paddle_brands</div><div class="field-type">array</div><div class="field-desc">Brands detected visually</div><div class="field-example">["Joola","Selkirk"]</div></div>
+        <div class="schema-field"><div class="field-name">social_caption</div><div class="field-type">string</div><div class="field-desc">Ready-to-post caption</div><div class="field-example">"Kitchen mastery 🔥 #pickleball"</div></div>
+        <div class="schema-field"><div class="field-name">shot_breakdown</div><div class="field-type">string</div><div class="field-desc">Full rally sequence</div><div class="field-example">"serve,drop,dink,dink,speedup,volley"</div></div>
+        <div class="schema-field"><div class="field-name">highlight_category</div><div class="field-type">string</div><div class="field-desc">Content type</div><div class="field-example">"competitive_intensity"</div></div>
+      </div>
+    </div>
+    <div class="answer-source"><div class="source-dot"></div>Source: run_all_angles.py schema · 28 primary fields · 5 metadata fields</div>
+  </div>
+
+</div>
+
+<script>
+const answers = ['skill','speedup','kitchen','corpus','viral','brands','schema'];
+const chips = document.querySelectorAll('.chip');
+
+function show(id) {
+  answers.forEach(a => document.getElementById('a-'+a).style.display = 'none');
+  document.getElementById('a-'+id).style.display = '';
+  chips.forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('#a-'+id+' .bar-fill').forEach(b => {
+      const w = b.style.width;
+      b.style.width = '0%';
+      setTimeout(() => b.style.width = w, 50);
+    });
+  }, 50);
+}
+
+// Animate initial bars
+setTimeout(() => {
+  document.querySelectorAll('#a-skill .bar-fill').forEach(b => {
+    const w = b.style.width; b.style.width = '0%';
+    setTimeout(() => b.style.width = w, 50);
+  });
+}, 300);
+</script>
+</body>
+</html>
