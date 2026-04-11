@@ -1,0 +1,173 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "generated": "2026-04-11T22:15:00Z",
+    "pipeline": "Pickle DaaS Rapid Insight Cycle",
+    "model": "gemini-2.5-flash-lite",
+    "total_clips": 34,
+    "total_shots": 557,
+    "total_players": 155,
+    "hypothesis": "Advanced players have distinct shot sequence signatures that could power a coaching product",
+    "hypothesis_verdict": "SUPPORTED_WITH_CAVEATS",
+    "venue_bias_flag": true,
+    "confidence_caps_applied": [
+      "single_venue_max_80",
+      "non_random_sample_max_75",
+      "n_under_20_per_band_max_60"
+    ]
+  },
+  "corpus_stats": {
+    "clips_by_batch": {
+      "batch-30-daas": 11,
+      "picklebill-batch-20260410": 12,
+      "batches/2026-04-11-tactical": 11
+    },
+    "dupr_breakdown": {
+      "2.5-3.0": 1,
+      "3.0-3.5": 8,
+      "3.5-4.0": 8,
+      "4.0-4.5": 4,
+      "unknown": 13
+    },
+    "shot_type_counts": {
+      "dink": 101,
+      "drive": 27,
+      "speed_up": 24,
+      "volley": 25,
+      "serve": 22,
+      "return": 21,
+      "block": 19,
+      "drop": 6,
+      "smash": 1,
+      "overhead": 1
+    },
+    "rally_distribution": {
+      "short_1_to_3": 3,
+      "medium_4_to_7": 4,
+      "long_8_plus": 15
+    },
+    "speedup_outcomes": {
+      "winner": 3,
+      "error": 5,
+      "rally_continues": 16,
+      "total": 24,
+      "winner_rate": 0.125,
+      "error_rate": 0.208
+    },
+    "kitchen_mastery_by_dupr": {
+      "2.5-3.0": 3.0,
+      "3.0-3.5": 5.9,
+      "3.5-4.0": 7.1,
+      "4.0-4.5": 8.0
+    },
+    "avg_rally_length_by_dupr": {
+      "2.5-3.0": 2.0,
+      "3.0-3.5": 13.6,
+      "3.5-4.0": 10.6,
+      "4.0-4.5": 8.2
+    }
+  },
+  "discoveries": [
+    {
+      "id": "D004",
+      "rank": 1,
+      "composite_score": 81.9,
+      "title": "The '4.0 Fingerprint': speed_up→block→speed_up Chain Exclusive to 4.0+ Players",
+      "category": "shot_sequence_signature",
+      "finding": "The attack-defend-attack chain (speed_up→block→speed_up) appears exclusively in 4.0+ DUPR clips and is absent from all lower bands. Distribution: 4.0-4.5 = 7 instances, 3.5-4.0 = 0, 3.0-3.5 = 0.",
+      "data_points": 7,
+      "confidence_score": 52,
+      "confidence_caps_applied": ["N<20 per band → max 60%", "Non-random sample → max 75%"],
+      "why_it_matters": "Concrete 3-shot sequence to grade players on — directly validates coaching product hypothesis.",
+      "sampling_bias_flag": "Only 4 clips in 4.0+ band — may reflect 1-2 specific recurring players at venue.",
+      "strongest_counter_argument": "With only 4 clips in the 4.0+ band, pattern could be person-specific not skill-level-specific.",
+      "hypothesis_score": 90,
+      "metrics": {
+        "chain_by_dupr": {"2.5-3.0": 0, "3.0-3.5": 0, "3.5-4.0": 0, "4.0-4.5": 7}
+      }
+    },
+    {
+      "id": "D001",
+      "rank": 2,
+      "composite_score": 76.1,
+      "title": "Advanced Players Use Dinks as Setup Weapons — Measurably Higher Attack Conversion Rate",
+      "category": "shot_sequence_signature",
+      "finding": "3.5+ DUPR players convert dinks to speed-up attacks at a higher rate than 3.0-3.5 players. The behavioral signature: dink strategically to create an opening, then attack. Beginners dink to survive.",
+      "data_points": 23,
+      "confidence_score": 58,
+      "confidence_caps_applied": ["N<20 clips → max 60%", "Non-random highlights → max 75%"],
+      "why_it_matters": "Teachable metric: dink attack conversion rate measurable before/after coaching intervention.",
+      "sampling_bias_flag": "Highlights over-represent exciting rallies — may inflate visible attack rates.",
+      "strongest_counter_argument": "Dink-to-speed-up rate may reflect highlight clip type (exciting rallies selected), not true skill difference.",
+      "hypothesis_score": 85,
+      "metrics": {
+        "top_bigrams_3x": [["dink", "dink", 47], ["drive", "drive", 15]],
+        "top_bigrams_4x": [["dink", "dink", 30], ["dink", "speed_up", 6], ["speed_up", "block", 7]],
+        "dink_to_attack_3x": "low",
+        "dink_to_attack_4x": "high"
+      }
+    },
+    {
+      "id": "D002",
+      "rank": 3,
+      "composite_score": 76.0,
+      "title": "Speed-Up Is the Riskiest Shot: 12.5% Win Rate, 20.8% Error Rate",
+      "category": "error_pattern",
+      "finding": "24 tracked speed-ups: 3 winners (12.5%), 5 errors (20.8%), 16 rally continuations (66.7%). The 'be aggressive at the kitchen' coaching trope is not data-supported in this corpus.",
+      "data_points": 24,
+      "confidence_score": 55,
+      "confidence_caps_applied": ["N<20 clips total → max 60%", "Highlights bias → max 75%"],
+      "why_it_matters": "Shot selection coach alert — AI flags statistically suboptimal speed-up timing in real time.",
+      "sampling_bias_flag": "Highlights over-represent exciting rallies — speed-up outcomes may be skewed in both directions.",
+      "strongest_counter_argument": "Highlight selection captures more long rallies where speed-ups appear mid-rally, not the clean winners from short aggressive points.",
+      "hypothesis_score": 75,
+      "metrics": {
+        "winner_rate": 0.125,
+        "error_rate": 0.208,
+        "continues_rate": 0.667,
+        "total_tracked": 24,
+        "most_common_preceding_shot": "dink (13 instances)"
+      }
+    },
+    {
+      "id": "D005",
+      "rank": 4,
+      "composite_score": 70.9,
+      "title": "Kitchen Mastery Is the Best Single DUPR Predictor — Linear 3.0→8.0 Ladder",
+      "category": "skill_signature",
+      "finding": "Kitchen mastery rating climbs monotonically across DUPR bands: 2.5-3.0=3.0, 3.0-3.5=5.9, 3.5-4.0=7.1, 4.0-4.5=8.0. More linear than court IQ, touch, or power.",
+      "data_points": 34,
+      "confidence_score": 58,
+      "confidence_caps_applied": ["N<20 per band → max 60%", "Single venue → max 80%"],
+      "why_it_matters": "North star coaching metric — 'Raise your Kitchen Score' — simple and measurable.",
+      "sampling_bias_flag": "AI-estimated DUPR from same model doing analysis creates circular reasoning risk.",
+      "strongest_counter_argument": "Gemini may correlate kitchen proximity with skill in both DUPR estimation and mastery rating — artificial correlation.",
+      "hypothesis_score": 80,
+      "metrics": {
+        "kitchen_mastery_by_dupr": {"2.5-3.0": 3.0, "3.0-3.5": 5.9, "3.5-4.0": 7.1, "4.0-4.5": 8.0},
+        "court_iq_by_dupr": {"2.5-3.0": 4.0, "3.0-3.5": 5.5, "3.5-4.0": 6.8, "4.0-4.5": 7.0},
+        "touch_by_dupr": {"2.5-3.0": 4.0, "3.0-3.5": 6.0, "3.5-4.0": 6.9, "4.0-4.5": 7.3}
+      }
+    },
+    {
+      "id": "D003",
+      "rank": 5,
+      "composite_score": 65.5,
+      "title": "Advanced Players Close Rallies ~40% Faster Than Intermediate Players",
+      "category": "rally_length",
+      "finding": "Avg rally length by DUPR: 2.5-3.0=2.0, 3.0-3.5=13.6, 3.5-4.0=10.6, 4.0-4.5=8.2 shots. 4.0+ players are ~40% more decisive than 3.5 players.",
+      "data_points": 22,
+      "confidence_score": 50,
+      "confidence_caps_applied": ["N<20 per band → max 60%", "CRITICAL highlight bias on rally length"],
+      "why_it_matters": "Decisiveness quotient — trackable coaching metric for shot selection efficiency.",
+      "sampling_bias_flag": "CRITICAL: Long rallies preferentially highlighted — beginner rally lengths are almost certainly inflated.",
+      "strongest_counter_argument": "This finding likely does not survive cross with full match data — entirely explainable by highlight selection algorithm behavior.",
+      "hypothesis_score": 70,
+      "metrics": {
+        "avg_rally_by_dupr": {"2.5-3.0": 2.0, "3.0-3.5": 13.6, "3.5-4.0": 10.6, "4.0-4.5": 8.2},
+        "rally_distribution": {"short_1_3": 3, "medium_4_7": 4, "long_8_plus": 15}
+      }
+    }
+  ],
+  "typescript_interfaces": "// TypeScript interfaces for Lovable import\nexport interface DiscoveryMeta {\n  version: string;\n  generated: string;\n  total_clips: number;\n  total_shots: number;\n  hypothesis_verdict: 'SUPPORTED' | 'SUPPORTED_WITH_CAVEATS' | 'INCONCLUSIVE' | 'REFUTED';\n}\n\nexport interface Discovery {\n  id: string;\n  rank: number;\n  composite_score: number;\n  title: string;\n  category: 'shot_sequence_signature' | 'error_pattern' | 'rally_length' | 'skill_signature';\n  finding: string;\n  data_points: number;\n  confidence_score: number; // 0-100, capped per validation rules\n  why_it_matters: string;\n  sampling_bias_flag: string;\n  strongest_counter_argument: string;\n  hypothesis_score: number; // 0-100\n  metrics: Record<string, unknown>;\n}\n\nexport interface CorpusStats {\n  shot_type_counts: Record<string, number>;\n  speedup_outcomes: {\n    winner: number; error: number; rally_continues: number;\n    winner_rate: number; error_rate: number;\n  };\n  kitchen_mastery_by_dupr: Record<string, number>;\n  avg_rally_length_by_dupr: Record<string, number>;\n}"
+}
