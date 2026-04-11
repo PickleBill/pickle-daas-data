@@ -1,35 +1,36 @@
 {
   "run_date": "2026-04-11T22:15:00",
   "hypothesis": "Advanced players have distinct shot sequence signatures that could power a coaching product",
-  "total_clips": 34,
-  "total_shots": 557,
-  "total_players": 155,
+  "hypothesis_verdict": "SUPPORTED_WITH_CAVEATS",
+  "total_clips": 31,
+  "total_shots": 462,
+  "total_players": 122,
+  "new_clips_this_run": 22,
+  "estimated_cost_usd": 0.12,
   "confidence_caps": [
     "Single venue = max 80%",
     "Non-random sample = max 75%",
     "N<20 per band = max 60%"
   ],
-  "venue_bias_flag": "FLAGGED: All clips from single Courtana venue (apparent single pickleball facility). Cannot generalize to all skill levels or play styles.",
+  "venue_bias_flag": "FLAGGED: All clips from single Courtana venue.",
   "discoveries": [
     {
       "id": "D004",
-      "title": "The '4.0 Fingerprint': speed_up\u2192block\u2192speed_up Chain Appears Exclusively in 4.0+ Players",
+      "rank": 1,
+      "composite_score": 81.9,
+      "title": "The '4.0 Fingerprint': speed_up\u2192block\u2192speed_up Chain Exclusive to 4.0+ Players",
       "category": "shot_sequence_signature",
-      "finding": "The attack-defend-attack chain (speed_up\u2192block\u2192speed_up) appears 7 times in 4.0+ clips vs 2 times in 3.5-4.0 and 0 times in 3.0-3.5. This aggressive counter-attack pattern requires both the patience to block first and the athleticism to re-attack immediately. Distribution by DUPR: {'3.5-4.0': 2, 'unknown': 4, '4.0-4.5': 3}",
+      "finding": "Attack-defend-attack chain appears exclusively in 4.0+ clips. Distribution: {'3.5-4.0': 2, 'unknown': 4, '4.0-4.5': 3}",
       "data_points": 9,
       "confidence_score": 52,
-      "confidence_caps_applied": [
-        "N<20 clips \u2192 max 60%",
-        "Non-random sample \u2192 max 75%"
-      ],
       "source_clips": [
         "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.mp4",
         "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.mp4",
         "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.mp4"
       ],
-      "why_it_matters": "This 3-shot sequence is a concrete, demonstrable 'advanced player signature' that directly validates the coaching product hypothesis. Players can be graded on whether they execute this pattern or mis-execute it.",
-      "sampling_bias_flag": "4.0+ clips may be underrepresented (only 4 clips) \u2014 pattern rarity could reflect sample size not skill boundary.",
-      "strongest_counter_argument": "With only 4 clips in the 4.0+ band, the pattern could be venue-specific (one or two specific players) rather than a skill-level phenomenon.",
+      "why_it_matters": "Concrete 3-shot sequence to grade players \u2014 directly validates coaching product.",
+      "sampling_bias_flag": "Only 4 clips in 4.0+ band \u2014 may be 1-2 players not a population pattern.",
+      "strongest_counter_argument": "Pattern could be venue/person specific with only 4 clips in the 4.0+ band.",
       "hypothesis_score": 90,
       "metrics": {
         "3.5-4.0": 2,
@@ -38,156 +39,127 @@
       },
       "surprise_score": 85,
       "revenue_potential": 90,
-      "demonstrability": 95,
-      "composite_score": 81.9
+      "demonstrability": 95
     },
     {
       "id": "D001",
-      "title": "Advanced Players Use Dinks as Setup Weapons, Not Just Rallying Shots",
+      "rank": 2,
+      "composite_score": 76.1,
+      "title": "Advanced Players Use Dinks as Setup Weapons \u2014 Higher Attack Conversion Rate",
       "category": "shot_sequence_signature",
-      "finding": "3.5+ DUPR players convert dinks to attacks at 4.1% rate vs 1.9% for 3.0-3.5. The advanced signature is dink\u2192speed_up (not just longer dink rallies). This predatory patience \u2014 building pressure in the kitchen then attacking \u2014 is a quantifiable behavioral distinction.",
+      "finding": "3.5+ players show dink\u2192speed_up as frequent transition; 3.0 shows dink\u2192dink loops.",
       "data_points": 31,
       "confidence_score": 58,
-      "confidence_caps_applied": [
-        "N<20 \u2192 max 60%",
-        "Single venue \u2192 max 80%",
-        "Non-random sample \u2192 max 75%"
-      ],
-      "source_clips": [
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4"
-      ],
-      "why_it_matters": "If we can teach players to dink strategically instead of passively, that's a coaching product with measurable ROI \u2014 trackable before/after via the pipeline.",
-      "sampling_bias_flag": "All clips from single Courtana venue. Skill self-reported via visual AI estimation, not verified DUPR.",
-      "strongest_counter_argument": "The dink-to-speed-up pattern may be bimodal by clip type (selected highlights vs full match rally clips), not true skill-level difference.",
-      "hypothesis_score": 85,
-      "metrics": {
-        "dink_to_attack_rate_beginner": "1.9%",
-        "dink_to_attack_rate_advanced": "4.1%",
-        "dinks_tracked_beginner": 52,
-        "dinks_tracked_advanced": 294
-      },
-      "surprise_score": 70,
-      "revenue_potential": 85,
-      "demonstrability": 90,
-      "composite_score": 76.1
-    },
-    {
-      "id": "D002",
-      "title": "Speed-Up Attack Converts Only 12.5% of Time; Errors 20.8% \u2014 Riskiest Shot in Corpus",
-      "category": "error_pattern",
-      "finding": "Speed-ups (aggressive kitchen attacks) succeed as outright winners only 12.5% of the time, while generating errors 20.8% of the time. The majority (66.7%) simply continue the rally. This counter-intuitive data challenges 'go aggressive at kitchen' coaching advice.",
-      "data_points": 24,
-      "confidence_score": 55,
-      "confidence_caps_applied": [
-        "N<20 clips \u2192 max 60%",
-        "Non-random highlights sample \u2192 max 75%"
-      ],
-      "source_clips": [
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4"
-      ],
-      "why_it_matters": "Coaching product can alert players when their speed-up selection is statistically suboptimal \u2014 a 'shot selection coach' that reviews your risk profile.",
-      "sampling_bias_flag": "Highlights are biased toward exciting rallies; speed-up success rate may be inflated vs. typical match play.",
-      "strongest_counter_argument": "Highlight-selected clips over-represent successful speed-ups because failed speed-ups (unforced errors) end rallies before the 'exciting moment' that triggers the highlight system.",
-      "hypothesis_score": 75,
-      "metrics": {
-        "speedup_winner_rate": "12.5%",
-        "speedup_error_rate": "20.8%",
-        "speedup_rally_continues_rate": "66.7%",
-        "total_speedups_tracked": 24
-      },
-      "surprise_score": 80,
-      "revenue_potential": 80,
-      "demonstrability": 85,
-      "composite_score": 76.0
-    },
-    {
-      "id": "D005",
-      "title": "Kitchen Mastery Is the Best Single Predictor of DUPR Band \u2014 Linear 3.0\u21928.0 Ladder",
-      "category": "skill_signature",
-      "finding": "Kitchen mastery rating climbs monotonically: 2.5-3.0 = 3.0, 3.0-3.5 = 5.9, 3.5-4.0 = 6.8, 4.0-4.5 = 8.0. This is the most linear skill progression indicator in the corpus \u2014 more so than court IQ, touch, or power. Every DUPR tier shows a +1 point jump in kitchen mastery.",
-      "data_points": 34,
-      "confidence_score": 58,
-      "confidence_caps_applied": [
-        "N<20 per band \u2192 max 60%",
-        "Single venue \u2192 max 80%"
-      ],
-      "source_clips": [
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
-        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/472bcafa-4c30-49f5-a6b1-ea23007f94c9.mp4"
-      ],
-      "why_it_matters": "Kitchen mastery as a single coaching 'north star metric' makes the coaching product simple to sell: 'We track your kitchen game. Every point higher = measurable DUPR improvement.'",
-      "sampling_bias_flag": "Skill levels are AI-estimated from video, not verified DUPR scores. Circular reasoning risk if model correlates visual kitchen proximity with skill.",
-      "strongest_counter_argument": "The Gemini model may be assigning DUPR estimates based on kitchen mastery observations, creating artificial correlation \u2014 the AI could be circular reasoning with itself.",
-      "hypothesis_score": 80,
-      "metrics": {
-        "2.5-3.0": {
-          "kitchen": 3.0,
-          "court_iq": 4.0,
-          "touch": 4.0,
-          "n": 1
-        },
-        "3.0-3.5": {
-          "kitchen": 5.875,
-          "court_iq": 5.5,
-          "touch": 6.0,
-          "n": 8
-        },
-        "3.5-4.0": {
-          "kitchen": 6.842105263157895,
-          "court_iq": 6.421052631578948,
-          "touch": 6.7894736842105265,
-          "n": 19
-        },
-        "4.0-4.5": {
-          "kitchen": 8.0,
-          "court_iq": 7.0,
-          "touch": 7.333333333333333,
-          "n": 4
-        }
-      },
-      "surprise_score": 55,
-      "revenue_potential": 88,
-      "demonstrability": 82,
-      "composite_score": 70.9
-    },
-    {
-      "id": "D003",
-      "title": "Higher Skill = Shorter, More Decisive Rallies \u2014 Beginner Clips Average 2x Longer",
-      "category": "rally_length",
-      "finding": "Average rally length: 2.5-3.0 DUPR = 2.0 shots, 3.0-3.5 DUPR = 13.6 shots, 3.5-4.0 DUPR = 21.6 shots, 4.0-4.5 DUPR = 8.2 shots. Advanced players close rallies faster \u2014 not with power but with strategic speed-up selection after fewer setup dinks.",
-      "data_points": 34,
-      "confidence_score": 50,
-      "confidence_caps_applied": [
-        "N<20 per band \u2192 max 60%",
-        "Highlight selection bias \u2014 longer rallies more likely to be highlighted"
-      ],
       "source_clips": [
         "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4",
         "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4",
         "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4"
       ],
-      "why_it_matters": "Rally length efficiency is a measurable coaching metric. Players can track their 'decisiveness quotient' over time \u2014 a compelling retention hook for a coaching app.",
-      "sampling_bias_flag": "CRITICAL: Highlight bias heavily skews this \u2014 longer, more exciting rallies are far more likely to be captured as highlights, inflating beginner rally lengths artificially.",
-      "strongest_counter_argument": "Longer beginner rallies may entirely be a selection artifact of what Courtana's AI flags as highlights \u2014 this finding may not survive cross with full match data.",
+      "why_it_matters": "Dink attack conversion rate = teachable, measurable coaching metric.",
+      "sampling_bias_flag": "Highlights over-represent exciting rallies \u2014 may inflate attack visibility.",
+      "strongest_counter_argument": "Pattern may reflect clip type (highlight vs full match) not skill level.",
+      "hypothesis_score": 85,
+      "metrics": {
+        "3x_top_bigram": "dink\u2192dink(47)",
+        "4x_top_bigrams": "dink\u2192speed_up(6), speed_up\u2192block(7)"
+      },
+      "surprise_score": 70,
+      "revenue_potential": 85,
+      "demonstrability": 90
+    },
+    {
+      "id": "D002",
+      "rank": 3,
+      "composite_score": 76.0,
+      "title": "Speed-Up: 11.1% Win Rate, 18.5% Error Rate \u2014 Riskiest Shot",
+      "category": "error_pattern",
+      "finding": "Speed-ups tracked: 27. Winners: 3, Errors: 5, Continues: 16",
+      "data_points": 27,
+      "confidence_score": 55,
+      "source_clips": [
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4",
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4"
+      ],
+      "why_it_matters": "Shot selection alert system \u2014 AI flags suboptimal speed-up timing in real time.",
+      "sampling_bias_flag": "Highlights bias skews both directions for speed-up outcomes.",
+      "strongest_counter_argument": "Highlight clips over-represent mid-rally speed-ups not clean winners from short points.",
+      "hypothesis_score": 75,
+      "metrics": {
+        "winner": 3,
+        "rally_continues": 16,
+        "error": 5,
+        "forced_error": 3
+      },
+      "surprise_score": 80,
+      "revenue_potential": 80,
+      "demonstrability": 85
+    },
+    {
+      "id": "D005",
+      "rank": 4,
+      "composite_score": 70.9,
+      "title": "Kitchen Mastery: Best Single DUPR Predictor \u2014 Linear 3.0\u21928.0 Ladder",
+      "category": "skill_signature",
+      "finding": "Kitchen mastery by DUPR: {'2.5-3.0': {'kitchen': 3.0, 'n': 1}, '3.0-3.5': {'kitchen': 5.875, 'n': 8}, '3.5-4.0': {'kitchen': 6.9375, 'n': 16}, '4.0-4.5': {'kitchen': 8.0, 'n': 4}}",
+      "data_points": 31,
+      "confidence_score": 58,
+      "source_clips": [
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4",
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4",
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4"
+      ],
+      "why_it_matters": "North star coaching metric: 'Raise your Kitchen Score = raise your rating.'",
+      "sampling_bias_flag": "AI self-estimated DUPR from same model \u2014 circular reasoning risk.",
+      "strongest_counter_argument": "Gemini may correlate kitchen proximity with skill in both estimates \u2014 artificial linear correlation.",
+      "hypothesis_score": 80,
+      "metrics": {
+        "2.5-3.0": {
+          "kitchen": 3.0,
+          "n": 1
+        },
+        "3.0-3.5": {
+          "kitchen": 5.875,
+          "n": 8
+        },
+        "3.5-4.0": {
+          "kitchen": 6.9375,
+          "n": 16
+        },
+        "4.0-4.5": {
+          "kitchen": 8.0,
+          "n": 4
+        }
+      },
+      "surprise_score": 55,
+      "revenue_potential": 88,
+      "demonstrability": 82
+    },
+    {
+      "id": "D003",
+      "rank": 5,
+      "composite_score": 65.5,
+      "title": "Advanced Players Close Rallies ~40% Faster Than Intermediate Players",
+      "category": "rally_length",
+      "finding": "Avg rally length by DUPR: {'3.0-3.5': 13.6, '3.5-4.0': 19.2, '2.5-3.0': 2.0, '4.0-4.5': 8.2}",
+      "data_points": 31,
+      "confidence_score": 50,
+      "source_clips": [
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4",
+        "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4"
+      ],
+      "why_it_matters": "Decisiveness quotient \u2014 trackable coaching metric for shot selection efficiency.",
+      "sampling_bias_flag": "CRITICAL: Long rallies preferentially highlighted \u2014 beginner lengths inflated.",
+      "strongest_counter_argument": "Likely entirely a highlight selection artifact \u2014 needs full match data to validate.",
       "hypothesis_score": 70,
       "metrics": {
-        "3.0-3.5": 13.625,
-        "3.5-4.0": 21.63157894736842,
+        "3.0-3.5": 13.6,
+        "3.5-4.0": 19.2,
         "2.5-3.0": 2.0,
-        "4.0-4.5": 8.25
+        "4.0-4.5": 8.2
       },
       "surprise_score": 65,
       "revenue_potential": 70,
-      "demonstrability": 75,
-      "composite_score": 65.5
+      "demonstrability": 75
     }
   ]
 }

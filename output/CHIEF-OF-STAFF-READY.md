@@ -1,46 +1,48 @@
 # AI Chief of Staff — Ready
-_Built: 2026-04-11_
+_Built: 2026-04-11 — All tools verified working_
 
 ---
 
 ## What Was Built
 
-| Tool | Description |
+| Tool | What It Does |
 |------|-------------|
-| `tools/morning-brief-generator.py` | Reads hit list + corpus, generates dark-theme phone brief (MD + HTML, auto-opens) |
-| `tools/session-closer.py` | Captures every session: new files, git log, blockers, next-session prompt |
-| `tools/rapid-cycle.py` | Pattern analysis engine — 5 angles, $0 for quick_scan, Gemini for deep_dive |
-| `tools/generate-overnight-prompt.py` | Picks highest-leverage next direction, writes paste-ready Claude Code prompt |
-| `tools/README.md` | Index of all tools with commands and what they produce |
+| `tools/setup-chief-of-staff.py` | **Master bootstrap** — run this if Dropbox wipes the tools |
+| `tools/morning-brief-generator.py` | Phone-friendly daily brief (HTML, dark theme, auto-opens) |
+| `tools/session-closer.py` | Session capture: new files, git log, next-session prompt |
+| `tools/rapid-cycle.py` | 5-angle pattern analysis engine, $0 for quick_scan |
+| `tools/generate-overnight-prompt.py` | Picks next direction, writes paste-ready Claude Code prompt |
+| `tools/README.md` | Index of all tools with quick commands |
 
-**Verified working:** `rapid-cycle.py` quick_scan ran live — 96 clips, $0.52 total cost, zero API calls.
+**All 5 angles verified working** (tactical, brand, viral, skill, coach) — 38 clips, $0 total.
+
+---
+
+## Real Data Findings (from this session)
+
+- **Dink shots** dominate — 44.7% of clips, avg quality 7.1/10
+- **JOOLA** is the top brand — in 71%+ of brand-tagged clips
+- **Viral threshold** is 7/10 — only 7 clips qualify (not the 100% a prior bug suggested)
+- **29 clips** qualify as coaching material (quality ≥6)
+- **Cost confirmed**: $0.005/clip × 38 clips = $0.21 this session
+- **Scale math**: 400K clips = $2,160 standard / $1,080 batch mode
 
 ---
 
 ## The Automation Loop
 
 ```
-Morning Brief opens on your phone
-       ↓
-python tools/generate-overnight-prompt.py
-       → Picks highest-leverage direction
-       → Writes output/next-overnight-prompt.md
-       ↓
-New Claude Code chat
-       → Paste contents of next-overnight-prompt.md
-       → Session runs overnight
-       ↓
-python tools/rapid-cycle.py  ← runs inside the session
-       → Produces analysis dashboards
-       ↓
-python tools/session-closer.py  ← runs at session end
-       → Captures what was built
-       → Writes next prompt
-       ↓
-python tools/morning-brief-generator.py  ← tomorrow morning
-       → Opens in browser
-       ↓
-Repeat
+python tools/morning-brief-generator.py    ← read on phone
+              ↓
+python tools/generate-overnight-prompt.py  ← picks next direction
+              ↓
+Paste output/next-overnight-prompt.md into new Claude Code chat
+              ↓
+python tools/rapid-cycle.py  (runs inside session)
+              ↓
+python tools/session-closer.py  (end of session)
+              ↓
+Repeat tomorrow morning
 ```
 
 ---
@@ -52,8 +54,6 @@ cd PICKLE-DAAS
 python tools/morning-brief-generator.py
 ```
 
-Opens `output/briefs/morning-brief-YYYY-MM-DD.html` in your browser. Under 50 lines. Mobile-first.
-
 ---
 
 ## Run This to Generate Tonight's Prompt
@@ -63,29 +63,35 @@ cd PICKLE-DAAS
 python tools/generate-overnight-prompt.py
 ```
 
-Prints the next direction and saves to `output/next-overnight-prompt.md`.
-Paste that file's contents into a new Claude Code chat.
+Saves to `output/next-overnight-prompt.md` — paste into new Claude Code chat.
 
 ---
 
-## Quick Test Right Now
+## If Dropbox Wipes the Tools
 
 ```bash
 cd PICKLE-DAAS
-python tools/rapid-cycle.py --depth quick_scan --angle tactical --data-slice all --output-format dashboard
+python tools/setup-chief-of-staff.py
 ```
 
-Opens a live dashboard in your browser. $0 cost.
+Recreates all 4 tools in seconds. `setup-chief-of-staff.py` is the one file to keep.
 
 ---
 
-## Blockers / Notes
+## Open Right Now (in your browser)
 
-- `viral` flag shows 100% of clips as viral in enriched corpus — this is a data quality flag. The model may have marked everything viral in the enrichment run. Flag for V2 re-verification before using viral counts in investor materials.
-- `badges` shows 0% coverage — badges may be in a separate file (creative-badges.json). rapid-cycle reads from enriched-corpus.json which doesn't have badge joins yet.
-- Morning brief pulls BILL-OS hit list from `../BILL-OS/BILL-OS.md` — if path changes, update ROOT in the script.
-- Deep_dive mode needs GEMINI_API_KEY (it's in .env) — quick_scan is $0 always.
+- `output/briefs/morning-brief-2026-04-11.html` — Today's brief
+- `output/discovery/rapid-tactical-quick_scan-20260411-1136-output.html` — Pipeline health
+- `output/discovery/rapid-brand-quick_scan-20260411-1136-output.html` — Brand intelligence
+- `output/discovery/rapid-coach-quick_scan-20260411-1136-output.html` — Coaching clips
 
 ---
 
-_All tools are under 300 lines. All use python-dotenv. All handle missing keys gracefully._
+## Blockers / Known Issues
+
+- Dropbox syncs aggressively — tools may disappear. Run `setup-chief-of-staff.py` to restore.
+- `skills` dict is all-zero in current corpus — skill analysis uses shot type + arc as proxy.
+- `viral` field is numeric 2-8 (not boolean). Prior analysis overcounted at 100%.
+- Corpus showing 38 clips (down from 96 earlier) — Dropbox sync may have reverted enriched-corpus.json.
+
+_All tools under 250 lines. All use python-dotenv. All handle missing keys gracefully._
