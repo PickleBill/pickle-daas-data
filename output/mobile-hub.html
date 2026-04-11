@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Courtana AI Hub</title>
+<style>
+  :root {
+    --bg: #0f1219; --bg2: #151e2b; --bg3: #1a2535;
+    --border: #1e2d3f; --accent: #00E676; --text: #e8eaf0; --muted: #6b7c93;
+    --orange: #FF9800; --blue: #64B5F6; --red: #ff5252;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding-bottom: 40px; }
+
+  .header { background: #0a0e15; border-bottom: 2px solid var(--accent); padding: 16px 16px 12px; position: sticky; top: 0; z-index: 10; }
+  .header h1 { font-size: 18px; font-weight: 700; color: #fff; }
+  .header .sub { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
+  .header .date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .tabs { display: flex; overflow-x: auto; background: #0a0e15; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex-shrink: 0; padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-content { display: none; padding: 16px; }
+  .tab-content.active { display: block; }
+
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .card.action { border-left: 3px solid var(--orange); }
+  .card.done { border-left: 3px solid var(--accent); }
+  .card .title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .card .body { font-size: 13px; color: #b0bec8; line-height: 1.6; }
+  .card .link { color: var(--accent); font-size: 13px; display: inline-block; margin-top: 6px; text-decoration: none; }
+
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin: 4px 3px 0 0; }
+  .tag-green { background: #00E67622; color: var(--accent); }
+  .tag-orange { background: #FF980022; color: var(--orange); }
+  .tag-grey { background: #37474F; color: #90A4AE; }
+
+  /* Prompt blocks */
+  .prompt-block { background: #0a0e15; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; overflow: hidden; }
+  .prompt-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+  .prompt-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .prompt-tag { font-size: 11px; color: var(--muted); }
+  .copy-btn { background: var(--accent); color: #000; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+  .copy-btn:active { background: #00c060; }
+  .copy-btn.copied { background: #37474F; color: #90A4AE; }
+  .prompt-text { padding: 12px 14px; font-size: 13px; color: #b0bec8; line-height: 1.6; white-space: pre-wrap; max-height: 180px; overflow-y: auto; }
+  .prompt-expand { text-align: center; padding: 8px; font-size: 12px; color: var(--accent); cursor: pointer; border-top: 1px solid var(--border); }
+
+  /* Deal status */
+  .deal-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+  .deal-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .dot-hot { background: #00E676; }
+  .dot-warm { background: #FF9800; }
+  .dot-cold { background: #607D8B; }
+  .deal-name { font-weight: 600; font-size: 14px; }
+  .deal-status { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .deal-action { font-size: 12px; color: var(--blue); margin-top: 4px; }
+
+  /* Links list */
+  .link-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; text-decoration: none; }
+  .link-item:active { background: var(--bg3); }
+  .link-icon { font-size: 20px; flex-shrink: 0; }
+  .link-info .link-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .link-info .link-desc { font-size: 12px; color: var(--muted); }
+  .link-arrow { margin-left: auto; color: var(--muted); font-size: 14px; }
+
+  /* Fundraise bar */
+  .fundraise-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 10px; }
+  .fundraise-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .fundraise-bar-bg { background: var(--bg3); border-radius: 4px; height: 8px; margin-bottom: 8px; }
+  .fundraise-bar-fill { background: var(--accent); border-radius: 4px; height: 8px; }
+  .fundraise-nums { display: flex; justify-content: space-between; font-size: 13px; }
+  .fundraise-raised { font-weight: 700; color: var(--accent); }
+  .fundraise-goal { color: var(--muted); }
+
+  section-title { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 16px 0 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="sub">AI Chief of Staff</div>
+  <h1>chief@courtana.com</h1>
+  <div class="date">April 11, 2026 · Updated automatically</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('action')">🟠 Action</div>
+  <div class="tab" onclick="showTab('prompts')">📋 Prompts</div>
+  <div class="tab" onclick="showTab('deals')">🤝 Deals</div>
+  <div class="tab" onclick="showTab('links')">🔗 Links</div>
+  <div class="tab" onclick="showTab('built')">✅ Built</div>
+</div>
+
+<!-- TAB: ACTION -->
+<div id="tab-action" class="tab-content active">
+
+  <div class="card action">
+    <div class="title">🟠 Your One Action (5 min)</div>
+    <div class="body">Set up Slack webhook → everything flows to your phone.<br><br>
+    1. Go to <strong>api.slack.com/apps</strong><br>
+    2. Create App → Incoming Webhooks → Add to #ops-ai<br>
+    3. Copy webhook URL<br>
+    4. Paste into PICKLE-DAAS/.env as <code>SLACK_WEBHOOK_URL</code>
+    </div>
+    <a class="link" href="https://api.slack.com/apps" target="_blank">→ api.slack.com/apps ↗</a>
+  </div>
+
+  <div class="card action">
+    <div class="title">🟠 Peak: Send lobby display to Chris</div>
+    <div class="body">The TV display is ready. Open <strong>lobby-display.html</strong> in a browser, add <code>?venue=Peak+Pickleball</code> to the URL. Chris Kepko's IT person can put it on any TV with a browser. Grand opening May 9.</div>
+    <a class="link" href="https://courtana.com/session-highlights/KYMLnLpmA6Sq" target="_blank">→ Example session page ↗</a>
+  </div>
+
+  <div class="card action">
+    <div class="title">🟠 Court Kings: Prep re-engagement (Rich back Apr 24)</div>
+    <div class="body">Draft the follow-up email now so it's ready to send Apr 22. Theme: "while you were away, here's what we built." Include: lobby display demo, player card widget preview, Kings Court Coach demo link.</div>
+  </div>
+
+  <div class="card action">
+    <div class="title">🟠 Create chief@courtana.com Google account</div>
+    <div class="body">This unlocks full AI employee access: Gmail, Calendar, Drive, Fireflies OAuth. Full plan in BILL-OS/CHIEF-AT-COURTANA.md. Everything else is ready — just needs the account.</div>
+  </div>
+
+</div>
+
+<!-- TAB: PROMPTS -->
+<div id="tab-prompts" class="tab-content">
+
+  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Tap COPY on any prompt → paste directly into Lovable chat.</p>
+
+  <div class="prompt-block">
+    <div class="prompt-header">
+      <div>
+        <div class="prompt-title">1. Lobby TV Display</div>
+        <div class="prompt-tag">Branch 1 · Zero auth · Any venue TV</div>
+      </div>
+      <button class="copy-btn" onclick="copyPrompt(this, 'p1')">COPY</button>
+    </div>
+    <div class="prompt-text" id="p1">Build a pickleball venue lobby display in dark mode (bg #0f131a, accent #00E676). Full screen, designed for TV. Three columns:
+
+LEFT: Today's top 5 players ranked by XP. Each row: avatar (circular), username, level/tier badge, XP in green. Top 3 have gold/silver/bronze border accents.
+
+CENTER: "Recent Sessions" — last 5 session cards. Each card: thumbnail image (16:9, CDN), player avatar chips (small circular + username), badge pills showing badges earned (bronze/silver/gold tier colors). Time ago label.
+
+RIGHT: "Badges Just Earned" ticker — last 6 badges. Each: large badge icon, badge name in tier color, player username in green, AI reason text (2 lines, grey), rarity % at bottom.
+
+FOOTER: session count | clip count | badge count. "Scan QR code · courtana.com"
+
+Data: https://courtana.com/app/anon-highlight-groups/?format=json&page=1&page_size=12
+Auto-refresh every 60 seconds. No auth required.</div>
+    <div class="prompt-expand" onclick="expandPrompt(this)">Show full prompt ↓</div>
+  </div>
+
+  <div class="prompt-block">
+    <div class="prompt-header">
+      <div>
+        <div class="prompt-title">2. Player Card Widget</div>
+        <div class="prompt-tag">Branch 2 · iFrame embeddable · Viral sharing</div>
+      </div>
+      <button class="copy-btn" onclick="copyPrompt(this, 'p2')">COPY</button>
+    </div>
+    <div class="prompt-text" id="p2">Build an embeddable pickleball player card widget (280×380px). Must work as an iframe.
+
+Dark card: bg #1e2738, 1px border #00E676. Top: player avatar (72px circular), tier badge icon, username bold 18px, "Level 14" in green. Middle: XP progress bar in #00E676, "14 → 15" label. Below: 3 badge pills (icon + name, dark bg #2a3548). Bottom: best clip thumbnail (CDN, 16:9, rounded, play button overlay). Tap anywhere → courtana.com/player/{uuid}/
+
+Props: username, avatarUrl, level, tier, xp, xpNext, badges [{name, iconUrl}], clipThumbnail, profileUrl</div>
+    <div class="prompt-expand" onclick="expandPrompt(this)">Show full prompt ↓</div>
+  </div>
+
+  <div class="prompt-block">
+    <div class="prompt-header">
+      <div>
+        <div class="prompt-title">3. Venue App Live Panel</div>
+        <div class="prompt-tag">Branch 3 · Closes Concord · "No second system"</div>
+      </div>
+      <button class="copy-btn" onclick="copyPrompt(this, 'p3')">COPY</button>
+    </div>
+    <div class="prompt-text" id="p3">Add a "Courtana Live" section to an existing venue homepage app. Place below court availability grid.
+
+Dark panel (bg #1a2030, border #1e2d3f, border-radius 8px). Left half: total sessions today (large number), "LAST BADGE: [name] [icon]" + player name in green, "COURTS ACTIVE: N" stat. Right half: horizontal scrolling strip of last 5 session thumbnails (120×80px, CDN, tappable → courtana.com/session-highlights/{id}). Each labeled with player count and time ago.
+
+Section label: "⚡ Live on Court" with pulsing green dot. Auto-refreshes every 2 minutes.
+Data: https://courtana.com/app/anon-highlight-groups/?format=json&page=1&page_size=10</div>
+    <div class="prompt-expand" onclick="expandPrompt(this)">Show full prompt ↓</div>
+  </div>
+
+  <div class="prompt-block">
+    <div class="prompt-header">
+      <div>
+        <div class="prompt-title">4. Post-Session Email</div>
+        <div class="prompt-tag">Branch 4 · Badge reveal · Players share it</div>
+      </div>
+      <button class="copy-btn" onclick="copyPrompt(this, 'p4')">COPY</button>
+    </div>
+    <div class="prompt-text" id="p4">Build a pickleball post-session email template (pure HTML/CSS, no React — must work in email clients). Mobile-first, max-width 600px.
+
+bg #0f1419. Header: player avatar (64px circular), username bold 22px, session date. "You earned:" section — 2-3 badge cards: large badge icon (80px), badge name bold, tier pill, AI reason in grey italic. Below: best clip thumbnail (full width, CDN), "Watch your highlight →" green CTA button → courtana.com/highlight/{uuid}. Footer: Level + XP progress bar + global rank. "Share highlights" link.
+
+Accent: #00E676. Font: system-ui. All images: CDN URLs only.</div>
+    <div class="prompt-expand" onclick="expandPrompt(this)">Show full prompt ↓</div>
+  </div>
+
+  <div class="prompt-block">
+    <div class="prompt-header">
+      <div>
+        <div class="prompt-title">5. Coach Dashboard</div>
+        <div class="prompt-tag">Branch 5 · Upsell coaching tier</div>
+      </div>
+      <button class="copy-btn" onclick="copyPrompt(this, 'p5')">COPY</button>
+    </div>
+    <div class="prompt-text" id="p5">Build a coach dashboard panel. Dark theme (#0f131a bg, #00E676 accent).
+
+Left sidebar (240px): player list with avatar, username, session count this week. Active player in green border. Search box.
+
+Main panel for selected player: avatar + username + level + "Last seen" header. Badge Trend: bar chart of badges per session (last 6), bars in #00E676. Play Profile: "Dominant arc: grind_rally", "Top shot: third_shot_drop" with %, "Avg quality: 7.2/10". AI Coaching Notes: 3 bullet points. Top 3 Clips: thumbnail grid (CDN), quality score overlay, arc label.
+
+Props: playerCard JSON, topClips array (uuid, thumbnail, quality, arc, summary)</div>
+    <div class="prompt-expand" onclick="expandPrompt(this)">Show full prompt ↓</div>
+  </div>
+
+</div>
+
+<!-- TAB: DEALS -->
+<div id="tab-deals" class="tab-content">
+
+  <div class="fundraise-card">
+    <div class="fundraise-label">Fundraise — Tranche 1</div>
+    <div class="fundraise-bar-bg"><div class="fundraise-bar-fill" style="width:79%"></div></div>
+    <div class="fundraise-nums">
+      <span class="fundraise-raised">$396K raised</span>
+      <span class="fundraise-goal">$500K goal · $104K gap</span>
+    </div>
+  </div>
+
+  <div class="deal-item">
+    <div class="deal-dot dot-hot"></div>
+    <div>
+      <div class="deal-name">🏟️ Peak Pickleball</div>
+      <div class="deal-status">Venue #1 · Grand opening May 9 · Install planning</div>
+      <div class="deal-action">→ Send lobby-display.html to Chris Kepko for TV setup</div>
+    </div>
+  </div>
+
+  <div class="deal-item">
+    <div class="deal-dot dot-warm"></div>
+    <div>
+      <div class="deal-name">🏆 Court Kings</div>
+      <div class="deal-status">$250–500K · NDA sent · Rich on vacation until ~Apr 24</div>
+      <div class="deal-action">→ Prep re-engagement package now. Send Apr 22.</div>
+    </div>
+  </div>
+
+  <div class="deal-item">
+    <div class="deal-dot dot-warm"></div>
+    <div>
+      <div class="deal-name">🏟️ Concord Pickleball</div>
+      <div class="deal-status">Real objection: ROI, not CourtReserve. Chris back Apr 14.</div>
+      <div class="deal-action">→ David schedules call week of Apr 14. Lead with ROI proof.</div>
+    </div>
+  </div>
+
+  <div class="deal-item">
+    <div class="deal-dot dot-warm"></div>
+    <div>
+      <div class="deal-name">🏟️ Rally Pickleball</div>
+      <div class="deal-status">Warm intro via Nora. No response to outreach.</div>
+      <div class="deal-action">→ Bill: follow up with Barrett directly</div>
+    </div>
+  </div>
+
+  <div class="deal-item">
+    <div class="deal-dot dot-cold"></div>
+    <div>
+      <div class="deal-name">💰 Scot McClintic</div>
+      <div class="deal-status">First call Mar 29. Status TBD.</div>
+      <div class="deal-action">→ Follow up. Check last email thread.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB: LINKS -->
+<div id="tab-links" class="tab-content">
+
+  <p style="font-size:13px;color:var(--muted);margin-bottom:14px">All real URLs — tap to open.</p>
+
+  <a class="link-item" href="https://courtana.com" target="_blank">
+    <span class="link-icon">🏠</span>
+    <div class="link-info"><div class="link-title">Courtana Homepage</div><div class="link-desc">Live product</div></div>
+    <span class="link-arrow">↗</span>
+  </a>
+
+  <a class="link-item" href="https://courtana.com/player/bGLx1SV3k1lT/" target="_blank">
+    <span class="link-icon">👤</span>
+    <div class="link-info"><div class="link-title">PickleBill Profile</div><div class="link-desc">#1 Global · Level 19 · 82 badges</div></div>
+    <span class="link-arrow">↗</span>
+  </a>
+
+  <a class="link-item" href="https://courtana.com/session-highlights/KYMLnLpmA6Sq" target="_blank">
+    <span class="link-icon">🎬</span>
+    <div class="link-info"><div class="link-title">Example Session Page</div><div class="link-desc">Seven Oaks · Live badge display</div></div>
+    <span class="link-arrow">↗</span>
+  </a>
+
+  <a class="link-item" href="https://docsend.com/v/qkdkk/courtanapitch2026" target="_blank">
+    <span class="link-icon">📊</span>
+    <div class="link-info"><div class="link-title">Pitch Deck</div><div class="link-desc">DocSend · Shareable</div></div>
+    <span class="link-arrow">↗</span>
+  </a>
+
+  <a class="link-item" href="https://stack.angellist.com/company/picklebills/raise/rounds/bb56d9a9-a068-489e-9b1d-9cf533e3a7" target="_blank">
+    <span class="link-icon">💰</span>
+    <div class="link-info"><div class="link-title">AngelList Raise</div><div class="link-desc">$1.3M seed round</div></div>
+    <span class="link-arrow">↗</span>
+  </a>
+
+  <a class="link-item" href="https://docs.google.com/document/d/1KpNRoHE6O0larxdRQ8fFQ34bOtVnNaRFdb71CVgy7GE/edit" target="_blank">
+    <span class="link-icon">📄</span>
+    <div class="link-info"><div class="link-title">Investor Outreach Doc</div><div class="link-desc">Google Drive · Master list</div></div>
+    <span class="link-arrow">↗</span>
+  </a>
+
+</div>
+
+<!-- TAB: BUILT -->
+<div id="tab-built" class="tab-content">
+
+  <div class="card done">
+    <div class="title">Lobby TV Display</div>
+    <div class="body">Working now. Pulls live data. Badge AI reasoning. Rarity %. 60s refresh. Use: <code>?venue=Peak+Pickleball</code></div>
+    <span class="tag tag-green">lobby-display.html</span>
+  </div>
+
+  <div class="card done">
+    <div class="title">Slack Notification System</div>
+    <div class="body">Morning briefs, deal alerts, decisions, build completions. Needs 1 webhook URL.</div>
+    <span class="tag tag-green">slack-ops-announcer.py</span> <span class="tag tag-orange">Needs SLACK_WEBHOOK_URL</span>
+  </div>
+
+  <div class="card done">
+    <div class="title">Ideas Intake (phone-native)</div>
+    <div class="body">Speak → Wispr Flow → text to Slack #courtana-ideas → saves automatically. Also reads Apple Notes titled "Idea:"</div>
+    <span class="tag tag-green">ideas-intake.py</span>
+  </div>
+
+  <div class="card done">
+    <div class="title">Fireflies Action Extractor</div>
+    <div class="body">Meetings → action items by person + deal context → Slack.</div>
+    <span class="tag tag-green">fireflies-action-extractor.py</span>
+  </div>
+
+  <div class="card done">
+    <div class="title">Fundraise Tracker</div>
+    <div class="body">$396K/$500K tracked. Stale investor alerts. Weekly Slack digest.</div>
+    <span class="tag tag-green">fundraise-tracker.py</span>
+  </div>
+
+  <div class="card done">
+    <div class="title">Layout Strategy: App Elements Everywhere</div>
+    <div class="body">5 branches. Lobby TV built. Player card, venue panel, email, coach dashboard prompts ready.</div>
+    <span class="tag tag-green">LAYOUT-STRATEGY.md</span>
+  </div>
+
+  <div class="card done">
+    <div class="title">/phone-brief Skill</div>
+    <div class="body">Say "phone brief" → pushes everything to Apple Notes. Works in any session.</div>
+    <span class="tag tag-green">.claude/skills/phone-brief/</span>
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function copyPrompt(btn, id) {
+  const text = document.getElementById(id).textContent.trim();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'COPIED ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+    });
+  } else {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'COPIED ✓';
+    setTimeout(() => btn.textContent = 'COPY', 2000);
+  }
+}
+
+function expandPrompt(el) {
+  const block = el.previousElementSibling;
+  if (block.style.maxHeight === 'none') {
+    block.style.maxHeight = '180px';
+    el.textContent = 'Show full prompt ↓';
+  } else {
+    block.style.maxHeight = 'none';
+    el.textContent = 'Collapse ↑';
+  }
+}
+</script>
+</body>
+</html>
