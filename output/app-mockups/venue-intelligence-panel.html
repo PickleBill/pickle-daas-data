@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venue Intelligence Panel | Courtana Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
+    --emerald: #10B981;
+    --text: #ffffff;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 8px;
+    --orange: #F97316;
+    --red: #EF4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist Sans', 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  .back-nav {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .back-nav a { color: var(--text3); text-decoration: none; }
+  .back-nav a:hover { color: var(--text); }
+  .back-nav .sep { color: var(--border); }
+  .back-nav .current { color: var(--green); font-weight: 600; }
+
+  /* Staff header */
+  .staff-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .staff-header-left { display: flex; align-items: center; gap: 16px; }
+  .staff-badge {
+    background: rgba(56,189,248,0.12);
+    border: 1px solid rgba(56,189,248,0.3);
+    color: var(--blue);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .staff-header h1 { font-size: 20px; font-weight: 700; }
+  .staff-header p { font-size: 13px; color: var(--text3); margin-top: 2px; }
+  .header-date {
+    font-size: 13px;
+    color: var(--text3);
+    text-align: right;
+  }
+  .header-date strong { color: var(--text2); font-size: 15px; display: block; }
+
+  /* Nav tabs */
+  .tab-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 700; }
+
+  /* Layout */
+  .page { max-width: 1200px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  /* Stat cards */
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .stat-label { font-size: 12px; color: var(--text3); font-weight: 600; margin-bottom: 6px; }
+  .stat-val { font-size: 36px; font-weight: 900; line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--text3); margin-top: 6px; }
+  .stat-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+  .delta-up { color: var(--green); }
+  .delta-down { color: var(--red); }
+
+  /* Highlight mini cards */
+  .highlight-mini {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hl-thumb {
+    width: 72px; height: 48px;
+    background: #1a2535;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    color: rgba(255,255,255,0.2);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .hl-wow {
+    position: absolute;
+    top: -6px; right: -6px;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .wow-9-sm { background: var(--orange); color: #000; }
+  .wow-8-sm { background: var(--yellow); color: #000; }
+  .wow-7-sm { background: #84CC16; color: #000; }
+  .hl-info { flex: 1; min-width: 0; }
+  .hl-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hl-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .hl-share-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Sponsor badge */
+  .sponsor-banner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.06));
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .sponsor-left { display: flex; align-items: center; gap: 14px; }
+  .sponsor-icon {
+    width: 44px; height: 44px;
+    background: rgba(245,158,11,0.15);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .sponsor-label { font-size: 11px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .sponsor-text { font-size: 15px; font-weight: 700; color: var(--text); }
+  .sponsor-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .sponsor-pct {
+    font-size: 40px; font-weight: 900; color: var(--yellow);
+    line-height: 1;
+    text-align: right;
+  }
+  .sponsor-pct span { font-size: 16px; color: var(--text3); display: block; margin-top: 2px; }
+
+  /* Retention card */
+  .retention-card {
+    background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(16,163,74,0.05));
+    border: 1px solid rgba(34,197,94,0.25);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .retention-num { font-size: 52px; font-weight: 900; color: var(--green); line-height: 1; }
+  .retention-delta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(34,197,94,0.15);
+    color: var(--green);
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 700;
+    margin-top: 6px;
+  }
+  .retention-right { text-align: right; }
+  .retention-label { font-size: 13px; color: var(--text3); margin-bottom: 4px; }
+
+  /* Bar chart */
+  .bar-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .bar-name { color: var(--text2); font-weight: 500; }
+  .bar-val { color: var(--text); font-weight: 700; }
+  .bar-track {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .bar-fill { height: 100%; border-radius: 4px; }
+
+  /* Peak hour viz */
+  .hour-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+    margin-top: 8px;
+  }
+  .hour-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .hour-bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    background: var(--surface2);
+    transition: background 0.2s;
+  }
+  .hour-bar.active { background: var(--btn-gradient); }
+  .hour-bar.peak { background: linear-gradient(135deg, var(--yellow), var(--orange)); }
+  .hour-label { font-size: 9px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<div class="back-nav">
+  <a href="index.html">← Back to mockups</a>
+  <span class="sep">|</span>
+  <a href="player-dna-tab.html">Player DNA</a>
+  <span class="sep">|</span>
+  <a href="highlight-intelligence-card.html">Highlight Cards</a>
+  <span class="sep">|</span>
+  <a href="court-tv-overlay.html">Court TV</a>
+  <span class="sep">|</span>
+  <span class="current">Venue Intel</span>
+  <span class="sep">|</span>
+  <a href="game-report.html">Game Report</a>
+</div>
+
+<!-- Staff Header -->
+<div class="staff-header">
+  <div class="staff-header-left">
+    <div class="staff-badge">Staff View</div>
+    <div>
+      <h1>The Underground Pickleball</h1>
+      <p>Facility Intelligence Dashboard · courtana.com/facility-staff/</p>
+    </div>
+  </div>
+  <div class="header-date">
+    <strong>Saturday, Apr 11 2026</strong>
+    Last updated 7:43 PM
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <div class="tab">Overview</div>
+  <div class="tab active">Intelligence</div>
+  <div class="tab">Courts</div>
+  <div class="tab">Clips</div>
+  <div class="tab">Players</div>
+  <div class="tab">Sponsors</div>
+  <div class="tab">Settings</div>
+</div>
+
+<div class="page">
+
+  <!-- Today's Activity Stats -->
+  <div class="section-title">Today's Activity</div>
+  <div class="grid-4" style="margin-bottom:28px;">
+    <div class="stat-card">
+      <div class="stat-label">Active Courts</div>
+      <div class="stat-val" style="color:var(--green);">3</div>
+      <div class="stat-sub">of 6 total courts</div>
+      <div class="hour-bars" style="height:40px; margin-top:12px;">
+        <div class="hour-bar-wrap"><div class="hour-bar" style="height:30%;"></div><div class="hour-label">4P</div></div>
+        <div class="hour-bar-wrap"><div class="hour-bar active" style="height:55%;"></div><div class="hour-label">5P</div></div>
+        <div class="hour-bar-wrap"><div class="hour-bar peak" style="height:100%;"></div><div class="hour-label">6P</div></div>
+        <div class="hour-bar-wrap"><div class="hour-bar active" style="height:85%;"></div><div class="hour-label">7P</div></div>
+        <div class="hour-bar-wrap"><div class="hour-bar active" style="height:60%;"></div><div class="hour-label">8P</div></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sessions Today</div>
+      <div class="stat-val" style="color:var(--blue);">12</div>
+      <div class="stat-sub">Avg 38 min each</div>
+      <div class="stat-delta delta-up">↑ 3 vs last Saturday</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Players Today</div>
+      <div class="stat-val" style="color:var(--text);">47</div>
+      <div class="stat-sub">28 unique members</div>
+      <div class="stat-delta delta-up">↑ 8% vs last week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Peak Hour</div>
+      <div class="stat-val" style="color:var(--yellow);">6–7P</div>
+      <div class="stat-sub">19 players on court</div>
+      <div class="stat-delta delta-up">All 3 active courts full</div>
+    </div>
+  </div>
+
+  <!-- Retention Banner -->
+  <div class="retention-card">
+    <div>
+      <div style="font-size:13px; color:var(--text3); margin-bottom:4px; text-transform:uppercase; letter-spacing:1px; font-weight:600;">Week-over-Week Retention</div>
+      <div class="retention-num">67%</div>
+      <div class="retention-delta">↑ 12% vs prior week</div>
+    </div>
+    <div style="flex:1; margin: 0 40px;">
+      <div style="font-size:13px; color:var(--text3); margin-bottom:8px;">of today's 47 players played last week</div>
+      <div style="background:var(--surface); border-radius:4px; height:12px; overflow:hidden;">
+        <div style="width:67%; height:100%; background:var(--btn-gradient); border-radius:4px;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text3); margin-top:4px;"><span>0%</span><span>67% returning</span><span>100%</span></div>
+    </div>
+    <div class="retention-right">
+      <div class="retention-label">New Players Today</div>
+      <div style="font-size:32px; font-weight:900; color:var(--blue);">19</div>
+      <div style="font-size:12px; color:var(--text3); margin-top:2px;">first-time sessions</div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid-2">
+
+    <!-- Skill Distribution Donut -->
+    <div class="card">
+      <div class="card-title">Player Skill Distribution — Today</div>
+      <div style="display:flex; align-items:center; gap:24px;">
+        <div style="width:180px; flex-shrink:0;">
+          <canvas id="skillDistChart"></canvas>
+        </div>
+        <div style="flex:1;">
+          <div style="margin-bottom:16px;">
+            <div class="bar-label-row">
+              <span class="bar-name">3.0 – 3.5</span>
+              <span class="bar-val" style="color:var(--blue);">28% · 13 players</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:28%; background:var(--blue);"></div></div>
+
+            <div class="bar-label-row">
+              <span class="bar-name">3.5 – 4.0</span>
+              <span class="bar-val" style="color:var(--green);">61% · 29 players</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:61%; background:var(--green);"></div></div>
+
+            <div class="bar-label-row">
+              <span class="bar-name">4.0 – 4.5</span>
+              <span class="bar-val" style="color:var(--yellow);">11% · 5 players</span>
+            </div>
+            <div class="bar-track" style="margin-bottom:0;"><div class="bar-fill" style="width:11%; background:var(--yellow);"></div></div>
+          </div>
+          <div style="font-size:12px; color:var(--text3); line-height:1.6; padding-top:12px; border-top:1px solid var(--border);">
+            Venue skews 3.5–4.0. Consider adding a 4.0+ round-robin event to retain advanced players.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shot Mix Bar Chart -->
+    <div class="card">
+      <div class="card-title">Shot Mix Across Venue — Today</div>
+      <canvas id="shotMixBar" height="200"></canvas>
+      <div style="font-size:12px; color:var(--text3); margin-top:12px; line-height:1.6;">
+        Dink dominance (68%) suggests a patient, kitchen-oriented player base. Speed-up rate low at 4% — opportunity to feature more aggressive clips.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sponsor Exposure -->
+  <div class="sponsor-banner">
+    <div class="sponsor-left">
+      <div class="sponsor-icon">🏓</div>
+      <div>
+        <div class="sponsor-label">Sponsor Exposure Alert</div>
+        <div class="sponsor-text">JOOLA branding detected in session footage</div>
+        <div class="sponsor-sub">Court 1 · Courts 2 and 3 also active — sponsor visible in 14 of 47 sessions</div>
+      </div>
+    </div>
+    <div>
+      <div class="sponsor-pct">30%<span>of sessions</span></div>
+    </div>
+  </div>
+
+  <!-- Today's Top Highlights -->
+  <div class="section-title">Today's Top Highlights — Ready to Share</div>
+  <div class="grid-3">
+    <div class="highlight-mini">
+      <div class="hl-thumb">▶<div class="hl-wow wow-9-sm">9.1</div></div>
+      <div class="hl-info">
+        <div class="hl-title">22-shot kitchen battle → lob</div>
+        <div class="hl-meta">Court 3 · 6:48 PM · 3.5–4.0</div>
+      </div>
+      <button class="hl-share-btn">↗ Share</button>
+    </div>
+    <div class="highlight-mini">
+      <div class="hl-thumb">▶<div class="hl-wow wow-8-sm">8.4</div></div>
+      <div class="hl-info">
+        <div class="hl-title">Erne attempt → diving reset</div>
+        <div class="hl-meta">Court 1 · 5:22 PM · 4.0–4.5</div>
+      </div>
+      <button class="hl-share-btn">↗ Share</button>
+    </div>
+    <div class="highlight-mini">
+      <div class="hl-thumb">▶<div class="hl-wow wow-9-sm">9.0</div></div>
+      <div class="hl-info">
+        <div class="hl-title">Speed-up → block → put-away</div>
+        <div class="hl-meta">Court 2 · 7:05 PM · 3.5–4.0</div>
+      </div>
+      <button class="hl-share-btn">↗ Share</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Skill Distribution Donut
+new Chart(document.getElementById('skillDistChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['3.0–3.5', '3.5–4.0', '4.0–4.5'],
+    datasets: [{
+      data: [28, 61, 11],
+      backgroundColor: ['#38BDF8', '#22C55E', '#F59E0B'],
+      borderColor: '#333D4D',
+      borderWidth: 3,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } }
+    }
+  }
+});
+
+// Shot Mix Bar
+new Chart(document.getElementById('shotMixBar'), {
+  type: 'bar',
+  data: {
+    labels: ['Dink', 'Drive', 'Third Shot Drop', 'Speed-Up', 'Block', 'Lob', 'Erne', 'Other'],
+    datasets: [{
+      label: '% of Shots',
+      data: [68, 14, 8, 4, 3, 1, 0.5, 1.5],
+      backgroundColor: ['#22C55E','#38BDF8','#10B981','#F59E0B','#EF4444','#A78BFA','#F97316','#8892a4'],
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}% of shots` } }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#8892a4', font: { size: 11 } },
+        grid: { color: 'rgba(61,77,97,0.4)' }
+      },
+      y: {
+        ticks: { color: '#8892a4', font: { size: 11 }, callback: v => v + '%' },
+        grid: { color: 'rgba(61,77,97,0.4)' },
+        max: 80
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

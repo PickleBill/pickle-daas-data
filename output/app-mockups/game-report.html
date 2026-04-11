@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post-Session Game Report | Courtana Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
+    --emerald: #10B981;
+    --text: #ffffff;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 8px;
+    --orange: #F97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1f2b;
+    color: var(--text);
+    font-family: 'Geist Sans', 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Back nav — full width */
+  .back-nav {
+    width: 100%;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .back-nav a { color: var(--text3); text-decoration: none; }
+  .back-nav a:hover { color: var(--text); }
+  .back-nav .sep { color: var(--border); }
+  .back-nav .current { color: var(--green); font-weight: 600; }
+
+  /* Mobile frame hint */
+  .mobile-hint {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+    padding: 12px 0 0;
+    letter-spacing: 0.5px;
+  }
+
+  /* Phone wrapper — 375px wide */
+  .phone {
+    width: 375px;
+    margin: 16px auto 60px;
+    background: var(--bg);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+    border: 1px solid var(--border);
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: var(--surface2);
+    padding: 10px 20px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+  }
+
+  /* Report header */
+  .report-header {
+    background: linear-gradient(160deg, #1e2d1e 0%, var(--surface2) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 20px 18px;
+  }
+  .report-from {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .courtana-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--btn-gradient);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #000;
+    flex-shrink: 0;
+  }
+  .report-from-text .from-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .report-from-text .from-sub { font-size: 12px; color: var(--text3); }
+
+  .report-title { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.3; }
+  .report-meta { font-size: 13px; color: var(--text3); margin-top: 4px; }
+
+  /* Content sections */
+  .section { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  /* Session stats row */
+  .stats-row {
+    display: flex;
+    gap: 0;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .stat-item {
+    flex: 1;
+    padding: 14px 8px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-n { font-size: 26px; font-weight: 900; color: var(--text); }
+  .stat-l { font-size: 11px; color: var(--text3); margin-top: 2px; font-weight: 500; }
+
+  /* Kitchen Score hero */
+  .ks-block {
+    background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(16,163,74,0.06));
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ks-left {}
+  .ks-label { font-size: 12px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .ks-num {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    background: var(--btn-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .ks-denom { font-size: 24px; color: var(--text3); -webkit-text-fill-color: var(--text3); }
+  .ks-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(34,197,94,0.15);
+    color: var(--green);
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 12px; font-weight: 700;
+    margin-top: 6px;
+  }
+  .ks-right { text-align: right; }
+  .ks-rank { font-size: 13px; color: var(--text3); }
+  .ks-rank strong { color: var(--text2); display: block; font-size: 18px; font-weight: 800; margin-top: 4px; }
+
+  /* Best rally clip */
+  .clip-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .clip-thumb-area {
+    height: 140px;
+    background: linear-gradient(160deg, #1a2535, #0f1825);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .clip-play-btn {
+    width: 48px; height: 48px;
+    background: rgba(34,197,94,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    padding-left: 3px;
+    cursor: pointer;
+  }
+  .clip-wow-badge {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--orange);
+    color: #000;
+    font-size: 12px; font-weight: 800;
+    border-radius: 5px;
+    padding: 3px 8px;
+  }
+  .clip-court-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mini-court {
+    width: 120px; height: 80px;
+    border: 2px solid white;
+    position: relative;
+  }
+  .mini-court::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 2px; background: white;
+    transform: translateY(-50%);
+  }
+  .clip-meta {
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .clip-desc { font-size: 14px; font-weight: 700; color: var(--text); }
+  .clip-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .clip-save-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 12px; font-weight: 600;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* Shot breakdown mini bars */
+  .shot-breakdown { display: flex; flex-direction: column; gap: 10px; }
+  .shot-row { display: flex; align-items: center; gap: 10px; }
+  .shot-name { font-size: 13px; color: var(--text2); min-width: 80px; font-weight: 500; }
+  .shot-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .shot-bar-fill { height: 100%; border-radius: 4px; }
+  .shot-pct { font-size: 13px; font-weight: 700; color: var(--text); min-width: 36px; text-align: right; }
+
+  /* AI Coaching note */
+  .coaching-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .coaching-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .ai-chip {
+    background: rgba(56,189,248,0.12);
+    border: 1px solid rgba(56,189,248,0.3);
+    color: var(--blue);
+    font-size: 10px; font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .coaching-title { font-size: 13px; font-weight: 700; color: var(--text2); }
+  .coaching-body { font-size: 14px; color: var(--text2); line-height: 1.6; }
+  .coaching-body strong { color: var(--text); font-weight: 600; }
+
+  /* Badge */
+  .badge-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+    border: 1px solid rgba(245,158,11,0.35);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: 0 0 24px rgba(245,158,11,0.08);
+  }
+  .badge-icon {
+    font-size: 48px;
+    filter: drop-shadow(0 0 12px rgba(245,158,11,0.5));
+    flex-shrink: 0;
+  }
+  .badge-info {}
+  .badge-earned { font-size: 11px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .badge-name { font-size: 20px; font-weight: 800; color: var(--text); }
+  .badge-desc { font-size: 12px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+
+  /* Share buttons */
+  .share-row {
+    display: flex;
+    gap: 8px;
+  }
+  .share-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: var(--radius);
+    font-size: 13px; font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px;
+  }
+  .share-ig {
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    color: #fff;
+  }
+  .share-wa {
+    background: #25D366;
+    color: #000;
+  }
+  .share-copy {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  /* Bottom padding */
+  .bottom-pad { height: 24px; }
+</style>
+</head>
+<body>
+
+<div class="back-nav">
+  <a href="index.html">← Back to mockups</a>
+  <span class="sep">|</span>
+  <a href="player-dna-tab.html">Player DNA</a>
+  <span class="sep">|</span>
+  <a href="highlight-intelligence-card.html">Highlight Cards</a>
+  <span class="sep">|</span>
+  <a href="court-tv-overlay.html">Court TV</a>
+  <span class="sep">|</span>
+  <a href="venue-intelligence-panel.html">Venue Intel</a>
+  <span class="sep">|</span>
+  <span class="current">Game Report</span>
+</div>
+
+<div class="mobile-hint">Mobile-first design · 375px viewport · Delivered 30 min post-session</div>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span>9:18 PM</span>
+    <span>▌▌▌ WiFi ●●●</span>
+  </div>
+
+  <!-- Report Header -->
+  <div class="report-header">
+    <div class="report-from">
+      <div class="courtana-avatar">C</div>
+      <div class="report-from-text">
+        <div class="from-name">Courtana</div>
+        <div class="from-sub">Your post-session report is ready</div>
+      </div>
+    </div>
+    <div class="report-title">Your Game Report</div>
+    <div class="report-meta">Apr 10, 2026 · The Underground Pickleball · Court 3</div>
+  </div>
+
+  <!-- Session Stats -->
+  <div class="section">
+    <div class="section-label">Session Stats</div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-n">47</div>
+        <div class="stat-l">Shots</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">4</div>
+        <div class="stat-l">Rallies</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">38</div>
+        <div class="stat-l">Min</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n" style="color:var(--green);">11.8</div>
+        <div class="stat-l">Avg Rally</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kitchen Score -->
+  <div class="section">
+    <div class="section-label">Kitchen Score</div>
+    <div class="ks-block">
+      <div class="ks-left">
+        <div class="ks-label">This Session</div>
+        <div>
+          <span class="ks-num">7.4</span><span class="ks-denom">/10</span>
+        </div>
+        <div class="ks-delta">↑ +0.6 vs last week (6.8)</div>
+      </div>
+      <div class="ks-right">
+        <div class="ks-rank">Your ranking<strong>Top 22%</strong></div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px; color:var(--text3); margin-bottom:4px;">4-wk trend</div>
+          <div style="display:flex; align-items:flex-end; gap:3px; height:28px; justify-content:flex-end;">
+            <div style="width:8px; border-radius:2px; background:var(--border); height:50%;"></div>
+            <div style="width:8px; border-radius:2px; background:var(--border); height:60%;"></div>
+            <div style="width:8px; border-radius:2px; background:var(--border); height:68%;"></div>
+            <div style="width:8px; border-radius:2px; background:var(--green); height:74%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Rally -->
+  <div class="section">
+    <div class="section-label">Best Rally</div>
+    <div class="clip-block">
+      <div class="clip-thumb-area">
+        <div class="clip-court-bg"><div class="mini-court"></div></div>
+        <div class="clip-play-btn">▶</div>
+        <div class="clip-wow-badge">Wow 9/10</div>
+      </div>
+      <div class="clip-meta">
+        <div>
+          <div class="clip-desc">18-shot kitchen battle</div>
+          <div class="clip-sub">Rally #2 · 6:48 PM · Speed-up winner</div>
+        </div>
+        <button class="clip-save-btn">💾 Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shot Breakdown -->
+  <div class="section">
+    <div class="section-label">Shot Breakdown</div>
+    <div class="shot-breakdown">
+      <div class="shot-row">
+        <span class="shot-name">Dink</span>
+        <div class="shot-bar-track"><div class="shot-bar-fill" style="width:71%; background:#22C55E;"></div></div>
+        <span class="shot-pct">71%</span>
+      </div>
+      <div class="shot-row">
+        <span class="shot-name">Drive</span>
+        <div class="shot-bar-track"><div class="shot-bar-fill" style="width:18%; background:#38BDF8;"></div></div>
+        <span class="shot-pct">18%</span>
+      </div>
+      <div class="shot-row">
+        <span class="shot-name">Speed-Up</span>
+        <div class="shot-bar-track"><div class="shot-bar-fill" style="width:6%; background:#F59E0B;"></div></div>
+        <span class="shot-pct">6%</span>
+      </div>
+      <div class="shot-row">
+        <span class="shot-name">Error</span>
+        <div class="shot-bar-track"><div class="shot-bar-fill" style="width:5%; background:#EF4444;"></div></div>
+        <span class="shot-pct">5%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Coaching Note -->
+  <div class="section">
+    <div class="section-label">AI Coaching Note</div>
+    <div class="coaching-block">
+      <div class="coaching-header">
+        <span class="ai-chip">AI Insight</span>
+        <span class="coaching-title">Speed-Up Timing</span>
+      </div>
+      <div class="coaching-body">
+        Your speed-ups came before <strong>4+ dinks were established</strong> in 5 of 7 instances. Try waiting for the <strong>5th dink</strong> before attacking — your win rate on those sequences is <strong>2.1× higher</strong> when you let the rally develop first.
+      </div>
+    </div>
+  </div>
+
+  <!-- Badge Earned -->
+  <div class="section">
+    <div class="section-label">Badge Earned</div>
+    <div class="badge-block">
+      <div class="badge-icon">🏅</div>
+      <div class="badge-info">
+        <div class="badge-earned">New Achievement</div>
+        <div class="badge-name">Patient Dinkmaster</div>
+        <div class="badge-desc">Sustained 7+ shot dink rallies in 3 consecutive sessions. Kitchen control is your superpower.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share -->
+  <div class="section">
+    <div class="section-label">Share Your Report</div>
+    <div class="share-row">
+      <button class="share-btn share-ig">📸 Instagram</button>
+      <button class="share-btn share-wa">💬 WhatsApp</button>
+      <button class="share-btn share-copy">🔗 Copy Link</button>
+    </div>
+  </div>
+
+  <div class="bottom-pad"></div>
+
+</div>
+
+</body>
+</html>

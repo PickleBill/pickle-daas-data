@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlight Intelligence Cards | Courtana Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
+    --emerald: #10B981;
+    --text: #ffffff;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 8px;
+    --orange: #F97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist Sans', 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  .back-nav {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .back-nav a { color: var(--text3); text-decoration: none; }
+  .back-nav a:hover { color: var(--text); }
+  .back-nav .sep { color: var(--border); }
+  .back-nav .current { color: var(--green); font-weight: 600; }
+
+  .page-header {
+    padding: 28px 32px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: var(--text3);
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .filter-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    background: var(--surface);
+    transition: all 0.15s;
+  }
+  .filter-pill.active {
+    background: rgba(34,197,94,0.12);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .filter-pill:hover { color: var(--text); border-color: var(--text3); }
+
+  /* Cards grid */
+  .cards-grid {
+    max-width: 1200px;
+    margin: 24px auto 60px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  /* Clip Card */
+  .clip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+  .clip-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  /* Thumbnail */
+  .thumb {
+    position: relative;
+    height: 180px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .thumb-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #1a2535 0%, #0f1825 100%);
+  }
+  .thumb-court {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.15;
+  }
+  .court-lines {
+    width: 140px;
+    height: 100px;
+    border: 2px solid white;
+    position: relative;
+  }
+  .court-lines::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 2px;
+    background: white;
+    transform: translateY(-50%);
+  }
+  .court-lines::after {
+    content: '';
+    position: absolute;
+    top: 30%;
+    bottom: 30%;
+    left: 50%;
+    width: 2px;
+    background: white;
+    transform: translateX(-50%);
+  }
+  .play-btn {
+    position: absolute;
+    width: 52px; height: 52px;
+    background: rgba(34,197,94,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    padding-left: 4px;
+    z-index: 2;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .clip-card:hover .play-btn {
+    transform: scale(1.1);
+    background: var(--green);
+  }
+  .thumb-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    padding: 12px 12px 8px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    z-index: 2;
+  }
+  .timestamp {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* Wow Score Badge */
+  .wow-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 800;
+    z-index: 3;
+  }
+  .wow-9 { background: var(--orange); color: #000; }
+  .wow-8 { background: var(--yellow); color: #000; }
+  .wow-7 { background: #84CC16; color: #000; }
+  .wow-6 { background: var(--emerald); color: #000; }
+
+  /* Top badges row */
+  .top-badges {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 3;
+  }
+  .category-badge {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cat-strategic { background: rgba(56,189,248,0.85); color: #000; }
+  .cat-athletic { background: rgba(239,68,68,0.85); color: #fff; }
+  .cat-funny { background: rgba(245,158,11,0.85); color: #000; }
+  .cat-teaching { background: rgba(16,185,129,0.85); color: #000; }
+
+  /* Card body */
+  .card-body {
+    padding: 16px;
+  }
+  .shot-summary {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .dupr-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .dupr-badge {
+    background: rgba(245,158,11,0.12);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--yellow);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .rally-info {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* Player tags */
+  .player-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .player-tag {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .player-tag .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
+  .player-tag strong { color: var(--text2); font-weight: 600; }
+
+  /* Action buttons */
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .btn-primary {
+    flex: 1;
+    padding: 8px 0;
+    background: var(--btn-gradient);
+    color: #000;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-secondary {
+    padding: 8px 12px;
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: border-color 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--text3); }
+
+  .breakdown-link {
+    font-size: 12px;
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .breakdown-link:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="back-nav">
+  <a href="index.html">← Back to mockups</a>
+  <span class="sep">|</span>
+  <a href="player-dna-tab.html">Player DNA</a>
+  <span class="sep">|</span>
+  <span class="current">Highlight Cards</span>
+  <span class="sep">|</span>
+  <a href="court-tv-overlay.html">Court TV</a>
+  <span class="sep">|</span>
+  <a href="venue-intelligence-panel.html">Venue Intel</a>
+  <span class="sep">|</span>
+  <a href="game-report.html">Game Report</a>
+</div>
+
+<div class="page-header">
+  <h1>Today's Highlights · Apr 11, 2026</h1>
+  <p>7 clips generated · The Underground Pickleball · AI-analyzed</p>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-pill active">All</div>
+  <div class="filter-pill">Strategic</div>
+  <div class="filter-pill">Athletic</div>
+  <div class="filter-pill">Teaching Moment</div>
+  <div class="filter-pill">Funny</div>
+  <div class="filter-pill">Wow 9+</div>
+  <div class="filter-pill">My Clips</div>
+</div>
+
+<div class="cards-grid">
+
+  <!-- Card 1: 9/10 Strategic -->
+  <div class="clip-card">
+    <div class="thumb">
+      <div class="thumb-bg"></div>
+      <div class="thumb-court">
+        <div class="court-lines"></div>
+      </div>
+      <div class="top-badges">
+        <span class="category-badge cat-strategic">Strategic</span>
+        <span class="wow-badge wow-9">Wow 9/10</span>
+      </div>
+      <div class="play-btn">▶</div>
+      <div class="thumb-overlay">
+        <span class="timestamp">6:48 PM · Court 3</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="shot-summary">22-shot dink battle → kitchen winner</div>
+      <div class="dupr-row">
+        <span class="dupr-badge">3.5–4.0</span>
+        <span class="rally-info">Rally #2 · 38 sec</span>
+      </div>
+      <div class="player-tags">
+        <div class="player-tag"><div class="dot"></div><strong>Jamie D.</strong> Kitchen Specialist</div>
+        <div class="player-tag"><div class="dot" style="background:var(--orange)"></div><strong>Chris M.</strong> Aggressive</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-primary">⚡ AI Analyze</button>
+        <button class="btn-secondary">💾 Save</button>
+        <button class="btn-secondary">↗ Share</button>
+      </div>
+      <a href="#" class="breakdown-link">View Shot Breakdown →</a>
+    </div>
+  </div>
+
+  <!-- Card 2: 8/10 Athletic -->
+  <div class="clip-card">
+    <div class="thumb">
+      <div class="thumb-bg" style="background:linear-gradient(160deg,#1e1a2e,#0f1020);"></div>
+      <div class="thumb-court">
+        <div class="court-lines"></div>
+      </div>
+      <div class="top-badges">
+        <span class="category-badge cat-athletic">Athletic</span>
+        <span class="wow-badge wow-8">Wow 8/10</span>
+      </div>
+      <div class="play-btn">▶</div>
+      <div class="thumb-overlay">
+        <span class="timestamp">5:22 PM · Court 1</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="shot-summary">Erne attempt + diving reset → put-away</div>
+      <div class="dupr-row">
+        <span class="dupr-badge">4.0–4.5</span>
+        <span class="rally-info">Rally #7 · 14 sec</span>
+      </div>
+      <div class="player-tags">
+        <div class="player-tag"><div class="dot" style="background:var(--yellow)"></div><strong>Sam T.</strong> Athletic Mover</div>
+        <div class="player-tag"><div class="dot" style="background:var(--emerald)"></div><strong>Alex R.</strong> Strategic</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-primary">⚡ AI Analyze</button>
+        <button class="btn-secondary">💾 Save</button>
+        <button class="btn-secondary">↗ Share</button>
+      </div>
+      <a href="#" class="breakdown-link">View Shot Breakdown →</a>
+    </div>
+  </div>
+
+  <!-- Card 3: 9/10 Teaching Moment -->
+  <div class="clip-card">
+    <div class="thumb">
+      <div class="thumb-bg" style="background:linear-gradient(160deg,#1a2520,#0f1a15);"></div>
+      <div class="thumb-court">
+        <div class="court-lines"></div>
+      </div>
+      <div class="top-badges">
+        <span class="category-badge cat-teaching">Teaching Moment</span>
+        <span class="wow-badge wow-9">Wow 9/10</span>
+      </div>
+      <div class="play-btn">▶</div>
+      <div class="thumb-overlay">
+        <span class="timestamp">7:05 PM · Court 2</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="shot-summary">Speed-up → block → reset → put-away (textbook)</div>
+      <div class="dupr-row">
+        <span class="dupr-badge">3.5–4.0</span>
+        <span class="rally-info">Rally #4 · 22 sec</span>
+      </div>
+      <div class="player-tags">
+        <div class="player-tag"><div class="dot"></div><strong>Jamie D.</strong> Kitchen Specialist</div>
+        <div class="player-tag"><div class="dot" style="background:var(--blue)"></div><strong>Pat K.</strong> Patient Player</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-primary">⚡ AI Analyze</button>
+        <button class="btn-secondary">💾 Save</button>
+        <button class="btn-secondary">↗ Share</button>
+      </div>
+      <a href="#" class="breakdown-link">View Shot Breakdown →</a>
+    </div>
+  </div>
+
+  <!-- Card 4: 7/10 Funny -->
+  <div class="clip-card">
+    <div class="thumb">
+      <div class="thumb-bg" style="background:linear-gradient(160deg,#25201a,#1a130f);"></div>
+      <div class="thumb-court">
+        <div class="court-lines"></div>
+      </div>
+      <div class="top-badges">
+        <span class="category-badge cat-funny">😂 Funny</span>
+        <span class="wow-badge wow-7">Wow 7/10</span>
+      </div>
+      <div class="play-btn">▶</div>
+      <div class="thumb-overlay">
+        <span class="timestamp">6:12 PM · Court 3</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="shot-summary">Ball-off-face save → accidental drop shot winner</div>
+      <div class="dupr-row">
+        <span class="dupr-badge">3.0–3.5</span>
+        <span class="rally-info">Rally #11 · 8 sec</span>
+      </div>
+      <div class="player-tags">
+        <div class="player-tag"><div class="dot" style="background:#A78BFA"></div><strong>Morgan B.</strong> Casual Player</div>
+        <div class="player-tag"><div class="dot" style="background:var(--orange)"></div><strong>Dana F.</strong> Aggressive</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-primary">⚡ AI Analyze</button>
+        <button class="btn-secondary">💾 Save</button>
+        <button class="btn-secondary">↗ Share</button>
+      </div>
+      <a href="#" class="breakdown-link">View Shot Breakdown →</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
