@@ -4,29 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Courtana — Court Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #080c14;
-    --surface: #0f1825;
-    --surface2: #162033;
-    --border: #1e2d45;
-    --green: #00E676;
-    --blue: #00B0FF;
-    --purple: #7C4DFF;
-    --orange: #FF6D00;
+    /* Exact courtana.com design tokens */
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --border-subtle: #4a5a70;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --green-glow: rgba(34,197,94,0.15);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
     --text: #ffffff;
-    --text2: #8fa3c0;
-    --text3: #4a6080;
-    --radius: 16px;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 14px;
     --radius-sm: 8px;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
     background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    color: var(--text2);
+    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
   }
@@ -48,11 +55,11 @@
   }
   nav .nav-links a:hover { color: var(--green); }
   nav .cta-nav {
-    background: var(--green); color: #000; font-weight: 700;
+    background: var(--btn-gradient); color: #fff; font-weight: 600;
     padding: 8px 20px; border-radius: 100px; font-size: 13px;
     text-decoration: none; transition: opacity 0.2s;
   }
-  nav .cta-nav:hover { opacity: 0.85; }
+  nav .cta-nav:hover { opacity: 0.88; }
 
   /* SECTIONS */
   section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
@@ -70,12 +77,12 @@
   .hero-glow {
     position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
     width: 800px; height: 800px;
-    background: radial-gradient(circle, rgba(0,230,118,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(34,197,94,0.07) 0%, transparent 70%);
     pointer-events: none;
   }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.25);
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
     color: var(--green); font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
     text-transform: uppercase; padding: 6px 16px; border-radius: 100px;
     margin-bottom: 32px;
@@ -113,7 +120,7 @@
   .hero-stat .label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
   .hero-ctas { display: flex; gap: 16px; }
   .btn-primary {
-    background: var(--green); color: #000; font-weight: 700;
+    background: var(--btn-gradient); color: #fff; font-weight: 600;
     padding: 16px 36px; border-radius: 100px; font-size: 16px;
     text-decoration: none; transition: transform 0.2s, opacity 0.2s;
   }
@@ -194,12 +201,12 @@
   /* STYLE CLOUD */
   .style-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
   .style-tag {
-    background: rgba(0,176,255,0.1); border: 1px solid rgba(0,176,255,0.2);
+    background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2);
     color: var(--blue); padding: 5px 12px; border-radius: 100px;
     font-size: 12px; font-weight: 500;
   }
-  .style-tag.green { background: rgba(0,230,118,0.1); border-color: rgba(0,230,118,0.2); color: var(--green); }
-  .style-tag.purple { background: rgba(124,77,255,0.1); border-color: rgba(124,77,255,0.2); color: #b39dff; }
+  .style-tag.green { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); color: var(--green); }
+  .style-tag.purple { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.25); color: #a5b4fc; }
 
   /* CLIPS */
   #clips { padding-top: 60px; }
@@ -228,7 +235,7 @@
   .clip-tag { font-size: 11px; color: var(--text3); background: var(--surface2); padding: 3px 8px; border-radius: 4px; }
 
   /* MOAT */
-  #moat { background: linear-gradient(135deg, rgba(0,230,118,0.04) 0%, rgba(0,176,255,0.04) 100%); border-radius: var(--radius); }
+  #moat { background: linear-gradient(135deg, rgba(34,197,94,0.05) 0%, rgba(56,189,248,0.04) 100%); border-radius: var(--radius); }
   #moat section { padding: 80px 60px; }
   .moat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
   .moat-stat-block { margin-bottom: 40px; }
@@ -296,7 +303,7 @@
     font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
     background: none; border: none; color: var(--text2);
   }
-  .toggle-btn.active { background: var(--green); color: #000; }
+  .toggle-btn.active { background: var(--btn-gradient); color: #fff; }
   .audience-panel { display: none; }
   .audience-panel.active { display: block; }
   .for-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -865,14 +872,14 @@
 <script>
 // Shot bars data
 const shots = [
-  { label: 'Dink', pct: 63.7, color: '#00E676' },
-  { label: 'Drive', pct: 23.3, color: '#00B0FF' },
-  { label: 'Serve', pct: 3.0, color: '#7C4DFF' },
-  { label: 'Return', pct: 3.0, color: '#7C4DFF' },
-  { label: 'Speed Up', pct: 2.8, color: '#FF9800' },
-  { label: 'Block', pct: 2.4, color: '#FF9800' },
-  { label: 'Volley', pct: 0.9, color: '#78909C' },
-  { label: 'Drop', pct: 0.7, color: '#78909C' },
+  { label: 'Dink', pct: 63.7, color: '#22C55E' },
+  { label: 'Drive', pct: 23.3, color: '#38BDF8' },
+  { label: 'Serve', pct: 3.0, color: '#6366F1' },
+  { label: 'Return', pct: 3.0, color: '#6366F1' },
+  { label: 'Speed Up', pct: 2.8, color: '#F59E0B' },
+  { label: 'Block', pct: 2.4, color: '#F59E0B' },
+  { label: 'Volley', pct: 0.9, color: '#64748B' },
+  { label: 'Drop', pct: 0.7, color: '#64748B' },
 ];
 
 const barsContainer = document.getElementById('shot-bars');
@@ -902,7 +909,7 @@ new Chart(duprCtx, {
     labels: ['3.0–3.5 Developing', '3.5–4.0 Intermediate', '4.0–4.5 Advanced'],
     datasets: [{
       data: [20.8, 66.7, 12.5],
-      backgroundColor: ['#7C4DFF', '#00E676', '#00B0FF'],
+      backgroundColor: ['#6366F1', '#22C55E', '#38BDF8'],
       borderColor: '#0f1825',
       borderWidth: 3,
       hoverOffset: 8
@@ -935,19 +942,19 @@ new Chart(radarCtx, {
       {
         label: 'Advanced (4.0–4.5)',
         data: [7.8, 7.2, 7.5, 7.0, 7.2, 7.5, 7.0, 6.5, 5.8, 7.5],
-        backgroundColor: 'rgba(0,176,255,0.15)',
-        borderColor: '#00B0FF',
+        backgroundColor: 'rgba(56,189,248,0.15)',
+        borderColor: '#38BDF8',
         borderWidth: 2,
-        pointBackgroundColor: '#00B0FF',
+        pointBackgroundColor: '#38BDF8',
         pointRadius: 3
       },
       {
         label: 'Intermediate (3.5–4.0)',
         data: [6.8, 6.5, 6.2, 6.8, 6.3, 5.8, 5.5, 4.5, 4.0, 6.5],
-        backgroundColor: 'rgba(0,230,118,0.1)',
-        borderColor: '#00E676',
+        backgroundColor: 'rgba(34,197,94,0.12)',
+        borderColor: '#22C55E',
         borderWidth: 2,
-        pointBackgroundColor: '#00E676',
+        pointBackgroundColor: '#22C55E',
         pointRadius: 3
       }
     ]

@@ -2,40 +2,45 @@
 """
 Full Corpus All-Angles Analysis
 PickleBill / Courtana — 2026-04-11
-One Gemini pass per clip capturing: tactical + player + brand + narrative
+One Gemini pass per clip: tactical + player + brand + narrative
+
+Strategy: download CDN clip → upload via Files API → analyze with schema → delete
+Validated: ~17s/clip, ~$0.0054/clip, ~6,400 input tokens, ~250 output tokens
 """
 
-import os, sys, json, time, glob, logging, datetime, traceback
+import os, sys, json, time, glob, logging, datetime, io
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load env from PICKLE-DAAS root
-env_path = Path(__file__).parent.parent.parent / '.env'
-load_dotenv(env_path)
+PICKLE_DAAS_ROOT = Path(__file__).parent.parent.parent
+load_dotenv(PICKLE_DAAS_ROOT / '.env')
 
-import google.generativeai as genai
+import google.genai as genai
+from google.genai import types
 import requests
 
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 GEMINI_API_KEY    = os.getenv('GEMINI_API_KEY')
-COURTANA_TOKEN    = os.getenv('COURTANA_TOKEN')
 BASE_URL          = 'https://courtana.com'
 ANON_ENDPOINT     = f'{BASE_URL}/app/anon-highlight-groups/'
 PAGE_SIZE         = 100
-MODEL             = 'gemini-2.5-flash-preview-04-17'
-HARD_STOP_USD     = 22.00   # stop fetching new clips above this
-ABSOLUTE_MAX_USD  = 25.00   # emergency kill
-COST_PER_CLIP_EST = 0.0054  # estimated cost per clip
-LOG_EVERY         = 10      # log running cost every N clips
+MODEL             = 'gemini-2.5-flash'
+HARD_STOP_USD     = 22.00
+ABSOLUTE_MAX_USD  = 25.00
+COST_PER_CLIP_EST = 0.0054
+LOG_EVERY         = 10
+MAX_RETRIES       = 3
+DOWNLOAD_TIMEOUT  = 45
+MAX_CLIP_MB       = 50
 
-RUN_DIR   = Path(__file__).parent
-ANALYSES  = RUN_DIR / 'analyses'
+RUN_DIR  = Path(__file__).parent
+ANALYSES = RUN_DIR / 'analyses'
 ANALYSES.mkdir(exist_ok=True)
-MANIFEST  = RUN_DIR / 'clip-manifest.json'
-COST_LOG  = RUN_DIR / 'cost-log.jsonl'
-PROGRESS  = RUN_DIR / 'progress.json'
+MANIFEST = RUN_DIR / 'clip-manifest.json'
+COST_LOG = RUN_DIR / 'cost-log.jsonl'
+PROGRESS = RUN_DIR / 'progress.json'
 
-# ─── LOGGING ────────────────────────────────────────────────────────────────
+# ─── LOGGING ─────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(message)s',
@@ -46,108 +51,70 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ─── GEMINI SETUP ────────────────────────────────────────────────────────────
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel(MODEL)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
-# ─── PROMPT TEMPLATE ─────────────────────────────────────────────────────────
-ALL_ANGLES_PROMPT = """You are an expert pickleball analyst with deep knowledge of professional play, coaching, equipment, and sports media.
+# ─── SCHEMA ──────────────────────────────────────────────────────────────────
+ANALYSIS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        # Tactical
+        'dominant_shot_type': {'type': 'string', 'description': 'Most common shot: dink|drive|lob|drop|erne|atp|volley|overhead|serve|reset|speedup'},
+        'rally_length': {'type': 'integer', 'description': 'Number of shots in the rally'},
+        'kitchen_control_pct': {'type': 'integer', 'description': '0-100, percentage of play at kitchen line'},
+        'rally_type': {'type': 'string', 'description': 'dink_battle|drive_exchange|mixed|quick_point'},
+        'winning_shot_type': {'type': 'string', 'description': 'Shot that ended the rally, or null'},
+        'error_type': {'type': 'string', 'description': 'unforced|forced|null'},
+        'sequence_pattern': {'type': 'string', 'description': 'Key shot sequence in plain English'},
+        'shot_breakdown': {'type': 'string', 'description': 'CSV of shot types seen e.g. dink,dink,drive,overhead'},
+        # Player skill
+        'skill_level': {'type': 'string', 'description': 'beginner|intermediate|advanced|professional'},
+        'DUPR_estimate': {'type': 'string', 'description': '2.0-3.0|3.0-3.5|3.5-4.0|4.0-4.5|4.5-5.0|5.0+'},
+        'court_coverage': {'type': 'integer', 'description': '1-10'},
+        'kitchen_mastery': {'type': 'integer', 'description': '1-10'},
+        'athleticism': {'type': 'integer', 'description': '1-10'},
+        'court_iq': {'type': 'integer', 'description': '1-10'},
+        'aggression_style': {'type': 'string', 'description': 'aggressive|balanced|defensive|counter-puncher'},
+        'play_style_tags': {'type': 'array', 'items': {'type': 'string'}, 'description': 'e.g. dink-heavy, power-hitter, kitchen-dominant, lobber, all-court'},
+        'signature_moves': {'type': 'string', 'description': 'Notable moves like erne, ATP, fake drop'},
+        # Brand
+        'paddle_brands': {'type': 'array', 'items': {'type': 'string'}, 'description': 'Selkirk, Joola, Engage, Franklin, Head, Paddletek, Gamma, etc.'},
+        'apparel_brands': {'type': 'array', 'items': {'type': 'string'}, 'description': 'Nike, Adidas, K-Swiss, Lululemon, etc.'},
+        'sponsorship_logos': {'type': 'array', 'items': {'type': 'string'}, 'description': 'Logos on court, banners, walls'},
+        # Narrative
+        'viral_score': {'type': 'integer', 'description': '1-10'},
+        'highlight_category': {'type': 'string', 'description': 'trick_shot|clutch_moment|athletic_rally|comedy|teaching_moment|competitive_intensity|beginner_win|pro_showcase'},
+        'best_for_investor_demo': {'type': 'boolean'},
+        'comedy_potential': {'type': 'integer', 'description': '1-10'},
+        'why_memorable': {'type': 'string', 'description': 'One sentence on what makes this clip stick'},
+        'social_caption': {'type': 'string', 'description': 'Instagram/TikTok ready caption with emojis'},
+        # Venue
+        'indoor_outdoor': {'type': 'string', 'description': 'indoor|outdoor|unclear'},
+        'venue_type': {'type': 'string', 'description': 'community_center|private_club|resort|dedicated_pickleball|backyard|unclear'},
+        'court_quality': {'type': 'string', 'description': 'recreational|club|tournament|unclear'},
+        'crowd_present': {'type': 'boolean'},
+        # Quality
+        'video_clarity': {'type': 'integer', 'description': '1-10'},
+        'analysis_confidence': {'type': 'integer', 'description': '1-10 overall confidence'},
+    },
+    'required': [
+        'dominant_shot_type', 'rally_length', 'viral_score', 'skill_level',
+        'DUPR_estimate', 'analysis_confidence', 'highlight_category', 'indoor_outdoor'
+    ]
+}
 
-Analyze this pickleball highlight video clip and return a SINGLE JSON object with ALL of the following fields. Be specific and evidence-based. If something cannot be determined from the video, use null.
+ANALYSIS_PROMPT = """Analyze this pickleball highlight video clip. Fill in all fields based on what you actually observe.
 
-Return ONLY valid JSON, no markdown, no explanation.
+Shot types: dink, drive, lob, drop, erne, atp, volley, overhead, serve, reset, speedup
+Skill: beginner (DUPR 2-3), intermediate (3-3.5), advanced (3.5-4.5), professional (4.5+)
+Style tags: dink-heavy, power-hitter, kitchen-dominant, lobber, all-court, baseline-oriented, counter-puncher
+Venue: community_center, private_club, resort, dedicated_pickleball, backyard, unclear
+Category: trick_shot, clutch_moment, athletic_rally, comedy, teaching_moment, competitive_intensity, beginner_win, pro_showcase
+Brands: Look carefully at paddle shapes, logos, clothing. Common paddles: Selkirk, Joola, Engage, Franklin, Head, Paddletek, Gamma."""
 
-{{
-  "clip_uuid": "{clip_uuid}",
-  "clip_url": "{clip_url}",
-  "analysis_timestamp": "{timestamp}",
-
-  "shot_analysis": {{
-    "shots": [
-      {{
-        "shot_type": "dink|drive|lob|drop|erne|atp|volley|overhead|serve|reset|speedup",
-        "player_position": "kitchen|transition|baseline",
-        "quality_score": 1-10,
-        "difficulty_score": 1-10,
-        "outcome": "winner|error|rally_continues|forced_error",
-        "wow_factor": 1-10,
-        "timestamp_approximate_seconds": float
-      }}
-    ],
-    "total_shots_counted": int,
-    "rally_length": int,
-    "rally_duration_seconds": float,
-    "rally_type": "dink_battle|drive_exchange|mixed|quick_point",
-    "kitchen_control_percentage": 0-100,
-    "dominant_shot_type": "string",
-    "winning_shot_type": "string|null",
-    "error_type": "unforced|forced|null",
-    "sequence_pattern": "describe the key shot sequence in plain English"
-  }},
-
-  "skill_indicators": {{
-    "court_coverage": 1-10,
-    "kitchen_mastery": 1-10,
-    "power_game": 1-10,
-    "touch_and_feel": 1-10,
-    "athleticism": 1-10,
-    "creativity": 1-10,
-    "court_iq": 1-10,
-    "consistency": 1-10,
-    "composure": 1-10,
-    "paddle_control": 1-10,
-    "aggression_style": "aggressive|balanced|defensive|counter-puncher",
-    "play_style_tags": ["list", "of", "style", "descriptors"],
-    "tactical_tendencies": "plain English description of observable patterns",
-    "DUPR_estimate": "2.0-3.0|3.0-3.5|3.5-4.0|4.0-4.5|4.5-5.0|5.0+",
-    "skill_level_label": "beginner|intermediate|advanced|professional",
-    "signature_moves_observed": ["list of notable moves"]
-  }},
-
-  "brand_detection": {{
-    "paddle_brands": ["list of brands seen on paddles"],
-    "apparel_brands": ["list of clothing/shoe brands visible"],
-    "equipment_visible": ["bags", "water bottles", "accessories with logos"],
-    "sponsorship_logos": ["logos seen on court, banner, shirt"],
-    "court_branding": "describe any court-side signage or branding",
-    "confidence_notes": "how confident are you in brand IDs (1-10)"
-  }},
-
-  "narrative": {{
-    "highlight_category": "trick_shot|clutch_moment|athletic_rally|comedy|teaching_moment|competitive_intensity|beginner_win|pro_showcase",
-    "viral_score": 1-10,
-    "story_arc": "plain English description of the narrative arc of this clip",
-    "comedy_potential": 1-10,
-    "sponsor_pitch_moment": true|false,
-    "sponsor_pitch_reason": "string|null",
-    "social_caption_draft": "ready-to-post caption for Instagram/TikTok",
-    "best_for_investor_demo": true|false,
-    "why_memorable": "one sentence on what makes this clip stick in memory"
-  }},
-
-  "venue_signals": {{
-    "indoor_outdoor": "indoor|outdoor|unclear",
-    "court_surface": "concrete|asphalt|sport_court|other|unclear",
-    "court_quality": "recreational|club|tournament|unclear",
-    "lighting_quality": "poor|adequate|good|excellent",
-    "crowd_present": true|false,
-    "estimated_venue_type": "community_center|private_club|resort|dedicated_pickleball|backyard|unclear"
-  }},
-
-  "data_quality": {{
-    "video_clarity": 1-10,
-    "angle_quality": 1-10,
-    "analysis_confidence": 1-10,
-    "limiting_factors": ["list any factors that limited analysis quality"]
-  }}
-}}"""
-
-# ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 def get_already_analyzed():
-    """Collect all clip UUIDs already analyzed in previous runs."""
     analyzed = set()
-    base = Path(__file__).parent.parent
+    base = PICKLE_DAAS_ROOT / 'output'
     patterns = [
         'batches/2026-04-11-tactical/analysis_*.json',
         'batches/batch-30-daas/analysis_*.json',
@@ -160,286 +127,317 @@ def get_already_analyzed():
     ]
     for pat in patterns:
         for f in glob.glob(str(base / pat)):
-            fname = Path(f).stem  # analysis_{uuid}_{ts}
-            # strip "analysis_" prefix then take UUID (first 36 chars or dash-joined)
-            rest = fname[len('analysis_'):]
-            # UUID is 36 chars: 8-4-4-4-12
-            uuid = rest[:36]
-            analyzed.add(uuid)
+            rest = Path(f).stem[len('analysis_'):]
+            clip_id = rest.split('_')[0] if '_' in rest else rest
+            analyzed.add(clip_id)
     return analyzed
 
 
 def fetch_all_clips():
-    """Paginate Courtana anon endpoint, collect all highlight clips with video URLs."""
     all_clips = []
-    page = 1
+    seen = set()
     headers = {'Accept': 'application/json'}
 
-    log.info("Fetching clip manifest from Courtana API...")
+    log.info("Paginating Courtana API...")
+    resp = requests.get(f'{ANON_ENDPOINT}?page_size={PAGE_SIZE}&page=1', headers=headers, timeout=30)
+    data = resp.json()
+    total_pages = data.get('total_pages', 1)
+    log.info(f"Total pages: {total_pages}")
 
-    while True:
-        url = f'{ANON_ENDPOINT}?page_size={PAGE_SIZE}&page={page}'
-        try:
-            resp = requests.get(url, headers=headers, timeout=30)
-            resp.raise_for_status()
-            data = resp.json()
-        except Exception as e:
-            log.error(f"Page {page} fetch failed: {e}")
-            break
-
-        results = data.get('results', [])
-        if not results:
-            log.info(f"No results on page {page}, stopping pagination.")
-            break
-
-        for group in results:
-            group_id = group.get('random_id') or str(group.get('id'))
+    def parse_page(page_data):
+        clips = []
+        for group in page_data.get('results', []):
+            gid = group.get('random_id') or str(group.get('id', ''))
+            plist = [p.get('username', '') for p in group.get('participants', [])]
             for hl in group.get('highlights', []):
-                file_url = hl.get('file', '')
-                if not file_url or not file_url.endswith('.mp4'):
+                url = hl.get('file', '')
+                if not url or not url.endswith('.mp4'):
                     continue
-                clip_uuid = hl.get('random_id') or hl.get('id')
-                if not clip_uuid:
+                uid = str(hl.get('random_id') or hl.get('id', ''))
+                if not uid or uid in seen:
                     continue
-                all_clips.append({
-                    'uuid': str(clip_uuid),
-                    'url': file_url,
-                    'group_id': group_id,
+                seen.add(uid)
+                clips.append({
+                    'uuid': uid,
+                    'url': url,
+                    'group_id': gid,
                     'thumbnail': hl.get('thumbnail_file', ''),
                     'name': hl.get('name', ''),
                     'type': hl.get('type', ''),
-                    'ai_analyzed': hl.get('ai_analyzed', False),
                     'created_at': hl.get('created_at', ''),
-                    'participants': [p.get('username') for p in group.get('participants', [])]
+                    'participants': plist
                 })
+        return clips
 
-        total_pages = data.get('total_pages', 1)
-        log.info(f"Page {page}/{total_pages} — clips so far: {len(all_clips)}")
+    all_clips.extend(parse_page(data))
 
-        if page >= total_pages:
-            break
+    for page in range(2, total_pages + 1):
+        try:
+            resp = requests.get(f'{ANON_ENDPOINT}?page_size={PAGE_SIZE}&page={page}', headers=headers, timeout=30)
+            resp.raise_for_status()
+            all_clips.extend(parse_page(resp.json()))
+        except Exception as e:
+            log.error(f"Page {page} error: {e}")
+            time.sleep(2)
 
-        page += 1
-        time.sleep(0.1)  # polite rate limiting
+        if page % 100 == 0:
+            log.info(f"  Page {page}/{total_pages} — {len(all_clips)} clips")
+        time.sleep(0.05)
 
-    log.info(f"Total clips fetched: {len(all_clips)}")
+    log.info(f"Total clips: {len(all_clips)}")
     return all_clips
 
 
+def download_clip(url):
+    try:
+        resp = requests.get(url, timeout=DOWNLOAD_TIMEOUT, stream=True)
+        resp.raise_for_status()
+        cl = resp.headers.get('Content-Length')
+        if cl and int(cl) > MAX_CLIP_MB * 1024 * 1024:
+            log.warning(f"  Too large ({int(cl)//1024//1024}MB), skipping")
+            return None
+        content = resp.content
+        if len(content) > MAX_CLIP_MB * 1024 * 1024:
+            log.warning(f"  Downloaded {len(content)//1024//1024}MB, too large")
+            return None
+        return content
+    except Exception as e:
+        log.error(f"  Download error: {e}")
+        return None
+
+
 def analyze_clip(clip):
-    """Call Gemini with all-angles prompt for one clip. Returns dict or None."""
-    clip_uuid = clip['uuid']
-    clip_url = clip['url']
-    timestamp = datetime.datetime.utcnow().isoformat() + 'Z'
+    uid = clip['uuid']
+    url = clip['url']
 
-    prompt = ALL_ANGLES_PROMPT.format(
-        clip_uuid=clip_uuid,
-        clip_url=clip_url,
-        timestamp=timestamp
-    )
+    # Download
+    video_bytes = download_clip(url)
+    if not video_bytes:
+        return {'error': 'download_failed', '_clip_meta': clip}
 
-    # Build message with video URL for Gemini to analyze
-    # Gemini 2.5 Flash can analyze video from URL via file API, but for CDN direct URLs
-    # we pass as a Part with file_data
-    import google.generativeai as genai2
+    mb = len(video_bytes) / 1024 / 1024
+    log.info(f"  {mb:.1f}MB downloaded")
 
-    contents = [
-        {
-            "parts": [
-                {
-                    "file_data": {
-                        "mime_type": "video/mp4",
-                        "file_uri": clip_url
-                    }
-                },
-                {
-                    "text": prompt
-                }
-            ]
-        }
-    ]
-
-    max_retries = 3
-    for attempt in range(max_retries):
+    # Upload to Files API
+    uploaded = None
+    for attempt in range(MAX_RETRIES):
         try:
-            response = model.generate_content(
-                contents,
-                generation_config={
-                    "temperature": 0.1,
-                    "max_output_tokens": 4096,
-                    "response_mime_type": "application/json"
-                }
+            uploaded = client.files.upload(
+                file=io.BytesIO(video_bytes),
+                config=types.UploadFileConfig(mime_type='video/mp4', display_name=f'{uid}.mp4')
             )
-            text = response.text.strip()
-            # Clean up any markdown fences if present
-            if text.startswith('```'):
-                text = text.split('\n', 1)[1].rsplit('```', 1)[0]
-            result = json.loads(text)
-            result['_clip_meta'] = clip
-            return result
-        except json.JSONDecodeError as e:
-            log.warning(f"JSON parse error on {clip_uuid} attempt {attempt+1}: {e}")
-            if attempt == max_retries - 1:
-                return {'error': 'json_parse_failed', '_clip_meta': clip, 'raw': text[:500]}
+            break
         except Exception as e:
-            err_str = str(e)
-            if 'RATE_LIMIT' in err_str or '429' in err_str or 'quota' in err_str.lower():
-                wait = 2 ** (attempt + 2)  # 4, 8, 16 seconds
-                log.warning(f"Rate limit on {clip_uuid}, waiting {wait}s...")
+            if '429' in str(e) or 'quota' in str(e).lower():
+                wait = 10 * (attempt + 1)
+                log.warning(f"  Upload rate limit, wait {wait}s")
                 time.sleep(wait)
-            elif 'SAFETY' in err_str or 'blocked' in err_str.lower():
-                log.warning(f"Safety block on {clip_uuid}: {err_str[:100]}")
-                return {'error': 'safety_blocked', '_clip_meta': clip}
             else:
-                log.error(f"Gemini error on {clip_uuid} attempt {attempt+1}: {err_str[:200]}")
-                if attempt == max_retries - 1:
-                    return {'error': err_str[:200], '_clip_meta': clip}
-                time.sleep(2 ** attempt)
+                log.error(f"  Upload attempt {attempt+1}: {str(e)[:100]}")
+                if attempt == MAX_RETRIES - 1:
+                    return {'error': f'upload_failed: {str(e)[:80]}', '_clip_meta': clip}
+                time.sleep(3)
 
-    return None
+    if not uploaded:
+        return {'error': 'upload_failed', '_clip_meta': clip}
+
+    # Wait for processing
+    for _ in range(15):
+        if uploaded.state.name != 'PROCESSING':
+            break
+        time.sleep(2)
+        try:
+            uploaded = client.files.get(name=uploaded.name)
+        except Exception:
+            break
+
+    if uploaded.state.name != 'ACTIVE':
+        try:
+            client.files.delete(name=uploaded.name)
+        except Exception:
+            pass
+        return {'error': f'file_not_active:{uploaded.state}', '_clip_meta': clip}
+
+    # Analyze
+    result = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = client.models.generate_content(
+                model=MODEL,
+                contents=[types.Content(parts=[
+                    types.Part(file_data=types.FileData(mime_type='video/mp4', file_uri=uploaded.uri)),
+                    types.Part(text=ANALYSIS_PROMPT)
+                ])],
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    max_output_tokens=4096,
+                    response_mime_type='application/json',
+                    response_schema=ANALYSIS_SCHEMA
+                )
+            )
+            result = json.loads(response.text)
+            result['_uuid'] = uid
+            result['_url'] = url
+            result['_clip_meta'] = clip
+            result['_model'] = MODEL
+            result['_ts'] = datetime.datetime.utcnow().isoformat() + 'Z'
+            if response.usage_metadata:
+                result['_tokens_in'] = response.usage_metadata.prompt_token_count
+                result['_tokens_out'] = response.usage_metadata.candidates_token_count
+            break
+
+        except json.JSONDecodeError as e:
+            log.warning(f"  JSON error attempt {attempt+1}: {e}")
+            if attempt == MAX_RETRIES - 1:
+                result = {'error': 'json_parse_failed', '_clip_meta': clip}
+
+        except Exception as e:
+            err = str(e)
+            if '429' in err or 'quota' in err.lower() or 'exhausted' in err.lower():
+                wait = 15 * (attempt + 1)
+                log.warning(f"  Rate limit attempt {attempt+1}, wait {wait}s")
+                time.sleep(wait)
+            elif 'SAFETY' in err:
+                result = {'error': 'safety_blocked', '_clip_meta': clip}
+                break
+            else:
+                log.error(f"  Analysis error attempt {attempt+1}: {err[:120]}")
+                if attempt == MAX_RETRIES - 1:
+                    result = {'error': err[:150], '_clip_meta': clip}
+                time.sleep(3)
+
+    # Always delete file
+    try:
+        client.files.delete(name=uploaded.name)
+    except Exception:
+        pass
+
+    return result or {'error': 'no_result', '_clip_meta': clip}
 
 
-def save_analysis(result, clip_uuid):
-    out_path = ANALYSES / f'analysis_{clip_uuid}.json'
-    with open(out_path, 'w') as f:
+def save_analysis(result, uid):
+    out = ANALYSES / f'analysis_{uid}.json'
+    with open(out, 'w') as f:
         json.dump(result, f, indent=2)
-    return out_path
+    return out
 
 
-def log_cost(clip_uuid, cumulative_cost, clips_done, clips_total):
-    entry = {
-        'ts': datetime.datetime.utcnow().isoformat(),
-        'clip_uuid': clip_uuid,
-        'cumulative_cost_usd': round(cumulative_cost, 4),
-        'clips_done': clips_done,
-        'clips_total': clips_total
-    }
+def checkpoint(label, cost, done, total):
     with open(COST_LOG, 'a') as f:
-        f.write(json.dumps(entry) + '\n')
-
-
-def save_progress(done_uuids, total_cost, clips_total):
+        f.write(json.dumps({
+            'ts': datetime.datetime.utcnow().isoformat(),
+            'label': str(label),
+            'cost_usd': round(cost, 4),
+            'done': done,
+            'total': total
+        }) + '\n')
     with open(PROGRESS, 'w') as f:
         json.dump({
             'last_updated': datetime.datetime.utcnow().isoformat(),
-            'clips_analyzed': len(done_uuids),
-            'clips_total': clips_total,
-            'total_cost_usd': round(total_cost, 4),
-            'done_uuids': list(done_uuids)
+            'clips_this_run': done,
+            'total_in_corpus': total,
+            'cost_usd_this_run': round(cost, 4)
         }, f, indent=2)
 
 
-# ─── MAIN ────────────────────────────────────────────────────────────────────
-
 def main():
     log.info("=" * 60)
-    log.info("FULL CORPUS ALL-ANGLES RUN — 2026-04-11")
+    log.info("FULL CORPUS ALL-ANGLES — 2026-04-11")
+    log.info(f"Model: {MODEL}  Budget: ${HARD_STOP_USD}")
     log.info("=" * 60)
 
     if not GEMINI_API_KEY:
-        log.error("GEMINI_API_KEY not set. Aborting.")
+        log.error("GEMINI_API_KEY missing")
         sys.exit(1)
 
-    # Step 1: Get already-analyzed clips
     already_done = get_already_analyzed()
-    log.info(f"Previously analyzed: {len(already_done)} clips (will skip)")
+    log.info(f"Previously analyzed: {len(already_done)}")
 
-    # Step 2: Load or fetch manifest
     if MANIFEST.exists():
-        log.info("Loading existing clip manifest...")
         with open(MANIFEST) as f:
             all_clips = json.load(f)
         log.info(f"Manifest loaded: {len(all_clips)} clips")
     else:
-        log.info("Fetching clip manifest from Courtana API (this may take a few minutes)...")
         all_clips = fetch_all_clips()
         with open(MANIFEST, 'w') as f:
             json.dump(all_clips, f, indent=2)
         log.info(f"Manifest saved: {len(all_clips)} clips")
 
-    # Step 3: Filter to unanalyzed clips
     to_analyze = [c for c in all_clips if c['uuid'] not in already_done]
-    log.info(f"Clips to analyze: {len(to_analyze)} (of {len(all_clips)} total)")
+    budget_cap = int(HARD_STOP_USD / COST_PER_CLIP_EST)
+    if len(to_analyze) > budget_cap:
+        to_analyze = to_analyze[:budget_cap]
+        log.info(f"Capped to {budget_cap} clips for ${HARD_STOP_USD} budget")
 
-    # Step 4: Estimate total cost
-    est_cost = len(to_analyze) * COST_PER_CLIP_EST
-    log.info(f"Estimated cost: ${est_cost:.2f} (budget: ${HARD_STOP_USD})")
+    log.info(f"Clips to analyze: {len(to_analyze)}")
+    log.info(f"Estimated cost: ${len(to_analyze) * COST_PER_CLIP_EST:.2f}")
+    log.info(f"Estimated time: {len(to_analyze) * 17 / 3600:.1f}h at ~17s/clip")
 
-    if est_cost > ABSOLUTE_MAX_USD:
-        clips_at_budget = int(HARD_STOP_USD / COST_PER_CLIP_EST)
-        log.info(f"Will cap at ~{clips_at_budget} clips to stay within ${HARD_STOP_USD} budget")
-
-    # Step 5: Run analysis
-    total_cost = 0.0
-    done_in_run = []
+    cost = 0.0
+    done = []
     errors = []
 
     for i, clip in enumerate(to_analyze):
-        clip_uuid = clip['uuid']
+        uid = clip['uuid']
 
-        # Cost check
-        if total_cost >= HARD_STOP_USD:
-            log.info(f"HARD STOP: Reached ${total_cost:.4f} — stopping at {len(done_in_run)} clips")
+        if cost >= HARD_STOP_USD:
+            log.info(f"HARD STOP at ${cost:.2f}")
+            break
+        if cost >= ABSOLUTE_MAX_USD:
+            log.error(f"EMERGENCY STOP ${cost:.2f}")
             break
 
-        # Emergency kill
-        if total_cost >= ABSOLUTE_MAX_USD:
-            log.error(f"EMERGENCY STOP: Cost ${total_cost:.4f} exceeds ${ABSOLUTE_MAX_USD}")
-            break
-
-        log.info(f"[{i+1}/{len(to_analyze)}] Analyzing {clip_uuid} — running cost: ${total_cost:.4f}")
+        t0 = time.time()
+        log.info(f"\n[{i+1}/{len(to_analyze)}] {uid}  ${cost:.4f} spent")
 
         result = analyze_clip(clip)
 
         if result:
-            out_path = save_analysis(result, clip_uuid)
-            done_in_run.append(clip_uuid)
-            total_cost += COST_PER_CLIP_EST
+            save_analysis(result, uid)
+            done.append(uid)
+            cost += COST_PER_CLIP_EST
 
-            if 'error' in result:
-                errors.append({'uuid': clip_uuid, 'error': result['error']})
-                log.warning(f"  Error result saved: {result['error']}")
+            has_error = 'error' in result and 'viral_score' not in result
+            if has_error:
+                errors.append({'uuid': uid, 'error': result.get('error')})
+                log.warning(f"  Error saved: {result.get('error')}")
             else:
-                log.info(f"  Saved to {out_path.name}")
+                vs = result.get('viral_score', '?')
+                dupr = result.get('DUPR_estimate', '?')
+                cat = result.get('highlight_category', '?')
+                elapsed = time.time() - t0
+                log.info(f"  viral={vs} dupr={dupr} cat={cat} | {elapsed:.1f}s")
         else:
-            errors.append({'uuid': clip_uuid, 'error': 'no_result_returned'})
-            log.error(f"  No result for {clip_uuid}")
+            errors.append({'uuid': uid, 'error': 'no_result'})
 
-        # Log cost every N clips
         if (i + 1) % LOG_EVERY == 0:
-            log_cost(clip_uuid, total_cost, len(done_in_run), len(to_analyze))
-            save_progress(set(list(already_done) + done_in_run), total_cost, len(all_clips))
-            log.info(f"  === CHECKPOINT: {len(done_in_run)} done, ${total_cost:.4f} spent ===")
+            checkpoint(uid, cost, len(done), len(to_analyze))
 
-        # Small delay between clips to avoid rate limits
-        time.sleep(0.5)
-
-    # Final save
-    all_done = set(list(already_done) + done_in_run)
-    save_progress(all_done, total_cost, len(all_clips))
-    log_cost('FINAL', total_cost, len(done_in_run), len(to_analyze))
-
-    log.info("=" * 60)
-    log.info(f"RUN COMPLETE")
-    log.info(f"Clips analyzed this run: {len(done_in_run)}")
-    log.info(f"Total clips ever analyzed: {len(all_done)}")
-    log.info(f"Total cost this run: ${total_cost:.4f}")
-    log.info(f"Errors: {len(errors)}")
-    log.info("=" * 60)
+    checkpoint('FINAL', cost, len(done), len(to_analyze))
 
     if errors:
         with open(RUN_DIR / 'errors.json', 'w') as f:
             json.dump(errors, f, indent=2)
-        log.info(f"Error log: {RUN_DIR / 'errors.json'}")
 
-    return {
-        'clips_this_run': len(done_in_run),
-        'total_ever': len(all_done),
-        'cost_usd': total_cost,
+    summary = {
+        'clips_this_run': len(done),
+        'corpus_total': len(all_clips),
+        'prev_analyzed': len(already_done),
+        'total_ever': len(already_done) + len(done),
+        'coverage_pct': round((len(already_done) + len(done)) / max(len(all_clips), 1) * 100, 2),
+        'cost_usd': round(cost, 4),
         'errors': len(errors)
     }
 
+    log.info("=" * 60)
+    log.info("COMPLETE")
+    for k, v in summary.items():
+        log.info(f"  {k}: {v}")
+    log.info("=" * 60)
+
+    print(json.dumps(summary, indent=2))
+    return summary
+
 
 if __name__ == '__main__':
-    result = main()
-    print(json.dumps(result, indent=2))
+    main()
