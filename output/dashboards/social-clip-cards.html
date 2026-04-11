@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Courtana Clip Cards</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --card-bg: #111118;
+  --text: #ffffff;
+  --text-muted: #8b8b9e;
+  --arc-clutch: #ff3366;
+  --arc-athletic-highlight: #00e5ff;
+  --arc-athletic-rally: #ff6600;
+  --arc-grind-rally: #a855f7;
+  --arc-error-highlight: #facc15;
+  --arc-competitive-intensity: #22d3ee;
+  --arc-teaching-moment: #34d399;
+  --arc-comedy: #f472b6;
+  --arc-pure-fun: #fb923c;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── HERO SECTION ── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  max-height: 800px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.5) saturate(1.3);
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, var(--bg) 0%, rgba(10,10,15,0.6) 40%, rgba(10,10,15,0.2) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 40px 24px;
+  width: 100%;
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,51,102,0.15);
+  border: 1px solid rgba(255,51,102,0.3);
+  color: var(--arc-clutch);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.hero-label .dot {
+  width: 6px; height: 6px;
+  background: var(--arc-clutch);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero-score {
+  font-size: 120px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -6px;
+  background: linear-gradient(135deg, #fff 0%, var(--arc-clutch) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.hero-summary {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.hero-quote {
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255,255,255,0.7);
+  border-left: 3px solid var(--arc-clutch);
+  padding-left: 14px;
+  margin-bottom: 24px;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--arc-clutch);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-watch:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(255,51,102,0.4);
+}
+
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.btn-share:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.15);
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  padding: 48px 24px 20px;
+}
+
+.section-header h2 {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.section-header p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── STORY CARDS SCROLL ── */
+.stories-track {
+  display: flex;
+  gap: 16px;
+  padding: 0 24px 48px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.stories-track::-webkit-scrollbar { display: none; }
+
+.story-card {
+  flex: 0 0 340px;
+  height: 604px;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  scroll-snap-align: center;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.story-card:hover {
+  transform: scale(1.02);
+}
+
+.story-card:active {
+  transform: scale(0.98);
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.55) saturate(1.2);
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg,
+    rgba(0,0,0,0.95) 0%,
+    rgba(0,0,0,0.4) 35%,
+    rgba(0,0,0,0.15) 55%,
+    rgba(0,0,0,0.3) 100%
+  );
+}
+
+.card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 20px;
+}
+
+/* Top area */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-score {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -4px;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+
+.card-rank {
+  width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+}
+
+/* Middle area - shot icon */
+.card-middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shot-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.4);
+}
+
+/* Bottom area */
+.card-bottom {}
+
+.card-arc-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.card-quote {
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.card-shots {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-btn:hover { transform: scale(1.05); }
+
+.card-btn-watch {
+  background: #fff;
+  color: #000;
+}
+
+.card-btn-share {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  backdrop-filter: blur(10px);
+}
+
+/* ── VIDEO MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(20px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-inner {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+}
+
+.modal-inner video {
+  width: 100%;
+  display: block;
+  border-radius: 20px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-logo {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.footer-logo span { color: var(--arc-clutch); }
+
+.footer-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── SHARE TOAST ── */
+.toast {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 2000;
+  transition: bottom 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(20px);
+}
+
+.toast.show { bottom: 32px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 420px) {
+  .story-card { flex: 0 0 calc(100vw - 48px); }
+  .hero-score { font-size: 88px; letter-spacing: -4px; }
+  .hero-title { font-size: 22px; }
+  .card-score { font-size: 56px; }
+}
+
+@media (min-width: 768px) {
+  .hero-content { padding: 60px 48px; }
+  .section-header { padding: 48px 48px 20px; }
+  .stories-track { padding: 0 48px 48px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<div class="modal-overlay" id="videoModal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <video id="modalVideo" controls playsinline></video>
+  </div>
+</div>
+
+<div class="toast" id="toast">Link copied to clipboard</div>
+
+<script>
+const CLIPS = [{"uuid":"2615847e-82b0-4ec6-866e-fe81fe9c5fec","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg","quality":8,"viral":7,"watchability":8,"arc":"clutch_moment","summary":"A pickleball rally ends with a lucky net-cord dink winner.","dominant_shot":"dink","total_shots":11,"brands":["PICKLEBALL"],"ron_burgundy":"Well, that was quite the spectacle, wasn't it? A veritable ballet of paddles and plastic, culminating in a most audacious, dare I say, fortuitous bounce. Truly, a moment of pure, unadulterated pickleball poetry, much like my own news reports.","espn":"A well-contested rally unfolds, featuring powerful drives from the baseline before transitioning into a delicate kitchen battle. The point is ultimately decided by a fortunate net-cord dink.","social_caption":"When the pickleball gods are on your side!","play_style":"balanced","score":35},{"uuid":"ce00696b-9f9b-465a-971c-dbf1334e556c","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg","quality":8,"viral":7,"watchability":8,"arc":"athletic_highlight","summary":"Player executes an explosive jumping overhead smash for a highlight-reel winner.","dominant_shot":"overhead","total_shots":5,"brands":["JOOLA","Courtana"],"ron_burgundy":"By the beard of Zeus, that was a shot of pure, unadulterated power! The ball, much like a fine aged scotch, was delivered with precision and a robust finish. Simply delightful.","espn":"What an incredible display of athleticism! This player elevates for a powerful overhead smash, leaving the opponents no chance. A truly spectacular shot.","social_caption":"Airborne for the WIN!","play_style":"aggressive","score":35},{"uuid":"139453f3-8ac3-4687-922e-214cc15490df","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg","quality":8,"viral":7,"watchability":8,"arc":"athletic_highlight","summary":"A patient dink rally ends with an explosive forehand speed-up for a decisive winner.","dominant_shot":"dink","total_shots":9,"brands":["JOOLA"],"ron_burgundy":"Good heavens, what a display of athletic prowess! The dinks were as delicate as a butterfly's kiss, until a thunderous forehand erupted, leaving the opposition utterly flummoxed. Simply magnificent!","espn":"A well-placed serve initiated this point, leading to a series of strategic dinks at the net. The near-side team maintained pressure, culminating in a powerful forehand put-away.","social_caption":"Dink, dink, BANG! What a finish!","play_style":"balanced","score":35},{"uuid":"70043064-c6c3-4f60-8744-5671a1f85e35","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.jpeg","quality":8,"viral":7,"watchability":8,"arc":"grind_rally","summary":"An intense, multi-shot kitchen rally concludes with a powerful overhead smash for a winner.","dominant_shot":"volley","total_shots":21,"brands":["JOOLA","CRBN","Courtana"],"ron_burgundy":"By the beard of Zeus, that was a rally of epic proportions! The players, with their paddles poised like gladiators, engaged in a ballet of dinks and volleys. Simply put, pure pickleball poetry. Stay classy, pickleballers.","espn":"What a rally at the kitchen line! Both teams showing incredible touch and quick reflexes, trading dinks and volleys. A powerful overhead smash seals the point.","social_caption":"Kitchen battle royale! What a rally!","play_style":"balanced","score":35},{"uuid":"c9aa41f3-74d2-4289-b9e7-7796f38c609b","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9aa41f3-74d2-4289-b9e7-7796f38c609b.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9aa41f3-74d2-4289-b9e7-7796f38c609b.jpeg","quality":8,"viral":9,"watchability":9,"arc":"athletic_rally","summary":"A player falls to the ground mid-rally, recovers, and continues to play, eventually winning the point.","dominant_shot":"drive","total_shots":30,"brands":[],"ron_burgundy":"","espn":"","social_caption":"Talk about dedication! This player took a tumble but kept the rally alive and WON THE POINT!","play_style":"aggressive","score":35},{"uuid":"c30b464e-25b4-4029-ba30-49b1f3877f42","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.jpeg","quality":7,"viral":8,"watchability":7,"arc":"error_highlight","summary":"A short pickleball rally features multiple errors and poor shot selection, ending with a net fault.","dominant_shot":"volley","total_shots":5,"brands":["LIFE TIME PICKLEBALL","JOOLA"],"ron_burgundy":"Well, that was certainly a pickleball rally. Not quite a symphony of dinks, nor a ballet of volleys, but a rally nonetheless. I'm Ron Burgundy, and that's the way the pickleball bounces.","espn":"A short rally here at the Lifetime Pickleball courts, showcasing some common challenges in the intermediate game. The point ends with an unforced error at the net.","social_caption":"When the rally is short but the lessons are long.","play_style":"aggressive","score":35},{"uuid":"cf1e048f-f1cf-47e8-a55e-c99abb6c6c36","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg","quality":8,"viral":7,"watchability":7,"arc":"athletic_highlight","summary":"A pickleball rally culminates in an athletic jump smash for a winner after a kitchen battle.","dominant_shot":"dink","total_shots":14,"brands":["Recovery Cave","The Underground"],"ron_burgundy":"By the beard of Zeus, what a display! The tactical ballet at the net, the sudden burst of power, culminating in an aerial assault that would make a bald eagle weep with pride. Truly, a moment of sporting grandeur!","espn":"A well-constructed rally unfolds, showcasing consistent dinking and defensive prowess at the net. The far team finishes with a powerful, airborne overhead smash to claim the point.","social_caption":"Kitchen battle to an airborne smash!","play_style":"balanced","score":34},{"uuid":"3df45199-1d8c-4d6a-a076-637a059c9621","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.jpeg","quality":8,"viral":7,"watchability":7,"arc":"grind_rally","summary":"A long kitchen dink rally ends with a decisive speed-up winner and a team celebration.","dominant_shot":"volley","total_shots":11,"brands":["Pickleball","The Ground"],"ron_burgundy":"By the beard of Zeus, that was a rally for the ages! The ball danced upon the net like a graceful gazelle, only to be met with a thunderous strike that left the opposition utterly flummoxed. Simply put, it was a triumph of human endeavor.","espn":"What a fantastic point! Both teams dug deep in a prolonged kitchen battle, exchanging dinks and volleys with precision, until a powerful speed-up found the open court for the winner.","social_caption":"Kitchen battle to a speed-up winner!","play_style":"balanced","score":34},{"uuid":"8ade4e4e-42df-4c74-9343-f144bac993a2","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"A long dink rally at the kitchen line ends with an out-of-bounds speed-up.","dominant_shot":"dink","total_shots":25,"brands":["JOOLA"],"ron_burgundy":"By the beard of Zeus, what a dink-fest! These gentlemen are engaged in a ballet of precision, a veritable symphony of soft touches, until, alas, a bold attempt sails just beyond the pale. Truly magnificent!","espn":"A prolonged kitchen battle unfolds with both teams displaying excellent touch and patience. The rally culminates in a decisive speed-up attempt that unfortunately sails long.","social_caption":"Dink battle royale! Who's got the softest hands?","play_style":"balanced","score":32},{"uuid":"f4df1bb4-196e-4588-bfee-cd2ca367d138","video_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.mp4","thumbnail":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.jpeg","quality":8,"viral":6,"watchability":7,"arc":"grind_rally","summary":"Multiple pickleball games show consistent dinking and kitchen play at an indoor facility.","dominant_shot":"dink","total_shots":20,"brands":["PICKLEBALL","Skull Logo"],"ron_burgundy":"Great Scott, what a spectacle! Multiple courts, multiple battles, all unfolding with the grace of a gazelle and the ferocity of a very determined pickleball player. Truly, a magnificent display of athleticism and paddle prowess.","espn":"A vibrant indoor pickleball facility buzzes with activity as multiple matches unfold simultaneously. Players demonstrate solid fundamental skills with consistent dink rallies and strategic kitchen play across all courts.","social_caption":"Dink battles and good vibes!","play_style":"balanced","score":32}];
+
+const ARC_CONFIG = {
+  clutch_moment:           { color: '#ff3366', label: 'CLUTCH',     glow: 'rgba(255,51,102,0.3)' },
+  athletic_highlight:      { color: '#00e5ff', label: 'ATHLETIC',   glow: 'rgba(0,229,255,0.3)' },
+  athletic_rally:          { color: '#ff6600', label: 'RALLY',      glow: 'rgba(255,102,0,0.3)' },
+  grind_rally:             { color: '#a855f7', label: 'GRIND',      glow: 'rgba(168,85,247,0.3)' },
+  error_highlight:         { color: '#facc15', label: 'BLOOPER',    glow: 'rgba(250,204,21,0.3)' },
+  competitive_intensity:   { color: '#22d3ee', label: 'INTENSE',    glow: 'rgba(34,211,238,0.3)' },
+  teaching_moment:         { color: '#34d399', label: 'LESSON',     glow: 'rgba(52,211,153,0.3)' },
+  comedy:                  { color: '#f472b6', label: 'COMEDY',     glow: 'rgba(244,114,182,0.3)' },
+  pure_fun:                { color: '#fb923c', label: 'FUN',        glow: 'rgba(251,146,60,0.3)' }
+};
+
+const SHOT_ICONS = {
+  dink:             { icon: '\u{1F3D3}', label: 'Dink' },
+  drive:            { icon: '\u{1F4A8}', label: 'Drive' },
+  volley:           { icon: '\u26A1',     label: 'Volley' },
+  overhead:         { icon: '\u{1F4AA}',  label: 'Overhead' },
+  speedup:          { icon: '\u{1F525}',  label: 'Speed-up' },
+  drop:             { icon: '\u{1F4A7}',  label: 'Drop' },
+  serve:            { icon: '\u{1F3BE}',  label: 'Serve' },
+  dink_to_speed_up: { icon: '\u{1F680}',  label: 'Dink > Speed' },
+  other:            { icon: '\u{1F3AF}',  label: 'Other' }
+};
+
+function getArc(arcKey) {
+  return ARC_CONFIG[arcKey] || { color: '#888', label: arcKey?.replace(/_/g,' ').toUpperCase() || 'UNKNOWN', glow: 'rgba(136,136,136,0.3)' };
+}
+
+function getShot(shotKey) {
+  return SHOT_ICONS[shotKey] || SHOT_ICONS.other;
+}
+
+function getQuote(clip) {
+  if (clip.ron_burgundy) return clip.ron_burgundy;
+  if (clip.espn) return clip.espn;
+  if (clip.social_caption) return clip.social_caption;
+  return clip.summary;
+}
+
+function openModal(videoUrl) {
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  video.src = videoUrl;
+  modal.classList.add('active');
+  video.play();
+}
+
+function closeModal() {
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  video.pause();
+  video.src = '';
+  modal.classList.remove('active');
+}
+
+function shareClip(clip) {
+  const text = clip.social_caption || clip.summary;
+  if (navigator.share) {
+    navigator.share({ title: 'Courtana Clip', text, url: clip.video_url });
+  } else {
+    navigator.clipboard.writeText(clip.video_url).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+}
+
+// Build hero
+function renderHero(clip) {
+  const arc = getArc(clip.arc);
+  const quote = getQuote(clip);
+  return `
+    <section class="hero">
+      <div class="hero-bg" style="background-image:url('${clip.thumbnail}')"></div>
+      <div class="hero-content">
+        <div class="hero-label"><span class="dot"></span>CLIP OF THE DAY</div>
+        <div class="hero-score" style="background:linear-gradient(135deg,#fff 0%,${arc.color} 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${clip.quality}.${clip.viral}</div>
+        <div class="hero-title">${clip.summary}</div>
+        <div class="hero-quote">"${quote.length > 180 ? quote.substring(0, 180) + '...' : quote}"</div>
+        <div class="hero-actions">
+          <button class="btn-watch" onclick="openModal('${clip.video_url}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Watch Now
+          </button>
+          <button class="btn-share" onclick="shareClip(CLIPS[0])">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            Share
+          </button>
+        </div>
+      </div>
+    </section>`;
+}
+
+function renderCard(clip, index) {
+  const arc = getArc(clip.arc);
+  const shot = getShot(clip.dominant_shot);
+  const quote = getQuote(clip);
+  const brandsHtml = clip.brands.map(b =>
+    `<span class="brand-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/></svg>${b}</span>`
+  ).join('');
+
+  return `
+    <div class="story-card" data-idx="${index}">
+      <div class="card-bg" style="background-image:url('${clip.thumbnail}')"></div>
+      <div class="card-overlay"></div>
+      <div class="card-accent" style="background:linear-gradient(90deg,${arc.color},transparent)"></div>
+      <div class="card-content">
+        <div class="card-top">
+          <div class="card-score" style="color:${arc.color}">${clip.quality}<span style="font-size:36px;opacity:0.5">.${clip.viral}</span></div>
+          <div class="card-rank">#${index + 1}</div>
+        </div>
+        <div class="card-middle">
+          <div class="shot-icon" style="box-shadow:0 0 24px ${arc.glow}">${shot.icon}</div>
+        </div>
+        <div class="card-bottom">
+          <div class="card-arc-tag" style="background:${arc.color}20;color:${arc.color};border:1px solid ${arc.color}40">${arc.label}</div>
+          <div class="card-quote">"${quote.length > 140 ? quote.substring(0, 140) + '...' : quote}"</div>
+          <div class="card-meta">
+            <span class="card-shots">${clip.total_shots} SHOTS ${shot.icon} ${shot.label.toUpperCase()}</span>
+            ${brandsHtml}
+          </div>
+          <div class="card-actions">
+            <button class="card-btn card-btn-watch" onclick="event.stopPropagation();openModal('${clip.video_url}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Watch
+            </button>
+            <button class="card-btn card-btn-share" onclick="event.stopPropagation();shareClip(CLIPS[${index}])">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// Render
+const app = document.getElementById('app');
+const hero = CLIPS[0];
+const cards = CLIPS.slice(0); // all 10 in cards too
+
+app.innerHTML = `
+  ${renderHero(hero)}
+  <div class="section-header">
+    <h2>Top 10 Viral Clips</h2>
+    <p>Ranked by viral score, quality, and AI commentary</p>
+  </div>
+  <div class="stories-track">
+    ${cards.map((c, i) => renderCard(c, i)).join('')}
+  </div>
+  <div class="footer">
+    <div class="footer-logo">Courtana <span>Clips</span></div>
+    <div class="footer-sub">Powered by Pickle DaaS</div>
+  </div>
+`;
+
+// Close modal on overlay click
+document.getElementById('videoModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Close modal on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

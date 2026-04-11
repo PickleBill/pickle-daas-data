@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana — Court Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    /* Exact courtana.com design tokens */
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --border-subtle: #4a5a70;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --green-glow: rgba(34,197,94,0.15);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
+    --text: #ffffff;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text2);
+    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(8,12,20,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav img { height: 28px; }
+  nav .nav-links { display: flex; gap: 32px; }
+  nav .nav-links a {
+    color: var(--text2); text-decoration: none; font-size: 14px;
+    transition: color 0.2s;
+  }
+  nav .nav-links a:hover { color: var(--green); }
+  nav .cta-nav {
+    background: var(--btn-gradient); color: #fff; font-weight: 600;
+    padding: 8px 20px; border-radius: 100px; font-size: 13px;
+    text-decoration: none; transition: opacity 0.2s;
+  }
+  nav .cta-nav:hover { opacity: 0.88; }
+
+  /* SECTIONS */
+  section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding-top: 120px;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(34,197,94,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green); font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 32px;
+  }
+  .eyebrow::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  h1 {
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 800; line-height: 1.0;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+    margin-bottom: 24px;
+  }
+  h1 .accent { color: var(--green); }
+  .hero-sub {
+    font-size: clamp(18px, 2.5vw, 22px);
+    color: var(--text2); max-width: 640px;
+    margin-bottom: 56px; line-height: 1.5;
+  }
+  .hero-stats {
+    display: flex; gap: 0; margin-bottom: 56px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; background: var(--surface);
+  }
+  .hero-stat {
+    padding: 24px 40px; text-align: center;
+    border-right: 1px solid var(--border);
+    flex: 1;
+  }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat .num {
+    font-size: 36px; font-weight: 800; color: var(--green);
+    letter-spacing: -0.02em; display: block;
+  }
+  .hero-stat .label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+  .hero-ctas { display: flex; gap: 16px; }
+  .btn-primary {
+    background: var(--btn-gradient); color: #fff; font-weight: 600;
+    padding: 16px 36px; border-radius: 100px; font-size: 16px;
+    text-decoration: none; transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+  .btn-secondary {
+    background: transparent; color: var(--text); font-weight: 600;
+    padding: 16px 36px; border-radius: 100px; font-size: 16px;
+    text-decoration: none; border: 1px solid var(--border);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--green); background: rgba(0,230,118,0.05); }
+
+  /* SECTION HEADERS */
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--green); margin-bottom: 16px;
+  }
+  h2 {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 18px; color: var(--text2); max-width: 600px;
+    margin-bottom: 60px;
+  }
+
+  /* FLYWHEEL */
+  #flywheel { background: var(--surface); border-radius: var(--radius); }
+  #flywheel section { padding: 80px 60px; }
+  .flywheel-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .flywheel-step {
+    background: var(--surface2); border-radius: var(--radius);
+    padding: 28px; border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .flywheel-step:hover { border-color: var(--green); transform: translateY(-4px); }
+  .step-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--text3); margin-bottom: 12px;
+  }
+  .step-icon { font-size: 32px; margin-bottom: 12px; }
+  .flywheel-step h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .flywheel-step p { font-size: 14px; color: var(--text2); line-height: 1.5; }
+  .step-accent { width: 40px; height: 3px; background: var(--green); border-radius: 2px; margin-bottom: 20px; }
+
+  /* DATA SECTION */
+  .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .data-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px;
+  }
+  .data-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .data-card .sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+  .chart-wrap { position: relative; height: 260px; }
+
+  /* SHOT BARS */
+  .shot-bars { display: flex; flex-direction: column; gap: 12px; }
+  .shot-bar-row { display: flex; align-items: center; gap: 12px; }
+  .shot-bar-label { width: 80px; font-size: 13px; color: var(--text2); text-align: right; }
+  .shot-bar-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .shot-bar-fill { height: 100%; border-radius: 4px; transition: width 1.5s cubic-bezier(0.23,1,0.32,1); }
+  .shot-bar-pct { width: 40px; font-size: 12px; color: var(--text3); font-weight: 600; }
+
+  /* DUPR PILLS */
+  .dupr-dist { display: flex; gap: 12px; margin-bottom: 28px; }
+  .dupr-pill {
+    flex: 1; background: var(--surface2); border-radius: var(--radius-sm);
+    padding: 16px; text-align: center; border: 1px solid var(--border);
+  }
+  .dupr-pill .pct { font-size: 28px; font-weight: 800; color: var(--green); }
+  .dupr-pill .range { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .dupr-pill .rating { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  /* STYLE CLOUD */
+  .style-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+  .style-tag {
+    background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2);
+    color: var(--blue); padding: 5px 12px; border-radius: 100px;
+    font-size: 12px; font-weight: 500;
+  }
+  .style-tag.green { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); color: var(--green); }
+  .style-tag.purple { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.25); color: #a5b4fc; }
+
+  /* CLIPS */
+  #clips { padding-top: 60px; }
+  .clips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .clip-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .clip-card:hover { border-color: var(--green); transform: translateY(-4px); }
+  .clip-card video {
+    width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+    background: #000;
+  }
+  .clip-info { padding: 20px; }
+  .clip-meta { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .clip-badge {
+    font-size: 11px; font-weight: 700; padding: 4px 10px;
+    border-radius: 100px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .badge-wow { background: rgba(255,109,0,0.15); color: #FF9800; border: 1px solid rgba(255,109,0,0.3); }
+  .badge-cat { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+  .badge-dupr { background: rgba(0,176,255,0.1); color: var(--blue); border: 1px solid rgba(0,176,255,0.2); }
+  .clip-summary { font-size: 14px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+  .clip-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .clip-tag { font-size: 11px; color: var(--text3); background: var(--surface2); padding: 3px 8px; border-radius: 4px; }
+
+  /* MOAT */
+  #moat { background: linear-gradient(135deg, rgba(34,197,94,0.05) 0%, rgba(56,189,248,0.04) 100%); border-radius: var(--radius); }
+  #moat section { padding: 80px 60px; }
+  .moat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .moat-stat-block { margin-bottom: 40px; }
+  .moat-big { font-size: 64px; font-weight: 800; color: var(--green); letter-spacing: -0.04em; line-height: 1; }
+  .moat-big-label { font-size: 16px; color: var(--text2); margin-top: 8px; }
+  .moat-list { list-style: none; }
+  .moat-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px 0; border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .moat-list li:last-child { border-bottom: none; }
+  .moat-list li::before {
+    content: '→'; color: var(--green); font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .flywheel-diagram {
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .fw-step {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px 20px;
+    margin-bottom: 0;
+  }
+  .fw-arrow { text-align: center; color: var(--green); font-size: 20px; padding: 4px 0; }
+  .fw-icon { font-size: 24px; flex-shrink: 0; }
+  .fw-text { flex: 1; }
+  .fw-text strong { font-size: 14px; display: block; }
+  .fw-text span { font-size: 12px; color: var(--text3); }
+
+  /* MARKET */
+  #market { padding: 100px 40px; }
+  .comp-table { width: 100%; border-collapse: collapse; }
+  .comp-table th {
+    text-align: left; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text3); padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-table td {
+    padding: 16px 20px; font-size: 14px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: middle;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table .courtana-row td { background: rgba(0,230,118,0.05); }
+  .comp-table .courtana-row td:first-child { border-left: 3px solid var(--green); }
+  .price-badge {
+    display: inline-block; font-weight: 700;
+    font-size: 13px; color: var(--green);
+  }
+  .sport-badge {
+    display: inline-block; font-size: 11px;
+    background: var(--surface2); padding: 3px 8px;
+    border-radius: 4px; color: var(--text2);
+  }
+  .check { color: var(--green); }
+  .dash { color: var(--text3); }
+
+  /* AUDIENCE TOGGLE */
+  .toggle-wrap { display: flex; gap: 0; margin-bottom: 48px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 4px; width: fit-content; }
+  .toggle-btn {
+    padding: 10px 28px; border-radius: calc(var(--radius) - 4px);
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    background: none; border: none; color: var(--text2);
+  }
+  .toggle-btn.active { background: var(--btn-gradient); color: #fff; }
+  .audience-panel { display: none; }
+  .audience-panel.active { display: block; }
+  .for-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .for-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+  }
+  .for-card .icon { font-size: 28px; margin-bottom: 16px; }
+  .for-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+  .for-card p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1200px; margin: 0 auto;
+    color: var(--text3); font-size: 13px;
+  }
+  footer a { color: var(--green); text-decoration: none; }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: rgba(255,109,0,0.05); border: 1px solid rgba(255,109,0,0.2);
+    border-radius: var(--radius-sm); padding: 12px 20px;
+    font-size: 12px; color: #FF9800; margin-top: 40px;
+  }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* TICKER */
+  .ticker-wrap { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); padding: 12px 0; margin: 0; }
+  .ticker { display: flex; gap: 60px; animation: ticker 40s linear infinite; white-space: nowrap; width: max-content; }
+  .ticker-item { font-size: 12px; color: var(--text3); letter-spacing: 0.05em; }
+  .ticker-item span { color: var(--green); font-weight: 700; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav .nav-links { display: none; }
+    .hero-stats { flex-direction: column; }
+    .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-stat:last-child { border-bottom: none; }
+    .flywheel-grid, .data-grid, .clips-grid, .moat-grid, .for-grid { grid-template-columns: 1fr; }
+    section { padding: 60px 20px; }
+    nav { padding: 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <img src="https://cdn.courtana.com/static/img/Courtana_Logo.png" alt="Courtana" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+  <span style="display:none; color:#00E676; font-weight:800; font-size:18px; letter-spacing:-0.02em;">COURTANA</span>
+  <div class="nav-links">
+    <a href="#data">Data</a>
+    <a href="#clips">Live Clips</a>
+    <a href="#moat">The Moat</a>
+    <a href="#market">Market</a>
+  </div>
+  <a href="https://courtana.com" class="cta-nav" target="_blank">Get Access →</a>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-glow"></div>
+  <div class="eyebrow">Live Intelligence • Pickleball Data Platform</div>
+  <h1>Every Rally.<br>Every Shot.<br><span class="accent">Every Story.</span></h1>
+  <p class="hero-sub">Courtana is the intelligence layer for pickleball. AI-powered shot analytics, player DNA profiles, and brand intelligence — extracted from every clip, at every venue, in real time.</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="num" id="count-corpus">4,097+</span>
+      <div class="label">Clip Groups in Corpus</div>
+    </div>
+    <div class="hero-stat">
+      <span class="num" id="count-shots">460+</span>
+      <div class="label">Shots Deep-Analyzed</div>
+    </div>
+    <div class="hero-stat">
+      <span class="num" id="count-styles">26</span>
+      <div class="label">Play Style Archetypes</div>
+    </div>
+    <div class="hero-stat">
+      <span class="num">$0.0054</span>
+      <div class="label">Per Clip Analysis Cost</div>
+    </div>
+  </div>
+
+  <div class="hero-ctas">
+    <a href="#data" class="btn-primary">Explore the Data</a>
+    <a href="#clips" class="btn-secondary">Watch Live Clips</a>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item">DINKS <span>64%</span> of all shots analyzed</div>
+    <div class="ticker-item">KITCHEN MASTERY <span>avg 6.8/10</span> across corpus</div>
+    <div class="ticker-item">DUPR 3.5–4.0 <span>most common</span> player tier</div>
+    <div class="ticker-item">DRIVES <span>23%</span> of shot distribution</div>
+    <div class="ticker-item">RALLY LENGTH <span>8–41 shots</span> tracked per clip</div>
+    <div class="ticker-item">FULL CORPUS RUN <span>IN PROGRESS</span> — 4,097 clips</div>
+    <div class="ticker-item">COACHING SIGNALS <span>LIVE</span> — improvement opportunities per player</div>
+    <div class="ticker-item">VIRAL SCORE <span>up to 9/10</span> clips in corpus</div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item">DINKS <span>64%</span> of all shots analyzed</div>
+    <div class="ticker-item">KITCHEN MASTERY <span>avg 6.8/10</span> across corpus</div>
+    <div class="ticker-item">DUPR 3.5–4.0 <span>most common</span> player tier</div>
+    <div class="ticker-item">DRIVES <span>23%</span> of shot distribution</div>
+    <div class="ticker-item">RALLY LENGTH <span>8–41 shots</span> tracked per clip</div>
+    <div class="ticker-item">FULL CORPUS RUN <span>IN PROGRESS</span> — 4,097 clips</div>
+    <div class="ticker-item">COACHING SIGNALS <span>LIVE</span> — improvement opportunities per player</div>
+    <div class="ticker-item">VIRAL SCORE <span>up to 9/10</span> clips in corpus</div>
+  </div>
+</div>
+
+<!-- FLYWHEEL -->
+<div id="flywheel">
+  <section>
+    <div class="section-label">How It Works</div>
+    <h2>One Camera. Infinite Intelligence.</h2>
+    <p class="section-sub">Courtana's AI pipeline turns raw court footage into a compounding data asset — automatically, at scale, for any venue.</p>
+
+    <div class="flywheel-grid fade-in">
+      <div class="flywheel-step">
+        <div class="step-num">01</div>
+        <div class="step-accent"></div>
+        <div class="step-icon">🎥</div>
+        <h3>Court Cameras</h3>
+        <p>Works with existing cameras at any venue. Booking-system agnostic. Zero disruption to your current setup.</p>
+      </div>
+      <div class="flywheel-step">
+        <div class="step-num">02</div>
+        <div class="step-accent"></div>
+        <div class="step-icon">🤖</div>
+        <h3>Gemini AI Analysis</h3>
+        <p>Every highlight clip is analyzed frame-by-frame: shot type, player position, quality score, difficulty, outcome, wow factor.</p>
+      </div>
+      <div class="flywheel-step">
+        <div class="step-num">03</div>
+        <div class="step-accent"></div>
+        <div class="step-icon">🧬</div>
+        <h3>Player DNA</h3>
+        <p>26 play style archetypes. 10 skill dimensions. DUPR estimation without manual entry. Tactical tendencies and improvement signals.</p>
+      </div>
+      <div class="flywheel-step">
+        <div class="step-num">04</div>
+        <div class="step-accent"></div>
+        <div class="step-icon">📊</div>
+        <h3>Shot Intelligence</h3>
+        <p>Dink-to-drive ratios. Kitchen control percentages. Error patterns. Winning shot sequences. Tactical fingerprints per player.</p>
+      </div>
+      <div class="flywheel-step">
+        <div class="step-num">05</div>
+        <div class="step-accent"></div>
+        <div class="step-icon">🏷️</div>
+        <h3>Brand Detection</h3>
+        <p>Paddle brands, apparel sponsors, court logos — identified in every clip. Sponsorship whitespace mapped automatically.</p>
+      </div>
+      <div class="flywheel-step">
+        <div class="step-num">06</div>
+        <div class="step-accent"></div>
+        <div class="step-icon">🚀</div>
+        <h3>Venue Intelligence</h3>
+        <p>Coaching products, player retention tools, viral content pipelines, sponsor packages — all powered by the same underlying data.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- DATA SECTION -->
+<section id="data">
+  <div class="section-label">Real Data · Live Corpus</div>
+  <h2>What the Data Actually Shows</h2>
+  <p class="section-sub">Real findings from Courtana's corpus. Every stat below is derived from AI analysis of actual court footage.</p>
+
+  <div class="data-grid fade-in">
+
+    <!-- Shot Distribution -->
+    <div class="data-card">
+      <h3>Shot Type Distribution</h3>
+      <div class="sub">460 shots analyzed across 24 clips · corpus expanding</div>
+      <div class="shot-bars" id="shot-bars">
+        <!-- populated by JS -->
+      </div>
+      <div class="disclaimer" style="margin-top: 24px; font-size: 11px;">
+        ⚠ Sample bias: N=24 clips, likely single-venue. Confidence capped at 75%. Full corpus run in progress.
+      </div>
+    </div>
+
+    <!-- DUPR Distribution -->
+    <div class="data-card">
+      <h3>Player Skill Distribution</h3>
+      <div class="sub">DUPR estimates from AI vision — no manual entry required</div>
+      <div class="dupr-dist">
+        <div class="dupr-pill">
+          <div class="pct">21%</div>
+          <div class="range">3.0–3.5</div>
+          <div class="rating">Developing</div>
+        </div>
+        <div class="dupr-pill">
+          <div class="pct" style="color: var(--green);">67%</div>
+          <div class="range">3.5–4.0</div>
+          <div class="rating">Intermediate</div>
+        </div>
+        <div class="dupr-pill">
+          <div class="pct" style="color: var(--blue);">12%</div>
+          <div class="range">4.0–4.5</div>
+          <div class="rating">Advanced</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height: 180px;">
+        <canvas id="duprChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Play Style Archetypes -->
+    <div class="data-card">
+      <h3>Play Style Archetypes Identified</h3>
+      <div class="sub">26 distinct archetypes detected — zero manual classification</div>
+      <div class="style-cloud">
+        <span class="style-tag green">kitchen specialist</span>
+        <span class="style-tag green">strategic</span>
+        <span class="style-tag">counter_puncher</span>
+        <span class="style-tag purple">banger</span>
+        <span class="style-tag">all-court player</span>
+        <span class="style-tag green">patient player</span>
+        <span class="style-tag purple">power player</span>
+        <span class="style-tag">dinker</span>
+        <span class="style-tag">net rusher</span>
+        <span class="style-tag purple">aggressive baseliner</span>
+        <span class="style-tag">transition player</span>
+        <span class="style-tag">scrambler</span>
+        <span class="style-tag green">consistent</span>
+        <span class="style-tag">driver</span>
+        <span class="style-tag">balanced player</span>
+        <span class="style-tag purple">baseliner</span>
+        <span class="style-tag">defensive player</span>
+        <span class="style-tag green">methodical</span>
+        <span class="style-tag">reactive</span>
+        <span class="style-tag">good mover</span>
+        <span class="style-tag purple">developing dinker</span>
+        <span class="style-tag">recreational</span>
+        <span class="style-tag green">patient</span>
+        <span class="style-tag">balanced</span>
+        <span class="style-tag purple">hero_ball</span>
+        <span class="style-tag">recreational player</span>
+      </div>
+      <div style="margin-top: 20px; font-size: 13px; color: var(--text2);">
+        Each archetype powers personalized coaching feedback, player retention messaging, and in-app badges.
+      </div>
+    </div>
+
+    <!-- Skill Radar -->
+    <div class="data-card">
+      <h3>Skill Dimension Radar</h3>
+      <div class="sub">10 dimensions scored per player · averaged across corpus</div>
+      <div class="chart-wrap">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIVE CLIPS -->
+<section id="clips" style="padding-top: 20px;">
+  <div class="section-label">Live Data · CDN Clips</div>
+  <h2>Real Clips. Real Intelligence.</h2>
+  <p class="section-sub">These are actual highlights from Courtana's corpus — each tagged, scored, and analyzed by AI in real time.</p>
+
+  <div class="clips-grid fade-in">
+
+    <div class="clip-card">
+      <video autoplay muted loop playsinline preload="none"
+        poster=""
+        src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/136b9ca6-e285-4861-aeaa-f2b024c6f94b.mp4">
+      </video>
+      <div class="clip-info">
+        <div class="clip-meta">
+          <span class="clip-badge badge-wow">Wow 9/10</span>
+          <span class="clip-badge badge-cat">Strategic</span>
+          <span class="clip-badge badge-dupr">DUPR 3.5–4.0</span>
+        </div>
+        <p class="clip-summary">Strategic kitchen battle — patient dink exchange ends with precision winner. 12 shots analyzed.</p>
+        <div class="clip-tags">
+          <span class="clip-tag">kitchen specialist</span>
+          <span class="clip-tag">patient</span>
+          <span class="clip-tag">strategic</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="clip-card">
+      <video autoplay muted loop playsinline preload="none"
+        src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.mp4">
+      </video>
+      <div class="clip-info">
+        <div class="clip-meta">
+          <span class="clip-badge badge-wow">Wow 8/10</span>
+          <span class="clip-badge badge-cat">Athletic</span>
+          <span class="clip-badge badge-dupr">DUPR 4.0–4.5</span>
+        </div>
+        <p class="clip-summary">Doubles rally — dinks to speed-ups, cross-court winner. Advanced players, 8 shots, max athleticism.</p>
+        <div class="clip-tags">
+          <span class="clip-tag">net rusher</span>
+          <span class="clip-tag">scrambler</span>
+          <span class="clip-tag">all-court</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="clip-card">
+      <video autoplay muted loop playsinline preload="none"
+        src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4">
+      </video>
+      <div class="clip-info">
+        <div class="clip-meta">
+          <span class="clip-badge badge-wow">Wow 8/10</span>
+          <span class="clip-badge badge-cat" style="background: rgba(255,109,0,0.1); color: #FF9800; border-color: rgba(255,109,0,0.3);">Funny</span>
+          <span class="clip-badge badge-dupr">DUPR 3.5–4.0</span>
+        </div>
+        <p class="clip-summary">Drives and blocks end with a lucky net cord dink winner. Pure pickleball chaos — viral-ready.</p>
+        <div class="clip-tags">
+          <span class="clip-tag">driver</span>
+          <span class="clip-tag">consistent</span>
+          <span class="clip-tag">viral moment</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="text-align: center; margin-top: 40px; color: var(--text2); font-size: 14px;">
+    Every clip in Courtana's corpus gets this treatment — automatically. <strong style="color: var(--green);">4,097+ groups and growing.</strong>
+  </div>
+</section>
+
+<!-- THE MOAT -->
+<div id="moat">
+  <section>
+    <div class="section-label">Defensible Advantage</div>
+    <h2>The Data Flywheel.<br>Nobody Catches Up.</h2>
+
+    <div class="moat-grid fade-in">
+      <div>
+        <div class="moat-stat-block">
+          <div class="moat-big">4,097+</div>
+          <div class="moat-big-label">Highlight groups in corpus today.<br>Target: 400,000 clips.</div>
+        </div>
+        <ul class="moat-list">
+          <li>More venues → more clips → more patterns → better AI models → more accurate coaching signals</li>
+          <li>Proprietary DUPR estimation from vision alone — zero manual data entry required from players</li>
+          <li>Shot sequence fingerprinting creates player profiles that deepen with every session</li>
+          <li>Brand sponsorship detection maps real-world ad exposure — a data product no agency can replicate</li>
+          <li>Coaching feedback loop means players come back. Retention is the moat that funds the data engine.</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="margin-bottom: 20px; font-size: 13px; color: var(--text3); letter-spacing: 0.05em; text-transform: uppercase; font-weight: 700;">The Flywheel</div>
+        <div class="flywheel-diagram">
+          <div class="fw-step">
+            <div class="fw-icon">🎥</div>
+            <div class="fw-text"><strong>Court footage captured</strong><span>Any venue, any camera, any booking system</span></div>
+          </div>
+          <div class="fw-arrow">↓</div>
+          <div class="fw-step">
+            <div class="fw-icon">🤖</div>
+            <div class="fw-text"><strong>AI analyzes every clip</strong><span>$0.0054/clip — 10,000 clips costs $54</span></div>
+          </div>
+          <div class="fw-arrow">↓</div>
+          <div class="fw-step">
+            <div class="fw-icon">🧬</div>
+            <div class="fw-text"><strong>Player DNA profiles built</strong><span>Skill ratings, tendencies, DUPR estimates</span></div>
+          </div>
+          <div class="fw-arrow">↓</div>
+          <div class="fw-step">
+            <div class="fw-icon">💡</div>
+            <div class="fw-text"><strong>Coaching signals surface</strong><span>Personalized feedback → players keep coming back</span></div>
+          </div>
+          <div class="fw-arrow">↓</div>
+          <div class="fw-step">
+            <div class="fw-icon">💰</div>
+            <div class="fw-text"><strong>Venue revenue grows</strong><span>More sessions → more clips → flywheel spins faster</span></div>
+          </div>
+          <div class="fw-arrow">↓</div>
+          <div class="fw-step" style="border-color: var(--green);">
+            <div class="fw-icon">🏆</div>
+            <div class="fw-text"><strong style="color: var(--green);">Proprietary data moat</strong><span>Impossible to replicate without the courts</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- MARKET -->
+<section id="market" style="max-width: 1200px; margin: 0 auto;">
+  <div class="section-label">Market Context</div>
+  <h2>Sports Data Is a<br>Multi-Billion Dollar Business.</h2>
+  <p class="section-sub">Courtana is entering a proven category — but with a structural cost advantage and a sport that's growing faster than any other in America.</p>
+
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 40px;">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Sport</th>
+          <th>Annual Price</th>
+          <th>Shot-Level Data</th>
+          <th>Real-Time AI</th>
+          <th>Venue Revenue Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Sportradar</strong></td>
+          <td><span class="sport-badge">Football / Basketball</span></td>
+          <td><span class="price-badge" style="color: var(--text2);">$500K–$2M / yr</span></td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="dash">—</td>
+        </tr>
+        <tr>
+          <td><strong>StatsBomb</strong></td>
+          <td><span class="sport-badge">Soccer</span></td>
+          <td><span class="price-badge" style="color: var(--text2);">$50K–$200K / yr</span></td>
+          <td class="check">✓</td>
+          <td class="dash">—</td>
+          <td class="dash">—</td>
+        </tr>
+        <tr>
+          <td><strong>ShotTracker</strong></td>
+          <td><span class="sport-badge">Basketball</span></td>
+          <td><span class="price-badge" style="color: var(--text2);">$15K / court / yr</span></td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="dash">—</td>
+        </tr>
+        <tr>
+          <td><strong>Hudl</strong></td>
+          <td><span class="sport-badge">Multi-sport</span></td>
+          <td><span class="price-badge" style="color: var(--text2);">$200–$2K / mo</span></td>
+          <td class="dash">—</td>
+          <td class="dash">—</td>
+          <td class="dash">—</td>
+        </tr>
+        <tr class="courtana-row">
+          <td><strong style="color: var(--green);">Courtana</strong> <span style="font-size: 11px; background: rgba(0,230,118,0.1); color: var(--green); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">LIVE</span></td>
+          <td><span class="sport-badge" style="background: rgba(0,230,118,0.1); color: var(--green);">Pickleball</span></td>
+          <td><span class="price-badge">$0.0054 / clip</span></td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;" class="fade-in">
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px;">
+      <div style="font-size: 40px; font-weight: 800; color: var(--green); letter-spacing: -0.03em;">10,000+</div>
+      <div style="font-size: 14px; color: var(--text2); margin-top: 8px;">Pickleball venues in the US today — growing 30%+ per year</div>
+    </div>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px;">
+      <div style="font-size: 40px; font-weight: 800; color: var(--blue); letter-spacing: -0.03em;">48M</div>
+      <div style="font-size: 14px; color: var(--text2); margin-top: 8px;">Pickleball players in the US — the fastest-growing sport for 4 consecutive years</div>
+    </div>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px;">
+      <div style="font-size: 40px; font-weight: 800; color: #b39dff; letter-spacing: -0.03em;">$0</div>
+      <div style="font-size: 14px; color: var(--text2); margin-top: 8px;">Direct competition in pickleball-specific shot-level AI data today</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section style="max-width: 1200px; margin: 0 auto;">
+  <div class="section-label">Who It's For</div>
+  <h2>One Platform. Every Stakeholder.</h2>
+
+  <div class="toggle-wrap">
+    <button class="toggle-btn active" onclick="toggleAudience('venues')">Venues</button>
+    <button class="toggle-btn" onclick="toggleAudience('investors')">Investors</button>
+    <button class="toggle-btn" onclick="toggleAudience('players')">Players</button>
+  </div>
+
+  <div class="audience-panel active" id="panel-venues">
+    <div class="for-grid">
+      <div class="for-card">
+        <div class="icon">📹</div>
+        <h3>Works With What You Have</h3>
+        <p>Layers on top of any booking system — CourtReserve, Pickleheads, or your own. No rip-and-replace. No second system.</p>
+      </div>
+      <div class="for-card">
+        <div class="icon">🏆</div>
+        <h3>Player Retention Tool</h3>
+        <p>Personalized coaching signals and highlight reels give players a reason to come back. Your venue becomes a training destination, not just a court rental.</p>
+      </div>
+      <div class="for-card">
+        <div class="icon">💰</div>
+        <h3>New Revenue Streams</h3>
+        <p>Sponsor packages backed by verified brand exposure data. Premium coaching products. Player data subscriptions. Revenue share on every clip.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="audience-panel" id="panel-investors">
+    <div class="for-grid">
+      <div class="for-card">
+        <div class="icon">🧬</div>
+        <h3>Proprietary Data Asset</h3>
+        <p>4,097+ clip groups today, targeting 400K. Shot-level pickleball data that didn't exist before Courtana. The dataset IS the defensible moat.</p>
+      </div>
+      <div class="for-card">
+        <div class="icon">📈</div>
+        <h3>Multiple Revenue Layers</h3>
+        <p>Per-venue SaaS + data licensing API + brand sponsorship intelligence + coaching product upsells. Sportradar proved the model at $500M+ valuation.</p>
+      </div>
+      <div class="for-card">
+        <div class="icon">⏱️</div>
+        <h3>First-Mover, Right Now</h3>
+        <p>Zero direct competition in pickleball shot-level AI. 48M players. 10,000+ venues. The sport is growing 30%/yr and nobody owns the data layer yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="audience-panel" id="panel-players">
+    <div class="for-grid">
+      <div class="for-card">
+        <div class="icon">🎯</div>
+        <h3>Your Shot, Analyzed</h3>
+        <p>Every rally you play gets broken down: shot quality, positioning, kitchen control. See exactly what's working and what's costing you points.</p>
+      </div>
+      <div class="for-card">
+        <div class="icon">🧬</div>
+        <h3>Your Player DNA</h3>
+        <p>Are you a kitchen specialist? A banger? A counter-puncher? Courtana builds your play style profile automatically — no surveys, no manual input.</p>
+      </div>
+      <div class="for-card">
+        <div class="icon">📱</div>
+        <h3>Highlights, Automatically</h3>
+        <p>Best moments from your session clipped and ready to share. AI-scored for viral potential. Your best shots, right in your pocket.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <img src="https://cdn.courtana.com/static/img/Courtana_Logo.png" alt="Courtana" style="height: 20px; opacity: 0.6;" onerror="this.outerHTML='<span style=\'color: var(--text3); font-weight: 700;\'>COURTANA</span>'">
+    <span style="margin-left: 16px;">© 2026 PickleBills Inc. All rights reserved.</span>
+  </div>
+  <div style="display: flex; gap: 24px;">
+    <a href="https://courtana.com">courtana.com</a>
+    <a href="mailto:bill@courtana.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+// Shot bars data
+const shots = [
+  { label: 'Dink', pct: 63.7, color: '#22C55E' },
+  { label: 'Drive', pct: 23.3, color: '#38BDF8' },
+  { label: 'Serve', pct: 3.0, color: '#6366F1' },
+  { label: 'Return', pct: 3.0, color: '#6366F1' },
+  { label: 'Speed Up', pct: 2.8, color: '#F59E0B' },
+  { label: 'Block', pct: 2.4, color: '#F59E0B' },
+  { label: 'Volley', pct: 0.9, color: '#64748B' },
+  { label: 'Drop', pct: 0.7, color: '#64748B' },
+];
+
+const barsContainer = document.getElementById('shot-bars');
+shots.forEach(s => {
+  barsContainer.innerHTML += `
+    <div class="shot-bar-row">
+      <div class="shot-bar-label">${s.label}</div>
+      <div class="shot-bar-track">
+        <div class="shot-bar-fill" style="width: 0%; background: ${s.color};" data-pct="${s.pct}"></div>
+      </div>
+      <div class="shot-bar-pct">${s.pct}%</div>
+    </div>`;
+});
+
+// Animate bars on scroll
+function animateBars() {
+  document.querySelectorAll('.shot-bar-fill').forEach(bar => {
+    bar.style.width = bar.dataset.pct + '%';
+  });
+}
+
+// DUPR Doughnut
+const duprCtx = document.getElementById('duprChart').getContext('2d');
+new Chart(duprCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['3.0–3.5 Developing', '3.5–4.0 Intermediate', '4.0–4.5 Advanced'],
+    datasets: [{
+      data: [20.8, 66.7, 12.5],
+      backgroundColor: ['#6366F1', '#22C55E', '#38BDF8'],
+      borderColor: '#0f1825',
+      borderWidth: 3,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { color: '#8fa3c0', font: { size: 11 }, padding: 12, boxWidth: 12 }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+        }
+      }
+    }
+  }
+});
+
+// Skill Radar
+const radarCtx = document.getElementById('radarChart').getContext('2d');
+new Chart(radarCtx, {
+  type: 'radar',
+  data: {
+    labels: ['Kitchen\nMastery', 'Touch &\nFeel', 'Court IQ', 'Consistency', 'Composure', 'Athleticism', 'Court\nCoverage', 'Power\nGame', 'Creativity', 'Paddle\nControl'],
+    datasets: [
+      {
+        label: 'Advanced (4.0–4.5)',
+        data: [7.8, 7.2, 7.5, 7.0, 7.2, 7.5, 7.0, 6.5, 5.8, 7.5],
+        backgroundColor: 'rgba(56,189,248,0.15)',
+        borderColor: '#38BDF8',
+        borderWidth: 2,
+        pointBackgroundColor: '#38BDF8',
+        pointRadius: 3
+      },
+      {
+        label: 'Intermediate (3.5–4.0)',
+        data: [6.8, 6.5, 6.2, 6.8, 6.3, 5.8, 5.5, 4.5, 4.0, 6.5],
+        backgroundColor: 'rgba(34,197,94,0.12)',
+        borderColor: '#22C55E',
+        borderWidth: 2,
+        pointBackgroundColor: '#22C55E',
+        pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      r: {
+        min: 0, max: 10,
+        ticks: { display: false, stepSize: 2 },
+        grid: { color: 'rgba(30,45,69,0.8)' },
+        angleLines: { color: 'rgba(30,45,69,0.8)' },
+        pointLabels: { color: '#4a6080', font: { size: 10 } }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: { color: '#8fa3c0', font: { size: 11 }, padding: 16, boxWidth: 10 }
+      }
+    }
+  }
+});
+
+// Intersection observer for fade-ins and bar animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      if (entry.target.querySelector('.shot-bar-fill')) {
+        setTimeout(animateBars, 200);
+      }
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Audience toggle
+function toggleAudience(audience) {
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.audience-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + audience).classList.add('active');
+}
+
+// Animated counter on load
+function animateCounter(el, target, suffix, duration) {
+  const start = 0;
+  const startTime = performance.now();
+  const isFloat = target.toString().includes('.');
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = start + (target - start) * eased;
+    el.textContent = (isFloat ? current.toFixed(4) : Math.floor(current).toLocaleString()) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    animateCounter(document.getElementById('count-corpus'), 4097, '+', 2000);
+    animateCounter(document.getElementById('count-shots'), 460, '+', 1500);
+    animateCounter(document.getElementById('count-styles'), 26, '', 1000);
+  }, 500);
+});
+</script>
+</body>
+</html>

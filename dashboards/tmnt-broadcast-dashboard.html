@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐢 COWABUNGA SPORTS INTEL — Pickle DaaS × TMNT</title>
+<style>
+  :root {
+    --bg: #0a0f0a;
+    --card: #0d1a0d;
+    --card2: #112211;
+    --green: #3ddc84;
+    --green-bright: #00ff41;
+    --pizza: #ff6b00;
+    --shell: #8b5e3c;
+    --purple: #6b21a8;
+    --leo-blue: #3b82f6;
+    --raph-red: #ef4444;
+    --mikey-orange: #f97316;
+    --don-purple: #a855f7;
+    --splinter-gold: #eab308;
+    --border: #1a3a1a;
+    --text-dim: #4a7a4a;
+    --font-mono: 'Courier New', Courier, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: #c8e6c9;
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCANLINE ANIMATION ─── */
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  @keyframes shellspin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { text-shadow: 0 0 8px var(--green), 0 0 16px var(--green); }
+    50% { text-shadow: 0 0 16px var(--green-bright), 0 0 32px var(--green-bright), 0 0 48px #00ff4144; }
+  }
+  @keyframes waveform {
+    0%, 100% { height: 8px; }
+    50% { height: 32px; }
+  }
+  @keyframes toast-in {
+    0% { transform: translateX(120%); opacity: 0; }
+    15% { transform: translateX(0); opacity: 1; }
+    80% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(120%); opacity: 0; }
+  }
+  @keyframes countdown-tick {
+    0% { transform: scale(1.2); color: var(--pizza); }
+    100% { transform: scale(1); color: var(--green); }
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: #000;
+    border-bottom: 2px solid var(--green);
+    box-shadow: 0 2px 24px #00ff4133;
+    padding: 14px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-bright), transparent);
+    animation: scanline 8s linear infinite;
+    opacity: 0.3;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .header-left {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--green-bright);
+    animation: glow-pulse 3s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  .header-center {
+    text-align: center;
+    flex: 1;
+  }
+  .header-title {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .tmnt-toggle {
+    background: var(--card2);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tmnt-toggle:hover, .tmnt-toggle.active {
+    background: var(--green);
+    color: #000;
+    box-shadow: 0 0 12px var(--green);
+  }
+
+  /* ─── LAYOUT ─── */
+  .main-layout {
+    display: flex;
+    height: calc(100vh - 85px);
+    overflow: hidden;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+  .sidebar-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    padding: 0 12px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .clip-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .clip-item:hover { background: #0f200f; }
+  .clip-item.active { background: #112a11; border-left-color: var(--green); }
+  .clip-item-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .turtle-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .turtle-leo { background: #1e3a5f; color: #60a5fa; border: 1px solid #3b82f6; }
+  .turtle-raph { background: #3f1515; color: #f87171; border: 1px solid #ef4444; }
+  .turtle-mikey { background: #3f2000; color: #fb923c; border: 1px solid #f97316; }
+  .turtle-don { background: #2d1a4a; color: #c084fc; border: 1px solid #a855f7; }
+  .clip-name {
+    font-size: 0.78rem;
+    color: #a7d9a7;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .quality-chip {
+    font-size: 0.6rem;
+    font-family: var(--font-mono);
+    color: var(--green);
+    background: #0a1f0a;
+    border: 1px solid #1a3a1a;
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+  .clip-arc {
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* ─── CONTENT ─── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* ─── VIDEO PLAYER ─── */
+  .video-wrapper {
+    position: relative;
+    background: #000;
+    border: 2px solid var(--green);
+    border-radius: 4px;
+    box-shadow: 0 0 20px #00ff4122, inset 0 0 10px #00000088;
+  }
+  .video-wrapper::before {
+    content: '🐢';
+    position: absolute;
+    top: -14px; left: -14px;
+    font-size: 1.4rem;
+    z-index: 10;
+    filter: drop-shadow(0 0 6px var(--green));
+  }
+  .video-wrapper::after {
+    content: '🐢';
+    position: absolute;
+    top: -14px; right: -14px;
+    font-size: 1.4rem;
+    z-index: 10;
+    filter: drop-shadow(0 0 6px var(--green));
+    transform: scaleX(-1);
+  }
+  .video-wrapper video {
+    width: 100%;
+    max-height: 320px;
+    display: block;
+    background: #000;
+  }
+  .broadcast-bug {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: var(--green);
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    z-index: 5;
+  }
+  .quality-badge-video {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: #000a;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    z-index: 5;
+  }
+
+  /* ─── SCORE STRIP ─── */
+  .score-strip {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .score-chip {
+    flex: 1;
+    min-width: 100px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .score-chip-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .score-chip-value {
+    font-size: 1.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .score-chip-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .score-chip-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* ─── TURTLE VOICE SELECTOR ─── */
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .turtle-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .turtle-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 8px;
+    border: 2px solid;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .turtle-btn span.emoji { font-size: 1.2rem; display: inline-block; transition: transform 0.3s; }
+  .turtle-btn:hover span.emoji { animation: shellspin 0.4s linear; }
+  .turtle-btn.leo-btn { border-color: var(--leo-blue); color: var(--leo-blue); }
+  .turtle-btn.leo-btn:hover, .turtle-btn.leo-btn.active { background: var(--leo-blue); color: #fff; box-shadow: 0 0 12px #3b82f666; }
+  .turtle-btn.raph-btn { border-color: var(--raph-red); color: var(--raph-red); }
+  .turtle-btn.raph-btn:hover, .turtle-btn.raph-btn.active { background: var(--raph-red); color: #fff; box-shadow: 0 0 12px #ef444466; }
+  .turtle-btn.mikey-btn { border-color: var(--mikey-orange); color: var(--mikey-orange); }
+  .turtle-btn.mikey-btn:hover, .turtle-btn.mikey-btn.active { background: var(--mikey-orange); color: #fff; box-shadow: 0 0 12px #f9731666; }
+  .turtle-btn.don-btn { border-color: var(--don-purple); color: var(--don-purple); }
+  .turtle-btn.don-btn:hover, .turtle-btn.don-btn.active { background: var(--don-purple); color: #fff; box-shadow: 0 0 12px #a855f766; }
+  .turtle-btn.splinter-btn { border-color: var(--splinter-gold); color: var(--splinter-gold); }
+  .turtle-btn.splinter-btn:hover, .turtle-btn.splinter-btn.active { background: var(--splinter-gold); color: #000; box-shadow: 0 0 12px #eab30866; }
+
+  /* ─── COMMENTARY BOX ─── */
+  .commentary-box {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    min-height: 70px;
+    position: relative;
+  }
+  .commentary-speaker {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .commentary-text {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #b8d4b8;
+    font-style: italic;
+  }
+
+  /* ─── WAVEFORM ─── */
+  .waveform {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 40px;
+    padding: 4px 0;
+  }
+  .wave-bar {
+    width: 10px;
+    border-radius: 2px 2px 0 0;
+    transition: background 0.3s;
+  }
+  .wave-bar.playing {
+    animation: waveform 0.4s ease-in-out infinite;
+  }
+  .wave-bar:nth-child(2) { animation-delay: 0.08s; }
+  .wave-bar:nth-child(3) { animation-delay: 0.16s; }
+  .wave-bar:nth-child(4) { animation-delay: 0.24s; }
+  .wave-bar:nth-child(5) { animation-delay: 0.32s; }
+
+  /* ─── PIZZA BUTTON ─── */
+  .pizza-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .pizza-btn {
+    background: var(--pizza);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .pizza-btn:hover { box-shadow: 0 0 16px #ff6b0066; transform: scale(1.03); }
+  .hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
+  }
+  .hashtag {
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    color: var(--green);
+    background: #0a1f0a;
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .hashtag:hover { background: #112a11; border-color: var(--green); }
+
+  /* ─── BOTTOM GRID ─── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .bottom-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .bottom-card-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+
+  /* ─── RADAR CHART ─── */
+  .radar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .radar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+  }
+  .radar-label { width: 60px; font-family: var(--font-mono); font-size: 0.65rem; }
+  .radar-bar-bg { flex: 1; height: 6px; background: #0a1f0a; border-radius: 3px; overflow: hidden; }
+  .radar-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .radar-val { width: 28px; text-align: right; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); }
+
+  /* ─── PIZZA ETA ─── */
+  .pizza-eta {
+    text-align: center;
+    padding: 8px 0;
+  }
+  .pizza-eta-time {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    color: var(--pizza);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .pizza-eta-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .pizza-eta-donnie {
+    font-size: 0.72rem;
+    color: var(--don-purple);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ─── SEWER INTEL ─── */
+  .intel-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #0f200f;
+    font-size: 0.75rem;
+  }
+  .intel-label { color: var(--text-dim); font-family: var(--font-mono); font-size: 0.62rem; }
+  .intel-value { color: var(--green); font-family: var(--font-mono); font-size: 0.72rem; }
+  .intel-intercepted {
+    font-size: 0.6rem;
+    color: #ff444444;
+    font-family: var(--font-mono);
+    margin-top: 8px;
+    padding: 4px 8px;
+    background: #1a00000a;
+    border: 1px solid #ff000022;
+    border-radius: 3px;
+  }
+
+  /* ─── CLIPS TABLE ─── */
+  .clips-table-wrapper {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .clips-table-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--green);
+    letter-spacing: 2px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  thead th {
+    padding: 8px 12px;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  tbody tr {
+    border-bottom: 1px solid #0d1a0d;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: #0f200f; }
+  tbody tr.active-row { background: #112a11; }
+  tbody td { padding: 8px 12px; color: #a7d9a7; }
+  .td-turtle { display: flex; align-items: center; gap: 5px; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--green);
+    color: #000;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 12px 20px;
+    border-radius: 6px;
+    z-index: 1000;
+    animation: toast-in 2.5s ease forwards;
+    box-shadow: 0 4px 20px #00ff4144;
+  }
+  .toast.pizza-toast {
+    background: var(--pizza);
+    box-shadow: 0 4px 20px #ff6b0044;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+  /* ─── COWABUNGA MODE ─── */
+  body.cowabunga-mode {
+    background: #050a05;
+  }
+  body.cowabunga-mode .header {
+    box-shadow: 0 2px 40px #00ff4155;
+  }
+  body.cowabunga-mode .video-wrapper {
+    box-shadow: 0 0 30px #00ff4133, 0 0 60px #00ff4111;
+  }
+</style>
+</head>
+<body>
+
+<!-- HIDDEN TMNT THEME YOUTUBE -->
+<iframe id="tmntTheme" src="" width="0" height="0" allow="autoplay" style="position:absolute;opacity:0;pointer-events:none;"></iframe>
+
+<!-- ─── HEADER ─── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">🐢 COWABUNGA SPORTS INTEL 🍕</div>
+    <div class="header-center">
+      <div class="header-title">PICKLE DaaS × TMNT BROADCASTING</div>
+      <div class="header-subtitle">Heroes in a Half Shell &nbsp;·&nbsp; AI Sports Analysis &nbsp;·&nbsp; RADICAL RESULTS</div>
+    </div>
+    <button class="tmnt-toggle" id="tmntToggle" onclick="toggleTmntMode()">TMNT MODE: OFF</button>
+  </div>
+</header>
+
+<!-- ─── MAIN LAYOUT ─── -->
+<div class="main-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">// CLIP INTEL — 8 TARGETS</div>
+    <div id="clipList"></div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- VIDEO PLAYER -->
+    <div class="video-wrapper">
+      <div class="broadcast-bug">🔴 LIVE COWABUNGA COVERAGE</div>
+      <div class="quality-badge-video" id="videoBadge">Q: 8/10</div>
+      <video id="mainVideo" controls playsinline></video>
+    </div>
+
+    <!-- SCORE STRIP -->
+    <div class="score-strip">
+      <div class="score-chip">
+        <div class="score-chip-label">Quality</div>
+        <div class="score-chip-value" id="scoreQuality">8</div>
+        <div class="score-chip-bar"><div class="score-chip-fill" id="fillQuality" style="width:80%"></div></div>
+      </div>
+      <div class="score-chip">
+        <div class="score-chip-label">Viral</div>
+        <div class="score-chip-value" id="scoreViral">7</div>
+        <div class="score-chip-bar"><div class="score-chip-fill" id="fillViral" style="width:70%"></div></div>
+      </div>
+      <div class="score-chip">
+        <div class="score-chip-label">Watchability</div>
+        <div class="score-chip-value" id="scoreWatch">9</div>
+        <div class="score-chip-bar"><div class="score-chip-fill" id="fillWatch" style="width:90%"></div></div>
+      </div>
+      <div class="score-chip">
+        <div class="score-chip-label">Cinematic</div>
+        <div class="score-chip-value" id="scoreCine">7</div>
+        <div class="score-chip-bar"><div class="score-chip-fill" id="fillCine" style="width:70%"></div></div>
+      </div>
+    </div>
+
+    <!-- TURTLE VOICE SELECTOR -->
+    <div>
+      <div class="section-title">// SELECT TURTLE COMMENTATOR</div>
+      <div class="turtle-buttons">
+        <button class="turtle-btn leo-btn active" id="btn-leo" onclick="setTurtle('leo')">
+          <span class="emoji">🐢</span>LEO
+        </button>
+        <button class="turtle-btn raph-btn" id="btn-raph" onclick="setTurtle('raph')">
+          <span class="emoji">🔴</span>RAPH
+        </button>
+        <button class="turtle-btn mikey-btn" id="btn-mikey" onclick="setTurtle('mikey')">
+          <span class="emoji">🟠</span>MIKEY
+        </button>
+        <button class="turtle-btn don-btn" id="btn-don" onclick="setTurtle('don')">
+          <span class="emoji">🟣</span>DON
+        </button>
+        <button class="turtle-btn splinter-btn" id="btn-splinter" onclick="setTurtle('splinter')">
+          <span class="emoji">🥋</span>SPLINTER
+        </button>
+      </div>
+    </div>
+
+    <!-- COMMENTARY BOX + WAVEFORM -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="section-title">// TURTLE COMMENTARY</div>
+        <div class="waveform" id="waveform">
+          <div class="wave-bar" id="wave0" style="height:8px;background:var(--leo-blue)"></div>
+          <div class="wave-bar" id="wave1" style="height:8px;background:var(--raph-red)"></div>
+          <div class="wave-bar" id="wave2" style="height:8px;background:var(--mikey-orange)"></div>
+          <div class="wave-bar" id="wave3" style="height:8px;background:var(--don-purple)"></div>
+          <div class="wave-bar" id="wave4" style="height:8px;background:var(--splinter-gold)"></div>
+        </div>
+      </div>
+      <div class="commentary-box">
+        <div class="commentary-speaker" id="commentarySpeaker" style="color:var(--leo-blue)">🐢 LEO SAYS:</div>
+        <div class="commentary-text" id="commentaryText">Loading intel from the sewers...</div>
+      </div>
+      <button onclick="playVoice()" style="margin-top:8px;background:transparent;border:1px solid var(--green);color:var(--green);padding:6px 14px;font-family:var(--font-mono);font-size:0.7rem;cursor:pointer;border-radius:4px;letter-spacing:1px;" onmouseover="this.style.background='var(--green)';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='var(--green)'">▶ SPEAK COWABUNGA</button>
+    </div>
+
+    <!-- PIZZA + HASHTAGS -->
+    <div class="pizza-row">
+      <button class="pizza-btn" onclick="pizzaTime()">🍕 PIZZA TIME</button>
+      <div class="hashtags">
+        <span class="hashtag">#Cowabunga</span>
+        <span class="hashtag">#HeroesInAHalfShell</span>
+        <span class="hashtag">#TMNTPickleball</span>
+        <span class="hashtag">#SewerIntel</span>
+        <span class="hashtag">#PickleDaaS</span>
+        <span class="hashtag">#TurtlePower</span>
+        <span class="hashtag">#RadicalResults</span>
+        <span class="hashtag">#ShellYeah</span>
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+
+      <!-- TURTLE POWER STATS -->
+      <div class="bottom-card">
+        <div class="bottom-card-title">🐢 TURTLE POWER STATS</div>
+        <div class="radar-container">
+          <div class="radar-row">
+            <div class="radar-label" style="color:var(--leo-blue)">LEO</div>
+            <div class="radar-bar-bg"><div class="radar-bar-fill" style="width:75%;background:var(--leo-blue)"></div></div>
+            <div class="radar-val">75%</div>
+          </div>
+          <div class="radar-row">
+            <div class="radar-label" style="color:var(--raph-red)">RAPH</div>
+            <div class="radar-bar-bg"><div class="radar-bar-fill" style="width:63%;background:var(--raph-red)"></div></div>
+            <div class="radar-val">63%</div>
+          </div>
+          <div class="radar-row">
+            <div class="radar-label" style="color:var(--mikey-orange)">MIKEY</div>
+            <div class="radar-bar-bg"><div class="radar-bar-fill" style="width:58%;background:var(--mikey-orange)"></div></div>
+            <div class="radar-val">58%</div>
+          </div>
+          <div class="radar-row">
+            <div class="radar-label" style="color:var(--don-purple)">DON</div>
+            <div class="radar-bar-bg"><div class="radar-bar-fill" style="width:82%;background:var(--don-purple)"></div></div>
+            <div class="radar-val">82%</div>
+          </div>
+          <div class="radar-row">
+            <div class="radar-label" style="color:var(--splinter-gold)">MASTER</div>
+            <div class="radar-bar-bg"><div class="radar-bar-fill" style="width:91%;background:var(--splinter-gold)"></div></div>
+            <div class="radar-val">91%</div>
+          </div>
+        </div>
+        <div style="font-size:0.62rem;color:var(--text-dim);margin-top:10px;font-family:var(--font-mono)">WIN % BY ASSIGNED TURTLE</div>
+      </div>
+
+      <!-- PIZZA DELIVERY ETA -->
+      <div class="bottom-card">
+        <div class="bottom-card-title">🍕 PIZZA DELIVERY ETA</div>
+        <div class="pizza-eta">
+          <div class="pizza-eta-time" id="etaDisplay">3:42</div>
+          <div class="pizza-eta-label">MINUTES UNTIL PIZZA ARRIVES</div>
+          <div class="pizza-eta-donnie">"Donnie calculated: optimal delivery route confirmed. ETA ±0.3 min"</div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:6px;">
+          <button onclick="startETA()" style="flex:1;background:var(--pizza);border:none;color:#fff;font-family:var(--font-mono);font-size:0.62rem;padding:6px;border-radius:3px;cursor:pointer;font-weight:700;">ORDER NOW</button>
+          <button onclick="resetETA()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:var(--font-mono);font-size:0.62rem;padding:6px;border-radius:3px;cursor:pointer;">RESET</button>
+        </div>
+      </div>
+
+      <!-- SEWER INTEL -->
+      <div class="bottom-card">
+        <div class="bottom-card-title">📡 SEWER INTEL</div>
+        <div id="sewerIntel">
+          <div class="intel-row">
+            <span class="intel-label">BRAND DETECTED</span>
+            <span class="intel-value" id="intelBrand">Loading...</span>
+          </div>
+          <div class="intel-row">
+            <span class="intel-label">VENUE</span>
+            <span class="intel-value" id="intelVenue">Life Time Pickleball</span>
+          </div>
+          <div class="intel-row">
+            <span class="intel-label">STORY ARC</span>
+            <span class="intel-value" id="intelArc">—</span>
+          </div>
+          <div class="intel-row">
+            <span class="intel-label">GEMINI SCORE</span>
+            <span class="intel-value" id="intelGemini">—</span>
+          </div>
+          <div class="intel-row">
+            <span class="intel-label">TURTLE ASSIGNED</span>
+            <span class="intel-value" id="intelTurtle">—</span>
+          </div>
+        </div>
+        <div class="intel-intercepted">⚠ INTERCEPTED FROM APRIL O'NEIL'S BROADCAST FEED</div>
+      </div>
+
+    </div>
+
+    <!-- CLIPS TABLE -->
+    <div class="clips-table-wrapper">
+      <div class="clips-table-title">// ALL CLIPS — TURTLE INTELLIGENCE FILE</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Turtle</th>
+            <th>Clip Name</th>
+            <th>Story Arc</th>
+            <th>Quality</th>
+            <th>Viral</th>
+            <th>ID</th>
+          </tr>
+        </thead>
+        <tbody id="clipsTableBody"></tbody>
+      </table>
+    </div>
+
+    <div style="height:20px"></div>
+  </main>
+</div>
+
+<script>
+// ─── CLIP DATA ───────────────────────────────────────────────────────────────
+const CLIPS = [
+  {
+    id: 'ce00696b',
+    name: 'Shot of the Day — Airborne',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4',
+    turtle: 'leo', quality: 8, viral: 7,
+    arc: 'athletic_highlight',
+    brands: ['Selkirk', 'Life Time'],
+    leo: "This overhead smash demonstrates exceptional aerial discipline. The player ascended without hesitation, committed fully to the shot. That is the way of the warrior.",
+    raph: "Okay OKAY. I'll admit it. That jump? Actually pretty sick. Don't tell the others I said that.",
+    mikey: "DUDE! THEY WENT TOTALLY AIRBORNE! Like a TURTLE FLYING THROUGH THE AIR! COWABUNGA TO THE MAX! That was the most RADICAL thing I've ever seen on a pickleball court! PIZZA WORTHY!",
+    don: "Fascinating! The angular momentum during the airborne phase, combined with a precise 47-degree paddle angle at contact, maximized both power transfer and shot placement accuracy.",
+    splinter: "The student who leaves the ground to strike... has already won the point in their mind. This is called zanshin — perfect follow-through of intention."
+  },
+  {
+    id: '70043064',
+    name: 'Meta Pickle — Mar 24',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4',
+    turtle: 'raph', quality: 8, viral: 7,
+    arc: 'grind_rally',
+    brands: ['CRBN'],
+    leo: "Sustained rally. Both competitors showing high discipline. This is the true test — not the spectacular shot, but the willingness to grind.",
+    raph: "THIS is what I'm talkin' about! None of that fancy spin garbage — just raw POWER, drive after drive. That's how Raph would play pickleball. Full send, every shot.",
+    mikey: "Bro they just kept GOING! Back and forth back and forth — like the most intense tennis match but TINY! And there was a CRBN paddle in there! Very swag!",
+    don: "I detect a CRBN paddle in this sequence. Based on the paddle's response characteristics and carbon fiber construction, the player achieves approximately 15% greater power efficiency per drive.",
+    splinter: "Power without patience is merely noise. These drives carry intention... but the student has not yet learned the value of softness."
+  },
+  {
+    id: '0ec3d983',
+    name: 'AI Cut — Mar 24',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.mp4',
+    turtle: 'raph', quality: 8, viral: 6,
+    arc: 'grind_rally',
+    brands: ['Joola'],
+    leo: "Another high-intensity drive sequence. The AI selected this for a reason — consistent aggression combined with court awareness.",
+    raph: "Bro is just HAMMERING that ball. I respect it. No fancy dinks, no soft game nonsense — just boom boom boom. This guy plays like me.",
+    mikey: "The AI picked this one and I totally agree! Like the algorithm is also a turtle bro! MACHINE COWABUNGA!",
+    don: "The AI curation algorithm identified this as a high-value training clip. I concur — the drive mechanics here show textbook form that my statistical models rate as elite-tier.",
+    splinter: "Even machines recognize excellence. The AI has learned what the eye of a master sees naturally."
+  },
+  {
+    id: 'bccb8b27',
+    name: 'AI Cut — Mar 28',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.mp4',
+    turtle: 'don', quality: 7, viral: 6,
+    arc: 'teaching_moment',
+    brands: ['Paddletek'],
+    leo: "The drive-drop-dink sequence. This is textbook strategic pickleball. Discipline in shot selection. I would use this clip in training.",
+    raph: "Okay fine, the drop shot actually worked. Whatever. The transition game is decent. I still think they should've just kept driving.",
+    mikey: "OH SNAP the drive then the DROP then the DINK! It's like a whole SENTENCE of pickleball! Drive. Drop. Dink. That's a haiku bro!",
+    don: "Drive. Drop. Dink. Three distinct mechanical phases, each requiring a different grip pressure, swing path, and follow-through. My analysis: 9.2 out of 10 for technical execution.",
+    splinter: "Drive like thunder. Drop like autumn leaf. Dink like the whisper of the wind. Three truths in one rally. This student understands."
+  },
+  {
+    id: '96f9f529',
+    name: 'Fresh Cut — Mar 28',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.mp4',
+    turtle: 'mikey', quality: 6, viral: 4,
+    arc: 'pure_fun',
+    brands: ['Life Time'],
+    leo: "A casual rally. Good fundamentals. Not every point must be spectacular — consistency is its own form of mastery.",
+    raph: "Ehh. It's fine. Nothing crazy. They're just... rallying. At least they're not doing that stupid Erne thing.",
+    mikey: "DUDE I LOVE THIS CLIP! It's just two people having the BEST TIME! This is literally why I play! Pure FUN! Life Time Pickleball is like the sewers but NICER!",
+    don: "Lower intensity metrics across all dimensions — 6/10 quality, 4/10 viral. However, the joy index is immeasurable. Sometimes fun IS the data.",
+    splinter: "The student who plays with joy... learns faster than the student who plays with fear. This rally contains more wisdom than it appears."
+  },
+  {
+    id: 'c30b464e',
+    name: 'Quick Rally Gone Wrong',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.mp4',
+    turtle: 'mikey', quality: 7, viral: 8,
+    arc: 'error_highlight',
+    brands: ['Onix'],
+    leo: "The unforced error. It happens to every warrior. The lesson is not in the mistake — it is in the recovery of composure that follows.",
+    raph: "HA! Oh man. Okay that was rough. I feel kinda bad but also... yeah that's going in the highlights reel for the wrong reasons.",
+    mikey: "NOOOOO! So close! They almost had it! The WORST and also somehow FUNNIEST moment in pickleball history! Eight out of ten viral! COWABUNGA OF PAIN!",
+    don: "Interesting. The error trajectory suggests a grip pressure miscalculation at the moment of contact. Approximately 23% too much force applied. Highly shareable content.",
+    splinter: "From failure, the greatest lessons emerge. This player will not make this mistake again. The error... was the teacher."
+  },
+  {
+    id: '0b225575',
+    name: 'Baseline Rally Masterclass',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0b225575-5bd7-4e7b-ac84-8b59a86cb811.mp4',
+    turtle: 'leo', quality: 7, viral: 3,
+    arc: 'pure_fun',
+    brands: ['Selkirk'],
+    leo: "Sustained baseline work. Not flashy. But this is how championships are won — one consistent drive at a time.",
+    raph: "Baseline banger energy. I respect it. These guys are just grinding it out. That's my kind of rally right there.",
+    mikey: "Baseline party! They've been going back and forth forever and I'm totally here for it! This is like a pickleball meditation session!",
+    don: "Extended baseline exchange, 7/10 quality. The consistency rating here is particularly impressive — less than 8% deviation in contact point across 12 measured drives.",
+    splinter: "The river does not hurry. Yet it carves the canyon. Consistency is the deepest power."
+  },
+  {
+    id: 'f415729c',
+    name: 'Drive Drop Dink Sequence',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f415729c-153e-4024-bdc3-9a9836752e4e.mp4',
+    turtle: 'don', quality: 7, viral: 3,
+    arc: 'teaching_moment',
+    brands: ['Head', 'Paddletek'],
+    leo: "Perfect execution of the three-shot sequence. Drive. Drop. Dink. Every intermediate player must learn this. Every advanced player must perfect it.",
+    raph: "I mean yeah the drop shot landed in the kitchen. Whatever. Fine. I guess drop shots have their place. Occasionally.",
+    mikey: "It's like they planned the whole thing! Drive drop DINK! Like a VIDEO GAME COMBO! K-K-KITCHEN! FINISH HIM! COWABUNGA!",
+    don: "The third-shot drop executed here shows a 94.3% success probability based on the trajectory arc and landing zone. Textbook mechanics. I approve.",
+    splinter: "Three shots. One mind. The warrior who fragments their thinking... misses the drop. The warrior who unifies... makes it every time."
+  }
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentClipIdx = 0;
+let currentTurtle = 'leo';
+let tmntModeOn = false;
+let etaInterval = null;
+let etaSeconds = 222;
+let speechSynthActive = false;
+
+const TURTLE_CONFIG = {
+  leo:     { rate: 0.95, pitch: 1.1,  emoji: '🐢', name: 'LEO',     color: 'var(--leo-blue)' },
+  raph:    { rate: 1.0,  pitch: 0.85, emoji: '🔴', name: 'RAPH',    color: 'var(--raph-red)' },
+  mikey:   { rate: 1.3,  pitch: 1.4,  emoji: '🟠', name: 'MIKEY',   color: 'var(--mikey-orange)' },
+  don:     { rate: 0.9,  pitch: 1.2,  emoji: '🟣', name: 'DON',     color: 'var(--don-purple)' },
+  splinter:{ rate: 0.75, pitch: 0.7,  emoji: '🥋', name: 'SPLINTER',color: 'var(--splinter-gold)' }
+};
+
+const TURTLE_BADGE_MAP = {
+  leo:     { label: '🐢 LEO',     cls: 'turtle-leo' },
+  raph:    { label: '🔴 RAPH',    cls: 'turtle-raph' },
+  mikey:   { label: '🟠 MIKEY',   cls: 'turtle-mikey' },
+  don:     { label: '🟣 DON',     cls: 'turtle-don' }
+};
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  buildSidebar();
+  buildTable();
+  loadClip(0);
+  startETA();
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const list = document.getElementById('clipList');
+  CLIPS.forEach((clip, i) => {
+    const badge = TURTLE_BADGE_MAP[clip.turtle];
+    const item = document.createElement('div');
+    item.className = 'clip-item' + (i === 0 ? ' active' : '');
+    item.id = 'sidebar-' + i;
+    item.onclick = () => loadClip(i);
+    item.innerHTML = `
+      <div class="clip-item-top">
+        <span class="turtle-badge ${badge.cls}">${badge.label}</span>
+        <span class="quality-chip">Q${clip.quality}</span>
+      </div>
+      <div class="clip-name">${clip.name}</div>
+      <div class="clip-arc">${clip.arc.replace(/_/g,' ')}</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// ─── TABLE ────────────────────────────────────────────────────────────────────
+function buildTable() {
+  const tbody = document.getElementById('clipsTableBody');
+  CLIPS.forEach((clip, i) => {
+    const badge = TURTLE_BADGE_MAP[clip.turtle];
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+    tr.onclick = () => loadClip(i);
+    tr.innerHTML = `
+      <td><div class="td-turtle"><span class="turtle-badge ${badge.cls}">${badge.label}</span></div></td>
+      <td>${clip.name}</td>
+      <td style="color:var(--text-dim);font-size:0.72rem">${clip.arc.replace(/_/g,' ')}</td>
+      <td style="color:var(--green);font-family:var(--font-mono)">${clip.quality}/10</td>
+      <td style="color:var(--pizza);font-family:var(--font-mono)">${clip.viral}/10</td>
+      <td style="color:var(--text-dim);font-family:var(--font-mono);font-size:0.65rem">${clip.id.slice(0,8)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── LOAD CLIP ────────────────────────────────────────────────────────────────
+function loadClip(index) {
+  currentClipIdx = index;
+  const clip = CLIPS[index];
+
+  // Video
+  document.getElementById('mainVideo').src = clip.url;
+  document.getElementById('videoBadge').textContent = `Q: ${clip.quality}/10`;
+
+  // Scores
+  document.getElementById('scoreQuality').textContent = clip.quality;
+  document.getElementById('fillQuality').style.width = (clip.quality * 10) + '%';
+  document.getElementById('scoreViral').textContent = clip.viral;
+  document.getElementById('fillViral').style.width = (clip.viral * 10) + '%';
+  const watch = Math.round((clip.quality + clip.viral) / 2 * 1.1);
+  document.getElementById('scoreWatch').textContent = Math.min(watch, 10);
+  document.getElementById('fillWatch').style.width = Math.min(watch * 10, 100) + '%';
+  const cine = Math.round(clip.quality * 0.9);
+  document.getElementById('scoreCine').textContent = cine;
+  document.getElementById('fillCine').style.width = (cine * 10) + '%';
+
+  // Sewer intel
+  document.getElementById('intelBrand').textContent = (clip.brands || ['Unknown']).join(', ');
+  document.getElementById('intelArc').textContent = clip.arc.replace(/_/g,' ');
+  document.getElementById('intelGemini').textContent = clip.quality + '.0 / 10.0';
+  const badge = TURTLE_BADGE_MAP[clip.turtle];
+  document.getElementById('intelTurtle').textContent = badge.label;
+
+  // Sidebar + table active states
+  document.querySelectorAll('.clip-item').forEach((el, i) => {
+    el.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('#clipsTableBody tr').forEach((el, i) => {
+    el.classList.toggle('active-row', i === index);
+  });
+
+  // Commentary (keep current turtle)
+  updateCommentary();
+}
+
+// ─── SET TURTLE ───────────────────────────────────────────────────────────────
+function setTurtle(turtle) {
+  currentTurtle = turtle;
+  ['leo','raph','mikey','don','splinter'].forEach(t => {
+    document.getElementById('btn-' + t).classList.toggle('active', t === turtle);
+  });
+  updateCommentary();
+  updateWaveformColors(turtle);
+}
+
+function updateCommentary() {
+  const clip = CLIPS[currentClipIdx];
+  const cfg = TURTLE_CONFIG[currentTurtle];
+  document.getElementById('commentarySpeaker').textContent = cfg.emoji + ' ' + cfg.name + ' SAYS:';
+  document.getElementById('commentarySpeaker').style.color = cfg.color;
+  document.getElementById('commentaryText').textContent = clip[currentTurtle];
+}
+
+function updateWaveformColors(turtle) {
+  const colors = {
+    leo:     ['var(--leo-blue)', '#1d4ed8', '#2563eb', '#1e40af', '#3b82f6'],
+    raph:    ['var(--raph-red)', '#dc2626', '#b91c1c', '#ef4444', '#f87171'],
+    mikey:   ['var(--mikey-orange)', '#ea580c', '#c2410c', '#f97316', '#fb923c'],
+    don:     ['var(--don-purple)', '#9333ea', '#7c3aed', '#a855f7', '#c084fc'],
+    splinter:['var(--splinter-gold)', '#ca8a04', '#a16207', '#eab308', '#facc15']
+  };
+  const c = colors[turtle];
+  for (let i = 0; i < 5; i++) {
+    document.getElementById('wave' + i).style.background = c[i];
+  }
+}
+
+// ─── PLAY VOICE ───────────────────────────────────────────────────────────────
+function playVoice() {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const clip = CLIPS[currentClipIdx];
+  const cfg = TURTLE_CONFIG[currentTurtle];
+  const utter = new SpeechSynthesisUtterance(clip[currentTurtle]);
+  utter.rate = cfg.rate;
+  utter.pitch = cfg.pitch;
+  utter.volume = 0.9;
+
+  // Animate waveform while speaking
+  const bars = document.querySelectorAll('.wave-bar');
+  utter.onstart = () => bars.forEach(b => b.classList.add('playing'));
+  utter.onend = () => bars.forEach(b => b.classList.remove('playing'));
+
+  window.speechSynthesis.speak(utter);
+}
+
+// ─── PIZZA TIME ───────────────────────────────────────────────────────────────
+function pizzaTime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(440, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+    osc.frequency.setValueAtTime(440, ctx.currentTime + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch(e) {}
+  showToast('COWABUNGA! 🍕🍕🍕', 'pizza-toast');
+}
+
+// ─── TMNT MODE ────────────────────────────────────────────────────────────────
+function toggleTmntMode() {
+  tmntModeOn = !tmntModeOn;
+  const btn = document.getElementById('tmntToggle');
+  btn.textContent = 'TMNT MODE: ' + (tmntModeOn ? 'ON' : 'OFF');
+  btn.classList.toggle('active', tmntModeOn);
+  document.body.classList.toggle('cowabunga-mode', tmntModeOn);
+
+  if (tmntModeOn) {
+    document.getElementById('tmntTheme').src = 'https://www.youtube.com/embed/LFhN8vRBSzs?autoplay=1&loop=1&playlist=LFhN8vRBSzs';
+    showToast('⚡ COWABUNGA MODE ACTIVATED ⚡');
+  } else {
+    document.getElementById('tmntTheme').src = '';
+  }
+}
+
+// ─── PIZZA ETA ────────────────────────────────────────────────────────────────
+function startETA() {
+  if (etaInterval) clearInterval(etaInterval);
+  etaSeconds = 222;
+  updateETADisplay();
+  etaInterval = setInterval(() => {
+    etaSeconds--;
+    if (etaSeconds <= 0) {
+      clearInterval(etaInterval);
+      document.getElementById('etaDisplay').textContent = '🍕 HERE!';
+      showToast('PIZZA IS HERE! COWABUNGA! 🍕🍕🍕', 'pizza-toast');
+    } else {
+      updateETADisplay();
+    }
+  }, 1000);
+}
+function resetETA() {
+  if (etaInterval) clearInterval(etaInterval);
+  etaSeconds = 222;
+  updateETADisplay();
+}
+function updateETADisplay() {
+  const m = Math.floor(etaSeconds / 60);
+  const s = etaSeconds % 60;
+  document.getElementById('etaDisplay').textContent = m + ':' + String(s).padStart(2, '0');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(msg, cls='') {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'toast ' + cls;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

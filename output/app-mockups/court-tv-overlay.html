@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Court TV — Live Overlay | Courtana Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
+    --emerald: #10B981;
+    --text: #ffffff;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 8px;
+    --red: #EF4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0f17;
+    color: var(--text);
+    font-family: 'Geist Sans', 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Back nav */
+  .back-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10,15,23,0.95);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 9999;
+    font-size: 13px;
+  }
+  .back-nav a { color: var(--text3); text-decoration: none; }
+  .back-nav a:hover { color: var(--text); }
+  .back-nav .sep { color: var(--border); }
+  .back-nav .current { color: var(--text2); }
+
+  /* TV Screen */
+  .tv-screen {
+    position: fixed;
+    top: 37px; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(160deg, #0f1825 0%, #0a0f17 50%, #0d1520 100%);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 380px;
+    gap: 0;
+    padding: 28px;
+    overflow: hidden;
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(239,68,68,0.15);
+    border: 2px solid var(--red);
+    border-radius: var(--radius);
+    padding: 10px 24px;
+  }
+  .live-dot {
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse-red 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+  }
+  .live-text {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  .court-label {
+    text-align: center;
+  }
+  .court-label .venue {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .court-label .court-name {
+    font-size: 40px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+
+  .top-right {
+    text-align: right;
+  }
+  .time {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .date {
+    font-size: 18px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  /* MAIN CONTENT */
+  .main-left {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 24px;
+  }
+
+  .main-right {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* RALLY COUNTER */
+  .rally-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .rally-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+  .rally-value {
+    font-size: 80px;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .rally-shots {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text2);
+  }
+  .rally-shots span {
+    color: var(--green);
+    font-size: 42px;
+    font-weight: 900;
+  }
+
+  /* KITCHEN CONTROL */
+  .kitchen-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 32px;
+  }
+  .kitchen-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+  .kitchen-bar-wrap {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .kitchen-team {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 80px;
+  }
+  .kitchen-team.right { text-align: right; }
+  .kitchen-bar-bg {
+    flex: 1;
+    height: 28px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .kitchen-bar-fill {
+    height: 100%;
+    background: var(--btn-gradient);
+    border-radius: 4px;
+    transition: width 0.6s ease;
+    position: relative;
+  }
+  .kitchen-bar-fill.right {
+    background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+    margin-left: auto;
+  }
+  .kitchen-pct {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .kitchen-teams-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  .kitchen-team-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text2);
+  }
+  .kitchen-team-pct {
+    font-size: 36px;
+    font-weight: 900;
+  }
+  .kitchen-team-pct.green { color: var(--green); }
+  .kitchen-team-pct.blue { color: var(--blue); }
+
+  /* WOW FACTOR */
+  .wow-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 32px;
+    flex: 1;
+  }
+  .wow-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .wow-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+  .wow-number {
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--yellow);
+    line-height: 1;
+  }
+  .wow-bar-track {
+    width: 100%;
+    height: 20px;
+    background: var(--surface2);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .wow-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--yellow), #F97316);
+    animation: wow-build 3s ease-in-out infinite alternate;
+  }
+  @keyframes wow-build {
+    0% { width: 55%; }
+    100% { width: 85%; }
+  }
+  .wow-building-text {
+    font-size: 16px;
+    color: var(--yellow);
+    font-weight: 600;
+    margin-top: 8px;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* SHOT FEED (RIGHT SIDE) */
+  .shot-feed-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    flex: 1;
+  }
+  .block-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+  .shot-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(61,77,97,0.5);
+    animation: slide-in 0.3s ease;
+  }
+  .shot-item:last-child { border-bottom: none; }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .shot-icon {
+    font-size: 32px;
+    min-width: 44px;
+    text-align: center;
+  }
+  .shot-info { flex: 1; }
+  .shot-type {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .shot-player {
+    font-size: 16px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .shot-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text3);
+  }
+  .shot-item.latest .shot-type { color: var(--green); }
+  .shot-item.latest .shot-icon { filter: drop-shadow(0 0 8px rgba(34,197,94,0.6)); }
+
+  /* LAST POINT */
+  .last-point-block {
+    background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,163,74,0.08));
+    border: 2px solid var(--green);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    animation: glow-green 2s ease-in-out infinite alternate;
+  }
+  @keyframes glow-green {
+    from { box-shadow: 0 0 0 0 rgba(34,197,94,0.3); }
+    to { box-shadow: 0 0 20px 4px rgba(34,197,94,0.2); }
+  }
+  .last-point-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .last-point-type {
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .last-point-wow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    background: rgba(34,197,94,0.2);
+    border-radius: 6px;
+    padding: 4px 12px;
+  }
+  .last-point-wow .wow-label-sm {
+    font-size: 14px;
+    color: var(--text3);
+    font-weight: 600;
+  }
+  .last-point-wow .wow-val {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--green);
+  }
+
+  /* BOTTOM BAR */
+  .bottom-bar {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* TOP CLIP */
+  .top-clip-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 20px;
+    flex: 1;
+    max-width: 520px;
+  }
+  .clip-thumb {
+    width: 90px;
+    height: 60px;
+    background: var(--surface2);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .clip-thumb-play {
+    font-size: 28px;
+    color: rgba(255,255,255,0.4);
+  }
+  .clip-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--yellow);
+    color: #000;
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: 4px;
+    padding: 2px 5px;
+  }
+  .clip-info { flex: 1; }
+  .clip-title-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .clip-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .clip-sub {
+    font-size: 14px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .watch-btn {
+    background: var(--btn-gradient);
+    color: #000;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 20px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .logo-block img {
+    height: 36px;
+    filter: brightness(1.1);
+  }
+  .logo-tagline {
+    font-size: 13px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Clock animation */
+  .clock-tick { animation: tick 1s step-end infinite; }
+  @keyframes tick { 50% { opacity: 0.7; } }
+</style>
+</head>
+<body>
+
+<!-- Back Nav -->
+<div class="back-nav">
+  <a href="index.html">← Back to mockups</a>
+  <span class="sep">|</span>
+  <a href="player-dna-tab.html">Player DNA</a>
+  <span class="sep">|</span>
+  <a href="highlight-intelligence-card.html">Highlight Cards</a>
+  <span class="sep">|</span>
+  <span class="current">Court TV</span>
+  <span class="sep">|</span>
+  <a href="venue-intelligence-panel.html">Venue Intel</a>
+  <span class="sep">|</span>
+  <a href="game-report.html">Game Report</a>
+</div>
+
+<div class="tv-screen">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <div class="live-text">Live</div>
+    </div>
+
+    <div class="court-label">
+      <div class="venue">The Underground Pickleball</div>
+      <div class="court-name">Court 3</div>
+    </div>
+
+    <div class="top-right">
+      <div class="time clock-tick" id="clock">7:42 PM</div>
+      <div class="date">Saturday, April 11, 2026</div>
+    </div>
+  </div>
+
+  <!-- MAIN LEFT -->
+  <div class="main-left">
+
+    <!-- Rally Counter -->
+    <div class="rally-block">
+      <div>
+        <div class="rally-label">Current Rally</div>
+        <div style="display:flex; align-items:baseline; gap:16px; margin-top:8px;">
+          <div style="font-size:20px; color:var(--text3); font-weight:600;">Rally</div>
+          <div class="rally-value">#4</div>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="rally-label">Shot Count</div>
+        <div class="rally-shots"><span>8</span> shots</div>
+        <div style="font-size:16px; color:var(--text3); margin-top:4px;">Avg 11.2 / rally</div>
+      </div>
+    </div>
+
+    <!-- Kitchen Control -->
+    <div class="kitchen-block">
+      <div class="kitchen-label">Kitchen Control</div>
+      <div class="kitchen-teams-row" style="margin-bottom:16px;">
+        <div>
+          <div class="kitchen-team-name">Left Team</div>
+          <div class="kitchen-team-pct green">78%</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="kitchen-team-name">Right Team</div>
+          <div class="kitchen-team-pct blue">22%</div>
+        </div>
+      </div>
+      <div style="position:relative; height:32px; background:var(--surface2); border-radius:6px; overflow:hidden;">
+        <div style="position:absolute; left:0; top:0; height:100%; width:78%; background:var(--btn-gradient); border-radius:6px; display:flex; align-items:center; padding-left:12px;">
+          <span style="font-size:18px; font-weight:800; color:#000;">LEFT</span>
+        </div>
+        <div style="position:absolute; right:0; top:0; height:100%; width:22%; background:linear-gradient(135deg,#38BDF8,#0EA5E9); border-radius:6px; display:flex; align-items:center; justify-content:flex-end; padding-right:10px;">
+          <span style="font-size:16px; font-weight:800; color:#000;">RIGHT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wow Factor -->
+    <div class="wow-block">
+      <div class="wow-header">
+        <div class="wow-label">Wow Factor — Building</div>
+        <div class="wow-number">7.2</div>
+      </div>
+      <div class="wow-bar-track">
+        <div class="wow-bar-fill"></div>
+      </div>
+      <div class="wow-building-text">▲ Intensity increasing — clip candidate forming</div>
+      <div style="display:flex; gap:24px; margin-top:20px;">
+        <div>
+          <div style="font-size:14px; color:var(--text3); margin-bottom:4px;">Today's Avg</div>
+          <div style="font-size:26px; font-weight:800; color:var(--text);">6.8</div>
+        </div>
+        <div>
+          <div style="font-size:14px; color:var(--text3); margin-bottom:4px;">Session High</div>
+          <div style="font-size:26px; font-weight:800; color:var(--yellow);">9.1</div>
+        </div>
+        <div>
+          <div style="font-size:14px; color:var(--text3); margin-bottom:4px;">Total Clips</div>
+          <div style="font-size:26px; font-weight:800; color:var(--green);">7</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MAIN RIGHT -->
+  <div class="main-right">
+
+    <!-- Shot Feed -->
+    <div class="shot-feed-block">
+      <div class="block-title">Shot Feed — Live</div>
+
+      <div class="shot-item latest">
+        <div class="shot-icon">⚡</div>
+        <div class="shot-info">
+          <div class="shot-type">Speed-Up</div>
+          <div class="shot-player">Player A — forehand cross-court</div>
+        </div>
+        <div class="shot-num">#8</div>
+      </div>
+
+      <div class="shot-item">
+        <div class="shot-icon">🥒</div>
+        <div class="shot-info">
+          <div class="shot-type">Dink</div>
+          <div class="shot-player">Player B — backhand crosscourt</div>
+        </div>
+        <div class="shot-num">#7</div>
+      </div>
+
+      <div class="shot-item">
+        <div class="shot-icon">🛡️</div>
+        <div class="shot-info">
+          <div class="shot-type">Block</div>
+          <div class="shot-player">Player C — body ball reset</div>
+        </div>
+        <div class="shot-num">#6</div>
+      </div>
+
+      <div class="shot-item">
+        <div class="shot-icon">🥒</div>
+        <div class="shot-info">
+          <div class="shot-type">Dink</div>
+          <div class="shot-player">Player A — down the line</div>
+        </div>
+        <div class="shot-num">#5</div>
+      </div>
+
+      <div class="shot-item">
+        <div class="shot-icon">🥒</div>
+        <div class="shot-info">
+          <div class="shot-type">Dink</div>
+          <div class="shot-player">Player D — third shot drop</div>
+        </div>
+        <div class="shot-num">#4</div>
+      </div>
+    </div>
+
+    <!-- Last Point -->
+    <div class="last-point-block">
+      <div class="last-point-label">Last Point</div>
+      <div class="last-point-type">Dink Winner</div>
+      <div style="font-size:18px; color:var(--text2); margin-top:4px;">14-shot rally · Left team scores</div>
+      <div class="last-point-wow">
+        <span class="wow-label-sm">Wow</span>
+        <span class="wow-val">9/10</span>
+        <span style="font-size:18px;">⚡</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+
+    <!-- Today's Top Clip -->
+    <div class="top-clip-block">
+      <div class="clip-thumb">
+        <div class="clip-thumb-play">▶</div>
+        <div class="clip-badge">9.1</div>
+      </div>
+      <div class="clip-info">
+        <div class="clip-title-label">Today's Top Clip</div>
+        <div class="clip-title">22-shot kitchen battle → lob winner</div>
+        <div class="clip-sub">Court 3 · 6:48 PM · Rally #2</div>
+      </div>
+      <button class="watch-btn">▶ Watch</button>
+    </div>
+
+    <div style="flex:1; padding: 0 32px; display:flex; gap:40px; justify-content:center; align-items:center;">
+      <div style="text-align:center;">
+        <div style="font-size:14px; color:var(--text3); margin-bottom:2px;">Players Today</div>
+        <div style="font-size:36px; font-weight:900; color:var(--text);">47</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:14px; color:var(--text3); margin-bottom:2px;">Active Courts</div>
+        <div style="font-size:36px; font-weight:900; color:var(--green);">3</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:14px; color:var(--text3); margin-bottom:2px;">Clips Generated</div>
+        <div style="font-size:36px; font-weight:900; color:var(--yellow);">7</div>
+      </div>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo-block">
+      <img src="https://cdn.courtana.com/static/img/Courtana_Logo.png" alt="Courtana" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <div style="display:none; font-size:28px; font-weight:900; color:var(--green); letter-spacing:2px;">COURTANA</div>
+      <div class="logo-tagline">Powered by AI</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // Live clock
+  function updateClock() {
+    const el = document.getElementById('clock');
+    const now = new Date();
+    let h = now.getHours();
+    const m = now.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    el.textContent = `${h}:${m.toString().padStart(2,'0')} ${ampm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Animate shot feed — cycle shots
+  const shots = [
+    { icon: '🥒', type: 'Dink', player: 'Player B — backhand crosscourt', highlight: false },
+    { icon: '⚡', type: 'Speed-Up', player: 'Player A — forehand cross-court', highlight: true },
+    { icon: '🛡️', type: 'Block', player: 'Player C — body ball reset', highlight: false },
+    { icon: '🚀', type: 'Drive', player: 'Player D — down the line', highlight: false },
+    { icon: '🥒', type: 'Dink', player: 'Player A — soft angled dink', highlight: false },
+    { icon: '⚡', type: 'Speed-Up', player: 'Player B — erne attempt', highlight: true },
+    { icon: '🛡️', type: 'Block', player: 'Player C — reset to kitchen', highlight: false },
+    { icon: '🥒', type: 'Dink', player: 'Player D — third shot drop', highlight: false },
+  ];
+  let shotIdx = 0;
+  let shotNum = 9;
+  setInterval(() => {
+    const items = document.querySelectorAll('.shot-item');
+    // Remove latest from first
+    items[0].classList.remove('latest');
+    // Shift items up visually (no DOM manipulation needed — just update content)
+    // Insert new shot at top
+    shotIdx = (shotIdx + 1) % shots.length;
+    shotNum++;
+    const feed = document.querySelector('.shot-feed-block');
+    const newShot = document.createElement('div');
+    newShot.className = 'shot-item latest';
+    newShot.innerHTML = `
+      <div class="shot-icon">${shots[shotIdx].icon}</div>
+      <div class="shot-info">
+        <div class="shot-type">${shots[shotIdx].type}</div>
+        <div class="shot-player">${shots[shotIdx].player}</div>
+      </div>
+      <div class="shot-num">#${shotNum}</div>
+    `;
+    feed.insertBefore(newShot, feed.children[1]);
+    // Remove last if too many
+    const allItems = feed.querySelectorAll('.shot-item');
+    if (allItems.length > 5) allItems[allItems.length-1].remove();
+  }, 2800);
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana AI — Apr 11 Session</title>
+<style>
+  :root { --bg:#0f1219; --s:#151e2b; --b:#1e2d3f; --g:#00E676; --t:#e8eaf0; --m:#6b7c93; --o:#FF9800; --bl:#64B5F6; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--t);font-family:-apple-system,system-ui,sans-serif;font-size:15px;line-height:1.6;padding-bottom:60px}
+  a{color:var(--g);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{background:#0a0e15;color:var(--g);padding:2px 6px;border-radius:4px;font-size:13px;font-family:monospace}
+
+  .hero{background:linear-gradient(135deg,#0a0e15,#0d1828);border-bottom:2px solid var(--g);padding:32px 24px 28px}
+  .hero .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2.5px;color:var(--g);margin-bottom:8px}
+  .hero h1{font-size:28px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px}
+  .hero .sub{color:var(--m);font-size:14px}
+
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--g);margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--b)}
+
+  .tldr{background:linear-gradient(135deg,#0d1828,#0a1520);border:1px solid var(--g);border-radius:10px;padding:20px;margin:20px 0;font-size:16px;line-height:1.7}
+  .tldr strong{color:var(--g)}
+
+  .action-box{background:#1a1208;border:1px solid var(--o);border-radius:8px;padding:16px;margin:16px 0}
+  .action-box .a-label{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--o);margin-bottom:6px}
+  .action-box .a-text{font-size:15px;font-weight:600}
+  .action-box .a-sub{font-size:13px;color:var(--m);margin-top:4px}
+
+  table{width:100%;border-collapse:collapse;margin-bottom:4px}
+  th{text-align:left;font-size:12px;color:var(--m);padding:6px 10px;border-bottom:1px solid var(--b)}
+  td{padding:9px 10px;border-bottom:1px solid #1a2535;font-size:14px;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:8px;font-weight:600}
+  .tg{background:#00E67620;color:var(--g)}
+  .to{background:#FF980020;color:var(--o)}
+  .tb{background:#64B5F620;color:var(--bl)}
+
+  .branch-card{background:var(--s);border:1px solid var(--b);border-radius:8px;padding:16px;margin-bottom:10px}
+  .branch-card .b-num{font-size:11px;color:var(--g);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+  .branch-card .b-title{font-size:16px;font-weight:700;margin-bottom:4px}
+  .branch-card .b-desc{font-size:13px;color:var(--m);line-height:1.5}
+  .branch-card .b-status{font-size:12px;margin-top:8px}
+
+  .thread-card{background:#0a1520;border:1px solid var(--b);border-left:3px solid var(--g);border-radius:8px;padding:16px;margin-bottom:12px}
+  .thread-card .t-label{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--g);margin-bottom:6px}
+  .thread-card .t-title{font-size:15px;font-weight:700;margin-bottom:8px}
+  .thread-card .t-prompt{background:#040810;border-radius:6px;padding:12px;font-size:12px;font-family:monospace;color:#b0c8d8;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+  .copy-btn{background:var(--g);color:#000;border:none;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;display:block}
+  .copy-btn.done{background:#37474F;color:#90A4AE}
+
+  .link-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s);border:1px solid var(--b);border-radius:7px;margin-bottom:7px}
+  .link-row .lr-icon{font-size:18px;flex-shrink:0}
+  .link-row .lr-info .lr-t{font-size:14px;font-weight:600}
+  .link-row .lr-info .lr-u{font-size:12px;color:var(--m)}
+  .link-row a{color:var(--g);font-size:12px;margin-left:auto;flex-shrink:0;white-space:nowrap}
+
+  .stat-row{display:flex;gap:0;border:1px solid var(--b);border-radius:8px;overflow:hidden;margin-bottom:20px}
+  .stat{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--b)}
+  .stat:last-child{border-right:none}
+  .stat .sv{font-size:22px;font-weight:800;color:var(--g)}
+  .stat .sl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
+  .bar-wrap{background:var(--s);border:1px solid var(--b);border-radius:8px;padding:14px;margin-bottom:20px}
+  .bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+  .bar-label .bl{color:var(--t);font-weight:600}
+  .bar-label .br{color:var(--g);font-weight:700}
+  .bar-bg{background:var(--b);border-radius:4px;height:10px}
+  .bar-fill{background:var(--g);border-radius:4px;height:10px;transition:width 1s ease}
+
+  footer{text-align:center;font-size:12px;color:var(--m);padding:24px;border-top:1px solid var(--b);margin-top:40px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">AI Chief of Staff · Session Report</div>
+  <h1>Courtana — April 11, 2026</h1>
+  <div class="sub">What was built · What's next · Links to everything</div>
+</div>
+
+<div class="wrap">
+
+  <div class="tldr" style="margin-top:24px">
+    We built the AI infrastructure layer for Courtana's go-to-market. The data pipeline analyzes clips overnight, posts to Slack, captures ideas from your phone, and tracks deals in the background. <strong>Key insight:</strong> Courtana's live components embed in venue apps, lobby TVs, and emails with zero auth — that's the answer to Concord's "second system" objection and the hook for Peak's May 9 grand opening. One working TV display is already live.
+  </div>
+
+  <div class="action-box">
+    <div class="a-label">🟠 Your One Action</div>
+    <div class="a-text">Set up Slack webhook → everything runs headlessly</div>
+    <div class="a-sub">5 min · <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a> → Create App → Incoming Webhooks → copy URL → paste as SLACK_WEBHOOK_URL in .env</div>
+  </div>
+
+  <h2>Stats</h2>
+  <div class="stat-row">
+    <div class="stat"><div class="sv">7</div><div class="sl">Agents</div></div>
+    <div class="stat"><div class="sv">5</div><div class="sl">Embed branches</div></div>
+    <div class="stat"><div class="sv">38</div><div class="sl">Clips analyzed</div></div>
+    <div class="stat"><div class="sv">$0.21</div><div class="sl">Total cost</div></div>
+  </div>
+
+  <div class="bar-wrap">
+    <div class="bar-label"><span class="bl">Fundraise — Tranche 1</span><span class="br">$396K / $500K · 79%</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:79%"></div></div>
+    <div style="font-size:12px;color:var(--m);margin-top:6px">Gap to close: $104K · Investors to follow up: Scot McClintic, Henry Ciocca, Matt Rosenbloom</div>
+  </div>
+
+  <h2>What Was Built</h2>
+  <table>
+    <tr><th>What</th><th>Status</th></tr>
+    <tr><td><strong>Lobby TV Display</strong><br><span style="font-size:12px;color:var(--m)">Live data · badges · AI reasoning · 60s refresh</span></td><td><span class="tag tg">✅ Working</span></td></tr>
+    <tr><td><strong>Slack Notification System</strong><br><span style="font-size:12px;color:var(--m)">Briefs, deal alerts, decisions, build completions</span></td><td><span class="tag to">Needs webhook</span></td></tr>
+    <tr><td><strong>Ideas Intake</strong><br><span style="font-size:12px;color:var(--m)">Wispr Flow → Slack → brainstorm-inbox.md</span></td><td><span class="tag tg">✅ Working</span></td></tr>
+    <tr><td><strong>Fireflies Action Extractor</strong><br><span style="font-size:12px;color:var(--m)">Meetings → action items by person + deal</span></td><td><span class="tag tg">✅ Working</span></td></tr>
+    <tr><td><strong>Fundraise Tracker</strong><br><span style="font-size:12px;color:var(--m)">$396K tracked · stale investor alerts</span></td><td><span class="tag tg">✅ Working</span></td></tr>
+    <tr><td><strong>Overnight Corpus Ingest</strong><br><span style="font-size:12px;color:var(--m)">Nightly Gemini analysis · auto-batch</span></td><td><span class="tag tg">✅ Working</span></td></tr>
+    <tr><td><strong>/phone-brief Skill</strong><br><span style="font-size:12px;color:var(--m)">Say it → Apple Notes pushed instantly</span></td><td><span class="tag tg">✅ Working</span></td></tr>
+  </table>
+
+  <h2>Deal Status</h2>
+  <table>
+    <tr><th>Deal</th><th>Status</th><th>Next action</th></tr>
+    <tr><td><strong>Peak Pickleball</strong></td><td><span class="tag tg">Install phase</span></td><td>Send lobby display to Chris Kepko · May 9 deadline</td></tr>
+    <tr><td><strong>Court Kings</strong></td><td><span class="tag to">Rich back Apr 24</span></td><td>Prep re-engagement package NOW · send Apr 22</td></tr>
+    <tr><td><strong>Concord</strong></td><td><span class="tag to">ROI objection</span></td><td>David calls Chris Williams · week of Apr 14</td></tr>
+    <tr><td><strong>Rally</strong></td><td><span class="tag tb">Warm intro</span></td><td>Bill: follow up with Barrett</td></tr>
+  </table>
+
+  <h2>Live Links</h2>
+  <div class="link-row">
+    <span class="lr-icon">👤</span>
+    <div class="lr-info"><div class="lr-t">PickleBill Player Profile</div><div class="lr-u">#1 Global · Level 19 · 82 badges</div></div>
+    <a href="https://courtana.com/player/bGLx1SV3k1lT/" target="_blank">Open ↗</a>
+  </div>
+  <div class="link-row">
+    <span class="lr-icon">🎬</span>
+    <div class="lr-info"><div class="lr-t">Example Session Page</div><div class="lr-u">Badges, clips, players — what courts show</div></div>
+    <a href="https://courtana.com/session-highlights/KYMLnLpmA6Sq" target="_blank">Open ↗</a>
+  </div>
+  <div class="link-row">
+    <span class="lr-icon">📊</span>
+    <div class="lr-info"><div class="lr-t">Pitch Deck</div><div class="lr-u">DocSend · shareable</div></div>
+    <a href="https://docsend.com/v/qkdkk/courtanapitch2026" target="_blank">Open ↗</a>
+  </div>
+  <div class="link-row">
+    <span class="lr-icon">💰</span>
+    <div class="lr-info"><div class="lr-t">AngelList Raise</div><div class="lr-u">$1.3M seed · $396K raised</div></div>
+    <a href="https://stack.angellist.com/company/picklebills/raise/rounds/bb56d9a9-a068-489e-9b1d-9cf533e3a7" target="_blank">Open ↗</a>
+  </div>
+  <div class="link-row">
+    <span class="lr-icon">🎾</span>
+    <div class="lr-info"><div class="lr-t">Courtana Homepage</div><div class="lr-u">Live product</div></div>
+    <a href="https://courtana.com" target="_blank">Open ↗</a>
+  </div>
+
+  <h2>Next Threads — Paste These to Start</h2>
+
+  <div class="thread-card">
+    <div class="t-label">Thread A · This week · $500K</div>
+    <div class="t-title">Court Kings Re-Engagement</div>
+    <div class="t-prompt">I'm Bill Bricker, CEO of Courtana (courtana.com). Read BILL-OS/BILL-OS.md. We have a $250-500K deal with Court Kings — Rich (CEO) returns ~Apr 24. Build the complete re-engagement package to send Apr 22: (1) draft email from Bill to Rich — "look what we built while you were away" tone, (2) update the Kings Court Coach Lovable demo (UUID: e7154881 in BILL-OS/LOVABLE-PROJECTS.md), (3) configure lobby-display.html for Court Kings (?venue=Court+Kings), (4) one-page "what's new" HTML. Draft everything — do not send.</div>
+    <button class="copy-btn" onclick="cp(this,'Court Kings Re-Engagement prompt')">COPY PROMPT</button>
+  </div>
+
+  <div class="thread-card">
+    <div class="t-label">Thread B · Autonomous · High fun</div>
+    <div class="t-title">Overnight Discovery Agent</div>
+    <div class="t-prompt">I'm Bill Bricker, CEO of Courtana. Read BILL-OS/BILL-OS.md and PICKLE-DAAS/CLAUDE.md. We have a working corpus in PICKLE-DAAS/output/ and tools in PICKLE-DAAS/tools/. Mission: design and run an overnight discovery experiment. (1) Run tools/rapid-cycle.py on the 'viral' angle — find the top 10 most viral-worthy clips with reasons, (2) build a "discovery digest" HTML with thumbnails + AI commentary, (3) propose the next 3 overnight experiments worth running. Budget: $2 max Gemini. Write to PICKLE-DAAS/output/overnight-[date]/.</div>
+    <button class="copy-btn" onclick="cp(this,'Overnight Discovery prompt')">COPY PROMPT</button>
+  </div>
+
+  <div class="thread-card">
+    <div class="t-label">Thread C · Closes deal · Apr 14</div>
+    <div class="t-title">Concord Deal Closer</div>
+    <div class="t-prompt">I'm Bill Bricker, CEO of Courtana. Read BILL-OS/BILL-OS.md and BILL-OS/concord-roi-brief.md. Concord's real objection: ROI ("won't make money back"), NOT CourtReserve. David calls Chris Williams week of Apr 14. Build: (1) Concord ROI brief — revenue split math + comparable venues, (2) demo showing Courtana INSIDE a venue app (use Lovable Prompt 3 from BILL-OS/LAYOUT-STRATEGY.md), (3) 3 talking points for David that reframe Courtana as a revenue line. Draft everything for review.</div>
+    <button class="copy-btn" onclick="cp(this,'Concord Deal Closer prompt')">COPY PROMPT</button>
+  </div>
+
+  <div class="thread-card">
+    <div class="t-label">Thread D · Infrastructure · Accessible anywhere</div>
+    <div class="t-title">GitHub Pages Output Gallery</div>
+    <div class="t-prompt">I'm Bill Bricker, CEO of Courtana. The folder PICKLE-DAAS/output/ has 10+ HTML files I want at a real URL accessible from any device. Set up GitHub Pages: (1) create an index.html listing all HTML outputs with previews + descriptions, (2) push to PickleBill GitHub org as 'courtana-outputs' repo with Pages enabled, (3) give me the live URL. GitHub org: PickleBill. Use git (no gh CLI). Ask before any push to remote.</div>
+    <button class="copy-btn" onclick="cp(this,'GitHub Pages prompt')">COPY PROMPT</button>
+  </div>
+
+  <h2>How to Resume in Any Thread</h2>
+  <div style="background:#0a0e15;border-radius:8px;padding:14px;font-family:monospace;font-size:13px;color:#b0c8d8;line-height:1.8">
+    I'm Bill Bricker, CEO of Courtana.<br>
+    Read BILL-OS/BILL-OS.md and BILL-OS/SESSION-SUMMARY-20260411.md for full context.<br>
+    Today's focus: [your specific task here]
+  </div>
+  <button class="copy-btn" style="margin-top:8px" onclick="cp(this,'I\'m Bill Bricker, CEO of Courtana.\nRead BILL-OS/BILL-OS.md and BILL-OS/SESSION-SUMMARY-20260411.md for full context.\nToday\'s focus: ')">COPY RESUME PROMPT</button>
+
+</div>
+
+<footer>
+  AI Chief of Staff · chief@courtana.com · April 11, 2026<br>
+  <a href="https://courtana.com" target="_blank">courtana.com</a>
+</footer>
+
+<script>
+function cp(btn, text) {
+  if (btn.nextElementSibling && btn.nextElementSibling.classList.contains('t-prompt')) {
+    text = btn.nextElementSibling.textContent.trim();
+  }
+  // Get the prompt text from the sibling .t-prompt div
+  const card = btn.closest('.thread-card');
+  if (card) {
+    const promptEl = card.querySelector('.t-prompt');
+    if (promptEl) text = promptEl.textContent.trim();
+  }
+  navigator.clipboard && navigator.clipboard.writeText(text);
+  const orig = btn.textContent;
+  btn.textContent = 'COPIED ✓';
+  btn.classList.add('done');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 2000);
+}
+</script>
+</body>
+</html>

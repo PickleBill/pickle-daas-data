@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chief of Staff — Status Apr 11</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f1219; color: #e8eaf0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.6; }
+  .header { background: linear-gradient(135deg, #0d1520 0%, #1a2535 100%); border-bottom: 2px solid #00E676; padding: 32px 24px 24px; }
+  .header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+  .header .sub { color: #00E676; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .header .date { color: #8899aa; font-size: 13px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 16px 64px; }
+
+  /* Status bar */
+  .status-bar { display: flex; gap: 12px; padding: 16px 24px; background: #151e2b; border-bottom: 1px solid #1e2d3f; flex-wrap: wrap; }
+  .stat { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+  .stat .num { font-size: 22px; font-weight: 700; color: #00E676; }
+  .stat .label { font-size: 11px; color: #6b7c93; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Sections */
+  .section { margin-top: 28px; }
+  .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #00E676; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #1e2d3f; }
+
+  /* Cards */
+  .card { background: #151e2b; border: 1px solid #1e2d3f; border-radius: 8px; padding: 16px; margin-bottom: 10px; }
+  .card:hover { border-color: #2a3f55; }
+  .card .title { font-weight: 600; color: #e8eaf0; margin-bottom: 4px; font-size: 15px; }
+  .card .desc { color: #8899aa; font-size: 13px; line-height: 1.5; }
+  .card .meta { font-size: 12px; color: #4a5f75; margin-top: 8px; }
+  .card.complete { border-left: 3px solid #00E676; }
+  .card.action-needed { border-left: 3px solid #FF9800; }
+  .card.new { border-left: 3px solid #2196F3; }
+
+  /* Tag pills */
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-right: 4px; margin-top: 6px; }
+  .tag-green { background: #00E67622; color: #00E676; }
+  .tag-blue { background: #2196F322; color: #64B5F6; }
+  .tag-orange { background: #FF980022; color: #FFB74D; }
+  .tag-grey { background: #37474F; color: #90A4AE; }
+
+  /* Slack preview */
+  .slack-preview { background: #1a1f36; border: 1px solid #2d3561; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; }
+  .slack-preview .channel { color: #5C83C4; font-weight: 600; margin-bottom: 8px; }
+  .slack-preview .msg { color: #d4d7e0; white-space: pre-line; line-height: 1.7; }
+  .slack-preview .green { color: #00E676; }
+  .slack-preview .orange { color: #FF9800; }
+  .slack-preview .bold { font-weight: 700; color: #fff; }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 16px 0; }
+  .flow-step { background: #151e2b; border: 1px solid #1e2d3f; border-radius: 6px; padding: 8px 14px; font-size: 13px; color: #c0d0e0; }
+  .flow-arrow { color: #00E676; font-size: 18px; padding: 0 6px; }
+
+  /* Embed examples */
+  .embed-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .embed-card { background: #1a2535; border: 1px solid #1e2d3f; border-radius: 8px; overflow: hidden; }
+  .embed-card .ec-header { background: #0d1520; padding: 12px 14px; border-bottom: 1px solid #1e2d3f; font-size: 12px; color: #6b7c93; text-transform: uppercase; letter-spacing: 1px; }
+  .embed-card .ec-body { padding: 14px; }
+  .embed-card .ec-stat { font-size: 24px; font-weight: 700; color: #00E676; }
+  .embed-card .ec-label { font-size: 12px; color: #6b7c93; margin-top: 2px; }
+  .badge-pill { display: inline-block; background: #1e2d3f; border: 1px solid #2a3f55; color: #c0d0e0; border-radius: 20px; padding: 4px 12px; font-size: 12px; margin: 3px; }
+
+  /* Action items */
+  .action-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #1a2535; }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { background: #FF9800; color: #000; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .action-text { flex: 1; }
+  .action-text .at-title { font-weight: 600; color: #e8eaf0; }
+  .action-text .at-sub { font-size: 13px; color: #6b7c93; }
+
+  /* Setup steps */
+  .setup-step { display: flex; gap: 12px; margin-bottom: 16px; }
+  .step-num { background: #00E67620; color: #00E676; border: 1px solid #00E67640; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .step-body .step-title { font-weight: 600; color: #e8eaf0; font-size: 14px; }
+  .step-body .step-desc { font-size: 13px; color: #8899aa; margin-top: 2px; }
+  code { background: #0d1520; color: #00E676; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+
+  @media(max-width:600px){
+    .status-bar { gap: 8px; }
+    .stat .num { font-size: 18px; }
+    .flow { flex-direction: column; align-items: flex-start; }
+    .flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="sub">AI Chief of Staff · Session Report</div>
+  <h1>chief@courtana.com</h1>
+  <div class="date">April 11, 2026 · Autonomous build session</div>
+</div>
+
+<div class="status-bar">
+  <div class="stat"><span class="num">7</span><span class="label">Agents Built</span></div>
+  <div class="stat"><span class="num">5</span><span class="label">Embed Strategies</span></div>
+  <div class="stat"><span class="num">3</span><span class="label">Docs Written</span></div>
+  <div class="stat"><span class="num">1</span><span class="label">Setup Left for Bill</span></div>
+  <div class="stat"><span class="num">$0</span><span class="label">Cost This Session</span></div>
+</div>
+
+<div class="container">
+
+  <!-- WHAT YOU NEED TO DO -->
+  <div class="section">
+    <div class="section-title">🟠 Bill — 1 Thing to Do</div>
+    <div class="card action-needed">
+      <div class="title">Set up the Slack webhook (5 minutes)</div>
+      <div class="desc">
+        Everything below is built and running. The only thing standing between you and getting
+        Slack notifications on your phone is a single webhook URL.<br><br>
+        Steps: <a href="https://api.slack.com/apps" style="color:#00E676">api.slack.com/apps</a>
+        → Create App → Incoming Webhooks → Add webhook to #ops-ai → copy URL → paste into PICKLE-DAAS/.env as <code>SLACK_WEBHOOK_URL</code>
+      </div>
+      <div class="meta"><span class="tag tag-orange">5 min setup</span> <span class="tag tag-grey">BILL-OS/NOTIFICATION-SETUP.md has full guide</span></div>
+    </div>
+  </div>
+
+  <!-- WHAT WAS BUILT -->
+  <div class="section">
+    <div class="section-title">✅ Built This Session</div>
+
+    <div class="card complete">
+      <div class="title">Slack Notification System</div>
+      <div class="desc">Morning briefs, deal alerts, decisions digest, build completions — all routed to Slack. Supports both webhooks (simple) and bot tokens (for reading ideas channel). Falls back to pending file if not configured.</div>
+      <div class="meta"><span class="tag tag-green">agents/slack-ops-announcer.py</span> <span class="tag tag-green">BILL-OS/NOTIFICATION-SETUP.md</span></div>
+    </div>
+
+    <div class="card complete">
+      <div class="title">Ideas Intake System</div>
+      <div class="desc">Bill speaks → Wispr Flow → texts to #courtana-ideas → agent saves to brainstorm-inbox.md. Also reads Apple Notes ("Idea:") and agents/idea-inbox.txt (Dropbox). Posts confirmation back to Slack.</div>
+      <div class="meta"><span class="tag tag-green">agents/ideas-intake.py</span> <span class="tag tag-green">BILL-OS/brainstorm-inbox.md</span></div>
+    </div>
+
+    <div class="card complete">
+      <div class="title">Fireflies Action Extractor</div>
+      <div class="desc">Pulls recent meeting transcripts from Fireflies. Extracts action items by person (Bill, David, Cedric, etc.) and by deal context (Peak, Concord, Court Kings, Fundraise). Posts to Slack.</div>
+      <div class="meta"><span class="tag tag-green">agents/fireflies-action-extractor.py</span></div>
+    </div>
+
+    <div class="card complete">
+      <div class="title">Fundraise Tracker</div>
+      <div class="desc">Current: $396K raised / $500K T1 goal (79%). Tracks pipeline investors, flags stale contacts via Gmail activity. Posts weekly Slack digest with progress bar and urgent follow-ups.</div>
+      <div class="meta"><span class="tag tag-green">agents/fundraise-tracker.py</span> <span class="tag tag-grey">$104K gap to T1 close</span></div>
+    </div>
+
+    <div class="card complete">
+      <div class="title">Layout Strategy: App Elements Everywhere</div>
+      <div class="desc">Strategic brief on embedding Courtana's live components (badges, player cards, leaderboard, highlight reels) into venue apps, lobby displays, and post-session emails. 5 branches with paste-ready Lovable prompts.</div>
+      <div class="meta"><span class="tag tag-green">BILL-OS/LAYOUT-STRATEGY.md</span></div>
+    </div>
+
+    <div class="card complete">
+      <div class="title">Tool Suite (morning-brief, session-closer, rapid-cycle, overnight-prompt)</div>
+      <div class="desc">4-tool kit in PICKLE-DAAS/tools/. Runs on its own. setup-chief-of-staff.py recreates all tools if Dropbox wipes them. Rapid-cycle produces 5 analysis angles from the corpus in under 5 minutes at $0 cost.</div>
+      <div class="meta"><span class="tag tag-green">tools/setup-chief-of-staff.py</span> <span class="tag tag-green">tools/rapid-cycle.py</span></div>
+    </div>
+  </div>
+
+  <!-- SLACK PREVIEW -->
+  <div class="section">
+    <div class="section-title">📱 What You'll See in Slack (after 5-min setup)</div>
+
+    <div class="slack-preview" style="margin-bottom:12px">
+      <div class="channel">#ops-ai</div>
+      <div class="msg"><span class="bold">☀️ Morning Brief — Apr 12</span>
+<span class="green">━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="bold">Top 3 today:</span>
+  • Peak install — confirm hardware ship date with David
+  • Court Kings — Rich back Apr 24, draft re-engagement msg
+  • Fundraise — gap to T1 close: $104K, Scot needs follow-up
+
+<span class="bold">Don't let die:</span>
+  • Carolina Pickleball zoom — David to schedule
+  • George Kaminis COO proposal — overdue
+
+<span class="bold">Corpus: 38 clips analyzed · $0.21 total · 8,214 groups available</span>
+<span style="color:#4a5f75">chief@courtana.com · 7:02am</span></div>
+    </div>
+
+    <div class="slack-preview" style="margin-bottom:12px">
+      <div class="channel">#decisions</div>
+      <div class="msg"><span class="bold"><span class="orange">🟠</span> Decision Needed</span>
+@Bill Should I draft the Court Kings re-engagement email now, or wait for Rich's return Apr 24?
+<span class="bold">Options:</span>
+  • Send a light "thinking of you" note this week
+  • Wait until Apr 22 and send the full follow-up package [Court Kings]
+<span style="color:#4a5f75">AI Chief of Staff · 9:15am</span></div>
+    </div>
+
+    <div class="slack-preview">
+      <div class="channel">#courtana-ideas</div>
+      <div class="msg"><span class="bold">💡 Idea captured:</span> <span style="color:#8899aa">"what if we built a court-side tablet rental program where players can review their highlights between games..."</span>
+Saved to brainstorm-inbox.md
+<span style="color:#4a5f75">AI Intake · 2:34pm</span></div>
+    </div>
+  </div>
+
+  <!-- LAYOUT STRATEGY PREVIEW -->
+  <div class="section">
+    <div class="section-title">🎨 Layout Strategy: Courtana Elements Everywhere</div>
+
+    <div class="embed-row">
+      <div class="embed-card">
+        <div class="ec-header">Branch 1 · Lobby TV Display</div>
+        <div class="ec-body">
+          <div class="ec-stat">60s</div>
+          <div class="ec-label">Auto-refresh. Zero auth. Runs on any TV with a browser.</div>
+          <div style="margin-top:12px; font-size:12px; color:#8899aa">Live leaderboard + last session badges + highlight thumbnail. Have this running at Peak before the May 9 grand opening.</div>
+        </div>
+      </div>
+      <div class="embed-card">
+        <div class="ec-header">Branch 2 · Player Card Widget</div>
+        <div class="ec-body">
+          <div class="ec-stat">Share</div>
+          <div class="ec-label">iFrame-embeddable. CDN-backed. Screenshot-worthy.</div>
+          <div style="margin-top:12px">
+            <span class="badge-pill">Rally Master ×100</span>
+            <span class="badge-pill">Kitchen King ×16</span>
+          </div>
+        </div>
+      </div>
+      <div class="embed-card">
+        <div class="ec-header">Branch 3 · Venue App Integration</div>
+        <div class="ec-body">
+          <div class="ec-stat">Closes</div>
+          <div class="ec-label">Concord deal. Answers "second system" objection.</div>
+          <div style="margin-top:12px; font-size:12px; color:#8899aa">Add live Courtana data panel to peakcourtana.lovable.app. When Chris Williams sees real data inside the venue app, the objection disappears.</div>
+        </div>
+      </div>
+      <div class="embed-card">
+        <div class="ec-header">Branch 4 · Post-Session Email</div>
+        <div class="ec-body">
+          <div class="ec-stat">Viral</div>
+          <div class="ec-label">Badge reveal in email = players share it.</div>
+          <div style="margin-top:12px; font-size:12px; color:#8899aa">HTML email template + ElevenLabs voice clip. The "moment of delight" that drives organic growth.</div>
+        </div>
+      </div>
+      <div class="embed-card">
+        <div class="ec-header">Branch 5 · Coach Dashboard</div>
+        <div class="ec-body">
+          <div class="ec-stat">Upsell</div>
+          <div class="ec-label">Corpus data → coaching insights → premium tier.</div>
+          <div style="margin-top:12px; font-size:12px; color:#8899aa">Weekly player badge trends, dominant shot analysis, AI coaching notes. Lives on coach's tablet.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; padding:14px; background:#0d1520; border-radius:6px; font-size:13px; color:#8899aa">
+      <strong style="color:#00E676">Key insight:</strong> Every widget above uses only CDN URLs and the anonymous API — zero auth required.
+      We can build all 5 and deploy them right now. The Lovable prompts are paste-ready in BILL-OS/LAYOUT-STRATEGY.md.
+    </div>
+  </div>
+
+  <!-- IDEA FLOW -->
+  <div class="section">
+    <div class="section-title">💡 Idea Capture Flow (Phone-Native)</div>
+    <div class="flow">
+      <div class="flow-step">Speak idea<br><small style="color:#6b7c93">Wispr Flow</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Text to Slack<br><small style="color:#6b7c93">#courtana-ideas</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">ideas-intake.py<br><small style="color:#6b7c93">runs hourly</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">brainstorm-inbox.md<br><small style="color:#6b7c93">saved + confirmed</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Morning brief<br><small style="color:#6b7c93">surfaces top 3</small></div>
+    </div>
+  </div>
+
+  <!-- NEXT ACTIONS -->
+  <div class="section">
+    <div class="section-title">🎯 What's Next</div>
+
+    <div style="background:#151e2b; border:1px solid #1e2d3f; border-radius:8px; padding:16px;">
+      <div class="action-item">
+        <div class="action-num">1</div>
+        <div class="action-text">
+          <div class="at-title">Set up Slack webhook (5 min)</div>
+          <div class="at-sub">One URL in .env → everything starts flowing to your phone</div>
+        </div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">2</div>
+        <div class="action-text">
+          <div class="at-title">Build Branch 1: Lobby display</div>
+          <div class="at-sub">Single HTML file, paste the Lovable prompt from LAYOUT-STRATEGY.md. Ready before May 9 Peak grand opening.</div>
+        </div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">3</div>
+        <div class="action-text">
+          <div class="at-title">Create chief@courtana.com Google account</div>
+          <div class="at-sub">Unlocks Gmail, Calendar, Drive, Fireflies OAuth. The plan is in BILL-OS/CHIEF-AT-COURTANA.md.</div>
+        </div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">4</div>
+        <div class="action-text">
+          <div class="at-title">Deploy Supabase for DaaS</div>
+          <div class="at-sub">Schema is ready. Follow PICKLE-DAAS/supabase/SUPABASE-SETUP-GUIDE.md.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILES -->
+  <div class="section">
+    <div class="section-title">📁 All Files Created/Updated Today</div>
+    <div style="background:#0d1520; border-radius:6px; padding:14px; font-family:monospace; font-size:12px; color:#8899aa; line-height:2;">
+      <span style="color:#00E676">BILL-OS/</span><br>
+      &nbsp;&nbsp;LAYOUT-STRATEGY.md &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64B5F6">← 5 embedding branches, Lovable prompts</span><br>
+      &nbsp;&nbsp;NOTIFICATION-SETUP.md &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64B5F6">← 5-min Slack setup guide</span><br>
+      &nbsp;&nbsp;brainstorm-inbox.md &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64B5F6">← ideas land here</span><br>
+      <br>
+      <span style="color:#00E676">PICKLE-DAAS/agents/</span><br>
+      &nbsp;&nbsp;fireflies-action-extractor.py &nbsp;<span style="color:#64B5F6">← meeting → action items</span><br>
+      &nbsp;&nbsp;fundraise-tracker.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64B5F6">← $396K tracked, stale alerts</span><br>
+      &nbsp;&nbsp;ideas-intake.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64B5F6">← Slack/Notes/file → inbox.md</span><br>
+      &nbsp;&nbsp;slack-ops-announcer.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64B5F6">← upgraded: webhooks + decisions</span><br>
+      <br>
+      <span style="color:#00E676">PICKLE-DAAS/output/</span><br>
+      &nbsp;&nbsp;ai-coo-status-20260411.html &nbsp;&nbsp;<span style="color:#64B5F6">← this file</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

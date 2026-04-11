@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana Live — Court Display</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist+Sans:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0f131a;
+    --bg2: #151b25;
+    --bg3: #1a2232;
+    --border: #1e2d3f;
+    --accent: #00E676;
+    --accent2: #00BCD4;
+    --text: #e8eaf0;
+    --muted: #6b7c93;
+    --gold: #FFD700;
+    --silver: #C0C0C0;
+    --bronze: #CD7F32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── Layout ── */
+  .screen {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    max-height: 100vh;
+  }
+
+  /* ── Header Bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: #0a0e15;
+    border-bottom: 2px solid var(--accent);
+  }
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-logo img {
+    height: 32px;
+    filter: brightness(1.1);
+  }
+  .topbar-logo .venue-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ff1744;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 5px 12px;
+    border-radius: 4px;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .clock {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Main Grid ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .panel {
+    padding: 20px 18px;
+    overflow: hidden;
+  }
+  .panel + .panel {
+    border-left: 1px solid var(--border);
+  }
+
+  .panel-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-title::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* ── Left Panel: Leaderboard ── */
+  .leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    transition: background 0.3s;
+    animation: slideIn 0.4s ease;
+  }
+  .leaderboard-item.top1 { border-color: var(--gold); background: #1a1608; }
+  .leaderboard-item.top2 { border-color: var(--silver); background: #161618; }
+  .leaderboard-item.top3 { border-color: var(--bronze); background: #1a1008; }
+
+  .rank-num {
+    font-size: 16px;
+    font-weight: 800;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .top1 .rank-num { color: var(--gold); }
+  .top2 .rank-num { color: var(--silver); }
+  .top3 .rank-num { color: var(--bronze); }
+  .leaderboard-item:not(.top1):not(.top2):not(.top3) .rank-num { color: var(--muted); }
+
+  .player-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    background: var(--bg3);
+  }
+  .top1 .player-avatar { border-color: var(--gold); }
+  .top2 .player-avatar { border-color: var(--silver); }
+  .top3 .player-avatar { border-color: var(--bronze); }
+
+  .player-info { flex: 1; min-width: 0; }
+  .player-name {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .player-rank {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .player-xp {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ── Center Panel: Live Feed ── */
+  .feed-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    animation: slideIn 0.4s ease;
+    display: flex;
+    gap: 0;
+  }
+  .feed-thumb {
+    width: 100px;
+    height: 70px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--bg3);
+  }
+  .feed-body {
+    padding: 10px 12px;
+    flex: 1;
+    min-width: 0;
+  }
+  .feed-players {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .feed-player-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--bg3);
+    border-radius: 20px;
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+  .feed-player-chip img {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .feed-badges {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .feed-badge-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .feed-badge-chip img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+  }
+  .tier-bronze { background: #2a1a0a; color: var(--bronze); border: 1px solid var(--bronze); }
+  .tier-silver { background: #181818; color: var(--silver); border: 1px solid var(--silver); }
+  .tier-gold   { background: #1a1500; color: var(--gold);   border: 1px solid var(--gold); }
+  .feed-time { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Right Panel: Badge Ticker ── */
+  .badge-award-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    animation: slideIn 0.4s ease;
+  }
+  .badge-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .badge-info { flex: 1; min-width: 0; }
+  .badge-name {
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge-player {
+    font-size: 12px;
+    color: var(--accent);
+    margin: 2px 0;
+  }
+  .badge-reason {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .badge-rarity {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .new-badge-banner {
+    position: fixed;
+    bottom: 80px;
+    right: 28px;
+    background: linear-gradient(135deg, #0d1520, #1a2535);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 340px;
+    box-shadow: 0 0 40px rgba(0, 230, 118, 0.3);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+  }
+  .new-badge-banner.hidden { display: none; }
+  .new-badge-banner img { width: 52px; height: 52px; object-fit: contain; }
+  .new-badge-banner .nbb-label { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+  .new-badge-banner .nbb-name { font-size: 18px; font-weight: 800; }
+  .new-badge-banner .nbb-player { font-size: 13px; color: var(--muted); }
+
+  /* ── Footer ── */
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 28px;
+    background: #0a0e15;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer-stats {
+    display: flex;
+    gap: 24px;
+  }
+  .footer-stat { display: flex; gap: 6px; align-items: center; }
+  .footer-stat .val { color: var(--accent); font-weight: 700; }
+  .footer-cta {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .footer-cta span { color: var(--accent); font-weight: 600; }
+
+  /* ── Animations ── */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* Scan line effect for TV feel */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 999;
+  }
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <img src="https://cdn.courtana.com/assets/logos/fulllogo-dark-transparent-grad.svg"
+           alt="Courtana" onerror="this.style.display='none'">
+      <div class="venue-name" id="venue-name">Peak Pickleball</div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+      <div class="clock" id="clock">--:--</div>
+    </div>
+  </div>
+
+  <!-- MAIN PANELS -->
+  <div class="main">
+
+    <!-- LEFT: Leaderboard -->
+    <div class="panel">
+      <div class="panel-title">Today's Top Players</div>
+      <div id="leaderboard-list">
+        <div class="loading"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <!-- CENTER: Live Session Feed -->
+    <div class="panel">
+      <div class="panel-title">Recent Sessions</div>
+      <div id="session-feed">
+        <div class="loading"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Badge Ticker -->
+    <div class="panel">
+      <div class="panel-title">Badges Just Earned</div>
+      <div id="badge-ticker">
+        <div class="loading"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-stats">
+      <div class="footer-stat">Sessions today: <span class="val" id="stat-sessions">—</span></div>
+      <div class="footer-stat">Clips recorded: <span class="val" id="stat-clips">—</span></div>
+      <div class="footer-stat">Badges awarded: <span class="val" id="stat-badges">—</span></div>
+    </div>
+    <div class="footer-cta">
+      Scan any QR code on court · View your highlights at <span>courtana.com</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Badge popup banner (shown when a new badge is detected) -->
+<div class="new-badge-banner hidden" id="badge-banner">
+  <img id="banner-img" src="" alt="badge">
+  <div>
+    <div class="nbb-label">🏆 Badge Unlocked</div>
+    <div class="nbb-name" id="banner-name"></div>
+    <div class="nbb-player" id="banner-player"></div>
+  </div>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const VENUE_NAME   = document.getElementById('venue-name').textContent;
+const API_BASE     = 'https://courtana.com';
+const PAGE_SIZE    = 12;
+const REFRESH_SECS = 60;
+
+// State
+let latestGroups     = [];
+let latestBadges     = [];
+let leaderboardData  = [];
+let seenGroupIds     = new Set();
+let displayedBadges  = [];
+let bannerQueue      = [];
+let isBannerShowing  = false;
+let totalSessions    = 0;
+let totalClips       = 0;
+let totalBadges      = 0;
+
+// ── Clock ─────────────────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  document.getElementById('clock').textContent = `${h}:${m}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── API ───────────────────────────────────────────────────────────────────────
+async function fetchHighlightGroups(page = 1) {
+  const url = `${API_BASE}/app/anon-highlight-groups/?format=json&page=${page}&page_size=${PAGE_SIZE}`;
+  const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!resp.ok) throw new Error(`API ${resp.status}`);
+  return resp.json();
+}
+
+// ── Format ────────────────────────────────────────────────────────────────────
+function timeAgo(isoStr) {
+  if (!isoStr) return '';
+  const diff = (Date.now() - new Date(isoStr).getTime()) / 1000;
+  if (diff < 60)   return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+function tierClass(tier) {
+  return { bronze: 'tier-bronze', silver: 'tier-silver', gold: 'tier-gold' }[tier] || 'tier-bronze';
+}
+
+function rankClass(idx) {
+  return ['top1', 'top2', 'top3'][idx] || '';
+}
+
+// ── Render Leaderboard ────────────────────────────────────────────────────────
+function renderLeaderboard(players) {
+  const el = document.getElementById('leaderboard-list');
+  if (!players.length) { el.innerHTML = '<div class="loading">No data yet</div>'; return; }
+
+  el.innerHTML = players.slice(0, 8).map((p, i) => `
+    <div class="leaderboard-item ${rankClass(i)}">
+      <div class="rank-num">${i + 1}</div>
+      <img class="player-avatar"
+           src="${p.avatar_file || ''}"
+           onerror="this.src=''"
+           alt="${p.username}">
+      <div class="player-info">
+        <div class="player-name">${p.username}</div>
+        <div class="player-rank">${p.rank_name || ''} · Lv ${p.level || '?'}</div>
+      </div>
+      <div class="player-xp">${p.xp ? (p.xp).toLocaleString() + ' XP' : ''}</div>
+    </div>
+  `).join('');
+}
+
+// ── Render Session Feed ───────────────────────────────────────────────────────
+function renderSessionFeed(groups) {
+  const el = document.getElementById('session-feed');
+  const displayGroups = groups.slice(0, 5);
+
+  el.innerHTML = displayGroups.map(g => {
+    const badges = (g.badge_awards || []).slice(0, 3);
+    const participants = (g.participants || []).slice(0, 4);
+    const highlight = (g.highlights || [])[0];
+    const thumb = highlight?.thumbnail_file || '';
+    const when = timeAgo(g.created_at);
+
+    const playerChips = participants.map(p => `
+      <div class="feed-player-chip">
+        <img src="${p.avatar_file || ''}" onerror="this.style.display='none'" alt="${p.username}">
+        ${p.username}
+      </div>
+    `).join('');
+
+    const badgeChips = badges.map(b => `
+      <div class="feed-badge-chip ${tierClass(b.badge_tier)}">
+        <img src="${b.badge_thumbnail_small || b.badge_file || ''}"
+             onerror="this.style.display='none'" alt="${b.badge_name}">
+        ${b.badge_name}
+      </div>
+    `).join('');
+
+    return `
+      <div class="feed-card">
+        ${thumb ? `<img class="feed-thumb" src="${thumb}" alt="session" onerror="this.style.display='none'">` : ''}
+        <div class="feed-body">
+          <div class="feed-players">${playerChips}</div>
+          <div class="feed-badges">${badgeChips || '<span style="font-size:11px;color:var(--muted)">No badges</span>'}</div>
+          <div class="feed-time">${when}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Render Badge Ticker ───────────────────────────────────────────────────────
+function renderBadgeTicker(badges) {
+  const el = document.getElementById('badge-ticker');
+  const display = badges.slice(0, 6);
+
+  el.innerHTML = display.map(b => `
+    <div class="badge-award-item">
+      <img class="badge-icon"
+           src="${b.badge_file || b.badge_thumbnail_small || ''}"
+           onerror="this.style.display='none'"
+           alt="${b.badge_name}">
+      <div class="badge-info">
+        <div class="badge-name ${tierClass(b.badge_tier)}" style="background:none;border:none;padding:0">
+          ${b.badge_name}
+        </div>
+        <div class="badge-player">${b.profile_username}</div>
+        <div class="badge-reason">${b.gemini_reason || b.badge_criteria || ''}</div>
+        <div class="badge-rarity">${b.rarity ? Math.round(b.rarity) + '% of players have this' : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Badge Pop Banner ──────────────────────────────────────────────────────────
+function showBanner(badge) {
+  const el    = document.getElementById('badge-banner');
+  const img   = document.getElementById('banner-img');
+  const name  = document.getElementById('banner-name');
+  const player = document.getElementById('banner-player');
+
+  img.src         = badge.badge_file || badge.badge_thumbnail_small || '';
+  name.textContent = badge.badge_name;
+  player.textContent = `${badge.profile_username} just earned this`;
+  el.classList.remove('hidden');
+
+  setTimeout(() => {
+    el.classList.add('hidden');
+    isBannerShowing = false;
+    if (bannerQueue.length) {
+      setTimeout(() => { isBannerShowing = true; showBanner(bannerQueue.shift()); }, 500);
+    }
+  }, 4000);
+}
+
+function maybeShowBanner(newBadges) {
+  for (const b of newBadges) {
+    if (!bannerQueue.find(x => x.id === b.id)) {
+      bannerQueue.push(b);
+    }
+  }
+  if (!isBannerShowing && bannerQueue.length) {
+    isBannerShowing = true;
+    showBanner(bannerQueue.shift());
+  }
+}
+
+// ── Update Stats Footer ───────────────────────────────────────────────────────
+function updateStats(groups) {
+  totalSessions = groups.length;
+  totalClips    = groups.reduce((acc, g) => acc + (g.highlights || []).length, 0);
+  totalBadges   = groups.reduce((acc, g) => acc + (g.badge_awards || []).length, 0);
+  document.getElementById('stat-sessions').textContent = totalSessions.toLocaleString();
+  document.getElementById('stat-clips').textContent    = totalClips.toLocaleString();
+  document.getElementById('stat-badges').textContent   = totalBadges.toLocaleString();
+}
+
+// ── Build leaderboard from groups ────────────────────────────────────────────
+function buildLeaderboard(groups) {
+  const playerMap = {};
+  for (const g of groups) {
+    for (const p of (g.participants || [])) {
+      if (!playerMap[p.username]) {
+        playerMap[p.username] = { ...p, sessionCount: 0, badgeCount: 0, xp: p.level ? p.level * 500 : 0 };
+      }
+      playerMap[p.username].sessionCount++;
+    }
+    for (const b of (g.badge_awards || [])) {
+      if (playerMap[b.profile_username]) {
+        playerMap[b.profile_username].badgeCount++;
+        playerMap[b.profile_username].xp += 100;
+      }
+    }
+  }
+  return Object.values(playerMap)
+    .sort((a, b) => (b.xp + b.badgeCount * 50) - (a.xp + a.badgeCount * 50))
+    .slice(0, 8);
+}
+
+// ── Main Data Fetch ───────────────────────────────────────────────────────────
+async function refresh() {
+  try {
+    const data = await fetchHighlightGroups(1);
+    const groups = data.results || [];
+    if (!groups.length) return;
+
+    // Find new groups
+    const newGroups = groups.filter(g => !seenGroupIds.has(g.id));
+    for (const g of newGroups) seenGroupIds.add(g.id);
+
+    // Collect all badges, newest first
+    const allBadges = groups.flatMap(g =>
+      (g.badge_awards || []).map(b => ({ ...b, groupCreatedAt: g.created_at }))
+    ).sort((a, b) => new Date(b.awarded_at || b.groupCreatedAt) - new Date(a.awarded_at || a.groupCreatedAt));
+
+    // Find new badges for banner
+    const prevBadgeIds = new Set(displayedBadges.map(b => b.id));
+    const newBadges    = allBadges.filter(b => !prevBadgeIds.has(b.id));
+
+    latestGroups  = groups;
+    displayedBadges = allBadges.slice(0, 20);
+
+    // Render
+    const lb = buildLeaderboard(groups);
+    renderLeaderboard(lb);
+    renderSessionFeed(groups);
+    renderBadgeTicker(allBadges);
+    updateStats(groups);
+
+    // Show banner for new badges (skip on first load to avoid spam)
+    if (seenGroupIds.size > groups.length && newBadges.length) {
+      maybeShowBanner(newBadges);
+    }
+
+  } catch (err) {
+    console.warn('[courtana] API error:', err.message);
+    // Don't crash the display — keep showing last good data
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+refresh();
+setInterval(refresh, REFRESH_SECS * 1000);
+
+// Config: change venue name via URL param
+const params = new URLSearchParams(location.search);
+if (params.get('venue')) {
+  document.getElementById('venue-name').textContent = params.get('venue');
+}
+</script>
+</body>
+</html>

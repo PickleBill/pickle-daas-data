@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PickleBill — Player Dashboard | Pickle DaaS</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1a2030;
+      --card: #252d3a;
+      --border: rgba(0, 230, 118, 0.15);
+      --accent: #00E676;
+      --accent-dim: rgba(0, 230, 118, 0.7);
+      --accent-glow: rgba(0, 230, 118, 0.2);
+      --text: #ffffff;
+      --text-secondary: #8899aa;
+      --yellow: #FFD600;
+      --red: #FF5252;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── Utility ─────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge--green  { background: rgba(0,230,118,0.18); color: var(--accent); border: 1px solid rgba(0,230,118,0.3); }
+    .badge--yellow { background: rgba(255,214,0,0.18); color: var(--yellow); border: 1px solid rgba(255,214,0,0.3); }
+    .badge--red    { background: rgba(255,82,82,0.18);  color: var(--red);    border: 1px solid rgba(255,82,82,0.3); }
+    .badge--dark   { background: rgba(255,255,255,0.08); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    /* ── Top Nav Bar ─────────────────────────────────────────── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .top-bar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .top-bar__logo {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-bar__logo svg {
+      width: 20px;
+      height: 20px;
+      fill: #1a2030;
+    }
+
+    .top-bar__name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .top-bar__sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+    }
+
+    .top-bar__pill {
+      background: rgba(0,230,118,0.1);
+      border: 1px solid rgba(0,230,118,0.25);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Hero / Player Card ──────────────────────────────────── */
+    .player-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(0,230,118,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .player-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00E676 0%, #00b248 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1a2030;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(0,230,118,0.3), 0 0 24px rgba(0,230,118,0.2);
+      letter-spacing: -1px;
+    }
+
+    .player-info {
+      flex: 1;
+    }
+
+    .player-info__top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .player-info__name {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      hyphens: none;
+    }
+
+    .player-info__meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .player-info__meta span::after {
+      content: '·';
+      margin-left: 8px;
+      opacity: 0.4;
+    }
+
+    .player-info__meta span:last-child::after { display: none; }
+
+    /* XP Bar */
+    .xp-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .xp-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .xp-bar-labels .xp-val {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .xp-bar-track {
+      height: 8px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .xp-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00b248 0%, #00E676 100%);
+      border-radius: 999px;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px rgba(0,230,118,0.5);
+    }
+
+    .player-stats {
+      display: flex;
+      gap: 24px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .player-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .player-stat__val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .player-stat__lbl {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: rgba(255,255,255,0.07);
+      align-self: stretch;
+    }
+
+    /* ── Two-col Grid ────────────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Highlights Grid ─────────────────────────────────────── */
+    .section-wrap {
+      margin-bottom: 28px;
+    }
+
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .highlight-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .highlight-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(0,230,118,0.4);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,230,118,0.15);
+    }
+
+    .highlight-thumb {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #1a2335 0%, #0f1520 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .highlight-thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(0,230,118,0.06) 0%, transparent 60%);
+    }
+
+    .play-btn {
+      width: 44px;
+      height: 44px;
+      background: rgba(0,230,118,0.15);
+      border: 2px solid rgba(0,230,118,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .highlight-card:hover .play-btn {
+      background: rgba(0,230,118,0.25);
+      transform: scale(1.1);
+    }
+
+    .play-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--accent);
+      margin-left: 3px;
+    }
+
+    .quality-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .quality-badge--green  { background: rgba(0,230,118,0.9);  color: #0f1a10; }
+    .quality-badge--yellow { background: rgba(255,214,0,0.9);  color: #1a1500; }
+    .quality-badge--red    { background: rgba(255,82,82,0.9);   color: #ffffff; }
+
+    .highlight-body {
+      padding: 14px 16px 16px;
+    }
+
+    .highlight-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      hyphens: none;
+    }
+
+    .highlight-caption {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      hyphens: none;
+    }
+
+    .highlight-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Ron Burgundy overlay */
+    .ron-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 21, 32, 0.96);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+      z-index: 10;
+      border-radius: var(--radius);
+    }
+
+    .highlight-card:hover .ron-overlay { opacity: 1; }
+
+    .ron-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8B4513 0%, #d4691e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .ron-quote {
+      font-size: 12px;
+      color: var(--text);
+      text-align: center;
+      font-style: italic;
+      line-height: 1.6;
+      hyphens: none;
+    }
+
+    .ron-attr {
+      margin-top: 10px;
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Charts ──────────────────────────────────────────────── */
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .chart-container {
+      position: relative;
+    }
+
+    .chart-container--radar { height: 300px; }
+    .chart-container--bar   { height: 260px; }
+
+    /* ── Ron Burgundy Quote Block ────────────────────────────── */
+    .quote-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: -20px;
+      left: 24px;
+      font-size: 160px;
+      font-weight: 900;
+      color: rgba(0,230,118,0.08);
+      font-family: Georgia, serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote-inner {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+    }
+
+    .quote-ron-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8B4513 0%, #d4691e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(212,105,30,0.3);
+    }
+
+    .quote-content {
+      flex: 1;
+    }
+
+    .quote-label {
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+
+    .quote-text {
+      font-size: 18px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.65;
+      margin-bottom: 12px;
+      hyphens: none;
+    }
+
+    .quote-source {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .quote-source strong {
+      color: var(--accent);
+    }
+
+    /* ── DaaS Footer ─────────────────────────────────────────── */
+    .daas-footer {
+      background: linear-gradient(135deg, rgba(0,230,118,0.05) 0%, rgba(0,178,72,0.08) 100%);
+      border: 1px solid rgba(0,230,118,0.25);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      text-align: center;
+    }
+
+    .daas-footer__stat {
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .daas-footer__sub {
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-weight: 600;
+      hyphens: none;
+    }
+
+    .daas-footer__imagine {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      hyphens: none;
+    }
+
+    .daas-footer__divider {
+      height: 1px;
+      background: rgba(0,230,118,0.15);
+      margin: 20px auto;
+      max-width: 200px;
+    }
+
+    .daas-footer__powered {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .daas-footer__powered a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .daas-footer__powered a:hover { text-decoration: underline; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .highlights-grid { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+      .player-stats { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .highlights-grid { grid-template-columns: 1fr; }
+      .player-card { flex-wrap: wrap; }
+      .quote-inner { flex-direction: column; }
+      .daas-footer { padding: 28px 20px; }
+      .daas-footer__stat { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<script>
+const DASHBOARD_DATA = {
+  player: {
+    username: "PickleBill",
+    rank: 1,
+    xp: 283950,
+    xp_next_level: 300000,
+    level: 17,
+    rank_tier: "Gold III",
+    badges_count: 82,
+    avg_quality_score: 7.8,
+    avg_viral_score: 7.2,
+    dominant_shot: "dink",
+    play_style: "Kitchen Specialist"
+  },
+  highlights: [
+    {
+      id: "KyRtzDmrpBQN",
+      name: "Epic Rally #427",
+      quality_score: 8.4,
+      viral_score: 7.9,
+      caption: "This kitchen rally just broke physics 🔥🥒",
+      story_arc: "clutch_moment",
+      badges: ["Epic Rally", "Kitchen King"],
+      ron_burgundy: "By the beard of Zeus, that was a pickleball clinic! PickleBill commanded that kitchen like a seasoned diplomat at a very competitive lunch meeting.",
+      brands: ["Selkirk", "JOOLA"]
+    },
+    {
+      id: "AbC123XyZ456",
+      name: "Erne Machine #81",
+      quality_score: 9.1,
+      viral_score: 8.7,
+      caption: "The erne you didn't see coming 😤 #pickleball",
+      story_arc: "athletic_highlight",
+      badges: ["Erne Machine", "Highlight Reel"],
+      ron_burgundy: "Great Odin's raven! That erne was executed with the precision of a Swiss watchmaker and the audacity of a man who once wrestled a bear.",
+      brands: ["Selkirk", "Nike"]
+    },
+    {
+      id: "DeF789GhI012",
+      name: "Wall of Hands #14",
+      quality_score: 7.6,
+      viral_score: 8.2,
+      caption: "Nobody gets through this kitchen 🧱 #pickleball",
+      story_arc: "dominant_performance",
+      badges: ["Wall of Hands", "Kitchen King"],
+      ron_burgundy: "I'm not even mad, that's amazing. The hands of PickleBill moved faster than my mustache in a hurricane.",
+      brands: ["Selkirk", "Adidas"]
+    },
+    {
+      id: "JkL345MnO678",
+      name: "Reset Artist #203",
+      quality_score: 7.2,
+      viral_score: 6.8,
+      caption: "Patience wins rallies 🎯 #pickleballIQ",
+      story_arc: "grinding",
+      badges: ["Reset Specialist"],
+      ron_burgundy: "Stay classy, The Underground. That reset had more composure than a news anchor on a slow Tuesday.",
+      brands: ["JOOLA", "Franklin"]
+    },
+    {
+      id: "PqR901StU234",
+      name: "Cross-Court Dink #55",
+      quality_score: 8.0,
+      viral_score: 7.4,
+      caption: "Angles don't lie 📐 #dinkkingdom",
+      story_arc: "creative_play",
+      badges: ["Kitchen King", "Highlight Reel"],
+      ron_burgundy: "I don't know how to put this, but that cross-court dink was kind of a big deal. People know him.",
+      brands: ["Selkirk", "Nike", "Franklin"]
+    }
+  ],
+  skill_radar: {
+    labels: ["Court Coverage", "Kitchen Mastery", "Power Game", "Touch & Feel", "Court IQ", "Creativity"],
+    values: [8.1, 9.2, 6.4, 8.8, 8.9, 8.5]
+  },
+  top_brands: [
+    { brand: "Selkirk", count: 14 },
+    { brand: "Nike", count: 11 },
+    { brand: "Franklin", count: 8 },
+    { brand: "Adidas", count: 7 },
+    { brand: "JOOLA", count: 9 }
+  ]
+};
+</script>
+
+<div class="page-wrap">
+
+  <!-- ── Top Bar ───────────────────────────────────────────── -->
+  <div class="top-bar">
+    <div class="top-bar__brand">
+      <div class="top-bar__logo">
+        <!-- Pickleball paddle icon -->
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="8" cy="8" rx="6.5" ry="7" />
+          <rect x="12.5" y="13.5" width="3" height="5.5" rx="1.5" transform="rotate(-35 12.5 13.5)" />
+          <circle cx="5.5" cy="7" r="1" fill="#00E676"/>
+          <circle cx="9" cy="5.5" r="1" fill="#00E676"/>
+          <circle cx="10" cy="9.5" r="1" fill="#00E676"/>
+          <circle cx="6.5" cy="11" r="1" fill="#00E676"/>
+        </svg>
+      </div>
+      <div>
+        <div class="top-bar__name">Pickle DaaS</div>
+        <div class="top-bar__sub">Data as a Service · courtana.com</div>
+      </div>
+    </div>
+    <div class="top-bar__pill">Preview Dashboard</div>
+  </div>
+
+  <!-- ── Player Card ───────────────────────────────────────── -->
+  <div class="player-card" id="playerCard">
+    <div class="player-avatar">PB</div>
+
+    <div class="player-info">
+      <div class="player-info__top">
+        <span class="player-info__name" id="playerName"></span>
+        <span class="badge badge--green" id="rankTier"></span>
+        <span class="badge badge--dark" id="playStyle"></span>
+      </div>
+      <div class="player-info__meta">
+        <span>Level <strong id="playerLevel" style="color:#fff"></strong></span>
+        <span>Rank <strong id="playerRank" style="color:#00E676"></strong></span>
+        <span><strong id="badgeCount" style="color:#fff"></strong> Badges</span>
+        <span>Dominant shot: <strong id="dominantShot" style="color:#fff;text-transform:capitalize"></strong></span>
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-labels">
+          <span>XP Progress</span>
+          <span><span class="xp-val" id="xpCurrent"></span> / <span id="xpNext"></span></span>
+        </div>
+        <div class="xp-bar-track">
+          <div class="xp-bar-fill" id="xpBar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="player-stats">
+      <div class="player-stat">
+        <span class="player-stat__val" id="avgQuality"></span>
+        <span class="player-stat__lbl">Avg Quality</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="player-stat">
+        <span class="player-stat__val" id="avgViral"></span>
+        <span class="player-stat__lbl">Avg Viral</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="player-stat">
+        <span class="player-stat__val">5</span>
+        <span class="player-stat__lbl">Highlights</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Highlights Grid ───────────────────────────────────── -->
+  <div class="section-wrap">
+    <div class="section-label">Top Highlights</div>
+    <div class="highlights-grid" id="highlightsGrid"></div>
+  </div>
+
+  <!-- ── Charts Row ────────────────────────────────────────── -->
+  <div class="two-col">
+    <div class="chart-card">
+      <div class="chart-title">Skill Radar</div>
+      <div class="chart-subtitle">Performance across 6 skill dimensions</div>
+      <div class="chart-container chart-container--radar">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Brand Exposure</div>
+      <div class="chart-subtitle">Top brands by clip appearance count</div>
+      <div class="chart-container chart-container--bar">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Top Ron Burgundy Quote ────────────────────────────── -->
+  <div class="quote-block" id="quoteBlock">
+    <div class="quote-inner">
+      <div class="quote-ron-avatar">🎙️</div>
+      <div class="quote-content">
+        <div class="quote-label">Ron Burgundy on your best clip</div>
+        <div class="quote-text" id="quoteText"></div>
+        <div class="quote-source">
+          From <strong id="quoteClipName"></strong> &mdash; Quality Score: <strong id="quoteQuality" style="color:#00E676"></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DaaS Pitch Footer ─────────────────────────────────── -->
+  <div class="daas-footer">
+    <div class="daas-footer__stat">4,097</div>
+    <div class="daas-footer__sub">highlights analyzed across the network</div>
+    <div class="daas-footer__imagine">Imagine 1,000 venues. Every shot. Every brand. Every story arc.</div>
+    <div class="daas-footer__divider"></div>
+    <div class="daas-footer__powered">
+      Powered by <a href="https://courtana.com" target="_blank">Pickle DaaS</a> &mdash; courtana.com
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const D = DASHBOARD_DATA;
+  const P = D.player;
+
+  // ── Player Card ─────────────────────────────────────────────
+  document.getElementById('playerName').textContent   = P.username;
+  document.getElementById('rankTier').textContent     = P.rank_tier;
+  document.getElementById('playStyle').textContent    = P.play_style;
+  document.getElementById('playerLevel').textContent  = P.level;
+  document.getElementById('playerRank').textContent   = '#' + P.rank;
+  document.getElementById('badgeCount').textContent   = P.badges_count;
+  document.getElementById('dominantShot').textContent = P.dominant_shot;
+  document.getElementById('xpCurrent').textContent    = P.xp.toLocaleString();
+  document.getElementById('xpNext').textContent       = P.xp_next_level.toLocaleString();
+  document.getElementById('avgQuality').textContent   = P.avg_quality_score;
+  document.getElementById('avgViral').textContent     = P.avg_viral_score;
+
+  // Animate XP bar
+  const xpPct = (P.xp / P.xp_next_level) * 100;
+  setTimeout(function () {
+    document.getElementById('xpBar').style.width = xpPct.toFixed(1) + '%';
+  }, 200);
+
+  // ── Quality badge color helper ───────────────────────────────
+  function qualityClass(score) {
+    if (score >= 8) return 'green';
+    if (score >= 6) return 'yellow';
+    return 'red';
+  }
+
+  // ── Highlights Grid ─────────────────────────────────────────
+  const grid = document.getElementById('highlightsGrid');
+
+  D.highlights.forEach(function (h) {
+    const cls = qualityClass(h.quality_score);
+    const tagsHtml = h.badges.map(function (b) {
+      return '<span class="badge badge--dark">' + b + '</span>';
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'highlight-card';
+    card.innerHTML = `
+      <div class="highlight-thumb">
+        <div class="play-btn">
+          <svg viewBox="0 0 16 16"><polygon points="3,1 15,8 3,15"/></svg>
+        </div>
+        <span class="quality-badge quality-badge--${cls}">${h.quality_score}</span>
+      </div>
+      <div class="highlight-body">
+        <div class="highlight-name">${h.name}</div>
+        <div class="highlight-caption">${h.caption}</div>
+        <div class="highlight-tags">${tagsHtml}</div>
+      </div>
+      <div class="ron-overlay">
+        <div class="ron-avatar">🎙️</div>
+        <div class="ron-quote">"${h.ron_burgundy}"</div>
+        <div class="ron-attr">— Ron Burgundy</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // ── Top Ron Burgundy Quote ───────────────────────────────────
+  const best = D.highlights.reduce(function (a, b) {
+    return b.quality_score > a.quality_score ? b : a;
+  });
+  document.getElementById('quoteText').textContent    = '"' + best.ron_burgundy + '"';
+  document.getElementById('quoteClipName').textContent = best.name;
+  document.getElementById('quoteQuality').textContent  = best.quality_score + ' / 10';
+
+  // ── Radar Chart ─────────────────────────────────────────────
+  const radarCtx = document.getElementById('radarChart').getContext('2d');
+  new Chart(radarCtx, {
+    type: 'radar',
+    data: {
+      labels: D.skill_radar.labels,
+      datasets: [{
+        label: 'PickleBill',
+        data: D.skill_radar.values,
+        backgroundColor: 'rgba(0,230,118,0.12)',
+        borderColor: '#00E676',
+        borderWidth: 2,
+        pointBackgroundColor: '#00E676',
+        pointBorderColor: '#1a2030',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 1000, easing: 'easeInOutQuart' },
+      scales: {
+        r: {
+          min: 0,
+          max: 10,
+          ticks: {
+            stepSize: 2,
+            display: false
+          },
+          grid: {
+            color: 'rgba(255,255,255,0.07)'
+          },
+          angleLines: {
+            color: 'rgba(255,255,255,0.07)'
+          },
+          pointLabels: {
+            color: '#8899aa',
+            font: { size: 11, weight: '600' }
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#252d3a',
+          borderColor: 'rgba(0,230,118,0.3)',
+          borderWidth: 1,
+          titleColor: '#00E676',
+          bodyColor: '#ffffff',
+          callbacks: {
+            label: function (ctx) {
+              return ' ' + ctx.label + ': ' + ctx.raw;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // ── Bar Chart ────────────────────────────────────────────────
+  // Sort by count descending
+  const sortedBrands = D.top_brands.slice().sort(function (a, b) {
+    return b.count - a.count;
+  });
+
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: sortedBrands.map(function (b) { return b.brand; }),
+      datasets: [{
+        label: 'Appearances',
+        data: sortedBrands.map(function (b) { return b.count; }),
+        backgroundColor: sortedBrands.map(function (_, i) {
+          const opacity = 1 - (i * 0.15);
+          return 'rgba(0,230,118,' + opacity + ')';
+        }),
+        borderColor: 'transparent',
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 1000, easing: 'easeInOutQuart' },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#8899aa', font: { size: 11 } },
+          border: { display: false }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#ffffff', font: { size: 13, weight: '600' } },
+          border: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#252d3a',
+          borderColor: 'rgba(0,230,118,0.3)',
+          borderWidth: 1,
+          titleColor: '#00E676',
+          bodyColor: '#ffffff',
+          callbacks: {
+            label: function (ctx) {
+              return '  ' + ctx.raw + ' appearances';
+            }
+          }
+        }
+      }
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>

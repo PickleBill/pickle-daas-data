@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Investor Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;0,7..72,500;1,7..72,300;1,7..72,400&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+/* ===================== TOKENS ===================== */
+:root {
+  --bg:            oklch(97.5% 0.008 145);
+  --bg-alt:        oklch(94.5% 0.012 145);
+  --surface:       oklch(100% 0 0);
+  --border:        oklch(88% 0.012 155);
+  --border-soft:   oklch(92% 0.008 155);
+
+  --text:          oklch(18% 0.015 155);
+  --text-secondary:oklch(44% 0.016 155);
+  --text-muted:    oklch(62% 0.01 155);
+
+  --accent:        oklch(42% 0.14 155);
+  --accent-mid:    oklch(52% 0.12 155);
+  --accent-subtle: oklch(95% 0.03 155);
+  --accent-border: oklch(84% 0.06 155);
+
+  --gold:          oklch(58% 0.14 85);
+  --gold-bg:       oklch(95% 0.04 85);
+
+  --data-positive: oklch(50% 0.14 160);
+  --data-positive-bg: oklch(96% 0.04 160);
+  --data-warn:     oklch(56% 0.15 50);
+  --data-warn-bg:  oklch(96% 0.04 50);
+
+  --ff-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ff-body:    'Literata', Georgia, serif;
+  --ff-mono:    'Azeret Mono', 'Courier New', monospace;
+
+  --radius-sm: 6px;
+  --radius:    12px;
+  --radius-lg: 18px;
+
+  --shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.06), 0 1px 2px oklch(0% 0 0 / 0.04);
+  --shadow:    0 4px 16px oklch(0% 0 0 / 0.08), 0 1px 4px oklch(0% 0 0 / 0.04);
+  --shadow-lg: 0 12px 40px oklch(0% 0 0 / 0.1), 0 2px 8px oklch(0% 0 0 / 0.04);
+}
+
+/* ===================== RESET ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--text); font-family: var(--ff-body); line-height: 1.65; }
+img { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===================== NAV ===================== */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  font-family: var(--ff-display);
+  font-size: 1rem; font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.nav-brand span { color: var(--accent); }
+.nav-badge {
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-back {
+  font-family: var(--ff-display);
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary);
+}
+.nav-back:hover { color: var(--accent); text-decoration: none; }
+.nav-contact {
+  font-family: var(--ff-display);
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary);
+}
+.nav-contact:hover { color: var(--accent); text-decoration: none; }
+
+/* ===================== HERO ===================== */
+.hero {
+  max-width: 960px; margin: 0 auto;
+  padding: 96px 40px 80px;
+}
+.hero-eyebrow {
+  font-family: var(--ff-display);
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+/* HERO HEADLINE — massive punch */
+.hero-headline {
+  font-family: var(--ff-display);
+  font-size: 4.5rem; font-weight: 800;
+  line-height: 1.08; letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+.hero-headline .punch {
+  display: inline-block;
+  position: relative;
+}
+.hero-headline .punch::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 120px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Hero entrance animation */
+.hero-headline {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeUp 0.6s ease forwards;
+}
+@keyframes heroFadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-sub {
+  font-size: 1.15rem; font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 580px;
+  margin-bottom: 48px;
+}
+
+/* Ron Burgundy card — POP */
+.burgundy-card {
+  background: oklch(94% 0.04 155);
+  border: 1px solid oklch(84% 0.06 155);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  max-width: 620px;
+  box-shadow: var(--shadow);
+  position: relative;
+  margin-bottom: 56px;
+}
+.burgundy-label {
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.burgundy-quote {
+  font-family: var(--ff-body);
+  font-size: 1.15rem; font-style: italic;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 3.4em;
+  transition: opacity 0.25s ease;
+}
+.burgundy-quote.fading { opacity: 0; }
+.burgundy-attribution {
+  font-family: var(--ff-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 14px;
+}
+.burgundy-dots {
+  display: flex; gap: 6px;
+  margin-top: 16px;
+}
+.burgundy-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s;
+  cursor: pointer;
+}
+.burgundy-dot.active { background: var(--accent); }
+
+/* Hero KPIs — big numbers */
+.hero-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  max-width: 740px;
+}
+.hero-kpi {
+  background: var(--surface);
+  padding: 20px 24px;
+}
+.hero-kpi-num {
+  font-family: var(--ff-display);
+  font-size: 2.5rem; font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hero-kpi-label {
+  font-family: var(--ff-display);
+  font-size: 0.72rem; font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ===================== SECTION SHELL ===================== */
+section {
+  border-top: 4px solid var(--accent);
+}
+.section-inner {
+  max-width: 960px; margin: 0 auto;
+  padding: 80px 40px;
+}
+.section-eyebrow {
+  font-family: var(--ff-display);
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--ff-display);
+  font-size: 2rem; font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.section-sub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin-bottom: 48px;
+}
+
+/* ===================== PROOF SECTION ===================== */
+.proof-bg { background: var(--bg); }
+.proof-stats {
+  display: flex; gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 48px;
+  max-width: 640px;
+}
+.proof-stat {
+  flex: 1;
+  padding: 16px 20px;
+  background: var(--surface);
+}
+.proof-stat + .proof-stat { border-left: 1px solid var(--border); }
+.proof-stat-num {
+  font-family: var(--ff-display);
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.proof-stat-label {
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+}
+
+/* Featured clip — full width */
+.featured-clip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+.featured-clip:hover { box-shadow: var(--shadow-lg); }
+.featured-thumb-wrap {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+.featured-thumb {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.featured-clip:hover .featured-thumb { transform: scale(1.02); }
+.featured-play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.featured-play-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+}
+.featured-clip:hover .featured-play-btn { transform: scale(1.08); }
+.featured-quality {
+  position: absolute; top: 12px; right: 12px;
+  font-family: var(--ff-mono);
+  font-size: 0.75rem; font-weight: 500;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--data-positive);
+}
+.featured-body {
+  padding: 24px 28px;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 24px; align-items: start;
+}
+.featured-quote {
+  font-family: var(--ff-body);
+  font-size: 1rem; font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.featured-quote cite {
+  display: block;
+  font-family: var(--ff-mono);
+  font-size: 0.7rem; font-style: normal;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+.featured-meta { text-align: right; }
+.featured-arc {
+  font-family: var(--ff-display);
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.featured-badges {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  justify-content: flex-end;
+}
+.badge-pill {
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 600;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+}
+.brand-pill {
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 600;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+/* Secondary clip grid */
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.clip-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.clip-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+.clip-thumb-wrap {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+.clip-thumb {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.clip-card:hover .clip-thumb { transform: scale(1.03); }
+.clip-play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
+}
+.clip-card:hover .clip-play { opacity: 1; }
+.clip-play-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--text);
+}
+.clip-score {
+  position: absolute; top: 8px; right: 8px;
+  font-family: var(--ff-mono);
+  font-size: 0.68rem; font-weight: 500;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: 999px;
+  color: var(--data-positive);
+}
+.clip-body { padding: 14px 16px; }
+.clip-arc-label {
+  font-family: var(--ff-display);
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 6px;
+}
+.clip-summary {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.clip-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* ===================== DATA BUYER SAMPLE ===================== */
+.buyer-sample {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.buyer-sample-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.buyer-sample-header:hover { background: var(--bg); }
+.buyer-sample-title {
+  font-family: var(--ff-display);
+  font-size: 0.95rem; font-weight: 600;
+  color: var(--text);
+}
+.buyer-sample-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.buyer-sample-toggle {
+  font-family: var(--ff-display);
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.buyer-sample-body {
+  display: none;
+  padding: 28px;
+}
+.buyer-sample-body.open { display: block; }
+.buyer-sample-intro {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.json-block {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  font-family: var(--ff-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text);
+  overflow-x: auto;
+  position: relative;
+}
+.json-key { color: var(--accent); }
+.json-str { color: var(--data-positive); }
+.json-num { color: var(--data-warn); }
+.json-bool { color: oklch(52% 0.16 300); }
+.json-ann {
+  display: inline-block;
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 500;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1px 8px; border-radius: 4px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+.buyer-framing {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius);
+  font-family: var(--ff-display);
+  font-size: 0.88rem; font-weight: 500;
+  color: var(--accent);
+}
+
+/* ===================== ECONOMICS SECTION ===================== */
+.econ-bg { background: oklch(96% 0.02 155); }
+.calc-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.calc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+.calc-card-title {
+  font-family: var(--ff-display);
+  font-size: 1rem; font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.calc-card-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+.slider-group { margin-bottom: 20px; }
+.slider-label-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 8px;
+}
+.slider-label {
+  font-family: var(--ff-display);
+  font-size: 0.82rem; font-weight: 500;
+  color: var(--text-secondary);
+}
+.slider-val {
+  font-family: var(--ff-mono);
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--accent);
+}
+input[type=range] {
+  width: 100%; height: 4px;
+  appearance: none; -webkit-appearance: none;
+  background: var(--border);
+  border-radius: 2px; outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none; -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--accent-border);
+}
+.calc-outputs { margin-top: 24px; }
+.calc-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.calc-row:last-child { border-bottom: none; }
+.calc-row-label {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+.calc-row-val {
+  font-family: var(--ff-mono);
+  font-size: 0.88rem; font-weight: 500;
+  color: var(--text);
+}
+.scale-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.scale-table th {
+  font-family: var(--ff-display);
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 0 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.scale-table td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+}
+.scale-table td:first-child { color: var(--text); font-weight: 500; }
+.scale-table td:last-child {
+  font-family: var(--ff-mono);
+  font-size: 0.82rem;
+  color: var(--data-positive);
+}
+.scale-table tr.highlight-row td { background: var(--accent-subtle); }
+.scale-table tr.highlight-row td:first-child { color: var(--accent); }
+.projected {
+  font-family: var(--ff-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.calc-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 16px;
+  line-height: 1.5;
+}
+
+/* Corpus advantage */
+.corpus-strip {
+  display: flex; gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 32px;
+  background: var(--surface);
+}
+.corpus-block {
+  flex: 1;
+  padding: 24px 28px;
+}
+.corpus-block + .corpus-block { border-left: 1px solid var(--border); }
+.corpus-num {
+  font-family: var(--ff-display);
+  font-size: 2.25rem; font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.corpus-arrow {
+  font-size: 1.5rem; color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 8px;
+}
+.corpus-label {
+  font-family: var(--ff-display);
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--text-muted);
+}
+.corpus-label strong { color: var(--accent); }
+.corpus-note {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--text-muted);
+  max-width: 500px;
+}
+
+/* ===================== CTA SECTION ===================== */
+.cta-section {
+  background: oklch(18% 0.04 155);
+  border-top: 4px solid var(--accent);
+}
+.cta-inner {
+  max-width: 960px; margin: 0 auto;
+  padding: 80px 40px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+.cta-headline {
+  font-family: var(--ff-display);
+  font-size: 2.25rem; font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--bg);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.cta-sub {
+  font-size: 1rem;
+  color: oklch(70% 0.01 155);
+  line-height: 1.6;
+}
+.cta-right { }
+.cta-what-label {
+  font-family: var(--ff-display);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: oklch(55% 0.01 155);
+  margin-bottom: 16px;
+}
+.cta-bullets { list-style: none; margin-bottom: 32px; }
+.cta-bullets li {
+  font-size: 0.92rem;
+  color: oklch(78% 0.01 155);
+  padding: 8px 0;
+  display: flex; align-items: flex-start; gap: 10px;
+  border-bottom: 1px solid oklch(30% 0.02 155);
+}
+.cta-bullets li:last-child { border-bottom: none; }
+.cta-bullet-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent-mid);
+  margin-top: 9px; flex-shrink: 0;
+}
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--ff-display);
+  font-size: 1rem; font-weight: 600;
+  background: var(--accent);
+  color: var(--surface);
+  padding: 16px 32px;
+  border-radius: var(--radius);
+  transition: background 0.2s ease;
+  animation: ctaPulse 3s ease-in-out infinite;
+}
+.cta-btn:hover {
+  background: var(--accent-mid);
+  text-decoration: none;
+  animation: none;
+}
+@keyframes ctaPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+/* ===================== VIDEO MODAL ===================== */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: oklch(0% 0 0 / 0.75);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: oklch(10% 0.01 155);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-width: 900px; width: 92vw;
+  transform: scale(0.96);
+  transition: transform 0.25s ease;
+  position: relative;
+}
+.modal-overlay.open .modal-box { transform: scale(1); }
+.modal-close {
+  position: absolute; top: 12px; right: 12px; z-index: 10;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: oklch(20% 0.01 155);
+  border: 1px solid oklch(30% 0.01 155);
+  color: oklch(80% 0.01 155);
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: oklch(30% 0.01 155); }
+.modal-video { width: 100%; display: block; max-height: 80vh; }
+
+/* ===================== FADE-IN ===================== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .hero { padding: 60px 20px 56px; }
+  .hero-headline { font-size: 2.5rem; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+  .hero-kpi-num { font-size: 2rem; }
+  .section-inner { padding: 56px 20px; }
+  .clip-grid { grid-template-columns: 1fr; }
+  .calc-split { grid-template-columns: 1fr; }
+  .featured-body { grid-template-columns: 1fr; }
+  .featured-badges { justify-content: flex-start; }
+  .cta-inner { grid-template-columns: 1fr; gap: 40px; }
+  .corpus-strip { flex-direction: column; }
+  .corpus-block + .corpus-block { border-left: none; border-top: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <a class="nav-back" href="index.html">&larr; Portal</a>
+    <div class="nav-brand">Pickle <span>DaaS</span></div>
+    <div class="nav-badge">Investor Demo &middot; April 2026</div>
+  </div>
+  <div class="nav-right">
+    <a class="nav-contact" href="mailto:bill@courtana.com">bill@courtana.com</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow fade-in">Courtana &middot; Data-as-a-Service</div>
+  <h1 class="hero-headline">Pickleball has<br>36 million players.<br><span class="punch">Zero Statcast.</span></h1>
+  <p class="hero-sub fade-in">Pickle DaaS turns every match clip into structured intelligence — player DNA, badge predictions, brand detection, coaching signals — at <strong>$0.0054 per clip</strong>.</p>
+
+  <!-- Ron Burgundy rotating card -->
+  <div class="burgundy-card fade-in" id="burgundyCard">
+    <div class="burgundy-label"><span style="color:var(--accent)">&#10022;</span> Actual AI commentary — real match, real Gemini 2.5 Flash output</div>
+    <blockquote class="burgundy-quote" id="burgundyQuote"></blockquote>
+    <div class="burgundy-attribution">— Ron Burgundy Voice Pack &middot; Courtana DaaS</div>
+    <div class="burgundy-dots" id="burgundyDots"></div>
+  </div>
+
+  <div class="hero-kpis fade-in">
+    <div class="hero-kpi">
+      <div class="hero-kpi-num" data-count="8125">0</div>
+      <div class="hero-kpi-label">Clips Available</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="hero-kpi-num" data-count="29">0</div>
+      <div class="hero-kpi-label">Players Tracked</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="hero-kpi-num" data-count-decimal="0.0054" data-prefix="$">$0.000</div>
+      <div class="hero-kpi-label">Cost Per Clip</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="hero-kpi-num" data-count="229">0</div>
+      <div class="hero-kpi-label">Badge Types</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: PROOF -->
+<section>
+<div class="section-inner">
+  <div class="section-eyebrow fade-in">Real Pipeline &middot; Real Data</div>
+  <h2 class="section-title fade-in">This is what the data looks like</h2>
+  <p class="section-sub fade-in">Every clip analyzed by Gemini 2.5 Flash. Click any clip to watch. The commentary is real AI output — not scripted.</p>
+
+  <div class="proof-stats fade-in">
+    <div class="proof-stat">
+      <div class="proof-stat-num">29</div>
+      <div class="proof-stat-label">Players</div>
+    </div>
+    <div class="proof-stat">
+      <div class="proof-stat-num">1,472</div>
+      <div class="proof-stat-label">Badge Awards</div>
+    </div>
+    <div class="proof-stat">
+      <div class="proof-stat-num">8,125</div>
+      <div class="proof-stat-label">Clips Available</div>
+    </div>
+    <div class="proof-stat">
+      <div class="proof-stat-num">~$44</div>
+      <div class="proof-stat-label">To Analyze All</div>
+    </div>
+  </div>
+
+  <!-- Featured clip -->
+  <div class="featured-clip fade-in" id="featuredClip">
+    <div class="featured-thumb-wrap">
+      <img class="featured-thumb" id="featuredThumb" src="" alt="Featured clip">
+      <div class="featured-play"><div class="featured-play-btn">&#9654;</div></div>
+      <div class="featured-quality" id="featuredScore"></div>
+    </div>
+    <div class="featured-body">
+      <div>
+        <blockquote class="featured-quote" id="featuredQuote"></blockquote>
+      </div>
+      <div class="featured-meta">
+        <div class="featured-arc" id="featuredArc"></div>
+        <div class="featured-badges" id="featuredBadges"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary clips grid -->
+  <div class="clip-grid" id="clipGrid"></div>
+
+  <!-- Buyer sample expandable -->
+  <div class="buyer-sample fade-in">
+    <div class="buyer-sample-header" onclick="toggleBuyerSample(this)">
+      <div>
+        <div class="buyer-sample-title">What a data buyer actually receives</div>
+        <div class="buyer-sample-sub">One clip &rarr; one structured JSON object. Every clip in the corpus.</div>
+      </div>
+      <div class="buyer-sample-toggle" id="buyerToggleLabel">Show data &rarr;</div>
+    </div>
+    <div class="buyer-sample-body" id="buyerSampleBody">
+      <p class="buyer-sample-intro">Every analyzed clip produces a structured JSON object like this one. Brand monitoring companies plug into brand detection. Coaching apps plug into skill metrics. Content platforms use viral scores and captions. Leagues use badge predictions for gamification.</p>
+      <div class="json-block"><pre id="jsonSample"></pre></div>
+      <div class="buyer-framing">Every clip &rarr; this JSON &rarr; your product. The corpus is the moat.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 3: ECONOMICS -->
+<section class="econ-bg">
+<div class="section-inner">
+  <div class="section-eyebrow fade-in">Unit Economics</div>
+  <h2 class="section-title fade-in">At scale, this is a flywheel</h2>
+  <p class="section-sub fade-in">Adjust the sliders. The AI analysis cost is negligible — the corpus value is the business.</p>
+
+  <div class="calc-split">
+    <div class="calc-card fade-in">
+      <div class="calc-card-title">Interactive Calculator</div>
+      <div class="calc-card-sub">Model your venue rollout</div>
+
+      <div class="slider-group">
+        <div class="slider-label-row">
+          <span class="slider-label">Number of Venues</span>
+          <span class="slider-val" id="venueVal">10</span>
+        </div>
+        <input type="range" min="1" max="1000" value="10" id="venueSlider">
+      </div>
+      <div class="slider-group">
+        <div class="slider-label-row">
+          <span class="slider-label">Courts per Venue</span>
+          <span class="slider-val" id="courtVal">8</span>
+        </div>
+        <input type="range" min="2" max="24" value="8" id="courtSlider">
+      </div>
+
+      <div class="calc-outputs">
+        <div class="calc-row">
+          <span class="calc-row-label">Clips per week</span>
+          <span class="calc-row-val" id="clipsWeek">1,600</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-row-label">Clips per month</span>
+          <span class="calc-row-val" id="clipsMonth">6,400</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-row-label">AI analysis cost / month</span>
+          <span class="calc-row-val" id="costMonth">$38</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-row-label">Corpus after 1 year</span>
+          <span class="calc-row-val" id="corpusYear">76,800</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-card fade-in">
+      <div class="calc-card-title">Scale Comparison</div>
+      <div class="calc-card-sub">Annual economics by deployment size</div>
+      <table class="scale-table">
+        <thead><tr><th>Scale</th><th>Clips / Year</th><th>AI Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Today (15 clips)</td><td>~15</td><td>$0.09</td></tr>
+          <tr class="highlight-row"><td>1 venue (8 courts)</td><td>33,280 <span class="projected">est.</span></td><td>~$200 <span class="projected">est.</span></td></tr>
+          <tr><td>10 venues</td><td>332,800 <span class="projected">est.</span></td><td>~$2,000</td></tr>
+          <tr><td>100 venues</td><td>3,328,000 <span class="projected">est.</span></td><td>~$20,000</td></tr>
+          <tr><td>1,000 venues</td><td>33,280,000 <span class="projected">est.</span></td><td>~$200,000</td></tr>
+        </tbody>
+      </table>
+      <p class="calc-note">Gemini 2.5 Flash at $0.006/clip. Competitive alternatives cost 10&ndash;40&times; more. Analysis cost is a rounding error at scale — the corpus value is the business.</p>
+    </div>
+  </div>
+
+  <div class="corpus-strip fade-in">
+    <div class="corpus-block">
+      <div class="corpus-num" data-count="15">0</div>
+      <div class="corpus-label">Clips analyzed today</div>
+    </div>
+    <div class="corpus-arrow">&rarr;</div>
+    <div class="corpus-block">
+      <div class="corpus-num">8,125</div>
+      <div class="corpus-label">Clips <strong>available now</strong> in the corpus</div>
+    </div>
+    <div class="corpus-arrow">&rarr;</div>
+    <div class="corpus-block">
+      <div class="corpus-num">36M+</div>
+      <div class="corpus-label">Players. <strong>Zero Statcast equivalent exists.</strong></div>
+    </div>
+  </div>
+  <p class="corpus-note fade-in">Second Spectrum sold to Genius Sports for $200M+ on sports data alone. We are building that infrastructure for pickleball — a sport with no incumbents, from the courts up.</p>
+</div>
+</section>
+
+<!-- SECTION 4: CTA -->
+<section class="cta-section">
+<div class="cta-inner">
+  <div>
+    <h2 class="cta-headline">What would you build with the world's largest corpus of pickleball intelligence?</h2>
+    <p class="cta-sub">The clock started the moment we flipped the first camera on. Every day is another moat-day.</p>
+  </div>
+  <div class="cta-right">
+    <div class="cta-what-label">What data buyers get</div>
+    <ul class="cta-bullets">
+      <li><span class="cta-bullet-dot"></span>Per-clip JSON: shot analysis, badge predictions, brand detections, viral scores, AI commentary</li>
+      <li><span class="cta-bullet-dot"></span>Player DNA profiles: skill ratings, tendencies, predicted coaching interventions</li>
+      <li><span class="cta-bullet-dot"></span>Brand intelligence: exposure frequency, venue mapping, sponsorship whitespace analysis</li>
+    </ul>
+    <a class="cta-btn" href="mailto:bill@courtana.com">Talk to us &rarr; bill@courtana.com</a>
+  </div>
+</div>
+</section>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close">&#10005;</button>
+    <video class="modal-video" id="modalVideo" controls playsinline></video>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const CLIPS = [
+  {uuid:"6cf49d96-ad41-47a1-a1c2-c5f8b57fd346",quality:8,viral:5,arc:"Athletic Highlight",summary:"A spectacular overhead smash ends a contested rally in decisive fashion.",ron_burgundy:"Sweet fancy Moses! That overhead was hit with the force of a thousand suns. The opponent had no answer. None whatsoever.",social_caption:"BOOM! Overhead of the year candidate? \u{1F4AA}",dominant_shot:"Overhead",court_coverage:8,kitchen_mastery:7,creativity:8,athleticism:9,court_iq:7,power_game:8,badges_predicted:["Smash King","High Flyer"],brands:["Recovery Cave"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.mp4",top_10:true},
+  {uuid:"139453f3-8ac3-4687-922e-214cc15490df",quality:8,viral:7,arc:"Athletic Highlight",summary:"A patient dink rally ends with an explosive forehand speed-up for a decisive winner.",ron_burgundy:"Good heavens, what a display of athletic prowess! The dinks were as delicate as a butterfly's kiss, until a thunderous forehand erupted, leaving the opposition utterly flummoxed. Simply magnificent!",social_caption:"Dink, dink, BANG! \u{1F4A5} What a finish!",dominant_shot:"Dink",court_coverage:8,kitchen_mastery:9,creativity:7,athleticism:8,court_iq:8,power_game:7,badges_predicted:["Dink Master","Clutch Player"],brands:["JOOLA","LIFE TIME PICKLEBALL"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4"},
+  {uuid:"6ee49439-c28a-452f-9bc3-ccea303d3330",quality:8,viral:6,arc:"Creative",summary:"A creative dink sequence featuring an unexpected erne attempt and quick recovery.",ron_burgundy:"I love lamp. And I love THIS shot. The erne attempt had me on the edge of my seat. This is journalism!",social_caption:"That erne attempt tho \u{1F60D} #pickleballlife #erne",dominant_shot:"Dink",court_coverage:8,kitchen_mastery:9,creativity:9,athleticism:8,court_iq:8,power_game:6,badges_predicted:["Creative Genius","Erne Artist"],brands:["Recovery Cave","The Underground"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea603d3330.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea603d3330.mp4"},
+  {uuid:"a4e8f830-35cc-4303-bec0-06b4cdeddfa7",quality:8,viral:7,arc:"Grind Rally",summary:"Elite cross-court drive exchange demonstrates championship-level consistency under pressure.",ron_burgundy:"By Odin's raven, these drives are LEGENDARY! Back and forth, neither yielding. This is what separates the champions from the mere mortals.",social_caption:"When the drives just don't stop \u{1F624} Consistency is king.",dominant_shot:"Drive",court_coverage:9,kitchen_mastery:6,creativity:6,athleticism:8,court_iq:8,power_game:9,badges_predicted:["Baseline Beast","Consistency King"],brands:["JOOLA"],thumbnail:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.jpeg",video_url:"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.mp4"}
+];
+
+const BURGUNDY_QUOTES = CLIPS.map(c => c.ron_burgundy);
+
+// ===================== RON BURGUNDY ROTATOR =====================
+let bqIndex = 0;
+let bqTimer;
+
+function initBurgundyRotator() {
+  const quote = document.getElementById('burgundyQuote');
+  const dots = document.getElementById('burgundyDots');
+  if (!quote || !dots) return;
+
+  // Build dots
+  BURGUNDY_QUOTES.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'burgundy-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => { setBurgundyQuote(i); resetTimer(); });
+    dots.appendChild(dot);
+  });
+
+  setBurgundyQuote(0);
+  bqTimer = setInterval(() => nextBurgundyQuote(), 5000);
+}
+
+function setBurgundyQuote(index) {
+  const quote = document.getElementById('burgundyQuote');
+  const allDots = document.querySelectorAll('.burgundy-dot');
+  bqIndex = index;
+  quote.classList.add('fading');
+  setTimeout(() => {
+    quote.textContent = '"' + BURGUNDY_QUOTES[index] + '"';
+    quote.classList.remove('fading');
+  }, 220);
+  allDots.forEach((d, i) => d.classList.toggle('active', i === index));
+}
+
+function nextBurgundyQuote() {
+  setBurgundyQuote((bqIndex + 1) % BURGUNDY_QUOTES.length);
+}
+
+function resetTimer() {
+  clearInterval(bqTimer);
+  bqTimer = setInterval(() => nextBurgundyQuote(), 5000);
+}
+
+// ===================== FEATURED CLIP =====================
+function buildFeaturedClip() {
+  const clip = CLIPS[0]; // top_10 candidate: overhead smash
+  const thumb = document.getElementById('featuredThumb');
+  const score = document.getElementById('featuredScore');
+  const quoteEl = document.getElementById('featuredQuote');
+  const arcEl = document.getElementById('featuredArc');
+  const badgesEl = document.getElementById('featuredBadges');
+
+  thumb.src = clip.thumbnail;
+  thumb.onerror = () => { thumb.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYwIiBoZWlnaHQ9IjU0MCIgdmlld0JveD0iMCAwIDk2MCA1NDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9Ijk2MCIgaGVpZ2h0PSI1NDAiIGZpbGw9IiNlOGVkZjIiLz48dGV4dCB4PSI0ODAiIHk9IjI3NiIgZm9udC1mYW1pbHk9InN5c3RlbS11aSIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q2xpcCBUaHVtYm5haWw8L3RleHQ+PC9zdmc+'; };
+  score.textContent = clip.quality + '/10';
+  quoteEl.innerHTML = '"' + clip.ron_burgundy + '"<cite>\u2014 Ron Burgundy Voice Pack \u00b7 Clip ' + clip.uuid.slice(0, 8) + ' \u00b7 Gemini 2.5 Flash</cite>';
+  arcEl.textContent = clip.arc;
+
+  clip.badges_predicted.forEach(b => {
+    const pill = document.createElement('span');
+    pill.className = 'badge-pill';
+    pill.textContent = b;
+    badgesEl.appendChild(pill);
+  });
+  clip.brands.forEach(b => {
+    const pill = document.createElement('span');
+    pill.className = 'brand-pill';
+    pill.textContent = b;
+    badgesEl.appendChild(pill);
+  });
+
+  document.getElementById('featuredClip').addEventListener('click', () => openModal(clip.video_url));
+}
+
+// ===================== CLIP GRID =====================
+function buildClipGrid() {
+  const grid = document.getElementById('clipGrid');
+  if (!grid) return;
+  CLIPS.slice(1, 4).forEach((clip, i) => {
+    const card = document.createElement('div');
+    card.className = 'clip-card fade-in';
+    card.style.transitionDelay = i * 0.07 + 's';
+    const bPills = clip.brands.map(b => `<span class="brand-pill">${b}</span>`).join('');
+    card.innerHTML = `
+      <div class="clip-thumb-wrap">
+        <img class="clip-thumb" src="${clip.thumbnail}" alt="${clip.arc}" loading="lazy"
+          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMyMCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNlOGVkZjIiLz48dGV4dCB4PSIxNjAiIHk9Ijk2IiBmb250LWZhbWlseT0ic3lzdGVtLXVpIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTRhM2I4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DbGlwPC90ZXh0Pjwvc3ZnPg=='" />
+        <div class="clip-play"><div class="clip-play-btn">\u25B6</div></div>
+        <div class="clip-score">${clip.quality}/10</div>
+      </div>
+      <div class="clip-body">
+        <div class="clip-arc-label">${clip.arc}</div>
+        <div class="clip-summary">${clip.summary}</div>
+        <div class="clip-tags">${bPills}</div>
+      </div>`;
+    card.addEventListener('click', () => openModal(clip.video_url));
+    grid.appendChild(card);
+    fadeObserver.observe(card);
+  });
+}
+
+// ===================== BUYER JSON SAMPLE =====================
+function buildJsonSample() {
+  const clip = CLIPS[1]; // dink rally clip — good variety of fields
+  const pre = document.getElementById('jsonSample');
+  if (!pre) return;
+  pre.innerHTML =
+`<span class="json-key">"clip_uuid"</span>: <span class="json-str">"${clip.uuid}"</span>, <span class="json-ann">unique identifier</span>
+<span class="json-key">"quality_score"</span>: <span class="json-num">${clip.quality}</span>, <span class="json-ann">0\u201310 \u00b7 AI-assessed</span>
+<span class="json-key">"viral_potential"</span>: <span class="json-num">${clip.viral}</span>,
+<span class="json-key">"story_arc"</span>: <span class="json-str">"${clip.arc}"</span>, <span class="json-ann">content classification</span>
+<span class="json-key">"dominant_shot"</span>: <span class="json-str">"${clip.dominant_shot}"</span>,
+<span class="json-key">"skill_metrics"</span>: {
+  <span class="json-key">"court_coverage"</span>: <span class="json-num">${clip.court_coverage}</span>,
+  <span class="json-key">"kitchen_mastery"</span>: <span class="json-num">${clip.kitchen_mastery}</span>, <span class="json-ann">coaching signal</span>
+  <span class="json-key">"creativity"</span>: <span class="json-num">${clip.creativity}</span>,
+  <span class="json-key">"athleticism"</span>: <span class="json-num">${clip.athleticism}</span>
+},
+<span class="json-key">"badges_predicted"</span>: <span class="json-str">["${clip.badges_predicted.join('", "')}"</span>], <span class="json-ann">gamification layer</span>
+<span class="json-key">"brands_detected"</span>: <span class="json-str">["${clip.brands.join('", "')}"</span>], <span class="json-ann">sponsorship intelligence</span>
+<span class="json-key">"social_caption"</span>: <span class="json-str">"${clip.social_caption}"</span>, <span class="json-ann">content ready</span>
+<span class="json-key">"ron_burgundy_commentary"</span>: <span class="json-str">"${clip.ron_burgundy.slice(0,60)}..."</span>,
+<span class="json-key">"video_url"</span>: <span class="json-str">"cdn.courtana.com/..."</span>, <span class="json-ann">CDN link \u00b7 public</span>
+<span class="json-key">"highlight_reel_worthy"</span>: <span class="json-bool">true</span>`;
+}
+
+function toggleBuyerSample(headerEl) {
+  const body = document.getElementById('buyerSampleBody');
+  const label = document.getElementById('buyerToggleLabel');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  label.textContent = isOpen ? 'Show data \u2192' : 'Hide \u2191';
+}
+
+// ===================== CALCULATOR =====================
+function initCalculator() {
+  const venue = document.getElementById('venueSlider');
+  const court = document.getElementById('courtSlider');
+  const update = () => {
+    const v = parseInt(venue.value), c = parseInt(court.value);
+    const wk = v * c * 20, mo = wk * 4, yr = wk * 52;
+    document.getElementById('venueVal').textContent = v.toLocaleString();
+    document.getElementById('courtVal').textContent = c;
+    document.getElementById('clipsWeek').textContent = wk.toLocaleString();
+    document.getElementById('clipsMonth').textContent = mo.toLocaleString();
+    document.getElementById('costMonth').textContent = '$' + Math.round(mo * 0.006).toLocaleString();
+    document.getElementById('corpusYear').textContent = yr.toLocaleString();
+  };
+  venue.addEventListener('input', update);
+  court.addEventListener('input', update);
+  update();
+}
+
+// ===================== VIDEO MODAL =====================
+function openModal(url) {
+  const m = document.getElementById('videoModal');
+  const v = document.getElementById('modalVideo');
+  v.src = url; m.classList.add('open');
+  v.play().catch(() => {});
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  const m = document.getElementById('videoModal');
+  const v = document.getElementById('modalVideo');
+  m.classList.remove('open'); v.pause(); v.src = '';
+  document.body.style.overflow = '';
+}
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('videoModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===================== FADE-IN =====================
+const fadeObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); fadeObserver.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+// ===================== COUNT UP =====================
+function countUp(el) {
+  const isDecimal = el.hasAttribute('data-count-decimal');
+  const target = isDecimal ? parseFloat(el.getAttribute('data-count-decimal')) : parseInt(el.getAttribute('data-count'));
+  const prefix = el.getAttribute('data-prefix') || '';
+  const suffix = el.getAttribute('data-suffix') || '';
+  const dur = 1400, start = performance.now();
+  const tick = now => {
+    const p = Math.min((now - start) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+    const val = isDecimal ? (e * target).toFixed(4) : Math.round(e * target).toLocaleString();
+    el.textContent = prefix + val + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+const countObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { countUp(e.target); countObserver.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count], [data-count-decimal]').forEach(el => countObserver.observe(el));
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  initBurgundyRotator();
+  buildFeaturedClip();
+  buildClipGrid();
+  buildJsonSample();
+  initCalculator();
+});
+</script>
+</body>
+</html>

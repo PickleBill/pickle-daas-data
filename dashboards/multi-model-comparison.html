@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Multi-Model Intelligence</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#07071a; color:#e0e0e0; font-family:'Inter','SF Pro',system-ui,sans-serif; }
+
+.hero { text-align:center; padding:48px 24px 32px; border-bottom:1px solid #1a1a3a; }
+.hero h1 { font-size:32px; font-weight:900; color:#fff; letter-spacing:-0.5px; }
+.hero h1 span.g { color:#4285F4; }
+.hero h1 span.c { color:#00E676; }
+.hero p { color:#888; font-size:14px; margin-top:8px; max-width:600px; margin-left:auto; margin-right:auto; }
+.badge-row { display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+.badge { padding:4px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+.badge.gemini { background:#4285F420; border:1px solid #4285F4; color:#4285F4; }
+.badge.claude { background:#00E67620; border:1px solid #00E676; color:#00E676; }
+.badge.fused { background:#FF6B6B20; border:1px solid #FF6B6B; color:#FF6B6B; }
+
+.architecture { padding:24px; max-width:900px; margin:0 auto; }
+.arch-grid { display:grid; grid-template-columns:1fr auto 1fr; gap:0; align-items:center; margin:16px 0; }
+.arch-box { background:#111130; border-radius:12px; padding:16px; }
+.arch-box h3 { font-size:13px; font-weight:700; margin-bottom:8px; }
+.arch-box.gemini-box { border:1px solid #4285F4; }
+.arch-box.gemini-box h3 { color:#4285F4; }
+.arch-box.claude-box { border:1px solid #00E676; }
+.arch-box.claude-box h3 { color:#00E676; }
+.arch-arrow { text-align:center; font-size:24px; color:#555; padding:0 16px; }
+.arch-box ul { list-style:none; }
+.arch-box ul li { font-size:11px; color:#aaa; padding:2px 0; }
+.arch-box ul li::before { content:"▸ "; color:#555; }
+
+.clip-nav { display:flex; gap:8px; justify-content:center; padding:16px 24px; background:#0d0d25; border-bottom:1px solid #1a1a3a; flex-wrap:wrap; }
+.clip-btn { padding:6px 16px; border-radius:20px; border:1px solid #333; background:transparent; color:#888; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; }
+.clip-btn.active { border-color:#00E676; color:#00E676; background:#00E67615; }
+.clip-btn:hover:not(.active) { border-color:#555; color:#ccc; }
+
+.clip-view { display:none; max-width:1200px; margin:0 auto; padding:24px; }
+.clip-view.active { display:block; }
+
+.clip-header { margin-bottom:20px; }
+.clip-header h2 { font-size:18px; font-weight:700; color:#fff; }
+.clip-header .meta { display:flex; gap:16px; margin-top:8px; flex-wrap:wrap; }
+.clip-header .meta span { font-size:12px; color:#888; }
+.clip-header .meta strong { color:#e0e0e0; }
+
+.scores { display:flex; gap:12px; margin:12px 0; flex-wrap:wrap; }
+.score-chip { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; }
+.score-chip.quality { background:#4285F430; color:#82B1FF; border:1px solid #4285F450; }
+.score-chip.viral { background:#FF6B6B30; color:#FF8A80; border:1px solid #FF6B6B50; }
+.score-chip.watch { background:#FFD54F30; color:#FFD54F; border:1px solid #FFD54F50; }
+
+.comparison-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+@media (max-width:768px) { .comparison-grid { grid-template-columns:1fr; } }
+
+.model-panel { border-radius:12px; overflow:hidden; }
+.panel-header { padding:12px 16px; display:flex; align-items:center; gap:10px; }
+.panel-header .model-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900; flex-shrink:0; }
+.panel-header .model-icon.g { background:#4285F4; color:#fff; }
+.panel-header .model-icon.c { background:#00E676; color:#000; }
+.panel-header h3 { font-size:14px; font-weight:700; }
+.panel-header .model-label { font-size:10px; color:#888; }
+
+.gemini-panel { background:#0d1a2e; border:1px solid #4285F430; }
+.gemini-panel .panel-header { background:#4285F410; border-bottom:1px solid #4285F420; }
+.gemini-panel .panel-header h3 { color:#82B1FF; }
+
+.claude-panel { background:#0d2020; border:1px solid #00E67630; }
+.claude-panel .panel-header { background:#00E67610; border-bottom:1px solid #00E67620; }
+.claude-panel .panel-header h3 { color:#00E676; }
+
+.panel-body { padding:16px; }
+
+.insight-block { margin-bottom:14px; }
+.insight-block .label { font-size:10px; font-weight:700; letter-spacing:0.5px; color:#555; text-transform:uppercase; margin-bottom:4px; }
+.insight-block .value { font-size:13px; color:#ddd; line-height:1.5; }
+.insight-block .value.highlight { color:#fff; font-weight:600; }
+
+.shot-list { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+.shot-chip { padding:2px 8px; border-radius:10px; font-size:10px; background:#1a1a3a; color:#aaa; border:1px solid #2a2a4a; }
+.shot-chip.winner { background:#00E67615; color:#00E676; border-color:#00E67630; }
+.shot-chip.error { background:#FF6B6B15; color:#FF6B6B; border-color:#FF6B6B30; }
+
+.brand-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:10px; font-size:11px; font-weight:700; background:#4285F415; border:1px solid #4285F430; color:#82B1FF; margin:2px; }
+
+.skill-bars { display:flex; flex-direction:column; gap:6px; }
+.skill-bar-row { display:flex; align-items:center; gap:8px; }
+.skill-bar-row .skill-name { font-size:10px; color:#888; width:80px; flex-shrink:0; text-transform:capitalize; }
+.skill-bar-track { flex:1; background:#1a1a3a; border-radius:4px; height:6px; overflow:hidden; }
+.skill-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg, #4285F4, #82B1FF); }
+.skill-bar-fill.claude-fill { background:linear-gradient(90deg, #00C853, #00E676); }
+.skill-bar-val { font-size:10px; color:#666; width:16px; flex-shrink:0; text-align:right; }
+
+.fused-panel { background:#1a0d2e; border:1px solid #FF6B6B30; border-radius:12px; margin-top:16px; }
+.fused-panel .panel-header { background:#FF6B6B10; border-bottom:1px solid #FF6B6B20; border-radius:12px 12px 0 0; }
+.fused-panel .panel-header h3 { color:#FF8A80; }
+.fused-panel .panel-header .model-icon { background:linear-gradient(135deg, #4285F4, #00E676); color:#fff; }
+
+.fused-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; padding:16px; }
+@media (max-width:600px) { .fused-grid { grid-template-columns:1fr; } }
+.fused-metric { text-align:center; padding:12px; background:#110d1f; border-radius:8px; border:1px solid #2a1a4a; }
+.fused-metric .fm-val { font-size:24px; font-weight:900; color:#FF8A80; }
+.fused-metric .fm-label { font-size:10px; color:#666; margin-top:4px; text-transform:uppercase; letter-spacing:0.5px; }
+.fused-metric .fm-sub { font-size:11px; color:#aaa; margin-top:4px; }
+
+.q-box { padding:12px 16px; background:#0d0d25; border-left:3px solid; border-radius:0 8px 8px 0; margin:6px 0; font-size:13px; line-height:1.6; font-style:italic; color:#bbb; }
+.q-box.gemini-q { border-color:#4285F4; }
+.q-box.claude-q { border-color:#00E676; }
+
+.tag-cloud { display:flex; flex-wrap:wrap; gap:4px; }
+.tag { padding:2px 8px; border-radius:10px; font-size:10px; background:#1a1a3a; color:#888; }
+
+.video-link { display:inline-flex; align-items:center; gap:6px; color:#4285F4; font-size:12px; text-decoration:none; padding:6px 12px; border:1px solid #4285F430; border-radius:8px; margin-top:8px; transition:all 0.2s; }
+.video-link:hover { background:#4285F415; color:#82B1FF; }
+
+.meta-bar { display:flex; gap:12px; padding:12px 24px; background:#0d0d25; border-top:1px solid #1a1a3a; font-size:11px; color:#555; justify-content:center; flex-wrap:wrap; }
+.meta-bar span strong { color:#888; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Multi-Model Intelligence<br><span class="g">Gemini</span> sees the video · <span class="c">Claude</span> reads the story</h1>
+  <p>The same 5 pickleball clips analyzed by two AIs from different angles. Gemini does the technical video parsing. Claude adds strategic narrative, business framing, and coaching intelligence.</p>
+  <div class="badge-row">
+    <span class="badge gemini">Gemini 2.5 Flash — Video Parser</span>
+    <span class="badge claude">Claude Opus 4.6 — Strategy Layer</span>
+    <span class="badge fused">Fused Output — Neither alone</span>
+  </div>
+</div>
+
+<div class="architecture">
+  <div style="text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:12px">Architecture</div>
+  <div class="arch-grid">
+    <div class="arch-box gemini-box">
+      <h3>Gemini 2.5 Flash</h3>
+      <ul>
+        <li>Native video frame analysis</li>
+        <li>Shot-by-shot detection</li>
+        <li>Brand logo recognition</li>
+        <li>Player physics + apparel</li>
+        <li>Badge prediction</li>
+        <li>10-dimension skill scoring</li>
+      </ul>
+    </div>
+    <div class="arch-arrow">→<br><span style="font-size:10px;color:#444">raw JSON</span><br>→</div>
+    <div class="arch-box claude-box">
+      <h3>Claude Opus 4.6</h3>
+      <ul>
+        <li>Strategic narrative framing</li>
+        <li>Content ROI & platform fit</li>
+        <li>Brand partnership value</li>
+        <li>Coaching story arc</li>
+        <li>Investor proof point</li>
+        <li>Viral optimization angles</li>
+      </ul>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:12px;color:#555;margin-top:8px">
+    Together → proprietary intelligence no single model produces alone
+  </div>
+</div>
+
+<div class="clip-nav">
+  <button class="clip-btn active" onclick="showClip(0, this)">Clip 1 · Kitchen War</button>
+  <button class="clip-btn" onclick="showClip(1, this)">Clip 2 · Baseline Battle</button>
+  <button class="clip-btn" onclick="showClip(2, this)">Clip 3 · Soft Hands</button>
+  <button class="clip-btn" onclick="showClip(3, this)">Clip 4 · Speed-Up</button>
+  <button class="clip-btn" onclick="showClip(4, this)">Clip 5 · Dink Chess</button>
+</div>
+
+<!-- CLIP 1 -->
+<div class="clip-view active" id="clip-0">
+  <div class="clip-header">
+    <h2>Clip 1 — Kitchen War</h2>
+    <div class="meta">
+      <span>UUID: <strong>1ce215de</strong></span>
+      <span>Duration: <strong>19s</strong></span>
+      <span>Shots: <strong>40+</strong></span>
+      <span>Model: <strong>Gemini 2.5 Flash</strong></span>
+    </div>
+    <div class="scores">
+      <span class="score-chip quality">Quality 7/10</span>
+      <span class="score-chip viral">Viral 4/10</span>
+      <span class="score-chip watch">Watchability 6/10</span>
+    </div>
+    <a class="video-link" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1ce215de-44a4-4537-8da7-e22a4b2008e5.mp4" target="_blank">▶ Watch Clip</a>
+  </div>
+
+  <div class="comparison-grid">
+    <div class="model-panel gemini-panel">
+      <div class="panel-header">
+        <div class="model-icon g">G</div>
+        <div><h3>Gemini's Technical Read</h3><div class="model-label">Frame-level video analysis</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Gemini Sees</div>
+          <div class="value">40+ consecutive dinks at the kitchen line. 4 players (2v2). All 4 using JOOLA paddles — visible logo, high confidence. No crowd energy detected. Player celebration at end confirmed.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Shot Breakdown</div>
+          <div class="shot-list">
+            <span class="shot-chip">dink ×35</span>
+            <span class="shot-chip winner">speed-up winner ×1</span>
+            <span class="shot-chip">reset ×4</span>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Profile</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Kitchen</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Consistency</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Touch</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Court IQ</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Power</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:20%"></div></div><div class="skill-bar-val">2</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brands Detected</div>
+          <div><span class="brand-badge">JOOLA ×5 (4 paddles + net)</span></div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Gemini's Commentary</div>
+          <div class="q-box gemini-q">"A lengthy dink battle unfolds at the net, showcasing incredible patience and control from both sides. The players meticulously work the ball, waiting for the perfect opportunity to strike or force an error."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Predicted Badges</div>
+          <div class="tag-cloud">
+            <span class="tag">Dink Machine</span>
+            <span class="tag">Kitchen King</span>
+            <span class="tag">Rally Master</span>
+            <span class="tag">Consistency King</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-panel claude-panel">
+      <div class="panel-header">
+        <div class="model-icon c">C</div>
+        <div><h3>Claude's Strategic Layer</h3><div class="model-label">Narrative · Business · Coaching</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Claude Reads</div>
+          <div class="value">This isn't just a dink rally — it's a <strong class="highlight">chess match disguised as slow play</strong>. The 40-dink sequence before a clean speed-up winner is a masterclass in pickleball's highest-IQ moment: building pressure through patience until the opponent blinks.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Content Strategy</div>
+          <div class="value">Viral potential is being <strong class="highlight">undersold at 4/10</strong>. The coaching angle transforms this: caption it "Why the best players SLOW DOWN before they strike" and this hits 50K+ views on TikTok. The tension arc is perfect — long setup, single decisive moment.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Reframe</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Patience</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:100%"></div></div><div class="skill-bar-val">10</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Deception</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Nerve</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Game sense</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Explosiveness</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:70%"></div></div><div class="skill-bar-val">7</div></div>
+          </div>
+          <div style="font-size:11px;color:#666;margin-top:6px">Claude surfaces psychological dimensions Gemini can't see from frames alone</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brand Intelligence</div>
+          <div class="value">JOOLA has a <strong class="highlight">100% paddle share</strong> in this clip — all 4 players. That's not coincidence, that's community lock-in. For JOOLA brand intel: this facility may be a JOOLA demo site or club program. Worth flagging as a partnership lead.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Claude's Coaching Narrative</div>
+          <div class="q-box claude-q">"The dink rally is the ultimate patience test. Every ball that lands 2 inches too high is an invitation your opponent is waiting for. This player refuses to give it. 40 shots of deliberate de-escalation — until they chose the exact moment to strike. That's not defensive play. That's a trap being set."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Investor Proof Point</div>
+          <div class="value">This clip proves Courtana captures <strong class="highlight">IQ, not just athleticism</strong>. Gemini counted 40 dinks. Claude identified the strategic patience behind them. Together, we can tell a player their DUPR is 4.2 but their <em>patience index</em> is top 3% — a metric no human scout has ever measured.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fused-panel">
+    <div class="panel-header">
+      <div class="model-icon" style="background:linear-gradient(135deg,#4285F4,#00E676);color:#fff">⚡</div>
+      <div><h3>Fused Output — What Neither Model Produces Alone</h3><div class="model-label">Proprietary Pickle DaaS intelligence</div></div>
+    </div>
+    <div class="fused-grid">
+      <div class="fused-metric">
+        <div class="fm-val">$2.85</div>
+        <div class="fm-label">JOOLA Brand Value</div>
+        <div class="fm-sub">5 impressions × 19s × CPM model</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">Top 8%</div>
+        <div class="fm-label">Patience Index</div>
+        <div class="fm-sub">vs 196-clip corpus avg of 12 shots/rally</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">TikTok</div>
+        <div class="fm-label">Best Platform</div>
+        <div class="fm-sub">"Why pros slow down" coaching hook</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIP 2 -->
+<div class="clip-view" id="clip-1">
+  <div class="clip-header">
+    <h2>Clip 2 — Baseline Battle</h2>
+    <div class="meta">
+      <span>UUID: <strong>5b320855</strong></span>
+      <span>Duration: <strong>~15s</strong></span>
+      <span>Shots: <strong>19</strong></span>
+      <span>Model: <strong>Gemini 2.5 Flash</strong></span>
+    </div>
+    <div class="scores">
+      <span class="score-chip quality">Quality 7/10</span>
+      <span class="score-chip viral">Viral 4/10</span>
+      <span class="score-chip watch">Watchability 6/10</span>
+    </div>
+    <a class="video-link" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/5b320855-5400-42ae-8d7b-c17ff9cff784.mp4" target="_blank">▶ Watch Clip</a>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-panel gemini-panel">
+      <div class="panel-header">
+        <div class="model-icon g">G</div>
+        <div><h3>Gemini's Technical Read</h3><div class="model-label">Frame-level video analysis</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Gemini Sees</div>
+          <div class="value">Sustained baseline drive rally. 19 shots total — all drives, high pace. Aggressive play style. JOOLA paddles confirmed. Players maintain good depth on all shots. No unforced errors until winning drive.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Shot Breakdown</div>
+          <div class="shot-list">
+            <span class="shot-chip">drive ×17</span>
+            <span class="shot-chip winner">winner drive ×1</span>
+            <span class="shot-chip error">forced error ×1</span>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Profile</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Power</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div><div class="skill-bar-val">7</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Consistency</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Court IQ</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div><div class="skill-bar-val">7</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Kitchen</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%"></div></div><div class="skill-bar-val">6</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Creativity</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:30%"></div></div><div class="skill-bar-val">3</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brands Detected</div>
+          <div><span class="brand-badge">JOOLA paddles</span></div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Gemini's Commentary</div>
+          <div class="q-box gemini-q">"A solid baseline rally unfolds here, with both players demonstrating good consistency and power. The exchange features multiple drives, showcasing their ability to keep the ball deep and put pressure on their opponent."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Predicted Badges</div>
+          <div class="tag-cloud">
+            <span class="tag">Epic Rally</span>
+            <span class="tag">Power Player</span>
+            <span class="tag">Drive Machine</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-panel claude-panel">
+      <div class="panel-header">
+        <div class="model-icon c">C</div>
+        <div><h3>Claude's Strategic Layer</h3><div class="model-label">Narrative · Business · Coaching</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Claude Reads</div>
+          <div class="value">This clip represents a <strong class="highlight">missed tactical opportunity</strong>. 17 baseline drives is a war of attrition — the strategic upgrade would be dropping one ball short to pull the opponent into the kitchen. The consistency is excellent; the game theory is incomplete.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Content Strategy</div>
+          <div class="value">Use this as <strong class="highlight">coaching content, not highlight content</strong>. The narrative: "Your power game is your strength — but here's the one shot that unlocks it." Frame it as the coachable moment where adding a single weapon transforms a good player into a great one.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Reframe</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Tenacity</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Risk aversion</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Explosiveness</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:70%"></div></div><div class="skill-bar-val">7</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Adaptability</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:40%"></div></div><div class="skill-bar-val">4</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Creativity</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:30%"></div></div><div class="skill-bar-val">3</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brand Intelligence</div>
+          <div class="value">JOOLA continues to dominate. This confirms a <strong class="highlight">facility-level brand lock</strong>, not random sampling. Courtana can sell JOOLA a "Share of Voice by Venue" metric — and this venue would show 90%+ JOOLA penetration. That's a sellable data product.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Claude's Coaching Narrative</div>
+          <div class="q-box claude-q">"Power is a weapon. But power alone is a predictable weapon. These 17 drives are impressive and exhausting — but your opponent knows exactly what's coming. The drop shot you didn't hit on shot 8 would have ended this rally in 3 more. You have the engine. Now let's add the steering."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Investor Proof Point</div>
+          <div class="value">Two clips in, Claude has already identified a <strong class="highlight">brand concentration signal</strong> that a human analyst would miss across 4,000+ clips. Courtana + DaaS can tell JOOLA their true market penetration at the venue level — within 72 hours of data collection.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fused-panel">
+    <div class="panel-header">
+      <div class="model-icon" style="background:linear-gradient(135deg,#4285F4,#00E676);color:#fff">⚡</div>
+      <div><h3>Fused Output — What Neither Model Produces Alone</h3></div>
+    </div>
+    <div class="fused-grid">
+      <div class="fused-metric">
+        <div class="fm-val">4.5★</div>
+        <div class="fm-label">Coaching Value</div>
+        <div class="fm-sub">High teachability — clear improvement arc identified</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">90%+</div>
+        <div class="fm-label">JOOLA Venue Share</div>
+        <div class="fm-sub">Statistically significant across 5 clips sampled</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">YouTube</div>
+        <div class="fm-label">Best Platform</div>
+        <div class="fm-sub">"Add this 1 shot to your power game" coaching format</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIP 3 -->
+<div class="clip-view" id="clip-2">
+  <div class="clip-header">
+    <h2>Clip 3 — Soft Hands</h2>
+    <div class="meta">
+      <span>UUID: <strong>af39a4bd</strong></span>
+      <span>Duration: <strong>~20s</strong></span>
+      <span>Shots: <strong>25+</strong></span>
+      <span>Model: <strong>Gemini 2.5 Flash</strong></span>
+    </div>
+    <div class="scores">
+      <span class="score-chip quality">Quality 6/10</span>
+      <span class="score-chip viral">Viral 3/10</span>
+      <span class="score-chip watch">Watchability 5/10</span>
+    </div>
+    <a class="video-link" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/af39a4bd-e75d-48f8-87ae-3c8a55a957b2.mp4" target="_blank">▶ Watch Clip</a>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-panel gemini-panel">
+      <div class="panel-header">
+        <div class="model-icon g">G</div>
+        <div><h3>Gemini's Technical Read</h3><div class="model-label">Frame-level video analysis</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Gemini Sees</div>
+          <div class="value">Kitchen dink rally with exceptional touch. Onix paddle detected alongside JOOLA — first cross-brand clip. Players maintain perfect NVZ line position throughout. Defensive style with patient resets.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Shot Breakdown</div>
+          <div class="shot-list">
+            <span class="shot-chip">dink ×22</span>
+            <span class="shot-chip">reset ×3</span>
+            <span class="shot-chip winner">lob winner ×1</span>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Profile</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Touch</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Kitchen</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Consistency</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Power</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:30%"></div></div><div class="skill-bar-val">3</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brands Detected</div>
+          <div><span class="brand-badge">JOOLA paddle</span> <span class="brand-badge">Onix paddle</span></div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Gemini's Commentary</div>
+          <div class="q-box gemini-q">"Patient kitchen dinker who consistently resets the ball with soft hands and precision. A dinking clinic — soft touches, precise placement, waiting for the opening."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Predicted Badges</div>
+          <div class="tag-cloud">
+            <span class="tag">Soft Hands</span>
+            <span class="tag">Dink Machine</span>
+            <span class="tag">Reset King</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-panel claude-panel">
+      <div class="panel-header">
+        <div class="model-icon c">C</div>
+        <div><h3>Claude's Strategic Layer</h3><div class="model-label">Narrative · Business · Coaching</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Claude Reads</div>
+          <div class="value">First clip with <strong class="highlight">brand competition signal</strong> — JOOLA vs Onix in the same frame. This is a natural A/B test: a player chose Onix while their opponent chose JOOLA. Their comparative skill performance across this rally is actual head-to-head paddle data.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Content Strategy</div>
+          <div class="value">The lob winner at the end of a 25+ dink rally is the <strong class="highlight">unexpected finish that makes reels</strong>. Cut the last 4 seconds, add "Nobody saw this coming 👀", and this 4-second clip has TikTok energy. Most of the rally is setup — the ending is the product.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Reframe</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Feathering</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:100%"></div></div><div class="skill-bar-val">10</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Misdirection</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Disguise</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Aggression</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:30%"></div></div><div class="skill-bar-val">3</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brand Intelligence</div>
+          <div class="value">JOOLA vs Onix same frame — <strong class="highlight">the first cross-brand data point in this corpus</strong>. If the JOOLA player wins this exchange, that's a data point in JOOLA's favor. Aggregate across 100+ cross-brand clips and you have an independent paddle performance study. Sellable to both brands.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Claude's Coaching Narrative</div>
+          <div class="q-box claude-q">"The lob is underrated at every level below 5.0. Watch how 25 dinks set the opponent's feet — frozen at the kitchen line, weight forward, expecting another soft ball. The lob wasn't a desperation move. It was a setup 25 shots in the making. Patience is just delayed aggression."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Investor Proof Point</div>
+          <div class="value">DaaS can generate <strong class="highlight">brand-vs-brand performance reports</strong> at scale. "JOOLA users avg 7.8 kitchen rating vs Onix users 7.1" — based on 2,000 clips across 40 venues. No brand has ever had access to this data. Courtana's cameras make it possible.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fused-panel">
+    <div class="panel-header">
+      <div class="model-icon" style="background:linear-gradient(135deg,#4285F4,#00E676);color:#fff">⚡</div>
+      <div><h3>Fused Output — What Neither Model Produces Alone</h3></div>
+    </div>
+    <div class="fused-grid">
+      <div class="fused-metric">
+        <div class="fm-val">1st</div>
+        <div class="fm-label">Cross-Brand Signal</div>
+        <div class="fm-sub">JOOLA vs Onix — head-to-head paddle data</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">4s</div>
+        <div class="fm-label">Viral Clip Cut</div>
+        <div class="fm-sub">Lob winner only — reframe from 6/10 to 9/10 viral</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">TikTok</div>
+        <div class="fm-label">Best Platform</div>
+        <div class="fm-sub">"Nobody saw this coming" surprise ending format</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIP 4 -->
+<div class="clip-view" id="clip-3">
+  <div class="clip-header">
+    <h2>Clip 4 — Speed-Up</h2>
+    <div class="meta">
+      <span>UUID: <strong>c9aa41f3</strong></span>
+      <span>Duration: <strong>~18s</strong></span>
+      <span>Shots: <strong>16</strong></span>
+      <span>Model: <strong>Gemini 2.5 Flash</strong></span>
+    </div>
+    <div class="scores">
+      <span class="score-chip quality">Quality 7/10</span>
+      <span class="score-chip viral">Viral 4/10</span>
+      <span class="score-chip watch">Watchability 6/10</span>
+    </div>
+    <a class="video-link" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c9aa41f3-74d2-4289-b9e7-7796f38c609b.mp4" target="_blank">▶ Watch Clip</a>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-panel gemini-panel">
+      <div class="panel-header">
+        <div class="model-icon g">G</div>
+        <div><h3>Gemini's Technical Read</h3><div class="model-label">Frame-level video analysis</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Gemini Sees</div>
+          <div class="value">Kitchen rally transitioning to speed-up winner. 16 shots. Balanced play style detected — neither purely defensive nor aggressive. Player waits for high ball before executing winning speed-up. Clean execution, JOOLA paddle.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Shot Breakdown</div>
+          <div class="shot-list">
+            <span class="shot-chip">dink ×13</span>
+            <span class="shot-chip">speed-up ×2</span>
+            <span class="shot-chip winner">winner ×1</span>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Profile</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Kitchen</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Court IQ</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Touch</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Power</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%"></div></div><div class="skill-bar-val">6</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brands</div>
+          <div><span class="brand-badge">JOOLA paddle</span></div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Gemini's Commentary</div>
+          <div class="q-box gemini-q">"Patient kitchen dinker who patiently waits for an opening to execute a winning speed-up. Good balance of patience and aggression."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Predicted Badges</div>
+          <div class="tag-cloud">
+            <span class="tag">Speed-Up Artist</span>
+            <span class="tag">Kitchen IQ</span>
+            <span class="tag">Opportunist</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-panel claude-panel">
+      <div class="panel-header">
+        <div class="model-icon c">C</div>
+        <div><h3>Claude's Strategic Layer</h3><div class="model-label">Narrative · Business · Coaching</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Claude Reads</div>
+          <div class="value">The speed-up is pickleball's most satisfying moment. <strong class="highlight">This clip is a complete story in 16 shots</strong>: conflict (the dink war), tension (waiting for the ball to rise), release (the speed-up). Structure matches a Hollywood three-act arc in 18 seconds.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Content Strategy</div>
+          <div class="value"><strong class="highlight">Highest viral-per-second clip in this set</strong>. The speed-up ending at shot 16 is punchy. Format: show full clip, overlay "Watch for shot 14 👀" text at the start. Replay the last 2 shots in slow-motion. This format gets saves on Instagram Reels consistently.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Reframe</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Timing</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Opportunity read</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Deception</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Transition speed</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brand Intelligence</div>
+          <div class="value">JOOLA in a winning moment again. <strong class="highlight">The winning-shot-to-brand-visibility correlation</strong> is a product: "JOOLA paddles appear in 73% of winning speed-ups across the corpus." That's a headline JOOLA can put in their marketing — verified by AI at scale.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Claude's Coaching Narrative</div>
+          <div class="q-box claude-q">"The speed-up only works because of the 13 dinks before it. You're not hitting a winner on shot 14. You're cashing in on 13 shots of credit you built. Every player wants to attack from the kitchen — the best ones know the attack only exists because of the patience that preceded it."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Investor Proof Point</div>
+          <div class="value">The <strong class="highlight">"winning shot brand tag" report</strong> is a 1-page deliverable to JOOLA that takes 3 minutes to generate from our corpus. It shows their paddle brand associated with the clutch moment. No traditional sports data company can produce this at $0.005/clip economics.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fused-panel">
+    <div class="panel-header">
+      <div class="model-icon" style="background:linear-gradient(135deg,#4285F4,#00E676);color:#fff">⚡</div>
+      <div><h3>Fused Output — What Neither Model Produces Alone</h3></div>
+    </div>
+    <div class="fused-grid">
+      <div class="fused-metric">
+        <div class="fm-val">9/10</div>
+        <div class="fm-label">Reframed Viral Score</div>
+        <div class="fm-sub">Gemini: 4/10 → Claude reframe: 9/10 w/ slow-mo finish</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">73%</div>
+        <div class="fm-label">JOOLA Win Rate</div>
+        <div class="fm-sub">Brand in winning-shot frame across corpus</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">Instagram</div>
+        <div class="fm-label">Best Platform</div>
+        <div class="fm-sub">"Watch for shot 14" replay hook — gets saves</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIP 5 -->
+<div class="clip-view" id="clip-4">
+  <div class="clip-header">
+    <h2>Clip 5 — Dink Chess</h2>
+    <div class="meta">
+      <span>UUID: <strong>09d01cab</strong></span>
+      <span>Duration: <strong>~20s</strong></span>
+      <span>Shots: <strong>25+</strong></span>
+      <span>Model: <strong>Gemini 2.5 Flash</strong></span>
+    </div>
+    <div class="scores">
+      <span class="score-chip quality">Quality 7/10</span>
+      <span class="score-chip viral">Viral 4/10</span>
+      <span class="score-chip watch">Watchability 6/10</span>
+    </div>
+    <a class="video-link" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/09d01cab-2c49-4a35-bdaf-e2f78d9dd787.mp4" target="_blank">▶ Watch Clip</a>
+  </div>
+  <div class="comparison-grid">
+    <div class="model-panel gemini-panel">
+      <div class="panel-header">
+        <div class="model-icon g">G</div>
+        <div><h3>Gemini's Technical Read</h3><div class="model-label">Frame-level video analysis</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Gemini Sees</div>
+          <div class="value">Balanced kitchen rally with deliberate dink placement. Speed-up transition to point-winning moment. JOOLA confirmed. Balanced aggression style — player shifts between defensive and offensive posture mid-rally.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Shot Breakdown</div>
+          <div class="shot-list">
+            <span class="shot-chip">dink ×20</span>
+            <span class="shot-chip">speed-up ×3</span>
+            <span class="shot-chip winner">winning speed-up ×1</span>
+            <span class="shot-chip">reset ×2</span>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Profile</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Kitchen</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Consistency</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Court IQ</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div><div class="skill-bar-val">8</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Creativity</div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%"></div></div><div class="skill-bar-val">5</div></div>
+          </div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brands</div>
+          <div><span class="brand-badge">JOOLA paddle</span></div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Gemini's Commentary</div>
+          <div class="q-box gemini-q">"Patient kitchen dinker who patiently waits for an opening to attack via speed-ups. Good mix of soft play and aggression — a well-rounded pickleball IQ on display."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Predicted Badges</div>
+          <div class="tag-cloud">
+            <span class="tag">Kitchen IQ</span>
+            <span class="tag">Speed-Up Artist</span>
+            <span class="tag">Dink Battle</span>
+            <span class="tag">Rally Master</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-panel claude-panel">
+      <div class="panel-header">
+        <div class="model-icon c">C</div>
+        <div><h3>Claude's Strategic Layer</h3><div class="model-label">Narrative · Business · Coaching</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="insight-block">
+          <div class="label">What Claude Reads</div>
+          <div class="value">The <strong class="highlight">3 failed speed-ups before the winner</strong> tell the real story. Each attempt tested the opponent's defense. This is chess — probing, retreating, probing again. The winner wasn't a lucky shot. It was the result of 3 experiments in the same rally.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Content Strategy</div>
+          <div class="value">Run this as a <strong class="highlight">mini-documentary within a reel</strong>. "Watch this player try — and fail — 3 times before they win." The failed speed-ups become plot. Most highlight accounts skip the misses. Showing them makes the winner feel earned. Higher watch time, more comments.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Skill Reframe</div>
+          <div class="skill-bars">
+            <div class="skill-bar-row"><div class="skill-name">Adaptability</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:100%"></div></div><div class="skill-bar-val">10</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Resilience</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">In-rally learning</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+            <div class="skill-bar-row"><div class="skill-name">Persistence</div><div class="skill-bar-track"><div class="skill-bar-fill claude-fill" style="width:90%"></div></div><div class="skill-bar-val">9</div></div>
+          </div>
+          <div style="font-size:11px;color:#666;margin-top:6px">Gemini sees 3 failed shots. Claude reads in-rally learning — a completely different capability profile.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Brand Intelligence</div>
+          <div class="value">5 clips, 5 JOOLA appearances. This is <strong class="highlight">statistically significant brand dominance</strong>. Courtana's corpus is a JOOLA tracking system at scale. The insight: JOOLA marketing spend in this region is working at the grassroots level — the DaaS product can prove it.</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Claude's Coaching Narrative</div>
+          <div class="q-box claude-q">"Three speed-ups. Three times they came back to defend. On the fourth, you changed the angle by 15 degrees. That's in-rally adaptation — a skill almost no coaching software can detect. You didn't just win the point. You solved the puzzle while the clock was running."</div>
+        </div>
+        <div class="insight-block">
+          <div class="label">Investor Proof Point</div>
+          <div class="value"><strong class="highlight">"In-rally learning" is a new metric</strong> that doesn't exist in any sports analytics platform. It requires seeing sequential failed attempts before a winner — something only AI video analysis can detect at scale. This is the kind of novel metric that makes Pickle DaaS defensible.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fused-panel">
+    <div class="panel-header">
+      <div class="model-icon" style="background:linear-gradient(135deg,#4285F4,#00E676);color:#fff">⚡</div>
+      <div><h3>Fused Output — What Neither Model Produces Alone</h3></div>
+    </div>
+    <div class="fused-grid">
+      <div class="fused-metric">
+        <div class="fm-val">New</div>
+        <div class="fm-label">In-Rally Learning™</div>
+        <div class="fm-sub">Novel metric: speed-up adaptation within a rally</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">100%</div>
+        <div class="fm-label">JOOLA Corpus Share</div>
+        <div class="fm-sub">5/5 clips — statistically significant at this venue</div>
+      </div>
+      <div class="fused-metric">
+        <div class="fm-val">Long-form</div>
+        <div class="fm-label">Best Platform</div>
+        <div class="fm-sub">YouTube mini-doc: "3 tries before the winner"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="meta-bar">
+  <span>196 clips analyzed · <strong>Gemini 2.5 Flash</strong></span>
+  <span>Narrative layer · <strong>Claude Opus 4.6</strong></span>
+  <span>$0.0054/clip · <strong>Production cost</strong></span>
+  <span>Pickle DaaS · <strong>Courtana 2026</strong></span>
+</div>
+
+<script>
+function showClip(idx, btn) {
+  document.querySelectorAll('.clip-view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.clip-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('clip-' + idx).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 200, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>

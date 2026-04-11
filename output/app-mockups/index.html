@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana App Mockups | Design Specs</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #252D3A;
+    --surface: #333D4D;
+    --surface2: #2a3444;
+    --border: #3d4d61;
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --btn-gradient: linear-gradient(135deg, #22C55E, #16A34A);
+    --blue: #38BDF8;
+    --yellow: #F59E0B;
+    --emerald: #10B981;
+    --text: #ffffff;
+    --text2: #D4DAE3;
+    --text3: #8892a4;
+    --radius: 8px;
+    --orange: #F97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist Sans', 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-left {}
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+  .logo-img {
+    height: 32px;
+  }
+  .header-badge {
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green);
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .header h1 { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+  .header p { font-size: 14px; color: var(--text3); }
+  .header-right { text-align: right; }
+  .header-date { font-size: 13px; color: var(--text3); }
+  .header-date strong { color: var(--text2); display: block; font-size: 15px; margin-bottom: 2px; }
+  .header-note {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 6px 12px;
+    max-width: 260px;
+  }
+
+  /* Grid */
+  .page { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  /* Mockup card */
+  .mockup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  }
+  .mockup-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  /* Preview thumbnail area */
+  .thumb {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb-num {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    color: #000;
+    z-index: 2;
+  }
+  .thumb-label {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    z-index: 2;
+  }
+  .thumb-open {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    font-size: 11px; font-weight: 600;
+    border-radius: 4px;
+    padding: 3px 8px;
+    z-index: 2;
+    letter-spacing: 0.5px;
+  }
+  .mockup-card:hover .thumb-open {
+    background: rgba(34,197,94,0.2);
+    border-color: rgba(34,197,94,0.4);
+    color: var(--green);
+  }
+
+  /* Thumbnail illustration: Player DNA */
+  .t1 { background: linear-gradient(135deg, #1e2d3d, #252D3A); }
+  .t1-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.7;
+  }
+  .radar-preview {
+    width: 80px; height: 80px;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radar-inner {
+    width: 50px; height: 50px;
+    border: 1px solid rgba(34,197,94,0.4);
+    border-radius: 50%;
+    background: rgba(34,197,94,0.1);
+  }
+  .score-preview { font-size: 32px; font-weight: 900; color: var(--green); }
+
+  /* Thumbnail: Highlight Cards */
+  .t2 { background: linear-gradient(135deg, #1e2535, #252D3A); }
+  .cards-preview {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; opacity: 0.75;
+  }
+  .mini-card {
+    width: 70px; height: 50px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex; align-items: flex-end; justify-content: flex-end;
+    padding: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mini-card-bg { position: absolute; inset: 0; opacity: 0.3; }
+  .mini-wow { font-size: 9px; font-weight: 800; border-radius: 3px; padding: 1px 4px; z-index: 1; }
+
+  /* Thumbnail: Court TV */
+  .t3 { background: #0a0f17; }
+  .tv-preview { display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.8; }
+  .live-prev {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid #EF4444;
+    border-radius: 4px;
+    padding: 4px 10px;
+  }
+  .live-dot-prev {
+    width: 8px; height: 8px;
+    background: #EF4444;
+    border-radius: 50%;
+    animation: pulse-r 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse-r { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .live-text-prev { font-size: 14px; font-weight: 900; color: #EF4444; letter-spacing: 3px; }
+  .rally-prev { font-size: 28px; font-weight: 900; color: var(--blue); }
+  .shot-prev { font-size: 12px; color: var(--text3); }
+
+  /* Thumbnail: Venue Intel */
+  .t4 { background: linear-gradient(135deg, #1d2535, #252D3A); }
+  .stats-preview { display: flex; gap: 10px; opacity: 0.75; }
+  .stat-prev-item { text-align: center; }
+  .stat-prev-n { font-size: 24px; font-weight: 900; }
+  .stat-prev-l { font-size: 9px; color: var(--text3); margin-top: 2px; }
+  .bar-prev { width: 60px; margin-top: 8px; }
+  .bar-prev-row { height: 6px; border-radius: 3px; margin-bottom: 3px; }
+
+  /* Thumbnail: Game Report */
+  .t5 { background: #1a1f2b; }
+  .phone-prev {
+    width: 90px; height: 130px;
+    background: var(--bg);
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    opacity: 0.85;
+  }
+  .phone-prev-header {
+    background: linear-gradient(135deg, #1e2d1e, var(--surface2));
+    padding: 6px 8px;
+    font-size: 7px; color: var(--green); font-weight: 700;
+  }
+  .phone-prev-score {
+    padding: 6px 8px;
+    font-size: 22px; font-weight: 900;
+    background: var(--btn-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .phone-prev-bars { padding: 4px 8px; display: flex; flex-direction: column; gap: 4px; }
+  .phone-prev-bar { height: 4px; border-radius: 2px; background: var(--surface2); overflow: hidden; }
+  .phone-prev-bar-fill { height: 100%; border-radius: 2px; }
+
+  /* Card body */
+  .card-body { padding: 20px; flex: 1; }
+  .card-num { font-size: 11px; font-weight: 700; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .card-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .card-subtitle { font-size: 12px; font-weight: 600; color: var(--text3); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .card-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+  /* Footer */
+  .page-footer {
+    text-align: center;
+    padding: 40px 32px;
+    border-top: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .page-footer strong { color: var(--text2); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-row">
+      <img src="https://cdn.courtana.com/static/img/Courtana_Logo.png" alt="Courtana" class="logo-img"
+           onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block'">
+      <span id="logo-text" style="display:none; font-size:22px; font-weight:900; color:var(--green); letter-spacing:1px;">COURTANA</span>
+      <span class="header-badge">Design Specs</span>
+    </div>
+    <h1>App Mockup Library</h1>
+    <p>5 self-contained HTML prototypes · Exact Courtana design tokens · Paste-ready for Lovable</p>
+  </div>
+  <div class="header-right">
+    <div class="header-date">
+      <strong>April 11, 2026</strong>
+      Generated by Claude Code
+    </div>
+    <div class="header-note">
+      All files are self-contained. Open any directly in a browser or paste into Lovable as a design reference.
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="cards-grid">
+
+    <!-- 1. Player DNA -->
+    <a href="player-dna-tab.html" class="mockup-card">
+      <div class="thumb t1">
+        <div class="thumb-num" style="background:var(--green);">1</div>
+        <div class="t1-inner">
+          <div class="score-preview">7.4</div>
+          <div class="radar-preview"><div class="radar-inner"></div></div>
+        </div>
+        <div class="thumb-label">courtana.com/profile/</div>
+        <div class="thumb-open">Open →</div>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Mockup 01</div>
+        <div class="card-title">Player DNA Tab</div>
+        <div class="card-subtitle">"My Game" · Profile Tab</div>
+        <div class="card-desc">New AI-powered profile tab showing Kitchen Score, Play Style DNA tags, estimated DUPR range, Shot Mix donut, Skill Radar, Signature Move detection, and coaching bullets.</div>
+      </div>
+    </a>
+
+    <!-- 2. Highlight Cards -->
+    <a href="highlight-intelligence-card.html" class="mockup-card">
+      <div class="thumb t2">
+        <div class="thumb-num" style="background:var(--yellow);">2</div>
+        <div class="cards-preview">
+          <div class="mini-card" style="background:linear-gradient(135deg,#1e2535,#252D3A);">
+            <div class="mini-wow" style="background:var(--orange); color:#000;">9</div>
+          </div>
+          <div class="mini-card" style="background:linear-gradient(135deg,#1e1a2e,#1a1030);">
+            <div class="mini-wow" style="background:var(--yellow); color:#000;">8</div>
+          </div>
+          <div class="mini-card" style="background:linear-gradient(135deg,#1a2520,#0f1a15);">
+            <div class="mini-wow" style="background:#84CC16; color:#000;">9</div>
+          </div>
+          <div class="mini-card" style="background:linear-gradient(135deg,#25201a,#1a130f);">
+            <div class="mini-wow" style="background:#84CC16; color:#000;">7</div>
+          </div>
+        </div>
+        <div class="thumb-label">courtana.com/highlights/</div>
+        <div class="thumb-open">Open →</div>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Mockup 02</div>
+        <div class="card-title">Highlight Intelligence Cards</div>
+        <div class="card-subtitle">Enhanced Clip Cards · Grid View</div>
+        <div class="card-desc">Redesigned clip cards with Wow Score badge, category tags (Strategic / Athletic / Funny / Teaching Moment), DUPR tier, shot summary, player style tags, and AI Analyze button.</div>
+      </div>
+    </a>
+
+    <!-- 3. Court TV -->
+    <a href="court-tv-overlay.html" class="mockup-card">
+      <div class="thumb t3">
+        <div class="thumb-num" style="background:#EF4444;">3</div>
+        <div class="tv-preview">
+          <div class="live-prev">
+            <div class="live-dot-prev"></div>
+            <div class="live-text-prev">LIVE</div>
+          </div>
+          <div class="rally-prev">#4 · 8 shots</div>
+          <div class="shot-prev">⚡ Speed-Up · 🥒 Dink · 🛡️ Block</div>
+        </div>
+        <div class="thumb-label">Venue TV Display · 55"</div>
+        <div class="thumb-open">Open →</div>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Mockup 03</div>
+        <div class="card-title">Court TV Live Overlay</div>
+        <div class="card-subtitle">Full-Screen · Venue Display</div>
+        <div class="card-desc">Full-screen dark overlay for venue TVs showing live rally counter, real-time shot feed, Kitchen Control bar, Wow Factor meter, last point result, and today's top clip. Designed for 55" viewing at 20+ feet.</div>
+      </div>
+    </a>
+
+    <!-- 4. Venue Intel -->
+    <a href="venue-intelligence-panel.html" class="mockup-card">
+      <div class="thumb t4">
+        <div class="thumb-num" style="background:var(--blue);">4</div>
+        <div class="stats-preview">
+          <div class="stat-prev-item">
+            <div class="stat-prev-n" style="color:var(--green);">3</div>
+            <div class="stat-prev-l">Courts</div>
+          </div>
+          <div class="stat-prev-item">
+            <div class="stat-prev-n" style="color:var(--blue);">47</div>
+            <div class="stat-prev-l">Players</div>
+          </div>
+          <div class="bar-prev">
+            <div class="bar-prev-row" style="background:var(--blue); width:28%;"></div>
+            <div class="bar-prev-row" style="background:var(--green); width:61%;"></div>
+            <div class="bar-prev-row" style="background:var(--yellow); width:11%;"></div>
+          </div>
+        </div>
+        <div class="thumb-label">courtana.com/facility-staff/</div>
+        <div class="thumb-open">Open →</div>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Mockup 04</div>
+        <div class="card-title">Venue Intelligence Panel</div>
+        <div class="card-subtitle">Facility Staff · Data Dashboard</div>
+        <div class="card-desc">Staff-facing intelligence section showing today's activity stats, player skill distribution, shot mix across courts, top highlights ready to share, sponsor exposure detection, and week-over-week retention.</div>
+      </div>
+    </a>
+
+    <!-- 5. Game Report -->
+    <a href="game-report.html" class="mockup-card">
+      <div class="thumb t5">
+        <div class="thumb-num" style="background:var(--yellow);">5</div>
+        <div class="phone-prev">
+          <div class="phone-prev-header">Your Game Report · Apr 10</div>
+          <div class="phone-prev-score">7.4</div>
+          <div class="phone-prev-bars">
+            <div class="phone-prev-bar"><div class="phone-prev-bar-fill" style="width:71%; background:#22C55E;"></div></div>
+            <div class="phone-prev-bar"><div class="phone-prev-bar-fill" style="width:18%; background:#38BDF8;"></div></div>
+            <div class="phone-prev-bar"><div class="phone-prev-bar-fill" style="width:6%; background:#F59E0B;"></div></div>
+            <div class="phone-prev-bar"><div class="phone-prev-bar-fill" style="width:5%; background:#EF4444;"></div></div>
+          </div>
+        </div>
+        <div class="thumb-label">Mobile-first · 375px</div>
+        <div class="thumb-open">Open →</div>
+      </div>
+      <div class="card-body">
+        <div class="card-num">Mockup 05</div>
+        <div class="card-title">Post-Session Game Report</div>
+        <div class="card-subtitle">Mobile-First · Auto-Generated</div>
+        <div class="card-desc">Auto-generated mobile report delivered 30 min post-session: Kitchen Score with trend, best rally clip, shot breakdown bars, AI coaching note, badge earned, and Instagram / WhatsApp / link share buttons.</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<div class="page-footer">
+  <strong>Courtana Design Spec Library</strong> · Built April 11, 2026<br>
+  All files use exact Courtana design tokens: <code style="color:var(--green);">--bg: #252D3A</code> · <code style="color:var(--green);">--radius: 8px</code> · Geist Sans · Chart.js 4.4.0<br>
+  Self-contained HTML — open directly in browser or paste into Lovable as a visual reference.
+</div>
+
+</body>
+</html>

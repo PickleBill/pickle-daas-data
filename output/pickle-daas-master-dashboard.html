@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Master Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: oklch(95% 0.008 250);
+    --card: #131d2e;
+    --card2: #1a2535;
+    --green: oklch(45% 0.2 265);
+    --text: oklch(25% 0.02 250);
+    --muted: #5a7090;
+    --gold: oklch(52% 0.14 75);
+    --border: #1e2d42;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+
+  /* LAYOUT */
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; height: 56px; background: #0d1626;
+    border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .header-center { text-align: center; flex: 1; }
+  .header-center .title { font-size: 18px; font-weight: 800; color: var(--green); letter-spacing: 0.5px; line-height: 1; }
+  .header-center .subtitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .header-right { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .btn {
+    padding: 7px 14px; border-radius: 6px; border: none; cursor: pointer;
+    font-family: var(--font); font-size: 12px; font-weight: 600; transition: all 0.15s;
+  }
+  .btn-outline { background: transparent; border: 1px solid var(--green); color: var(--green); }
+  .btn-outline:hover { background: oklch(45% 0.2 265 / 0.1); }
+  .btn-solid { background: var(--green); color: oklch(95% 0.008 250); }
+  .btn-solid:hover { background: #00c864; }
+
+  /* BODY */
+  .body { display: grid; grid-template-columns: 300px 1fr; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--card); border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 12px 8px;
+  }
+  .sidebar-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); padding: 0 8px 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px;
+  }
+  .clip-item {
+    display: flex; align-items: center; gap: 8px; padding: 9px 10px;
+    border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-bottom: 4px;
+    border: 1px solid transparent;
+  }
+  .clip-item:hover { background: var(--card2); }
+  .clip-item.active { background: oklch(45% 0.2 265 / 0.08); border-color: oklch(45% 0.2 265 / 0.3); }
+  .clip-icon { font-size: 18px; flex-shrink: 0; }
+  .clip-meta { flex: 1; min-width: 0; }
+  .clip-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .clip-item.active .clip-name { color: var(--green); }
+  .clip-arc { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .q-chip {
+    padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    background: oklch(45% 0.2 265 / 0.15); color: var(--green); flex-shrink: 0;
+  }
+
+  /* MAIN */
+  .main { overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* VIDEO SECTION */
+  .video-section { position: relative; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .video-section video { width: 100%; display: block; max-height: 420px; background: #000; }
+  .broadcast-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    padding: 20px 16px 12px; pointer-events: none;
+  }
+  .broadcast-caption { font-size: 15px; font-weight: 700; color: #fff; }
+  .broadcast-badge {
+    display: inline-block; margin-top: 5px; padding: 3px 10px;
+    background: var(--green); color: oklch(95% 0.008 250); border-radius: 4px;
+    font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* SCORE STRIP */
+  .score-strip {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    background: var(--card); border-radius: 8px; padding: 10px 14px;
+    border: 1px solid var(--border);
+  }
+  .score-badge {
+    display: flex; align-items: center; gap: 6px; padding: 5px 12px;
+    border-radius: 20px; font-size: 12px; font-weight: 700;
+  }
+  .score-badge.quality  { background: oklch(45% 0.2 265 / 0.12); color: var(--green); border: 1px solid oklch(45% 0.2 265 / 0.3); }
+  .score-badge.viral    { background: rgba(255,82,82,0.12); color: #ff5252; border: 1px solid rgba(255,82,82,0.3); }
+  .score-badge.watch    { background: rgba(100,181,246,0.12); color: #64b5f6; border: 1px solid rgba(100,181,246,0.3); }
+  .score-badge.cinema   { background: rgba(255,214,0,0.12); color: var(--gold); border: 1px solid rgba(255,214,0,0.3); }
+  .score-label { color: var(--muted); font-weight: 400; font-size: 11px; }
+
+  /* COMMENTARY */
+  .card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+  .card-header { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 10px 16px; cursor: pointer; font-size: 12px; font-weight: 600;
+    color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  .commentary-body { padding: 14px 16px; }
+  .commentary-text { font-size: 14px; line-height: 1.65; color: var(--text); min-height: 60px; }
+
+  .voice-controls { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+  .play-btn {
+    padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer;
+    background: var(--green); color: oklch(95% 0.008 250); font-weight: 700; font-size: 13px;
+    font-family: var(--font); transition: background 0.15s; display: flex; align-items: center; gap: 6px;
+  }
+  .play-btn:hover { background: #00c864; }
+  .play-btn.playing { background: #ff5252; color: #fff; }
+
+  /* WAVEFORM */
+  .waveform { display: flex; align-items: center; gap: 2px; height: 24px; opacity: 0; transition: opacity 0.3s; }
+  .waveform.active { opacity: 1; }
+  .wave-bar {
+    width: 3px; background: var(--green); border-radius: 2px;
+    animation: wave 0.6s ease-in-out infinite alternate;
+  }
+  .wave-bar:nth-child(1) { animation-delay: 0s; }
+  .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+  .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+  .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+  .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+  .wave-bar:nth-child(6) { animation-delay: 0.5s; }
+  .wave-bar:nth-child(7) { animation-delay: 0.15s; }
+  .wave-bar:nth-child(8) { animation-delay: 0.25s; }
+  @keyframes wave {
+    0% { height: 4px; }
+    100% { height: 20px; }
+  }
+
+  /* BRANDS + BADGES */
+  .brands-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .chip-section { background: var(--card); border-radius: 10px; padding: 12px 14px; border: 1px solid var(--border); }
+  .chip-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .chip-brand { background: rgba(255,214,0,0.08); color: var(--gold); border: 1px solid rgba(255,214,0,0.35); }
+  .chip-badge { background: oklch(45% 0.2 265 / 0.08); color: var(--green); border: 1px solid oklch(45% 0.2 265 / 0.3); }
+  .chip-empty { color: var(--muted); font-size: 11px; font-style: italic; padding: 4px 0; }
+
+  /* HASHTAGS */
+  .hashtag-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
+  .hashtag {
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    background: rgba(100,181,246,0.08); color: #64b5f6; border: 1px solid rgba(100,181,246,0.25);
+    cursor: pointer; transition: all 0.15s; position: relative;
+  }
+  .hashtag:hover { background: rgba(100,181,246,0.18); }
+  .hashtag.copied { background: oklch(45% 0.2 265 / 0.15); color: var(--green); border-color: var(--green); }
+
+  /* ANALYTICS GRID */
+  .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .analytics-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 14px; }
+  .analytics-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .stat-label { font-size: 12px; color: var(--muted); }
+  .stat-val { font-size: 13px; font-weight: 700; color: var(--text); }
+  .stat-val.green { color: var(--green); }
+
+  /* BRAND BARS */
+  .brand-bar-row { margin-bottom: 8px; }
+  .brand-bar-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 11px; }
+  .brand-bar-label span:first-child { color: var(--text); }
+  .brand-bar-label span:last-child { color: var(--gold); font-weight: 700; }
+  .brand-bar-track { background: var(--border); border-radius: 3px; height: 5px; }
+  .brand-bar-fill { height: 5px; border-radius: 3px; background: var(--gold); }
+
+  /* PIPELINE */
+  .pipeline-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .pipeline-item:last-child { border-bottom: none; }
+  .pipeline-name { font-size: 12px; color: var(--text); }
+  .pipeline-status { font-size: 12px; }
+
+  /* CLIPS TABLE */
+  .table-wrap { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+  .table-wrap table { width: 100%; border-collapse: collapse; }
+  .table-wrap th {
+    padding: 9px 12px; text-align: left; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+    background: #0f1a2b; border-bottom: 1px solid var(--border);
+  }
+  .table-wrap td {
+    padding: 9px 12px; font-size: 12px; color: var(--text);
+    border-bottom: 1px solid #162030; vertical-align: top;
+  }
+  .table-wrap tr:last-child td { border-bottom: none; }
+  .table-wrap tr:hover td { background: rgba(255,255,255,0.02); }
+  .tbl-q { font-weight: 700; color: var(--green); }
+  .tbl-arc { color: var(--muted); font-size: 11px; }
+  .tbl-ron { color: #aabbd0; font-style: italic; font-size: 11px; max-width: 220px; }
+  .jump-link {
+    color: var(--green); cursor: pointer; font-size: 11px; font-weight: 600;
+    background: none; border: none; font-family: var(--font); text-decoration: underline;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: var(--green); color: oklch(95% 0.008 250); padding: 10px 18px;
+    border-radius: 8px; font-weight: 700; font-size: 13px;
+    opacity: 0; transform: translateY(10px); transition: all 0.25s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* PRINT */
+  @media print {
+    .sidebar { display: none !important; }
+    .body { grid-template-columns: 1fr !important; }
+    .header-right { display: none !important; }
+    .play-btn { display: none !important; }
+    body { background: #fff; color: #000; }
+    .card, .analytics-card, .chip-section, .hashtag-row, .table-wrap { border: 1px solid #ccc !important; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet"></head>
+<body><div style="background:oklch(98% 0.004 250);border-bottom:1px solid oklch(88% 0.012 250);padding:8px 24px;font-family:Bricolage Grotesque,system-ui,sans-serif;font-size:0.78rem"><a href="index.html" style="color:oklch(45% 0.2 265);text-decoration:none">← Portal</a></div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <img src="https://cdn.courtana.com/assets/logos/fulllogo-dark-transparent-grad.svg" height="32"
+        onerror="this.outerHTML='<span style=color:oklch(45% 0.2 265);font-weight:800;font-size:18px>Courtana</span>'">
+    </div>
+    <div class="header-center">
+      <div class="title">Pickle DaaS</div>
+      <div class="subtitle">Data as a Service for Pickleball</div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-outline" onclick="copyLovablePrompt()">Copy Lovable Prompt</button>
+      <button class="btn btn-solid" onclick="window.print()">Export PDF</button>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-title">Clip Library — 8 Clips</div>
+      <div id="clipList"></div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- VIDEO PLAYER -->
+      <div class="video-section">
+        <video id="videoPlayer" controls playsinline preload="metadata">
+          <source id="videoSource" src="" type="video/mp4">
+        </video>
+        <div class="broadcast-overlay">
+          <div class="broadcast-caption" id="broadcastCaption"></div>
+          <div class="broadcast-badge" id="broadcastBadge"></div>
+        </div>
+      </div>
+
+      <!-- SCORE STRIP -->
+      <div class="score-strip">
+        <div class="score-badge quality"><span class="score-label">Quality</span> <span id="scoreQuality">—</span></div>
+        <div class="score-badge viral"><span class="score-label">Viral</span> <span id="scoreViral">—</span></div>
+        <div class="score-badge watch"><span class="score-label">Watchability</span> <span id="scoreWatch">—</span></div>
+        <div class="score-badge cinema"><span class="score-label">Cinematic</span> <span id="scoreCinema">—</span></div>
+      </div>
+
+      <!-- COMMENTARY PANEL -->
+      <div class="card">
+        <div class="tabs" id="voiceTabs">
+          <div class="tab active" data-voice="espn" onclick="setVoiceTab('espn')">ESPN</div>
+          <div class="tab" data-voice="hype" onclick="setVoiceTab('hype')">Hype</div>
+          <div class="tab" data-voice="ron" onclick="setVoiceTab('ron')">Ron Burgundy</div>
+          <div class="tab" data-voice="chuck" onclick="setVoiceTab('chuck')">Chuck Norris</div>
+          <div class="tab" data-voice="tts" onclick="setVoiceTab('tts')">Coach</div>
+        </div>
+        <div class="commentary-body">
+          <div class="commentary-text" id="commentaryText"></div>
+          <div class="voice-controls">
+            <button class="play-btn" id="playBtn" onclick="playVoice()">
+              <span id="playBtnIcon">&#9654;</span> <span id="playBtnLabel">Play</span>
+            </button>
+            <div class="waveform" id="waveform">
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRANDS + BADGES -->
+      <div class="brands-badges">
+        <div class="chip-section">
+          <div class="chip-section-title">Brand Detection</div>
+          <div class="chips" id="brandsChips"></div>
+        </div>
+        <div class="chip-section">
+          <div class="chip-section-title">Play Badges</div>
+          <div class="chips" id="badgesChips"></div>
+        </div>
+      </div>
+
+      <!-- HASHTAGS -->
+      <div class="hashtag-row" id="hashtagRow"></div>
+
+      <!-- ANALYTICS GRID -->
+      <div class="analytics-grid">
+        <!-- Batch Summary -->
+        <div class="analytics-card">
+          <div class="analytics-title">Batch Summary</div>
+          <div class="stat-row">
+            <span class="stat-label">Clips Analyzed</span>
+            <span class="stat-val green">8</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Avg Quality Score</span>
+            <span class="stat-val green">7.3</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Dominant Arc</span>
+            <span class="stat-val">Grind Rally</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Top Shot Type</span>
+            <span class="stat-val">Baseline Drive</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Avg Viral Score</span>
+            <span class="stat-val">5.4</span>
+          </div>
+        </div>
+
+        <!-- Brand Detection -->
+        <div class="analytics-card">
+          <div class="analytics-title">Brand Frequency</div>
+          <div class="brand-bar-row">
+            <div class="brand-bar-label"><span>JOOLA</span><span>6</span></div>
+            <div class="brand-bar-track"><div class="brand-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="brand-bar-row">
+            <div class="brand-bar-label"><span>LIFE TIME PICKLEBALL</span><span>5</span></div>
+            <div class="brand-bar-track"><div class="brand-bar-fill" style="width:83%"></div></div>
+          </div>
+          <div class="brand-bar-row">
+            <div class="brand-bar-label"><span>CRBN</span><span>2</span></div>
+            <div class="brand-bar-track"><div class="brand-bar-fill" style="width:33%"></div></div>
+          </div>
+        </div>
+
+        <!-- Pipeline Status -->
+        <div class="analytics-card">
+          <div class="analytics-title">Pipeline Status</div>
+          <div class="pipeline-item">
+            <span class="pipeline-name">Gemini Vision</span>
+            <span class="pipeline-status">✅ Live</span>
+          </div>
+          <div class="pipeline-item">
+            <span class="pipeline-name">ElevenLabs TTS</span>
+            <span class="pipeline-status">🔜 Planned</span>
+          </div>
+          <div class="pipeline-item">
+            <span class="pipeline-name">Supabase DB</span>
+            <span class="pipeline-status">🔜 Planned</span>
+          </div>
+          <div class="pipeline-item">
+            <span class="pipeline-name">Brand Detection</span>
+            <span class="pipeline-status">✅ Live</span>
+          </div>
+          <div class="pipeline-item">
+            <span class="pipeline-name">Auto Commentary</span>
+            <span class="pipeline-status">✅ Live</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIPS TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Quality</th>
+              <th>Viral</th>
+              <th>Arc</th>
+              <th>Brands</th>
+              <th>Ron Burgundy Quote</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="clipsTableBody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const CLIPS = [
+  {
+    id: 'ce00696b', name: 'Shot of the Day — Airborne',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4',
+    sport: 'pickleball', quality: 8, viral: 7, watchability: 8, cinematic: 9,
+    arc: 'athletic_highlight',
+    espn: 'A gravity-defying overhead smash that showcases elite athleticism and court awareness. The player launches airborne to put away a high ball with precision and power.',
+    hype: 'OH MY GOODNESS — THEY ARE LITERALLY FLYING! That overhead was NEXT LEVEL — pure ATHLETIC FIREPOWER on full display!',
+    ron: 'By the beard of Zeus, that airborne smash was a testament to the human spirit! I\'m Ron Burgundy, and I approve of this pickleball magnificence. Stay classy, San Diego.',
+    chuck: 'Chuck Norris once tried that shot. The ball filed a restraining order.',
+    tts: 'Watch this incredible airborne overhead smash — pure athletic brilliance on the pickleball court.',
+    caption: 'Going AIRBORNE for the smash 🚀 #PickleballLife',
+    hashtags: ['#pickleball', '#airborne', '#overhead', '#athleticism', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA'],
+    badges: ['Airborne', 'Highlight Reel', 'Top 10 Play'],
+    summary: 'Player leaps airborne to execute a crushing overhead smash winner.'
+  },
+  {
+    id: '70043064', name: 'Meta Pickle — Mar 24',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4',
+    sport: 'pickleball', quality: 8, viral: 7, watchability: 7, cinematic: 7,
+    arc: 'grind_rally',
+    espn: 'A relentless grind rally showcasing high-level baseline driving and patient ball striking. Both players demonstrate solid fundamental pickleball with consistent power drives.',
+    hype: 'THEY ARE GRINDING IT OUT — shot after shot, power drive after power drive! This is ELITE level pickleball, folks!',
+    ron: 'Good heavens, what a display of controlled aggression and paddle prowess! The drive game here is truly something that would make Zeus himself stand and applaud.',
+    chuck: 'Chuck Norris watched this rally. The rally asked for a timeout.',
+    tts: 'A high-intensity grind rally with powerful drives and consistent baseline play from both competitors.',
+    caption: 'Grinding it out from the baseline 💪 #PickleballDrive',
+    hashtags: ['#pickleball', '#grind', '#baseline', '#drives', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA', 'CRBN'],
+    badges: ['Consistent Driver', 'Power Banger'],
+    summary: 'Extended baseline drive rally demonstrating power game and consistency.'
+  },
+  {
+    id: '0ec3d983', name: 'AI Cut — Mar 24',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.mp4',
+    sport: 'pickleball', quality: 8, viral: 6, watchability: 7, cinematic: 7,
+    arc: 'grind_rally',
+    espn: 'Another textbook display of the drive-heavy style that defines this player\'s game. Aggressive baseline positioning and consistent power output throughout.',
+    hype: 'BANGER MODE ACTIVATED! This player is a MACHINE at the baseline — pure pickleball POWER!',
+    ron: 'I\'ve seen a lot of pickleball in my day, but this drive game is something special. I\'m Ron Burgundy, and I find this display of controlled power deeply satisfying.',
+    chuck: 'Chuck Norris plays like this every Tuesday. For warm-ups.',
+    tts: 'Watch this aggressive AI-curated highlight featuring powerful baseline drives and athletic court coverage.',
+    caption: 'AI picked this one for a reason 🤖🥒 #AIPickleball',
+    hashtags: ['#pickleball', '#aicuts', '#aggressive', '#banger', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA', 'CRBN'],
+    badges: ['Aggressive Driver', 'Banger'],
+    summary: 'AI-curated clip featuring dominant baseline driving and power play style.'
+  },
+  {
+    id: 'bccb8b27', name: 'AI Cut — Mar 28',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.mp4',
+    sport: 'pickleball', quality: 7, viral: 6, watchability: 6, cinematic: 6,
+    arc: 'teaching_moment',
+    espn: 'A teaching-moment sequence showing the transition from baseline drives to dinking at the kitchen. Classic pickleball strategy in action.',
+    hype: 'WATCH AND LEARN PEOPLE — this is how you run the full court spectrum! Drive to drop to dink — textbook!',
+    ron: 'What we have here is a masterclass in pickleball strategy. The drop shot transition, the kitchen approach... By the beard of Zeus, it\'s beautiful.',
+    chuck: 'Chuck Norris invented the drop shot. The ball was too scared to bounce back.',
+    tts: 'A strategic teaching moment showing the drive, drop, and dink transition sequence in competitive pickleball.',
+    caption: 'Drive. Drop. Dink. The holy trinity 🙏 #PickleballStrategy',
+    hashtags: ['#pickleball', '#strategy', '#teaching', '#driveDrop', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA'],
+    badges: ['Teaching Moment', 'Kitchen Approach'],
+    summary: 'Strategic drive-drop-dink sequence demonstrating court IQ and transition skills.'
+  },
+  {
+    id: '96f9f529', name: 'Fresh Cut — Mar 28',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.mp4',
+    sport: 'pickleball', quality: 6, viral: 4, watchability: 5, cinematic: 6,
+    arc: 'pure_fun',
+    espn: 'A casual but enjoyable rally showing consistent fundamental play. Good court positioning and clean ball striking from both players.',
+    hype: 'Just a chill day on the court but the VIBES ARE IMMACULATE — this is what pickleball is all about!',
+    ron: 'Not every rally needs to end in glory, my friends. Sometimes the journey is the destination. I\'m Ron Burgundy, and this is just good, clean pickleball fun.',
+    chuck: 'Chuck Norris calls this his warmup. His warmup once won a tournament.',
+    tts: 'A fun casual rally showcasing the pure enjoyment of pickleball with clean fundamental play.',
+    caption: 'Just another day at Life Time 🥒☀️ #PickleballLife',
+    hashtags: ['#pickleball', '#casual', '#fun', '#lifetime', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA'],
+    badges: [],
+    summary: 'Casual recreational rally demonstrating consistent baseline play and pure fun.'
+  },
+  {
+    id: 'c30b464e', name: 'Quick Rally Gone Wrong',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.mp4',
+    sport: 'pickleball', quality: 7, viral: 8, watchability: 7, cinematic: 8,
+    arc: 'error_highlight',
+    espn: 'An unforced error ends what was shaping up to be a competitive exchange. These moments are critical learning opportunities at every level of play.',
+    hype: 'OH NO THEY DIDN\'T — the crowd can\'t believe it! That unforced error is going to haunt them. PAINFUL but SHAREABLE!',
+    ron: 'Well, that was certainly a pickleball rally. Not quite a symphony of dinks, nor a ballet of volleys, but a rally nonetheless. I\'m Ron Burgundy, and even I make mistakes.',
+    chuck: 'Chuck Norris never makes unforced errors. The ball makes the error.',
+    tts: 'Watch this quick pickleball rally that ends in an unexpected unforced error — a classic teaching moment.',
+    caption: 'When the rally ends before it starts 😂 #PickleballFails',
+    hashtags: ['#pickleball', '#fails', '#errorhighlight', '#teachingmoment', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA'],
+    badges: ['Teaching Moment', 'Error Highlight'],
+    summary: 'Short rally ending in an unforced error — high viral potential teaching moment.'
+  },
+  {
+    id: '0b225575', name: 'Baseline Rally Masterclass',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0b225575-5bd7-4e7b-ac84-8b59a86cb811.mp4',
+    sport: 'pickleball', quality: 7, viral: 3, watchability: 6, cinematic: 7,
+    arc: 'pure_fun',
+    espn: 'Players engage in a steady rally exchanging consistent drives from the baseline, showcasing solid fundamental play in this indoor pickleball match.',
+    hype: 'BASELINE DOMINANCE on full display! The consistency is OFF THE CHARTS!',
+    ron: 'By the beard of Zeus, this pickleball contest is a symphony of precision and power! The players, with their unwavering focus, deliver a spectacle of athletic prowess.',
+    chuck: 'Chuck Norris once had a rally like this. It lasted three days.',
+    tts: 'A masterful baseline rally showcasing consistent drives and solid fundamental pickleball technique.',
+    caption: 'Just a casual day on the court! 🎾 #PickleballLife',
+    hashtags: ['#pickleball', '#baseline', '#rally', '#fundamentals', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA'],
+    badges: [],
+    summary: 'Extended baseline rally demonstrating consistent driving and solid fundamental play.'
+  },
+  {
+    id: 'f415729c', name: 'Drive Drop Dink Sequence',
+    url: 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f415729c-153e-4024-bdc3-9a9836752e4e.mp4',
+    sport: 'pickleball', quality: 7, viral: 3, watchability: 6, cinematic: 6,
+    arc: 'teaching_moment',
+    espn: 'A textbook drive-drop-dink sequence that every pickleball student should study. This is the correct third-shot drop approach executed with patience.',
+    hype: 'THE STRATEGY IS REAL — drive, drop, then ATTACK the kitchen! This is HOW YOU PLAY PICKLEBALL!',
+    ron: 'Good heavens, what a display of athleticism and paddle prowess! The serve, a veritable symphony of spin and precision — I\'m Ron Burgundy, and I approve this message.',
+    chuck: 'Chuck Norris doesn\'t need a third shot drop. He just stares at the ball and it goes in.',
+    tts: 'Watch this perfect drive drop dink sequence demonstrating proper pickleball strategy and kitchen approach.',
+    caption: 'Drive, drop, dink! Pickleball strategy in action. #PickleballTips',
+    hashtags: ['#pickleball', '#strategy', '#thirdshotdrop', '#kitchen', '#courtana'],
+    brands: ['LIFE TIME PICKLEBALL', 'JOOLA'],
+    badges: ['Teaching Moment', 'Aggressive Driver'],
+    summary: 'Classic drive-drop-dink teaching sequence with proper kitchen approach technique.'
+  }
+];
+
+let currentClipIndex = 0;
+let currentVoiceTab = 'espn';
+let isSpeaking = false;
+
+function sportIcon(sport) {
+  return sport === 'pickleball' ? '🥒' : '🏒';
+}
+
+function arcLabel(arc) {
+  return arc.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+// Build sidebar
+function buildSidebar() {
+  const list = document.getElementById('clipList');
+  list.innerHTML = '';
+  CLIPS.forEach((clip, i) => {
+    const el = document.createElement('div');
+    el.className = 'clip-item' + (i === currentClipIndex ? ' active' : '');
+    el.id = 'sidebar-item-' + i;
+    el.innerHTML = `
+      <span class="clip-icon">${sportIcon(clip.sport)}</span>
+      <div class="clip-meta">
+        <div class="clip-name">${clip.name}</div>
+        <div class="clip-arc">${arcLabel(clip.arc)}</div>
+      </div>
+      <span class="q-chip">${clip.quality}</span>
+    `;
+    el.onclick = () => loadClip(i);
+    list.appendChild(el);
+  });
+}
+
+// Build table
+function buildTable() {
+  const tbody = document.getElementById('clipsTableBody');
+  tbody.innerHTML = '';
+  CLIPS.forEach((clip, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong style="font-size:12px">${clip.name}</strong><br><span style="font-size:10px;color:#5a7090">${clip.id}</span></td>
+      <td class="tbl-q">${clip.quality}/10</td>
+      <td style="color:#ff5252;font-weight:700">${clip.viral}/10</td>
+      <td class="tbl-arc">${arcLabel(clip.arc)}</td>
+      <td style="font-size:11px;color:oklch(52% 0.14 75)">${clip.brands.join(', ')}</td>
+      <td class="tbl-ron">${clip.ron.substring(0, 90)}…</td>
+      <td><button class="jump-link" onclick="loadClip(${i}); document.querySelector('.main').scrollTo({top:0,behavior:'smooth'})">Load ↑</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function loadClip(index) {
+  // Stop any speech
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  stopWaveform();
+
+  currentClipIndex = index;
+  const clip = CLIPS[index];
+
+  // Video
+  const video = document.getElementById('videoPlayer');
+  const source = document.getElementById('videoSource');
+  source.src = clip.url;
+  video.load();
+
+  // Overlay
+  document.getElementById('broadcastCaption').textContent = clip.caption;
+  document.getElementById('broadcastBadge').textContent = 'Q' + clip.quality + ' / VIRAL ' + clip.viral;
+
+  // Scores
+  document.getElementById('scoreQuality').textContent = clip.quality + '/10';
+  document.getElementById('scoreViral').textContent = clip.viral + '/10';
+  document.getElementById('scoreWatch').textContent = clip.watchability + '/10';
+  document.getElementById('scoreCinema').textContent = clip.cinematic + '/10';
+
+  // Commentary
+  document.getElementById('commentaryText').textContent = clip[currentVoiceTab];
+
+  // Brands
+  const brandsEl = document.getElementById('brandsChips');
+  brandsEl.innerHTML = clip.brands.length
+    ? clip.brands.map(b => `<span class="chip chip-brand">${b}</span>`).join('')
+    : '<span class="chip-empty">No brands detected</span>';
+
+  // Badges
+  const badgesEl = document.getElementById('badgesChips');
+  badgesEl.innerHTML = clip.badges.length
+    ? clip.badges.map(b => `<span class="chip chip-badge">${b}</span>`).join('')
+    : '<span class="chip-empty">No badges</span>';
+
+  // Hashtags
+  const hashtagEl = document.getElementById('hashtagRow');
+  hashtagEl.innerHTML = clip.hashtags.map(h =>
+    `<span class="hashtag" onclick="copyHashtag('${h}', this)">${h}</span>`
+  ).join('');
+
+  // Sidebar active state
+  document.querySelectorAll('.clip-item').forEach((el, i) => {
+    el.classList.toggle('active', i === index);
+  });
+
+  // Reset play button
+  const btn = document.getElementById('playBtn');
+  btn.classList.remove('playing');
+  document.getElementById('playBtnIcon').textContent = '▶';
+  document.getElementById('playBtnLabel').textContent = 'Play';
+}
+
+function setVoiceTab(voice) {
+  currentVoiceTab = voice;
+
+  // Stop speech
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  stopWaveform();
+
+  // Update tabs
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.voice === voice);
+  });
+
+  // Update commentary
+  const clip = CLIPS[currentClipIndex];
+  document.getElementById('commentaryText').textContent = clip[voice];
+
+  // Reset button
+  const btn = document.getElementById('playBtn');
+  btn.classList.remove('playing');
+  document.getElementById('playBtnIcon').textContent = '▶';
+  document.getElementById('playBtnLabel').textContent = 'Play';
+}
+
+function playVoice() {
+  if (!window.speechSynthesis) { showToast('Speech not supported in this browser'); return; }
+
+  if (isSpeaking) {
+    window.speechSynthesis.cancel();
+    stopWaveform();
+    return;
+  }
+
+  const clip = CLIPS[currentClipIndex];
+  const text = clip[currentVoiceTab];
+
+  const utter = new SpeechSynthesisUtterance(text);
+
+  // Voice settings per tab
+  if (currentVoiceTab === 'espn') {
+    utter.rate = 1.0; utter.pitch = 1.0; utter.volume = 1.0;
+  } else if (currentVoiceTab === 'hype') {
+    utter.rate = 1.2; utter.pitch = 1.3; utter.volume = 1.0;
+  } else if (currentVoiceTab === 'ron') {
+    utter.rate = 0.9; utter.pitch = 0.8; utter.volume = 1.0;
+  } else if (currentVoiceTab === 'chuck') {
+    utter.rate = 0.85; utter.pitch = 0.6; utter.volume = 1.0;
+  } else if (currentVoiceTab === 'tts') {
+    utter.rate = 1.05; utter.pitch = 1.1; utter.volume = 1.0;
+  }
+
+  utter.onstart = () => {
+    isSpeaking = true;
+    startWaveform();
+    const btn = document.getElementById('playBtn');
+    btn.classList.add('playing');
+    document.getElementById('playBtnIcon').textContent = '■';
+    document.getElementById('playBtnLabel').textContent = 'Stop';
+  };
+
+  utter.onend = () => {
+    isSpeaking = false;
+    stopWaveform();
+    const btn = document.getElementById('playBtn');
+    btn.classList.remove('playing');
+    document.getElementById('playBtnIcon').textContent = '▶';
+    document.getElementById('playBtnLabel').textContent = 'Play';
+  };
+
+  utter.onerror = () => {
+    isSpeaking = false;
+    stopWaveform();
+  };
+
+  window.speechSynthesis.speak(utter);
+}
+
+function startWaveform() {
+  document.getElementById('waveform').classList.add('active');
+}
+
+function stopWaveform() {
+  isSpeaking = false;
+  document.getElementById('waveform').classList.remove('active');
+}
+
+function copyHashtag(tag, el) {
+  navigator.clipboard.writeText(tag).then(() => {
+    el.classList.add('copied');
+    el.textContent = 'Copied!';
+    setTimeout(() => {
+      el.classList.remove('copied');
+      el.textContent = tag;
+    }, 1200);
+  }).catch(() => {
+    showToast('Copied: ' + tag);
+  });
+}
+
+function copyLovablePrompt() {
+  const text = 'Build a Pickle DaaS app — see LOVABLE-PROMPT-PICKLE-DAAS-SHELL.md';
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Lovable prompt copied to clipboard!');
+  }).catch(() => {
+    showToast('Prompt: ' + text);
+  });
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// Init
+buildSidebar();
+buildTable();
+loadClip(0);
+</script>
+</body>
+</html>
