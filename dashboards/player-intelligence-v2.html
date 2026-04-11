@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Player Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1219;
+    --surface: #1e2a3a;
+    --surface-2: #253347;
+    --border: #2d3f54;
+    --primary: #00E676;
+    --primary-dim: rgba(0,230,118,0.15);
+    --accent: #FF6B00;
+    --accent-dim: rgba(255,107,0,0.15);
+    --text: #E8EDF3;
+    --text-dim: #8B9AB5;
+    --danger: #FF5252;
+    --info: #40C4FF;
+    --purple: #B388FF;
+    --yellow: #FFD740;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0f1219 0%, #1a2940 50%, #0f1219 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 120%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,230,118,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(255,107,0,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .hero-logo {
+    width: 48px; height: 48px;
+    background: var(--primary);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 20px; color: var(--bg);
+  }
+  .hero-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .hero-title span { color: var(--primary); }
+  .hero-badge {
+    background: var(--primary-dim);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    position: relative;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+  .stat-number {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-number.green { color: var(--primary); }
+  .stat-number.orange { color: var(--accent); }
+  .stat-number.blue { color: var(--info); }
+  .stat-number.purple { color: var(--purple); }
+  .stat-label { color: var(--text-dim); font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── SECTIONS ── */
+  section { padding: 48px 0; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .section-icon.green { background: var(--primary-dim); }
+  .section-icon.orange { background: var(--accent-dim); }
+  .section-icon.blue { background: rgba(64,196,255,0.15); }
+  .section-icon.purple { background: rgba(179,136,255,0.15); }
+  .section-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin-bottom: 48px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--surface-2);
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  th:hover { color: var(--primary); }
+  th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+  th.active .sort-arrow { opacity: 1; color: var(--primary); }
+  td { padding: 14px 18px; border-top: 1px solid var(--border); font-size: 14px; }
+  tr:hover td { background: rgba(0,230,118,0.03); }
+  .player-name-cell { display: flex; align-items: center; gap: 10px; }
+  .player-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    color: var(--bg);
+  }
+  .brand-pill {
+    display: inline-block;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    margin: 1px 2px;
+    color: var(--text-dim);
+  }
+  .quality-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    overflow: hidden;
+    min-width: 80px;
+  }
+  .quality-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+  /* ── CHARTS ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 24px;
+  }
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .chart-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .chart-container { position: relative; width: 100%; }
+
+  /* ── ARCHETYPES ── */
+  .archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .archetype-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .archetype-card:hover { transform: translateY(-3px); }
+  .archetype-card.kitchen { border-top: 3px solid var(--primary); }
+  .archetype-card.power { border-top: 3px solid var(--danger); }
+  .archetype-card.allcourt { border-top: 3px solid var(--info); }
+  .archetype-card.creative { border-top: 3px solid var(--purple); }
+  .archetype-emoji { font-size: 40px; margin-bottom: 12px; }
+  .archetype-name { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .archetype-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
+  .archetype-players { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .archetype-player-pill {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .archetype-count {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 8px 0;
+  }
+
+  /* ── PLAYER CARDS ── */
+  .player-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .player-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .player-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .player-card-header {
+    background: linear-gradient(135deg, var(--accent-dim), var(--surface));
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .player-card-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px; color: var(--bg);
+    flex-shrink: 0;
+  }
+  .player-card-info h3 { font-size: 18px; font-weight: 700; }
+  .player-card-info .meta { font-size: 12px; color: var(--text-dim); }
+  .player-card-info .meta span { color: var(--accent); font-weight: 600; }
+  .player-card-body { padding: 20px 24px; }
+  .player-card-body.collapsed { display: none; }
+  .player-card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .player-mini-stat {
+    text-align: center;
+    padding: 8px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+  }
+  .player-mini-stat .val { font-size: 20px; font-weight: 700; color: var(--primary); }
+  .player-mini-stat .lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.3px; }
+  .player-radar-container { height: 220px; margin-bottom: 16px; }
+  .player-card-brands { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .coaching-note {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .coaching-note strong { color: var(--accent); }
+  .signature-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-dim);
+    border: 1px solid rgba(0,230,118,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 2px;
+  }
+  .expand-hint {
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+    margin-top: 48px;
+  }
+  footer p { color: var(--text-dim); font-size: 13px; }
+  footer .brand { color: var(--primary); font-weight: 600; }
+  footer .pipe { color: var(--border); margin: 0 8px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { padding: 32px 0 28px; }
+    .hero-title { font-size: 22px; }
+    .stat-number { font-size: 32px; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    .player-cards-grid { grid-template-columns: 1fr; }
+    .archetype-grid { grid-template-columns: repeat(2, 1fr); }
+    table { font-size: 12px; }
+    th, td { padding: 10px 12px; }
+    .container { padding: 0 16px; }
+  }
+  @media (max-width: 480px) {
+    .hero-stats { grid-template-columns: 1fr; }
+    .archetype-grid { grid-template-columns: 1fr; }
+    .player-card-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HERO ════════════════ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-top">
+      <div class="hero-logo">P</div>
+      <div class="hero-title">Player <span>Intelligence</span></div>
+      <div class="hero-badge">Live Corpus</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-number green">8</div>
+        <div class="stat-label">Unique Players Tracked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number orange">96</div>
+        <div class="stat-label">Clips Analyzed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number blue">6.6</div>
+        <div class="stat-label">Avg Quality Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number purple">3.5</div>
+        <div class="stat-label">Avg Skill Level (est.)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number green">PickleBill</div>
+        <div class="stat-label" style="font-size:11px">Most Analyzed Player (27 clips)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ PLAYERS TABLE ════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon green">&#127941;</div>
+      <div class="section-title">Top Players</div>
+    </div>
+    <div class="table-wrap">
+      <table id="playersTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)">Player <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(1)">Clips <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(2)">Avg Quality <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(3)">Avg Viral <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(4)">Signature Shot <span class="sort-arrow">&#9650;</span></th>
+            <th>Top Brands</th>
+          </tr>
+        </thead>
+        <tbody id="playersBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ════════════════ SKILL RADAR + SHOT DISTRIBUTION ════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon blue">&#128202;</div>
+      <div class="section-title">Aggregate Analytics</div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Skill Distribution (Corpus Average)</h3>
+        <div class="chart-container" style="height:340px">
+          <canvas id="skillRadar"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Shot Type Frequency</h3>
+        <div class="chart-container" style="height:340px">
+          <canvas id="shotChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ════════════════ ARCHETYPES ════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon purple">&#129504;</div>
+      <div class="section-title">Player Archetype Clustering</div>
+    </div>
+    <div class="archetype-grid" id="archetypeGrid"></div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ════════════════ PLAYER CARDS ════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon orange">&#127183;</div>
+      <div class="section-title">Player DNA Cards</div>
+    </div>
+    <div class="player-cards-grid" id="playerCardsGrid"></div>
+  </div>
+</section>
+
+<div class="container"><div class="divider"></div></div>
+
+<!-- ════════════════ BADGE RARITY ════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon green">&#127942;</div>
+      <div class="section-title">Badge Rarity Index</div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Badge Distribution Across Corpus</h3>
+        <div class="chart-container" style="height:340px">
+          <canvas id="badgeChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Shot Type by Estimated Skill Level</h3>
+        <div class="chart-container" style="height:340px">
+          <canvas id="shotSkillChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="container">
+    <p>
+      <span class="brand">Pickle DaaS</span>
+      <span class="pipe">|</span>
+      Player Intelligence Dashboard
+      <span class="pipe">|</span>
+      Generated <span id="genDate"></span>
+    </p>
+    <p style="margin-top:8px;font-size:11px;color:#4a5568">
+      96 clips analyzed &middot; 8 players tracked &middot; Gemini 2.5 Flash &middot; $0.0054/clip
+    </p>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════
+// EMBEDDED DATA
+// ══════════════════════════════════════════
+
+const playerProfiles = [
+  {
+    name:"PickleBill", clipCount:27, avgQuality:6.5, avgViral:3.7, dominantShot:"dink",
+    topBrands:["JOOLA","Nike","STRENGTHHOUSE","PKLR"], badges:["Kitchen King","Rally Machine","Dink Master"],
+    skills: { court_coverage:6, kitchen:7, power:5, touch:7, athleticism:5, creativity:4, court_iq:6, consistency:7, composure:7, paddle_control:7 },
+    archetype:"Kitchen Specialist", signatureMove:"Cross-court dink to speed-up",
+    coachingNote:"Exceptional kitchen control. Work on adding more power variation to keep opponents guessing. Third shot drop could be more consistent.",
+    duprEst:"3.0-3.5", playStyle:["kitchen specialist","volleyer","consistent"]
+  },
+  {
+    name:"Ironvarr", clipCount:10, avgQuality:6.2, avgViral:3.5, dominantShot:"dink",
+    topBrands:["JOOLA","Nike","Onix"], badges:["Wall of Hands","Grinder"],
+    skills: { court_coverage:5, kitchen:6, power:5, touch:6, athleticism:5, creativity:4, court_iq:5, consistency:6, composure:6, paddle_control:6 },
+    archetype:"All-Court", signatureMove:"Steady baseline-to-kitchen transition",
+    coachingNote:"Well-rounded player with solid fundamentals. Focus on developing a stronger put-away shot and court positioning under pressure.",
+    duprEst:"3.0-3.5", playStyle:["all-court player","steady","balanced"]
+  },
+  {
+    name:"Pmcintosh", clipCount:10, avgQuality:6.0, avgViral:3.0, dominantShot:"dink",
+    topBrands:["JOOLA","Nike","Adidas"], badges:["Consistency King"],
+    skills: { court_coverage:5, kitchen:5, power:4, touch:5, athleticism:5, creativity:3, court_iq:5, consistency:6, composure:6, paddle_control:5 },
+    archetype:"All-Court", signatureMove:"Patient dink rallies",
+    coachingNote:"Consistent play but lacks offensive firepower. Incorporate speed-ups and drives to create more winning opportunities.",
+    duprEst:"2.5-3.0", playStyle:["recreational","methodical","patient"]
+  },
+  {
+    name:"Santinofuntila", clipCount:8, avgQuality:5.9, avgViral:3.4, dominantShot:"dink",
+    topBrands:["JOOLA","Nike"], badges:["Grinder","Rising Star"],
+    skills: { court_coverage:5, kitchen:5, power:5, touch:5, athleticism:6, creativity:4, court_iq:5, consistency:5, composure:5, paddle_control:5 },
+    archetype:"Power Player", signatureMove:"Aggressive drive from mid-court",
+    coachingNote:"Strong athleticism and energy. Channel that into more strategic shot selection rather than raw power. Soft game needs development.",
+    duprEst:"3.0-3.5", playStyle:["athletic","power-oriented","aggressive"]
+  },
+  {
+    name:"khamille06", clipCount:2, avgQuality:6.5, avgViral:2.5, dominantShot:"drop",
+    topBrands:["RECOVERY CAVE","ONIX","JOOLA"], badges:["Teaching Moment","Drop Shot Artist"],
+    skills: { court_coverage:4, kitchen:5, power:3, touch:5, athleticism:4, creativity:5, court_iq:5, consistency:4, composure:5, paddle_control:5 },
+    archetype:"Creative Shotmaker", signatureMove:"Third shot drop approach",
+    coachingNote:"Shows creative shot selection with drop shots. Needs better consistency on execution and more aggressive net approaches after the drop.",
+    duprEst:"3.0-3.5", playStyle:["creative","developing dinker","all-court player"]
+  },
+  {
+    name:"Daniella", clipCount:2, avgQuality:6.0, avgViral:3.5, dominantShot:"dink",
+    topBrands:["JOOLA","Nike"], badges:["Kitchen Queen"],
+    skills: { court_coverage:5, kitchen:6, power:4, touch:6, athleticism:5, creativity:4, court_iq:5, consistency:6, composure:6, paddle_control:6 },
+    archetype:"Kitchen Specialist", signatureMove:"Soft cross-court dinks",
+    coachingNote:"Natural touch at the kitchen. Build confidence in transitioning from defense to offense with well-timed speed-ups.",
+    duprEst:"3.0-3.5", playStyle:["kitchen player","soft hands","patient"]
+  },
+  {
+    name:"David", clipCount:1, avgQuality:6.0, avgViral:3.0, dominantShot:"dink",
+    topBrands:["JOOLA"], badges:[],
+    skills: { court_coverage:4, kitchen:4, power:4, touch:4, athleticism:4, creativity:3, court_iq:4, consistency:4, composure:5, paddle_control:4 },
+    archetype:"All-Court", signatureMove:"N/A (limited data)",
+    coachingNote:"Limited clip data available. Focus on fundamentals: serve consistency, third shot selection, and kitchen positioning.",
+    duprEst:"2.5-3.0", playStyle:["recreational","developing"]
+  },
+  {
+    name:"Riccj", clipCount:1, avgQuality:6.0, avgViral:3.0, dominantShot:"dink",
+    topBrands:["JOOLA"], badges:[],
+    skills: { court_coverage:4, kitchen:4, power:4, touch:4, athleticism:4, creativity:3, court_iq:4, consistency:4, composure:5, paddle_control:4 },
+    archetype:"All-Court", signatureMove:"N/A (limited data)",
+    coachingNote:"Limited clip data. Early indicators suggest balanced play style. More clips needed for comprehensive analysis.",
+    duprEst:"2.5-3.0", playStyle:["recreational","developing"]
+  }
+];
+
+const corpusStats = {
+  totalClips: 96,
+  shotTypes: { dink:56, drive:22, volley:7, serve:2, overhead:2, reset:2, drop:1, speed_up:1, other:3 },
+  brands: { JOOLA:68, Nike:9, Courtana:3, "LIFE TIME":3, CRBN:2, ONIX:2, "Recovery Cave":2, Selkirk:1, Franklin:1, PKLR:1, STRENGTHHOUSE:1, Adidas:1 },
+  arcs: { grind_rally:73, pure_fun:7, athletic_highlight:6, error_highlight:5, teaching_moment:2, clutch_moment:1, dominant_performance:1, other:1 },
+  avgQuality: 6.6,
+  avgViral: 3.8
+};
+
+const badgeData = {
+  "Kitchen King": 12,
+  "Wall of Hands": 8,
+  "Grinder": 7,
+  "Rally Machine": 6,
+  "Dink Master": 5,
+  "Teaching Moment": 4,
+  "Rising Star": 3,
+  "Kitchen Queen": 3,
+  "Consistency King": 2,
+  "Drop Shot Artist": 2,
+  "Power Surge": 2,
+  "Clutch Player": 1,
+  "Speed Demon": 1,
+  "Net Assassin": 1,
+  "Iron Wall": 1
+};
+
+const shotBySkill = {
+  beginner: { dink:15, drive:8, serve:3, volley:2, drop:2, overhead:0, reset:1, other:1 },
+  intermediate: { dink:35, drive:12, volley:4, overhead:2, reset:1, drop:1, serve:0, other:1 },
+  advanced: { dink:6, drive:2, volley:1, overhead:0, reset:0, drop:0, serve:0, other:0 }
+};
+
+const playerColors = ['#00E676','#FF6B00','#40C4FF','#B388FF','#FFD740','#FF5252','#69F0AE','#FF9100'];
+
+// ══════════════════════════════════════════
+// RENDER FUNCTIONS
+// ══════════════════════════════════════════
+
+document.getElementById('genDate').textContent = new Date().toLocaleDateString('en-US', {
+  year:'numeric', month:'long', day:'numeric'
+});
+
+// ── Players Table ──
+function renderTable(sortCol = 1, sortDir = 'desc') {
+  const tbody = document.getElementById('playersBody');
+  const sorted = [...playerProfiles].sort((a, b) => {
+    let va, vb;
+    switch(sortCol) {
+      case 0: va = a.name.toLowerCase(); vb = b.name.toLowerCase(); return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      case 1: va = a.clipCount; vb = b.clipCount; break;
+      case 2: va = a.avgQuality; vb = b.avgQuality; break;
+      case 3: va = a.avgViral; vb = b.avgViral; break;
+      case 4: va = a.dominantShot; vb = b.dominantShot; return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      default: va = a.clipCount; vb = b.clipCount;
+    }
+    return sortDir === 'asc' ? va - vb : vb - va;
+  });
+
+  tbody.innerHTML = sorted.map((p, i) => {
+    const color = playerColors[i % playerColors.length];
+    const qPct = (p.avgQuality / 10) * 100;
+    const vPct = (p.avgViral / 10) * 100;
+    const qColor = p.avgQuality >= 6.5 ? 'var(--primary)' : p.avgQuality >= 5.5 ? 'var(--yellow)' : 'var(--danger)';
+    const vColor = p.avgViral >= 4 ? 'var(--primary)' : p.avgViral >= 3 ? 'var(--yellow)' : 'var(--text-dim)';
+    return `<tr>
+      <td><div class="player-name-cell">
+        <div class="player-avatar" style="background:${color}">${p.name.charAt(0).toUpperCase()}</div>
+        <div><strong>${p.name}</strong><br><span style="font-size:11px;color:var(--text-dim)">${p.archetype}</span></div>
+      </div></td>
+      <td><strong>${p.clipCount}</strong></td>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div class="quality-bar"><div class="quality-bar-fill" style="width:${qPct}%;background:${qColor}"></div></div>
+        <span>${p.avgQuality.toFixed(1)}</span>
+      </div></td>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div class="quality-bar"><div class="quality-bar-fill" style="width:${vPct}%;background:${vColor}"></div></div>
+        <span>${p.avgViral.toFixed(1)}</span>
+      </div></td>
+      <td><span style="text-transform:capitalize">${p.dominantShot}</span></td>
+      <td>${p.topBrands.map(b => `<span class="brand-pill">${b}</span>`).join('')}</td>
+    </tr>`;
+  }).join('');
+}
+
+let currentSortCol = 1;
+let currentSortDir = 'desc';
+function sortTable(col) {
+  if (currentSortCol === col) {
+    currentSortDir = currentSortDir === 'desc' ? 'asc' : 'desc';
+  } else {
+    currentSortCol = col;
+    currentSortDir = 'desc';
+  }
+  document.querySelectorAll('#playersTable th').forEach((th, i) => {
+    th.classList.toggle('active', i === col);
+    th.querySelector('.sort-arrow').textContent = (i === col && currentSortDir === 'desc') ? '\u25BC' : '\u25B2';
+  });
+  renderTable(col, currentSortDir);
+}
+renderTable();
+
+// ── Skill Radar ──
+const avgSkills = {};
+const skillKeys = ['court_coverage','kitchen','power','touch','athleticism','creativity','court_iq','consistency','composure','paddle_control'];
+const skillLabels = ['Court Coverage','Kitchen Mastery','Power','Touch & Feel','Athleticism','Creativity','Court IQ','Consistency','Composure','Paddle Control'];
+skillKeys.forEach(k => {
+  const vals = playerProfiles.map(p => p.skills[k]);
+  avgSkills[k] = vals.reduce((a,b) => a+b, 0) / vals.length;
+});
+
+new Chart(document.getElementById('skillRadar'), {
+  type: 'radar',
+  data: {
+    labels: skillLabels,
+    datasets: [{
+      label: 'Corpus Average',
+      data: skillKeys.map(k => avgSkills[k]),
+      backgroundColor: 'rgba(0,230,118,0.15)',
+      borderColor: '#00E676',
+      borderWidth: 2,
+      pointBackgroundColor: '#00E676',
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }, {
+      label: 'Top Player (PickleBill)',
+      data: skillKeys.map(k => playerProfiles[0].skills[k]),
+      backgroundColor: 'rgba(255,107,0,0.12)',
+      borderColor: '#FF6B00',
+      borderWidth: 2,
+      pointBackgroundColor: '#FF6B00',
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 10,
+        ticks: { stepSize: 2, color: '#8B9AB5', backdropColor: 'transparent', font: { size: 10 } },
+        grid: { color: 'rgba(45,63,84,0.6)' },
+        angleLines: { color: 'rgba(45,63,84,0.6)' },
+        pointLabels: { color: '#E8EDF3', font: { size: 11 } }
+      }
+    },
+    plugins: {
+      legend: { labels: { color: '#E8EDF3', padding: 16, usePointStyle: true, pointStyle: 'circle' } }
+    }
+  }
+});
+
+// ── Shot Type Chart ──
+const shotLabels = Object.keys(corpusStats.shotTypes);
+const shotValues = Object.values(corpusStats.shotTypes);
+const shotColors = ['#00E676','#FF6B00','#40C4FF','#B388FF','#FFD740','#FF5252','#69F0AE','#FF9100','#90A4AE'];
+
+new Chart(document.getElementById('shotChart'), {
+  type: 'doughnut',
+  data: {
+    labels: shotLabels.map(s => s.charAt(0).toUpperCase() + s.slice(1).replace('_',' ')),
+    datasets: [{
+      data: shotValues,
+      backgroundColor: shotColors.slice(0, shotLabels.length),
+      borderColor: '#1e2a3a',
+      borderWidth: 3,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { color: '#E8EDF3', padding: 10, usePointStyle: true, pointStyle: 'rectRounded', font: { size: 12 } }
+      }
+    }
+  }
+});
+
+// ── Archetypes ──
+const archetypes = [
+  { id:'kitchen', name:'Kitchen Specialist', emoji:'\uD83C\uDFAF', desc:'Dominates the non-volley zone with precise dinks, soft hands, and patience. Wins points through placement, not power.',
+    players: playerProfiles.filter(p => p.archetype === 'Kitchen Specialist') },
+  { id:'power', name:'Power Player', emoji:'\u26A1', desc:'Aggressive drives and overheads. Controls pace with raw force and athletic ability. High risk, high reward style.',
+    players: playerProfiles.filter(p => p.archetype === 'Power Player') },
+  { id:'allcourt', name:'All-Court', emoji:'\uD83C\uDFBE', desc:'Balanced game with no glaring weakness. Adapts to opponents and situations. The versatile competitor.',
+    players: playerProfiles.filter(p => p.archetype === 'All-Court') },
+  { id:'creative', name:'Creative Shotmaker', emoji:'\uD83C\uDFA8', desc:'Unconventional angles, deceptive drops, and unexpected shot selection. Keeps opponents guessing with variety.',
+    players: playerProfiles.filter(p => p.archetype === 'Creative Shotmaker') }
+];
+
+document.getElementById('archetypeGrid').innerHTML = archetypes.map(a => `
+  <div class="archetype-card ${a.id}">
+    <div class="archetype-emoji">${a.emoji}</div>
+    <div class="archetype-name">${a.name}</div>
+    <div class="archetype-count" style="color:${a.id==='kitchen'?'var(--primary)':a.id==='power'?'var(--danger)':a.id==='allcourt'?'var(--info)':'var(--purple)'}">
+      ${a.players.length}
+    </div>
+    <div class="archetype-desc">${a.desc}</div>
+    <div class="archetype-players">
+      ${a.players.map(p => `<span class="archetype-player-pill">${p.name}</span>`).join('')}
+    </div>
+  </div>
+`).join('');
+
+// ── Player Cards ──
+const cardCharts = {};
+document.getElementById('playerCardsGrid').innerHTML = playerProfiles.map((p, i) => {
+  const color = playerColors[i % playerColors.length];
+  return `
+  <div class="player-card" onclick="toggleCard(${i})">
+    <div class="player-card-header">
+      <div class="player-card-avatar" style="background:${color}">${p.name.charAt(0).toUpperCase()}</div>
+      <div class="player-card-info">
+        <h3>${p.name}</h3>
+        <div class="meta">${p.archetype} &middot; <span>${p.clipCount} clips</span> &middot; DUPR est. ${p.duprEst}</div>
+      </div>
+    </div>
+    <div class="player-card-body collapsed" id="cardBody${i}">
+      <div class="player-card-stats">
+        <div class="player-mini-stat"><div class="val">${p.avgQuality.toFixed(1)}</div><div class="lbl">Quality</div></div>
+        <div class="player-mini-stat"><div class="val">${p.avgViral.toFixed(1)}</div><div class="lbl">Viral</div></div>
+        <div class="player-mini-stat"><div class="val" style="text-transform:capitalize;font-size:14px">${p.dominantShot}</div><div class="lbl">Top Shot</div></div>
+      </div>
+      <div class="player-radar-container"><canvas id="playerRadar${i}"></canvas></div>
+      ${p.badges.length ? '<div style="margin-bottom:12px">' + p.badges.map(b => `<span class="signature-badge">\u2605 ${b}</span>`).join('') + '</div>' : ''}
+      ${p.signatureMove !== 'N/A (limited data)' ? `<div style="margin-bottom:8px;font-size:13px"><strong style="color:var(--accent)">Signature Move:</strong> ${p.signatureMove}</div>` : ''}
+      <div class="player-card-brands">${p.topBrands.map(b => `<span class="brand-pill">${b}</span>`).join('')}</div>
+      <div class="coaching-note"><strong>Coach's Note:</strong> ${p.coachingNote}</div>
+    </div>
+    <div class="expand-hint" id="expandHint${i}">Click to expand player DNA &#9660;</div>
+  </div>`;
+}).join('');
+
+function toggleCard(idx) {
+  const body = document.getElementById(`cardBody${idx}`);
+  const hint = document.getElementById(`expandHint${idx}`);
+  const isCollapsed = body.classList.contains('collapsed');
+  body.classList.toggle('collapsed');
+  hint.innerHTML = isCollapsed ? 'Click to collapse &#9650;' : 'Click to expand player DNA &#9660;';
+  if (isCollapsed && !cardCharts[idx]) {
+    const p = playerProfiles[idx];
+    const color = playerColors[idx % playerColors.length];
+    cardCharts[idx] = new Chart(document.getElementById(`playerRadar${idx}`), {
+      type: 'radar',
+      data: {
+        labels: skillLabels,
+        datasets: [{
+          label: p.name,
+          data: skillKeys.map(k => p.skills[k]),
+          backgroundColor: hexToRgba(color, 0.15),
+          borderColor: color,
+          borderWidth: 2,
+          pointBackgroundColor: color,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            beginAtZero: true, max: 10,
+            ticks: { stepSize: 2, color: '#8B9AB5', backdropColor: 'transparent', font: { size: 9 } },
+            grid: { color: 'rgba(45,63,84,0.5)' },
+            angleLines: { color: 'rgba(45,63,84,0.5)' },
+            pointLabels: { color: '#c0c8d4', font: { size: 9 } }
+          }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+}
+
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ── Badge Rarity Chart ──
+const badgeLabels = Object.keys(badgeData);
+const badgeValues = Object.values(badgeData);
+const maxBadge = Math.max(...badgeValues);
+
+new Chart(document.getElementById('badgeChart'), {
+  type: 'bar',
+  data: {
+    labels: badgeLabels,
+    datasets: [{
+      label: 'Times Earned',
+      data: badgeValues,
+      backgroundColor: badgeValues.map(v =>
+        v >= 8 ? 'rgba(0,230,118,0.7)' :
+        v >= 4 ? 'rgba(64,196,255,0.7)' :
+        v >= 2 ? 'rgba(179,136,255,0.7)' :
+        'rgba(255,215,64,0.7)'
+      ),
+      borderColor: badgeValues.map(v =>
+        v >= 8 ? '#00E676' :
+        v >= 4 ? '#40C4FF' :
+        v >= 2 ? '#B388FF' :
+        '#FFD740'
+      ),
+      borderWidth: 1,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    scales: {
+      x: {
+        grid: { color: 'rgba(45,63,84,0.4)' },
+        ticks: { color: '#8B9AB5', font: { size: 11 } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#E8EDF3', font: { size: 11 } }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          afterLabel: function(ctx) {
+            const v = ctx.raw;
+            if (v >= 8) return 'Common';
+            if (v >= 4) return 'Uncommon';
+            if (v >= 2) return 'Rare';
+            return 'Legendary';
+          }
+        }
+      }
+    }
+  }
+});
+
+// ── Shot by Skill Level ──
+const skillLevels = ['beginner','intermediate','advanced'];
+const shotTypesForChart = ['dink','drive','volley','overhead','drop','serve','reset'];
+const skillColors = { beginner:'rgba(179,136,255,0.8)', intermediate:'rgba(64,196,255,0.8)', advanced:'rgba(0,230,118,0.8)' };
+
+new Chart(document.getElementById('shotSkillChart'), {
+  type: 'bar',
+  data: {
+    labels: shotTypesForChart.map(s => s.charAt(0).toUpperCase() + s.slice(1)),
+    datasets: skillLevels.map(level => ({
+      label: level.charAt(0).toUpperCase() + level.slice(1),
+      data: shotTypesForChart.map(shot => shotBySkill[level][shot] || 0),
+      backgroundColor: skillColors[level],
+      borderRadius: 3
+    }))
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#E8EDF3', font: { size: 11 } }
+      },
+      y: {
+        grid: { color: 'rgba(45,63,84,0.4)' },
+        ticks: { color: '#8B9AB5', font: { size: 11 } },
+        title: { display: true, text: 'Clip Count', color: '#8B9AB5', font: { size: 11 } }
+      }
+    },
+    plugins: {
+      legend: { labels: { color: '#E8EDF3', padding: 16, usePointStyle: true, pointStyle: 'rectRounded' } }
+    }
+  }
+});
+
+// Auto-expand first player card
+toggleCard(0);
+</script>
+</body>
+</html>
