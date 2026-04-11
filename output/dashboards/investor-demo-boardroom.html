@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Investor Intelligence Brief</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAFAF7;
+    --surface: #FFFFFF;
+    --border: #E5E5E0;
+    --text: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --accent: #0D7C4A;
+    --accent-light: #E8F5EE;
+    --blue: #2563EB;
+    --blue-light: #EFF6FF;
+    --amber: #D97706;
+    --amber-light: #FFFBEB;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --radius: 6px;
+  }
+
+  html { font-size: 15px; }
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .serif { font-family: Georgia, 'Times New Roman', serif; }
+
+  .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .tabnum {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  /* Layout */
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid var(--accent);
+    padding: 20px 0;
+    margin-bottom: 48px;
+  }
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .header-brand {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .header-brand span { color: var(--accent); }
+  .header-subtitle {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .header-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    text-align: right;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+
+  /* Section title */
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  /* Executive summary */
+  .exec-statement {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+  .exec-statement strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  .kpi-trend {
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .kpi-trend.up { color: var(--accent); }
+  .kpi-trend.neutral { color: var(--text-secondary); }
+
+  /* Market section */
+  .market-statement {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+  .market-statement strong { font-weight: 700; }
+
+  /* Comparison table */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .comp-table thead th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--border);
+  }
+  .comp-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table tbody tr:last-child td { border-bottom: none; }
+  .comp-table .highlight-row {
+    background: var(--accent-light);
+    font-weight: 600;
+  }
+  .comp-table .highlight-row td:first-child {
+    color: var(--accent);
+  }
+  .badge-yes {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .badge-no {
+    display: inline-block;
+    background: #F5F5F5;
+    color: #999;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .badge-partial {
+    display: inline-block;
+    background: var(--amber-light);
+    color: var(--amber);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  /* Chart containers */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .chart-container {
+    position: relative;
+  }
+  .chart-annotation {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* Sample clip */
+  .sample-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .sample-thumb {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .sample-meta-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .meta-pill.green { background: var(--accent-light); color: var(--accent); }
+  .meta-pill.blue { background: var(--blue-light); color: var(--blue); }
+  .meta-pill.amber { background: var(--amber-light); color: var(--amber); }
+
+  .sample-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+  .sample-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* Unit economics */
+  .econ-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .econ-table td {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .econ-table tr:last-child td { border-bottom: none; }
+  .econ-table td:first-child {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .econ-table td:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .econ-table .total-row td {
+    border-top: 2px solid var(--text);
+    border-bottom: none;
+    font-size: 17px;
+    padding-top: 18px;
+  }
+  .econ-table .total-row td:last-child { color: var(--accent); }
+
+  .econ-note {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--accent-light);
+    border-radius: var(--radius);
+    line-height: 1.5;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 48px 32px;
+    margin-bottom: 48px;
+  }
+  .cta-section .section-title { margin-bottom: 8px; }
+  .cta-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 40px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+  .cta-btn:hover { background: #0a6a3e; }
+  .cta-link {
+    display: block;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+  .cta-link:hover { color: var(--accent); text-decoration: underline; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .chart-row { grid-template-columns: 1fr; }
+    .sample-grid { grid-template-columns: 1fr; }
+    .header-inner { flex-direction: column; gap: 4px; }
+    .header-subtitle { font-size: 11px; }
+    .section-title { font-size: 22px; }
+    .exec-statement { font-size: 17px; }
+    .card { padding: 24px 20px; }
+    .kpi-value { font-size: 28px; }
+  }
+
+  @media (max-width: 480px) {
+    .kpi-row { grid-template-columns: 1fr; }
+    .comp-table { font-size: 12px; }
+    .comp-table thead th, .comp-table tbody td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="container">
+    <div class="header-inner">
+      <div>
+        <div class="header-brand">Pickle <span>DaaS</span></div>
+      </div>
+      <div>
+        <div class="header-subtitle">Investor Intelligence Brief</div>
+        <div class="header-date">April 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="card">
+    <div class="section-label">Executive Summary</div>
+    <p class="exec-statement">
+      AI-powered analysis of <strong>38</strong> pickleball highlights reveals
+      <strong>21</strong> brands, <strong>9</strong> skill dimensions, and a
+      production cost of <strong>$0.0054/clip</strong>. This is the first
+      structured data layer for the fastest-growing sport in America.
+    </p>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-value">38</div>
+        <div class="kpi-label">Clips Analyzed</div>
+        <div class="kpi-trend up">4,097 in pipeline</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">21</div>
+        <div class="kpi-label">Brands Detected</div>
+        <div class="kpi-trend up">Automated detection</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">7.2</div>
+        <div class="kpi-label">Avg Quality Score</div>
+        <div class="kpi-trend neutral">Out of 10</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">$0.005</div>
+        <div class="kpi-label">Cost per Clip</div>
+        <div class="kpi-trend up">Gemini 2.5 Flash</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKET OPPORTUNITY -->
+  <div class="card">
+    <div class="section-label">Market Opportunity</div>
+    <div class="section-title serif">Pickleball data is the last unstructured sports market</div>
+    <p class="market-statement">
+      Pickleball participation grew <strong>223% since 2020</strong> with 48.3 million
+      players in the U.S. Courtana cameras already capture <strong>4,000+ highlight groups</strong>
+      across partner venues. No competitor offers AI-driven clip analysis at this cost point.
+      The opportunity: build the Bloomberg Terminal for pickleball before incumbents notice.
+    </p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Provider</th>
+          <th>Cost / Unit</th>
+          <th>Pickleball</th>
+          <th>AI Analysis</th>
+          <th>Brand Intel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row">
+          <td>Pickle DaaS</td>
+          <td class="tabnum">$0.005 / clip</td>
+          <td><span class="badge-yes">Native</span></td>
+          <td><span class="badge-yes">9 dimensions</span></td>
+          <td><span class="badge-yes">21 brands</span></td>
+        </tr>
+        <tr>
+          <td>Sportradar</td>
+          <td class="tabnum">~$0.50 / event</td>
+          <td><span class="badge-no">None</span></td>
+          <td><span class="badge-partial">Box score only</span></td>
+          <td><span class="badge-no">None</span></td>
+        </tr>
+        <tr>
+          <td>StatsBomb</td>
+          <td class="tabnum">~$1.00 / match</td>
+          <td><span class="badge-no">None</span></td>
+          <td><span class="badge-yes">Deep</span></td>
+          <td><span class="badge-no">None</span></td>
+        </tr>
+        <tr>
+          <td>ShotTracker</td>
+          <td class="tabnum">$50K+ / season</td>
+          <td><span class="badge-no">None</span></td>
+          <td><span class="badge-partial">Tracking only</span></td>
+          <td><span class="badge-no">None</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BRAND INTELLIGENCE + SKILL DISTRIBUTION -->
+  <div class="chart-row">
+    <div class="card">
+      <div class="section-label">Brand Intelligence</div>
+      <div class="section-title serif" style="font-size:20px;">Top brands by appearance</div>
+      <div class="chart-container" style="height:340px;">
+        <canvas id="brandChart"></canvas>
+      </div>
+      <p class="chart-annotation">
+        JOOLA dominates with 12 appearances across 38 clips.
+        21 brands detected automatically via Gemini vision.
+        Sponsorship whitespace identified for underrepresented categories.
+      </p>
+    </div>
+    <div class="card">
+      <div class="section-label">Skill Distribution</div>
+      <div class="section-title serif" style="font-size:20px;">9 dimensions of play</div>
+      <div class="chart-container" style="height:340px;">
+        <canvas id="skillChart"></canvas>
+      </div>
+      <p class="chart-annotation">
+        AI measures 9 dimensions of play that no human scout can
+        assess at scale. Each clip produces a full skill fingerprint
+        in under 4 seconds.
+      </p>
+    </div>
+  </div>
+
+  <!-- SAMPLE ANALYSIS -->
+  <div class="card">
+    <div class="section-label">Sample Analysis</div>
+    <div class="section-title serif">What one clip produces</div>
+    <div class="sample-grid">
+      <div>
+        <img class="sample-thumb"
+             src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg"
+             alt="Clip thumbnail"
+             loading="lazy">
+        <div class="sample-meta-row" style="margin-top:12px;">
+          <span class="meta-pill green">Quality 8/10</span>
+          <span class="meta-pill blue">Viral 7/10</span>
+          <span class="meta-pill amber">Clutch Moment</span>
+        </div>
+        <div class="sample-meta-row">
+          <span class="meta-pill green">Epic Rally</span>
+          <span class="meta-pill green">Dink Machine</span>
+          <span class="meta-pill green">Clutch Performer</span>
+        </div>
+      </div>
+      <div>
+        <div class="sample-section-label">ESPN-Style Commentary</div>
+        <p class="sample-text">
+          A well-contested rally unfolds, featuring powerful drives from the baseline
+          before transitioning into a delicate kitchen battle. The point is ultimately
+          decided by a fortunate net-cord dink.
+        </p>
+
+        <div class="sample-section-label">Coaching Breakdown</div>
+        <p class="sample-text">
+          Notice the initial strategy to drive the ball deep, pushing opponents back
+          before moving to the kitchen. The final dink highlights the importance of
+          consistent soft hands and paddle angle control.
+        </p>
+
+        <div class="sample-section-label">Skill Fingerprint</div>
+        <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:6px 16px; margin-top:6px;">
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Coverage</span> <strong>7</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Kitchen</span> <strong>7</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Power</span> <strong>7</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Touch</span> <strong>7</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Athleticism</span> <strong>6</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Creativity</span> <strong>6</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Court IQ</span> <strong>7</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Consistency</span> <strong>7</strong></div>
+          <div style="font-size:13px;"><span style="color:var(--text-secondary);">Composure</span> <strong>7</strong></div>
+        </div>
+
+        <div class="sample-section-label">Brand Detection</div>
+        <p class="sample-text">PICKLEBALL (court branding)</p>
+
+        <div class="sample-section-label">Signature Move</div>
+        <p class="sample-text" style="font-style:italic;">
+          Initiates rallies with a powerful forehand drive from mid-court, setting
+          an aggressive tone before transitioning to dinks.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIT ECONOMICS -->
+  <div class="card">
+    <div class="section-label">Unit Economics</div>
+    <div class="section-title serif">Cost structure at scale</div>
+    <table class="econ-table">
+      <tr>
+        <td>Cost per clip (Gemini 2.5 Flash)</td>
+        <td>$0.0054</td>
+      </tr>
+      <tr>
+        <td>Processing speed</td>
+        <td>~4 clips / minute</td>
+      </tr>
+      <tr>
+        <td>Daily capacity (24h)</td>
+        <td>5,760 clips</td>
+      </tr>
+      <tr>
+        <td>Daily cost at capacity</td>
+        <td>$31.10</td>
+      </tr>
+      <tr>
+        <td>Annual capacity</td>
+        <td>2.1M clips</td>
+      </tr>
+      <tr>
+        <td>Annual cost at capacity</td>
+        <td>$11,340</td>
+      </tr>
+      <tr>
+        <td>Current Courtana corpus</td>
+        <td>4,097 highlight groups</td>
+      </tr>
+      <tr class="total-row">
+        <td>Target corpus (Year 1)</td>
+        <td>400,000 clips</td>
+      </tr>
+    </table>
+    <div class="econ-note">
+      At $0.0054/clip and 4 clips/minute, the pipeline processes 5,760 clips/day for $31.10.
+      Full Year 1 target (400K clips) costs $2,160 in compute. Infrastructure overhead is near zero &mdash;
+      the entire pipeline runs as serverless Python with no fixed costs.
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="card cta-section">
+    <div class="section-title serif">Ready to see the full platform?</div>
+    <p class="cta-subtitle">Schedule a live walkthrough of the data pipeline, brand intelligence layer, and player DNA profiles.</p>
+    <a href="mailto:bill@picklebills.com?subject=Pickle%20DaaS%20Demo%20Request" class="cta-btn">Schedule a Demo</a>
+    <a href="visual-intelligence-explorer.html" class="cta-link">View the full data explorer &rarr;</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="container">
+    PickleBills, Inc. &middot; Pickle DaaS &middot; Confidential &middot; April 2026
+  </div>
+</div>
+
+<script>
+// Brand horizontal bar chart
+const brandCtx = document.getElementById('brandChart').getContext('2d');
+new Chart(brandCtx, {
+  type: 'bar',
+  data: {
+    labels: ['JOOLA', 'Franklin', 'Selkirk', 'PICKLEBALL', 'Courtana', 'Recovery Cave', 'The Underground', 'LIFE TIME', 'CRBN', 'ONIX'],
+    datasets: [{
+      data: [12, 4, 3, 3, 3, 3, 3, 3, 2, 2],
+      backgroundColor: '#0D7C4A',
+      borderRadius: 3,
+      barThickness: 22
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1A1A1A',
+        titleFont: { family: 'system-ui', size: 13 },
+        bodyFont: { family: 'system-ui', size: 13 },
+        padding: 10,
+        cornerRadius: 4,
+        callbacks: {
+          label: function(ctx) { return ctx.raw + ' appearances'; }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#F0F0ED' },
+        ticks: {
+          font: { family: 'system-ui', size: 12 },
+          color: '#6B6B6B',
+          stepSize: 2
+        }
+      },
+      y: {
+        grid: { display: false },
+        ticks: {
+          font: { family: 'system-ui', size: 13, weight: '600' },
+          color: '#1A1A1A'
+        }
+      }
+    }
+  }
+});
+
+// Skill radar chart
+const skillCtx = document.getElementById('skillChart').getContext('2d');
+new Chart(skillCtx, {
+  type: 'radar',
+  data: {
+    labels: ['Coverage', 'Kitchen', 'Power', 'Touch', 'Athleticism', 'Creativity', 'Court IQ', 'Consistency', 'Composure'],
+    datasets: [{
+      label: 'Corpus Average',
+      data: [6.2, 5.8, 5.2, 5.9, 5.9, 4.2, 5.9, 6.4, 6.6],
+      backgroundColor: 'rgba(37, 99, 235, 0.12)',
+      borderColor: '#2563EB',
+      borderWidth: 2,
+      pointBackgroundColor: '#2563EB',
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1A1A1A',
+        bodyFont: { family: 'system-ui', size: 13 },
+        padding: 10,
+        cornerRadius: 4,
+        callbacks: {
+          label: function(ctx) { return ctx.raw.toFixed(1) + ' / 10'; }
+        }
+      }
+    },
+    scales: {
+      r: {
+        min: 0,
+        max: 10,
+        ticks: {
+          stepSize: 2,
+          font: { size: 11 },
+          color: '#999',
+          backdropColor: 'transparent'
+        },
+        pointLabels: {
+          font: { family: 'system-ui', size: 12, weight: '600' },
+          color: '#1A1A1A'
+        },
+        grid: { color: '#E5E5E0' },
+        angleLines: { color: '#E5E5E0' }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
