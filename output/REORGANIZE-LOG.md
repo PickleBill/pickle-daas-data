@@ -1,0 +1,72 @@
+# Output Reorganization Log
+
+Run: 2026-04-11 09:55:14
+
+- [2026-04-11 09:55:14] MOVED: auto-ingest-20260411-0344 → batches/auto-ingest-20260411-0344
+- [2026-04-11 09:55:14] MOVED: auto-ingest-20260411-0347 → batches/auto-ingest-20260411-0347
+- [2026-04-11 09:55:14] MOVED: auto-ingest-20260411-0603 → batches/auto-ingest-20260411-0603
+- [2026-04-11 09:55:14] MOVED: auto-ingest-20260411-0622 → batches/auto-ingest-20260411-0622
+- [2026-04-11 09:55:14] MOVED: auto-ingest-20260411-0811 → batches/auto-ingest-20260411-0811
+- [2026-04-11 09:55:14] MOVED: badged-clips → batches/badged-clips
+- [2026-04-11 09:55:14] MOVED: badged-clips-analysis → batches/badged-clips-analysis
+- [2026-04-11 09:55:14] MOVED: batch-30-daas → batches/batch-30-daas
+- [2026-04-11 09:55:14] MOVED: courtana-ground-truth → batches/courtana-ground-truth
+- [2026-04-11 09:55:14] MOVED: fast-batch-20 → batches/fast-batch-20
+- [2026-04-11 09:55:14] MOVED: fast-batch-40 → batches/fast-batch-40
+- [2026-04-11 09:55:14] MOVED: picklebill-batch-001 → batches/picklebill-batch-001
+- [2026-04-11 09:55:14] MOVED: picklebill-batch-20260410 → batches/picklebill-batch-20260410
+- [2026-04-11 09:55:14] MOVED: speed-test → batches/speed-test
+- [2026-04-11 09:55:14] MOVED: test-001 → batches/test-001
+- [2026-04-11 09:55:14] MOVED: v1.2-reprocess → batches/v1.2-reprocess
+- [2026-04-11 09:55:14] MOVED: v1.3-ab-test → batches/v1.3-ab-test
+- [2026-04-11 09:55:14] MOVED: discovery-engine/tactical-discoveries.json → discovery/v1/tactical-discoveries.json
+- [2026-04-11 09:55:14] MOVED: discovery-engine/brand-discoveries.json → discovery/v1/brand-discoveries.json
+- [2026-04-11 09:55:14] MOVED: discovery-engine/top-discoveries.html → discovery/v1/top-discoveries.html
+- [2026-04-11 09:55:14] MOVED: discovery-engine/ranked-discoveries.json → discovery/v1/ranked-discoveries.json
+- [2026-04-11 09:55:14] MOVED: discovery-engine/narrative-discoveries.json → discovery/v1/narrative-discoveries.json
+- [2026-04-11 09:55:14] MOVED: discovery-engine/MORNING-BRIEF.md → discovery/v1/MORNING-BRIEF.md
+- [2026-04-11 09:55:14] MOVED: discovery-engine/player-discoveries.json → discovery/v1/player-discoveries.json
+- [2026-04-11 09:55:14] MOVED: discovery-engine/census.json → discovery/v1/census.json
+- [2026-04-11 09:55:14] MOVED: discovery-engine/PLAYBOOK.md → discovery/v1/PLAYBOOK.md
+- [2026-04-11 09:55:14] REMOVED empty: discovery-engine/
+- [2026-04-11 09:55:14] MOVED: pickle-daas-investor-demo.html → investor/pickle-daas-investor-demo.html
+- [2026-04-11 09:55:14] MOVED: pickle-daas-investor-proof-points.md → investor/pickle-daas-investor-proof-points.md
+- [2026-04-11 09:55:14] MOVED: clip-selector.html → dashboards/clip-selector.html
+- [2026-04-11 09:55:14] MOVED: multi-model-comparison.html → dashboards/multi-model-comparison.html
+- [2026-04-11 09:55:14] MOVED: creative-badges.html → dashboards/creative-badges.html
+- [2026-04-11 09:55:14] MOVED: pickle-daas-product-plan-20260411.html → dashboards/pickle-daas-product-plan-20260411.html
+- [2026-04-11 09:55:14] MOVED: tmnt-broadcast-dashboard.html → dashboards/tmnt-broadcast-dashboard.html
+- [2026-04-11 09:55:14] MOVED: intelligence-preview.html → dashboards/intelligence-preview.html
+- [2026-04-11 09:55:14] MOVED: badge-analytics-dashboard.html → dashboards/badge-analytics-dashboard.html
+- [2026-04-11 09:55:14] MOVED: command-center.html → dashboards/command-center.html
+- [2026-04-11 09:55:14] MOVED: pickle-daas-master-dashboard.html → dashboards/pickle-daas-master-dashboard.html
+- [2026-04-11 09:55:14] MOVED: picklebill-intel-card.html → dashboards/picklebill-intel-card.html
+- [2026-04-11 09:55:14] MOVED: coaching-profile-picklebill.html → dashboards/coaching-profile-picklebill.html
+- [2026-04-11 09:55:14] MOVED: brand-intelligence-report-sample.html → dashboards/brand-intelligence-report-sample.html
+- [2026-04-11 09:55:14] MOVED: brand-intelligence-report.html → dashboards/brand-intelligence-report.html
+- [2026-04-11 09:55:14] MOVED: data-explorer.html → dashboards/data-explorer.html
+- [2026-04-11 09:55:14] MOVED: brand-report-joola.html → dashboards/brand-report-joola.html
+- [2026-04-11 09:55:14] MOVED: model-monitor-dashboard.html → dashboards/model-monitor-dashboard.html
+- [2026-04-11 09:55:14] MOVED: leaderboards.html → dashboards/leaderboards.html
+- [2026-04-11 09:55:14] MOVED: picklebill-dna-profile.json → player/picklebill-dna-profile.json
+- [2026-04-11 09:55:14] MOVED: player-cards → player/player-cards
+- [2026-04-11 09:55:14] MOVED: player-profiles.json → player/player-profiles.json
+- [2026-04-11 09:55:14] MOVED: brand-intelligence-report.json → brand/brand-intelligence-report.json
+- [2026-04-11 09:55:14] MOVED: lovable-package/voice-manifest-tmnt.json → lovable/voice-manifest-tmnt.json
+- [2026-04-11 09:55:14] MOVED: lovable-package/clips-metadata.json → lovable/clips-metadata.json
+- [2026-04-11 09:55:14] MOVED: lovable-package/player-dna.json → lovable/player-dna.json
+- [2026-04-11 09:55:14] MOVED: lovable-package/dashboard-data.json → lovable/dashboard-data.json
+- [2026-04-11 09:55:14] MOVED: lovable-package/voice-manifest.json → lovable/voice-manifest.json
+- [2026-04-11 09:55:14] MOVED: lovable-package/brand-registry.json → lovable/brand-registry.json
+- [2026-04-11 09:55:14] REMOVED empty: lovable-package/
+- [2026-04-11 09:55:14] MOVED: voice-commentary/top-clip-all-voices-log.txt → voice/top-clip-all-voices-log.txt
+- [2026-04-11 09:55:14] MOVED: voice-commentary/elevenlabs-log.txt → voice/elevenlabs-log.txt
+- [2026-04-11 09:55:14] MOVED: voice-commentary/voice-manifest.json → voice/voice-manifest.json
+- [2026-04-11 09:55:14] REMOVED empty: voice-commentary/
+- [2026-04-11 09:55:14] MOVED: cost-baseline-20260409.csv → tools/cost-baseline-20260409.csv
+- [2026-04-11 09:55:14] MOVED: auto-ingest-run-20260411-0603.log → tools/auto-ingest-run-20260411-0603.log
+- [2026-04-11 09:55:14] MOVED: cost-summary.md → tools/cost-summary.md
+- [2026-04-11 09:55:14] MOVED: batch-500-run-20260411.log → tools/batch-500-run-20260411.log
+- [2026-04-11 09:55:14] MOVED: broadcast → batches/broadcast
+- [2026-04-11 09:55:14] MOVED: frames → batches/frames
+- [2026-04-11 09:55:14] MOVED: pickle-wrapped → batches/pickle-wrapped

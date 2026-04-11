@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Clip Analysis Result</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1520;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 24px;
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0,230,118,.15);
+  }
+  .topbar-logo { font-size: 22px; font-weight: 800; color: #00E676; letter-spacing: -0.5px; }
+  .topbar-sep { color: #3a4a5a; }
+  .topbar-label { font-size: 13px; color: #667788; }
+  .badge-live {
+    margin-left: auto;
+    background: rgba(0,230,118,.15);
+    color: #00E676;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,230,118,.3);
+    letter-spacing: 1px;
+  }
+
+  /* ── Main grid ── */
+  .grid { display: grid; grid-template-columns: 340px 1fr; gap: 20px; max-width: 1100px; }
+
+  /* ── Video card ── */
+  .video-card {
+    background: #1a2535;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(0,230,118,.12);
+  }
+  .video-thumb {
+    position: relative;
+    width: 100%;
+    background: #0d1825;
+    cursor: pointer;
+  }
+  .video-thumb video {
+    width: 100%;
+    display: block;
+    border-radius: 0;
+  }
+  .score-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #00E676;
+    color: #0a1020;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 8px;
+  }
+  .video-meta { padding: 16px; }
+  .clip-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .clip-caption {
+    font-size: 13px;
+    color: #8899aa;
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,230,118,.35);
+    color: #00E676;
+    background: rgba(0,230,118,.07);
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #556677;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+
+  /* ── Right panel ── */
+  .right-panel { display: flex; flex-direction: column; gap: 16px; }
+
+  .panel {
+    background: #1a2535;
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255,255,255,.06);
+  }
+  .panel-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #556677;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  /* Scores row */
+  .scores-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .score-item { text-align: center; }
+  .score-num {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-num.green { color: #00E676; }
+  .score-num.yellow { color: #FFD600; }
+  .score-label { font-size: 10px; color: #667788; letter-spacing: 0.5px; }
+
+  /* Skill bars */
+  .skill-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+  .skill-name { font-size: 12px; color: #aabbcc; width: 130px; flex-shrink: 0; }
+  .skill-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #00E676, #00bfa5);
+    transition: width 1s ease;
+  }
+  .skill-bar-fill.null-bar { background: rgba(255,255,255,.12); width: 0 !important; }
+  .skill-val { font-size: 12px; font-weight: 700; color: #00E676; width: 28px; text-align: right; flex-shrink: 0; }
+  .skill-val.null-val { color: #445566; }
+
+  /* Commentary */
+  .commentary-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,.1);
+    color: #667788;
+    background: transparent;
+    transition: all .2s;
+  }
+  .tab.active {
+    background: rgba(0,230,118,.15);
+    border-color: rgba(0,230,118,.4);
+    color: #00E676;
+  }
+  .commentary-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #ccd8e8;
+    min-height: 60px;
+    font-style: italic;
+  }
+  .commentary-text.ron { font-style: italic; }
+
+  /* Brands */
+  .brands-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .brand-card {
+    background: rgba(255,255,255,.04);
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,.07);
+  }
+  .brand-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .brand-cat { font-size: 11px; color: #667788; margin-bottom: 6px; }
+  .brand-conf {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .brand-conf.high { background: rgba(0,230,118,.15); color: #00E676; }
+  .brand-conf.medium { background: rgba(255,214,0,.12); color: #FFD600; }
+  .whitespace-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.06); }
+  .whitespace-title { font-size: 11px; color: #556677; margin-bottom: 8px; font-weight: 600; }
+  .ws-chip {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: rgba(255,90,90,.1);
+    color: #ff9090;
+    border: 1px solid rgba(255,90,90,.2);
+    margin: 3px 3px 3px 0;
+  }
+
+  /* Paddle intel */
+  .paddle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pi-item {}
+  .pi-label { font-size: 10px; color: #556677; letter-spacing: 0.5px; margin-bottom: 3px; text-transform: uppercase; }
+  .pi-val { font-size: 13px; color: #ccd8e8; font-weight: 600; }
+  .pi-val.null { color: #3a4a5a; font-style: italic; font-weight: 400; }
+
+  /* Players detected */
+  .player-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .player-row:last-child { border-bottom: none; }
+  .player-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #252d3a;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #667788;
+    flex-shrink: 0;
+  }
+  .player-avatar.primary { background: rgba(0,230,118,.2); color: #00E676; border: 1px solid rgba(0,230,118,.4); }
+  .player-info { flex: 1; }
+  .player-pos { font-size: 13px; font-weight: 600; }
+  .player-desc { font-size: 11px; color: #667788; margin-top: 1px; }
+  .player-skill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .player-skill.elite { background: rgba(0,230,118,.15); color: #00E676; }
+  .player-skill.advanced { background: rgba(100,180,255,.12); color: #88ccff; }
+
+  /* Bottom file path */
+  .filepath {
+    margin-top: 20px;
+    font-size: 11px;
+    color: #3a4a5a;
+    font-family: monospace;
+    padding: 10px 14px;
+    background: rgba(255,255,255,.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.05);
+  }
+  .filepath span { color: #556677; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">🥒 Pickle DaaS</div>
+  <div class="topbar-sep">›</div>
+  <div class="topbar-label">Clip Analysis Result — gemini-2.5-flash</div>
+  <div class="badge-live">REAL GEMINI OUTPUT</div>
+</div>
+
+<div class="grid">
+
+  <!-- Left: Video + core meta -->
+  <div class="video-card">
+    <div class="video-thumb">
+      <video controls preload="metadata" poster="">
+        <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4" type="video/mp4">
+      </video>
+      <div class="score-badge">8.0 / 10</div>
+    </div>
+    <div class="video-meta">
+      <div class="clip-title">Shot of the Day — Jumping Overhead Smash</div>
+      <div class="clip-caption">Airborne for the WIN! 🚀 #Pickleball</div>
+      <div class="badge-row">
+        <span class="badge">🏅 Airborne</span>
+        <span class="badge">💥 Smash Master</span>
+        <span class="badge">⭐ Shot of the Day</span>
+        <span class="badge">🏆 Top 10 Play</span>
+      </div>
+      <div class="meta-row">
+        <span>44 sec</span>
+        <span>Competitive</span>
+        <span>DUPR 4.5–5.0</span>
+        <span>Highlight Reel ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="right-panel">
+
+    <!-- Scores -->
+    <div class="panel">
+      <div class="panel-title">Scores</div>
+      <div class="scores-grid">
+        <div class="score-item">
+          <div class="score-num green">8</div>
+          <div class="score-label">QUALITY</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num yellow">7</div>
+          <div class="score-label">VIRAL POTENTIAL</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num green">8</div>
+          <div class="score-label">WATCHABILITY</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num green">9</div>
+          <div class="score-label">CINEMATIC</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill indicators -->
+    <div class="panel">
+      <div class="panel-title">Skill Indicators — from this clip</div>
+      <div id="skills"></div>
+    </div>
+
+    <!-- Commentary tabs -->
+    <div class="panel">
+      <div class="panel-title">Commentary</div>
+      <div class="commentary-tabs">
+        <button class="tab active" onclick="showCommentary('espn', this)">ESPN</button>
+        <button class="tab" onclick="showCommentary('hype', this)">Hype</button>
+        <button class="tab" onclick="showCommentary('ron', this)">Ron Burgundy</button>
+        <button class="tab" onclick="showCommentary('chuck', this)">Chuck Norris</button>
+        <button class="tab" onclick="showCommentary('coach', this)">Coach</button>
+      </div>
+      <div class="commentary-text" id="commentary-text">
+        What an incredible display of athleticism! This player elevates for a powerful overhead smash, leaving the opponents no chance. A truly spectacular shot that defines the point.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Full-width bottom row -->
+<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:16px; max-width:1100px;">
+
+  <!-- Brands -->
+  <div class="panel">
+    <div class="panel-title">Brand Detection</div>
+    <div class="brands-grid">
+      <div class="brand-card">
+        <div class="brand-name">Courtana</div>
+        <div class="brand-cat">Sponsor Banner</div>
+        <span class="brand-conf high">HIGH confidence</span>
+        <div style="font-size:11px;color:#556677;margin-top:6px;">44s visible · full clip</div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-name">JOOLA</div>
+        <div class="brand-cat">Net (court equipment)</div>
+        <span class="brand-conf high">HIGH confidence</span>
+        <div style="font-size:11px;color:#556677;margin-top:6px;">44s visible · full clip</div>
+      </div>
+    </div>
+    <div class="whitespace-list">
+      <div class="whitespace-title">⚡ Sponsorship Whitespace — not present, but should be:</div>
+      <span class="ws-chip">Paddle Brand</span>
+      <span class="ws-chip">Apparel</span>
+      <span class="ws-chip">Shoes</span>
+      <span class="ws-chip">Ball Brand</span>
+    </div>
+  </div>
+
+  <!-- Paddle Intel -->
+  <div class="panel">
+    <div class="panel-title">Paddle Intel (v1.2)</div>
+    <div class="paddle-grid">
+      <div class="pi-item">
+        <div class="pi-label">Brand</div>
+        <div class="pi-val null">Not identified</div>
+      </div>
+      <div class="pi-item">
+        <div class="pi-label">Shape</div>
+        <div class="pi-val">Standard</div>
+      </div>
+      <div class="pi-item">
+        <div class="pi-label">Color Scheme</div>
+        <div class="pi-val">Brown face, black grip</div>
+      </div>
+      <div class="pi-item">
+        <div class="pi-label">Grip Style</div>
+        <div class="pi-val">One-handed</div>
+      </div>
+      <div class="pi-item">
+        <div class="pi-label">Lead Tape</div>
+        <div class="pi-val">No</div>
+      </div>
+      <div class="pi-item">
+        <div class="pi-label">Confidence</div>
+        <div class="pi-val" style="color:#FFD600;">LOW</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;color:#556677;">
+      💡 Paddle brand unclear at this angle — better frame needed. This is the data gap v1.2 was built to close.
+    </div>
+  </div>
+
+  <!-- Players detected -->
+  <div class="panel">
+    <div class="panel-title">Players Detected (4)</div>
+    <div class="player-row">
+      <div class="player-avatar primary">P1</div>
+      <div class="player-info">
+        <div class="player-pos">Near-Right — Primary</div>
+        <div class="player-desc">White hoodie, green shorts, black cap · explosive</div>
+      </div>
+      <span class="player-skill elite">ELITE</span>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar">P2</div>
+      <div class="player-info">
+        <div class="player-pos">Near-Left — Secondary</div>
+        <div class="player-desc">Black tank, black leggings · methodical</div>
+      </div>
+      <span class="player-skill advanced">ADV</span>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar">P3</div>
+      <div class="player-info">
+        <div class="player-pos">Far-Right</div>
+        <div class="player-desc">Grey long-sleeve, black shorts · reactive</div>
+      </div>
+      <span class="player-skill advanced">ADV</span>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar">P4</div>
+      <div class="player-info">
+        <div class="player-pos">Far-Left</div>
+        <div class="player-desc">Red shirt, blue shorts · reactive</div>
+      </div>
+      <span class="player-skill advanced">ADV</span>
+    </div>
+  </div>
+</div>
+
+<!-- File path footer -->
+<div class="filepath" style="max-width:1100px;">
+  <span>JSON output:</span> output/test-001/analysis_ce00696b-9f9b-465a-971c-dbf1334e556c_1774710372.json &nbsp;·&nbsp;
+  <span>Model:</span> gemini-2.5-flash &nbsp;·&nbsp;
+  <span>Data richness:</span> 9/10 &nbsp;·&nbsp;
+  <span>Use cases:</span> social_media · coaching_tool · sponsor_pitch · fan_engagement
+</div>
+
+<script>
+const commentary = {
+  espn: "What an incredible display of athleticism! This player elevates for a powerful overhead smash, leaving the opponents no chance. A truly spectacular shot that defines the point.",
+  hype: "OH MY GOODNESS! Did you SEE that?! He just absolutely SKIED for that overhead, bringing the thunder and slamming it home! That's not just a shot, that's a STATEMENT!",
+  ron: "By the beard of Zeus, that was a shot of pure, unadulterated power! The ball, much like a fine aged scotch, was delivered with precision and a robust finish. Simply delightful.",
+  chuck: "Chuck Norris doesn't play pickleball; pickleball plays Chuck Norris. But if he did, every shot would look like that. The ball knew its fate.",
+  coach: "Excellent court positioning to get under that lob. The timing on the jump and paddle face angle for the overhead was perfect, driving the ball down with authority. This is how you finish a point decisively."
+};
+
+function showCommentary(key, btn) {
+  document.getElementById('commentary-text').textContent = commentary[key];
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Build skill bars
+const skills = [
+  { name: "Power Game",          val: 10 },
+  { name: "Athleticism",         val: 10 },
+  { name: "Court Coverage",      val: 9  },
+  { name: "Composure",           val: 9  },
+  { name: "Paddle Control",      val: 9  },
+  { name: "Creativity",          val: 8  },
+  { name: "Court IQ",            val: 8  },
+  { name: "Kitchen Mastery",     val: null },
+  { name: "Touch & Feel",        val: null },
+  { name: "Consistency",         val: null },
+];
+
+const container = document.getElementById('skills');
+skills.forEach(s => {
+  const div = document.createElement('div');
+  div.className = 'skill-row';
+  const pct = s.val ? (s.val / 10 * 100) : 0;
+  div.innerHTML = `
+    <div class="skill-name">${s.name}</div>
+    <div class="skill-bar-bg">
+      <div class="skill-bar-fill ${s.val ? '' : 'null-bar'}" style="width:${pct}%"></div>
+    </div>
+    <div class="skill-val ${s.val ? '' : 'null-val'}">${s.val ?? '—'}</div>
+  `;
+  container.appendChild(div);
+});
+</script>
+</body>
+</html>

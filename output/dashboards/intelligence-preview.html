@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Intelligence Preview</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0a0a1a; color:#e0e0e0; font-family:'Inter','SF Pro',system-ui,sans-serif; padding:20px; }
+  .header { text-align:center; padding:40px 20px; margin-bottom:30px; }
+  .header h1 { font-size:36px; font-weight:800; background:linear-gradient(135deg,#00E676,#4FC3F7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .header p { color:#888; margin-top:8px; font-size:14px; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:30px; }
+  .kpi { background:#1a1a2e; border-radius:12px; padding:20px; text-align:center; }
+  .kpi .number { font-size:32px; font-weight:800; color:#00E676; }
+  .kpi .label { font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
+  .section { background:#111122; border-radius:16px; padding:24px; margin-bottom:24px; }
+  .section h2 { font-size:20px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section h2 .emoji { font-size:24px; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:8px 12px; color:#888; font-weight:600; text-transform:uppercase; font-size:11px; letter-spacing:1px; border-bottom:1px solid #333; }
+  td { padding:8px 12px; border-bottom:1px solid #1a1a2e; }
+  .insight-card { background:#1a1a2e; border-radius:12px; padding:20px; }
+  .insight-card h3 { font-size:14px; color:#4FC3F7; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
+  .insight-card .value { font-size:24px; font-weight:700; color:#fff; }
+  .insight-card .detail { font-size:12px; color:#888; margin-top:4px; }
+  .vs-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #222; }
+  .vs-label { font-size:12px; color:#888; width:140px; }
+  .vs-bar { flex:1; height:8px; background:#222; border-radius:4px; margin:0 12px; position:relative; }
+  .vs-fill { height:8px; border-radius:4px; position:absolute; top:0; }
+  @media(max-width:768px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+  .watermark { text-align:center; padding:30px; color:#444; font-size:12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Pickle DaaS Intelligence Preview</h1>
+    <p>Cross-cutting insights from 183 analyzed clips | Generated April 11, 2026 at 06:05 AM</p>
+    <p style="color:#4FC3F7;margin-top:4px;font-size:12px">This is what your data looks like when AI watches every clip. Imagine 400,000.</p>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-grid">
+    <div class="kpi"><div class="number">183</div><div class="label">Clips Analyzed</div></div>
+    <div class="kpi"><div class="number">2850</div><div class="label">Shots Tracked</div></div>
+    <div class="kpi"><div class="number">2</div><div class="label">Player Profiles</div></div>
+    <div class="kpi"><div class="number">5</div><div class="label">Brands Detected</div></div>
+    <div class="kpi"><div class="number">10</div><div class="label">Shot Types</div></div>
+    <div class="kpi"><div class="number" style="color:#4FC3F7">30</div><div class="label">High-Viral Clips</div></div>
+</div>
+
+<!-- VIRAL PREDICTION -->
+<div class="section">
+    <h2><span class="emoji">🔥</span> Viral Prediction Intelligence</h2>
+    <p style="color:#888;margin-bottom:20px;font-size:13px">What separates clips that go viral from ones that don't? Here's what the data says.</p>
+    <div class="grid-2">
+        <div>
+            <div class="grid-3" style="grid-template-columns:1fr 1fr">
+                <div class="insight-card">
+                    <h3>High-Viral Clips</h3>
+                    <div class="value" style="color:#00E676">30</div>
+                    <div class="detail">Viral score 6+ out of 10</div>
+                </div>
+                <div class="insight-card">
+                    <h3>Avg Quality (Viral)</h3>
+                    <div class="value">8.0</div>
+                    <div class="detail">vs 6.1 for low-viral</div>
+                </div>
+                <div class="insight-card">
+                    <h3>Avg Rally Length (Viral)</h3>
+                    <div class="value">12.0</div>
+                    <div class="detail">vs 16.6 for low-viral</div>
+                </div>
+                <div class="insight-card">
+                    <h3>Avg Badges (Viral)</h3>
+                    <div class="value">3.0</div>
+                    <div class="detail">vs 3.4 for low-viral</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <canvas id="viralDistChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- BRAND-SKILL CORRELATIONS -->
+<div class="section">
+    <h2><span class="emoji">🏷️</span> Brand Intelligence: Does Your Gear Matter?</h2>
+    <p style="color:#888;margin-bottom:20px;font-size:13px">Skill profiles of players grouped by paddle brand. Each brand attracts a different type of player.</p>
+    <div class="grid-2">
+        <div>
+            <canvas id="brandRadar" height="300"></canvas>
+        </div>
+        <div>
+            <table>
+                <tr><th>Brand</th><th>Sample</th><th>Top Skill</th><th>Weakest Skill</th></tr>
+                <tr><td style="font-weight:600;color:#00E676">JOOLA</td><td>113</td><td style="color:#00E676">Touch And Feel</td><td style="color:#FF6B6B">Athleticism</td></tr><tr><td style="font-weight:600;color:#FF6B6B">SELKIRK</td><td>2</td><td style="color:#00E676">Touch And Feel</td><td style="color:#FF6B6B">Athleticism</td></tr><tr><td style="font-weight:600;color:#4FC3F7">HEAD</td><td>2</td><td style="color:#00E676">Touch And Feel</td><td style="color:#FF6B6B">Athleticism</td></tr><tr><td style="font-weight:600;color:#FFD54F">ONIX</td><td>1</td><td style="color:#00E676">Touch And Feel</td><td style="color:#FF6B6B">Athleticism</td></tr><tr><td style="font-weight:600;color:#BA68C8">CRBN</td><td>2</td><td style="color:#00E676">Touch And Feel</td><td style="color:#FF6B6B">Athleticism</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- PLAYER ARCHETYPES -->
+<div class="section">
+    <h2><span class="emoji">🧬</span> Player DNA Archetypes</h2>
+    <p style="color:#888;margin-bottom:20px;font-size:13px">AI-classified player types based on skill patterns across multiple clips. Every player has a unique DNA fingerprint.</p>
+    <div class="grid-3">
+        
+        <div style="background:#1a1a2e;border-radius:12px;padding:20px;border-left:3px solid #90A4AE">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div>
+                    <div style="font-size:18px;font-weight:700;color:#fff">unknown</div>
+                    <div style="font-size:12px;color:#90A4AE;font-weight:600;text-transform:uppercase;letter-spacing:1px">Developing Player</div>
+                </div>
+                <div style="background:#90A4AE22;color:#90A4AE;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600">180 clips</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Consistency</span><div style="background:#90A4AE33;height:6px;width:100px;border-radius:3px"><div style="background:#90A4AE;height:6px;width:73.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#90A4AE">7.3</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Paddle Control</span><div style="background:#90A4AE33;height:6px;width:100px;border-radius:3px"><div style="background:#90A4AE;height:6px;width:70.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#90A4AE">7.0</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Kitchen Mastery</span><div style="background:#90A4AE33;height:6px;width:100px;border-radius:3px"><div style="background:#90A4AE;height:6px;width:68.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#90A4AE">6.8</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Composure Under Pressure</span><div style="background:#90A4AE33;height:6px;width:100px;border-radius:3px"><div style="background:#90A4AE;height:6px;width:68.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#90A4AE">6.8</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Touch And Feel</span><div style="background:#90A4AE33;height:6px;width:100px;border-radius:3px"><div style="background:#90A4AE;height:6px;width:67.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#90A4AE">6.7</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Court Iq</span><div style="background:#90A4AE33;height:6px;width:100px;border-radius:3px"><div style="background:#90A4AE;height:6px;width:64.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#90A4AE">6.4</span></div>
+        </div>
+        <div style="background:#1a1a2e;border-radius:12px;padding:20px;border-left:3px solid #4FC3F7">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div>
+                    <div style="font-size:18px;font-weight:700;color:#fff">Santinofuntila</div>
+                    <div style="font-size:12px;color:#4FC3F7;font-weight:600;text-transform:uppercase;letter-spacing:1px">Kitchen Specialist</div>
+                </div>
+                <div style="background:#4FC3F722;color:#4FC3F7;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600">2 clips</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Consistency</span><div style="background:#4FC3F733;height:6px;width:100px;border-radius:3px"><div style="background:#4FC3F7;height:6px;width:85.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#4FC3F7">8.5</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Kitchen Mastery</span><div style="background:#4FC3F733;height:6px;width:100px;border-radius:3px"><div style="background:#4FC3F7;height:6px;width:80.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#4FC3F7">8.0</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Touch And Feel</span><div style="background:#4FC3F733;height:6px;width:100px;border-radius:3px"><div style="background:#4FC3F7;height:6px;width:75.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#4FC3F7">7.5</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Composure Under Pressure</span><div style="background:#4FC3F733;height:6px;width:100px;border-radius:3px"><div style="background:#4FC3F7;height:6px;width:75.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#4FC3F7">7.5</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Paddle Control</span><div style="background:#4FC3F733;height:6px;width:100px;border-radius:3px"><div style="background:#4FC3F7;height:6px;width:75.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#4FC3F7">7.5</span></div><div style="display:flex;align-items:center;gap:8px;margin:3px 0"><span style="width:120px;font-size:11px;color:#999">Court Coverage</span><div style="background:#4FC3F733;height:6px;width:100px;border-radius:3px"><div style="background:#4FC3F7;height:6px;width:65.0%;border-radius:3px"></div></div><span style="font-size:11px;color:#4FC3F7">6.5</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- SHOT ECONOMY -->
+<div class="section">
+    <h2><span class="emoji">🎯</span> Shot Economy: What Wins Rallies?</h2>
+    <p style="color:#888;margin-bottom:20px;font-size:13px">Win rate = (winners - errors) / total. Positive = net effective. Negative = risky.</p>
+    <table>
+        <tr><th>Shot Type</th><th>Total</th><th>Winner %</th><th>Error %</th><th>Net Effect</th><th>Wow Factor</th></tr>
+        
+        <tr>
+            <td style="font-weight:600">Dink</td>
+            <td>1509</td>
+            <td><div style="background:#00E676;height:8px;width:0.5%;border-radius:4px"></div> 0.5%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:0.1%;border-radius:4px"></div> 0.1%</td>
+            <td style="color:#00E676;font-weight:700">+0.3%</td>
+            <td>⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Drive</td>
+            <td>969</td>
+            <td><div style="background:#00E676;height:8px;width:0.4%;border-radius:4px"></div> 0.4%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:2.3%;border-radius:4px"></div> 2.3%</td>
+            <td style="color:#FF6B6B;font-weight:700">-1.9%</td>
+            <td>⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Speed Up</td>
+            <td>73</td>
+            <td><div style="background:#00E676;height:8px;width:21.9%;border-radius:4px"></div> 21.9%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:30.1%;border-radius:4px"></div> 30.1%</td>
+            <td style="color:#FF6B6B;font-weight:700">-8.2%</td>
+            <td>⭐⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Volley</td>
+            <td>70</td>
+            <td><div style="background:#00E676;height:8px;width:5.7%;border-radius:4px"></div> 5.7%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:1.4%;border-radius:4px"></div> 1.4%</td>
+            <td style="color:#00E676;font-weight:700">+4.3%</td>
+            <td>⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Return</td>
+            <td>68</td>
+            <td><div style="background:#00E676;height:8px;width:0.0%;border-radius:4px"></div> 0.0%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:4.4%;border-radius:4px"></div> 4.4%</td>
+            <td style="color:#FF6B6B;font-weight:700">-4.4%</td>
+            <td>⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Serve</td>
+            <td>65</td>
+            <td><div style="background:#00E676;height:8px;width:0.0%;border-radius:4px"></div> 0.0%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:3.1%;border-radius:4px"></div> 3.1%</td>
+            <td style="color:#FF6B6B;font-weight:700">-3.1%</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Block</td>
+            <td>44</td>
+            <td><div style="background:#00E676;height:8px;width:2.3%;border-radius:4px"></div> 2.3%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:6.8%;border-radius:4px"></div> 6.8%</td>
+            <td style="color:#FF6B6B;font-weight:700">-4.5%</td>
+            <td>⭐⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Reset</td>
+            <td>29</td>
+            <td><div style="background:#00E676;height:8px;width:0.0%;border-radius:4px"></div> 0.0%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:0.0%;border-radius:4px"></div> 0.0%</td>
+            <td style="color:#FF6B6B;font-weight:700">+0.0%</td>
+            <td>⭐⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Drop</td>
+            <td>15</td>
+            <td><div style="background:#00E676;height:8px;width:0.0%;border-radius:4px"></div> 0.0%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:6.7%;border-radius:4px"></div> 6.7%</td>
+            <td style="color:#FF6B6B;font-weight:700">-6.7%</td>
+            <td>⭐</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Overhead</td>
+            <td>5</td>
+            <td><div style="background:#00E676;height:8px;width:80.0%;border-radius:4px"></div> 80.0%</td>
+            <td><div style="background:#FF6B6B;height:8px;width:0.0%;border-radius:4px"></div> 0.0%</td>
+            <td style="color:#00E676;font-weight:700">+80.0%</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+    </table>
+</div>
+
+<!-- CONTENT STRATEGY -->
+<div class="section">
+    <h2><span class="emoji">📊</span> Content Strategy: What Should Venues Film?</h2>
+    <p style="color:#888;margin-bottom:20px;font-size:13px">Not all highlight types are created equal. Here's what the data says about what content performs best.</p>
+    <table>
+        <tr><th>Story Arc</th><th>Clips</th><th>Avg Viral Score</th><th>Max Viral</th><th>Recommendation</th></tr>
+        
+        <tr>
+            <td style="font-weight:600">Clutch Moment</td>
+            <td>2</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:70.0%;border-radius:4px;min-width:4px"></div> 7.0</div></td>
+            <td>7</td>
+            <td style="color:#00E676;font-weight:600">Film more</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Athletic Highlight</td>
+            <td>11</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:55.00000000000001%;border-radius:4px;min-width:4px"></div> 5.5</div></td>
+            <td>7</td>
+            <td style="color:#00E676;font-weight:600">Film more</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Error Highlight</td>
+            <td>6</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:38.0%;border-radius:4px;min-width:4px"></div> 3.8</div></td>
+            <td>8</td>
+            <td style="color:#FFD54F;font-weight:600">Good baseline</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Grind Rally</td>
+            <td>149</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:37.0%;border-radius:4px;min-width:4px"></div> 3.7</div></td>
+            <td>7</td>
+            <td style="color:#FFD54F;font-weight:600">Good baseline</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Teaching Moment</td>
+            <td>3</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:37.0%;border-radius:4px;min-width:4px"></div> 3.7</div></td>
+            <td>6</td>
+            <td style="color:#FFD54F;font-weight:600">Good baseline</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Dominant Performance</td>
+            <td>3</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:32.99999999999999%;border-radius:4px;min-width:4px"></div> 3.3</div></td>
+            <td>4</td>
+            <td style="color:#FFD54F;font-weight:600">Good baseline</td>
+        </tr>
+        <tr>
+            <td style="font-weight:600">Pure Fun</td>
+            <td>9</td>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="background:#4FC3F7;height:8px;width:28.999999999999996%;border-radius:4px;min-width:4px"></div> 2.9</div></td>
+            <td>4</td>
+            <td style="color:#FF6B6B;font-weight:600">Low viral potential</td>
+        </tr>
+    </table>
+</div>
+
+<!-- WHAT THIS MEANS -->
+<div class="section" style="background:linear-gradient(135deg,#0a1628,#1a0a28);border:1px solid #333">
+    <h2><span class="emoji">💡</span> What This Means</h2>
+    <div class="grid-3">
+        <div class="insight-card" style="border-left:3px solid #00E676">
+            <h3>For Venues</h3>
+            <div class="detail" style="color:#ccc;font-size:13px">Configure cameras to capture more of the high-viral content types. Optimize highlight detection for rally types that perform best on social.</div>
+        </div>
+        <div class="insight-card" style="border-left:3px solid #4FC3F7">
+            <h3>For Brands</h3>
+            <div class="detail" style="color:#ccc;font-size:13px">Know exactly which player segments use your gear and how they perform. Target sponsorships at players whose archetype matches your brand identity.</div>
+        </div>
+        <div class="insight-card" style="border-left:3px solid #FFD54F">
+            <h3>For Coaches</h3>
+            <div class="detail" style="color:#ccc;font-size:13px">Identify player archetypes instantly. Know which shots have the highest net effectiveness. Build training plans around data, not intuition.</div>
+        </div>
+    </div>
+    <p style="text-align:center;color:#666;margin-top:20px;font-size:13px">This analysis is from <strong>183 clips</strong>. The Courtana system has <strong>4,097+ highlight groups</strong> ready to analyze. At 400,000 clips, these insights become statistically unassailable.</p>
+</div>
+
+<div class="watermark">
+    Pickle DaaS Intelligence Engine v1.0 | Powered by Gemini 2.5 Flash + Claude | 2026-04-11
+</div>
+
+<script>
+// Viral Distribution Chart
+new Chart(document.getElementById('viralDistChart'), {
+    type: 'bar',
+    data: {
+        labels: ["2", "3", "4", "5", "6", "7", "8"],
+        datasets: [{
+            label: 'Clips at this viral score',
+            data: [13, 95, 33, 12, 18, 11, 1],
+            backgroundColor: [2, 3, 4, 5, 6, 7, 8].map(v => parseInt(v) >= 6 ? '#00E676' : parseInt(v) <= 3 ? '#FF6B6B44' : '#4FC3F744'),
+            borderColor: [2, 3, 4, 5, 6, 7, 8].map(v => parseInt(v) >= 6 ? '#00E676' : parseInt(v) <= 3 ? '#FF6B6B' : '#4FC3F7'),
+            borderWidth: 1,
+            borderRadius: 4,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false }, title: { display: true, text: 'Viral Score Distribution', color: '#888' } },
+        scales: {
+            x: { grid: { color: '#222' }, ticks: { color: '#888' }, title: { display: true, text: 'Viral Score', color: '#888' } },
+            y: { grid: { color: '#222' }, ticks: { color: '#888' }, title: { display: true, text: 'Number of Clips', color: '#888' } }
+        }
+    }
+});
+
+// Brand Radar Chart
+new Chart(document.getElementById('brandRadar'), {
+    type: 'radar',
+    data: {
+        labels: ["Court Coverage", "Kitchen Mastery", "Power Game", "Touch And Feel", "Athleticism", "Creativity", "Court Iq", "Consistency"],
+        datasets: [{"label": "JOOLA", "data": [6.1, 7.0, 4.5, 6.8, 5.3, 2.8, 6.5, 7.6], "borderColor": "#00E676", "backgroundColor": "#00E67633", "pointBackgroundColor": "#00E676"}, {"label": "SELKIRK", "data": [6.0, 6.0, 5.5, 6.0, 6.0, 5.0, 6.0, 6.5], "borderColor": "#FF6B6B", "backgroundColor": "#FF6B6B33", "pointBackgroundColor": "#FF6B6B"}, {"label": "HEAD", "data": [6.0, 5.0, 6.0, 5.5, 6.0, 3.5, 6.0, 6.5], "borderColor": "#4FC3F7", "backgroundColor": "#4FC3F733", "pointBackgroundColor": "#4FC3F7"}, {"label": "ONIX", "data": [6.0, 7.0, 4.0, 7.0, 5.0, 3.0, 6.0, 7.0], "borderColor": "#FFD54F", "backgroundColor": "#FFD54F33", "pointBackgroundColor": "#FFD54F"}, {"label": "CRBN", "data": [7.5, 7.0, 7.0, 7.0, 7.0, 5.5, 6.5, 7.0], "borderColor": "#BA68C8", "backgroundColor": "#BA68C833", "pointBackgroundColor": "#BA68C8"}]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#888' } } },
+        scales: {
+            r: {
+                beginAtZero: true, max: 10,
+                grid: { color: '#333' },
+                angleLines: { color: '#333' },
+                pointLabels: { color: '#888', font: { size: 10 } },
+                ticks: { color: '#666', backdropColor: 'transparent' }
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

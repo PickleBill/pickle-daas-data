@@ -1,0 +1,159 @@
+[
+  {
+    "id": "T1",
+    "agent": "tactical",
+    "headline": "Most common shot sequence: 'dink \u2192 dink' (1494 occurrences)",
+    "insight": "Top sequences across 2845 transitions: ['dink\u2192dink(1494)', 'drive\u2192drive(503)', 'drive\u2192dink(257)', 'dink\u2192drive(225)', 'volley\u2192volley(71)']. Pattern detection from video is novel but shot-by-shot reproducibility is uncertain (shot count agreement: 40%).",
+    "evidence": [
+      "Sequences (n=2845): {('dink', 'dink'): 1494, ('drive', 'drive'): 503, ('drive', 'dink'): 257, ('dink', 'drive'): 225, ('volley', 'volley'): 71}"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 2845,
+    "confidence": {
+      "raw": 65,
+      "capped": 65,
+      "caps_applied": [],
+      "rationale": "Raw 65 \u2192 65 (caps: none)"
+    },
+    "wow_factor": 70,
+    "buyer_segments": [
+      "broadcast",
+      "coaching"
+    ],
+    "pricing": {
+      "category": "tactical_intelligence",
+      "reasoning": "Sportradar play-by-play = $500K+/yr for major sports. At 1/100th for pickleball: $5K-$20K/year for real-time shot sequence data.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Shot detection has only 40% reproducibility. Sequences are derived from individual shot detections, so errors compound. Treat as indicative, not statistically rigorous.",
+    "verification_badge": "needs_more_data"
+  },
+  {
+    "id": "T2",
+    "agent": "tactical",
+    "headline": "Kitchen play yields 1.8% point win rate \u2014 but from highlight clips only",
+    "insight": "Of 2089 kitchen shots detected: 1.8% won the point. Caveat: these are highlight clips (selected for exciting play), so kitchen effectiveness in general play may differ. Shot detection consistency: 40%.",
+    "evidence": [
+      "Kitchen: 2089 shots, 37 winners, 1.8% win rate"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 2089,
+    "confidence": {
+      "raw": 60,
+      "capped": 60,
+      "caps_applied": [],
+      "rationale": "Raw 60 \u2192 60 (caps: none)"
+    },
+    "wow_factor": 58,
+    "buyer_segments": [
+      "coaching",
+      "broadcast"
+    ],
+    "pricing": {
+      "category": "coaching_analytics",
+      "reasoning": "Hudl coaching tier: $200-2000/month. Kitchen analytics add-on: $100-$500/month.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Highlight clips select for dramatic moments. Kitchen win rates in ordinary play could be very different. Also: shot position detection (kitchen vs baseline) has not been separately verified.",
+    "verification_badge": "sampling_bias"
+  },
+  {
+    "id": "T5",
+    "agent": "tactical",
+    "headline": "AI-estimated DUPR range: '3.5-4.0' is modal (169/191 clips)",
+    "insight": "METHODOLOGY: Gemini estimates DUPR based on visual cues (shot speed, positioning, decision quality). Distribution: {'3.5-4.0': 169, '3.0-3.5': 13, '4.0-4.5': 3, '4.5-5.0': 1, '2.5-3.0': 1}. CRITICAL: Verification showed 0% agreement on DUPR estimates across re-analysis. This is NOT a reliable predictor in its current form.",
+    "evidence": [
+      "DUPR estimates: {'3.5-4.0': 169, '3.0-3.5': 13, '4.0-4.5': 3, '4.5-5.0': 1, '2.5-3.0': 1}",
+      "Verification: 0% agreement"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 187,
+    "confidence": {
+      "raw": 30,
+      "capped": 30,
+      "caps_applied": [],
+      "rationale": "Raw 30 \u2192 30 (caps: none)"
+    },
+    "wow_factor": 60,
+    "buyer_segments": [
+      "dupr",
+      "tournament_operators"
+    ],
+    "pricing": {
+      "category": "rating_prediction",
+      "reasoning": "Novel product \u2014 no direct comparable. If validated against real DUPR data, could command $1K-$5K/month from tournament platforms. Currently: proof-of-concept only.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "0% DUPR agreement in verification testing. The model defaults to '3.5-4.0' regardless of actual skill \u2014 this is likely prompt bias, not real prediction. Needs ground-truth DUPR data for calibration.",
+    "verification_badge": "unreliable"
+  }
+]

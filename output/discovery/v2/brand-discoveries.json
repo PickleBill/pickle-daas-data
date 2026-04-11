@@ -1,0 +1,220 @@
+[
+  {
+    "id": "B1",
+    "agent": "brand",
+    "headline": "84.3% of clips have AI-identifiable brands \u2014 15.700000000000003% have none",
+    "insight": "161 of 191 highlight clips have at least one brand detected by AI. Note: brand detection has only 20% reproducibility \u2014 the same clip may detect different brands on re-analysis.",
+    "evidence": [
+      "Brand-covered: 161/191 (84.3%)"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 191,
+    "confidence": {
+      "raw": 75,
+      "capped": 75,
+      "caps_applied": [
+        "non_random_sample"
+      ],
+      "rationale": "Raw 75 \u2192 75 (caps: non_random_sample)"
+    },
+    "wow_factor": 70,
+    "buyer_segments": [
+      "brands",
+      "sponsors"
+    ],
+    "pricing": {
+      "category": "brand_intelligence",
+      "reasoning": "StatsBomb charges $50K-200K/yr for sports analytics subscriptions. For a niche sport at early stage, brand intelligence could be $500-$2,000/month per brand subscriber. At 10 brand subscribers: $5K-$20K/month total.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Brand detection agreement is only 20%. The '84.3%' figure may not be stable \u2014 a re-run could produce a different number. Needs prompt engineering to improve reliability.",
+    "verification_badge": "needs_more_data"
+  },
+  {
+    "id": "B2",
+    "agent": "brand",
+    "headline": "Top detected brands: JOOLA(405), Nike(51), HEAD(5)",
+    "insight": "Brand frequency across 191 clips: {'JOOLA': 405, 'Nike': 51, 'HEAD': 5, 'On': 5, 'Franklin': 4}. CRITICAL CAVEAT: 97% of clips have no identified venue. If most clips come from Lifetime facilities (a JOOLA partner), JOOLA dominance is a venue artifact, not a market signal.",
+    "evidence": [
+      "Top brands: {'JOOLA': 405, 'Nike': 51, 'HEAD': 5, 'On': 5, 'Franklin': 4, 'PICKLEBALL': 3, 'Courtana': 3, 'PKLR': 3}",
+      "Venue: 97% unidentified, likely single-venue"
+    ],
+    "clip_ids_cited": [
+      "c9aa41f3-74d2-4289-b9e7-7796f38c609b",
+      "c9aa41f3-74d2-4289-b9e7-7796f38c609b",
+      "c9aa41f3-74d2-4289-b9e7-7796f38c609b",
+      "c9aa41f3-74d2-4289-b9e7-7796f38c609b",
+      "dc7e80e0-e646-40d1-b664-9b7e532d65df"
+    ],
+    "data_points": 510,
+    "confidence": {
+      "raw": 60,
+      "capped": 60,
+      "caps_applied": [],
+      "rationale": "Raw 60 \u2192 60 (caps: none)"
+    },
+    "wow_factor": 65,
+    "buyer_segments": [
+      "brands",
+      "sponsors"
+    ],
+    "pricing": {
+      "category": "brand_tracking",
+      "reasoning": "ShotTracker = $15K/court/yr. Brand tracking at venue level: $200-500/venue/month.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "If clips are from a Lifetime venue, JOOLA is the house paddle brand. Dominance reflects distribution deals, not organic preference. Multi-venue data required to separate signal from noise.",
+    "verification_badge": "sampling_bias"
+  },
+  {
+    "id": "B4",
+    "agent": "brand",
+    "headline": "Sponsorship whitespace: Gatorade(125), BODYARMOR(120), Nike(87) \u2014 zero detected presence",
+    "insight": "METHODOLOGY: The AI prompt asks Gemini to identify common sports brand categories. These categories (['Gatorade', 'BODYARMOR', 'Nike', 'Yeti', 'Selkirk']) were flagged as ABSENT \u2014 meaning zero instances detected across 191 clips. This does NOT mean these brands aren't in pickleball \u2014 it means they weren't visible in these specific highlight clips from this venue.",
+    "evidence": [
+      "Whitespace: {'Gatorade': 125, 'BODYARMOR': 120, 'Nike': 87, 'Yeti': 78, 'Selkirk': 76}",
+      "Method: AI-flagged absence, not confirmed market gap"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 191,
+    "confidence": {
+      "raw": 55,
+      "capped": 55,
+      "caps_applied": [],
+      "rationale": "Raw 55 \u2192 55 (caps: none)"
+    },
+    "wow_factor": 60,
+    "buyer_segments": [
+      "brands",
+      "agencies"
+    ],
+    "pricing": {
+      "category": "whitespace_intelligence",
+      "reasoning": "Novel data product with no direct comparable. Conservative estimate: $300-$1,000/month per brand subscriber for whitespace alerts across venues.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Absence of brand detection \u2260 absence of brand. The AI may miss logos, and these clips are from ~1 venue. A brand like Gatorade could be at 500 other pickleball venues and not appear in this sample.",
+    "verification_badge": "sampling_bias"
+  },
+  {
+    "id": "B5",
+    "agent": "brand",
+    "headline": "Paddle detection: JOOLA dominates (124/191 clips) \u2014 but likely a venue artifact",
+    "insight": "Paddle brands detected: {'JOOLA': 124, 'CRBN': 2, 'Selkirk': 1, 'HEAD': 1, 'Franklin': 1}. JOOLA appears in 124 clips. Lifetime facilities use JOOLA as their house paddle, so this dominance almost certainly reflects the venue's equipment deal, not organic player preference. Multi-venue data needed.",
+    "evidence": [
+      "Paddles: {'JOOLA': 124, 'CRBN': 2, 'Selkirk': 1, 'HEAD': 1, 'Franklin': 1}",
+      "Venue: likely Lifetime (JOOLA partner)"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 191,
+    "confidence": {
+      "raw": 50,
+      "capped": 50,
+      "caps_applied": [],
+      "rationale": "Raw 50 \u2192 50 (caps: none)"
+    },
+    "wow_factor": 55,
+    "buyer_segments": [
+      "equipment_manufacturers"
+    ],
+    "pricing": {
+      "category": "paddle_intelligence",
+      "reasoning": "Paddle market intelligence: $500-$2,000/month for equipment manufacturers. At 5 paddle brand subscribers: $2.5K-$10K/month total.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "JOOLA provides house paddles at Lifetime venues. This is not organic market share \u2014 it's distribution. Remove Lifetime clips and JOOLA dominance likely disappears.",
+    "verification_badge": "sampling_bias"
+  }
+]

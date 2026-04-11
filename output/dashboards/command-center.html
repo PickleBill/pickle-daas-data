@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: oklch(95% 0.008 250);
+  --surface: #111827;
+  --card: oklch(98% 0.004 250);
+  --border: oklch(98% 0.004 250);
+  --green: oklch(45% 0.2 265);
+  --green-dim: oklch(45% 0.2 265 /  0.15);
+  --green-glow: oklch(45% 0.2 265 /  0.3);
+  --gold: oklch(52% 0.14 75);
+  --gold-dim: rgba(245, 158, 11, 0.15);
+  --muted: oklch(55% 0.015 250);
+  --text: #E2E8F0;
+  --text-bright: oklch(15% 0.02 250);
+  --red: oklch(48% 0.18 25);
+  --blue: oklch(50% 0.18 260);
+  --purple: oklch(55% 0.15 300);
+  --cyan: oklch(50% 0.14 200);
+  --pink: #EC4899;
+}
+
+body {
+  font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Layout */
+.container { max-width: 1440px; margin: 0 auto; padding: 0 24px; }
+
+/* ============ HEADER ============ */
+.header {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--green), transparent);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.header-title h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-bright);
+  letter-spacing: -0.5px;
+}
+.header-title h1 span { color: var(--green); }
+.header-title .logo-mark {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--green), #00C853);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--bg);
+  box-shadow: 0 0 20px var(--green-glow);
+}
+.header-meta {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.header-meta .live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--green-glow);
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ============ KPI BAR ============ */
+.kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  padding: 20px 0;
+}
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), transparent);
+  opacity: 0.5;
+}
+.kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.kpi-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-bright);
+}
+.kpi-value .unit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.kpi-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ============ NAV HUB ============ */
+.nav-hub {
+  padding: 24px 0;
+}
+.nav-hub h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 14px;
+}
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.nav-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nav-card:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px var(--green-dim);
+}
+.nav-card .nav-icon { font-size: 24px; }
+.nav-card .nav-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+.nav-card .nav-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.nav-card .nav-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  margin-top: auto;
+}
+
+/* ============ SECTION HEADERS ============ */
+.section {
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.section-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-bright);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-header h2 .icon { font-size: 22px; }
+.section-count {
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--green-dim);
+  color: var(--green);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* ============ FILTER BAR ============ */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+.filter-bar select,
+.filter-bar input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.filter-bar select:focus,
+.filter-bar input:focus {
+  border-color: var(--green);
+}
+.filter-bar input[type="search"] {
+  min-width: 220px;
+}
+.filter-bar label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sort-active { color: var(--green) !important; }
+.filter-results {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+/* ============ CLIP GRID ============ */
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.clip-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.clip-card:hover {
+  border-color: oklch(45% 0.2 265 /  0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px oklch(45% 0.2 265 /  0.1);
+}
+
+/* Thumbnail + Video */
+.clip-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, oklch(98% 0.004 250), #0f1724);
+  cursor: pointer;
+  overflow: hidden;
+}
+.clip-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s;
+}
+.clip-media video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+.clip-media.playing img { opacity: 0; }
+.clip-media.playing video { display: block; }
+.play-btn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(0,0,0,0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 2;
+  pointer-events: none;
+}
+.clip-media:hover .play-btn { background: var(--green); transform: translate(-50%, -50%) scale(1.1); }
+.clip-media.playing .play-btn { display: none; }
+.play-btn::after {
+  content: '';
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 8px 0 8px 14px;
+  border-color: transparent transparent transparent white;
+  margin-left: 3px;
+}
+
+/* Badges overlay */
+.clip-badges-overlay {
+  position: absolute;
+  top: 8px; right: 8px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+.badge-quality {
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.badge-quality.high { color: var(--green); border: 1px solid var(--green); }
+.badge-quality.mid { color: var(--gold); border: 1px solid var(--gold); }
+.badge-quality.low { color: var(--red); border: 1px solid var(--red); }
+.badge-dupr {
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+}
+.badge-batch {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  z-index: 2;
+}
+
+/* Clip body */
+.clip-body { padding: 16px; }
+.clip-summary {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.clip-story-arc {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.arc-grind_rally { background: rgba(59,130,246,0.15); color: #60A5FA; }
+.arc-athletic_highlight { background: rgba(168,85,247,0.15); color: #C084FC; }
+.arc-clutch_moment { background: rgba(245,158,11,0.15); color: #FBBF24; }
+.arc-pure_fun { background: rgba(6,182,212,0.15); color: #22D3EE; }
+.arc-error_highlight { background: rgba(239,68,68,0.15); color: #F87171; }
+.arc-teaching_moment { background: rgba(236,72,153,0.15); color: #F472B6; }
+
+/* Brand pills */
+.brand-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.brand-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.brand-pill .brand-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.cat-paddle .brand-dot { background: var(--purple); }
+.cat-paddle { background: rgba(168,85,247,0.12); color: #C084FC; }
+.cat-net .brand-dot { background: var(--blue); }
+.cat-net { background: rgba(59,130,246,0.12); color: #93C5FD; }
+.cat-sponsor_banner .brand-dot { background: var(--gold); }
+.cat-sponsor_banner { background: rgba(245,158,11,0.12); color: #FCD34D; }
+.cat-court_surface .brand-dot { background: var(--cyan); }
+.cat-court_surface { background: rgba(6,182,212,0.12); color: #67E8F9; }
+.cat-ball .brand-dot { background: var(--green); }
+.cat-ball { background: oklch(45% 0.2 265 / 0.12); color: #6EE7B7; }
+.cat-apparel .brand-dot { background: var(--pink); }
+.cat-apparel { background: rgba(236,72,153,0.12); color: #F9A8D4; }
+
+/* Badge pills */
+.badge-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.badge-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+/* Expandables */
+.expandable {
+  margin-bottom: 8px;
+}
+.expandable-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 6px 0;
+  user-select: none;
+  transition: color 0.2s;
+}
+.expandable-toggle:hover { color: var(--text); }
+.expandable-toggle .arrow {
+  transition: transform 0.2s;
+  font-size: 10px;
+}
+.expandable.open .arrow { transform: rotate(90deg); }
+.expandable-content {
+  display: none;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  border-left: 2px solid var(--border);
+}
+.expandable.open .expandable-content { display: block; }
+.expandable-content.ron { border-left-color: var(--gold); font-style: italic; }
+.expandable-content.coach { border-left-color: var(--green); }
+
+/* Clip meta */
+.clip-meta {
+  font-size: 10px;
+  color: var(--muted);
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Skill Radar mini */
+.skill-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.skill-bar-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  width: 55px;
+  text-align: right;
+}
+.skill-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.skill-bar-val {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+  width: 18px;
+}
+
+/* ============ BRAND INTELLIGENCE ============ */
+.brand-chart-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.brand-chart-container canvas { max-height: 300px; }
+
+.brand-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.brand-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.brand-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(30,42,58,0.5);
+  color: var(--text);
+}
+.brand-table tr:hover td { background: oklch(45% 0.2 265 / 0.03); }
+
+.whitespace-callout {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+.whitespace-callout h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.whitespace-brands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.whitespace-brand {
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* ============ MODEL QUALITY ============ */
+.model-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--surface);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.model-table th {
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.model-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(30,42,58,0.5);
+  color: var(--text);
+}
+.fill-good { color: var(--green); }
+.fill-warn { color: var(--gold); }
+.fill-bad { color: var(--red); }
+.copy-cmd {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--green);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+.copy-cmd:hover {
+  border-color: var(--green);
+  background: var(--green-dim);
+}
+.copy-cmd .copy-icon { color: var(--muted); font-size: 14px; }
+
+/* ============ FEEDBACK PANEL ============ */
+.feedback-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.form-group select,
+.form-group textarea,
+.form-group input {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.form-group select:focus,
+.form-group textarea:focus,
+.form-group input:focus { border-color: var(--green); }
+
+.star-rating { display: flex; gap: 4px; }
+.star-rating .star {
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--border);
+  transition: all 0.15s;
+  user-select: none;
+}
+.star-rating .star.active { color: var(--gold); }
+.star-rating .star:hover { color: var(--gold); transform: scale(1.2); }
+
+.btn-primary {
+  background: var(--green);
+  color: var(--bg);
+  border: none;
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover {
+  background: #00C853;
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+.feedback-list {
+  margin-top: 20px;
+}
+.feedback-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.feedback-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.feedback-item-header .clip-id {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--green);
+}
+.feedback-item-header .field-name {
+  font-size: 12px;
+  color: var(--muted);
+}
+.feedback-item-stars { color: var(--gold); font-size: 14px; }
+.feedback-item-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.feedback-recommendations {
+  background: linear-gradient(135deg, oklch(45% 0.2 265 / 0.05), transparent);
+  border: 1px solid oklch(45% 0.2 265 / 0.15);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 16px;
+}
+.feedback-recommendations h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.feedback-recommendations p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ============ SPEND / BATCH ============ */
+.spend-bar-track {
+  width: 100%;
+  height: 24px;
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+  margin: 16px 0;
+}
+.spend-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), #00C853);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bg);
+  min-width: 40px;
+}
+.spend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.batch-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+.batch-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 6px;
+}
+.batch-card .batch-stat {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.batch-card .batch-stat strong { color: var(--text); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .clip-grid { grid-template-columns: 1fr; }
+  .nav-cards { grid-template-columns: repeat(2, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+  .header-title h1 { font-size: 22px; }
+  .kpi-bar { grid-template-columns: repeat(2, 1fr); }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-bar input[type="search"] { min-width: auto; }
+}
+@media (max-width: 480px) {
+  .nav-cards { grid-template-columns: 1fr; }
+  .kpi-bar { grid-template-columns: 1fr; }
+  .clip-grid { grid-template-columns: 1fr; }
+  .container { padding: 0 12px; }
+}
+
+/* Section nav tabs */
+.section-nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.section-nav a {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.section-nav a:hover { color: var(--text); background: var(--surface); }
+.section-nav a.active { color: var(--green); background: var(--green-dim); }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet"></head>
+<body><div style="background:oklch(98% 0.004 250);border-bottom:1px solid oklch(88% 0.012 250);padding:8px 24px;font-family:Bricolage Grotesque,system-ui,sans-serif;font-size:0.78rem"><a href="index.html" style="color:oklch(45% 0.2 265);text-decoration:none">← Portal</a></div>
+
+<div class="container">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div class="header-title">
+        <div class="logo-mark">P</div>
+        <h1>Pickle DaaS <span>Command Center</span></h1>
+      </div>
+      <div class="header-meta">
+        <div class="live-dot"></div>
+        <span>Pipeline Active</span>
+        <span>|</span>
+        <span id="lastUpdated"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION NAV -->
+  <nav class="section-nav">
+    <a href="#clips" class="active">Clip Browser</a>
+    <a href="#brands">Brand Intel</a>
+    <a href="#model">Model Quality</a>
+    <a href="#feedback">Coach Feedback</a>
+    <a href="#batch">Batch + Spend</a>
+    <a href="#dashboards">Dashboards</a>
+  </nav>
+
+  <!-- KPI BAR -->
+  <div class="kpi-bar" id="kpiBar"></div>
+
+  <!-- NAV HUB -->
+  <div class="nav-hub" id="dashboards">
+    <h2>Dashboard Hub</h2>
+    <div class="nav-cards" id="navCards"></div>
+  </div>
+
+  <!-- CLIP BROWSER -->
+  <div class="section" id="clips">
+    <div class="section-header">
+      <h2><span class="icon">&#127916;</span> Clip Browser</h2>
+      <span class="section-count" id="clipCount"></span>
+    </div>
+    <div class="filter-bar" id="filterBar"></div>
+    <div class="clip-grid" id="clipGrid"></div>
+  </div>
+
+  <!-- BRAND INTELLIGENCE -->
+  <div class="section" id="brands">
+    <div class="section-header">
+      <h2><span class="icon">&#127942;</span> Brand Intelligence</h2>
+    </div>
+    <div class="brand-chart-container">
+      <canvas id="brandChart"></canvas>
+    </div>
+    <div style="overflow-x: auto;">
+      <table class="brand-table" id="brandTable"></table>
+    </div>
+    <div class="whitespace-callout" id="whitespace"></div>
+  </div>
+
+  <!-- MODEL QUALITY -->
+  <div class="section" id="model">
+    <div class="section-header">
+      <h2><span class="icon">&#128202;</span> Model Quality Monitor</h2>
+    </div>
+    <div style="overflow-x: auto;">
+      <table class="model-table" id="modelTable"></table>
+    </div>
+    <div class="copy-cmd" onclick="copyToClipboard('python3 tools/model-monitor.py')">
+      <span class="copy-icon">&#128203;</span>
+      <code>python3 tools/model-monitor.py</code>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);">Click to copy</span>
+    </div>
+  </div>
+
+  <!-- COACH FEEDBACK -->
+  <div class="section" id="feedback">
+    <div class="section-header">
+      <h2><span class="icon">&#128221;</span> Coach Feedback Panel</h2>
+    </div>
+    <div class="feedback-form" id="feedbackForm"></div>
+    <div class="feedback-list" id="feedbackList"></div>
+    <div class="feedback-recommendations" id="feedbackRecs">
+      <h4>Prompt Improvement Recommendations</h4>
+      <p id="recsText">Submit feedback on clips to see aggregated improvement recommendations here.</p>
+    </div>
+  </div>
+
+  <!-- BATCH + SPEND -->
+  <div class="section" id="batch">
+    <div class="section-header">
+      <h2><span class="icon">&#128176;</span> Batch Status + Spend</h2>
+    </div>
+    <div class="batch-grid" id="batchGrid"></div>
+    <h3 style="font-size:14px;font-weight:700;color:var(--text-bright);margin-bottom:10px;">Budget Tracker</h3>
+    <div class="spend-bar-track">
+      <div class="spend-bar-fill" id="spendFill"></div>
+    </div>
+    <div class="spend-labels">
+      <span>$0.74 spent</span>
+      <span>$20.00 budget</span>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+      <div class="copy-cmd" onclick="copyToClipboard('python3 pickle-daas-gemini-analyzer.py')">
+        <span class="copy-icon">&#9654;</span>
+        <code>python3 pickle-daas-gemini-analyzer.py</code>
+        <span style="margin-left:auto;font-size:11px;color:var(--muted);">Run next batch</span>
+      </div>
+    </div>
+  </div>
+
+  <footer style="padding:40px 0;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid var(--border);">
+    Pickle DaaS Command Center &middot; Courtana, Inc. &middot; Built with Gemini 2.5 Flash &middot; $0.0054/clip
+  </footer>
+</div>
+
+<script>
+// ============ EMBEDDED DATA ============
+const CLIPS = [
+  {
+    "clip_id": "b18ca113",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg",
+    "quality": 9, "viral": 6, "dupr": "3.5-4.0", "story_arc": "grind_rally",
+    "summary": "A long pickleball dink rally culminates in a speed-up error at the kitchen line.",
+    "ron_burgundy": "By the beard of Zeus, what a display of athletic prowess! These gladiators of the court, engaged in a ballet of dinks, then unleashed a thunderous volley, only to see it fall just shy. Truly, a magnificent spectacle!",
+    "coaching": "This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle. Consider a more controlled attack or another dink to open up a better opportunity. Focus on keeping the ball in play and waiting for the high ball.",
+    "brands": [], "badges": ["Epic Rally", "Kitchen King"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 7, "athleticism": 7, "power": 6, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "139453f3",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg",
+    "quality": 8, "viral": 7, "dupr": "3.5-4.0", "story_arc": "athletic_highlight",
+    "summary": "A patient dink rally ends with an explosive forehand speed-up for a decisive winner.",
+    "ron_burgundy": "Good heavens, what a display of athletic prowess! The dinks were as delicate as a butterfly's kiss, until, that is, a thunderous forehand erupted, leaving the opposition utterly flummoxed. Simply magnificent, San Diego!",
+    "coaching": "Excellent patience in the dink exchange, maintaining low balls. Player 2 recognized the slight opening, stepped in, and drove through the ball with conviction. Notice the quick transition from soft play to aggressive finish. Far side needs to anticipate that speed-up and be ready to block or reset.",
+    "brands": [{"name":"JOOLA","category":"net","confidence":"high"}],
+    "badges": ["Kitchen King","Momentum Shift","Clutch Performer","Athletic Highlight"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 7, "athleticism": 8, "power": 8, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "3df45199",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.jpeg",
+    "quality": 8, "viral": 7, "dupr": "3.5-4.0", "story_arc": "grind_rally",
+    "summary": "A long kitchen dink rally ends with a decisive speed-up winner and a team celebration.",
+    "ron_burgundy": "By the beard of Zeus, that was a rally for the ages! The ball danced upon the net like a graceful gazelle, only to be met with a thunderous strike that left the opposition utterly flummoxed. Simply put, it was a triumph of human endeavor.",
+    "coaching": "Excellent patience in the dink rally, setting up the opportunity. The final speed-up was well-timed and executed, targeting the opponent's body or an open lane. Notice the quick transition from soft game to power. The far side could have tried to reset deeper or attack earlier.",
+    "brands": [{"name":"The Ground","category":"sponsor_banner","confidence":"high"},{"name":"Pickleball","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Epic Rally","Kitchen King","Clutch Performer"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 7, "athleticism": 7, "power": 7, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "42520eda",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.jpeg",
+    "quality": 8, "viral": 6, "dupr": "3.5-4.0", "story_arc": "grind_rally",
+    "summary": "A patient dink rally culminates in a powerful overhead smash winner after a speed-up.",
+    "ron_burgundy": "Well, that was a pickleball rally of epic proportions, a true ballet of paddles and plastic. The dinking, oh the dinking, a delicate dance before the thunderous conclusion. Simply magnificent.",
+    "coaching": "Notice the consistent dinking, keeping the ball low and in front. The speed-up was well-timed, but the block was crucial. Finally, capitalize on the high ball with a strong overhead. Good court awareness.",
+    "brands": [{"name":"APPLA","category":"court_surface","confidence":"high"},{"name":"APPLA","category":"net","confidence":"high"}],
+    "badges": ["Kitchen King","Momentum Shift","Wall of Hands"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 7, "athleticism": 7, "power": 7, "touch": 8, "creativity": 6
+  },
+  {
+    "clip_id": "6cf49d96",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6cf49d96-ad41-47a1-a1c2-c5f8b57fd346.jpeg",
+    "quality": 8, "viral": 3, "dupr": "3.0-3.5", "story_arc": "pure_fun",
+    "summary": "Two players engage in a long, consistent dink rally at the kitchen line.",
+    "ron_burgundy": "Well, I'll be a pickle! This, ladies and gentlemen, is what we call a 'dink-a-thon.' A true test of patience and delicate touch, much like a fine aged cheddar. Simply delightful.",
+    "coaching": "This clip is an excellent example of maintaining a consistent dink rally. Notice the paddle face angle, keeping the ball low over the net and landing deep in the kitchen. For improvement, consider when to transition from dinking to a speed-up or a drive to create an offensive opportunity.",
+    "brands": [{"name":"The Underground","category":"sponsor_banner","confidence":"high"},{"name":"Recovery Cave","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Kitchen King","Kitchen Queen","Consistency Master"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 6, "athleticism": 4, "power": 1, "touch": 8, "creativity": 2
+  },
+  {
+    "clip_id": "cf1e048f",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg",
+    "quality": 8, "viral": 7, "dupr": "3.5-4.0", "story_arc": "athletic_highlight",
+    "summary": "A pickleball rally culminates in an athletic jump smash for a winner after a kitchen battle.",
+    "ron_burgundy": "By the beard of Zeus, what a display! The tactical ballet at the net, the sudden burst of power, culminating in an aerial assault that would make a bald eagle weep with pride. Truly, a moment of sporting grandeur!",
+    "coaching": "The near team did well to absorb pressure with those blocks, but the pop-up on the last block gave the far team an easy put-away. The far team's patience to set up the speed-up and then capitalize on the high ball was excellent execution.",
+    "brands": [{"name":"The Underground","category":"sponsor_banner","confidence":"high"},{"name":"Recovery Cave","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Epic Rally","Kitchen King","Airborne","Wall of Hands"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": "Player 4's jump overhead smash",
+    "kitchen": 8, "court_iq": 7, "athleticism": 8, "power": 7, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "d2171138",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d2171138-f847-4272-803a-39115e86bd2b.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/d2171138-f847-4272-803a-39115e86bd2b.jpeg",
+    "quality": 8, "viral": 5, "dupr": "", "story_arc": "grind_rally",
+    "summary": "",
+    "ron_burgundy": "",
+    "coaching": "",
+    "brands": [{"name":"A100","category":"net","confidence":"high"}],
+    "badges": ["Wall of Hands","Grind Rally"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 6, "athleticism": 7, "power": 7, "touch": 6, "creativity": 5,
+    "has_frames": true
+  },
+  {
+    "clip_id": "0ec3d983",
+    "batch": "broadcast",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.jpeg",
+    "quality": 8, "viral": 6, "dupr": "3.5-4.0", "story_arc": "grind_rally",
+    "summary": "The far team wins a rally with two powerful overhead smashes after the near team's high shots.",
+    "ron_burgundy": "By the beard of Zeus, that was a pickleball point of considerable vigor! The far team, with their powerful overheads, demonstrated a mastery of the aerial assault, leaving their opponents bewildered and, dare I say, slightly deflated. Truly a spectacle for the ages.",
+    "coaching": "Near team, focus on getting that third shot drop lower to neutralize your opponents and allow yourselves to get to the kitchen. Far team, excellent job staying patient and then pouncing on those high balls with aggressive overheads. Near-right, watch that paddle face on your resets to keep the ball down.",
+    "brands": [{"name":"CRBN","category":"paddle","confidence":"high"},{"name":"JOOLA","category":"net","confidence":"high"}],
+    "badges": ["Overhead Dominance","Wall of Hands"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 6, "court_iq": 6, "athleticism": 7, "power": 7, "touch": 6, "creativity": 5
+  },
+  {
+    "clip_id": "70043064",
+    "batch": "broadcast",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.jpeg",
+    "quality": 8, "viral": 7, "dupr": "4.0-4.5", "story_arc": "grind_rally",
+    "summary": "An intense, multi-shot kitchen rally concludes with a powerful overhead smash for a winner.",
+    "ron_burgundy": "By the beard of Zeus, that was a rally of epic proportions! The players, with their paddles poised like gladiators, engaged in a ballet of dinks and volleys. And then, a decisive overhead, a shot so magnificent, it could only be described as pure, unadulterated pickleball poetry. Stay classy, pickleballers.",
+    "coaching": "Excellent patience in the dink exchange, forcing the opponents to speed up. The blocks and resets were crucial to stay in the point. The final overhead was well-timed, capitalizing on the high ball after sustained pressure. Focus on maintaining that low contact point on dinks and being ready for the counter-attack.",
+    "brands": [{"name":"CRBN","category":"paddle","confidence":"high"},{"name":"JOOLA","category":"net","confidence":"high"},{"name":"Courtana","category":"sponsor_banner","confidence":"medium"}],
+    "badges": ["Epic Rally","Kitchen King","Wall of Hands"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 7, "athleticism": 7, "power": 7, "touch": 8, "creativity": 6
+  },
+  {
+    "clip_id": "2615847e",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg",
+    "quality": 8, "viral": 7, "dupr": "3.5-4.0", "story_arc": "clutch_moment",
+    "summary": "A rally of drives and blocks ends with a lucky net cord dink winner.",
+    "ron_burgundy": "Well, that was quite the pickleball exchange, wasn't it? A veritable ballet of paddles and plastic. And then, a moment of pure, unadulterated chance, as the ball, with a dramatic flourish, decided to defy gravity and the net, landing ever so gently on the other side. Remarkable!",
+    "coaching": "This rally shows good consistency on drives and resets, but the final point highlights the unpredictable nature of the game. While the net cord was lucky, the preceding shots were solid. For the serving team, consider varying pace or adding more spin to break up the rhythm. For the receiving team, that dink was well-placed, even if the net helped it over.",
+    "brands": [{"name":"Courtana","category":"court_surface","confidence":"high"}],
+    "badges": ["Net Cord Ninja","Lucky Shot"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 6, "court_iq": 7, "athleticism": 6, "power": 7, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "8ade4e4e",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8ade4e4e-42df-4c74-9343-f144bac993a2.jpeg",
+    "quality": 8, "viral": 6, "dupr": "4.0-4.5", "story_arc": "grind_rally",
+    "summary": "A long pickleball kitchen rally featuring multiple dinks, speed-ups, and blocks ends with an unforced error.",
+    "ron_burgundy": "By the beard of Zeus! What a display of athletic prowess and paddle-wielding wizardry! The ball, a mere blur, danced upon the net, a testament to the sheer will of these gladiators of the court. Truly, a magnificent spectacle!",
+    "coaching": "Good job staying in the point, especially the near side with those blocks. However, the far side's repeated speed-ups eventually forced an error. Near side, consider varying your dinks more to open up angles, and far side, don't be afraid to reset or drop after a few speed-ups to keep your opponents guessing.",
+    "brands": [{"name":"Courtana","category":"court_surface","confidence":"high"},{"name":"Courtana","category":"net","confidence":"high"}],
+    "badges": ["Epic Rally","Kitchen King","Wall of Hands"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 7, "athleticism": 7, "power": 7, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "8fe77353",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.jpeg",
+    "quality": 8, "viral": 6, "dupr": "4.0-4.5", "story_arc": "athletic_highlight",
+    "summary": "A pickleball doubles rally featuring dinks and speed-ups, ending with a cross-court winner.",
+    "ron_burgundy": "Well, that was a rather spirited exchange of the pickleball, wasn't it? The gentlemen at the net displayed a remarkable blend of finesse and brute force, culminating in a most decisive, and dare I say, *magnificent* point. Stay classy, pickleball fans.",
+    "coaching": "Notice how the near team maintained patience in the dink rally, waiting for the opportune moment. Player 2's first speed-up wasn't a winner, but it created an opening, and the follow-up angled drive was perfectly executed, exploiting the open court.",
+    "brands": [{"name":"ASICS","category":"court_surface","confidence":"high"}],
+    "badges": ["Kitchen King","Wall of Hands","Athletic Highlight"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 8, "athleticism": 8, "power": 7, "touch": 8, "creativity": 7
+  },
+  {
+    "clip_id": "ac0e1a1b",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.jpeg",
+    "quality": 8, "viral": 2, "dupr": "4.0-4.5", "story_arc": "pure_fun",
+    "summary": "A player serves the pickleball, which is then returned by an opponent, showcasing fundamental shots.",
+    "ron_burgundy": "Well, that was a serve. And then, a return. Truly, a masterclass in the foundational elements of this... *pickleball* sport. Remarkable. Simply remarkable.",
+    "coaching": "Notice the server's consistent toss and full follow-through, generating good depth. The receiver maintains a balanced stance and drives through the ball for a strong return, aiming for the deep court.",
+    "brands": [{"name":"Courtana","category":"sponsor_banner","confidence":"high"},{"name":"Selkirk","category":"paddle","confidence":"medium"},{"name":"JOOLA","category":"paddle","confidence":"medium"},{"name":"Franklin","category":"ball","confidence":"low"}],
+    "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": null, "court_iq": 6, "athleticism": 6, "power": 6, "touch": null, "creativity": null
+  },
+  {
+    "clip_id": "ea5f58c0",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ea5f58c0-8d07-4eed-8393-22218dc0b4fc.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ea5f58c0-8d07-4eed-8393-22218dc0b4fc.jpeg",
+    "quality": 8, "viral": 4, "dupr": "4.0-4.5", "story_arc": "grind_rally",
+    "summary": "A pickleball rally transitions from dinks to multiple speed-ups and blocks, ending in an out shot.",
+    "ron_burgundy": "By the beard of Zeus, what a display of athletic prowess on the pickleball court! The dinks, so delicate, yet the ensuing volleys, a veritable tempest of power and precision. A truly magnificent, if ultimately errant, conclusion to this spirited exchange.",
+    "coaching": "This rally demonstrates good patience in the dink exchange. The near team correctly identified opportunities to speed up, but the execution on the final speed-up was just a bit off, going wide. The far team showed excellent hand speed and paddle control on their blocks. Focus on consistent depth and angle on those speed-ups, especially when opponents are ready.",
+    "brands": [], "badges": ["Wall of Hands","Kitchen King"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 7, "athleticism": 7, "power": 7, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "f4df1bb4",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.jpeg",
+    "quality": 8, "viral": 4, "dupr": "3.0-3.5", "story_arc": "pure_fun",
+    "summary": "A multi-view montage shows various players engaged in casual pickleball rallies across four indoor courts.",
+    "ron_burgundy": "Good heavens, what a spectacle! A veritable symphony of paddles and polymer, echoing through this magnificent arena. One might say, it's a big deal. People know us. We're very important.",
+    "coaching": "Observe the various player positions and shot selections across these courts. Many players are effectively getting to the kitchen line, which is crucial. Focus on consistent serves and returns to set up your third shot drop opportunities. Keep an eye on your opponent's paddle face for shot anticipation.",
+    "brands": [{"name":"PICKLEBALL","category":"sponsor_banner","confidence":"high"},{"name":"SKULL","category":"sponsor_banner","confidence":"high"},{"name":"HEAD","category":"paddle","confidence":"low"},{"name":"Selkirk","category":"paddle","confidence":"low"}],
+    "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 6, "court_iq": 6, "athleticism": 6, "power": 5, "touch": 6, "creativity": 5
+  },
+  {
+    "clip_id": "ce00696b",
+    "batch": "test-001",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+    "quality": 8, "viral": 7, "dupr": "4.5-5.0", "story_arc": "athletic_highlight",
+    "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+    "ron_burgundy": "By the beard of Zeus, that was a shot of pure, unadulterated power! The ball, much like a fine aged scotch, was delivered with precision and a robust finish. Simply delightful.",
+    "coaching": "Excellent court positioning to get under that lob. The timing on the jump and paddle face angle for the overhead was perfect, driving the ball down with authority. This is how you finish a point decisively.",
+    "brands": [{"name":"Courtana","category":"sponsor_banner","confidence":"high"},{"name":"JOOLA","category":"net","confidence":"high"}],
+    "badges": ["Airborne","Smash Master","Shot of the Day"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": "Jumping overhead smash",
+    "kitchen": null, "court_iq": 8, "athleticism": 10, "power": 10, "touch": null, "creativity": 8
+  },
+  {
+    "clip_id": "08932731",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/08932731-03ab-4c3d-9558-a2cfc5273dad.jpeg",
+    "quality": 7, "viral": 3, "dupr": "3.0-3.5", "story_arc": "pure_fun",
+    "summary": "A casual doubles pickleball rally features a sustained volley exchange at the kitchen line.",
+    "ron_burgundy": "Well, I'll be a pickle! This, my friends, is a veritable ballet of paddles and plastic, a true testament to the human spirit's desire for... well, for pickleball. Stay classy, pickleballers!",
+    "coaching": "Good serve placement, followed by a deep return. The third shot was a bit high, allowing the receiving team to get to the net. Focus on keeping the ball low during the dink exchange to force errors.",
+    "brands": [{"name":"Recovery Cave","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Kitchen King"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 6, "athleticism": 5, "power": 5, "touch": 7, "creativity": 4
+  },
+  {
+    "clip_id": "472bcafa",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/472bcafa-4c30-49f5-a6b1-ea23007f94c9.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/472bcafa-4c30-49f5-a6b1-ea23007f94c9.jpeg",
+    "quality": 7, "viral": 4, "dupr": "", "story_arc": "",
+    "summary": "",
+    "ron_burgundy": "",
+    "coaching": "",
+    "brands": [], "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-28T12:00:00Z", "signature_move": "",
+    "kitchen": 0, "court_iq": 0, "athleticism": 0, "power": 0, "touch": 0, "creativity": 0
+  },
+  {
+    "clip_id": "6ee49439",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea303d3330.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/6ee49439-c28a-452f-9bc3-ccea303d3330.jpeg",
+    "quality": 7, "viral": 2, "dupr": "2.5-3.0", "story_arc": "error_highlight",
+    "summary": "A pickleball player serves twice, with the opponent making unforced errors on both returns by hitting them long.",
+    "ron_burgundy": "Well, that's certainly one way to win a point, isn't it? A magnificent display of... well, of the ball going out. Truly a testament to the unpredictable nature of this glorious sport. Stay classy, pickleball fans!",
+    "coaching": "For the receiver, focus on getting the ball in play, especially on the serve return. Aim for a deep cross-court shot to give yourself time to get to the net. Don't try to do too much with the first shot back. Server's underhand serve is consistent, but could benefit from varying placement.",
+    "brands": [{"name":"The Underground","category":"sponsor_banner","confidence":"high"}],
+    "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 3, "court_iq": 4, "athleticism": 4, "power": 4, "touch": 4, "creativity": 2
+  },
+  {
+    "clip_id": "91a764f8",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/91a764f8-4093-4dd0-afb8-ca31b5bf72c5.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/91a764f8-4093-4dd0-afb8-ca31b5bf72c5.jpeg",
+    "quality": 7, "viral": 3, "dupr": "3.0-3.5", "story_arc": "grind_rally",
+    "summary": "A sustained dink rally at the kitchen line ends with an unforced error on a speed-up attempt.",
+    "ron_burgundy": "Well, that was a rather... deliberate exchange of the pickleball. The dinks, they just kept coming, like a well-oiled machine, until, alas, the final shot, a valiant effort, found itself outside the confines of the playing field. Stay classy, pickleballers.",
+    "coaching": "Notice the consistent dinking to maintain position and look for openings. Player 4's final speed-up was a good idea to change pace, but the execution was off. Focus on keeping that shot in play, perhaps aiming for the opponent's feet rather than going for a clean winner every time.",
+    "brands": [{"name":"RECOVERY CAVE","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Kitchen King"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 6, "athleticism": 6, "power": 5, "touch": 7, "creativity": 4
+  },
+  {
+    "clip_id": "a4e8f830",
+    "batch": "batch-30-daas",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a4e8f830-35cc-4303-bec0-06b4cdeddfa7.jpeg",
+    "quality": 7, "viral": 2, "dupr": "3.0-3.5", "story_arc": "pure_fun",
+    "summary": "Two players engage in a consistent baseline drive rally on a blue pickleball court during a casual practice.",
+    "ron_burgundy": "Well, I'll be a pickleball paddle! These two are engaged in what can only be described as a rather agreeable exchange of volleys. The sheer consistency, the unwavering commitment to the baseline, it's a symphony of... well, pickleball. Stay classy, San Diego.",
+    "coaching": "Good consistent drives from both players, maintaining a steady pace and depth. For improvement, I'd like to see them work on transitioning forward after a strong drive, or incorporating a dink to change the pace and move opponents off the baseline.",
+    "brands": [{"name":"ONIX","category":"net","confidence":"high"}],
+    "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 3, "court_iq": 5, "athleticism": 5, "power": 6, "touch": 4, "creativity": 3
+  },
+  {
+    "clip_id": "bccb8b27",
+    "batch": "broadcast",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.jpeg",
+    "quality": 7, "viral": 6, "dupr": null, "story_arc": "teaching_moment",
+    "summary": "Young ice hockey players practice stickhandling and shooting in a snowy outdoor rink with coaching feedback.",
+    "ron_burgundy": "By the beard of Zeus, these young gladiators of the ice are a sight to behold! Their stickhandling, a symphony of skill amidst the winter's embrace. Truly, a magnificent display of frozen artistry.",
+    "coaching": "Excellent head-up play and puck protection from the red jersey. For the player in green, focus on lowering that center of gravity for tighter turns. And red, let's get that full leg extension for more powerful strides.",
+    "brands": [], "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-05-23T12:00:00Z", "signature_move": null,
+    "kitchen": null, "court_iq": 5, "athleticism": 6, "power": 5, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "0b225575",
+    "batch": "picklebill-batch-001",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0b225575-5bd7-4e7b-ac84-8b59a86cb811.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0b225575-5bd7-4e7b-ac84-8b59a86cb811.jpeg",
+    "quality": 7, "viral": 3, "dupr": "3.5-4.0", "story_arc": "pure_fun",
+    "summary": "Players engage in a consistent driving rally on an indoor pickleball court.",
+    "ron_burgundy": "By the beard of Zeus, this pickleball contest is a symphony of precision and power! The players, with their unwavering focus, deliver a spectacle of athletic prowess that truly defines 'stay classy, San Diego' on the court.",
+    "coaching": "Notice the consistent depth on these drives, keeping opponents pinned back. However, look for opportunities to transition forward or add a dink to break up the rhythm and force an error.",
+    "brands": [{"name":"LIFE TIME PICKLEBALL","category":"sponsor_banner","confidence":"high"},{"name":"JOOLA","category":"sponsor_banner","confidence":"high"}],
+    "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 5, "court_iq": 7, "athleticism": 6, "power": 6, "touch": 5, "creativity": 4
+  },
+  {
+    "clip_id": "c30b464e",
+    "batch": "picklebill-batch-001",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c30b464e-25b4-4029-ba30-49b1f3877f42.jpeg",
+    "quality": 7, "viral": 8, "dupr": "3.0-3.5", "story_arc": "error_highlight",
+    "summary": "A short pickleball rally features multiple errors and poor shot selection, ending with a net fault.",
+    "ron_burgundy": "Well, that was certainly a pickleball rally. Not quite a symphony of dinks, nor a ballet of volleys, but a rally nonetheless. I'm Ron Burgundy, and that's the way the pickleball bounces.",
+    "coaching": "This clip highlights critical areas for intermediate players. Red shirt's serve lacks depth, forcing an aggressive third shot that's too high. His partner is too static. Both need to focus on active feet, paddle readiness, and trusting their partner to cover their zone, rather than trying to play 1v2.",
+    "brands": [{"name":"LIFE TIME PICKLEBALL","category":"sponsor_banner","confidence":"high"},{"name":"JOOLA","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Error Highlight","Teaching Moment"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 4, "court_iq": 4, "athleticism": 6, "power": 5, "touch": 4, "creativity": 3
+  },
+  {
+    "clip_id": "f415729c",
+    "batch": "picklebill-batch-001",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f415729c-153e-4024-bdc3-9a9836752e4e.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f415729c-153e-4024-bdc3-9a9836752e4e.jpeg",
+    "quality": 7, "viral": 3, "dupr": "3.0-3.5", "story_arc": "teaching_moment",
+    "summary": "A pickleball rally featuring a strong 3rd shot drive, a defensive volley, a drop shot, and a dink exchange.",
+    "ron_burgundy": "Good heavens, what a display of athleticism and paddle prowess! The serve, a veritable symphony of spin and precision, was met with a return of... well, let's just say it was returned. Then, a drive of such ferocity, it could curdle milk! Truly, a pickleball ballet unfolding before our very eyes.",
+    "coaching": "Player in red, good intent on the serve and the 3rd shot drive. However, after that drive, you need to sprint to the kitchen, don't admire the shot. Also, ensure you split step and stabilize before hitting that volley. For the team on the far side, work on deeper returns to keep your opponents back, and for the blonde player, keep that paddle up and out in front during transition.",
+    "brands": [{"name":"LIFE TIME PICKLEBALL","category":"sponsor_banner","confidence":"high"},{"name":"JOOLA","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Teaching Moment","Aggressive Driver"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 6, "court_iq": 6, "athleticism": 7, "power": 7, "touch": 7, "creativity": 5
+  },
+  {
+    "clip_id": "597f6bf5",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/597f6bf5-ece9-4a4c-8a6c-98b33f41edf9.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/597f6bf5-ece9-4a4c-8a6c-98b33f41edf9.jpeg",
+    "quality": 7, "viral": 3, "dupr": "3.0-3.5", "story_arc": "pure_fun",
+    "summary": "Multiple players engage in simultaneous pickleball rallies on four indoor courts.",
+    "ron_burgundy": "Ah, the glorious spectacle of pickleball, played with such casual intensity across these magnificent courts. A true testament to the human spirit's desire for paddle-based camaraderie. Stay classy, pickleballers.",
+    "coaching": "Observe the consistent, fundamental play here. Players are maintaining good court positioning and executing standard dinks and drives. For improvement, focus on adding more shot variety and strategic aggression to elevate your game.",
+    "brands": [{"name":"Pickleball","category":"sponsor_banner","confidence":"high"},{"name":"Skull Logo","category":"sponsor_banner","confidence":"high"}],
+    "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-30T12:00:00Z", "signature_move": null,
+    "kitchen": 6, "court_iq": 6, "athleticism": 6, "power": 5, "touch": 6, "creativity": 4
+  },
+  {
+    "clip_id": "e1454b14",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e1454b14-12b9-4955-b07b-81642fddb8e3.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e1454b14-12b9-4955-b07b-81642fddb8e3.jpeg",
+    "quality": 7, "viral": 6, "dupr": "3.5-4.0", "story_arc": "error_highlight",
+    "summary": "A pickleball dink rally ends with an unforced error into the net after a speed-up attempt.",
+    "ron_burgundy": "By the beard of Zeus, what a display of finesse and... oh, a miscalculation! The ball, alas, found its watery grave in the net. Truly a moment of both grace and, dare I say, mild disappointment.",
+    "coaching": "Good patience on the dinks, but Player 4, that speed-up was a low percentage shot from that position. Next time, consider another dink or a well-placed drive if you have a better opening. Focus on keeping the ball in play and waiting for the right opportunity.",
+    "brands": [{"name":"ACRYL","category":"court_surface","confidence":"high"}],
+    "badges": ["Kitchen King","Error Highlight"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 8, "court_iq": 7, "athleticism": 7, "power": 6, "touch": 7, "creativity": 6
+  },
+  {
+    "clip_id": "e7340a11",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e7340a11-5037-478c-9065-6e6f52d3e74c.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e7340a11-5037-478c-9065-6e6f52d3e74c.jpeg",
+    "quality": 7, "viral": 2, "dupr": "3.0-3.5", "story_arc": "error_highlight",
+    "summary": "A pickleball rally ends quickly with a third shot drop error into the net.",
+    "ron_burgundy": "Well, that was a pickleball rally of... brevity. The third shot, a valiant effort, alas, found its watery grave before the net. Remarkable.",
+    "coaching": "Player in black, your third shot drop was too high and didn't clear the net. Focus on getting under the ball more and aiming for the kitchen line with less pace and a softer touch.",
+    "brands": [{"name":"ONIX","category":"net","confidence":"high"},{"name":"RECOVERY CAVE","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Teaching Moment"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 3, "court_iq": 4, "athleticism": 4, "power": 4, "touch": 3, "creativity": 3
+  },
+  {
+    "clip_id": "eb168c8c",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/eb168c8c-cd17-4f06-b2ff-64335723dbc7.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/eb168c8c-cd17-4f06-b2ff-64335723dbc7.jpeg",
+    "quality": 7, "viral": 2, "dupr": "3.0-3.5", "story_arc": "pure_fun",
+    "summary": "Two players consistently dink the pickleball back and forth at the kitchen line during a drill.",
+    "ron_burgundy": "Ah, the subtle art of the dink. A dance of precision, a ballet of the paddle. These two, with their unwavering focus, are truly staying classy on the pickleball court. Remarkable, simply remarkable.",
+    "coaching": "This is a great example of a dinking drill. Focus on keeping the ball low over the net and landing it deep in the kitchen. Notice their paddle faces are open, guiding the ball softly. Good footwork to stay balanced and ready for the next shot.",
+    "brands": [{"name":"PICKLEBALL","category":"sponsor_banner","confidence":"high"}],
+    "badges": ["Kitchen King","Wall of Hands"],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 7, "court_iq": 5, "athleticism": 4, "power": 3, "touch": 7, "creativity": 3
+  },
+  {
+    "clip_id": "f949e679",
+    "batch": "picklebill-batch-20260410",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f949e679-378f-4eab-8f80-d7f619702b07.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f949e679-378f-4eab-8f80-d7f619702b07.jpeg",
+    "quality": 7, "viral": 2, "dupr": "3.5-4.0", "story_arc": "error_highlight",
+    "summary": "A doubles pickleball rally ends with an unforced error on a speed-up attempt from the kitchen line.",
+    "ron_burgundy": "Well, that escalated quickly, then de-escalated even quicker. A valiant effort at the net, but alas, the ball had other plans, much like my weekend schedule. Stay classy, pickleball fans.",
+    "coaching": "Good initial positioning, but the player on the right needs to be more patient with their speed-up. That ball was too high and too far back to attack effectively, leading to the unforced error.",
+    "brands": [], "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-07-29T12:00:00Z", "signature_move": null,
+    "kitchen": 6, "court_iq": 5, "athleticism": 6, "power": 5, "touch": 5, "creativity": 4
+  },
+  {
+    "clip_id": "96f9f529",
+    "batch": "broadcast",
+    "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.mp4",
+    "thumb_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.jpeg",
+    "quality": 6, "viral": 4, "dupr": null, "story_arc": "pure_fun",
+    "summary": "Children play ice hockey on an outdoor rink at night during a snowfall.",
+    "ron_burgundy": "Ah, the crisp night air, the gentle snowfall, and the unmistakable sound of young champions forging their destiny on the ice. Truly, a magnificent display of athleticism and youthful exuberance. Stay classy, San Diego.",
+    "coaching": "For these young players, the focus is on fundamental skating and puck control in challenging conditions. Encouraging active movement and stick on the ice is key at this stage.",
+    "brands": [], "badges": [],
+    "prompt_version": "gemini-2.5-flash", "analyzed_at": "2024-05-15T12:00:00Z", "signature_move": null,
+    "kitchen": null, "court_iq": null, "athleticism": 5, "power": null, "touch": null, "creativity": null
+  }
+];
+
+// ============ NAV DASHBOARDS ============
+const DASHBOARDS = [
+  { icon: "\ud83d\udcca", title: "Investor Demo", desc: "10-section shareable pitch deck with live data", file: "pickle-daas-investor-demo.html" },
+  { icon: "\ud83c\udfc3", title: "Coaching Profile", desc: "PickleBill's full player DNA breakdown", file: "coaching-profile-picklebill.html" },
+  { icon: "\ud83c\udff7\ufe0f", title: "Brand Report", desc: "Brand detection intelligence across all clips", file: "brand-intelligence-report-sample.html" },
+  { icon: "\ud83d\udd2c", title: "Model Monitor", desc: "Gemini 2.5 Flash performance tracking", file: "model-monitor-dashboard.html" },
+  { icon: "\ud83c\udfc5", title: "Badge Analytics", desc: "229 Courtana badges vs our predictions — precision, recall, criteria gaps", file: "badge-analytics-dashboard.html" },
+  { icon: "\ud83c\udfc6", title: "Player Intel Card", desc: "Shareable player intelligence card", file: "picklebill-intel-card.html" },
+  { icon: "\ud83c\udfac", title: "TMNT Broadcast", desc: "Multi-voice broadcast commentary demo", file: "tmnt-broadcast-dashboard.html" },
+  { icon: "\ud83d\udcf7", title: "Multi-Angle", desc: "Multi-camera angle analysis dashboard", file: "multi-angle-dashboard.html" },
+  { icon: "\ud83c\udf10", title: "CourtSense Hub", desc: "Central hub for all CourtSense dashboards", file: "courtsense-hub.html" },
+  { icon: "\ud83d\udcc8", title: "Master Dashboard", desc: "Full pipeline overview and metrics", file: "pickle-daas-master-dashboard.html" },
+  { icon: "\u26a1", title: "CourtSense Live", desc: "Live data dashboard with real-time feeds", file: "courtsense-dashboard-live.html" }
+];
+
+// ============ DERIVED DATA ============
+function computeBrandMap() {
+  const map = {};
+  CLIPS.forEach(c => {
+    c.brands.forEach(b => {
+      const key = b.name.toUpperCase();
+      if (!map[key]) map[key] = { name: b.name, category: b.category, clips: new Set(), duprTiers: {} };
+      map[key].clips.add(c.clip_id);
+      if (c.dupr) {
+        map[key].duprTiers[c.dupr] = (map[key].duprTiers[c.dupr] || 0) + 1;
+      }
+    });
+  });
+  return map;
+}
+
+function computeBatchMap() {
+  const map = {};
+  CLIPS.forEach(c => {
+    if (!map[c.batch]) map[c.batch] = { clips: [], dates: [] };
+    map[c.batch].clips.push(c);
+    map[c.batch].dates.push(c.analyzed_at);
+  });
+  return map;
+}
+
+const BRAND_MAP = computeBrandMap();
+const BATCH_MAP = computeBatchMap();
+
+const ALL_BRANDS = Object.keys(BRAND_MAP).sort((a,b) => BRAND_MAP[b].clips.size - BRAND_MAP[a].clips.size);
+const ALL_BATCHES = Object.keys(BATCH_MAP);
+const ALL_DUPR_TIERS = [...new Set(CLIPS.map(c => c.dupr).filter(d => d && d !== ""))].sort();
+
+const TOTAL_CLIPS = CLIPS.length;
+const TOTAL_BRANDS = ALL_BRANDS.length;
+const AVG_QUALITY = (CLIPS.reduce((s,c) => s + c.quality, 0) / TOTAL_CLIPS).toFixed(1);
+
+// ============ UTILITY ============
+function formatDate(iso) {
+  if (!iso) return 'N/A';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function qualityClass(q) {
+  if (q >= 8) return 'high';
+  if (q >= 6) return 'mid';
+  return 'low';
+}
+
+function skillColor(val) {
+  if (val === null || val === undefined || val === 0) return 'var(--muted)';
+  if (val >= 8) return 'var(--green)';
+  if (val >= 6) return 'var(--gold)';
+  if (val >= 4) return 'var(--blue)';
+  return 'var(--red)';
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const el = event.currentTarget;
+    const orig = el.querySelector('span:last-child').textContent;
+    el.querySelector('span:last-child').textContent = 'Copied!';
+    el.querySelector('span:last-child').style.color = 'var(--green)';
+    setTimeout(() => {
+      el.querySelector('span:last-child').textContent = orig;
+      el.querySelector('span:last-child').style.color = 'var(--muted)';
+    }, 2000);
+  });
+}
+
+// ============ RENDER KPI BAR ============
+function renderKPIs() {
+  document.getElementById('kpiBar').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Total Clips</div>
+      <div class="kpi-value">${TOTAL_CLIPS}</div>
+      <div class="kpi-sub">Analyzed by Gemini 2.5 Flash</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Brands Detected</div>
+      <div class="kpi-value">${TOTAL_BRANDS}</div>
+      <div class="kpi-sub">Unique brands across corpus</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg Quality</div>
+      <div class="kpi-value">${AVG_QUALITY} <span class="unit">/ 10</span></div>
+      <div class="kpi-sub">Mean clip quality score</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Budget Spent</div>
+      <div class="kpi-value" style="color:var(--green)">$0.74 <span class="unit">/ $20</span></div>
+      <div class="kpi-sub">96% under budget</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Cost per Clip</div>
+      <div class="kpi-value">$0.005</div>
+      <div class="kpi-sub">Gemini 2.5 Flash baseline</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Batches</div>
+      <div class="kpi-value">${ALL_BATCHES.length}</div>
+      <div class="kpi-sub">${ALL_BATCHES.join(', ').substring(0, 50)}...</div>
+    </div>
+  `;
+}
+
+// ============ RENDER NAV CARDS ============
+function renderNavCards() {
+  document.getElementById('navCards').innerHTML = DASHBOARDS.map(d => `
+    <a class="nav-card" href="${d.file}" target="_blank">
+      <span class="nav-icon">${d.icon}</span>
+      <span class="nav-title">${d.title}</span>
+      <span class="nav-desc">${d.desc}</span>
+      <span class="nav-link">Open &rarr;</span>
+    </a>
+  `).join('');
+}
+
+// ============ RENDER FILTER BAR ============
+function renderFilterBar() {
+  const brandOpts = ALL_BRANDS.map(b => `<option value="${b}">${BRAND_MAP[b].name} (${BRAND_MAP[b].clips.size})</option>`).join('');
+  const batchOpts = ALL_BATCHES.map(b => `<option value="${b}">${b} (${BATCH_MAP[b].clips.length})</option>`).join('');
+  const duprOpts = ALL_DUPR_TIERS.map(d => `<option value="${d}">${d}</option>`).join('');
+
+  document.getElementById('filterBar').innerHTML = `
+    <div class="filter-group">
+      <label>Search</label>
+      <input type="search" id="searchBox" placeholder="Search summaries, brands, badges..." oninput="applyFilters()">
+    </div>
+    <div class="filter-group">
+      <label>Brand</label>
+      <select id="filterBrand" onchange="applyFilters()">
+        <option value="">All Brands</option>
+        ${brandOpts}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>DUPR Tier</label>
+      <select id="filterDupr" onchange="applyFilters()">
+        <option value="">All Tiers</option>
+        ${duprOpts}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Batch</label>
+      <select id="filterBatch" onchange="applyFilters()">
+        <option value="">All Batches</option>
+        ${batchOpts}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Min Quality</label>
+      <select id="filterQuality" onchange="applyFilters()">
+        <option value="0">Any</option>
+        <option value="6">6+</option>
+        <option value="7">7+</option>
+        <option value="8">8+</option>
+        <option value="9">9+</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Sort By</label>
+      <select id="sortBy" onchange="applyFilters()">
+        <option value="quality">Quality (High First)</option>
+        <option value="viral">Viral Score</option>
+        <option value="date">Analyzed Date</option>
+        <option value="brands">Brand Count</option>
+      </select>
+    </div>
+    <span class="filter-results" id="filterResults"></span>
+  `;
+}
+
+// ============ CLIP CARD ============
+function renderClipCard(clip) {
+  const qClass = qualityClass(clip.quality);
+  const arcClass = clip.story_arc ? `arc-${clip.story_arc}` : '';
+  const brandPills = clip.brands.map(b => {
+    const catClass = `cat-${b.category}`;
+    return `<span class="brand-pill ${catClass}"><span class="brand-dot"></span>${b.name}</span>`;
+  }).join('');
+  const badgePills = clip.badges.map(b => `<span class="badge-pill">${b}</span>`).join('');
+
+  const skills = ['kitchen','court_iq','athleticism','power','touch','creativity'];
+  const skillLabels = { kitchen:'Kitchen', court_iq:'Court IQ', athleticism:'Athletic', power:'Power', touch:'Touch', creativity:'Creative' };
+  const skillBars = skills.map(s => {
+    const val = clip[s];
+    if (val === null || val === undefined) return '';
+    const pct = val * 10;
+    return `<div class="skill-bar-row">
+      <span class="skill-bar-label">${skillLabels[s]}</span>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%;background:${skillColor(val)}"></div></div>
+      <span class="skill-bar-val">${val}</span>
+    </div>`;
+  }).join('');
+
+  const hasRon = clip.ron_burgundy && clip.ron_burgundy.length > 0;
+  const hasCoach = clip.coaching && clip.coaching.length > 0;
+  const hasSummary = clip.summary && clip.summary.length > 0;
+  const hasFrames = clip.has_frames;
+
+  return `
+    <div class="clip-card" data-id="${clip.clip_id}">
+      <div class="clip-media" onclick="toggleVideo(this, '${clip.video_url}')">
+        <img src="${clip.thumb_url}" alt="Clip ${clip.clip_id}" onerror="this.style.display='none'">
+        <div class="play-btn"></div>
+        <div class="clip-badges-overlay">
+          <span class="badge-quality ${qClass}">Q:${clip.quality}</span>
+          ${clip.dupr ? `<span class="badge-dupr">DUPR ${clip.dupr}</span>` : ''}
+        </div>
+        <span class="badge-batch">${clip.batch}</span>
+      </div>
+      <div class="clip-body">
+        ${clip.story_arc ? `<span class="clip-story-arc ${arcClass}">${clip.story_arc.replace(/_/g, ' ')}</span>` : ''}
+        ${hasSummary ? `<p class="clip-summary">${clip.summary}</p>` : '<p class="clip-summary" style="color:var(--muted);font-style:italic;">No summary generated</p>'}
+        ${brandPills ? `<div class="brand-pills">${brandPills}</div>` : ''}
+        ${badgePills ? `<div class="badge-pills">${badgePills}</div>` : ''}
+        ${clip.signature_move ? `<div style="font-size:11px;color:var(--gold);margin-bottom:8px;">&#9733; Signature: ${clip.signature_move}</div>` : ''}
+        <div style="margin-bottom:8px;">${skillBars}</div>
+        ${hasRon ? `
+        <div class="expandable" onclick="this.classList.toggle('open')">
+          <div class="expandable-toggle"><span class="arrow">&#9654;</span> Ron Burgundy Commentary</div>
+          <div class="expandable-content ron">"${clip.ron_burgundy}"</div>
+        </div>` : ''}
+        ${hasCoach ? `
+        <div class="expandable" onclick="this.classList.toggle('open')">
+          <div class="expandable-toggle"><span class="arrow">&#9654;</span> Coaching Breakdown</div>
+          <div class="expandable-content coach">${clip.coaching}</div>
+        </div>` : ''}
+        ${hasFrames ? `<div style="margin-bottom:8px;"><a href="frames/${clip.clip_id}/" style="font-size:11px;color:var(--cyan);text-decoration:none;" target="_blank">&#128247; Frame Evidence &rarr;</a></div>` : ''}
+        <div class="clip-meta">
+          <span>Analyzed by ${clip.prompt_version} &middot; ${formatDate(clip.analyzed_at)}</span>
+          <span style="font-family:monospace;font-size:9px;opacity:0.5">${clip.clip_id}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============ VIDEO TOGGLE ============
+function toggleVideo(mediaEl, videoUrl) {
+  if (mediaEl.classList.contains('playing')) {
+    const vid = mediaEl.querySelector('video');
+    if (vid) { vid.pause(); vid.remove(); }
+    mediaEl.classList.remove('playing');
+    return;
+  }
+  // Pause all other videos
+  document.querySelectorAll('.clip-media.playing').forEach(el => {
+    const v = el.querySelector('video');
+    if (v) { v.pause(); v.remove(); }
+    el.classList.remove('playing');
+  });
+  const video = document.createElement('video');
+  video.src = videoUrl;
+  video.controls = true;
+  video.autoplay = true;
+  video.muted = true;
+  video.playsInline = true;
+  video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:14px 14px 0 0;';
+  mediaEl.appendChild(video);
+  mediaEl.classList.add('playing');
+  video.play().catch(() => {});
+}
+
+// ============ FILTER + SORT ============
+let currentClips = [...CLIPS];
+
+function applyFilters() {
+  const search = (document.getElementById('searchBox')?.value || '').toLowerCase();
+  const brand = document.getElementById('filterBrand')?.value || '';
+  const dupr = document.getElementById('filterDupr')?.value || '';
+  const batch = document.getElementById('filterBatch')?.value || '';
+  const minQ = parseInt(document.getElementById('filterQuality')?.value || '0');
+  const sortBy = document.getElementById('sortBy')?.value || 'quality';
+
+  let filtered = CLIPS.filter(c => {
+    if (brand && !c.brands.some(b => b.name.toUpperCase() === brand)) return false;
+    if (dupr && c.dupr !== dupr) return false;
+    if (batch && c.batch !== batch) return false;
+    if (c.quality < minQ) return false;
+    if (search) {
+      const haystack = [c.summary, c.clip_id, c.batch, c.story_arc, ...c.badges, ...c.brands.map(b => b.name)].join(' ').toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    switch(sortBy) {
+      case 'quality': return b.quality - a.quality;
+      case 'viral': return b.viral - a.viral;
+      case 'date': return new Date(b.analyzed_at) - new Date(a.analyzed_at);
+      case 'brands': return b.brands.length - a.brands.length;
+      default: return 0;
+    }
+  });
+
+  currentClips = filtered;
+  document.getElementById('clipGrid').innerHTML = filtered.map(renderClipCard).join('');
+  document.getElementById('clipCount').textContent = `${filtered.length} of ${TOTAL_CLIPS} clips`;
+  document.getElementById('filterResults').textContent = `Showing ${filtered.length} clips`;
+}
+
+// ============ BRAND INTELLIGENCE ============
+function renderBrandIntel() {
+  const sorted = ALL_BRANDS.slice(0, 20);
+  const labels = sorted.map(k => BRAND_MAP[k].name);
+  const data = sorted.map(k => BRAND_MAP[k].clips.size);
+
+  const ctx = document.getElementById('brandChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Clip Appearances',
+        data: data,
+        backgroundColor: 'oklch(45% 0.2 265 /  0.4)',
+        borderColor: 'oklch(45% 0.2 265 /  0.8)',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'oklch(98% 0.004 250)',
+          titleColor: '#E2E8F0',
+          bodyColor: 'oklch(45% 0.015 250)',
+          borderColor: 'oklch(98% 0.004 250)',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(30,42,58,0.5)' },
+          ticks: { color: 'oklch(55% 0.015 250)', font: { family: 'Bricolage Grotesque', size: 11 } }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#E2E8F0', font: { family: 'Bricolage Grotesque', size: 11, weight: '600' } }
+        }
+      }
+    }
+  });
+
+  // Brand table
+  let tableHTML = `<thead><tr><th>Brand</th><th>Category</th><th>Clips</th><th>DUPR Tiers</th></tr></thead><tbody>`;
+  sorted.forEach(k => {
+    const b = BRAND_MAP[k];
+    const duprStr = Object.entries(b.duprTiers).map(([t,c]) => `${t} (${c})`).join(', ') || 'N/A';
+    tableHTML += `<tr><td style="font-weight:600">${b.name}</td><td>${b.category}</td><td>${b.clips.size}</td><td style="font-size:12px;color:var(--muted)">${duprStr}</td></tr>`;
+  });
+  tableHTML += '</tbody>';
+  document.getElementById('brandTable').innerHTML = tableHTML;
+
+  // Whitespace
+  const detected = new Set(ALL_BRANDS.map(k => k.toUpperCase()));
+  const majorBrands = ['SELKIRK','ENGAGE','FRANKLIN','PADDLETEK','SIX ZERO','GEARBOX','WILSON','GAMMA','PRINCE','VULCAN','PROKENNEX'];
+  const missing = majorBrands.filter(b => !detected.has(b));
+  const partial = majorBrands.filter(b => detected.has(b) && BRAND_MAP[b] && BRAND_MAP[b].clips.size <= 1);
+
+  let wsHTML = `<h3>&#128161; Sponsorship Whitespace</h3><p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Major pickleball brands NOT detected in the corpus (or appearing in 1 clip or fewer) represent untapped sponsorship inventory.</p><div class="whitespace-brands">`;
+  missing.forEach(b => { wsHTML += `<span class="whitespace-brand">${b} &mdash; 0 clips</span>`; });
+  partial.forEach(b => { wsHTML += `<span class="whitespace-brand" style="opacity:0.7">${BRAND_MAP[b].name} &mdash; ${BRAND_MAP[b].clips.size} clip</span>`; });
+  wsHTML += '</div>';
+  document.getElementById('whitespace').innerHTML = wsHTML;
+}
+
+// ============ MODEL QUALITY ============
+function renderModelQuality() {
+  const fields = ['summary', 'dupr', 'ron_burgundy', 'coaching', 'signature_move', 'badges'];
+  let tableHTML = `<thead><tr><th>Batch</th><th>Clips</th>`;
+  fields.forEach(f => { tableHTML += `<th>${f.replace(/_/g, ' ')}</th>`; });
+  tableHTML += `</tr></thead><tbody>`;
+
+  const batchOrder = Object.keys(BATCH_MAP);
+  const prevRates = {};
+
+  batchOrder.forEach(bName => {
+    const clips = BATCH_MAP[bName].clips;
+    const count = clips.length;
+    tableHTML += `<tr><td style="font-weight:700">${bName}</td><td>${count}</td>`;
+    fields.forEach(f => {
+      let filled = 0;
+      clips.forEach(c => {
+        const val = c[f];
+        if (f === 'badges') { if (val && val.length > 0) filled++; }
+        else if (val && val !== '' && val !== null) filled++;
+      });
+      const rate = Math.round((filled / count) * 100);
+      const cls = rate >= 80 ? 'fill-good' : rate >= 50 ? 'fill-warn' : 'fill-bad';
+      let alert = '';
+      if (prevRates[f] !== undefined && prevRates[f] - rate > 5) {
+        alert = ' &#9888;';
+      }
+      prevRates[f] = rate;
+      tableHTML += `<td class="${cls}">${rate}%${alert}</td>`;
+    });
+    tableHTML += '</tr>';
+  });
+  tableHTML += '</tbody>';
+  document.getElementById('modelTable').innerHTML = tableHTML;
+}
+
+// ============ FEEDBACK PANEL ============
+function renderFeedbackForm() {
+  const clipOpts = CLIPS.map(c => `<option value="${c.clip_id}">${c.clip_id} - ${(c.summary || 'No summary').substring(0, 50)}</option>`).join('');
+  const fieldOpts = ['summary','coaching','ron_burgundy','brands','badges','dupr','story_arc','signature_move','quality','viral'].map(f => `<option value="${f}">${f.replace(/_/g, ' ')}</option>`).join('');
+
+  document.getElementById('feedbackForm').innerHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label>Select Clip</label>
+        <select id="fbClip">${clipOpts}</select>
+      </div>
+      <div class="form-group">
+        <label>Select Field</label>
+        <select id="fbField">${fieldOpts}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Rating</label>
+        <div class="star-rating" id="starRating">
+          ${[1,2,3,4,5].map(i => `<span class="star" data-val="${i}" onclick="setRating(${i})">&#9733;</span>`).join('')}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Note</label>
+        <textarea id="fbNote" rows="2" placeholder="Optional coaching note..."></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="saveFeedback()">Save Feedback</button>
+      <span id="fbStatus" style="font-size:12px;color:var(--muted)"></span>
+    </div>
+    <div id="fbCommand" style="display:none;margin-top:14px;"></div>
+  `;
+  loadFeedbackList();
+}
+
+let currentRating = 0;
+function setRating(val) {
+  currentRating = val;
+  document.querySelectorAll('#starRating .star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+  });
+}
+
+function saveFeedback() {
+  const clipId = document.getElementById('fbClip').value;
+  const field = document.getElementById('fbField').value;
+  const note = document.getElementById('fbNote').value;
+  if (currentRating === 0) {
+    document.getElementById('fbStatus').textContent = 'Please select a rating.';
+    document.getElementById('fbStatus').style.color = 'var(--red)';
+    return;
+  }
+  const fb = { clipId, field, rating: currentRating, note, timestamp: new Date().toISOString() };
+  const stored = JSON.parse(localStorage.getItem('pickle-daas-feedback') || '[]');
+  stored.push(fb);
+  localStorage.setItem('pickle-daas-feedback', JSON.stringify(stored));
+
+  document.getElementById('fbStatus').textContent = 'Feedback saved!';
+  document.getElementById('fbStatus').style.color = 'var(--green)';
+
+  const cmd = `python3 tools/feedback-schema.py add --clip ${clipId} --field ${field} --rating ${currentRating} --note "${note.replace(/"/g, '\\"')}"`;
+  document.getElementById('fbCommand').style.display = 'block';
+  document.getElementById('fbCommand').innerHTML = `
+    <div class="copy-cmd" onclick="copyToClipboard('${cmd.replace(/'/g, "\\'")}')">
+      <span class="copy-icon">&#128203;</span>
+      <code style="font-size:11px;word-break:break-all;">${cmd}</code>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;">Click to copy</span>
+    </div>
+  `;
+
+  // Reset
+  currentRating = 0;
+  document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('active'));
+  document.getElementById('fbNote').value = '';
+
+  loadFeedbackList();
+  updateRecommendations();
+}
+
+function loadFeedbackList() {
+  const stored = JSON.parse(localStorage.getItem('pickle-daas-feedback') || '[]');
+  if (stored.length === 0) {
+    document.getElementById('feedbackList').innerHTML = '<p style="font-size:12px;color:var(--muted);padding:12px;">No feedback saved yet. Use the form above to rate clip fields.</p>';
+    return;
+  }
+  const items = stored.slice(-10).reverse().map(fb => `
+    <div class="feedback-item">
+      <div class="feedback-item-header">
+        <span class="clip-id">${fb.clipId}</span>
+        <span class="field-name">${fb.field.replace(/_/g, ' ')}</span>
+      </div>
+      <div class="feedback-item-stars">${'&#9733;'.repeat(fb.rating)}${'&#9734;'.repeat(5 - fb.rating)}</div>
+      ${fb.note ? `<div class="feedback-item-note">${fb.note}</div>` : ''}
+      <div style="font-size:10px;color:var(--muted);margin-top:4px;">${formatDate(fb.timestamp)}</div>
+    </div>
+  `).join('');
+  document.getElementById('feedbackList').innerHTML = `<h4 style="font-size:13px;font-weight:700;color:var(--text-bright);margin-bottom:10px;">Recent Feedback (${stored.length} total)</h4>` + items;
+}
+
+function updateRecommendations() {
+  const stored = JSON.parse(localStorage.getItem('pickle-daas-feedback') || '[]');
+  if (stored.length < 2) {
+    document.getElementById('recsText').textContent = 'Submit more feedback to see aggregated improvement recommendations.';
+    return;
+  }
+  const fieldScores = {};
+  stored.forEach(fb => {
+    if (!fieldScores[fb.field]) fieldScores[fb.field] = [];
+    fieldScores[fb.field].push(fb.rating);
+  });
+  const lowFields = Object.entries(fieldScores)
+    .map(([f, scores]) => ({ field: f, avg: scores.reduce((s,v) => s+v, 0) / scores.length, count: scores.length }))
+    .filter(x => x.avg < 3.5)
+    .sort((a,b) => a.avg - b.avg);
+
+  if (lowFields.length === 0) {
+    document.getElementById('recsText').textContent = 'All rated fields are scoring 3.5+ out of 5. Looking good! Keep submitting feedback to refine the model.';
+  } else {
+    const items = lowFields.map(x => `"${x.field.replace(/_/g, ' ')}" (avg: ${x.avg.toFixed(1)}/5, ${x.count} ratings)`).join(', ');
+    document.getElementById('recsText').textContent = `Fields coaches are rating low: ${items}. Consider adjusting prompt instructions for these fields in the next Gemini batch run.`;
+  }
+}
+
+// ============ BATCH + SPEND ============
+function renderBatchStatus() {
+  let html = '';
+  Object.entries(BATCH_MAP).forEach(([name, data]) => {
+    const dates = data.dates.map(d => new Date(d)).sort((a,b) => a-b);
+    const dateRange = dates.length > 0 ? `${formatDate(dates[0].toISOString())} - ${formatDate(dates[dates.length-1].toISOString())}` : 'N/A';
+    html += `
+      <div class="batch-card">
+        <h4>${name}</h4>
+        <div class="batch-stat"><strong>${data.clips.length}</strong> clips analyzed</div>
+        <div class="batch-stat">Date range: ${dateRange}</div>
+        <div class="batch-stat">Avg quality: <strong>${(data.clips.reduce((s,c) => s + c.quality, 0) / data.clips.length).toFixed(1)}</strong>/10</div>
+      </div>
+    `;
+  });
+  document.getElementById('batchGrid').innerHTML = html;
+
+  // Spend bar
+  const pct = (0.74 / 20 * 100).toFixed(1);
+  document.getElementById('spendFill').style.width = `${Math.max(pct, 5)}%`;
+  document.getElementById('spendFill').textContent = `$0.74 (${pct}%)`;
+}
+
+// ============ SECTION NAV HIGHLIGHTING ============
+function initSectionNav() {
+  const links = document.querySelectorAll('.section-nav a');
+  links.forEach(link => {
+    link.addEventListener('click', function(e) {
+      links.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  // Scroll spy
+  const sections = ['clips','brands','model','feedback','batch','dashboards'];
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < 200) current = id;
+    });
+    if (current) {
+      links.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+      });
+    }
+  });
+}
+
+// ============ LAST UPDATED ============
+function setLastUpdated() {
+  const dates = CLIPS.map(c => new Date(c.analyzed_at)).sort((a,b) => b-a);
+  document.getElementById('lastUpdated').textContent = `Last analyzed: ${formatDate(dates[0].toISOString())}`;
+}
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+  setLastUpdated();
+  renderKPIs();
+  renderNavCards();
+  renderFilterBar();
+  applyFilters();
+  renderBrandIntel();
+  renderModelQuality();
+  renderFeedbackForm();
+  renderBatchStatus();
+  initSectionNav();
+  updateRecommendations();
+});
+</script>
+</body>
+</html>

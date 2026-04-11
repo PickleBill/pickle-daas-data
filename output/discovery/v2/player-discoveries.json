@@ -1,0 +1,171 @@
+[
+  {
+    "id": "P1",
+    "agent": "player",
+    "headline": "The player corpus is 79.6% intermediate \u2014 a coaching goldmine hiding in plain sight",
+    "insight": "Of 750 players detected, 79.6% are intermediate. However: skill estimation has only 45% reproducibility across re-analysis runs. Treat as directional, not precise.",
+    "evidence": [
+      "Skill distribution: {'intermediate': 597, 'advanced intermediate': 97, 'advanced': 24, 'unknown': 14, 'advanced_intermediate': 11}"
+    ],
+    "clip_ids_cited": [
+      "c9aa41f3-74d2-4289-b9e7-7796f38c609b",
+      "c9aa41f3-74d2-4289-b9e7-7796f38c609b",
+      "dc7e80e0-e646-40d1-b664-9b7e532d65df",
+      "dc7e80e0-e646-40d1-b664-9b7e532d65df",
+      "dc7e80e0-e646-40d1-b664-9b7e532d65df"
+    ],
+    "data_points": 750,
+    "confidence": {
+      "raw": 88,
+      "capped": 75,
+      "caps_applied": [
+        "non_random_sample",
+        "single_venue_bias"
+      ],
+      "rationale": "Raw 88 \u2192 75 (caps: non_random_sample, single_venue_bias)"
+    },
+    "wow_factor": 72,
+    "buyer_segments": [
+      "coaching",
+      "player_apps",
+      "tournament_operators"
+    ],
+    "pricing": {
+      "category": "coaching_intelligence",
+      "reasoning": "Hudl charges $200-2000/month for coaching analytics. At 1/10th for niche sport early stage: $80-$200/month for individual coaches, $500-$1000/month for coaching platforms.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Skill estimates have 45% reproducibility (per verification). The 'intermediate' dominance may reflect prompt bias \u2014 Gemini may default to 'intermediate' when uncertain.",
+    "verification_badge": "needs_more_data"
+  },
+  {
+    "id": "P3",
+    "agent": "player",
+    "headline": "Kitchen mastery is the #1 predictor of skill level \u2014 data aligns with coaching consensus",
+    "insight": "Kitchen mastery by skill: {'advanced intermediate': 7.33, 'intermediate': 6.69, 'advanced_intermediate': 6.5, 'advanced': 7.5}. 'advanced' players avg 7.5/10. Note: these ratings are AI-estimated from video, not ground-truth measurements.",
+    "evidence": [
+      "Kitchen by skill: {'advanced intermediate': 7.33, 'intermediate': 6.69, 'advanced_intermediate': 6.5, 'advanced': 7.5}"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 186,
+    "confidence": {
+      "raw": 85,
+      "capped": 75,
+      "caps_applied": [
+        "non_random_sample",
+        "single_venue_bias"
+      ],
+      "rationale": "Raw 85 \u2192 75 (caps: non_random_sample, single_venue_bias)"
+    },
+    "wow_factor": 68,
+    "buyer_segments": [
+      "coaching",
+      "player_apps"
+    ],
+    "pricing": {
+      "category": "coaching_intelligence",
+      "reasoning": "Comparable to Hudl's coaching tier. $100-500/month.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Kitchen mastery being correlated with skill is already known by every coach. The novel claim is that AI can detect it from video \u2014 which has only 45% reproducibility.",
+    "verification_badge": "needs_more_data"
+  },
+  {
+    "id": "P4",
+    "agent": "player",
+    "headline": "Average rally is 16.6 shots \u2014 65.8% go epic (12+)",
+    "insight": "From 187 clips: avg 16.6 shots/rally. 65.8% are 12+ shots. These are highlight clips (non-random), so actual play likely has shorter average rallies.",
+    "evidence": [
+      "Rally stats: min=1, avg=16.6, max=45, n=187"
+    ],
+    "clip_ids_cited": [],
+    "data_points": 187,
+    "confidence": {
+      "raw": 70,
+      "capped": 70,
+      "caps_applied": [],
+      "rationale": "Raw 70 \u2192 70 (caps: none)"
+    },
+    "wow_factor": 64,
+    "buyer_segments": [
+      "broadcast",
+      "fan_engagement"
+    ],
+    "pricing": {
+      "category": "broadcast_intelligence",
+      "reasoning": "At 1/100th Sportradar ($500K-2M/yr), broadcast intelligence = $5K-20K/year.",
+      "comparables_used": [
+        {
+          "name": "Sportradar",
+          "price": "$500K-$2M/year",
+          "scope": "League-level multi-sport data feeds"
+        },
+        {
+          "name": "StatsBomb",
+          "price": "$50K-$200K/year",
+          "scope": "Team-level football analytics subscriptions"
+        },
+        {
+          "name": "ShotTracker",
+          "price": "$15K/court/year",
+          "scope": "Per-venue basketball shot analytics"
+        },
+        {
+          "name": "Hudl",
+          "price": "$200-$2,000/month",
+          "scope": "Coaching video analytics platform"
+        }
+      ],
+      "note": "Pickleball is ~1/100th the market of major sports. Pricing scaled accordingly."
+    },
+    "sample_caveat": "Based on 191 highlight clips from Courtana's CDN. Sample is non-random (auto-selected highlights, not sequential recording). Venue diversity unknown (97% unidentifiable, likely single-venue dominated). Verification test showed: brand detection 20% reproducible, shot counts 40%, skill estimates 45%, DUPR predictions 0%.",
+    "counter_argument": "Highlight clips are selected for interesting play \u2014 rally lengths in this sample likely skew longer than population average. Need sequential (non-highlight) clips to validate.",
+    "verification_badge": "sampling_bias"
+  }
+]

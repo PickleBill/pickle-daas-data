@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Broadcast Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0f1a;
+  --card: #131d2e;
+  --card2: #1a2535;
+  --border: rgba(255,255,255,.07);
+  --green: #00E676;
+  --green-dim: rgba(0,230,118,.12);
+  --text: #e0eaf8;
+  --muted: #5a7090;
+  --gold: #FFD600;
+}
+
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+/* ── LAYOUT ── */
+.app { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
+.sidebar { background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.main { display: flex; flex-direction: column; overflow-y: auto; }
+
+/* ── SIDEBAR TOP ── */
+.sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); }
+.logo { font-size: 16px; font-weight: 800; color: var(--green); display: flex; align-items: center; gap: 8px; }
+.session-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+
+/* ── CLIP LIST ── */
+.clip-list { flex: 1; overflow-y: auto; padding: 8px; }
+.clip-item {
+  padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  margin-bottom: 4px; border: 1px solid transparent;
+  transition: all .15s;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.clip-item:hover { background: var(--card2); }
+.clip-item.active { background: var(--green-dim); border-color: rgba(0,230,118,.3); }
+.clip-num { font-size: 10px; font-weight: 700; color: var(--muted); width: 18px; flex-shrink: 0; padding-top: 2px; }
+.clip-info { flex: 1; min-width: 0; }
+.clip-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+.clip-meta-row { display: flex; gap: 6px; align-items: center; }
+.q-chip { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 5px; background: var(--green); color: #000; }
+.q-chip.med { background: var(--gold); }
+.q-chip.low { background: #445566; color: #aabbcc; }
+.arc-chip { font-size: 10px; color: var(--muted); }
+.sport-icon { font-size: 14px; flex-shrink: 0; }
+
+/* ── MAIN AREA ── */
+.main-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; background: var(--card); }
+.main-title { font-size: 16px; font-weight: 700; flex: 1; }
+.export-btn { font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(0,230,118,.4); background: var(--green-dim); color: var(--green); cursor: pointer; letter-spacing: 0.5px; }
+
+/* ── PLAYER SECTION ── */
+.player-section { padding: 20px; display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+
+.video-wrap { position: relative; background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; }
+.video-wrap video { width: 100%; height: 100%; object-fit: contain; }
+
+/* Broadcast overlay */
+.broadcast-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,.85));
+  padding: 20px 16px 14px;
+  pointer-events: none;
+}
+.overlay-caption { font-size: 15px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,.8); margin-bottom: 4px; }
+.overlay-meta { display: flex; gap: 10px; font-size: 11px; color: rgba(255,255,255,.7); }
+.overlay-badge { background: var(--green); color: #000; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
+
+/* ── COMMENTARY PANEL ── */
+.commentary-panel { display: flex; flex-direction: column; gap: 12px; }
+
+.voice-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.vtab {
+  font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px;
+  cursor: pointer; border: 1px solid var(--border); color: var(--muted);
+  background: transparent; transition: all .15s;
+}
+.vtab:hover { border-color: rgba(0,230,118,.3); color: var(--text); }
+.vtab.active { background: var(--green-dim); border-color: rgba(0,230,118,.4); color: var(--green); }
+
+.commentary-box {
+  background: var(--card2); border-radius: 10px; padding: 14px 16px;
+  border: 1px solid var(--border); flex: 1;
+  font-size: 13px; line-height: 1.65; color: var(--text);
+  font-style: italic; min-height: 90px;
+}
+
+/* TTS button */
+.tts-row { display: flex; gap: 8px; align-items: center; }
+.tts-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 700;
+  border: 1px solid rgba(0,230,118,.4); background: var(--green-dim); color: var(--green);
+  transition: all .2s;
+}
+.tts-btn:hover { background: rgba(0,230,118,.2); }
+.tts-btn.playing { background: rgba(0,230,118,.25); animation: pulse 1.5s infinite; }
+.tts-btn svg { width: 18px; height: 18px; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.eleven-btn {
+  padding: 10px 14px; border-radius: 10px; font-size: 11px; font-weight: 700;
+  border: 1px solid rgba(255,150,50,.3); background: rgba(255,150,50,.07); color: #ff9944;
+  cursor: pointer; white-space: nowrap;
+}
+.eleven-btn:hover { background: rgba(255,150,50,.15); }
+
+/* Score strip */
+.score-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.score-cell { background: var(--card2); border-radius: 8px; padding: 10px; text-align: center; border: 1px solid var(--border); }
+.score-num { font-size: 22px; font-weight: 800; line-height: 1; }
+.score-num.green { color: var(--green); }
+.score-num.gold { color: var(--gold); }
+.score-num.red { color: #ff6060; }
+.score-label { font-size: 9px; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 3px; }
+
+/* Brands strip */
+.brands-strip { display: flex; flex-wrap: wrap; gap: 6px; }
+.brand-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,215,0,.3); background: rgba(255,215,0,.08); color: var(--gold); }
+.brand-tag.none { color: var(--muted); border-color: var(--border); background: transparent; font-weight: 400; font-style: italic; }
+
+/* Badges strip */
+.badges-strip { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(0,230,118,.3); background: var(--green-dim); color: var(--green); }
+
+/* ── HASHTAG STRIP ── */
+.hashtag-strip { padding: 0 20px 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+.htag { font-size: 11px; color: #5588ff; background: rgba(80,130,255,.08); border: 1px solid rgba(80,130,255,.2); padding: 2px 9px; border-radius: 20px; cursor: pointer; transition: all .15s; }
+.htag:hover { background: rgba(80,130,255,.18); }
+
+/* ── SECTION DIVIDERS ── */
+.section { padding: 0 20px 20px; }
+.section-title { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 12px; }
+
+/* ── MATCH SUMMARY ── */
+.summary-section { padding: 20px; background: var(--card); border-top: 1px solid var(--border); margin-top: auto; }
+.summary-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 16px; }
+.summary-card { background: var(--card2); border-radius: 10px; padding: 14px; border: 1px solid var(--border); }
+.summary-big { font-size: 26px; font-weight: 800; color: var(--green); margin-bottom: 3px; }
+.summary-sub { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* All clips mini table */
+.clips-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.clips-table th { text-align: left; font-size: 10px; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+.clips-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.clips-table tr:hover td { background: rgba(255,255,255,.02); }
+.clips-table .jump { color: var(--green); cursor: pointer; font-weight: 600; }
+.clips-table .jump:hover { text-decoration: underline; }
+
+/* ElevenLabs callout */
+.eleven-callout { background: rgba(255,150,50,.06); border: 1px solid rgba(255,150,50,.2); border-radius: 10px; padding: 14px 16px; margin: 0 20px 20px; display: flex; gap: 14px; align-items: flex-start; }
+.eleven-callout-icon { font-size: 22px; flex-shrink: 0; }
+.eleven-callout-text { font-size: 12px; line-height: 1.6; color: #ccbbaa; }
+.eleven-callout-text strong { color: #ff9944; }
+.eleven-callout-text code { background: rgba(255,150,50,.12); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+/* Print styles */
+@media print {
+  .sidebar, .tts-row, .voice-tabs, .export-btn, .eleven-callout { display: none !important; }
+  .app { grid-template-columns: 1fr; }
+  .main { overflow: visible; }
+  .player-section { grid-template-columns: 1fr; }
+  .video-wrap { display: none; }
+}
+
+/* Waveform animation */
+.wave { display: flex; align-items: center; gap: 2px; height: 16px; }
+.wave span { display: block; width: 3px; border-radius: 2px; background: var(--green); animation: wave 0.8s ease-in-out infinite; }
+.wave span:nth-child(2) { animation-delay: .1s; }
+.wave span:nth-child(3) { animation-delay: .2s; }
+.wave span:nth-child(4) { animation-delay: .3s; }
+.wave span:nth-child(5) { animation-delay: .4s; }
+@keyframes wave { 0%,100% { height: 4px; } 50% { height: 14px; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">🥒 Pickle DaaS</div>
+    <div class="session-label">Broadcast Dashboard · PickleBill · The Underground</div>
+  </div>
+  <div class="clip-list" id="clipList"></div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<main class="main" id="mainContent">
+
+  <div class="main-header">
+    <div class="main-title" id="mainTitle">Select a clip →</div>
+    <button class="export-btn" onclick="window.print()">⬇ Export PDF</button>
+  </div>
+
+  <!-- Video + Commentary -->
+  <div class="player-section">
+
+    <div>
+      <div class="video-wrap" id="videoWrap">
+        <video id="mainVideo" controls preload="metadata" style="width:100%;height:100%;object-fit:contain;"></video>
+        <div class="broadcast-overlay">
+          <div class="overlay-caption" id="overlayCap">—</div>
+          <div class="overlay-meta">
+            <span class="overlay-badge" id="overlayScore">—</span>
+            <span id="overlayArc">—</span>
+          </div>
+        </div>
+      </div>
+      <!-- Score strip below video -->
+      <div style="margin-top:12px;">
+        <div class="score-strip" id="scoreStrip">
+          <div class="score-cell"><div class="score-num green" id="sQ">—</div><div class="score-label">Quality</div></div>
+          <div class="score-cell"><div class="score-num gold" id="sV">—</div><div class="score-label">Viral</div></div>
+          <div class="score-cell"><div class="score-num" id="sW" style="color:#88aaff">—</div><div class="score-label">Watchability</div></div>
+          <div class="score-cell"><div class="score-num" id="sC" style="color:#cc88ff">—</div><div class="score-label">Cinematic</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commentary panel -->
+    <div class="commentary-panel">
+      <div class="section-title">🎙 Commentary</div>
+      <div class="voice-tabs" id="voiceTabs">
+        <button class="vtab active" data-voice="espn" onclick="switchVoice('espn',this)">📺 ESPN</button>
+        <button class="vtab" data-voice="hype" onclick="switchVoice('hype',this)">🔥 Hype</button>
+        <button class="vtab" data-voice="ron" onclick="switchVoice('ron',this)">🥃 Ron Burgundy</button>
+        <button class="vtab" data-voice="chuck" onclick="switchVoice('chuck',this)">💪 Chuck Norris</button>
+        <button class="vtab" data-voice="coach" onclick="switchVoice('coach',this)">📋 Coach</button>
+        <button class="vtab" data-voice="tts" onclick="switchVoice('tts',this)">🔊 Broadcast TTS</button>
+      </div>
+
+      <div class="commentary-box" id="commentaryBox">← Select a clip from the sidebar to see commentary</div>
+
+      <div class="tts-row">
+        <button class="tts-btn" id="ttsBtn" onclick="speakCurrent()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span id="ttsBtnLabel">▶ Speak it</span>
+          <div class="wave" id="waveform" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </button>
+        <button class="eleven-btn" onclick="showElevenInfo()">🎭 ElevenLabs</button>
+      </div>
+
+      <!-- Brands -->
+      <div>
+        <div class="section-title" style="margin-bottom:8px;">🏷 Brands Detected</div>
+        <div class="brands-strip" id="brandsStrip"><span class="brand-tag none">none detected</span></div>
+      </div>
+
+      <!-- Badges -->
+      <div>
+        <div class="section-title" style="margin-bottom:8px;">🏅 Predicted Badges</div>
+        <div class="badges-strip" id="badgesStrip"><span class="badge-tag" style="color:var(--muted);background:transparent;border-color:var(--border)">none</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hashtags -->
+  <div class="hashtag-strip" id="hashtagStrip"></div>
+
+  <!-- ElevenLabs callout -->
+  <div class="eleven-callout" id="elevenCallout" style="display:none">
+    <div class="eleven-callout-icon">🎙️</div>
+    <div class="eleven-callout-text">
+      <strong>Add real ElevenLabs voices</strong> — Ron Burgundy, ESPN anchor, Chuck Norris energy.<br>
+      1. Get your API key at <strong>elevenlabs.io</strong> → Profile → API Keys<br>
+      2. Add it to your <code>.env</code> file: <code>ELEVENLABS_API_KEY=your_key</code><br>
+      3. Run: <code>python elevenlabs-voice-pipeline.py --analysis output/broadcast/analysis_*.json --voice ron_burgundy</code><br>
+      4. The script generates an MP3 per clip → drop into this player or merge with the video via FFmpeg.<br>
+      <strong style="color:#ffbb55;">ElevenLabs free tier</strong> gives 10,000 chars/month — enough for ~20 clips.
+    </div>
+  </div>
+
+  <!-- Match Summary -->
+  <div class="summary-section">
+    <div class="section-title" style="margin-bottom:14px;">📊 Session Summary — PickleBill · The Underground</div>
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <div class="section-title" style="margin-bottom:10px;">All Clips</div>
+    <table class="clips-table" id="clipsTable">
+      <thead><tr>
+        <th>#</th><th>Clip</th><th>Sport</th><th>Q</th><th>Viral</th><th>Arc</th><th>Brands</th><th>Badges</th><th>Caption</th>
+      </tr></thead>
+      <tbody id="clipsTableBody"></tbody>
+    </table>
+
+    <div style="margin-top:16px;font-size:11px;color:var(--muted);text-align:center;">
+      Powered by Pickle DaaS · gemini-2.5-flash · courtana.com
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  DATA — straight from Gemini analysis
+// ════════════════════════════════════════
+const CLIPS = [
+  {
+    id: 1,
+    name: "Shot of the Day — Airborne Smash",
+    sport: "🥒 Pickleball",
+    url: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+    date: "Mar 27",
+    scores: { quality: 8, viral: 7, watch: 8, cinematic: 9 },
+    arc: "athletic_highlight",
+    brands: ["Courtana", "JOOLA"],
+    badges: ["Airborne", "Smash Master", "Shot of the Day"],
+    commentary: {
+      espn: "What an incredible display of athleticism! This player elevates for a powerful overhead smash, leaving the opponents no chance. A truly spectacular shot that defines the point.",
+      hype: "OH MY GOODNESS! Did you SEE that?! He just absolutely SKIED for that overhead, bringing the thunder and slamming it home! That's not just a shot, that's a STATEMENT!",
+      ron: "By the beard of Zeus, that was a shot of pure, unadulterated power! The ball, much like a fine aged scotch, was delivered with precision and a robust finish. Simply delightful.",
+      chuck: "Chuck Norris doesn't play pickleball; pickleball plays Chuck Norris. But if he did, every shot would look like that. The ball knew its fate.",
+      coach: "Excellent court positioning to get under that lob. The timing on the jump and paddle face angle for the overhead was perfect, driving the ball down with authority. This is how you finish a point decisively.",
+      tts: "What an incredible display of athleticism! This player elevates for a powerful overhead smash, leaving the opponents no chance. A truly spectacular shot that defines the point."
+    },
+    hashtags: ["#pickleball", "#overheadsmash", "#athleticplay", "#shotofday", "#courtana", "#pickleballhighlights"],
+    caption: "Airborne for the WIN! 🚀 #Pickleball"
+  },
+  {
+    id: 2,
+    name: "Kitchen Battle Royale",
+    sport: "🥒 Pickleball",
+    url: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4",
+    date: "Mar 24",
+    scores: { quality: 8, viral: 7, watch: 8, cinematic: 7 },
+    arc: "grind_rally",
+    brands: ["CRBN", "JOOLA", "Courtana"],
+    badges: ["Kitchen King", "Grind Rally"],
+    commentary: {
+      espn: "What a rally at the kitchen line! Both teams showing incredible touch and quick reflexes, trading dinks and volleys. Finally, a powerful overhead smash ends the point with authority.",
+      hype: "OH MY GOODNESS! The kitchen is ON FIRE! Dink, dink, dink, then BAM! Speed-up, block, volley, volley, volley! This is an absolute WAR at the net!",
+      ron: "By the beard of Zeus, that was a rally of epic proportions! The players, with their paddles poised like gladiators, engaged in a ballet of dinks and volleys that would make even Zeus himself weep with joy.",
+      chuck: "Chuck Norris once played a kitchen rally that lasted three days. Everyone else has to settle for this.",
+      coach: "Great example of patient dinking until an opportunity opens up. Notice how the point is won when someone forces the pace — that overhead at the end is textbook. Stay patient, then pounce.",
+      tts: "What a rally at the kitchen line! Both teams showing incredible touch and quick reflexes, trading dinks and volleys. Finally, a powerful overhead smash ends the point with authority."
+    },
+    hashtags: ["#pickleball", "#kitchenbattle", "#rally", "#overheadsmash", "#pickleballaddict"],
+    caption: "Kitchen battle royale! 🔥 What a rally! #pickleball"
+  },
+  {
+    id: 3,
+    name: "Overhead Win — Mar 24",
+    sport: "🥒 Pickleball",
+    url: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0ec3d983-c439-4126-ae11-d659c4c5e379.mp4",
+    date: "Mar 24",
+    scores: { quality: 8, viral: 6, watch: 7, cinematic: 7 },
+    arc: "grind_rally",
+    brands: ["CRBN", "JOOLA"],
+    badges: ["Aggressive Driver"],
+    commentary: {
+      espn: "A well-played point showcasing solid serves and returns. The rally intensified with a speedup attempt, but the far team's powerful overhead finish sealed the deal.",
+      hype: "BOOM! What a finish! The far team just absolutely hammered that overhead, shutting down the rally with authority! That's how you close out a point!",
+      ron: "By the beard of Zeus, that was a pickleball point of considerable vigor! The far team, with their powerful overheads, demonstrated a mastery of the aerial game. Stay classy, The Underground.",
+      chuck: "That overhead was so powerful, it briefly left the county. The ball filed a restraining order.",
+      coach: "Watch the serve placement — that deep return sets up everything. Third shot drive is a bit high, but the team recovers well and finishes with a decisive overhead. Good court positioning throughout.",
+      tts: "A solid serve starts the point. The far team returns deep, forcing the server back. A third shot drive is a bit high, allowing the far team to attack with a powerful overhead smash for the winner."
+    },
+    hashtags: ["#pickleball", "#overheadsmash", "#rally", "#intermediatepickleball", "#courtana"],
+    caption: "Overhead for the win! 💥 #pickleball"
+  },
+  {
+    id: 4,
+    name: "Youth Hockey — Snowy Night",
+    sport: "🏒 Hockey",
+    url: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.mp4",
+    date: "Mar 28",
+    scores: { quality: 7, viral: 6, watch: 7, cinematic: 8 },
+    arc: "teaching_moment",
+    brands: [],
+    badges: ["Future Star"],
+    commentary: {
+      espn: "Under the lights and falling snow, these young athletes are honing their skills on the ice. We're seeing some determined stickhandling and solid effort from players who are clearly passionate about the game.",
+      hype: "Whoa, check out that puck control in the blizzard! This kid's got the moves, weaving through the defense like a pro! And the cinematic factor here — snow falling, lights blazing — pure gold!",
+      ron: "By the beard of Zeus, these young gladiators of the ice are a sight to behold! Their stickhandling, a symphony of skill amidst the winter's embrace. Tomorrow's champions, today.",
+      chuck: "Chuck Norris learned to skate by walking on ice. These kids are taking a slightly longer route.",
+      coach: "Great intensity and hustle despite the weather conditions. Skate hard to the puck, keep your head up. The snow makes this harder, but these players are adapting well. This is elite development footage.",
+      tts: "Under the lights and falling snow, these young athletes are honing their skills on the ice. Determined stickhandling and solid effort from players who are clearly passionate about the game."
+    },
+    hashtags: ["#YouthHockey", "#IceHockey", "#SnowDay", "#BeginnerHockey", "#OutdoorRink", "#FutureChampions"],
+    caption: "Snow day hockey! 🏒🥅 #YouthHockey"
+  },
+  {
+    id: 5,
+    name: "Outdoor Rink — Pure Fun",
+    sport: "🏒 Hockey",
+    url: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96f9f529-d92e-4ab4-a675-0305a8b0b9ea.mp4",
+    date: "Mar 28",
+    scores: { quality: 6, viral: 4, watch: 6, cinematic: 8 },
+    arc: "pure_fun",
+    brands: [],
+    badges: [],
+    commentary: {
+      espn: "On a snowy evening, young athletes take to the ice, honing their skills in a spirited game of hockey. The falling snow adds a picturesque backdrop to the action.",
+      hype: "The future stars are out tonight, battling the elements and each other on the frozen pond! Every stride, every stick-handle brings them one step closer to the big leagues!",
+      ron: "Ah, the crisp night air, the gentle snowfall, and the unmistakable sound of young champions forging their destiny on the ice. Truly, a magnificent display of youthful exuberance.",
+      chuck: "These kids chose to play hockey in a snowstorm. Chuck Norris approves. In fact, he is the snowstorm.",
+      coach: "Beautiful outdoor rink footage. The low light and snow create cinematic conditions. Work on keeping your edges sharp — the ice quality here is challenging but builds great instincts.",
+      tts: "On a snowy evening, young athletes take to the ice, honing their skills in a spirited game of hockey. The falling snow adds a picturesque backdrop to the action on this outdoor rink."
+    },
+    hashtags: ["#icehockey", "#youthsports", "#winterfun", "#snow", "#outdoorrink", "#PickleballLife"],
+    caption: "Snowy night, hockey lights! 🏒❄️ Pure fun on ice!"
+  }
+];
+
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let activeClip = CLIPS[0];
+let activeVoice = 'espn';
+let ttsUtterance = null;
+let isSpeaking = false;
+
+// ════════════════════════════════════════
+//  BUILD UI
+// ════════════════════════════════════════
+function buildSidebar() {
+  const list = document.getElementById('clipList');
+  CLIPS.forEach((clip, i) => {
+    const div = document.createElement('div');
+    div.className = 'clip-item' + (i === 0 ? ' active' : '');
+    div.id = 'clip-item-' + clip.id;
+    const q = clip.scores.quality;
+    const qClass = q >= 8 ? '' : q >= 7 ? ' med' : ' low';
+    div.innerHTML = `
+      <div class="sport-icon">${clip.sport.split(' ')[0]}</div>
+      <div class="clip-info">
+        <div class="clip-name">${clip.name}</div>
+        <div class="clip-meta-row">
+          <span class="q-chip${qClass}">${q}/10</span>
+          <span class="arc-chip">${clip.arc.replace(/_/g,' ')}</span>
+          <span class="arc-chip" style="color:#445566">${clip.date}</span>
+        </div>
+      </div>`;
+    div.onclick = () => selectClip(clip, div);
+    list.appendChild(div);
+  });
+}
+
+function buildSummary() {
+  const avgQ = (CLIPS.reduce((s,c) => s+c.scores.quality, 0)/CLIPS.length).toFixed(1);
+  const avgV = (CLIPS.reduce((s,c) => s+c.scores.viral, 0)/CLIPS.length).toFixed(1);
+  const allBrands = [...new Set(CLIPS.flatMap(c => c.brands))];
+  const pickleClips = CLIPS.filter(c => c.sport.includes('Pickleball'));
+  const topClip = [...CLIPS].sort((a,b) => b.scores.viral - a.scores.viral)[0];
+
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="summary-card"><div class="summary-big">${CLIPS.length}</div><div class="summary-sub">Clips Analyzed</div></div>
+    <div class="summary-card"><div class="summary-big">${avgQ}</div><div class="summary-sub">Avg Quality Score</div></div>
+    <div class="summary-card"><div class="summary-big">${avgV}</div><div class="summary-sub">Avg Viral Score</div></div>
+    <div class="summary-card"><div class="summary-big">${allBrands.length}</div><div class="summary-sub">Brands Detected<br><span style="font-size:10px;color:#667788;">${allBrands.join(', ') || 'none'}</span></div></div>
+    <div class="summary-card"><div class="summary-big" style="font-size:13px;line-height:1.3;">"${topClip.caption}"</div><div class="summary-sub">Top Viral Caption</div></div>
+  `;
+
+  const tbody = document.getElementById('clipsTableBody');
+  CLIPS.forEach((c, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td><span class="jump" onclick="selectClipById(${c.id})">${c.name}</span></td>
+      <td>${c.sport}</td>
+      <td><strong style="color:${c.scores.quality>=8?'var(--green)':'var(--gold)'}">${c.scores.quality}</strong></td>
+      <td>${c.scores.viral}</td>
+      <td>${c.arc.replace(/_/g,' ')}</td>
+      <td>${c.brands.join(', ') || '—'}</td>
+      <td>${c.badges.join(', ') || '—'}</td>
+      <td style="color:var(--muted);font-style:italic;">${c.caption}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function selectClip(clip, el) {
+  stopSpeaking();
+  activeClip = clip;
+  activeVoice = 'espn';
+
+  // Update sidebar active state
+  document.querySelectorAll('.clip-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+
+  // Update title
+  document.getElementById('mainTitle').textContent = clip.sport + '  ' + clip.name + '  ·  ' + clip.date;
+
+  // Update video
+  const vid = document.getElementById('mainVideo');
+  vid.src = clip.url;
+  vid.load();
+
+  // Update overlay
+  document.getElementById('overlayCap').textContent = clip.caption;
+  document.getElementById('overlayScore').textContent = clip.scores.quality + '/10';
+  document.getElementById('overlayArc').textContent = clip.arc.replace(/_/g,' ');
+
+  // Update scores
+  document.getElementById('sQ').textContent = clip.scores.quality;
+  document.getElementById('sQ').className = 'score-num ' + (clip.scores.quality >= 8 ? 'green' : 'gold');
+  document.getElementById('sV').textContent = clip.scores.viral;
+  document.getElementById('sW').textContent = clip.scores.watch;
+  document.getElementById('sC').textContent = clip.scores.cinematic;
+
+  // Update commentary
+  document.querySelectorAll('.vtab').forEach(t => t.classList.toggle('active', t.dataset.voice === 'espn'));
+  document.getElementById('commentaryBox').textContent = clip.commentary.espn;
+
+  // Update brands
+  const bs = document.getElementById('brandsStrip');
+  bs.innerHTML = clip.brands.length
+    ? clip.brands.map(b => `<span class="brand-tag">${b}</span>`).join('')
+    : '<span class="brand-tag none">no brands detected</span>';
+
+  // Update badges
+  const bads = document.getElementById('badgesStrip');
+  bads.innerHTML = clip.badges.length
+    ? clip.badges.map(b => `<span class="badge-tag">🏅 ${b}</span>`).join('')
+    : '<span style="color:var(--muted);font-size:12px;">no badges predicted</span>';
+
+  // Update hashtags
+  document.getElementById('hashtagStrip').innerHTML = clip.hashtags.map(h =>
+    `<span class="htag" onclick="navigator.clipboard.writeText('${h}')" title="Copy">${h}</span>`
+  ).join('');
+}
+
+function selectClipById(id) {
+  const clip = CLIPS.find(c => c.id === id);
+  const el = document.getElementById('clip-item-' + id);
+  if (clip && el) { selectClip(clip, el); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+}
+
+function switchVoice(voice, btn) {
+  activeVoice = voice;
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('commentaryBox').textContent = activeClip.commentary[voice] || '—';
+}
+
+// ════════════════════════════════════════
+//  TTS — Browser SpeechSynthesis
+// ════════════════════════════════════════
+function speakCurrent() {
+  if (isSpeaking) { stopSpeaking(); return; }
+  if (!window.speechSynthesis) { alert('SpeechSynthesis not supported in this browser.'); return; }
+
+  const text = activeClip.commentary[activeVoice] || activeClip.commentary.tts;
+  ttsUtterance = new SpeechSynthesisUtterance(text);
+
+  // Pick a good voice
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('Daniel') || v.name.includes('Aaron') || v.name.includes('Alex') || v.name.includes('Samantha'));
+  if (preferred) ttsUtterance.voice = preferred;
+
+  ttsUtterance.rate = activeVoice === 'hype' ? 1.2 : 0.95;
+  ttsUtterance.pitch = activeVoice === 'chuck' ? 0.75 : activeVoice === 'hype' ? 1.2 : 1.0;
+  ttsUtterance.volume = 1.0;
+
+  ttsUtterance.onstart = () => {
+    isSpeaking = true;
+    document.getElementById('ttsBtn').classList.add('playing');
+    document.getElementById('ttsBtnLabel').style.display = 'none';
+    document.getElementById('waveform').style.display = 'flex';
+  };
+  ttsUtterance.onend = ttsUtterance.onerror = () => stopSpeaking();
+
+  speechSynthesis.speak(ttsUtterance);
+}
+
+function stopSpeaking() {
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  isSpeaking = false;
+  document.getElementById('ttsBtn').classList.remove('playing');
+  document.getElementById('ttsBtnLabel').style.display = 'inline';
+  document.getElementById('waveform').style.display = 'none';
+}
+
+function showElevenInfo() {
+  const el = document.getElementById('elevenCallout');
+  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildSidebar();
+  buildSummary();
+  // Auto-select first clip
+  const firstEl = document.querySelector('.clip-item');
+  if (firstEl) selectClip(CLIPS[0], firstEl);
+  // Load voices async
+  if (window.speechSynthesis) speechSynthesis.getVoices();
+});
+</script>
+</body>
+</html>

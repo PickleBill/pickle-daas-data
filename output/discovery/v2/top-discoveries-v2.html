@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS Discovery Engine V2 — Verified Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0f1219;
+  --surface: #1e2a3a;
+  --surface2: #253344;
+  --accent: #00E676;
+  --accent-dim: #00E67644;
+  --warn: #FFB300;
+  --danger: #FF5252;
+  --text: #e0e6ed;
+  --text-dim: #8899aa;
+  --border: #2a3a4a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'SF Mono',Monaco,Consolas,monospace; font-size:14px; line-height:1.6; padding:24px; max-width:1200px; margin:0 auto; }
+h1 { color:var(--accent); font-size:24px; margin-bottom:4px; }
+h2 { color:var(--accent); font-size:18px; margin:32px 0 12px; border-bottom:1px solid var(--border); padding-bottom:8px; }
+h3 { color:var(--text); font-size:15px; margin:16px 0 8px; }
+.subtitle { color:var(--text-dim); font-size:13px; margin-bottom:24px; }
+.card { background:var(--surface); border-radius:8px; padding:16px; margin:12px 0; border-left:3px solid var(--border); }
+.card.verified { border-left-color:var(--accent); }
+.card.needs-data { border-left-color:var(--warn); }
+.card.bias { border-left-color:#FF9800; }
+.card.unreliable { border-left-color:var(--danger); }
+.badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:bold; margin-right:8px; }
+.badge.verified { background:#00E67633; color:var(--accent); }
+.badge.needs-data { background:#FFB30033; color:var(--warn); }
+.badge.bias { background:#FF980033; color:#FF9800; }
+.badge.unreliable { background:#FF525233; color:var(--danger); }
+.badge.agent { background:var(--surface2); color:var(--text-dim); }
+.metric { display:inline-block; background:var(--surface2); padding:4px 10px; border-radius:4px; margin:4px; font-size:12px; }
+.metric .value { color:var(--accent); font-weight:bold; }
+.metric.warn .value { color:var(--warn); }
+.metric.danger .value { color:var(--danger); }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+.stat-box { background:var(--surface); border-radius:8px; padding:16px; text-align:center; }
+.stat-box .num { font-size:28px; font-weight:bold; color:var(--accent); }
+.stat-box .label { font-size:12px; color:var(--text-dim); }
+.counter-arg { background:#FF525211; border-left:2px solid var(--danger); padding:8px 12px; margin-top:8px; font-size:12px; color:var(--text-dim); }
+.pricing { background:#00E67611; border-left:2px solid var(--accent); padding:8px 12px; margin-top:8px; font-size:12px; }
+.caveat { font-size:11px; color:var(--text-dim); font-style:italic; margin-top:6px; }
+details { margin-top:8px; }
+details summary { cursor:pointer; color:var(--accent); font-size:12px; }
+details summary:hover { text-decoration:underline; }
+.chart-container { background:var(--surface); border-radius:8px; padding:16px; margin:12px 0; }
+canvas { max-height:300px; }
+table { width:100%; border-collapse:collapse; margin:8px 0; }
+th,td { padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; }
+th { color:var(--accent); font-weight:600; }
+.what-we-dont-know { background:#FF525211; border:1px solid #FF525233; border-radius:8px; padding:16px; margin:12px 0; }
+.what-we-dont-know li { margin:6px 0; font-size:13px; }
+.scenario-table td:nth-child(2) { color:var(--danger); }
+.scenario-table td:nth-child(3) { color:var(--warn); }
+.scenario-table td:nth-child(4) { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<h1>Pickle DaaS Discovery Engine V2</h1>
+<p class="subtitle">Verified Intelligence Report — Generated 2026-04-11 | 191 unique clips | Honesty-first methodology</p>
+
+<!-- Section 1: Data Quality -->
+<h2>1. Data Quality Assessment</h2>
+<div class="grid">
+  <div class="stat-box"><div class="num">191</div><div class="label">Unique Clips Analyzed</div></div>
+  <div class="stat-box"><div class="num">82</div><div class="label">Duplicate Clips Found</div></div>
+  <div class="stat-box"><div class="num">97%</div><div class="label">Venue Unknown</div></div>
+  <div class="stat-box"><div class="num">4</div><div class="label">Months of Data</div></div>
+</div>
+<div class="card">
+  <h3>Sample Bias Flags</h3>
+  <ul style="padding-left:20px;font-size:13px;">
+    <li>97.4% of clips have no identifiable venue — likely single-venue dominated</li>
+    <li>Sample is non-random: auto-selected highlights, not sequential recording</li>
+    <li>Highlight clips over-represent "interesting" moments vs typical play</li>
+    <li>79.6% of detected players classified as "intermediate" — possible prompt bias</li>
+  </ul>
+</div>
+
+<!-- Section 2: Verification Results -->
+<h2>2. Verification Test Results</h2>
+<p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">20 clips re-analyzed with identical Gemini prompt. Measures how reproducible our analysis is.</p>
+<div class="grid">
+  <div class="stat-box"><div class="num" style="color:var(--danger)">20%</div><div class="label">Brand Detection Agreement</div></div>
+  <div class="stat-box"><div class="num" style="color:var(--danger)">40%</div><div class="label">Shot Count Agreement (±20%)</div></div>
+  <div class="stat-box"><div class="num" style="color:var(--warn)">45%</div><div class="label">Skill Level Agreement</div></div>
+  <div class="stat-box"><div class="num" style="color:var(--danger)">0%</div><div class="label">DUPR Prediction Agreement</div></div>
+</div>
+<div class="card">
+  <h3>What This Means</h3>
+  <p style="font-size:13px;">Running the same video through Gemini twice produces different results. Brand detection is the least reliable (20% match). DUPR predictions are essentially random. Aggregate patterns (e.g., "most players are intermediate") may be more stable than individual clip analysis, but individual data points should not be treated as ground truth.</p>
+</div>
+
+<!-- Section 3: Venue Distribution Chart -->
+<h2>3. Venue & Batch Distribution</h2>
+<div class="grid">
+  <div class="chart-container">
+    <canvas id="venueChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="batchChart"></canvas>
+  </div>
+</div>
+
+<!-- Section 4: Confidence Distribution -->
+<h2>4. Confidence Distribution</h2>
+<div class="chart-container">
+  <canvas id="confidenceChart"></canvas>
+</div>
+<div class="card">
+  <h3>Confidence Cap Rules (V2)</h3>
+  <table>
+    <tr><th>Condition</th><th>Max Confidence</th></tr>
+    <tr><td>Non-random sample</td><td>75</td></tr>
+    <tr><td>Single venue dominance (>50%)</td><td>80</td></tr>
+    <tr><td>N &lt; 20 data points</td><td>60</td></tr>
+    <tr><td>Low reproducibility (&lt;50% agreement)</td><td>Further reduced per finding</td></tr>
+  </table>
+</div>
+
+<!-- Section 5: Comparable Company Pricing -->
+<h2>5. Market Comparables</h2>
+<table>
+  <tr><th>Company</th><th>Pricing</th><th>Scope</th><th>Pickle DaaS Scaling</th></tr>
+  <tr><td>Sportradar</td><td>$500K-$2M/year</td><td>League-level multi-sport data feeds</td><td>At 1/100th: $5K-$20K/yr</td></tr>
+  <tr><td>StatsBomb</td><td>$50K-$200K/year</td><td>Team-level football analytics</td><td>At 1/50th: $1K-$4K/yr</td></tr>
+  <tr><td>ShotTracker</td><td>$15K/court/year</td><td>Per-venue basketball analytics</td><td>At 1/10th: $1.5K/court/yr</td></tr>
+  <tr><td>Hudl</td><td>$200-$2,000/month</td><td>Coaching video analytics</td><td>Direct comparable: $100-$500/mo</td></tr>
+</table>
+<div class="card">
+  <p style="font-size:13px;">Pickleball is approximately 1/100th the addressable market of major professional sports. Pricing is scaled accordingly. As the sport grows and data quality improves, prices can increase toward these comparables.</p>
+</div>
+
+<!-- Section 6: Top Discoveries -->
+<h2>6. Ranked Discoveries (11 Total)</h2>
+<p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Scored 70% on capped confidence, 30% on commercial wow factor. V1 had 21 discoveries with scores up to 93 — V2 is more conservative.</p>
+
+<div id="discoveries-container"></div>
+
+<!-- Section 7: What We Don't Know Yet -->
+<h2>7. What We Don't Know Yet</h2>
+<div class="what-we-dont-know">
+  <ul>
+    <li><strong>Multi-venue distribution:</strong> All clips likely from one venue. We can't distinguish venue effects from sport-wide patterns.</li>
+    <li><strong>Brand detection reliability:</strong> 20% reproducibility means brand frequency counts are approximate at best.</li>
+    <li><strong>DUPR prediction validity:</strong> 0% agreement in verification. The model defaults to "3.5-4.0" — this is prompt bias, not prediction.</li>
+    <li><strong>Temporal trends:</strong> Data spans 4 months across 2 years (Apr 2024, May 2024, Jul 2024, Apr 2026). Gaps make trend analysis unreliable.</li>
+    <li><strong>Player identity:</strong> No player tracking across clips. The "494 players detected" may be 20 actual people.</li>
+    <li><strong>Ground truth:</strong> No human-labeled validation set. All quality metrics are AI-estimated.</li>
+  </ul>
+</div>
+
+<!-- Section 8: V1 vs V2 Comparison -->
+<h2>8. V1 → V2 Changes</h2>
+<table>
+  <tr><th>Metric</th><th>V1</th><th>V2</th></tr>
+  <tr><td>Unique clips</td><td>127</td><td>191</td></tr>
+  <tr><td>Discoveries</td><td>21</td><td>11</td></tr>
+  <tr><td>Max confidence</td><td>95</td><td>75</td></tr>
+  <tr><td>Verified discoveries</td><td>N/A (not tested)</td><td>0 of 11</td></tr>
+  <tr><td>Price sourcing</td><td>Aspirational estimates</td><td>Real comparables with math</td></tr>
+  <tr><td>Venue bias flagged</td><td>No</td><td>Yes — every finding</td></tr>
+  <tr><td>Counter-arguments</td><td>None</td><td>Every discovery</td></tr>
+  <tr><td>Clip UUIDs cited</td><td>No</td><td>Yes</td></tr>
+</table>
+
+<!-- Section 9: Scaling Projections -->
+<h2>9. Scaling Projections — Three Scenarios</h2>
+<table class="scenario-table">
+  <tr><th>Metric</th><th>Pessimistic</th><th>Base</th><th>Optimistic</th></tr>
+  <tr><td>Clips analyzed (12mo)</td><td>5,000</td><td>50,000</td><td>400,000</td></tr>
+  <tr><td>Venues represented</td><td>3</td><td>20</td><td>100+</td></tr>
+  <tr><td>Brand detection accuracy</td><td>30% (current+tuning)</td><td>60% (prompt eng.)</td><td>85% (fine-tuned)</td></tr>
+  <tr><td>Monthly revenue</td><td>$500-$2K</td><td>$5K-$15K</td><td>$30K-$100K</td></tr>
+  <tr><td>Annual cost (Gemini)</td><td>$27 ($0.005/clip)</td><td>$270</td><td>$2,160</td></tr>
+  <tr><td>Gross margin</td><td>97%+</td><td>98%+</td><td>99%+</td></tr>
+</table>
+<div class="card">
+  <p style="font-size:13px;">Gemini processing cost remains negligible at any scale. The bottleneck is data quality and venue diversity, not compute cost. Revenue projections assume improving detection accuracy through prompt engineering and multi-venue sampling.</p>
+</div>
+
+<!-- Section 10: Next Steps -->
+<h2>10. Next Steps to Improve Data Quality</h2>
+<div class="card">
+  <ol style="padding-left:20px;font-size:13px;">
+    <li><strong>Multi-venue data:</strong> Get clips from Peak, Chicken N Pickle, or any non-Lifetime venue. Even 50 clips would unlock venue comparison.</li>
+    <li><strong>Prompt engineering:</strong> Brand detection at 20% needs the most work. Constrain Gemini's brand list, add few-shot examples.</li>
+    <li><strong>Human validation set:</strong> Label 50 clips by hand (brands, skill, shots). Measure AI accuracy against ground truth.</li>
+    <li><strong>DUPR calibration:</strong> Get 20 clips from players with known DUPR ratings. Measure prediction accuracy.</li>
+    <li><strong>Sequential sampling:</strong> Run on non-highlight clips (raw court footage) to compare against highlight-selected data.</li>
+  </ol>
+</div>
+
+<!-- Section 11: Revenue Model -->
+<h2>11. Revenue Model</h2>
+<div class="card">
+  <h3>Conservative Year 1 (Base Case)</h3>
+  <table>
+    <tr><td>Brand intelligence subscriptions (5 brands × $1K/mo)</td><td>$5,000/mo</td></tr>
+    <tr><td>Venue analytics (10 venues × $300/mo)</td><td>$3,000/mo</td></tr>
+    <tr><td>Coaching platform data feed (2 platforms × $500/mo)</td><td>$1,000/mo</td></tr>
+    <tr><td><strong>Total MRR</strong></td><td><strong>$9,000/mo</strong></td></tr>
+    <tr><td>Annual Gemini cost (50K clips)</td><td>-$270/yr</td></tr>
+    <tr><td><strong>Gross margin</strong></td><td><strong>99.7%</strong></td></tr>
+  </table>
+  <p class="caveat">Assumes 60%+ brand detection accuracy (requires prompt engineering work) and 20+ venue diversity.</p>
+</div>
+
+<!-- Section 12: Technical Methodology -->
+<h2>12. Technical Methodology</h2>
+<div class="card">
+  <h3>Analysis Pipeline</h3>
+  <table>
+    <tr><td>Model</td><td>Gemini 2.5 Flash Lite</td></tr>
+    <tr><td>Cost per clip</td><td>$0.0054 (verified baseline)</td></tr>
+    <tr><td>Prompt</td><td>Structured extraction: shots, brands, skill, badges, narrative (7,379 chars)</td></tr>
+    <tr><td>Temperature</td><td>0.3</td></tr>
+    <tr><td>Output format</td><td>JSON with 14 top-level fields</td></tr>
+  </table>
+  <h3>Verification Method</h3>
+  <p style="font-size:13px;">20 clips randomly selected (seed=42). Same prompt, same model, same temperature. Compared: brand sets (Jaccard), shot counts (±20%), skill level (exact match), DUPR (±0.5 range).</p>
+  <h3>"Courtana Clips" Explained</h3>
+  <p style="font-size:13px;">In V1, "Courtana clips avg 7.43/10" referred to clips where the Courtana brand was detected on screen (logo on court/screen). This is the venue's own camera system branding, NOT a product category. Clips with Courtana branding visible may correlate with better-positioned cameras, explaining higher quality scores.</p>
+</div>
+
+<p style="text-align:center;color:var(--text-dim);margin-top:40px;font-size:11px;">
+  Pickle DaaS Discovery Engine V2 | PickleBill Inc. | Generated 2026-04-11
+</p>
+
+<script>
+// Venue distribution pie chart
+new Chart(document.getElementById('venueChart'), {
+  type: 'pie',
+  data: {
+    labels: ['Unknown (97.4%)', 'Lifetime (1.6%)', 'The Underground (1.0%)'],
+    datasets: [{
+      data: [186, 3, 2],
+      backgroundColor: ['#FF5252', '#FFB300', '#00E676'],
+      borderColor: '#1e2a3a',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: { display:true, text:'Venue Distribution', color:'#e0e6ed' },
+      legend: { labels: { color:'#8899aa', font:{size:11} } }
+    }
+  }
+});
+
+// Batch distribution bar chart
+new Chart(document.getElementById('batchChart'), {
+  type: 'bar',
+  data: {
+    labels: ['v1.3-ab-test','auto-0622','auto-0811','auto-0603','batch-30','pb-0410','v1.2-reproc','auto-0347','broadcast','pb-001','auto-0344','test-001','fast-20'],
+    datasets: [{
+      label: 'Clips per batch',
+      data: [59,38,34,23,10,7,5,4,4,3,2,1,1],
+      backgroundColor: '#00E67666',
+      borderColor: '#00E676',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: { display:true, text:'Batch Distribution', color:'#e0e6ed' },
+      legend: { display:false }
+    },
+    scales: {
+      x: { ticks:{color:'#8899aa',font:{size:10}}, grid:{color:'#2a3a4a'} },
+      y: { ticks:{color:'#8899aa'}, grid:{color:'#2a3a4a'} }
+    }
+  }
+});
+
+// Confidence distribution
+const discoveries = [
+  {id:'P1',conf:75,badge:'needs_more_data',agent:'player',headline:'79.6% intermediate — coaching goldmine'},
+  {id:'B1',conf:75,badge:'needs_more_data',agent:'brand',headline:'84.3% have brands — 15.7% blind spot'},
+  {id:'P3',conf:75,badge:'needs_more_data',agent:'player',headline:'Kitchen mastery = skill predictor'},
+  {id:'P4',conf:70,badge:'sampling_bias',agent:'player',headline:'Avg rally 16.6 shots — 65.8% epic'},
+  {id:'N1',conf:65,badge:'needs_more_data',agent:'narrative',headline:'Story arc classification — grind_rally top'},
+  {id:'T1',conf:65,badge:'needs_more_data',agent:'tactical',headline:'Shot sequences detected — serve→return top'},
+  {id:'B2',conf:60,badge:'sampling_bias',agent:'brand',headline:'Top brands: JOOLA, Courtana (venue bias)'},
+  {id:'T2',conf:60,badge:'sampling_bias',agent:'tactical',headline:'Kitchen win rate (highlights only)'},
+  {id:'B4',conf:55,badge:'sampling_bias',agent:'brand',headline:'Sponsorship whitespace categories'},
+  {id:'B5',conf:50,badge:'sampling_bias',agent:'brand',headline:'JOOLA paddle dominance = venue artifact'},
+  {id:'T5',conf:30,badge:'unreliable',agent:'tactical',headline:'DUPR predictions — 0% agreement'}
+];
+
+new Chart(document.getElementById('confidenceChart'), {
+  type: 'bar',
+  data: {
+    labels: discoveries.map(d => d.id),
+    datasets: [{
+      label: 'Capped Confidence',
+      data: discoveries.map(d => d.conf),
+      backgroundColor: discoveries.map(d =>
+        d.badge==='unreliable'?'#FF525288':
+        d.badge==='sampling_bias'?'#FF980088':
+        d.badge==='needs_more_data'?'#FFB30088':'#00E67688'
+      ),
+      borderColor: discoveries.map(d =>
+        d.badge==='unreliable'?'#FF5252':
+        d.badge==='sampling_bias'?'#FF9800':
+        d.badge==='needs_more_data'?'#FFB300':'#00E676'
+      ),
+      borderWidth:1
+    }]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: {
+      title: { display:true, text:'Discovery Confidence (Capped)', color:'#e0e6ed' },
+      legend: { display:false }
+    },
+    scales: {
+      x: { max:100, ticks:{color:'#8899aa'}, grid:{color:'#2a3a4a'} },
+      y: { ticks:{color:'#8899aa',font:{size:11}}, grid:{color:'#2a3a4a'} }
+    }
+  }
+});
+
+// Render discovery cards
+const container = document.getElementById('discoveries-container');
+const badgeLabels = {
+  'verified':'Verified','needs_more_data':'Needs More Data',
+  'sampling_bias':'Sampling Bias','unreliable':'Unreliable'
+};
+const fullDiscoveries = [
+  {id:'P1',agent:'player',badge:'needs_more_data',conf:75,raw:88,headline:'The player corpus is 79.6% intermediate — a coaching goldmine hiding in plain sight',counter:'Skill estimates have 45% reproducibility. The intermediate dominance may reflect prompt bias.',pricing:'Hudl: $200-2000/mo. Niche sport early stage: $80-200/mo for coaches, $500-1000/mo for platforms.'},
+  {id:'B1',agent:'brand',badge:'needs_more_data',conf:75,raw:75,headline:'84.3% of clips have AI-identifiable brands — 15.7% have none',counter:'Brand detection agreement is only 20%. Re-runs could produce different numbers. Needs prompt engineering.',pricing:'StatsBomb: $50K-200K/yr. For niche sport: $500-2000/mo per brand subscriber.'},
+  {id:'P3',agent:'player',badge:'needs_more_data',conf:75,raw:85,headline:'Kitchen mastery is the #1 predictor of skill level',counter:'Kitchen-skill correlation is already known. The novel claim is AI detection from video — which has 45% reproducibility.',pricing:'Hudl coaching tier comparable: $100-500/mo.'},
+  {id:'P4',agent:'player',badge:'sampling_bias',conf:70,raw:70,headline:'Average rally is 16.6 shots — 65.8% go epic (12+)',counter:'Highlight clips are selected for interesting play — rally lengths skew longer than population average.',pricing:'Sportradar at 1/100th: $5K-20K/yr for broadcast intelligence.'},
+  {id:'N1',agent:'narrative',badge:'needs_more_data',conf:65,raw:65,headline:'191 clips classified into story arcs — grind_rally dominates',counter:'Story arc classification is subjective. Without human labelers, unknown if matches human judgment.',pricing:'Automated curation saves 10-20 hrs/week of manual review. Value: $2K-4K/mo.'},
+  {id:'T1',agent:'tactical',badge:'needs_more_data',conf:65,raw:65,headline:'Most common shot sequence identified — pickleball has a grammar',counter:'Shot detection has 40% reproducibility. Errors compound in sequences. Indicative, not rigorous.',pricing:'At 1/100th Sportradar: $5K-20K/yr.'},
+  {id:'B2',agent:'brand',badge:'sampling_bias',conf:60,raw:60,headline:'Top brands: JOOLA, Courtana, ONIX — but likely venue-specific',counter:'If clips are from Lifetime, JOOLA is the house paddle brand. Dominance = distribution deals, not organic preference.',pricing:'Brand tracking at venue level: $200-500/venue/mo.'},
+  {id:'T2',agent:'tactical',badge:'sampling_bias',conf:60,raw:60,headline:'Kitchen control yields high win rate — but from highlights only',counter:'Highlight clips select for dramatic moments. Kitchen effectiveness in ordinary play could differ.',pricing:'Kitchen analytics add-on: $100-500/mo.'},
+  {id:'B4',agent:'brand',badge:'sampling_bias',conf:55,raw:55,headline:'Gatorade, BODYARMOR flagged as absent — sponsorship whitespace',counter:'Absence of detection ≠ absence of brand. AI may miss logos. One venue sample.',pricing:'Novel product. $300-1000/mo per brand for whitespace alerts.'},
+  {id:'B5',agent:'brand',badge:'sampling_bias',conf:50,raw:50,headline:'JOOLA paddle dominance (likely venue artifact)',counter:'Lifetime provides JOOLA house paddles. Remove Lifetime clips and dominance disappears.',pricing:'$500-2000/mo for equipment manufacturers.'},
+  {id:'T5',agent:'tactical',badge:'unreliable',conf:30,raw:30,headline:'DUPR predictions — 3.5-4.0 modal but 0% verified',counter:'0% agreement in verification. Model defaults to 3.5-4.0 regardless. Prompt bias, not prediction.',pricing:'If validated: $1K-5K/mo from tournament platforms. Currently: proof-of-concept only.'}
+];
+
+fullDiscoveries.forEach((d,i) => {
+  const cardClass = d.badge==='unreliable'?'unreliable':d.badge==='sampling_bias'?'bias':d.badge==='needs_more_data'?'needs-data':'verified';
+  container.innerHTML += `
+    <div class="card ${cardClass}">
+      <span class="badge ${cardClass}">${badgeLabels[d.badge]||d.badge}</span>
+      <span class="badge agent">${d.agent}</span>
+      <span class="metric">Confidence: <span class="value">${d.conf}</span> (raw ${d.raw})</span>
+      <span class="metric">Rank: <span class="value">#${i+1}</span></span>
+      <h3>${d.headline}</h3>
+      <div class="counter-arg"><strong>Counter-argument:</strong> ${d.counter}</div>
+      <div class="pricing"><strong>Pricing (grounded):</strong> ${d.pricing}</div>
+    </div>
+  `;
+});
+</script>
+</body>
+</html>

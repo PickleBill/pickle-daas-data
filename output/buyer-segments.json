@@ -1,0 +1,280 @@
+{
+  "version": "1.0",
+  "generated": "2026-04-11",
+  "description": "Pickle DaaS buyer segments — maps data fields to buyer types, use cases, and pricing",
+  "segments": [
+    {
+      "id": "equipment-brands",
+      "name": "Equipment & Paddle Brands",
+      "tier": 1,
+      "timeline": "0-6 months",
+      "example_companies": ["JOOLA", "Selkirk", "HEAD", "Franklin", "Paddletek", "Engage", "ONIX", "Electrum", "Gamma", "ProKennex"],
+      "contract_range": { "low": 5000, "high": 50000, "unit": "per_month" },
+      "data_fields_consumed": [
+        "brands_detected", "brand_visibility_seconds", "brand_confidence", "brand_category",
+        "paddle_brand", "paddle_model", "paddle_colorway", "co_brand_analysis",
+        "sponsorship_whitespace", "clip_quality_score", "player_skill_level"
+      ],
+      "use_cases": [
+        "Measure on-court brand visibility ROI across venues",
+        "Identify sponsorship whitespace (brands NOT appearing on camera)",
+        "Track competitor brand presence per venue/region",
+        "Optimize paddle placement and endorsement spend",
+        "Target high-skill players for ambassador programs"
+      ],
+      "product_format": "Brand Intelligence Report (HTML) + API access",
+      "pitch_angle": "Your brand appears in X clips for Y seconds. Your competitor appears in Z. Here's what that means for your sponsorship ROI.",
+      "existing_data_ready": true,
+      "notes": "JOOLA detected in 47+ clips. Selkirk at zero. That gap IS the pitch."
+    },
+    {
+      "id": "coaching-platforms",
+      "name": "Coaching Platforms & Player Rating Systems",
+      "tier": 1,
+      "timeline": "0-6 months",
+      "example_companies": ["DUPR", "pb.vision", "SwingVision", "VS. Pickleball", "Playsight", "PicklePlay"],
+      "contract_range": { "low": 50000, "high": 200000, "unit": "per_year_api_license" },
+      "per_player_pricing": { "low": 2, "high": 10, "unit": "per_player_per_month" },
+      "data_fields_consumed": [
+        "skill_scores_10d", "court_coverage", "kitchen_mastery", "power", "touch",
+        "athleticism", "creativity", "court_iq", "consistency", "composure", "paddle_control",
+        "shot_type_breakdown", "rally_dna", "dominant_shot", "total_shots",
+        "estimated_dupr", "improvement_opportunities", "play_style_tags",
+        "player_progression_over_time", "coaching_commentary"
+      ],
+      "use_cases": [
+        "Enrich DUPR ratings with 'why' data (shot intelligence, not just W/L)",
+        "Auto-generate personalized coaching reports per player",
+        "Track player skill progression across sessions",
+        "Benchmark players against skill-level cohorts",
+        "Feed training recommendation engines"
+      ],
+      "product_format": "Player Enrichment API (JSON) + Player DNA Profiles",
+      "pitch_angle": "DUPR knows WHO is good. We know WHY. Together = the only complete player profile in pickleball.",
+      "existing_data_ready": true,
+      "notes": "12 players profiled with full DNA. Need full corpus run for 50+ player depth."
+    },
+    {
+      "id": "media-content",
+      "name": "Media & Content Platforms",
+      "tier": 1,
+      "timeline": "0-6 months",
+      "example_companies": ["MLP/PPA media", "ESPN+", "TikTok Sports", "YouTube Shorts", "Dude Perfect", "Barstool Sports"],
+      "contract_range": { "low": 10000, "high": 100000, "unit": "per_month" },
+      "data_fields_consumed": [
+        "viral_potential", "watchability", "clip_quality_score", "cinematic_score",
+        "story_arc", "highlight_category", "social_media_caption", "trending_hashtags",
+        "ron_burgundy_commentary", "espn_commentary", "hype_commentary",
+        "content_use_cases", "thumbnail_quality", "emotional_tone"
+      ],
+      "use_cases": [
+        "Auto-curate viral highlight reels from raw footage",
+        "Generate broadcast-ready AI commentary (4 voice personas)",
+        "Score clips for social media virality before posting",
+        "Feed content recommendation algorithms",
+        "License pre-captioned clips for TikTok/Reels/Shorts"
+      ],
+      "product_format": "Content API + Highlight Feed + Voice Commentary MP3s",
+      "pitch_angle": "645% YoY growth in pickleball content on TikTok. We auto-generate broadcast-ready highlights with commentary. You just publish.",
+      "existing_data_ready": true,
+      "notes": "32+ MP3 voice commentaries already generated. 4 voice personas per clip."
+    },
+    {
+      "id": "venues",
+      "name": "Venue Operators (Bundled Upsell)",
+      "tier": 1,
+      "timeline": "0-6 months",
+      "example_companies": ["Peak Pickleball", "Court Kings", "Concord PB", "Life Time", "Chicken N Pickle", "Pickleball Kingdom"],
+      "contract_range": { "low": 99, "high": 99, "unit": "per_court_per_month_bundled" },
+      "data_fields_consumed": [
+        "court_utilization_proxy", "player_retention_signals", "member_engagement_scores",
+        "facility_brand_visibility", "court_surface_data", "lighting_conditions",
+        "sponsor_banner_readability", "player_demographics_estimate", "peak_hours_analysis"
+      ],
+      "use_cases": [
+        "Demonstrate camera ROI to venue owners in sales conversations",
+        "Provide member engagement analytics as retention tool",
+        "Help venues sell sponsorship space with visibility data",
+        "Track which courts/times generate highest-quality content"
+      ],
+      "product_format": "Venue Dashboard (bundled with Courtana subscription)",
+      "pitch_angle": "Our cameras don't just record highlights. They generate intelligence that helps you retain members and sell sponsorships.",
+      "existing_data_ready": true,
+      "notes": "Already in deal flow with 3 venues. DaaS is the 'why our cameras are different' argument."
+    },
+    {
+      "id": "sports-betting",
+      "name": "Sports Betting & Daily Fantasy",
+      "tier": 2,
+      "timeline": "6-12 months",
+      "example_companies": ["FanDuel", "DraftKings", "BetMGM", "PrizePicks", "Underdog Fantasy"],
+      "contract_range": { "low": 100000, "high": 500000, "unit": "per_year" },
+      "data_fields_consumed": [
+        "momentum_shifts", "fatigue_indicators", "win_probability_flow",
+        "consistency_score", "clutch_rating", "estimated_dupr",
+        "shot_type_breakdown", "rally_length_patterns", "player_tendencies",
+        "head_to_head_matchup_data", "composure_under_pressure"
+      ],
+      "use_cases": [
+        "Build predictive models for match outcomes",
+        "Power live in-play betting odds adjustments",
+        "Create DFS player projections from video intelligence",
+        "Detect form changes and injury risk signals",
+        "Generate historical performance baselines for line setting"
+      ],
+      "product_format": "Performance Data Feed (real-time API) + Historical Archive",
+      "pitch_angle": "FanDuel already offers pickleball betting in 10 states. They have zero structured player performance data. We have it.",
+      "existing_data_ready": false,
+      "fields_to_add": ["momentum_shifts", "fatigue_indicators", "win_probability_flow", "consistency_score", "clutch_rating"],
+      "notes": "Requires prompt update to extract betting-relevant fields. Zero additional cost per clip."
+    },
+    {
+      "id": "apparel-lifestyle",
+      "name": "Apparel & Lifestyle Brands",
+      "tier": 2,
+      "timeline": "6-12 months",
+      "example_companies": ["Lululemon", "Skechers", "Nike", "Vuori", "Alo Yoga", "FILA", "New Balance"],
+      "contract_range": { "low": 75000, "high": 300000, "unit": "per_year" },
+      "data_fields_consumed": [
+        "apparel_brands_detected", "shoe_brands", "accessories",
+        "player_demographics_estimate", "skill_level_distribution",
+        "brand_affinity_by_skill_level", "venue_demographic_profile"
+      ],
+      "use_cases": [
+        "Measure on-court apparel brand visibility",
+        "Segment player demographics by skill level for targeting",
+        "Optimize sponsorship placement by venue demographic match",
+        "Track competitor apparel penetration across venues"
+      ],
+      "product_format": "Apparel Visibility Report + Demographic API",
+      "pitch_angle": "Lululemon sponsors Life Time pickleball. We can tell them exactly how many players wear their gear, at what skill level, and where the whitespace is.",
+      "existing_data_ready": false,
+      "fields_to_add": ["apparel_brand_detailed", "shoe_brand", "accessories_detected"],
+      "notes": "Current pipeline detects some apparel. Needs prompt refinement for detailed apparel taxonomy."
+    },
+    {
+      "id": "cpg-wellness",
+      "name": "CPG / Health & Wellness Brands",
+      "tier": 2,
+      "timeline": "6-12 months",
+      "example_companies": ["Gatorade/PepsiCo", "BioSteel", "AG1", "Recovery Cave", "Therabody", "Hyperice"],
+      "contract_range": { "low": 25000, "high": 150000, "unit": "per_year" },
+      "data_fields_consumed": [
+        "brands_detected", "brand_visibility_seconds", "venue_brand_penetration",
+        "player_demographics_estimate", "hydration_behavior_signals",
+        "recovery_behavior_between_points", "session_duration_proxy"
+      ],
+      "use_cases": [
+        "Measure venue-level brand penetration for CPG products",
+        "Identify sponsorship opportunities by player demographic",
+        "Track Recovery Cave vs competitor visibility at venues",
+        "Optimize on-court advertising placement"
+      ],
+      "product_format": "Brand Visibility Report + Venue Analytics",
+      "pitch_angle": "Recovery Cave already appears in your clips. Here's exactly how visible they are. Want the same report for your brand?",
+      "existing_data_ready": true,
+      "notes": "Recovery Cave detected in 3 clips. LIFE TIME PICKLEBALL in 3 clips. Foundation exists."
+    },
+    {
+      "id": "data-aggregators",
+      "name": "Sports Data Aggregators & Intelligence Platforms",
+      "tier": 3,
+      "timeline": "12-24 months",
+      "example_companies": ["Sportradar", "Genius Sports", "Stats Perform", "Second Spectrum", "Catapult Sports"],
+      "contract_range": { "low": 250000, "high": 2000000, "unit": "per_year" },
+      "data_fields_consumed": ["*"],
+      "use_cases": [
+        "White-label the entire analysis pipeline for their platforms",
+        "License structured video-derived statistics at scale",
+        "Feed their existing sports data products with pickleball",
+        "Power broadcast analytics overlays"
+      ],
+      "product_format": "Enterprise API License + White-label Pipeline",
+      "pitch_angle": "Second Spectrum sold to Genius Sports for $200M+. Statcast is the standard in baseball. Pickleball has 36M players and zero equivalent. We're building it.",
+      "existing_data_ready": false,
+      "notes": "Requires enterprise-grade API, SLAs, audit trail. Langfuse + Supabase are prerequisites."
+    },
+    {
+      "id": "insurance-healthcare",
+      "name": "Insurance & Healthcare",
+      "tier": 3,
+      "timeline": "12-24 months",
+      "example_companies": ["UnitedHealth", "Humana", "AARP Insurance", "PT clinic chains", "HSS"],
+      "contract_range": { "low": 200000, "high": 1000000, "unit": "per_year" },
+      "data_fields_consumed": [
+        "movement_biomechanics", "fall_risk_indicators", "injury_incident_patterns",
+        "player_demographics_estimate", "fatigue_indicators", "session_intensity"
+      ],
+      "use_cases": [
+        "Model injury risk by player demographic and skill level",
+        "Build actuarial models for pickleball-related claims",
+        "Power preventive health recommendations",
+        "Partner with PT clinics on injury prevention programs"
+      ],
+      "product_format": "Anonymized Risk Analytics API",
+      "pitch_angle": "Pickleball injuries cost $377-500M annually. We have the only video-derived biomechanics dataset that can help predict and prevent them.",
+      "existing_data_ready": false,
+      "notes": "Requires privacy/compliance work. Massive addressable market once solved."
+    },
+    {
+      "id": "local-advertisers",
+      "name": "Local Venue Advertisers",
+      "tier": 3,
+      "timeline": "12-24 months (needs 10+ venues)",
+      "example_companies": ["Local PT clinics", "Sports bars near venues", "Equipment shops", "Restaurants", "Chiropractors"],
+      "contract_range": { "low": 500, "high": 5000, "unit": "per_month_per_venue" },
+      "data_fields_consumed": [
+        "player_demographics_estimate", "peak_hours", "foot_traffic_proxy",
+        "local_brand_visibility", "venue_geographic_data"
+      ],
+      "use_cases": [
+        "Self-serve local advertising dashboard per venue",
+        "Prove ROI on venue-level sponsorship spend",
+        "Target advertising by player demographics and time slots"
+      ],
+      "product_format": "Self-serve Dashboard + Local Brand Reports",
+      "pitch_angle": "500 pickleball players walk past your ad 3x per week. Here's the proof.",
+      "existing_data_ready": false,
+      "notes": "Low per-deal but high volume at scale. Build self-serve after 10+ venues."
+    },
+    {
+      "id": "real-estate-hospitality",
+      "name": "Real Estate & Hospitality",
+      "tier": 3,
+      "timeline": "12-24 months",
+      "example_companies": ["Life Time communities", "Pickleball Kingdom", "AvantStay", "Zillow (proximity data)", "Club Wyndham"],
+      "contract_range": { "low": 100000, "high": 500000, "unit": "per_year_per_region" },
+      "data_fields_consumed": [
+        "venue_utilization", "player_density_heatmaps", "tournament_draw_data",
+        "membership_retention_patterns", "demographic_distribution"
+      ],
+      "use_cases": [
+        "Inform real estate development decisions near courts",
+        "Optimize resort/hospitality pickleball programming",
+        "Forecast tournament attendance and economic impact",
+        "Track venue utilization for investment decisions"
+      ],
+      "product_format": "Regional Analytics Reports + Planning API",
+      "pitch_angle": "Homes near pickleball courts sell at 10% premium. We have the utilization data to prove which courts drive value.",
+      "existing_data_ready": false,
+      "notes": "Strategic play. Requires multi-venue network data."
+    }
+  ],
+  "data_field_registry": {
+    "currently_extracted": [
+      "quality_score", "viral_potential", "watchability", "cinematic_score",
+      "story_arc", "highlight_category", "summary", "dominant_shot", "total_shots",
+      "shot_sequence", "brands_detected", "brand_visibility_seconds", "brand_confidence",
+      "paddle_intel", "apparel_summary", "badges_predicted", "estimated_dupr",
+      "skill_scores_10d", "player_detection", "coaching_commentary",
+      "espn_commentary", "hype_commentary", "social_caption", "ron_burgundy",
+      "content_use_cases", "trending_hashtags", "data_richness_score"
+    ],
+    "to_add_in_prompt_update": [
+      "momentum_shifts", "fatigue_indicators", "win_probability_flow",
+      "consistency_score", "clutch_rating", "apparel_brand_detailed",
+      "shoe_brand", "accessories_detected", "movement_biomechanics",
+      "fall_risk_indicators", "hydration_behavior", "recovery_behavior"
+    ]
+  }
+}

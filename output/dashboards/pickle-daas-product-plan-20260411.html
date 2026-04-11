@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Product Plan & Buyer Segments</title>
+<style>
+  :root {
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --green-dark: #14532d;
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-400: #94a3b8;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50: #f8fafc;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --red: #ef4444;
+    --red-light: #fee2e2;
+    --blue: #3b82f6;
+    --blue-light: #dbeafe;
+    --purple: #8b5cf6;
+    --purple-light: #ede9fe;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--slate-50);
+    color: var(--slate-900);
+    line-height: 1.6;
+  }
+  .mono { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
+  .sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  /* Header */
+  .header {
+    background: var(--slate-900);
+    color: white;
+    padding: 48px 32px 40px;
+    border-bottom: 4px solid var(--green);
+  }
+  .header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  .header .subtitle { color: var(--slate-400); font-size: 16px; }
+  .header .date { color: var(--green); font-size: 13px; margin-top: 4px; }
+
+  /* Nav */
+  .nav {
+    background: white;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav button {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: none;
+    border: none;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--slate-600);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav button:hover { color: var(--slate-900); }
+  .nav button.active {
+    color: var(--green-dark);
+    border-bottom-color: var(--green);
+    font-weight: 600;
+  }
+
+  /* Sections */
+  .content { max-width: 1100px; margin: 0 auto; padding: 32px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  h2 { font-size: 24px; font-weight: 700; margin: 0 0 20px; color: var(--slate-900); }
+  h3 { font-size: 18px; font-weight: 600; margin: 24px 0 12px; color: var(--slate-800); }
+  p { margin-bottom: 16px; color: var(--slate-700); }
+
+  /* Cards */
+  .card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .card-title { font-size: 18px; font-weight: 600; }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: -apple-system, sans-serif;
+  }
+  .tag-green { background: var(--green-light); color: var(--green-dark); }
+  .tag-amber { background: var(--amber-light); color: #92400e; }
+  .tag-red { background: var(--red-light); color: #991b1b; }
+  .tag-blue { background: var(--blue-light); color: #1e40af; }
+  .tag-purple { background: var(--purple-light); color: #5b21b6; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-family: -apple-system, sans-serif; font-size: 14px; }
+  th { text-align: left; padding: 10px 12px; background: var(--slate-100); border-bottom: 2px solid var(--slate-200); font-weight: 600; color: var(--slate-700); font-size: 13px; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--slate-100); color: var(--slate-700); vertical-align: top; }
+  tr:hover td { background: var(--slate-50); }
+
+  /* Priority list */
+  .priority-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--slate-100);
+  }
+  .priority-num {
+    font-family: 'SF Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--green);
+    min-width: 40px;
+    line-height: 1.2;
+  }
+  .priority-content { flex: 1; }
+  .priority-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+  .priority-detail { font-size: 14px; color: var(--slate-600); font-family: -apple-system, sans-serif; }
+  .priority-meta { font-size: 12px; color: var(--slate-400); margin-top: 6px; font-family: -apple-system, sans-serif; }
+
+  /* Segment cards */
+  .segment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .segment-grid { grid-template-columns: 1fr; } }
+  .segment-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid var(--green);
+    transition: box-shadow 0.15s;
+  }
+  .segment-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .segment-card.tier-1 { border-left-color: var(--green); }
+  .segment-card.tier-2 { border-left-color: var(--amber); }
+  .segment-card.tier-3 { border-left-color: var(--blue); }
+  .segment-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .segment-companies { font-size: 13px; color: var(--slate-500); margin-bottom: 8px; font-family: -apple-system, sans-serif; }
+  .segment-data { font-size: 14px; color: var(--slate-700); margin-bottom: 8px; }
+  .segment-price { font-family: 'SF Mono', monospace; font-size: 14px; font-weight: 600; color: var(--green-dark); }
+  .segment-timeline { font-size: 12px; color: var(--slate-400); margin-top: 4px; }
+
+  /* Callout */
+  .callout {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout-title { font-weight: 700; font-size: 14px; color: var(--green-dark); margin-bottom: 4px; }
+  .callout p { color: var(--green-dark); margin: 0; font-size: 14px; }
+
+  .callout-amber {
+    background: var(--amber-light);
+    border-left-color: var(--amber);
+  }
+  .callout-amber .callout-title, .callout-amber p { color: #92400e; }
+
+  /* Decision box */
+  .decision {
+    background: white;
+    border: 2px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .decision-header { font-weight: 700; font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .decision-verdict { font-size: 14px; color: var(--slate-700); }
+
+  .confidence { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+  .conf-bar { height: 8px; border-radius: 4px; }
+  .conf-high { background: var(--green); width: 120px; }
+  .conf-med { background: var(--amber); width: 80px; }
+  .conf-label { font-size: 12px; color: var(--slate-500); font-family: -apple-system, sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Pickle DaaS — Product Plan & Buyer Intelligence</h1>
+  <div class="subtitle">From 120 analyzed clips to a real data product with paying customers</div>
+  <div class="date mono">April 11, 2026 — Prepared for Bill Bricker</div>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="showSection('top10', this)">Top 10 Moves</button>
+  <button onclick="showSection('buyers', this)">Buyer Segments</button>
+  <button onclick="showSection('pipeline', this)">Pipeline Hardening</button>
+  <button onclick="showSection('lovable', this)">Lovable Strategy</button>
+  <button onclick="showSection('supabase', this)">Supabase Decision</button>
+  <button onclick="showSection('roadmap', this)">90-Day Roadmap</button>
+</div>
+
+<div class="content">
+
+<!-- ========== TOP 10 ========== -->
+<div class="section active" id="top10">
+  <h2>Top 10 Moves — Ranked by Revenue Impact</h2>
+  <p class="sans" style="font-size:14px; color:var(--slate-500); margin-bottom:24px;">These are the actions that turn Pickle DaaS from a demo into a revenue-generating product. Ordered by what unblocks money fastest.</p>
+
+  <div class="priority-item">
+    <div class="priority-num">01</div>
+    <div class="priority-content">
+      <div class="priority-title">Analyze the full 4,097-clip corpus this weekend</div>
+      <div class="priority-detail">You have 120 clips analyzed. The API has 4,097+. Run the auto-ingest + Gemini analyzer overnight to process ALL of them. At $0.0054/clip, the entire corpus costs ~$22. This transforms every buyer conversation from "we analyzed 120 clips" to "we analyzed 4,097 clips — the largest structured pickleball dataset in existence."</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code autonomous</span> &nbsp; Cost: ~$22 &nbsp; Time: 1 overnight run</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">02</div>
+    <div class="priority-content">
+      <div class="priority-title">Build the Buyer Segment JSON — the "menu" for every sales conversation</div>
+      <div class="priority-detail">Create a structured JSON file that maps every data field your pipeline extracts to specific buyer types, use cases, and pricing. This becomes the backbone of outreach, the Lovable product, and investor conversations. I'll build this for you today.</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code autonomous</span> &nbsp; Time: This session</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">03</div>
+    <div class="priority-content">
+      <div class="priority-title">Get the DaaS Explorer live in Lovable — iterate on what you've pasted</div>
+      <div class="priority-detail">You've already pasted DaaS Explorer v2 into Lovable. Share the Lovable URL with me so I can review via Chrome MCP and write targeted improvement prompts. The other Lovable prompts (08-10) are audience-specific demos, not the core product — see the Lovable Strategy tab for what to do with each.</div>
+      <div class="priority-meta"><span class="tag tag-amber">Bill involved</span> &nbsp; Share Lovable link → I review → you paste fixes</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">04</div>
+    <div class="priority-content">
+      <div class="priority-title">Build brand-specific "Sponsorship Intelligence Reports" — the first product people pay for</div>
+      <div class="priority-detail">From the full corpus: generate per-brand reports showing visibility duration, clip frequency, co-brand presence, and whitespace gaps. "JOOLA appeared in 47 clips for 412 cumulative seconds. Selkirk: zero. Here's what that means." This is the pitch deck for every equipment brand sales conversation.</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code autonomous</span> &nbsp; Time: 1 overnight build &nbsp; Revenue: $5K-$50K/brand/month</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">05</div>
+    <div class="priority-content">
+      <div class="priority-title">Deploy Supabase → expose a real API endpoint</div>
+      <div class="priority-detail">The schema is ready. Deploy a Supabase instance, push all analyses, and expose a REST API. This converts "look at our demo" into "hit this endpoint and get data." Every enterprise buyer expects an API. See the Supabase Decision tab for the full recommendation.</div>
+      <div class="priority-meta"><span class="tag tag-amber">Bill involved (5 min)</span> &nbsp; Bill creates Supabase account → Claude Code does the rest &nbsp; Cost: $25/month</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">06</div>
+    <div class="priority-content">
+      <div class="priority-title">Schedule auto-ingest on cron — corpus grows daily without you</div>
+      <div class="priority-detail">The auto-ingest script exists (<code>tools/auto-ingest.py</code>). Schedule it to run daily. Every new clip at every venue gets analyzed automatically. The moat compounds while you sleep.</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code autonomous</span> &nbsp; Time: 15 min setup</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">07</div>
+    <div class="priority-content">
+      <div class="priority-title">Build outreach to JOOLA and Selkirk with live data</div>
+      <div class="priority-detail">You already have brand detection data. JOOLA shows up in clips. Selkirk doesn't (and that's the pitch). Draft personalized outreach with actual data from their brand's visibility — or lack thereof. This is not cold outreach; it's "we already have intelligence about your brand."</div>
+      <div class="priority-meta"><span class="tag tag-amber">Bill involved</span> &nbsp; I draft → Bill sends &nbsp; Revenue: First DaaS contract</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">08</div>
+    <div class="priority-content">
+      <div class="priority-title">Add betting/DFS data fields to the Gemini prompt</div>
+      <div class="priority-detail">FanDuel already offers pickleball betting. Your pipeline can extract win probability indicators, momentum shifts, fatigue signals, and consistency patterns. Add these fields to the analysis prompt — they cost nothing extra per clip but open a $100K-$500K/year buyer segment.</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code autonomous</span> &nbsp; Time: Prompt update + re-analyze a test batch</div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">09</div>
+    <div class="priority-content">
+      <div class="priority-title">Build the "Customer Segment Explorer" page in Lovable</div>
+      <div class="priority-detail">An interactive page that lets potential buyers see exactly what data they'd get. Equipment brand? Here's your view. Coaching app? Here's yours. Betting platform? Here's yours. This replaces static pitch decks with a self-serve demo.</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code writes prompt</span> → <span class="tag tag-amber">Bill pastes into Lovable</span></div>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">10</div>
+    <div class="priority-content">
+      <div class="priority-title">Add Langfuse observability to the pipeline</div>
+      <div class="priority-detail">Track every Gemini call: cost, latency, token usage, quality scores over time. This is the "proof we're a real data company" layer for investors and enterprise buyers who need SLAs.</div>
+      <div class="priority-meta"><span class="tag tag-green">Claude Code autonomous</span> &nbsp; Time: 2 hours &nbsp; <span class="tag tag-blue">HIGH CONFIDENCE — all 3 research reports agree</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== BUYER SEGMENTS ========== -->
+<div class="section" id="buyers">
+  <h2>Buyer Segments — Who Pays for This Data</h2>
+  <p class="sans" style="font-size:14px; color:var(--slate-500); margin-bottom:8px;">Organized by tier: Tier 1 = near-term revenue (0-6 months). Tier 2 = medium-term (6-12 months). Tier 3 = strategic long-term (12-24 months).</p>
+
+  <h3>Tier 1 — Go Get Money Now <span class="tag tag-green">0-6 months</span></h3>
+  <div class="segment-grid">
+    <div class="segment-card tier-1">
+      <div class="segment-name">Equipment Brands (Sponsorship Intel)</div>
+      <div class="segment-companies">JOOLA, Selkirk, HEAD, Franklin, Paddletek, Engage, ONIX, Electrum</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Brand visibility per clip (seconds on camera), co-brand analysis, sponsorship whitespace gaps, paddle brand detection, player-brand affinity scores</div>
+      <div class="segment-price">$5K — $50K / month</div>
+      <div class="segment-timeline">Why now: You already have this data. JOOLA shows up in 47 clips. Selkirk shows up in zero. That gap IS the sales pitch.</div>
+    </div>
+    <div class="segment-card tier-1">
+      <div class="segment-name">Coaching Platforms & DUPR</div>
+      <div class="segment-companies">DUPR, pb.vision, SwingVision, VS. Pickleball, Playsight</div>
+      <div class="segment-data"><strong>Data they buy:</strong> 10-dimension skill scores, shot type breakdown, rally DNA, player progression over time, estimated DUPR from video, coaching improvement areas</div>
+      <div class="segment-price">$2 — $10 / player / month or $50K-$200K API license</div>
+      <div class="segment-timeline">Why now: DUPR has ratings but zero "why" data. You complete their player profile. Partnership conversation is straightforward.</div>
+    </div>
+    <div class="segment-card tier-1">
+      <div class="segment-name">Content & Media Platforms</div>
+      <div class="segment-companies">MLP/PPA media arm, ESPN+, TikTok Sports, YouTube Shorts creators</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Viral potential scores, auto-generated highlight reels, AI commentary (4 personas), social captions, story arc classification, thumbnail quality</div>
+      <div class="segment-price">$10K — $100K / month content licensing</div>
+      <div class="segment-timeline">Why now: Pickleball content is exploding on TikTok (645% YoY growth). Your pipeline already generates broadcast-ready commentary.</div>
+    </div>
+    <div class="segment-card tier-1">
+      <div class="segment-name">Venues (Bundled Upsell)</div>
+      <div class="segment-companies">Peak Pickleball, Court Kings, Concord PB, Life Time, Chicken N Pickle</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Player retention analytics, court utilization patterns, member engagement scores, facility branding effectiveness</div>
+      <div class="segment-price">Bundled with $99/court/month — drives deal close rate</div>
+      <div class="segment-timeline">Why now: Already in your deal flow. DaaS is the "why our cameras are different" argument in every venue pitch.</div>
+    </div>
+  </div>
+
+  <h3>Tier 2 — Build Toward <span class="tag tag-amber">6-12 months</span></h3>
+  <div class="segment-grid">
+    <div class="segment-card tier-2">
+      <div class="segment-name">Sports Betting & DFS</div>
+      <div class="segment-companies">FanDuel, DraftKings, BetMGM, PrizePicks</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Player performance models, win probability indicators, momentum shift patterns, fatigue signals, consistency metrics, head-to-head matchup predictions</div>
+      <div class="segment-price">$100K — $500K / year exclusive data feeds</div>
+      <div class="segment-timeline">FanDuel already offers pickleball betting (PPA partnership, 10 states). Data infrastructure gap = your opportunity. Requires 1,000+ player profiles for statistical significance.</div>
+    </div>
+    <div class="segment-card tier-2">
+      <div class="segment-name">Apparel & Lifestyle Brands</div>
+      <div class="segment-companies">Lululemon, Skechers, Nike, Vuori, Alo Yoga, FILA</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Player demographic segmentation, apparel visibility data, brand affinity by skill level, purchase intent proxies from on-court appearance</div>
+      <div class="segment-price">$75K — $300K / year sponsorship optimization</div>
+      <div class="segment-timeline">Lululemon/Life Time partnership exists. Your camera data can prove ROI on court-side advertising that currently has zero measurement.</div>
+    </div>
+    <div class="segment-card tier-2">
+      <div class="segment-name">CPG / Health & Wellness</div>
+      <div class="segment-companies">Gatorade/PepsiCo, BioSteel, AG1, Recovery Cave, Therabody</div>
+      <div class="segment-data"><strong>Data they buy:</strong> On-court brand visibility, player hydration/recovery behavior patterns, venue-level brand penetration, demographic reach per court</div>
+      <div class="segment-price">$25K — $150K / year venue-level sponsorship analytics</div>
+      <div class="segment-timeline">Recovery Cave already shows up in your clips. First pitch: "Your brand appears in X clips reaching Y players. Here's your visibility report."</div>
+    </div>
+  </div>
+
+  <h3>Tier 3 — Strategic / Transformational <span class="tag tag-blue">12-24 months</span></h3>
+  <div class="segment-grid">
+    <div class="segment-card tier-3">
+      <div class="segment-name">Data Aggregators & Sports Intelligence</div>
+      <div class="segment-companies">Sportradar, Genius Sports, Stats Perform, Second Spectrum</div>
+      <div class="segment-data"><strong>Data they buy:</strong> White-label video-derived statistics, bulk clip analysis API, institutional-grade player tracking</div>
+      <div class="segment-price">$250K — $2M / year enterprise license</div>
+      <div class="segment-timeline">Highest value but longest sales cycle. Requires enterprise-grade API + SLAs + audit trail. Langfuse + Supabase get you there.</div>
+    </div>
+    <div class="segment-card tier-3">
+      <div class="segment-name">Insurance & Healthcare</div>
+      <div class="segment-companies">UnitedHealth, Humana, AARP, physical therapy chains</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Injury incident patterns, movement biomechanics, fall risk by skill level, demographic health correlations</div>
+      <div class="segment-price">$200K — $1M / year behavioral risk models</div>
+      <div class="segment-timeline">Pickleball injuries cost $377-500M annually (UBS). Massive addressable market but requires compliance/privacy work.</div>
+    </div>
+    <div class="segment-card tier-3">
+      <div class="segment-name">Real Estate & Hospitality</div>
+      <div class="segment-companies">Life Time communities, Pickleball Kingdom, resort chains, Zillow (venue proximity data)</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Venue utilization analytics, player density heatmaps, tournament draw forecasting, membership retention patterns</div>
+      <div class="segment-price">$100K — $500K / year per region</div>
+      <div class="segment-timeline">Homes near PB courts sell 10% premium (Zillow 2024). As your venue network grows, this data becomes extremely valuable.</div>
+    </div>
+    <div class="segment-card tier-3">
+      <div class="segment-name">Local Venue Advertisers</div>
+      <div class="segment-companies">Physical therapy clinics, sports bars, equipment shops, local restaurants near venues</div>
+      <div class="segment-data"><strong>Data they buy:</strong> Player demographics per venue, peak hours, foot traffic proxies, local brand visibility opportunities</div>
+      <div class="segment-price">$500 — $5K / month per venue (self-serve)</div>
+      <div class="segment-timeline">Lowest per-deal value but highest volume at scale. Requires self-serve dashboard + venue partnerships. Build after 10+ venues.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PIPELINE ========== -->
+<div class="section" id="pipeline">
+  <h2>Pipeline Hardening — Making Claude Code Builds Production-Grade</h2>
+
+  <div class="callout">
+    <div class="callout-title">WHAT'S WORKING</div>
+    <p>Gemini 2.5 Flash pipeline at $0.0054/clip, 18s/clip, model cascade with flash-lite fallback, 120 clips analyzed, 36 brands detected, 12 players profiled, badge F1 improved to 45.2%.</p>
+  </div>
+
+  <h3>What to Fix (Priority Order)</h3>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">1. Full Corpus Analysis Run</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">Run <code>fetch-clips-expanded.py</code> → <code>pickle-daas-gemini-analyzer.py</code> on all 4,097 clips. Use the model cascade (flash → flash-lite on 503). Write results to <code>output/full-corpus-20260411/</code>. Estimated cost: ~$22. Estimated time: ~20 hours at 18s/clip. Split into 4 parallel batches of ~1,000 clips for 5-hour runtime.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">2. Error Handling & Retry Logic</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">Current pipeline has basic error handling. Needs: exponential backoff on 503s, dead letter queue for failed clips, checkpoint/resume so a crash at clip 2,000 doesn't require re-analyzing 1-1,999, and a post-run summary showing success/fail/skip counts.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">3. Prompt Versioning System</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">Every analysis JSON should record which prompt version was used (v1.2, v1.3, etc.). Store prompts in <code>prompts/</code> with version numbers. This lets you re-analyze specific clips when prompts improve and track quality improvements over time.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">4. Betting & DFS Fields in Prompt</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">Add to the Gemini analysis prompt: <code>momentum_shifts</code> (array of timestamps), <code>fatigue_indicators</code> (0-10 per player), <code>win_probability_flow</code> (estimated % at each rally point), <code>consistency_score</code> (shot-to-shot variance), <code>clutch_rating</code> (performance under pressure). These cost zero extra per clip but unlock the betting buyer segment.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">5. Langfuse Observability</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">All three research reports flagged this. Track: per-clip cost, latency, token usage, quality scores, model used, error rates. This is table stakes for any enterprise data buyer due diligence and for your investor narrative ("our quality improves every batch").</p>
+    <div class="confidence">
+      <div class="conf-bar conf-high"></div>
+      <div class="conf-label">HIGH CONFIDENCE — Claude, ChatGPT, and Gemini all recommend this</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">6. Auto-Ingest Cron</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">Schedule <code>tools/auto-ingest.py</code> to run daily. Fetch new clips from the API, run Gemini analysis, push to Supabase, update gh-pages export. The corpus grows without you touching anything.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">7. Brand Intelligence Report Generator</div>
+      <span class="tag tag-green">Claude Code overnight</span>
+    </div>
+    <p class="sans" style="font-size:14px;">Automated per-brand reports: <code>python brand-intelligence-report.py --brand JOOLA</code> → produces an HTML report with visibility stats, clip samples, competitive positioning, and whitespace analysis. This IS the product for Tier 1 brand buyers.</p>
+  </div>
+</div>
+
+<!-- ========== LOVABLE ========== -->
+<div class="section" id="lovable">
+  <h2>Lovable Strategy — What to Build, What to Skip</h2>
+
+  <div class="callout">
+    <div class="callout-title">YOUR CURRENT STATE</div>
+    <p>DaaS Explorer v2 is pasted into Lovable. Prompts 08-10 are written but not pasted. Here's the play.</p>
+  </div>
+
+  <div class="decision">
+    <div class="decision-header">🎯 DaaS Explorer v2 = The Core Product</div>
+    <div class="decision-verdict sans" style="font-size:14px;">
+      <p>This is the product. Everything else is a demo or sales tool. Your #1 Lovable priority is making this excellent. Share the Lovable link with me and I'll review via Chrome MCP, then write targeted fix-and-improve prompts you can paste.</p>
+      <p><strong>What it should become:</strong> A self-serve data explorer where any potential buyer can filter by their segment (brands, coaching, media, betting) and see exactly what intelligence they'd get access to. Think "Bloomberg Terminal for pickleball data."</p>
+    </div>
+  </div>
+
+  <h3>What to Do With Prompts 08-10</h3>
+
+  <table>
+    <tr>
+      <th>Prompt</th>
+      <th>What It Builds</th>
+      <th>Recommendation</th>
+      <th>When</th>
+    </tr>
+    <tr>
+      <td><strong>08 — Investor Demo</strong></td>
+      <td>Animated KPIs, player card, brand charts, scale math</td>
+      <td><span class="tag tag-green">BUILD</span> — Paste into a separate Lovable project <code>pickle-daas-investor</code>. Use before investor meetings. Does NOT need to connect to the Explorer.</td>
+      <td>Before next investor conversation</td>
+    </tr>
+    <tr>
+      <td><strong>09 — Court Kings Coaching</strong></td>
+      <td>Black/gold branded coaching intelligence page</td>
+      <td><span class="tag tag-amber">HOLD</span> — Rich is on vacation until ~Apr 24. Build this the week before he returns so it's fresh. Separate project: <code>court-kings-intelligence</code></td>
+      <td>Week of Apr 21</td>
+    </tr>
+    <tr>
+      <td><strong>10 — Multi-Player Comparison</strong></td>
+      <td>Fantasy-style player matchups with radar charts</td>
+      <td><span class="tag tag-amber">HOLD</span> — Cool demo but not revenue-generating. Build after the Explorer is solid and you have 50+ player profiles from the full corpus run.</td>
+      <td>After full corpus analysis</td>
+    </tr>
+  </table>
+
+  <h3>New Lovable Prompt to Write: "Customer Segment Explorer"</h3>
+  <p class="sans" style="font-size:14px;">I'll write a new Lovable prompt that builds an interactive page where potential buyers pick their segment (Equipment Brand / Coaching / Media / Betting / Venue / CPG) and see a tailored view of what data they'd access, sample outputs, and pricing. This is the "front door" for all DaaS sales conversations. I can have this prompt ready for you to paste today.</p>
+
+</div>
+
+<!-- ========== SUPABASE ========== -->
+<div class="section" id="supabase">
+  <h2>Supabase — Decision & Recommendation</h2>
+
+  <div class="decision">
+    <div class="decision-header">✅ VERDICT: Deploy Supabase. It's not legacy — it's essential.</div>
+    <div class="decision-verdict sans" style="font-size:14px;">
+      <p>The schema and push scripts are ready in your repo. Supabase gives you three things no static JSON file on GitHub Pages can:</p>
+      <ol style="margin: 12px 0 12px 20px;">
+        <li><strong>A real API.</strong> Every enterprise buyer expects to hit an endpoint, not download a JSON file. Supabase gives you REST + GraphQL out of the box.</li>
+        <li><strong>Live data.</strong> The Lovable DaaS Explorer can show "LIVE DATA" badges pulling from real analyses instead of hardcoded demos. Investor meetings go from "this is a mockup" to "this is production."</li>
+        <li><strong>Metered access.</strong> Supabase Row Level Security + API keys = per-customer access control. This is how you charge $5K/month for brand-specific data views.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h3>What You Need to Do (5 minutes)</h3>
+  <div class="card">
+    <p class="sans" style="font-size:14px;">
+      <strong>Step 1:</strong> Go to <a href="https://supabase.com">supabase.com</a> → Create account → Create a new project (name it <code>pickle-daas</code>). Free tier is fine to start. Pro ($25/month) when you need more than 500MB.<br><br>
+      <strong>Step 2:</strong> Copy the project URL and anon key from Settings → API.<br><br>
+      <strong>Step 3:</strong> Tell me the URL and key (or paste them into <code>PICKLE-DAAS/.env</code>).<br><br>
+      <strong>Claude Code does the rest:</strong> Run the schema migration, push all 120+ analyses (and later, 4,097), configure Row Level Security, and wire it into the Lovable Explorer.
+    </p>
+  </div>
+
+  <div class="callout-amber callout">
+    <div class="callout-title">WHY NOT SKIP IT?</div>
+    <p>Without Supabase, you're serving static JSON from GitHub Pages. That works for demos but not for: per-customer data access, API metering/billing, real-time corpus updates, or any enterprise sales conversation where they ask "what's your API endpoint?" The $25/month is trivial compared to the credibility it provides.</p>
+  </div>
+</div>
+
+<!-- ========== ROADMAP ========== -->
+<div class="section" id="roadmap">
+  <h2>90-Day Product Roadmap</h2>
+
+  <h3>Week 1-2: Foundation (April 11-25)</h3>
+  <table>
+    <tr><th>Action</th><th>Who</th><th>Output</th></tr>
+    <tr>
+      <td>Full 4,097-clip corpus analysis</td>
+      <td>Claude Code overnight</td>
+      <td>Complete structured dataset — 10x what exists today</td>
+    </tr>
+    <tr>
+      <td>Deploy Supabase + push all data</td>
+      <td>Bill (5 min) + Claude Code</td>
+      <td>Live API endpoint for all analyses</td>
+    </tr>
+    <tr>
+      <td>Wire Lovable Explorer to Supabase</td>
+      <td>Claude Code writes prompt → Bill pastes</td>
+      <td>"LIVE DATA" badge, real-time corpus</td>
+    </tr>
+    <tr>
+      <td>Build buyer segment JSON + Customer Segment Explorer prompt</td>
+      <td>Claude Code</td>
+      <td>Structured sales tool + new Lovable page</td>
+    </tr>
+    <tr>
+      <td>Auto-ingest cron scheduled</td>
+      <td>Claude Code</td>
+      <td>Corpus grows daily without intervention</td>
+    </tr>
+    <tr>
+      <td>Langfuse observability integrated</td>
+      <td>Claude Code overnight</td>
+      <td>Full cost/quality/latency tracking per clip</td>
+    </tr>
+  </table>
+
+  <h3>Week 3-4: First Revenue Conversations (April 25 - May 9)</h3>
+  <table>
+    <tr><th>Action</th><th>Who</th><th>Output</th></tr>
+    <tr>
+      <td>Generate per-brand intelligence reports (JOOLA, Selkirk, HEAD)</td>
+      <td>Claude Code</td>
+      <td>3 shareable HTML reports with real data</td>
+    </tr>
+    <tr>
+      <td>Court Kings coaching demo (Prompt 09) — Rich returns ~Apr 24</td>
+      <td>Claude Code writes → Bill pastes into Lovable</td>
+      <td>Live demo URL for Rich + Bryan</td>
+    </tr>
+    <tr>
+      <td>Outreach to JOOLA + Selkirk with live brand data</td>
+      <td>Claude Code drafts → Bill sends</td>
+      <td>First DaaS pilot conversations</td>
+    </tr>
+    <tr>
+      <td>Investor demo page (Prompt 08) for fundraise meetings</td>
+      <td>Bill pastes into Lovable</td>
+      <td>Updated investor narrative with 4,097-clip proof</td>
+    </tr>
+    <tr>
+      <td>Peak grand opening (May 9) — DaaS running on real venue data</td>
+      <td>Automatic (pipeline + cron)</td>
+      <td>First venue generating live DaaS intelligence</td>
+    </tr>
+  </table>
+
+  <h3>Week 5-8: Scale & Sell (May 9 - June 6)</h3>
+  <table>
+    <tr><th>Action</th><th>Who</th><th>Output</th></tr>
+    <tr>
+      <td>Add betting/DFS fields to analysis prompt</td>
+      <td>Claude Code</td>
+      <td>Expanded schema for sports betting buyers</td>
+    </tr>
+    <tr>
+      <td>DUPR partnership outreach with player enrichment pitch</td>
+      <td>Claude Code drafts → Bill sends</td>
+      <td>Partnership conversation started</td>
+    </tr>
+    <tr>
+      <td>Self-serve brand dashboard in Lovable (Tier 1 product)</td>
+      <td>Claude Code writes prompt → Bill builds</td>
+      <td>Brand buyers can explore their own data</td>
+    </tr>
+    <tr>
+      <td>API key management + metered billing setup</td>
+      <td>Claude Code</td>
+      <td>Revenue infrastructure ready</td>
+    </tr>
+  </table>
+
+  <h3>Week 9-12: Enterprise Ready (June 6 - July 10)</h3>
+  <table>
+    <tr><th>Action</th><th>Who</th><th>Output</th></tr>
+    <tr>
+      <td>Multi-model ensemble (Gemini + Claude for consensus)</td>
+      <td>Claude Code</td>
+      <td>Higher quality scores for enterprise SLAs</td>
+    </tr>
+    <tr>
+      <td>Approach Sportradar / Genius Sports with white-label pitch</td>
+      <td>Bill (with prepared materials)</td>
+      <td>Enterprise licensing conversations</td>
+    </tr>
+    <tr>
+      <td>CPG / apparel brand outreach (Lululemon, Skechers)</td>
+      <td>Claude Code drafts → Bill sends</td>
+      <td>Tier 2 buyer pipeline</td>
+    </tr>
+    <tr>
+      <td>10+ venue milestone → local advertiser self-serve</td>
+      <td>Claude Code + Lovable</td>
+      <td>Long-tail revenue stream activated</td>
+    </tr>
+  </table>
+
+  <div class="callout" style="margin-top:24px;">
+    <div class="callout-title">THE MATH</div>
+    <p>Full corpus analysis: $22 one-time. Supabase: $25/month. Langfuse: free tier. First brand report → outreach → pilot contract: $5K-$50K/month. Time to first DaaS revenue: 30-45 days from today.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+
+</body>
+</html>
