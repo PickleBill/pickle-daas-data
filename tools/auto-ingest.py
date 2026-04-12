@@ -84,7 +84,14 @@ def fetch_new_clips(count=20, badged_only=False, already_analyzed=None):
         pages_scanned += 1
 
         for group in results:
+            # API changed: highlight_file is now nested inside highlights[].file
             highlight_file = group.get("highlight_file")
+            if not highlight_file:
+                highlights = group.get("highlights", [])
+                for h in highlights:
+                    if h.get("file"):
+                        highlight_file = h["file"]
+                        break
             if not highlight_file:
                 continue
 
