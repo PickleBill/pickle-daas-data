@@ -1,11 +1,11 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-13T17:37:28.340756+00:00_
+_Generated: 2026-04-13T19:22:27.341370+00:00_
 
 ## Summary
 
 - **Corpus on gh-pages:** 492 clips
-- **Total analysis files on disk:** 1021 (1021 ≥500 bytes)
-- **Minutes since last analysis:** 22.5
+- **Total analysis files on disk:** 1024 (1024 ≥500 bytes)
+- **Minutes since last analysis:** 58.3
 - **Human flags:** 7 total (7 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
@@ -13,7 +13,7 @@ _Generated: 2026-04-13T17:37:28.340756+00:00_
 - **Precision:** 37.8%  (343 TP / 908 predicted)
 - **Recall:**    48.1%  (343 TP / 713 awarded)
 - **F1 Score:**  42.3%
-- **Predictions analyzed:** 1407 across 385 unique clips
+- **Predictions analyzed:** 1411 across 386 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
@@ -33,22 +33,22 @@ _Generated: 2026-04-13T17:37:28.340756+00:00_
 
 ## Field Fill Rates (Schema Completeness)
 
-Sampled 455 most-recent analyses.
+Sampled 458 most-recent analyses.
 **1** fields are below 80% population.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 0/455 | 0% |
-| brand_detection.brands | 418/455 | 92% |
-| clip_meta.clip_quality_score | 455/455 | 100% |
-| clip_meta.viral_potential_score | 455/455 | 100% |
-| clip_meta.watchability_score | 455/455 | 100% |
-| skill_indicators.kitchen_mastery_rating | 455/455 | 100% |
-| commentary.neutral_announcer_espn | 455/455 | 100% |
-| storytelling.story_arc | 455/455 | 100% |
-| daas_signals.clip_summary_one_sentence | 455/455 | 100% |
-| badge_intelligence.predicted_badges | 455/455 | 100% |
-| daas_signals.data_richness_score | 455/455 | 100% |
+| analysis_confidence ⚠️ | 0/458 | 0% |
+| brand_detection.brands | 418/458 | 91% |
+| clip_meta.clip_quality_score | 458/458 | 100% |
+| clip_meta.viral_potential_score | 458/458 | 100% |
+| clip_meta.watchability_score | 458/458 | 100% |
+| skill_indicators.kitchen_mastery_rating | 458/458 | 100% |
+| commentary.neutral_announcer_espn | 458/458 | 100% |
+| storytelling.story_arc | 458/458 | 100% |
+| daas_signals.clip_summary_one_sentence | 458/458 | 100% |
+| badge_intelligence.predicted_badges | 458/458 | 100% |
+| daas_signals.data_richness_score | 458/458 | 100% |
 
 ## Human Feedback
 
