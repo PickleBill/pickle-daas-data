@@ -1,54 +1,54 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-13T19:47:33.566817+00:00_
+_Generated: 2026-04-13T20:36:08.354367+00:00_
 
 ## Summary
 
 - **Corpus on gh-pages:** 493 clips
-- **Total analysis files on disk:** 1024 (1024 ≥500 bytes)
-- **Minutes since last analysis:** 83.4
+- **Total analysis files on disk:** 1025 (1025 ≥500 bytes)
+- **Minutes since last analysis:** 20.3
 - **Human flags:** 7 total (7 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 37.8%  (343 TP / 908 predicted)
-- **Recall:**    48.1%  (343 TP / 713 awarded)
+- **Precision:** 37.8%  (345 TP / 913 predicted)
+- **Recall:**    48.0%  (345 TP / 719 awarded)
 - **F1 Score:**  42.3%
-- **Predictions analyzed:** 1411 across 386 unique clips
+- **Predictions analyzed:** 1416 across 387 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Kitchen King | 30 | 111 | 0 | 21% | 100% | 35% |
-| Dink Machine | 0 | 138 | 0 | 0% | 0% | 0% |
-| Epic Rally | 41 | 81 | 1 | 34% | 98% | 50% |
+| Kitchen King | 30 | 112 | 0 | 21% | 100% | 35% |
+| Dink Machine | 0 | 139 | 0 | 0% | 0% | 0% |
+| Epic Rally | 41 | 82 | 1 | 33% | 98% | 50% |
 | Consistency King | 0 | 119 | 0 | 0% | 0% | 0% |
-| Steady Eddie | 62 | 0 | 49 | 100% | 56% | 72% |
-| Rally Master | 78 | 0 | 32 | 100% | 71% | 83% |
-| New Look | 0 | 0 | 74 | 0% | 0% | 0% |
+| Steady Eddie | 63 | 0 | 49 | 100% | 56% | 72% |
+| Rally Master | 78 | 0 | 33 | 100% | 70% | 82% |
+| New Look | 0 | 0 | 75 | 0% | 0% | 0% |
 | Power Player | 0 | 53 | 0 | 0% | 0% | 0% |
 | Fresh Fit | 1 | 0 | 42 | 100% | 2% | 4% |
-| Two Up Pressure | 16 | 0 | 25 | 100% | 39% | 56% |
+| Two Up Pressure | 16 | 0 | 26 | 100% | 38% | 55% |
 
 ## Field Fill Rates (Schema Completeness)
 
-Sampled 458 most-recent analyses.
+Sampled 459 most-recent analyses.
 **1** fields are below 80% population.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 0/458 | 0% |
-| brand_detection.brands | 418/458 | 91% |
-| clip_meta.clip_quality_score | 458/458 | 100% |
-| clip_meta.viral_potential_score | 458/458 | 100% |
-| clip_meta.watchability_score | 458/458 | 100% |
-| skill_indicators.kitchen_mastery_rating | 458/458 | 100% |
-| commentary.neutral_announcer_espn | 458/458 | 100% |
-| storytelling.story_arc | 458/458 | 100% |
-| daas_signals.clip_summary_one_sentence | 458/458 | 100% |
-| badge_intelligence.predicted_badges | 458/458 | 100% |
-| daas_signals.data_richness_score | 458/458 | 100% |
+| analysis_confidence ⚠️ | 0/459 | 0% |
+| brand_detection.brands | 419/459 | 91% |
+| clip_meta.clip_quality_score | 459/459 | 100% |
+| clip_meta.viral_potential_score | 459/459 | 100% |
+| clip_meta.watchability_score | 459/459 | 100% |
+| skill_indicators.kitchen_mastery_rating | 459/459 | 100% |
+| commentary.neutral_announcer_espn | 459/459 | 100% |
+| storytelling.story_arc | 459/459 | 100% |
+| daas_signals.clip_summary_one_sentence | 459/459 | 100% |
+| badge_intelligence.predicted_badges | 459/459 | 100% |
+| daas_signals.data_richness_score | 459/459 | 100% |
 
 ## Human Feedback
 
