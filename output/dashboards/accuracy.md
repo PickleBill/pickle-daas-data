@@ -1,54 +1,54 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-13T20:36:08.354367+00:00_
+_Generated: 2026-04-13T23:40:40.578678+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 493 clips
-- **Total analysis files on disk:** 1025 (1025 ≥500 bytes)
-- **Minutes since last analysis:** 20.3
+- **Corpus on gh-pages:** 496 clips
+- **Total analysis files on disk:** 1108 (1108 ≥500 bytes)
+- **Minutes since last analysis:** 109.4
 - **Human flags:** 7 total (7 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 37.8%  (345 TP / 913 predicted)
-- **Recall:**    48.0%  (345 TP / 719 awarded)
-- **F1 Score:**  42.3%
-- **Predictions analyzed:** 1416 across 387 unique clips
+- **Precision:** 43.3%  (460 TP / 1062 predicted)
+- **Recall:**    54.6%  (460 TP / 843 awarded)
+- **F1 Score:**  48.3%
+- **Predictions analyzed:** 1657 across 451 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Kitchen King | 30 | 112 | 0 | 21% | 100% | 35% |
-| Dink Machine | 0 | 139 | 0 | 0% | 0% | 0% |
-| Epic Rally | 41 | 82 | 1 | 33% | 98% | 50% |
-| Consistency King | 0 | 119 | 0 | 0% | 0% | 0% |
-| Steady Eddie | 63 | 0 | 49 | 100% | 56% | 72% |
-| Rally Master | 78 | 0 | 33 | 100% | 70% | 82% |
-| New Look | 0 | 0 | 75 | 0% | 0% | 0% |
+| Kitchen King | 33 | 120 | 0 | 22% | 100% | 36% |
+| Steady Eddie | 97 | 0 | 49 | 100% | 66% | 80% |
+| Rally Master | 106 | 2 | 33 | 98% | 76% | 86% |
+| Dink Machine | 0 | 140 | 0 | 0% | 0% | 0% |
+| Epic Rally | 49 | 83 | 1 | 37% | 98% | 54% |
+| Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
+| New Look | 0 | 0 | 76 | 0% | 0% | 0% |
 | Power Player | 0 | 53 | 0 | 0% | 0% | 0% |
-| Fresh Fit | 1 | 0 | 42 | 100% | 2% | 4% |
-| Two Up Pressure | 16 | 0 | 26 | 100% | 38% | 55% |
+| Two Up Pressure | 24 | 0 | 26 | 100% | 48% | 65% |
+| Fresh Fit | 1 | 0 | 46 | 100% | 2% | 4% |
 
 ## Field Fill Rates (Schema Completeness)
 
-Sampled 459 most-recent analyses.
+Sampled 500 most-recent analyses.
 **1** fields are below 80% population.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 0/459 | 0% |
-| brand_detection.brands | 419/459 | 91% |
-| clip_meta.clip_quality_score | 459/459 | 100% |
-| clip_meta.viral_potential_score | 459/459 | 100% |
-| clip_meta.watchability_score | 459/459 | 100% |
-| skill_indicators.kitchen_mastery_rating | 459/459 | 100% |
-| commentary.neutral_announcer_espn | 459/459 | 100% |
-| storytelling.story_arc | 459/459 | 100% |
-| daas_signals.clip_summary_one_sentence | 459/459 | 100% |
-| badge_intelligence.predicted_badges | 459/459 | 100% |
-| daas_signals.data_richness_score | 459/459 | 100% |
+| analysis_confidence ⚠️ | 79/500 | 16% |
+| brand_detection.brands | 446/500 | 89% |
+| clip_meta.clip_quality_score | 500/500 | 100% |
+| clip_meta.viral_potential_score | 500/500 | 100% |
+| clip_meta.watchability_score | 500/500 | 100% |
+| skill_indicators.kitchen_mastery_rating | 500/500 | 100% |
+| commentary.neutral_announcer_espn | 500/500 | 100% |
+| storytelling.story_arc | 500/500 | 100% |
+| daas_signals.clip_summary_one_sentence | 500/500 | 100% |
+| badge_intelligence.predicted_badges | 500/500 | 100% |
+| daas_signals.data_richness_score | 500/500 | 100% |
 
 ## Human Feedback
 
