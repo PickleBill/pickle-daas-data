@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coach Demo · PickleBill — Pickle DaaS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(98% 0.005 80);
+  --bg-alt: oklch(95% 0.012 80);
+  --surface: oklch(100% 0 0);
+  --border: oklch(88% 0.012 80);
+  --text: oklch(18% 0.015 80);
+  --text-2: oklch(44% 0.016 80);
+  --text-3: oklch(62% 0.01 80);
+  --accent: oklch(48% 0.18 50);   /* warm coach orange */
+  --accent-soft: oklch(95% 0.04 60);
+  --accent-border: oklch(85% 0.08 55);
+  --green: oklch(52% 0.13 155);
+  --green-soft: oklch(94% 0.04 155);
+  --ff-d: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ff-b: 'Literata', Georgia, serif;
+  --ff-m: 'Azeret Mono', monospace;
+  --r: 12px;
+  --r-l: 18px;
+  --shadow: 0 4px 16px oklch(0% 0 0 / 0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--text); font-family: var(--ff-b); line-height: 1.65; }
+img { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+nav { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+.nav-l { font-family: var(--ff-d); font-weight: 700; font-size: 0.95rem; }
+.nav-l span { color: var(--accent); }
+.nav-r { font-family: var(--ff-d); font-size: 0.8rem; color: var(--text-2); display: flex; gap: 16px; }
+.nav-r a { color: var(--text-2); }
+.nav-pill { font-family: var(--ff-m); font-size: 0.7rem; padding: 3px 10px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; }
+
+.shell { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+
+.hero { padding: 64px 0 32px; }
+.eyebrow { font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+h1.hero-h { font-family: var(--ff-d); font-size: 3.2rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 18px; }
+.hero-sub { font-size: 1.1rem; color: var(--text-2); max-width: 600px; }
+
+.player-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-l); padding: 28px; margin-top: 36px; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; box-shadow: var(--shadow); }
+.player-avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--accent); color: oklch(98% 0.005 80); display: flex; align-items: center; justify-content: center; font-family: var(--ff-d); font-weight: 800; font-size: 1.6rem; }
+.player-meta h2 { font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+.player-meta .style { font-family: var(--ff-d); color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.player-stats { font-size: 0.95rem; color: var(--text-2); line-height: 1.6; }
+
+section.block { margin-top: 64px; }
+.section-head h2 { font-family: var(--ff-d); font-size: 1.7rem; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 6px; }
+.section-head .desc { color: var(--text-2); margin-bottom: 24px; }
+
+.dna-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; }
+.skill-row { display: grid; grid-template-columns: 160px 1fr 40px; gap: 14px; align-items: center; padding: 8px 0; }
+.skill-label { font-family: var(--ff-d); font-size: 0.88rem; color: var(--text-2); }
+.skill-bar-bg { background: var(--bg-alt); height: 12px; border-radius: 6px; overflow: hidden; }
+.skill-bar-fill { background: linear-gradient(90deg, var(--accent), oklch(58% 0.16 50)); height: 100%; border-radius: 6px; transition: width 0.5s; }
+.skill-value { font-family: var(--ff-m); font-size: 0.88rem; text-align: right; font-variant-numeric: tabular-nums; }
+
+.scene { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-l); padding: 28px; margin-bottom: 20px; }
+.scene-num { font-family: var(--ff-m); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.scene-role { font-family: var(--ff-d); font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-top: 4px; }
+.scene-role-desc { font-size: 0.95rem; color: var(--text-2); margin: 6px 0 18px; font-style: italic; }
+.scene-clip { display: block; aspect-ratio: 16/9; border-radius: var(--r); overflow: hidden; background: var(--bg-alt); position: relative; margin-bottom: 18px; transition: transform 0.15s; }
+.scene-clip:hover { transform: translateY(-2px); }
+.scene-thumb { width: 100%; height: 100%; object-fit: cover; }
+.scene-thumb.placeholder { background: linear-gradient(135deg, var(--bg-alt), var(--accent-soft)); }
+.scene-q { position: absolute; top: 12px; right: 12px; background: oklch(18% 0.015 80 / 0.85); color: oklch(99% 0 0); font-family: var(--ff-d); font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+.scene-text { display: grid; gap: 14px; }
+.scene-label { font-family: var(--ff-d); font-size: 0.7rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.scene-summary { font-size: 1rem; color: var(--text); }
+.scene-espn { font-size: 0.95rem; color: var(--text-2); font-style: italic; padding-left: 12px; border-left: 3px solid var(--accent); }
+.scene-coaching { font-size: 0.98rem; color: var(--text); background: var(--green-soft); padding: 14px 18px; border-radius: var(--r); border-left: 3px solid var(--green); }
+
+.drill { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start; padding: 22px 0; border-bottom: 1px solid var(--border); }
+.drill:last-child { border-bottom: none; }
+.drill-num { width: 48px; height: 48px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-family: var(--ff-d); font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; }
+.drill-body h4 { font-family: var(--ff-d); font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.drill-targets { font-family: var(--ff-m); font-size: 0.75rem; color: var(--text-3); margin-bottom: 6px; }
+.drill-body p { font-size: 0.95rem; color: var(--text-2); }
+
+.cta { margin-top: 80px; padding: 48px 32px; text-align: center; background: var(--text); color: oklch(97% 0.005 80); border-radius: var(--r-l); }
+.cta h3 { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
+.cta p { color: oklch(75% 0.01 80); font-size: 1.05rem; max-width: 540px; margin: 0 auto 24px; }
+.cta a.btn { display: inline-block; background: oklch(99% 0.005 80); color: var(--text); font-family: var(--ff-d); font-weight: 600; padding: 12px 28px; border-radius: 999px; }
+.cta a.btn:hover { transform: translateY(-1px); text-decoration: none; }
+
+footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); }
+
+@media (max-width: 700px) {
+  h1.hero-h { font-size: 2.2rem; }
+  .player-card { grid-template-columns: 1fr; padding: 20px; }
+  .skill-row { grid-template-columns: 110px 1fr 36px; }
+  .scene { padding: 20px; }
+  .scene-role { font-size: 1.2rem; }
+  .cta h3 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-l">Pickle <span>DaaS</span> · Coach Demo</div>
+  <div class="nav-r">
+    <span class="nav-pill">For coaches</span>
+    <a href="../showcase-portal.html">Portal ↗</a>
+    <a href="mailto:bill@picklebill.com">contact</a>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <header class="hero">
+    <div class="eyebrow">A real session · 2026-04-13 20:55 UTC</div>
+    <h1 class="hero-h">Meet PickleBill.<br>This is what AI coaching looks like.</h1>
+    <p class="hero-sub">
+      Every clip PickleBill plays gets analyzed automatically — shot-by-shot. The AI calls out strengths,
+      pinpoints growth areas, prescribes drills. No coach manually reviewing tape. No paid tier required to start.
+      Just watch.
+    </p>
+
+    <div class="player-card">
+      <div class="player-avatar">PI</div>
+      <div class="player-meta">
+        <h2>PickleBill</h2>
+        <div class="style">Grind Rally · 29 clips analyzed of 61 total</div>
+        <div class="player-stats">
+          <div><strong>Top brands worn:</strong> JOOLA (36) · SMASHWORKS (4) · STRONGSIDE (2)</div>
+          <div><strong>Earned badges:</strong> Rally Master (45) · Steady Eddie (39) · Epic Rally (21) · Kitchen King (16) · Two Up Pressure (12)</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Player DNA</h2>
+      <p class="desc">Skill ratings 0–10, averaged across every analyzed clip. Updates after every match.</p>
+    </div>
+    <div class="dna-card">
+      
+      <div class="skill-row">
+        <div class="skill-label">Court coverage</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:59.0%"></div></div>
+        <div class="skill-value">5.9</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Kitchen mastery</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:70.0%"></div></div>
+        <div class="skill-value">7.0</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Power game</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:41.0%"></div></div>
+        <div class="skill-value">4.1</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Touch &amp; feel</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:69.0%"></div></div>
+        <div class="skill-value">6.9</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Athleticism</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:51.0%"></div></div>
+        <div class="skill-value">5.1</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Creativity</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:29.0%"></div></div>
+        <div class="skill-value">2.9</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Court IQ</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:65.0%"></div></div>
+        <div class="skill-value">6.5</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Consistency</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:79.0%"></div></div>
+        <div class="skill-value">7.9</div>
+      </div>
+    
+      <div class="skill-row">
+        <div class="skill-label">Composure</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:70.0%"></div></div>
+        <div class="skill-value">7.0</div>
+      </div>
+    
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Three teaching moments from this session</h2>
+      <p class="desc">The AI picks clips that span a strength, a growth area, and a turning point — then writes the coaching note. Real clips, real commentary.</p>
+    </div>
+    
+    <div class="scene">
+      <div class="scene-num">Clip 1</div>
+      <div class="scene-role">Strength</div>
+      <p class="scene-role-desc">Where the player is operating at their peak.</p>
+      <a class="scene-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.mp4" target="_blank" rel="noopener">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="" class="scene-thumb">
+        <div class="scene-q">★ 9/10 · play ↗</div>
+      </a>
+      <div class="scene-text">
+        <div class="scene-label">What happened</div>
+        <p class="scene-summary">A long pickleball dink rally culminates in a speed-up error at the kitchen line.</p>
+        <div class="scene-label">ESPN call</div><p class="scene-espn">A patient rally unfolds at the net, with both teams exchanging precise dinks. The intensity builds as the ball stays low, until a decisive speed-up attempt sails just wide, concluding a hard-fought point.</p>
+        <div class="scene-label">Coaching breakdown</div>
+        <p class="scene-coaching">This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle. Consider a more controlled attack or another dink to open up a better opportunity. Focus on keeping the ball in play and waiting for the high ball.</p>
+      </div>
+    </div>
+    
+    <div class="scene">
+      <div class="scene-num">Clip 2</div>
+      <div class="scene-role">Teaching moment</div>
+      <p class="scene-role-desc">AI-detected pattern worth focused practice.</p>
+      <a class="scene-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3cb70b63-fdc5-4217-8c77-d5a078f1c7b0.mp4" target="_blank" rel="noopener">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3cb70b63-fdc5-4217-8c77-d5a078f1c7b0.jpeg" alt="" class="scene-thumb">
+        <div class="scene-q">★ 7/10 · play ↗</div>
+      </a>
+      <div class="scene-text">
+        <div class="scene-label">What happened</div>
+        <p class="scene-summary">Players execute strategic dinks and a key third shot drop, ending with a volley error.</p>
+        <div class="scene-label">ESPN call</div><p class="scene-espn">A well-executed third shot drop by the near team's player in the blue shirt sets up a strategic advantage. The rally then transitions into a patient dink exchange at the net, showcasing control and touch.</p>
+        <div class="scene-label">Coaching breakdown</div>
+        <p class="scene-coaching">Notice the excellent depth on that third shot drop, forcing the opponents back. The subsequent dinks show good control and patience. The key is to maintain that position and look for opportunities to attack or reset. The volley error at the end highlights the need for consistent footwork and paddle preparation under pressure.</p>
+      </div>
+    </div>
+    
+    <div class="scene">
+      <div class="scene-num">Clip 3</div>
+      <div class="scene-role">Growth area</div>
+      <p class="scene-role-desc">Where intentional reps will compound the fastest.</p>
+      <a class="scene-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/52f6ee3d-c53c-4038-90d9-8ca92edd2a7a.mp4" target="_blank" rel="noopener">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/52f6ee3d-c53c-4038-90d9-8ca92edd2a7a.jpeg" alt="" class="scene-thumb">
+        <div class="scene-q">★ 6/10 · play ↗</div>
+      </a>
+      <div class="scene-text">
+        <div class="scene-label">What happened</div>
+        <p class="scene-summary">Two pairs of players engage in a consistent rally of baseline drives.</p>
+        <div class="scene-label">ESPN call</div><p class="scene-espn">In this pickleball rally, we see a sustained exchange of drives from both sides of the court. The players are demonstrating solid consistency, keeping the ball in play with impressive depth and pace. It's a testament to their focus and control.</p>
+        <div class="scene-label">Coaching breakdown</div>
+        <p class="scene-coaching">Notice the consistent depth on these drives. The players are effectively using the baseline to their advantage, forcing their opponents to react. However, there's a lack of variety; incorporating some dinks or a well-placed drop shot could open up opportunities to move forward and finish points at the net.</p>
+      </div>
+    </div>
+    
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Drills, targeted at this week's weakest dimensions</h2>
+      <p class="desc">Recommendations are weighted by your three lowest skill ratings. They change as your DNA improves.</p>
+    </div>
+    <div class="dna-card">
+      
+    <div class="drill">
+      <div class="drill-num">1</div>
+      <div class="drill-body">
+        <div class="drill-targets">Targets: Creativity · current rating 2.9/10</div>
+        <h4>ATP and ernie repetition</h4>
+        <p>Partner feeds wide angle balls; player works around-the-post and erne shots until comfortable improvising.</p>
+      </div>
+    </div>
+    
+    <div class="drill">
+      <div class="drill-num">2</div>
+      <div class="drill-body">
+        <div class="drill-targets">Targets: Power game · current rating 4.1/10</div>
+        <h4>Drive-and-recover ladder</h4>
+        <p>Baseline drives off feeds, immediately split-step and recover to NVZ. 3 sets of 10. Builds explosive transitions.</p>
+      </div>
+    </div>
+    
+    <div class="drill">
+      <div class="drill-num">3</div>
+      <div class="drill-body">
+        <div class="drill-targets">Targets: Athleticism · current rating 5.1/10</div>
+        <h4>Lateral footwork wall drill</h4>
+        <p>Side-shuffle with paddle out, simulating opponent angle changes. 30s on, 30s off, 5 rounds.</p>
+      </div>
+    </div>
+    
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Imagine this for every session.</h2>
+      <p class="desc">No setup. Just play. The cameras are already at your venue — Courtana already records every clip. We turn each one into this.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <h3>Bring this to your venue.</h3>
+    <p>Coaches see every player's progress. Players see their own DNA evolve. Venues see retention rise. Booking-agnostic — it layers on top of whatever you already use.</p>
+    <a class="btn" href="mailto:bill@picklebill.com?subject=Coach%20demo%20followup">Talk to us</a>
+  </div>
+
+  <footer>
+    <div>Pickle DaaS · Snapshot rebuilt 2026-04-13 20:55 UTC</div>
+    <div><a href="../../player-cards/picklebill.html">Full player card ↗</a> · <a href="../showcase-portal.html">Showcase ↗</a></div>
+  </footer>
+
+</div>
+</body></html>

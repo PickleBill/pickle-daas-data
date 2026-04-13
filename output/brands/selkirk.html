@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selkirk · Brand Intelligence Report — Pickle DaaS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(97.5% 0.008 145);
+  --surface: oklch(100% 0 0);
+  --surface-2: oklch(95% 0.012 145);
+  --border: oklch(88% 0.012 155);
+  --text: oklch(18% 0.015 155);
+  --text-2: oklch(44% 0.016 155);
+  --text-3: oklch(62% 0.01 155);
+  --accent: oklch(42% 0.14 155);
+  --accent-soft: oklch(94% 0.04 155);
+  --gold: oklch(58% 0.14 85);
+  --warn: oklch(56% 0.15 50);
+  --ff-d: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ff-b: 'Literata', Georgia, serif;
+  --ff-m: 'Azeret Mono', monospace;
+  --r: 12px;
+  --r-l: 18px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--text); font-family: var(--ff-b); line-height: 1.65; }
+img { display: block; max-width: 100%; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.shell { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
+
+nav { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+.nav-l { font-family: var(--ff-d); font-weight: 700; font-size: 0.95rem; }
+.nav-l span { color: var(--accent); }
+.nav-r { font-family: var(--ff-d); font-size: 0.8rem; color: var(--text-2); display: flex; gap: 16px; }
+.nav-r a { color: var(--text-2); }
+.nav-r a:hover { color: var(--accent); text-decoration: none; }
+
+.hero { padding: 56px 0 32px; }
+.eyebrow { font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+h1.brand-name { font-family: var(--ff-d); font-size: 3.4rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; color: var(--text); margin-bottom: 18px; }
+.hero-sub { font-size: 1.1rem; color: var(--text-2); max-width: 620px; margin-bottom: 28px; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-top: 28px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; }
+.kpi-num { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
+.kpi-num small { font-size: 0.85rem; color: var(--text-3); font-weight: 500; }
+.kpi-label { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 8px; }
+.kpi.accent { background: var(--accent-soft); border-color: oklch(84% 0.06 155); }
+.kpi.accent .kpi-num { color: var(--accent); }
+
+section.block { margin-top: 56px; }
+.section-head { margin-bottom: 20px; }
+.section-head h2 { font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.section-head .desc { color: var(--text-2); font-size: 0.95rem; margin-top: 6px; }
+
+.clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.clip-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; display: block; color: inherit; }
+.clip-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px oklch(0% 0 0 / 0.08); text-decoration: none; }
+.clip-thumb-wrap { position: relative; aspect-ratio: 16/9; background: var(--surface-2); }
+.clip-thumb { width: 100%; height: 100%; object-fit: cover; }
+.clip-thumb.placeholder { background: linear-gradient(135deg, var(--surface-2), var(--accent-soft)); }
+.clip-quality { position: absolute; top: 8px; right: 8px; background: oklch(18% 0.015 155 / 0.85); color: oklch(99% 0 0); font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
+.clip-body { padding: 12px 14px 14px; }
+.clip-summary { font-size: 0.95rem; color: var(--text); line-height: 1.45; margin-bottom: 10px; min-height: 2.7em; }
+.clip-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.meta-pill { font-family: var(--ff-d); font-size: 0.68rem; padding: 2px 8px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; font-weight: 600; }
+.meta-uuid { font-family: var(--ff-m); font-size: 0.7rem; color: var(--text-3); margin-left: auto; }
+
+.skill-grid { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; }
+.skill-row { display: grid; grid-template-columns: 160px 1fr 40px; gap: 14px; align-items: center; padding: 8px 0; }
+.skill-label { font-family: var(--ff-d); font-size: 0.85rem; color: var(--text-2); }
+.skill-bar-bg { background: var(--surface-2); height: 10px; border-radius: 5px; overflow: hidden; }
+.skill-bar-fill { background: var(--accent); height: 100%; border-radius: 5px; transition: width 0.5s; }
+.skill-value { font-family: var(--ff-m); font-size: 0.85rem; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+
+.comp-table { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; border-collapse: collapse; }
+.comp-table th, .comp-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+.comp-table th { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; background: var(--surface-2); }
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table tr.row-self { background: var(--accent-soft); font-weight: 600; }
+.comp-table .rank-cell { font-family: var(--ff-d); font-weight: 700; color: var(--text-3); width: 50px; }
+.comp-table .num-cell { font-family: var(--ff-m); text-align: right; font-variant-numeric: tabular-nums; width: 80px; }
+.comp-bar-bg { background: var(--surface-2); height: 8px; border-radius: 4px; min-width: 80px; }
+.comp-bar-fill { background: var(--accent); height: 100%; border-radius: 4px; }
+
+.media-card { background: linear-gradient(135deg, var(--accent-soft), var(--surface)); border: 1px solid oklch(84% 0.06 155); border-radius: var(--r-l); padding: 32px; }
+.media-card .big-num { font-family: var(--ff-d); font-size: 3.5rem; font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
+.media-card .sub { font-size: 1.05rem; color: var(--text-2); margin-top: 8px; }
+.media-card .formula { font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+.cta { margin-top: 64px; padding: 44px 32px; text-align: center; background: var(--text); color: oklch(97% 0.005 145); border-radius: var(--r-l); }
+.cta h3 { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+.cta p { color: oklch(75% 0.01 145); font-size: 1.05rem; max-width: 560px; margin: 0 auto 24px; }
+.cta a.btn { display: inline-block; background: oklch(99% 0.005 145); color: var(--text); font-family: var(--ff-d); font-weight: 600; padding: 12px 28px; border-radius: 999px; transition: transform 0.15s; }
+.cta a.btn:hover { transform: translateY(-1px); text-decoration: none; }
+
+.empty-note { padding: 24px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--r); color: var(--text-3); text-align: center; font-style: italic; }
+
+footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); }
+footer a { color: var(--text-3); }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 700px) {
+  h1.brand-name { font-size: 2.4rem; }
+  .skill-row { grid-template-columns: 110px 1fr 36px; }
+  .comp-table th:nth-child(3), .comp-table td:nth-child(3) { display: none; }
+  .media-card .big-num { font-size: 2.6rem; }
+  .cta { padding: 32px 20px; }
+  .cta h3 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-l">Pickle <span>DaaS</span> · Brand Intelligence</div>
+  <div class="nav-r">
+    <a href="../dashboards/showcase-portal.html">Portal ↗</a>
+    <a href="mailto:data@courtana.com">data@courtana.com</a>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <header class="hero">
+    <div class="eyebrow">Brand Intelligence Report</div>
+    <h1 class="brand-name">Selkirk</h1>
+    <p class="hero-sub">
+      Real exposure data from 510 pickleball clips analyzed by Courtana's AI.
+      Every number on this page references a clip with a verifiable UUID — generated 2026-04-13 20:55 UTC.
+    </p>
+
+    <div class="kpi-row">
+      <div class="kpi accent">
+        <div class="kpi-num">4</div>
+        <div class="kpi-label">Clips featuring Selkirk</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">0.8<small>%</small></div>
+        <div class="kpi-label">Market share of corpus</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">0.8<small>%</small></div>
+        <div class="kpi-label">Share of voice</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">#9</div>
+        <div class="kpi-label">Brand rank in corpus</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Top 4 clips featuring Selkirk</h2>
+      <div class="desc">Ranked by quality × viral potential. Click any thumbnail to play.</div>
+    </div>
+    <div class="clip-grid">
+      
+    <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.mp4" target="_blank" rel="noopener">
+      <div class="clip-thumb-wrap">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f4df1bb4-196e-4588-bfee-cd2ca367d138.jpeg" alt="" class="clip-thumb">
+        <div class="clip-quality">★ 8/10</div>
+      </div>
+      <div class="clip-body">
+        <div class="clip-summary">A multi-view montage shows various players engaged in casual pickleball rallies across four indoor courts.</div>
+        <div class="clip-meta">
+          <span class="meta-pill">social play</span>
+          <span class="meta-pill">viral 4/10</span>
+          <span class="meta-uuid">f4df1bb4</span>
+        </div>
+      </div>
+    </a>
+    
+    <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.mp4" target="_blank" rel="noopener">
+      <div class="clip-thumb-wrap">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.jpeg" alt="" class="clip-thumb">
+        <div class="clip-quality">★ 8/10</div>
+      </div>
+      <div class="clip-body">
+        <div class="clip-summary">A player serves the pickleball, which is then returned by an opponent, showcasing fundamental shots.</div>
+        <div class="clip-meta">
+          <span class="meta-pill">teaching moment</span>
+          <span class="meta-pill">viral 2/10</span>
+          <span class="meta-uuid">ac0e1a1b</span>
+        </div>
+      </div>
+    </a>
+    
+    <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b0ba59c2-313a-43a1-817f-11e80b5402e7.mp4" target="_blank" rel="noopener">
+      <div class="clip-thumb-wrap">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b0ba59c2-313a-43a1-817f-11e80b5402e7.jpeg" alt="" class="clip-thumb">
+        <div class="clip-quality">★ 6/10</div>
+      </div>
+      <div class="clip-body">
+        <div class="clip-summary">Players engage in a patient kitchen dink rally, ending with a speed-up that forces an error.</div>
+        <div class="clip-meta">
+          <span class="meta-pill">grind rally</span>
+          <span class="meta-pill">viral 4/10</span>
+          <span class="meta-uuid">b0ba59c2</span>
+        </div>
+      </div>
+    </a>
+    
+    <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c364f8f5-bdae-4b03-9ea5-62c28a5cf13a.mp4" target="_blank" rel="noopener">
+      <div class="clip-thumb-wrap">
+        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/c364f8f5-bdae-4b03-9ea5-62c28a5cf13a.jpeg" alt="" class="clip-thumb">
+        <div class="clip-quality">★ 0/10</div>
+      </div>
+      <div class="clip-body">
+        <div class="clip-summary">Pickleball rally</div>
+        <div class="clip-meta">
+          <span class="meta-pill">dink</span>
+          <span class="meta-pill">viral 0/10</span>
+          <span class="meta-uuid">c364f8f5</span>
+        </div>
+      </div>
+    </a>
+    
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Player skill profile</h2>
+      <div class="desc">Average skill ratings (0–10) across players whose clips feature Selkirk.</div>
+    </div>
+    <div class="skill-grid">
+      
+          <div class="skill-row">
+            <div class="skill-label">Court coverage</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+            <div class="skill-value">6.0</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Kitchen mastery</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+            <div class="skill-value">6.0</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Power game</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:55.0%"></div></div>
+            <div class="skill-value">5.5</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Touch & feel</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+            <div class="skill-value">6.0</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Athleticism</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+            <div class="skill-value">6.0</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Creativity</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:50%"></div></div>
+            <div class="skill-value">5.0</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Court IQ</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+            <div class="skill-value">6.0</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Consistency</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:65.0%"></div></div>
+            <div class="skill-value">6.5</div>
+          </div>
+        
+          <div class="skill-row">
+            <div class="skill-label">Composure</div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:65.0%"></div></div>
+            <div class="skill-value">6.5</div>
+          </div>
+        
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Competitive position</h2>
+      <div class="desc">Selkirk ranked against the top brands detected across the corpus.</div>
+    </div>
+    <table class="comp-table">
+      <thead>
+        <tr><th></th><th>Brand</th><th>Share</th><th>Clips</th><th>%</th></tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td class="rank-cell">#1</td>
+            <td>JOOLA</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:100.0%"></div></div></td>
+            <td class="num-cell">323</td>
+            <td class="num-cell">63.3%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#2</td>
+            <td>Nike</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:13.6%"></div></div></td>
+            <td class="num-cell">44</td>
+            <td class="num-cell">8.6%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#3</td>
+            <td>PICKLEBALL KINGDOM</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:6.8%"></div></div></td>
+            <td class="num-cell">22</td>
+            <td class="num-cell">4.3%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#4</td>
+            <td>HEAD</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:5.6%"></div></div></td>
+            <td class="num-cell">18</td>
+            <td class="num-cell">3.5%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#5</td>
+            <td>On</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.9%"></div></div></td>
+            <td class="num-cell">6</td>
+            <td class="num-cell">1.2%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#6</td>
+            <td>PBS</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.5%"></div></div></td>
+            <td class="num-cell">5</td>
+            <td class="num-cell">1.0%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#7</td>
+            <td>Courtana</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.5%"></div></div></td>
+            <td class="num-cell">5</td>
+            <td class="num-cell">1.0%</td>
+          </tr>
+        
+          <tr>
+            <td class="rank-cell">#8</td>
+            <td>Onix</td>
+            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.2%"></div></div></td>
+            <td class="num-cell">4</td>
+            <td class="num-cell">0.8%</td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="section-head">
+      <h2>Equivalent media value</h2>
+      <div class="desc">Estimated impression-equivalent value of Selkirk's on-court visibility, based on detected screen time and a transparent CPM model.</div>
+    </div>
+    <div class="media-card">
+      <div class="big-num">$8</div>
+      <div class="sub">4 clips × 1,500 blended views/clip × 2s avg visibility ≈ 300 30-second spot equivalents @ $25 CPM</div>
+      <div class="formula">
+        Method: clips × views/clip → impressions; impressions × (visible_seconds / 30s spot) × CPM ÷ 1000.
+        Assumes 1,500 blended venue-screen + social views per clip and $25 sports CPM.
+        Excludes broadcast amplification and brand-equity halo. Updates as the corpus and partnerships grow.
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <h3>Partner with Courtana</h3>
+    <p>Brand intelligence reports like this are part of Courtana's data layer for paddle, apparel, and venue partners. Reach out to scope a custom brief.</p>
+    <a class="btn" href="mailto:data@courtana.com?subject=Selkirk%20brand%20intelligence">data@courtana.com</a>
+  </div>
+
+  <footer>
+    <div>Pickle DaaS · 2026-04-13 20:55 UTC · 510 clips analyzed</div>
+    <div>
+      <a href="../../corpus-export.json">corpus-export.json ↗</a> ·
+      <a href="../dashboards/showcase-portal.html">Showcase Portal ↗</a>
+    </div>
+  </footer>
+
+</div>
+
+</body></html>
