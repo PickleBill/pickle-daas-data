@@ -3,674 +3,381 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Intelligence v2 | Pickle DaaS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Brand Intelligence · Pickle DaaS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg: #0f1219;
-  --surface: #1e2a3a;
-  --surface2: #162032;
-  --card: #1a2538;
-  --border: #2a3a4f;
-  --green: #00E676;
-  --green-dim: rgba(0,230,118,0.15);
-  --blue: #4FC3F7;
-  --blue-dim: rgba(79,195,247,0.15);
-  --gold: #FFD54F;
-  --gold-dim: rgba(255,213,79,0.12);
-  --red: #FF5252;
-  --red-dim: rgba(255,82,82,0.12);
-  --purple: #B388FF;
-  --purple-dim: rgba(179,136,255,0.12);
-  --orange: #FF9800;
-  --text: #E8EDF5;
-  --muted: #7B8BA3;
-  --dimmer: #4A5568;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  :root {
+    --bg: #0a0e18;
+    --surface: #131a2a;
+    --surface-2: #1d2640;
+    --border: #2a3555;
+    --text: #e4e7ed;
+    --muted: #7a8499;
+    --accent: #3b82f6;
+    --accent-bright: #60a5fa;
+    --accent-dim: rgba(59, 130, 246, 0.12);
+    --gold: #eab308;
+    --ok: #22c55e;
+    --warn: #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+  .shell { max-width: 1300px; margin: 0 auto; padding: 32px 24px; }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+  .brand-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  .brand-title .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--ok); border-radius: 4px; color: var(--ok); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+  .live-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* ── Nav ── */
-.nav{position:sticky;top:0;z-index:100;background:rgba(15,18,25,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-size:17px;font-weight:800;letter-spacing:-0.4px}
-.nav-logo span{color:var(--green)}
-.nav-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;background:var(--green-dim);color:var(--green);border:1px solid rgba(0,230,118,0.25);text-transform:uppercase;letter-spacing:1.2px}
-.nav-links{display:flex;gap:24px;font-size:13px;font-weight:500}
-.nav-links a{color:var(--muted);text-decoration:none;transition:color 0.2s}
-.nav-links a:hover{color:var(--green)}
+  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
+  .hero-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .hero-stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 10px; font-family: ui-monospace, monospace; }
+  .hero-stat .value { font-size: 32px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; }
+  .hero-stat .sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .hero-stat.featured { background: linear-gradient(135deg, var(--accent-dim), transparent); border-color: var(--accent); }
+  .hero-stat.featured .value { color: var(--accent-bright); }
 
-/* ── Container ── */
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
+  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 16px; display: flex; justify-content: space-between; align-items: baseline; }
+  h2 .meta { font-size: 12px; color: var(--muted); font-weight: normal; font-family: ui-monospace, monospace; }
 
-/* ── Hero ── */
-.hero{padding:56px 0 40px;text-align:center}
-.hero-tag{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px}
-.hero h1{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:16px}
-.hero h1 em{font-style:normal;color:var(--green)}
-.hero-sub{font-size:16px;color:var(--muted);max-width:640px;margin:0 auto 36px}
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
 
-/* ── KPI Row ── */
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:48px}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:3px;border-radius:0 0 4px 4px}
-.kpi.green::before{background:var(--green)}
-.kpi.blue::before{background:var(--blue)}
-.kpi.gold::before{background:var(--gold)}
-.kpi.purple::before{background:var(--purple)}
-.kpi-val{font-size:36px;font-weight:900;letter-spacing:-1.5px;margin-bottom:4px}
-.kpi.green .kpi-val{color:var(--green)}
-.kpi.blue .kpi-val{color:var(--blue)}
-.kpi.gold .kpi-val{color:var(--gold)}
-.kpi.purple .kpi-val{color:var(--purple)}
-.kpi-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .hero-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ── Section ── */
-.section{margin-bottom:56px}
-.section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
-.section-head h2{font-size:22px;font-weight:800;letter-spacing:-0.5px}
-.section-head .pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:1px}
-.pill-green{background:var(--green-dim);color:var(--green)}
-.pill-blue{background:var(--blue-dim);color:var(--blue)}
-.pill-gold{background:var(--gold-dim);color:var(--gold)}
-.pill-red{background:var(--red-dim);color:var(--red)}
+  .brand-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; transition: all 0.15s ease; }
+  .brand-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .brand-card.rank-1 { border-color: var(--gold); }
+  .brand-card.rank-1 .brand-rank { background: var(--gold); color: #000; }
 
-/* ── Cards ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;transition:border-color 0.2s}
-.card:hover{border-color:rgba(0,230,118,0.3)}
+  .brand-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .brand-rank { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-dim); color: var(--accent-bright); font-size: 10px; font-family: ui-monospace, monospace; font-weight: 600; margin-bottom: 8px; }
+  .brand-name { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .brand-metrics { display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .brand-metric { flex: 1; }
+  .brand-metric .m-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 2px; }
+  .brand-metric .m-value { font-size: 16px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+  .brand-metric .m-value.pct { color: var(--accent-bright); }
 
-/* ── Two-col grid ── */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; }
+  th.right { text-align: right; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  td.right { text-align: right; }
+  td.num { color: var(--accent-bright); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: var(--surface-2); }
 
-/* ── Chart containers ── */
-.chart-wrap{position:relative;height:400px}
-.chart-wrap-sm{position:relative;height:340px}
+  .insights { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+  @media (max-width: 800px) { .insights { grid-template-columns: 1fr; } }
+  .insight { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; border-left: 3px solid var(--gold); }
+  .insight .insight-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gold); margin-bottom: 10px; font-family: ui-monospace, monospace; }
+  .insight .insight-text { font-size: 14px; line-height: 1.6; }
+  .insight .insight-text strong { color: var(--accent-bright); font-variant-numeric: tabular-nums; }
 
-/* ── Heatmap Table ── */
-.heatmap-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.heatmap{border-collapse:collapse;width:100%;min-width:600px}
-.heatmap th,.heatmap td{padding:10px 12px;font-size:12px;text-align:center;border:1px solid var(--border)}
-.heatmap th{background:var(--surface2);color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;position:sticky;top:0}
-.heatmap td.brand-label{text-align:left;font-weight:600;color:var(--text);background:var(--surface2);position:sticky;left:0;z-index:1}
-.heat-0{background:transparent;color:var(--dimmer)}
-.heat-1{background:rgba(0,230,118,0.08);color:var(--green)}
-.heat-2{background:rgba(0,230,118,0.18);color:var(--green)}
-.heat-3{background:rgba(0,230,118,0.30);color:#fff;font-weight:700}
+  .whitespace { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+  .whitespace-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .whitespace-chip { padding: 6px 12px; background: rgba(234, 179, 8, 0.1); border: 1px dashed var(--gold); border-radius: 4px; color: var(--gold); font-size: 12px; }
 
-/* ── Whitespace ── */
-.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.ws-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden}
-.ws-card::after{content:'OPPORTUNITY';position:absolute;top:10px;right:-28px;transform:rotate(45deg);font-size:8px;font-weight:800;letter-spacing:1.5px;padding:2px 36px;background:var(--gold);color:#000}
-.ws-brand{font-size:18px;font-weight:800;margin-bottom:4px}
-.ws-cat{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.ws-reason{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px}
-.ws-value{font-size:20px;font-weight:800;color:var(--gold)}
-.ws-value-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .chart-container { height: 320px; position: relative; }
 
-/* ── Brand Detail Cards ── */
-.brand-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.brand-detail{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.brand-detail-head{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.brand-detail-head:hover{background:var(--surface2)}
-.brand-detail-name{font-size:16px;font-weight:700}
-.brand-detail-count{font-size:24px;font-weight:900;color:var(--green)}
-.brand-detail-body{padding:0 20px 20px;display:none}
-.brand-detail.open .brand-detail-body{display:block}
-.brand-detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
-.brand-detail-row:last-child{border-bottom:none}
-.brand-detail-row .label{color:var(--muted)}
-.brand-detail-row .val{font-weight:600}
-.chevron{transition:transform 0.2s;color:var(--muted)}
-.brand-detail.open .chevron{transform:rotate(180deg)}
+  .loading { padding: 40px; text-align: center; color: var(--muted); font-family: ui-monospace, monospace; }
+  .loading::after { content: '...'; animation: dots 1s infinite; }
+  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
 
-/* ── Comparison ── */
-.comp-table{width:100%;border-collapse:collapse}
-.comp-table th,.comp-table td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
-.comp-table th{color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;font-size:11px}
-.comp-table tr:hover{background:var(--surface2)}
-.comp-highlight{background:rgba(0,230,118,0.06)!important;border-left:3px solid var(--green)}
-.comp-price{font-weight:800;font-size:15px}
-.comp-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}
-.tag-premium{background:var(--gold-dim);color:var(--gold)}
-.tag-mid{background:var(--blue-dim);color:var(--blue)}
-.tag-disruptor{background:var(--green-dim);color:var(--green)}
-
-/* ── Footer ── */
-.footer{text-align:center;padding:40px 24px 32px;border-top:1px solid var(--border);margin-top:64px;font-size:12px;color:var(--dimmer)}
-.footer strong{color:var(--green)}
-
-/* ── Responsive ── */
-@media(max-width:640px){
-  .nav{padding:12px 16px}
-  .nav-links{display:none}
-  .container{padding:0 16px}
-  .hero{padding:32px 0 24px}
-  .kpi-row{grid-template-columns:1fr 1fr}
-  .kpi-val{font-size:28px}
-  .chart-wrap,.chart-wrap-sm{height:280px}
-  .ws-grid{grid-template-columns:1fr}
-  .brand-cards-grid{grid-template-columns:1fr}
-}
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  footer a { color: var(--accent-bright); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
+<div class="shell">
 
-<!-- ── Nav ── -->
-<nav class="nav">
-  <div style="display:flex;align-items:center;gap:14px">
-    <div class="nav-logo">Pickle<span>DaaS</span></div>
-    <span class="nav-badge">Brand Intelligence v2</span>
+<header>
+  <div class="brand-title">
+    <h1>Brand Intelligence</h1>
+    <div class="sub">What brands appear in Courtana highlights — and what that means for market share</div>
   </div>
-  <div class="nav-links">
-    <a href="#frequency">Frequency</a>
-    <a href="#categories">Categories</a>
-    <a href="#cooccurrence">Co-occurrence</a>
-    <a href="#whitespace">Whitespace</a>
-    <a href="#details">Brand Cards</a>
-    <a href="#comparison">Market Position</a>
-  </div>
-</nav>
+  <div class="live-badge">Live</div>
+</header>
 
-<div class="container">
-
-<!-- ── Hero ── -->
-<div class="hero">
-  <div class="hero-tag">Computer Vision Brand Analytics</div>
-  <h1>Every Frame is an <em>Ad Impression</em></h1>
-  <p class="hero-sub">AI-powered brand detection across 23 analyzed pickleball clips. We see what cameras capture and sponsors miss.</p>
-</div>
-
-<!-- ── KPIs ── -->
-<div class="kpi-row">
-  <div class="kpi green">
-    <div class="kpi-val">18</div>
-    <div class="kpi-label">Unique Brands Detected</div>
+<div class="hero-grid">
+  <div class="hero-stat featured">
+    <div class="label">Dominant brand</div>
+    <div class="value" id="hero-top-brand">—</div>
+    <div class="sub" id="hero-top-brand-sub">—</div>
   </div>
-  <div class="kpi blue">
-    <div class="kpi-val">32</div>
-    <div class="kpi-label">Total Brand Impressions</div>
+  <div class="hero-stat">
+    <div class="label">Brands detected</div>
+    <div class="value" id="hero-brand-count">—</div>
+    <div class="sub">unique brands across corpus</div>
   </div>
-  <div class="kpi gold">
-    <div class="kpi-val">JOOLA</div>
-    <div class="kpi-label">Dominant Equipment Brand</div>
+  <div class="hero-stat">
+    <div class="label">Clips sampled</div>
+    <div class="value" id="hero-clip-count">—</div>
+    <div class="sub">total clips analyzed</div>
   </div>
-  <div class="kpi purple">
-    <div class="kpi-val">387s</div>
-    <div class="kpi-label">Total Visibility Seconds</div>
+  <div class="hero-stat">
+    <div class="label">Total detections</div>
+    <div class="value" id="hero-total-detections">—</div>
+    <div class="sub">brand impressions</div>
   </div>
 </div>
 
-<!-- ── Brand Frequency ── -->
-<div class="section" id="frequency">
-  <div class="section-head">
-    <h2>Brand Frequency</h2>
-    <span class="pill pill-green">Top 15</span>
+<div class="insights">
+  <div class="insight">
+    <div class="insight-label">💡 Key Insight</div>
+    <div class="insight-text" id="insight-1">Analyzing…</div>
   </div>
-  <div class="card">
-    <div class="chart-wrap">
-      <canvas id="freqChart"></canvas>
-    </div>
+  <div class="insight">
+    <div class="insight-label">💡 Market Read</div>
+    <div class="insight-text" id="insight-2">Analyzing…</div>
   </div>
-</div>
-
-<!-- ── Categories + Visibility ── -->
-<div class="section" id="categories">
-  <div class="section-head">
-    <h2>Brand Categories</h2>
-    <span class="pill pill-blue">By Detection Type</span>
-  </div>
-  <div class="grid-2">
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--muted)">Category Breakdown</div>
-      <div class="chart-wrap-sm">
-        <canvas id="catChart"></canvas>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--muted)">Visibility by Brand (seconds)</div>
-      <div class="chart-wrap-sm">
-        <canvas id="visChart"></canvas>
-      </div>
-    </div>
+  <div class="insight">
+    <div class="insight-label">💡 Monetization Signal</div>
+    <div class="insight-text" id="insight-3">Analyzing…</div>
   </div>
 </div>
 
-<!-- ── Co-occurrence Matrix ── -->
-<div class="section" id="cooccurrence">
-  <div class="section-head">
-    <h2>Brand Co-occurrence Matrix</h2>
-    <span class="pill pill-gold">Which brands appear together</span>
-  </div>
-  <div class="card">
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Heatmap showing how often brands are detected in the same clip. Higher values indicate stronger venue co-location.</p>
-    <div class="heatmap-scroll" id="heatmapContainer"></div>
+<h2>
+  <span>Market Share</span>
+  <span class="meta" id="market-share-meta">—</span>
+</h2>
+<div class="section">
+  <div class="chart-container">
+    <canvas id="share-chart"></canvas>
   </div>
 </div>
 
-<!-- ── Sponsorship Whitespace ── -->
-<div class="section" id="whitespace">
-  <div class="section-head">
-    <h2>Sponsorship Whitespace</h2>
-    <span class="pill pill-red">Untapped Revenue</span>
-  </div>
-  <p style="font-size:14px;color:var(--muted);margin-bottom:24px">Brands that <em>should</em> be present in pickleball venues but are not yet detected. Each represents a sponsorship opportunity that Pickle DaaS can quantify and sell.</p>
-  <div class="ws-grid" id="whitespaceGrid"></div>
+<h2>
+  <span>Brand Leaderboard</span>
+  <span class="meta" id="leaderboard-meta">—</span>
+</h2>
+<div class="brand-list" id="brand-list">
+  <div class="loading">Loading brand cards</div>
 </div>
 
-<!-- ── Per-Brand Detail Cards ── -->
-<div class="section" id="details">
-  <div class="section-head">
-    <h2>Per-Brand Intelligence</h2>
-    <span class="pill pill-green">Click to expand</span>
-  </div>
-  <div class="brand-cards-grid" id="brandCards"></div>
+<h2>
+  <span>Full Brand Table</span>
+  <span class="meta">Sortable by appearances</span>
+</h2>
+<div class="section" style="padding: 0; overflow: hidden;">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Brand</th>
+        <th class="right">Appearances</th>
+        <th class="right">Unique Clips</th>
+        <th class="right">Share %</th>
+        <th class="right">Avg Quality</th>
+      </tr>
+    </thead>
+    <tbody id="brand-table">
+      <tr><td colspan="6" class="loading">Loading</td></tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- ── Market Comparison ── -->
-<div class="section" id="comparison">
-  <div class="section-head">
-    <h2>Sponsorship Value Landscape</h2>
-    <span class="pill pill-gold">Market Position</span>
-  </div>
-  <div class="card" style="overflow-x:auto">
-    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">How Pickle DaaS stacks up against established sports data providers in sponsorship valuation.</p>
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>Provider</th>
-          <th>Focus</th>
-          <th>Annual Price</th>
-          <th>Coverage</th>
-          <th>Tier</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="font-weight:700">Sportradar</td>
-          <td>Full sports data ecosystem, media rights</td>
-          <td class="comp-price">$500K &ndash; $2M</td>
-          <td>100+ sports, global leagues</td>
-          <td><span class="comp-tag tag-premium">Enterprise</span></td>
-        </tr>
-        <tr>
-          <td style="font-weight:700">StatsBomb</td>
-          <td>Advanced analytics, event data</td>
-          <td class="comp-price">$50K &ndash; $200K</td>
-          <td>Soccer-focused, expanding</td>
-          <td><span class="comp-tag tag-mid">Mid-Market</span></td>
-        </tr>
-        <tr>
-          <td style="font-weight:700">ShotTracker</td>
-          <td>Real-time player/ball tracking</td>
-          <td class="comp-price">~$15K / court / yr</td>
-          <td>Basketball, requires hardware</td>
-          <td><span class="comp-tag tag-mid">Mid-Market</span></td>
-        </tr>
-        <tr>
-          <td style="font-weight:700">Rapsodo</td>
-          <td>Ball flight + swing analytics</td>
-          <td class="comp-price">$5K &ndash; $30K</td>
-          <td>Golf, baseball, softball</td>
-          <td><span class="comp-tag tag-mid">Mid-Market</span></td>
-        </tr>
-        <tr class="comp-highlight">
-          <td style="font-weight:700;color:var(--green)">Pickle DaaS</td>
-          <td>Brand intelligence + player analytics from existing cameras</td>
-          <td class="comp-price" style="color:var(--green)">$2K &ndash; $10K / venue / yr</td>
-          <td>Pickleball-native, zero hardware</td>
-          <td><span class="comp-tag tag-disruptor">Disruptor</span></td>
-        </tr>
-      </tbody>
-    </table>
-    <div style="margin-top:24px;padding:20px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--green)">
-      <div style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--green)">The Pickle DaaS Advantage</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.7">
-        Zero hardware installation. Plugs into existing camera infrastructure. AI processes every frame for brand exposure, player analytics, and sponsorship valuation.
-        At $0.0054/clip processing cost, margins scale dramatically. A 500-court venue network generates
-        <strong style="color:var(--text)">400K+ clips/year</strong> of analyzable inventory &mdash; each frame a measurable ad impression.
-      </div>
-    </div>
+<h2>
+  <span>Sponsorship Whitespace</span>
+  <span class="meta">Absent brands = opportunity</span>
+</h2>
+<div class="whitespace">
+  <p style="color: var(--muted); font-size: 13px;">These major pickleball brands and adjacent categories are <strong style="color: var(--gold);">not detected</strong> in our corpus. Each is a potential partnership or sponsorship conversation.</p>
+  <div class="whitespace-chips" id="whitespace-chips">
+    <div class="loading">Analyzing whitespace</div>
   </div>
 </div>
 
-</div><!-- /container -->
+<footer>
+  <div>Pickle DaaS · Brand Intelligence · Live from corpus-export.json (hourly)</div>
+  <div>
+    <a href="showcase-portal.html">← Portal</a> ·
+    <a href="data-lab.html">Data Lab →</a> ·
+    <a href="../brand-report-joola.html" target="_blank">JOOLA Report ↗</a>
+  </div>
+</footer>
 
-<!-- ── Footer ── -->
-<div class="footer">
-  <strong>Pickle DaaS</strong> &mdash; Brand Intelligence | Generated <span id="genDate"></span>
 </div>
 
 <script>
-// ════════════════════════════════════════════════
-// DATA (embedded from pipeline output)
-// ════════════════════════════════════════════════
-
-const brandData = [
-  {"brand_name":"Recovery Cave","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Red/white on black"},
-  {"brand_name":"JOOLA","category":"net","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":15,"color_scheme":"Black/white"},
-  {"brand_name":"The Ground","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Black/white"},
-  {"brand_name":"Pickleball","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Black/white"},
-  {"brand_name":"APPLA","category":"court_surface","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"Blue/white"},
-  {"brand_name":"APPLA","category":"net","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"Black/white"},
-  {"brand_name":"The Underground","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on black"},
-  {"brand_name":"Recovery Cave","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on black"},
-  {"brand_name":"The Underground","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Black/white/red"},
-  {"brand_name":"RECOVERY CAVE","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on red"},
-  {"brand_name":"ONIX","category":"net","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"White on black"},
-  {"brand_name":"The Underground","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on black"},
-  {"brand_name":"Recovery Cave","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on black"},
-  {"brand_name":"A100","category":"net","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":15,"color_scheme":"White on black"},
-  {"brand_name":"Courtana","category":"court_surface","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"Blue/light blue/white"},
-  {"brand_name":"Pickleball","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"White on black"},
-  {"brand_name":"Skull Logo","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"White skull on black"},
-  {"brand_name":"Courtana","category":"court_surface","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"Blue/light blue/white"},
-  {"brand_name":"Courtana","category":"net","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"Black/white"},
-  {"brand_name":"ASICS","category":"court_surface","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":19,"color_scheme":"White"},
-  {"brand_name":"Courtana","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Red/white/black"},
-  {"brand_name":"Selkirk","category":"paddle","confidence":"medium","visibility_quality":"partial","estimated_visible_seconds":5,"color_scheme":"Black/red"},
-  {"brand_name":"JOOLA","category":"paddle","confidence":"medium","visibility_quality":"partial","estimated_visible_seconds":5,"color_scheme":"White/black"},
-  {"brand_name":"Franklin","category":"ball","confidence":"low","visibility_quality":"brief_flash","estimated_visible_seconds":1,"color_scheme":"Yellow/green"},
-  {"brand_name":"ACRYL","category":"court_surface","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":19,"color_scheme":"Blue/grey"},
-  {"brand_name":"ONIX","category":"net","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on black"},
-  {"brand_name":"RECOVERY CAVE","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":21,"color_scheme":"White on red"},
-  {"brand_name":"PICKLEBALL","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Black/white"},
-  {"brand_name":"PICKLEBALL","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Black/white/red"},
-  {"brand_name":"SKULL","category":"sponsor_banner","confidence":"high","visibility_quality":"clear","estimated_visible_seconds":20,"color_scheme":"Black/white/red"},
-  {"brand_name":"HEAD","category":"paddle","confidence":"low","visibility_quality":"brief_flash","estimated_visible_seconds":1,"color_scheme":"Black/white"},
-  {"brand_name":"Selkirk","category":"paddle","confidence":"low","visibility_quality":"brief_flash","estimated_visible_seconds":1,"color_scheme":"Black/white"}
-];
-
-// Co-occurrence: brands found in same clip
-const clipBrands = [
-  ["Recovery Cave","JOOLA","The Ground","Pickleball"],
-  ["APPLA","APPLA"],
-  ["The Underground","Recovery Cave"],
-  ["The Underground","RECOVERY CAVE"],
-  ["ONIX"],
-  ["The Underground","Recovery Cave","A100"],
-  ["Courtana","Pickleball","Skull Logo"],
-  ["Courtana"],
-  ["Courtana","ASICS"],
-  ["Courtana","Selkirk","JOOLA","Franklin"],
-  ["ACRYL","ONIX"],
-  ["RECOVERY CAVE","PICKLEBALL"],
-  ["PICKLEBALL","SKULL"],
-  ["HEAD","Selkirk"]
-];
-
-const whitespaceData = [
-  {brand:"Gatorade",category:"Sports Hydration",reason:"Zero sports drink presence detected across all clips. Pickleball is high-intensity and dehydration-prone. Every water break is an impression.",value:"$50K-150K/yr"},
-  {brand:"Nike",category:"Athletic Apparel",reason:"No Nike apparel or footwear detected. Largest sports brand globally, absent from fastest-growing sport in America.",value:"$100K-500K/yr"},
-  {brand:"Under Armour",category:"Performance Apparel",reason:"No performance apparel brands detected on players. Massive whitespace for court-specific gear lines.",value:"$75K-250K/yr"},
-  {brand:"Lululemon",category:"Athleisure / Apparel",reason:"Premium athleisure absent from a sport dominated by affluent, health-conscious demographics perfectly aligned with the brand.",value:"$100K-400K/yr"},
-  {brand:"New Balance",category:"Court Footwear",reason:"No major footwear brands detected on court. Pickleball-specific court shoes are an untapped category.",value:"$50K-200K/yr"},
-  {brand:"Body Armor",category:"Sports Hydration",reason:"Challenger hydration brand with aggressive sports marketing. Zero presence in pickleball venues.",value:"$25K-100K/yr"},
-  {brand:"Fila",category:"Court Footwear / Apparel",reason:"Heritage tennis brand with natural crossover appeal. Not yet detected in pickleball.",value:"$30K-120K/yr"},
-  {brand:"Celsius",category:"Energy / Fitness Drinks",reason:"Fitness-focused energy drink absent from fitness-focused sport. High demographic overlap.",value:"$30K-100K/yr"}
-];
-
-// ════════════════════════════════════════════════
-// PROCESSING
-// ════════════════════════════════════════════════
-
-// Normalize brand names (case-insensitive merge)
-function normalizeBrand(name) {
-  const map = {
-    'recovery cave': 'Recovery Cave',
-    'the underground': 'The Underground',
-    'joola': 'JOOLA',
-    'pickleball': 'Pickleball',
-    'appla': 'APPLA',
-    'onix': 'ONIX',
-    'courtana': 'Courtana',
-    'skull logo': 'Skull/Logo',
-    'skull': 'Skull/Logo',
-    'pickleball': 'Pickleball',
-    'recovery cave': 'Recovery Cave',
-    'a100': 'A100',
-    'the ground': 'The Ground',
-    'asics': 'ASICS',
-    'selkirk': 'Selkirk',
-    'franklin': 'Franklin',
-    'acryl': 'ACRYL',
-    'head': 'HEAD'
-  };
-  return map[name.toLowerCase()] || name;
+async function loadData() {
+  try {
+    const res = await fetch('../corpus-export.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const corpus = await res.json();
+    render(corpus);
+  } catch (e) {
+    document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui;"><h1 style="color:#ef4444;">Brand Data Unavailable</h1><p style="color:#7a8499;margin:20px 0;">' + (e.message || 'Unknown error') + '</p><button onclick="location.reload()" style="padding:10px 24px;background:#3b82f6;color:#fff;border:none;border-radius:6px;cursor:pointer;">Retry</button></div>';
+  }
 }
 
-// Frequency
-const freq = {};
-const visSeconds = {};
-const catCount = {};
-const brandMeta = {};
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
 
-brandData.forEach(b => {
-  const name = normalizeBrand(b.brand_name);
-  freq[name] = (freq[name] || 0) + 1;
-  visSeconds[name] = (visSeconds[name] || 0) + b.estimated_visible_seconds;
-  catCount[b.category] = (catCount[b.category] || 0) + 1;
-  if (!brandMeta[name]) brandMeta[name] = {categories: new Set(), confidences: [], visQualities: [], totalVis: 0, count: 0};
-  brandMeta[name].categories.add(b.category);
-  brandMeta[name].confidences.push(b.confidence);
-  brandMeta[name].visQualities.push(b.visibility_quality);
-  brandMeta[name].totalVis += b.estimated_visible_seconds;
-  brandMeta[name].count++;
-});
+// Normalize "JOOLA" and "Joola" etc. into one canonical bucket
+function canonBrand(b) {
+  if (!b) return b;
+  const lower = b.toLowerCase().trim();
+  if (lower === 'joola') return 'JOOLA';
+  if (lower === 'pickleball') return 'Pickleball';
+  return b.trim();
+}
 
-const sortedBrands = Object.entries(freq).sort((a,b) => b[1]-a[1]);
-const top15 = sortedBrands.slice(0, 15);
+function render(corpus) {
+  const n = corpus.length;
 
-// Co-occurrence matrix
-const coocBrands = [...new Set(clipBrands.flat().map(normalizeBrand))].sort();
-const coocMatrix = {};
-coocBrands.forEach(a => { coocMatrix[a] = {}; coocBrands.forEach(b => { coocMatrix[a][b] = 0; }); });
-clipBrands.forEach(clip => {
-  const normed = [...new Set(clip.map(normalizeBrand))];
-  for (let i = 0; i < normed.length; i++) {
-    for (let j = 0; j < normed.length; j++) {
-      if (i !== j) coocMatrix[normed[i]][normed[j]]++;
+  // Aggregate brand data
+  const brandAppearances = {}; // total count (brand can appear multiple times per clip)
+  const brandClipSet = {};     // unique clips per brand
+  const brandQuality = {};     // quality scores per brand
+  const brandViral = {};       // viral scores per brand
+
+  for (const c of corpus) {
+    const seenInClip = new Set();
+    for (const raw of (c.brands || [])) {
+      if (!raw) continue;
+      const b = canonBrand(raw);
+      brandAppearances[b] = (brandAppearances[b] || 0) + 1;
+      if (!seenInClip.has(b)) {
+        seenInClip.add(b);
+        brandClipSet[b] = brandClipSet[b] || new Set();
+        brandClipSet[b].add(c.uuid);
+        brandQuality[b] = brandQuality[b] || [];
+        if (c.quality) brandQuality[b].push(c.quality);
+        brandViral[b] = brandViral[b] || [];
+        if (c.viral) brandViral[b].push(c.viral);
+      }
     }
   }
-});
 
-// ════════════════════════════════════════════════
-// CHARTS
-// ════════════════════════════════════════════════
+  const brands = Object.keys(brandAppearances).map(b => {
+    const clips = brandClipSet[b].size;
+    const q = brandQuality[b];
+    const v = brandViral[b];
+    return {
+      name: b,
+      appearances: brandAppearances[b],
+      clips,
+      share: +(clips / n * 100).toFixed(1),
+      avgQuality: q.length ? +(q.reduce((s, x) => s + x, 0) / q.length).toFixed(1) : null,
+      avgViral: v.length ? +(v.reduce((s, x) => s + x, 0) / v.length).toFixed(1) : null,
+    };
+  }).sort((a, b) => b.appearances - a.appearances);
 
-Chart.defaults.color = '#7B8BA3';
-Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
-Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  const totalDetections = brands.reduce((s, b) => s + b.appearances, 0);
 
-// Frequency bar chart
-new Chart(document.getElementById('freqChart'), {
-  type: 'bar',
-  data: {
-    labels: top15.map(b => b[0]),
-    datasets: [{
-      label: 'Detections',
-      data: top15.map(b => b[1]),
-      backgroundColor: top15.map((_, i) => {
-        const colors = ['#00E676','#00E676','#00E676','#4FC3F7','#4FC3F7','#4FC3F7','#B388FF','#B388FF','#FFD54F','#FFD54F','#FFD54F','#FF9800','#FF9800','#FF9800','#FF9800'];
-        return colors[i] || '#FF9800';
-      }),
-      borderRadius: 4,
-      borderSkipped: false
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: '#1e2a3a',
-        borderColor: '#2a3a4f',
-        borderWidth: 1,
-        titleColor: '#E8EDF5',
-        bodyColor: '#7B8BA3',
-        callbacks: {
-          afterLabel: function(ctx) {
-            const name = ctx.label;
-            return `Visibility: ${visSeconds[name] || 0}s`;
-          }
-        }
-      }
+  // Hero stats
+  const top = brands[0];
+  document.getElementById('hero-top-brand').textContent = top?.name || '—';
+  document.getElementById('hero-top-brand-sub').textContent = top ? `${top.clips} of ${n} clips (${top.share}%)` : '—';
+  document.getElementById('hero-brand-count').textContent = brands.length;
+  document.getElementById('hero-clip-count').textContent = n.toLocaleString();
+  document.getElementById('hero-total-detections').textContent = totalDetections.toLocaleString();
+
+  // Insights
+  const secondPct = brands[1] ? ((brands[0].appearances / brands[1].appearances)).toFixed(1) : '—';
+  document.getElementById('insight-1').innerHTML = top
+    ? `<strong>${top.name}</strong> is in <strong>${top.share}%</strong> of all clips — a dominant signal. ${brands[1] ? `Second-place ${brands[1].name} appears at <strong>${brands[1].share}%</strong>, making ${top.name} ${secondPct}× more prevalent.` : ''}`
+    : 'No brands detected yet.';
+
+  const bigBrands = brands.filter(b => b.share >= 2).length;
+  const smallBrands = brands.length - bigBrands;
+  document.getElementById('insight-2').innerHTML = `<strong>${bigBrands}</strong> brands have meaningful presence (≥2% of clips). The long tail of <strong>${smallBrands}</strong> one-off detections suggests organic brand variety — users bring their own equipment, not venue-issued gear.`;
+
+  const topQuality = brands.filter(b => b.avgQuality != null).sort((a, b) => b.avgQuality - a.avgQuality)[0];
+  document.getElementById('insight-3').innerHTML = topQuality
+    ? `<strong>${topQuality.name}</strong> appears in the highest-quality clips (avg <strong>${topQuality.avgQuality}/10</strong>). A brand report showing its users' skill profile is a revenue conversation.`
+    : 'Quality data loading…';
+
+  // Market share chart (top 8 + "other")
+  const ctx = document.getElementById('share-chart').getContext('2d');
+  const topN = brands.slice(0, 8);
+  const otherCount = brands.slice(8).reduce((s, b) => s + b.appearances, 0);
+  const chartLabels = topN.map(b => b.name).concat(otherCount > 0 ? ['Other'] : []);
+  const chartData = topN.map(b => b.appearances).concat(otherCount > 0 ? [otherCount] : []);
+  const palette = ['#3b82f6', '#eab308', '#22c55e', '#ef4444', '#f59e0b', '#a855f7', '#06b6d4', '#ec4899', '#64748b'];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Appearances',
+        data: chartData,
+        backgroundColor: chartLabels.map((_, i) => palette[i % palette.length]),
+        borderRadius: 4,
+      }]
     },
-    scales: {
-      x: { grid: { color: 'rgba(42,58,79,0.4)' }, ticks: { stepSize: 1 } },
-      y: { grid: { display: false } }
-    }
-  }
-});
-
-// Category doughnut
-const catLabels = Object.keys(catCount);
-const catValues = Object.values(catCount);
-const catColors = ['#00E676','#4FC3F7','#B388FF','#FFD54F','#FF9800','#FF5252'];
-const catDisplayLabels = catLabels.map(c => c.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase()));
-
-new Chart(document.getElementById('catChart'), {
-  type: 'doughnut',
-  data: {
-    labels: catDisplayLabels,
-    datasets: [{
-      data: catValues,
-      backgroundColor: catColors.slice(0, catLabels.length),
-      borderWidth: 0,
-      hoverOffset: 8
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '62%',
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { padding: 16, font: { size: 12 } }
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#7a8499', font: { family: 'ui-monospace, monospace', size: 11 } } },
+        x: { grid: { display: false }, ticks: { color: '#e4e7ed', font: { family: 'ui-sans-serif, system-ui, sans-serif', size: 12 } } }
       }
     }
-  }
-});
-
-// Visibility bar
-const visSorted = Object.entries(visSeconds).sort((a,b) => b[1]-a[1]).slice(0,12);
-new Chart(document.getElementById('visChart'), {
-  type: 'bar',
-  data: {
-    labels: visSorted.map(v => v[0]),
-    datasets: [{
-      label: 'Seconds',
-      data: visSorted.map(v => v[1]),
-      backgroundColor: '#4FC3F7',
-      borderRadius: 4,
-      borderSkipped: false
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: 'rgba(42,58,79,0.4)' } },
-      y: { grid: { display: false } }
-    }
-  }
-});
-
-// ════════════════════════════════════════════════
-// CO-OCCURRENCE HEATMAP TABLE
-// ════════════════════════════════════════════════
-
-(function() {
-  const top = coocBrands.slice(0, 12);
-  let html = '<table class="heatmap"><thead><tr><th></th>';
-  top.forEach(b => { html += `<th>${b}</th>`; });
-  html += '</tr></thead><tbody>';
-  top.forEach(row => {
-    html += `<tr><td class="brand-label">${row}</td>`;
-    top.forEach(col => {
-      const val = coocMatrix[row]?.[col] || 0;
-      const cls = val === 0 ? 'heat-0' : val === 1 ? 'heat-1' : val === 2 ? 'heat-2' : 'heat-3';
-      html += `<td class="${cls}">${val > 0 ? val : '&mdash;'}</td>`;
-    });
-    html += '</tr>';
   });
-  html += '</tbody></table>';
-  document.getElementById('heatmapContainer').innerHTML = html;
-})();
+  document.getElementById('market-share-meta').textContent = `Top 8 brands + other`;
 
-// ════════════════════════════════════════════════
-// WHITESPACE CARDS
-// ════════════════════════════════════════════════
-
-(function() {
-  const grid = document.getElementById('whitespaceGrid');
-  whitespaceData.forEach(w => {
-    grid.innerHTML += `
-      <div class="ws-card">
-        <div class="ws-brand">${w.brand}</div>
-        <div class="ws-cat">${w.category}</div>
-        <div class="ws-reason">${w.reason}</div>
-        <div class="ws-value">${w.value}</div>
-        <div class="ws-value-label">Est. Sponsorship Value</div>
-      </div>`;
-  });
-})();
-
-// ════════════════════════════════════════════════
-// BRAND DETAIL CARDS
-// ════════════════════════════════════════════════
-
-(function() {
-  const container = document.getElementById('brandCards');
-  sortedBrands.forEach(([name, count]) => {
-    const meta = brandMeta[name];
-    const cats = [...meta.categories].map(c => c.replace(/_/g,' ')).join(', ');
-    const avgVis = Math.round(meta.totalVis / meta.count);
-    const confDist = {};
-    meta.confidences.forEach(c => { confDist[c] = (confDist[c]||0)+1; });
-    const confStr = Object.entries(confDist).map(([k,v]) => `${k}: ${v}`).join(', ');
-    const visDist = {};
-    meta.visQualities.forEach(v => { visDist[v] = (visDist[v]||0)+1; });
-    const visStr = Object.entries(visDist).map(([k,v]) => `${k.replace(/_/g,' ')}: ${v}`).join(', ');
-
-    container.innerHTML += `
-      <div class="brand-detail" onclick="this.classList.toggle('open')">
-        <div class="brand-detail-head">
-          <div>
-            <div class="brand-detail-name">${name}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px">${cats}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px">
-            <div class="brand-detail-count">${count}</div>
-            <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
+  // Brand cards
+  const cardsHtml = brands.slice(0, 9).map((b, i) => `
+    <div class="brand-card ${i === 0 ? 'rank-1' : ''}">
+      <div class="brand-rank">#${i + 1}</div>
+      <div class="brand-name">${escapeHtml(b.name)}</div>
+      <div style="color: var(--muted); font-size: 12px;">${b.appearances} appearances across ${b.clips} clips</div>
+      <div class="brand-metrics">
+        <div class="brand-metric">
+          <div class="m-label">Share</div>
+          <div class="m-value pct">${b.share}%</div>
         </div>
-        <div class="brand-detail-body">
-          <div class="brand-detail-row"><span class="label">Appearances</span><span class="val">${count} detections</span></div>
-          <div class="brand-detail-row"><span class="label">Total Visibility</span><span class="val">${meta.totalVis}s</span></div>
-          <div class="brand-detail-row"><span class="label">Avg Visibility / Clip</span><span class="val">${avgVis}s</span></div>
-          <div class="brand-detail-row"><span class="label">Confidence</span><span class="val">${confStr}</span></div>
-          <div class="brand-detail-row"><span class="label">Visibility Quality</span><span class="val">${visStr}</span></div>
-          <div class="brand-detail-row"><span class="label">Categories</span><span class="val">${cats}</span></div>
+        <div class="brand-metric">
+          <div class="m-label">Avg Qty</div>
+          <div class="m-value">${b.avgQuality != null ? b.avgQuality : '—'}</div>
         </div>
-      </div>`;
-  });
-})();
+        <div class="brand-metric">
+          <div class="m-label">Avg Viral</div>
+          <div class="m-value">${b.avgViral != null ? b.avgViral : '—'}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('brand-list').innerHTML = cardsHtml;
+  document.getElementById('leaderboard-meta').textContent = `Top 9 of ${brands.length}`;
 
-// Date
-document.getElementById('genDate').textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+  // Full table
+  document.getElementById('brand-table').innerHTML = brands.map((b, i) => `
+    <tr>
+      <td style="color: var(--muted); font-family: ui-monospace, monospace;">${i + 1}</td>
+      <td><strong>${escapeHtml(b.name)}</strong></td>
+      <td class="right num">${b.appearances}</td>
+      <td class="right">${b.clips}</td>
+      <td class="right">${b.share}%</td>
+      <td class="right">${b.avgQuality != null ? b.avgQuality : '—'}</td>
+    </tr>
+  `).join('');
+
+  // Whitespace analysis
+  const knownBrands = new Set(brands.map(b => b.name.toLowerCase()));
+  const pickleballBrands = [
+    'Selkirk', 'Paddletek', 'CRBN', 'Engage', 'Gamma', 'Prolite',
+    'Vatic Pro', 'Diadem', 'Electrum', 'Volair', 'Gearbox',
+    'Adidas', 'Nike', 'Under Armour', 'Lululemon', 'Puma',
+    'Gatorade', 'BODYARMOR', 'Liquid Death', 'Celsius',
+    'Wilson', 'Babolat', 'Head', 'Yonex',
+    'Nova', 'Pickleball Central', 'Onix'
+  ];
+  const missing = pickleballBrands.filter(b => !knownBrands.has(b.toLowerCase()));
+  document.getElementById('whitespace-chips').innerHTML = missing.map(b =>
+    `<span class="whitespace-chip">${escapeHtml(b)}</span>`
+  ).join('');
+}
+
+loadData();
 </script>
 </body>
 </html>

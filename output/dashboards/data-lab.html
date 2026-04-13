@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Lab · Pickle DaaS</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --surface: #131722;
+    --surface-2: #1c2333;
+    --border: #2a3142;
+    --text: #e4e7ed;
+    --muted: #7a8499;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.12);
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: ui-monospace, 'SF Mono', Monaco, Menlo, monospace;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .shell { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+  header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark { width: 32px; height: 32px; border-radius: 6px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; font-size: 15px; }
+  .brand h1 { font-size: 15px; font-weight: 600; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .brand-sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .header-stats { display: flex; gap: 24px; }
+  .stat-chip { text-align: right; }
+  .stat-chip .val { font-size: 16px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stat-chip .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .health-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .health-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+  .health-card.ok { border-left: 3px solid var(--accent); }
+  .health-card.warn { border-left: 3px solid var(--warning); }
+  .health-card.danger { border-left: 3px solid var(--danger); }
+  .health-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; }
+  .health-value { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); }
+  .health-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .insights-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+  .insight-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 10px; }
+  .insight-card .content { font-size: 13px; line-height: 1.6; }
+  .insight-card .highlight { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .main { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+
+  .sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px; height: fit-content; position: sticky; top: 24px; }
+  .sidebar h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 12px; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .preset-group { margin-bottom: 18px; }
+  .preset-group-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 6px; padding: 0 4px; }
+  .preset-btn {
+    display: block; width: 100%; text-align: left; padding: 8px 10px; margin-bottom: 4px;
+    background: transparent; border: 1px solid transparent; border-radius: 4px;
+    color: var(--text); font-family: inherit; font-size: 12px; cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .preset-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .preset-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .preset-num { color: var(--muted); font-size: 10px; margin-right: 6px; }
+
+  .query-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .query-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); }
+  .query-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .query-desc { color: var(--text); font-family: ui-sans-serif, system-ui, sans-serif; text-transform: none; letter-spacing: 0; font-size: 13px; margin-top: 2px; }
+
+  .results-panel { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .results-header { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); display: flex; justify-content: space-between; align-items: center; }
+  .results-info { font-size: 11px; color: var(--muted); }
+  .results-info.error { color: var(--danger); }
+  .results-info.success { color: var(--accent); }
+  #results { max-height: 620px; overflow: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead { background: var(--surface-2); position: sticky; top: 0; z-index: 1; }
+  th { padding: 8px 12px; text-align: left; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; vertical-align: top; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td.num { text-align: right; color: var(--accent); }
+  tr:hover { background: var(--surface-2); }
+  td a { color: var(--info); text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+  .bar { display: inline-block; background: var(--accent-dim); border-left: 2px solid var(--accent); height: 12px; vertical-align: middle; margin-right: 6px; }
+
+  .empty-state { padding: 40px 20px; text-align: center; color: var(--muted); }
+  .loading { padding: 40px; text-align: center; color: var(--muted); }
+  .loading::after { content: '...'; animation: dots 1s infinite; }
+  @keyframes dots { 0%,20% { content: '.'; } 40% { content: '..'; } 60%,100% { content: '...'; } }
+
+  .sql-block { margin-top: 16px; padding: 14px 16px; background: var(--bg); border-top: 1px solid var(--border); }
+  .sql-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .sql-label a { color: var(--info); text-decoration: none; }
+  pre.sql { font-size: 11px; color: var(--muted); white-space: pre-wrap; line-height: 1.5; }
+  pre.sql .k { color: #c084fc; } /* keyword */
+
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  footer a { color: var(--info); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .health-grid { grid-template-columns: repeat(2, 1fr); }
+    .insights-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">D</div>
+    <div>
+      <h1>Data Lab</h1>
+      <div class="brand-sub">Internal analytics · Pickle DaaS pipeline</div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-chip">
+      <div class="val" id="stat-clips">—</div>
+      <div class="lbl">Clips</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-brands">—</div>
+      <div class="lbl">Brands</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-updated">—</div>
+      <div class="lbl">Updated</div>
+    </div>
+  </div>
+</header>
+
+<div class="health-grid" id="health-grid">
+  <div class="health-card warn" id="hc-analyses">
+    <div class="health-label">clips in corpus</div>
+    <div class="health-value">—</div>
+    <div class="health-sub">loading…</div>
+  </div>
+  <div class="health-card warn" id="hc-brands">
+    <div class="health-label">unique brands</div>
+    <div class="health-value">—</div>
+    <div class="health-sub">loading…</div>
+  </div>
+  <div class="health-card warn" id="hc-quality">
+    <div class="health-label">avg quality</div>
+    <div class="health-value">—</div>
+    <div class="health-sub">loading…</div>
+  </div>
+  <div class="health-card warn" id="hc-viral">
+    <div class="health-label">avg viral potential</div>
+    <div class="health-value">—</div>
+    <div class="health-sub">loading…</div>
+  </div>
+</div>
+
+<div class="insights-row" id="insights-row">
+  <div class="insight-card">
+    <div class="label">🏷️ Dominant Brand</div>
+    <div class="content" id="insight-brand">Loading…</div>
+  </div>
+  <div class="insight-card">
+    <div class="label">📖 Top Story Arc</div>
+    <div class="content" id="insight-arc">Loading…</div>
+  </div>
+  <div class="insight-card">
+    <div class="label">⚡ Pipeline Status</div>
+    <div class="content" id="insight-pipeline">Loading…</div>
+  </div>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <h3>Preset Questions</h3>
+
+    <div class="preset-group">
+      <div class="preset-group-label">Health</div>
+      <button class="preset-btn" data-q="1"><span class="preset-num">01</span>Corpus totals</button>
+      <button class="preset-btn" data-q="11"><span class="preset-num">11</span>Quality distribution</button>
+    </div>
+
+    <div class="preset-group">
+      <div class="preset-group-label">Brands</div>
+      <button class="preset-btn" data-q="3"><span class="preset-num">03</span>Top 10 brands</button>
+      <button class="preset-btn" data-q="7"><span class="preset-num">07</span>JOOLA clips</button>
+    </div>
+
+    <div class="preset-group">
+      <div class="preset-group-label">Content</div>
+      <button class="preset-btn" data-q="4"><span class="preset-num">04</span>Top quality clips</button>
+      <button class="preset-btn" data-q="5"><span class="preset-num">05</span>Viral candidates</button>
+      <button class="preset-btn" data-q="12"><span class="preset-num">12</span>Random social post</button>
+      <button class="preset-btn" data-q="13"><span class="preset-num">13</span>Best per arc</button>
+    </div>
+
+    <div class="preset-group">
+      <div class="preset-group-label">Analytics</div>
+      <button class="preset-btn" data-q="6"><span class="preset-num">06</span>Story arc breakdown</button>
+      <button class="preset-btn" data-q="8"><span class="preset-num">08</span>Elite players (kitchen ≥8)</button>
+      <button class="preset-btn" data-q="9"><span class="preset-num">09</span>Average skills</button>
+      <button class="preset-btn" data-q="14"><span class="preset-num">14</span>Quality vs Viral</button>
+    </div>
+
+    <div class="preset-group">
+      <div class="preset-group-label">Shots</div>
+      <button class="preset-btn" data-q="15"><span class="preset-num">15</span>Shot type breakdown</button>
+      <button class="preset-btn" data-q="16"><span class="preset-num">16</span>Play style split</button>
+    </div>
+  </aside>
+
+  <div>
+    <div class="query-panel">
+      <div class="query-header">
+        <div>
+          <div class="query-title">Question</div>
+          <div class="query-desc" id="query-desc">Pick a preset from the sidebar →</div>
+        </div>
+      </div>
+
+      <div class="results-panel" style="margin-top: 0; border-top: 0; border-radius: 0;">
+        <div class="results-header">
+          <div class="results-info" id="results-info">Fetching corpus-export.json from gh-pages…</div>
+          <div class="results-info" id="results-time"></div>
+        </div>
+        <div id="results">
+          <div class="empty-state">Loading live corpus…</div>
+        </div>
+      </div>
+
+      <div class="sql-block" id="sql-block" style="display: none;">
+        <div class="sql-label">
+          <span>Equivalent SQL (copy into Supabase for the full relational query)</span>
+          <a href="https://supabase.com/dashboard/project/vlcjaftwnllfjyckjchg/sql" target="_blank">Open Supabase SQL Editor ↗</a>
+        </div>
+        <pre class="sql" id="sql-preview"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>
+    Pickle DaaS · Data Lab · Reads live corpus-export.json (auto-updated hourly)
+  </div>
+  <div>
+    <a href="showcase-portal.html">← Portal</a> ·
+    <a href="https://supabase.com/dashboard/project/vlcjaftwnllfjyckjchg/sql" target="_blank">Supabase SQL ↗</a> ·
+    <a href="../corpus-export.json" target="_blank">Raw JSON ↗</a>
+  </div>
+</footer>
+
+</div>
+
+<script>
+// ===========================================================================
+// Data Lab — queries computed client-side from corpus-export.json
+// (source of truth, auto-updated by hourly pipeline)
+// ===========================================================================
+
+let CORPUS = [];
+
+// Preset questions — each has:
+//   title:   short label
+//   desc:    human question
+//   sql:     equivalent Supabase SQL (for reference / copy to dashboard)
+//   run:     function(CORPUS) → array of rows
+const QUERIES = {
+  1: {
+    title: '01 · Corpus totals',
+    desc: 'How many clips, brands, and arcs do we have?',
+    sql: `SELECT\n  COUNT(*) AS total_clips,\n  COUNT(DISTINCT story_arc) AS unique_arcs\nFROM pickle_daas_analyses;`,
+    run: (c) => {
+      const arcs = new Set();
+      const brands = new Set();
+      const shots = new Set();
+      let withSkills = 0;
+      for (const r of c) {
+        if (r.arc) arcs.add(r.arc);
+        (r.brands || []).forEach(b => b && brands.add(b));
+        if (r.dominant_shot) shots.add(r.dominant_shot);
+        if (r.skills && r.skills.kitchen) withSkills++;
+      }
+      return [{
+        total_clips: c.length,
+        unique_brands: brands.size,
+        unique_arcs: arcs.size,
+        unique_shot_types: shots.size,
+        clips_with_skills: withSkills,
+      }];
+    }
+  },
+  3: {
+    title: '03 · Top 10 brands',
+    desc: 'Which brands appear most often?',
+    sql: `SELECT brand_name, total_appearances, total_clips_seen_in\nFROM pickle_daas_brands\nORDER BY total_appearances DESC\nLIMIT 10;`,
+    run: (c) => {
+      const counts = {};
+      const clips = {};
+      for (const r of c) {
+        for (const b of (r.brands || [])) {
+          if (!b) continue;
+          counts[b] = (counts[b] || 0) + 1;
+          clips[b] = clips[b] || new Set();
+          clips[b].add(r.uuid);
+        }
+      }
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([brand, appearances]) => ({
+          brand,
+          appearances,
+          unique_clips: clips[brand].size,
+          market_share_pct: (clips[brand].size / c.length * 100).toFixed(1) + '%'
+        }));
+    }
+  },
+  4: {
+    title: '04 · Top 10 highest-quality clips',
+    desc: 'Which clips scored the highest on quality?',
+    sql: `SELECT video_url, clip_quality_score, viral_potential_score, story_arc, clip_summary\nFROM pickle_daas_analyses\nORDER BY clip_quality_score DESC, viral_potential_score DESC\nLIMIT 10;`,
+    run: (c) => c
+      .filter(r => r.quality)
+      .sort((a, b) => (b.quality - a.quality) || ((b.viral || 0) - (a.viral || 0)))
+      .slice(0, 10)
+      .map(r => ({
+        quality: r.quality,
+        viral: r.viral,
+        arc: r.arc,
+        summary: (r.summary || '').slice(0, 80),
+        watch: r.video_url,
+      }))
+  },
+  5: {
+    title: '05 · Viral candidates (viral ≥ 7)',
+    desc: 'Which clips are most likely to go viral?',
+    sql: `SELECT video_url, viral_potential_score, clip_quality_score, story_arc, commentary_social_caption\nFROM pickle_daas_analyses\nWHERE viral_potential_score >= 7\nORDER BY viral_potential_score DESC\nLIMIT 20;`,
+    run: (c) => c
+      .filter(r => (r.viral || 0) >= 7)
+      .sort((a, b) => (b.viral - a.viral) || ((b.quality || 0) - (a.quality || 0)))
+      .slice(0, 20)
+      .map(r => ({
+        viral: r.viral,
+        quality: r.quality,
+        arc: r.arc,
+        caption: (r.social_caption || '').slice(0, 100),
+        watch: r.video_url,
+      }))
+  },
+  6: {
+    title: '06 · Story arc breakdown',
+    desc: 'How many clips per story arc, and how do they rate?',
+    sql: `SELECT story_arc, COUNT(*) AS clips,\n  ROUND(AVG(clip_quality_score)::numeric, 2) AS avg_quality,\n  ROUND(AVG(viral_potential_score)::numeric, 2) AS avg_viral\nFROM pickle_daas_analyses\nGROUP BY story_arc\nORDER BY clips DESC;`,
+    run: (c) => {
+      const g = {};
+      for (const r of c) {
+        if (!r.arc) continue;
+        g[r.arc] = g[r.arc] || { arc: r.arc, clips: 0, _q: [], _v: [] };
+        g[r.arc].clips++;
+        if (r.quality) g[r.arc]._q.push(r.quality);
+        if (r.viral) g[r.arc]._v.push(r.viral);
+      }
+      return Object.values(g)
+        .map(x => ({
+          arc: x.arc,
+          clips: x.clips,
+          pct: (x.clips / c.length * 100).toFixed(1) + '%',
+          avg_quality: x._q.length ? (x._q.reduce((a, b) => a + b, 0) / x._q.length).toFixed(2) : '—',
+          avg_viral: x._v.length ? (x._v.reduce((a, b) => a + b, 0) / x._v.length).toFixed(2) : '—',
+        }))
+        .sort((a, b) => b.clips - a.clips);
+    }
+  },
+  7: {
+    title: '07 · JOOLA brand report',
+    desc: 'Clips featuring JOOLA paddles',
+    sql: `SELECT video_url, clip_quality_score, viral_potential_score, story_arc\nFROM pickle_daas_analyses\nWHERE brands_detected::text ILIKE '%JOOLA%'\nORDER BY clip_quality_score DESC\nLIMIT 20;`,
+    run: (c) => c
+      .filter(r => (r.brands || []).some(b => /joola/i.test(b)))
+      .sort((a, b) => (b.quality || 0) - (a.quality || 0))
+      .slice(0, 20)
+      .map(r => ({
+        quality: r.quality,
+        viral: r.viral,
+        arc: r.arc,
+        summary: (r.summary || '').slice(0, 80),
+        watch: r.video_url,
+      }))
+  },
+  8: {
+    title: '08 · Elite player clips (kitchen ≥ 8, quality ≥ 7)',
+    desc: 'Clips showing high kitchen skill and high quality',
+    sql: `SELECT video_url,\n  (skill_indicators->>'kitchen_mastery_rating')::int AS kitchen,\n  (skill_indicators->>'consistency_rating')::int AS consistency,\n  clip_quality_score, story_arc\nFROM pickle_daas_analyses\nWHERE (skill_indicators->>'kitchen_mastery_rating')::int >= 8\n  AND clip_quality_score >= 7\nORDER BY kitchen DESC, clip_quality_score DESC\nLIMIT 25;`,
+    run: (c) => c
+      .filter(r => r.skills && r.skills.kitchen >= 8 && (r.quality || 0) >= 7)
+      .sort((a, b) => (b.skills.kitchen - a.skills.kitchen) || ((b.quality || 0) - (a.quality || 0)))
+      .slice(0, 25)
+      .map(r => ({
+        kitchen: r.skills.kitchen,
+        consistency: r.skills.consistency || '—',
+        court_iq: r.skills.court_iq || '—',
+        quality: r.quality,
+        arc: r.arc,
+        watch: r.video_url,
+      }))
+  },
+  9: {
+    title: '09 · Average skill scores',
+    desc: 'What does the average Courtana player look like?',
+    sql: `SELECT\n  ROUND(AVG((skill_indicators->>'kitchen_mastery_rating')::numeric), 2) AS avg_kitchen,\n  ROUND(AVG((skill_indicators->>'power_game_rating')::numeric), 2) AS avg_power,\n  ...\nFROM pickle_daas_analyses;`,
+    run: (c) => {
+      const keys = ['kitchen','court_coverage','power','touch','athleticism','creativity','court_iq','consistency','composure'];
+      const vals = {};
+      for (const k of keys) vals[k] = [];
+      for (const r of c) {
+        if (!r.skills) continue;
+        for (const k of keys) if (typeof r.skills[k] === 'number' && r.skills[k] > 0) vals[k].push(r.skills[k]);
+      }
+      const out = {};
+      for (const k of keys) {
+        out[k] = vals[k].length ? (vals[k].reduce((a, b) => a + b, 0) / vals[k].length).toFixed(2) : '—';
+      }
+      return [out];
+    }
+  },
+  11: {
+    title: '11 · Quality distribution',
+    desc: 'How many clips at each quality score?',
+    sql: `SELECT clip_quality_score, COUNT(*) AS clips\nFROM pickle_daas_analyses\nGROUP BY clip_quality_score\nORDER BY clip_quality_score DESC;`,
+    run: (c) => {
+      const counts = {};
+      for (const r of c) if (r.quality) counts[r.quality] = (counts[r.quality] || 0) + 1;
+      const max = Math.max(...Object.values(counts), 1);
+      return Object.entries(counts)
+        .sort((a, b) => b[0] - a[0])
+        .map(([score, clips]) => ({
+          score: +score,
+          clips,
+          visual: '█'.repeat(Math.round(clips / max * 30)),
+        }));
+    }
+  },
+  12: {
+    title: '12 · Random social post candidate',
+    desc: 'Give me one clip to post right now (quality ≥ 8, viral ≥ 6)',
+    sql: `SELECT video_url, commentary_social_caption, commentary_ron_burgundy\nFROM pickle_daas_analyses\nWHERE clip_quality_score >= 8 AND viral_potential_score >= 6\nORDER BY RANDOM() LIMIT 1;`,
+    run: (c) => {
+      const pool = c.filter(r => (r.quality || 0) >= 8 && (r.viral || 0) >= 6);
+      if (!pool.length) return [];
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      return [{
+        quality: pick.quality,
+        viral: pick.viral,
+        arc: pick.arc,
+        caption: pick.social_caption || '(none)',
+        ron_burgundy: pick.ron_burgundy || '(none)',
+        watch: pick.video_url,
+      }];
+    }
+  },
+  13: {
+    title: '13 · Best clip per story arc',
+    desc: 'The highlight reel — best clip in every arc category',
+    sql: `SELECT DISTINCT ON (story_arc) story_arc, video_url, clip_quality_score, clip_summary\nFROM pickle_daas_analyses\nORDER BY story_arc, clip_quality_score DESC;`,
+    run: (c) => {
+      const best = {};
+      for (const r of c) {
+        if (!r.arc) continue;
+        const score = (r.quality || 0) * 10 + (r.viral || 0);
+        if (!best[r.arc] || score > best[r.arc]._s) {
+          best[r.arc] = { arc: r.arc, quality: r.quality, viral: r.viral, summary: (r.summary || '').slice(0, 80), watch: r.video_url, _s: score };
+        }
+      }
+      return Object.values(best).map(({ _s, ...rest }) => rest).sort((a, b) => a.arc.localeCompare(b.arc));
+    }
+  },
+  14: {
+    title: '14 · Quality vs Viral correlation',
+    desc: 'Does higher quality predict higher viral?',
+    sql: `SELECT clip_quality_score AS quality,\n  ROUND(AVG(viral_potential_score)::numeric, 2) AS avg_viral,\n  COUNT(*) AS n\nFROM pickle_daas_analyses\nGROUP BY quality ORDER BY quality DESC;`,
+    run: (c) => {
+      const g = {};
+      for (const r of c) {
+        if (!r.quality || !r.viral) continue;
+        g[r.quality] = g[r.quality] || { quality: r.quality, _v: [] };
+        g[r.quality]._v.push(r.viral);
+      }
+      return Object.values(g)
+        .sort((a, b) => b.quality - a.quality)
+        .map(x => ({
+          quality: x.quality,
+          avg_viral: (x._v.reduce((a, b) => a + b, 0) / x._v.length).toFixed(2),
+          sample_size: x._v.length,
+        }));
+    }
+  },
+  15: {
+    title: '15 · Shot type breakdown',
+    desc: 'How often does each shot type appear as the dominant shot?',
+    sql: `SELECT shot_analysis->>'dominant_shot_type' AS shot, COUNT(*) AS clips\nFROM pickle_daas_analyses\nGROUP BY shot ORDER BY clips DESC;`,
+    run: (c) => {
+      const counts = {};
+      const quality = {};
+      for (const r of c) {
+        if (!r.dominant_shot) continue;
+        counts[r.dominant_shot] = (counts[r.dominant_shot] || 0) + 1;
+        quality[r.dominant_shot] = quality[r.dominant_shot] || [];
+        if (r.quality) quality[r.dominant_shot].push(r.quality);
+      }
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([shot, clips]) => ({
+          shot,
+          clips,
+          pct: (clips / c.length * 100).toFixed(1) + '%',
+          avg_quality: quality[shot].length ? (quality[shot].reduce((a, b) => a + b, 0) / quality[shot].length).toFixed(2) : '—',
+        }));
+    }
+  },
+  16: {
+    title: '16 · Play style split',
+    desc: 'Distribution of play styles across clips',
+    sql: `SELECT skill_indicators->>'aggression_style' AS style, COUNT(*) AS clips\nFROM pickle_daas_analyses\nGROUP BY style ORDER BY clips DESC;`,
+    run: (c) => {
+      const counts = {};
+      for (const r of c) {
+        const s = r.play_style || 'unknown';
+        counts[s] = (counts[s] || 0) + 1;
+      }
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([style, clips]) => ({ style, clips, pct: (clips / c.length * 100).toFixed(1) + '%' }));
+    }
+  },
+};
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function renderTable(rows) {
+  if (!rows || rows.length === 0) {
+    document.getElementById('results').innerHTML = '<div class="empty-state">No rows returned.</div>';
+    return;
+  }
+  const cols = Object.keys(rows[0]);
+  let html = '<table><thead><tr>';
+  for (const c of cols) html += `<th>${escapeHtml(c)}</th>`;
+  html += '</tr></thead><tbody>';
+  for (const r of rows) {
+    html += '<tr>';
+    for (const c of cols) {
+      const v = r[c];
+      if (v == null || v === '') {
+        html += '<td style="color: var(--muted)">—</td>';
+      } else if (c === 'watch' && typeof v === 'string' && /^https?:/.test(v)) {
+        html += `<td><a href="${escapeHtml(v)}" target="_blank">▶ watch</a></td>`;
+      } else if (c === 'visual' && typeof v === 'string') {
+        html += `<td style="color: var(--accent); font-family: ui-monospace, monospace;">${escapeHtml(v)}</td>`;
+      } else if (typeof v === 'number') {
+        html += `<td class="num">${v}</td>`;
+      } else {
+        const s = String(v);
+        html += `<td title="${escapeHtml(s)}">${escapeHtml(s.slice(0, 100))}${s.length > 100 ? '…' : ''}</td>`;
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('results').innerHTML = html;
+}
+
+function runPreset(qNum) {
+  const q = QUERIES[qNum];
+  if (!q) return;
+
+  document.getElementById('query-desc').textContent = q.desc;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.toggle('active', b.dataset.q === String(qNum)));
+  document.getElementById('sql-block').style.display = 'block';
+  document.getElementById('sql-preview').textContent = q.sql;
+
+  const info = document.getElementById('results-info');
+  const timeEl = document.getElementById('results-time');
+  info.textContent = 'Computing…';
+  info.className = 'results-info';
+  document.getElementById('results').innerHTML = '<div class="loading">Running</div>';
+
+  setTimeout(() => {
+    const t0 = performance.now();
+    try {
+      const rows = q.run(CORPUS);
+      const t = Math.round(performance.now() - t0);
+      renderTable(rows);
+      info.textContent = `${rows.length} row${rows.length === 1 ? '' : 's'}`;
+      info.className = 'results-info success';
+      timeEl.textContent = `${t}ms (client-side)`;
+    } catch (e) {
+      document.getElementById('results').innerHTML = `<div class="empty-state">Query failed:<br><br>${escapeHtml(e.message || String(e))}</div>`;
+      info.textContent = 'Error';
+      info.className = 'results-info error';
+    }
+  }, 40);
+}
+
+function formatTimeAgo(date) {
+  const diffMs = Date.now() - date.getTime();
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.round(hrs / 24);
+  return `${days}d ago`;
+}
+
+function setHealthCard(id, value, sub, status) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.querySelector('.health-value').textContent = typeof value === 'number' ? value.toLocaleString() : value;
+  el.querySelector('.health-sub').textContent = sub;
+  el.className = 'health-card ' + status;
+}
+
+function loadInsights() {
+  const c = CORPUS;
+
+  // Basic stats
+  const brands = new Set();
+  const brandCounts = {};
+  const brandClips = {};
+  let qSum = 0, qN = 0, vSum = 0, vN = 0;
+  for (const r of c) {
+    if (r.quality) { qSum += r.quality; qN++; }
+    if (r.viral) { vSum += r.viral; vN++; }
+    for (const b of (r.brands || [])) {
+      if (!b) continue;
+      brands.add(b);
+      brandCounts[b] = (brandCounts[b] || 0) + 1;
+      brandClips[b] = brandClips[b] || new Set();
+      brandClips[b].add(r.uuid);
+    }
+  }
+  const avgQ = qN ? (qSum / qN).toFixed(2) : '—';
+  const avgV = vN ? (vSum / vN).toFixed(2) : '—';
+
+  document.getElementById('stat-clips').textContent = c.length.toLocaleString();
+  document.getElementById('stat-brands').textContent = brands.size;
+
+  setHealthCard('hc-analyses', c.length, `unique clips`, 'ok');
+  setHealthCard('hc-brands', brands.size, `detected across corpus`, 'ok');
+  setHealthCard('hc-quality', avgQ, `out of 10`, 'ok');
+  setHealthCard('hc-viral', avgV, `out of 10`, 'ok');
+
+  // Dominant brand
+  const topBrand = Object.entries(brandCounts).sort((a, b) => b[1] - a[1])[0];
+  if (topBrand) {
+    const clipCount = brandClips[topBrand[0]].size;
+    const pct = Math.round(clipCount / c.length * 100);
+    document.getElementById('insight-brand').innerHTML =
+      `<span class="highlight">${escapeHtml(topBrand[0])}</span> appears in <span class="highlight">${clipCount}</span> clips (<span class="highlight">${pct}%</span> of corpus). Total appearances: <span class="highlight">${topBrand[1]}</span>.`;
+  } else {
+    document.getElementById('insight-brand').textContent = 'No brand data.';
+  }
+
+  // Top story arc
+  const arcCounts = {};
+  for (const r of c) if (r.arc) arcCounts[r.arc] = (arcCounts[r.arc] || 0) + 1;
+  const topArc = Object.entries(arcCounts).sort((a, b) => b[1] - a[1])[0];
+  if (topArc) {
+    const pct = Math.round(topArc[1] / c.length * 100);
+    document.getElementById('insight-arc').innerHTML =
+      `<span class="highlight">${escapeHtml(topArc[0])}</span> dominates at <span class="highlight">${pct}%</span> of clips (${topArc[1]} of ${c.length}).`;
+  } else {
+    document.getElementById('insight-arc').textContent = 'No arc data.';
+  }
+
+  // Pipeline status
+  document.getElementById('insight-pipeline').innerHTML =
+    `<span class="highlight">${c.length}</span> clips analyzed at <span class="highlight">$0.0054</span> each = <span class="highlight">$${(c.length * 0.0054).toFixed(2)}</span> spent total. Auto-ingest runs hourly.`;
+}
+
+async function init() {
+  const info = document.getElementById('results-info');
+  try {
+    const res = await fetch('../corpus-export.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const lastModified = res.headers.get('Last-Modified');
+    CORPUS = await res.json();
+
+    info.textContent = `Loaded ${CORPUS.length} clips from corpus-export.json`;
+    info.className = 'results-info success';
+
+    if (lastModified) {
+      document.getElementById('stat-updated').textContent = formatTimeAgo(new Date(lastModified));
+    } else {
+      document.getElementById('stat-updated').textContent = 'live';
+    }
+
+    loadInsights();
+
+    document.getElementById('results').innerHTML = '<div class="empty-state">Loaded. Pick a preset from the sidebar to see results.</div>';
+  } catch (e) {
+    info.textContent = 'Failed to load corpus';
+    info.className = 'results-info error';
+    document.getElementById('results').innerHTML = `<div class="empty-state">Failed to load corpus-export.json:<br><br>${escapeHtml(e.message)}<br><br><small>Check that <a href="../corpus-export.json" target="_blank" style="color: var(--info)">corpus-export.json</a> is accessible.</small></div>`;
+  }
+}
+
+// Wire up UI
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => runPreset(+btn.dataset.q));
+});
+
+init();
+</script>
+</body>
+</html>

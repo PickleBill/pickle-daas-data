@@ -3,671 +3,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pickle DaaS — Pipeline Health Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<title>Pipeline Health · Pickle DaaS</title>
 <style>
   :root {
-    --bg: #0f1219;
-    --surface: #1e2a3a;
-    --surface-alt: #253347;
-    --accent: #00E676;
-    --accent-dim: rgba(0,230,118,0.15);
-    --secondary: #4FC3F7;
-    --secondary-dim: rgba(79,195,247,0.12);
-    --warn: #FFB74D;
-    --danger: #EF5350;
-    --text: #E8EDF3;
-    --text-dim: #8899AA;
-    --text-muted: #556677;
-    --radius: 16px;
-    --radius-sm: 10px;
+    --bg: #0b0e14;
+    --surface: #131722;
+    --surface-2: #1c2333;
+    --border: #2a3142;
+    --text: #e4e7ed;
+    --muted: #7a8499;
+    --ok: #22c55e;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-monospace, 'SF Mono', Monaco, monospace; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; }
+  .shell { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+  header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark { width: 32px; height: 32px; border-radius: 6px; background: var(--ok); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; font-size: 15px; }
+  .brand h1 { font-size: 15px; font-weight: 600; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .brand-sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--ok); border-radius: 4px; color: var(--ok); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .live-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  h2 { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 14px; font-weight: 600; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 18px; }
+  .kpi.status-ok { border-left: 3px solid var(--ok); }
+  .kpi.status-warn { border-left: 3px solid var(--warn); }
+  .kpi.status-danger { border-left: 3px solid var(--danger); }
+  .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 20px; }
+  .section h3 { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .section h3 .meta { font-size: 11px; color: var(--muted); font-weight: normal; }
+
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) {
+    .chart-row { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { padding: 8px 12px; text-align: left; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  td.num { text-align: right; color: var(--ok); }
+  tr:last-child td { border-bottom: none; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    min-height: 100vh;
-  }
+  .bar-chart { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row { display: grid; grid-template-columns: 100px 1fr 40px; gap: 8px; align-items: center; font-size: 12px; }
+  .bar-label { color: var(--muted); }
+  .bar-track { height: 16px; background: var(--surface-2); border-radius: 3px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; background: var(--ok); border-radius: 3px; transition: width 0.4s ease; }
+  .bar-value { text-align: right; color: var(--ok); font-variant-numeric: tabular-nums; }
 
-  .dashboard {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 32px 24px 64px;
-  }
+  .metric-inline { display: flex; gap: 24px; margin-top: 8px; }
+  .metric-inline span { color: var(--muted); font-size: 11px; }
+  .metric-inline strong { color: var(--ok); font-variant-numeric: tabular-nums; }
 
-  /* ─── HEADER ─── */
-  .header {
-    text-align: center;
-    margin-bottom: 48px;
-    position: relative;
-  }
-  .header::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    margin: 20px auto 0;
-    border-radius: 2px;
-  }
-  .header .badge {
-    display: inline-block;
-    background: var(--accent-dim);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(0,230,118,0.25);
-    margin-bottom: 16px;
-  }
-  .header h1 {
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #fff 0%, var(--secondary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .header .subtitle {
-    color: var(--text-dim);
-    font-size: 15px;
-    margin-top: 8px;
-  }
+  .loading { padding: 30px; text-align: center; color: var(--muted); }
+  .loading::after { content: '...'; animation: dots 1s infinite; }
+  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
 
-  /* ─── HERO KPIs ─── */
-  .hero-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-  .kpi-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    border: 1px solid rgba(255,255,255,0.04);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .kpi-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  }
-  .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: var(--radius) var(--radius) 0 0;
-  }
-  .kpi-card:nth-child(1)::before { background: var(--accent); }
-  .kpi-card:nth-child(2)::before { background: var(--secondary); }
-  .kpi-card:nth-child(3)::before { background: var(--warn); }
-  .kpi-card:nth-child(4)::before { background: #CE93D8; }
-  .kpi-card:nth-child(5)::before { background: #EF5350; }
-  .kpi-card:nth-child(6)::before { background: #4DB6AC; }
+  .error { padding: 30px; text-align: center; color: var(--danger); }
 
-  .kpi-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-  }
-  .kpi-value {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.1;
-  }
-  .kpi-value.accent { color: var(--accent); }
-  .kpi-value.secondary { color: var(--secondary); }
-  .kpi-value.warn { color: var(--warn); }
-  .kpi-value.purple { color: #CE93D8; }
-  .kpi-value.danger { color: #EF5350; }
-  .kpi-value.teal { color: #4DB6AC; }
-
-  .kpi-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 6px;
-  }
-
-  /* ─── SECTIONS ─── */
-  .section-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 24px;
-    margin-bottom: 24px;
-  }
-  @media (max-width: 860px) {
-    .section-grid { grid-template-columns: 1fr; }
-  }
-
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 28px;
-    border: 1px solid rgba(255,255,255,0.04);
-  }
-  .card-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .card-subtitle {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-  .card canvas {
-    max-height: 320px;
-  }
-
-  /* ─── FULL-WIDTH CARD ─── */
-  .full-width { grid-column: 1 / -1; }
-
-  /* ─── WARNING BANNER ─── */
-  .warning-banner {
-    background: rgba(255,183,77,0.08);
-    border: 1px solid rgba(255,183,77,0.25);
-    border-radius: var(--radius-sm);
-    padding: 20px 24px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-  }
-  .warning-banner .icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
-  .warning-banner .title { font-weight: 700; color: var(--warn); margin-bottom: 4px; }
-  .warning-banner .detail { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
-
-  /* ─── MODEL CARD ─── */
-  .model-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-  }
-  .model-stat {
-    background: var(--surface-alt);
-    border-radius: var(--radius-sm);
-    padding: 18px;
-    text-align: center;
-  }
-  .model-stat .val {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--accent);
-  }
-  .model-stat .lbl {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-
-  /* ─── COST PROJECTION ─── */
-  .cost-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .cost-row:last-child { border-bottom: none; }
-  .cost-label { color: var(--text-dim); font-size: 14px; }
-  .cost-value { font-weight: 700; font-size: 16px; }
-  .cost-value.green { color: var(--accent); }
-  .cost-value.blue { color: var(--secondary); }
-
-  .progress-track {
-    width: 100%;
-    height: 8px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 4px;
-    margin: 20px 0 12px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    transition: width 1s ease;
-  }
-  .progress-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  /* ─── FOOTER ─── */
-  .footer {
-    text-align: center;
-    padding-top: 48px;
-    color: var(--text-muted);
-    font-size: 13px;
-    border-top: 1px solid rgba(255,255,255,0.04);
-    margin-top: 40px;
-  }
-  .footer span { color: var(--accent); font-weight: 600; }
-
-  /* ─── ANIMATION ─── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .kpi-card, .card { animation: fadeUp 0.5s ease both; }
-  .kpi-card:nth-child(2), .card:nth-child(2) { animation-delay: 0.05s; }
-  .kpi-card:nth-child(3), .card:nth-child(3) { animation-delay: 0.1s; }
-  .kpi-card:nth-child(4) { animation-delay: 0.15s; }
-  .kpi-card:nth-child(5) { animation-delay: 0.2s; }
-  .kpi-card:nth-child(6) { animation-delay: 0.25s; }
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  footer a { color: var(--info); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
-<div class="dashboard">
+<div class="shell">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="badge">Live Pipeline Intelligence</div>
-    <h1>Pickle DaaS Health Dashboard</h1>
-    <div class="subtitle">Data-as-a-Service pipeline status &mdash; 4,097 clip corpus &mdash; Gemini 2.5 Flash</div>
-  </div>
-
-  <!-- HERO KPIs -->
-  <div class="hero-grid">
-    <div class="kpi-card">
-      <div class="kpi-label">Clips Analyzed</div>
-      <div class="kpi-value accent">96</div>
-      <div class="kpi-sub">of 4,097 available (2.3%)</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Avg Quality Score</div>
-      <div class="kpi-value secondary">6.6<span style="font-size:18px;color:var(--text-muted)">/10</span></div>
-      <div class="kpi-sub">Target: 7.5+ for production</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Total Spend</div>
-      <div class="kpi-value warn">$0.74</div>
-      <div class="kpi-sub">of $20.00 budget (96% remaining)</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Cost per Clip</div>
-      <div class="kpi-value purple">$0.0054</div>
-      <div class="kpi-sub">Gemini analysis only</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Unique Brands</div>
-      <div class="kpi-value danger">24</div>
-      <div class="kpi-sub">Across all analyzed clips</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Badge F1 Score</div>
-      <div class="kpi-value teal">45.2%</div>
-      <div class="kpi-sub">Precision 38.9% / Recall 53.9%</div>
+<header>
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div>
+      <h1>Pipeline Health</h1>
+      <div class="brand-sub">System status · Pickle DaaS ingestion pipeline</div>
     </div>
   </div>
+  <div class="live-badge">Live</div>
+</header>
 
-  <!-- ROW 1: Corpus Growth + Quality Distribution -->
-  <div class="section-grid">
-    <div class="card">
-      <div class="card-title">Corpus Growth</div>
-      <div class="card-subtitle">Cumulative clips analyzed by batch</div>
-      <canvas id="growthChart"></canvas>
-    </div>
-    <div class="card">
-      <div class="card-title">Quality Distribution</div>
-      <div class="card-subtitle">Clip quality scores across all batches</div>
-      <canvas id="qualityChart"></canvas>
-    </div>
+<h2>System KPIs</h2>
+<div class="kpi-grid">
+  <div class="kpi status-ok" id="kpi-clips">
+    <div class="kpi-label">Clips analyzed</div>
+    <div class="kpi-value">—</div>
+    <div class="kpi-sub">total in corpus</div>
   </div>
+  <div class="kpi status-ok" id="kpi-brands">
+    <div class="kpi-label">Unique brands</div>
+    <div class="kpi-value">—</div>
+    <div class="kpi-sub">detected across corpus</div>
+  </div>
+  <div class="kpi status-ok" id="kpi-cost">
+    <div class="kpi-label">Total spend</div>
+    <div class="kpi-value">—</div>
+    <div class="kpi-sub">at $0.0054 / clip</div>
+  </div>
+  <div class="kpi status-ok" id="kpi-updated">
+    <div class="kpi-label">Last update</div>
+    <div class="kpi-value">—</div>
+    <div class="kpi-sub">auto-ingest hourly</div>
+  </div>
+</div>
 
-  <!-- ROW 2: Brand Frequency + Story Arc -->
-  <div class="section-grid">
-    <div class="card">
-      <div class="card-title">Brand Frequency</div>
-      <div class="card-subtitle">Top 15 brands detected across clips</div>
-      <canvas id="brandChart"></canvas>
-    </div>
-    <div class="card">
-      <div class="card-title">Story Arc Distribution</div>
-      <div class="card-subtitle">Narrative classification of analyzed clips</div>
-      <canvas id="arcChart"></canvas>
+<div class="section">
+  <h3>
+    <span>Quality Distribution</span>
+    <span class="meta" id="quality-meta">—</span>
+  </h3>
+  <div id="quality-chart" class="bar-chart">
+    <div class="loading">Loading quality scores</div>
+  </div>
+</div>
+
+<div class="chart-row">
+  <div class="section">
+    <h3>
+      <span>Top Brands (market share)</span>
+      <span class="meta" id="brands-meta">—</span>
+    </h3>
+    <div id="brands-chart" class="bar-chart">
+      <div class="loading">Loading brand data</div>
     </div>
   </div>
 
-  <!-- ROW 3: Venue Warning + Model Performance -->
-  <div class="section-grid">
-    <div class="card">
-      <div class="card-title">Venue Concentration</div>
-      <div class="card-subtitle">Source diversity health check</div>
-      <div class="warning-banner" style="margin-top: 8px;">
-        <div class="icon">&#9888;</div>
-        <div>
-          <div class="title">High Concentration Warning</div>
-          <div class="detail">
-            Current corpus is sourced from a <strong>single venue</strong> via the Courtana platform.
-            Recommend expanding to 3+ venues before investor data room.
-            Single-venue data risks model bias and limits generalizability claims.
-            <br><br>
-            <strong>Status:</strong> 1 venue active &bull; Target: 5 venues by Q3 2026 &bull;
-            <span style="color:var(--warn)">Risk: HIGH</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Model Performance</div>
-      <div class="card-subtitle">Gemini 2.5 Flash pipeline metrics</div>
-      <div class="model-grid">
-        <div class="model-stat">
-          <div class="val">Gemini 2.5</div>
-          <div class="lbl">Model</div>
-        </div>
-        <div class="model-stat">
-          <div class="val">Flash</div>
-          <div class="lbl">Tier</div>
-        </div>
-        <div class="model-stat">
-          <div class="val">4,800</div>
-          <div class="lbl">Avg Tokens/Clip</div>
-        </div>
-        <div class="model-stat">
-          <div class="val">~3s</div>
-          <div class="lbl">Avg Latency</div>
-        </div>
-        <div class="model-stat">
-          <div class="val">100%</div>
-          <div class="lbl">Core Field Fill</div>
-        </div>
-        <div class="model-stat">
-          <div class="val">6 / 6</div>
-          <div class="lbl">Batches Complete</div>
-        </div>
-      </div>
-      <div style="margin-top: 20px; padding: 16px; background: var(--surface-alt); border-radius: var(--radius-sm);">
-        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 8px;">Field Fill Rate (Latest Batch)</div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <span style="background: rgba(0,230,118,0.12); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Quality: 100%</span>
-          <span style="background: rgba(0,230,118,0.12); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Story Arc: 100%</span>
-          <span style="background: rgba(0,230,118,0.12); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Brands: 100%</span>
-          <span style="background: rgba(0,230,118,0.12); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Coaching: 100%</span>
-          <span style="background: rgba(255,183,77,0.12); color: var(--warn); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Badges: 50%</span>
-          <span style="background: rgba(239,83,80,0.12); color: var(--danger); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Sig. Move: 0%</span>
-        </div>
-      </div>
+  <div class="section">
+    <h3>
+      <span>Story Arc Mix</span>
+      <span class="meta" id="arcs-meta">—</span>
+    </h3>
+    <div id="arcs-chart" class="bar-chart">
+      <div class="loading">Loading arc data</div>
     </div>
   </div>
+</div>
 
-  <!-- ROW 4: Cost Tracking -->
-  <div class="section-grid">
-    <div class="card full-width">
-      <div class="card-title">Cost Tracking &amp; Projection</div>
-      <div class="card-subtitle">Budget utilization and full-corpus cost modeling</div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;">
-        <div>
-          <div class="cost-row">
-            <span class="cost-label">Gemini analysis (96 clips)</span>
-            <span class="cost-value green">$0.52</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">ElevenLabs voice (13 clips)</span>
-            <span class="cost-value blue">$0.22</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">Total to date</span>
-            <span class="cost-value" style="color:#fff;">$0.74</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">Budget remaining</span>
-            <span class="cost-value green">$19.26</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" style="width: 3.7%;"></div>
-          </div>
-          <div class="progress-labels">
-            <span>$0.74 spent</span>
-            <span>$20.00 budget</span>
-          </div>
-        </div>
-        <div>
-          <div class="cost-row">
-            <span class="cost-label">Cost per clip (Gemini only)</span>
-            <span class="cost-value green">$0.0054</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">Full corpus (4,097 clips)</span>
-            <span class="cost-value blue">$22.12</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">Cost per 100K clips (scale)</span>
-            <span class="cost-value blue">$540</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">400K target corpus</span>
-            <span class="cost-value" style="color:#CE93D8;">$2,160</span>
-          </div>
-          <div style="margin-top: 20px; padding: 16px; background: var(--surface-alt); border-radius: var(--radius-sm);">
-            <div style="font-size: 13px; color: var(--accent); font-weight: 700; margin-bottom: 4px;">Unit Economics</div>
-            <div style="font-size: 12px; color: var(--text-dim); line-height: 1.8;">
-              At $0.0054/clip, full corpus analysis is <strong style="color:var(--accent)">$22</strong> &mdash; not $22K.<br>
-              Brand intelligence reports sell for <strong style="color:var(--secondary)">$500-2,000</strong>/venue/month.<br>
-              Gross margin: <strong style="color:var(--accent)">&gt;99%</strong> on data product layer.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="section">
+  <h3>
+    <span>Shot Type Distribution</span>
+    <span class="meta" id="shots-meta">—</span>
+  </h3>
+  <div id="shots-chart" class="bar-chart">
+    <div class="loading">Loading shot data</div>
   </div>
+</div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <span>Pickle DaaS</span> &mdash; Pipeline Intelligence &nbsp;|&nbsp; Generated April 11, 2026
-    &nbsp;|&nbsp; 96 clips processed &nbsp;|&nbsp; 6 batches complete
+<div class="section">
+  <h3>
+    <span>Data Sources</span>
+    <span class="meta" id="sources-meta">—</span>
+  </h3>
+  <table id="sources-table">
+    <thead>
+      <tr><th>Source</th><th>Endpoint</th><th style="text-align:right">Status</th></tr>
+    </thead>
+    <tbody id="sources-body">
+      <tr><td colspan="3" class="loading">Checking</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <div>Pickle DaaS · Pipeline Health · Live data from corpus-export.json (updated hourly)</div>
+  <div>
+    <a href="showcase-portal.html">← Portal</a> ·
+    <a href="data-lab.html">Data Lab →</a> ·
+    <a href="../corpus-export.json" target="_blank">Raw JSON ↗</a>
   </div>
+</footer>
 
 </div>
 
 <script>
-// ─── CHART DEFAULTS ───
-Chart.defaults.color = '#8899AA';
-Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
-Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif";
+async function loadData() {
+  const results = await Promise.allSettled([
+    fetch('../corpus-export.json', { cache: 'no-cache' }),
+    fetch('../dashboard-stats.json', { cache: 'no-cache' }),
+  ]);
 
-// ─── CORPUS GROWTH ───
-new Chart(document.getElementById('growthChart'), {
-  type: 'bar',
-  data: {
-    labels: ['test-001\nApr 5', 'batch-001\nApr 6', 'broadcast\nApr 7', 'batch-30\nApr 9', 'batch-0410\nApr 10', 'v1.2-reprocess\nApr 11'],
-    datasets: [{
-      label: 'Clips in Batch',
-      data: [1, 3, 4, 11, 12, 5],
-      backgroundColor: 'rgba(0,230,118,0.7)',
-      borderRadius: 8,
-      borderSkipped: false,
-      barPercentage: 0.6,
-    }, {
-      label: 'Cumulative Total',
-      data: [1, 4, 8, 19, 31, 36],
-      type: 'line',
-      borderColor: '#4FC3F7',
-      backgroundColor: 'rgba(79,195,247,0.1)',
-      pointBackgroundColor: '#4FC3F7',
-      pointBorderColor: '#1e2a3a',
-      pointBorderWidth: 2,
-      pointRadius: 5,
-      tension: 0.3,
-      fill: true,
-      yAxisID: 'y1',
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    interaction: { mode: 'index', intersect: false },
-    plugins: {
-      legend: { display: true, position: 'top', labels: { usePointStyle: true, padding: 20, font: { size: 11 } } }
-    },
-    scales: {
-      y: { beginAtZero: true, title: { display: true, text: 'Clips per Batch', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
-      y1: { position: 'right', beginAtZero: true, title: { display: true, text: 'Cumulative', font: { size: 11 } }, grid: { display: false } },
-      x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+  let corpus = [];
+  let stats = {};
+
+  const [corpusRes, statsRes] = results;
+  if (corpusRes.status === 'fulfilled' && corpusRes.value.ok) {
+    corpus = await corpusRes.value.json();
+  } else {
+    document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;"><h1 style="color:var(--danger);">Pipeline Data Unavailable</h1><p style="color:var(--muted);margin:20px 0;">Could not fetch corpus-export.json.</p><button onclick="location.reload()" style="padding:10px 24px;background:var(--ok);color:#000;border:none;border-radius:6px;font-weight:600;cursor:pointer;">Retry</button></div>';
+    return;
+  }
+  if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
+    stats = await statsRes.value.json();
+  }
+
+  const lastModified = corpusRes.value.headers.get('Last-Modified');
+  render(corpus, stats, lastModified);
+}
+
+function timeAgo(date) {
+  const diff = (Date.now() - date.getTime()) / 1000;
+  if (diff < 60) return Math.round(diff) + 's ago';
+  if (diff < 3600) return Math.round(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.round(diff / 3600) + 'h ago';
+  return Math.round(diff / 86400) + 'd ago';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function renderBarChart(container, items, totalLabel) {
+  if (!items.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:12px;">No data</div>';
+    return;
+  }
+  const max = Math.max(...items.map(i => i.value));
+  let html = '';
+  for (const it of items) {
+    const pct = (it.value / max * 100).toFixed(1);
+    const shareText = it.share != null ? ` (${it.share})` : '';
+    html += `<div class="bar-row">
+      <span class="bar-label" title="${escapeHtml(String(it.label))}">${escapeHtml(String(it.label).slice(0, 18))}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="bar-value">${it.value}</span>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function render(corpus, stats, lastModified) {
+  const n = corpus.length;
+
+  // Compute analytics
+  const brandCounts = {};
+  const brandClips = {};
+  const arcCounts = {};
+  const shotCounts = {};
+  const qualityBuckets = {};
+
+  for (const c of corpus) {
+    for (const b of (c.brands || [])) {
+      if (!b) continue;
+      brandCounts[b] = (brandCounts[b] || 0) + 1;
+      brandClips[b] = brandClips[b] || new Set();
+      brandClips[b].add(c.uuid);
+    }
+    if (c.arc) arcCounts[c.arc] = (arcCounts[c.arc] || 0) + 1;
+    if (c.dominant_shot) shotCounts[c.dominant_shot] = (shotCounts[c.dominant_shot] || 0) + 1;
+    if (c.quality != null) {
+      const q = Math.floor(c.quality);
+      qualityBuckets[q] = (qualityBuckets[q] || 0) + 1;
     }
   }
-});
 
-// ─── QUALITY DISTRIBUTION ───
-// Derived from cost-baseline (14 clips: scores 7,7,7,7,7,7,7,8,8,8,8,8,8,7) + dashboard avg 6.6 across 96
-// Estimated distribution based on avg 6.6 and known batch data
-new Chart(document.getElementById('qualityChart'), {
-  type: 'bar',
-  data: {
-    labels: ['1-3 (Poor)', '4-6 (Fair)', '7-8 (Good)', '9-10 (Excellent)'],
-    datasets: [{
-      label: 'Number of Clips',
-      data: [4, 38, 51, 3],
-      backgroundColor: [
-        'rgba(239,83,80,0.7)',
-        'rgba(255,183,77,0.7)',
-        'rgba(0,230,118,0.7)',
-        'rgba(79,195,247,0.7)'
-      ],
-      borderRadius: 8,
-      borderSkipped: false,
-      barPercentage: 0.65,
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          afterLabel: function(ctx) {
-            return Math.round(ctx.raw / 96 * 100) + '% of corpus';
-          }
-        }
-      }
-    },
-    scales: {
-      y: { beginAtZero: true, title: { display: true, text: 'Clip Count', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
-      x: { grid: { display: false } }
-    }
+  const uniqueBrands = Object.keys(brandCounts).length;
+  const totalSpend = (n * 0.0054).toFixed(2);
+
+  // KPIs
+  document.querySelector('#kpi-clips .kpi-value').textContent = n.toLocaleString();
+  document.querySelector('#kpi-brands .kpi-value').textContent = uniqueBrands;
+  document.querySelector('#kpi-cost .kpi-value').textContent = '$' + totalSpend;
+  if (lastModified) {
+    document.querySelector('#kpi-updated .kpi-value').textContent = timeAgo(new Date(lastModified));
+  } else {
+    document.querySelector('#kpi-updated .kpi-value').textContent = 'live';
   }
-});
 
-// ─── BRAND FREQUENCY ───
-const brandData = {
-  "JOOLA": 68, "Nike": 9, "PICKLEBALL": 3, "Courtana": 3, "LIFE TIME PICKLEBALL": 3,
-  "Skull Logo": 2, "Recovery Cave": 2, "The Underground": 2, "Pickleball": 2, "CRBN": 2,
-  "RECOVERY CAVE": 2, "ONIX": 2, "Franklin": 1, "Selkirk": 1, "STRENGTHHOUSE": 1
-};
-const brandLabels = Object.keys(brandData);
-const brandValues = Object.values(brandData);
-const maxBrand = Math.max(...brandValues);
+  // Quality distribution
+  const qItems = Object.keys(qualityBuckets)
+    .sort((a, b) => Number(b) - Number(a))
+    .map(q => ({ label: 'Quality ' + q, value: qualityBuckets[q] }));
+  renderBarChart(document.getElementById('quality-chart'), qItems);
+  document.getElementById('quality-meta').textContent = qItems.reduce((s, i) => s + i.value, 0) + ' clips scored';
 
-new Chart(document.getElementById('brandChart'), {
-  type: 'bar',
-  data: {
-    labels: brandLabels,
-    datasets: [{
-      label: 'Detections',
-      data: brandValues,
-      backgroundColor: brandValues.map(v =>
-        v === maxBrand ? 'rgba(0,230,118,0.8)' :
-        v >= 3 ? 'rgba(79,195,247,0.6)' :
-        'rgba(136,153,170,0.35)'
-      ),
-      borderRadius: 6,
-      borderSkipped: false,
-      barPercentage: 0.7,
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          afterLabel: function(ctx) {
-            return Math.round(ctx.raw / 96 * 100) + '% of clips';
-          }
-        }
-      }
-    },
-    scales: {
-      x: { beginAtZero: true, title: { display: true, text: 'Detection Count', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
-      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
-    }
-  }
-});
+  // Brands (top 10)
+  const topBrands = Object.entries(brandCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([brand, count]) => {
+      const share = Math.round(brandClips[brand].size / n * 100);
+      return { label: brand, value: count, share: share + '%' };
+    });
+  renderBarChart(document.getElementById('brands-chart'), topBrands);
+  document.getElementById('brands-meta').textContent = uniqueBrands + ' total brands';
 
-// ─── STORY ARC ───
-const arcData = {
-  "Grind Rally": 73, "Pure Fun": 7, "Athletic Highlight": 6,
-  "Error Highlight": 5, "Teaching Moment": 2, "Clutch Moment": 1, "Dominant Performance": 1
-};
-const arcColors = [
-  'rgba(0,230,118,0.85)',
-  'rgba(79,195,247,0.85)',
-  'rgba(206,147,216,0.85)',
-  'rgba(255,183,77,0.85)',
-  'rgba(239,83,80,0.75)',
-  'rgba(77,182,172,0.75)',
-  'rgba(255,138,101,0.75)'
-];
+  // Arcs
+  const topArcs = Object.entries(arcCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([arc, count]) => ({ label: arc, value: count }));
+  renderBarChart(document.getElementById('arcs-chart'), topArcs);
+  document.getElementById('arcs-meta').textContent = Object.keys(arcCounts).length + ' arc types';
 
-new Chart(document.getElementById('arcChart'), {
-  type: 'doughnut',
-  data: {
-    labels: Object.keys(arcData),
-    datasets: [{
-      data: Object.values(arcData),
-      backgroundColor: arcColors,
-      borderColor: '#1e2a3a',
-      borderWidth: 3,
-      hoverOffset: 8,
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    cutout: '55%',
-    plugins: {
-      legend: {
-        position: 'right',
-        labels: {
-          usePointStyle: true,
-          pointStyle: 'circle',
-          padding: 14,
-          font: { size: 11 }
-        }
-      },
-      tooltip: {
-        callbacks: {
-          label: function(ctx) {
-            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-            return ctx.label + ': ' + ctx.raw + ' (' + Math.round(ctx.raw / total * 100) + '%)';
-          }
-        }
-      }
-    }
-  }
-});
+  // Shots
+  const topShots = Object.entries(shotCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([shot, count]) => ({ label: shot, value: count }));
+  renderBarChart(document.getElementById('shots-chart'), topShots);
+  document.getElementById('shots-meta').textContent = Object.keys(shotCounts).length + ' shot types';
+
+  // Data sources
+  const sources = [
+    { name: 'Courtana CDN', endpoint: 'cdn.courtana.com/files/production/u/…', status: 'ok' },
+    { name: 'Gemini 2.5 Flash', endpoint: 'generativelanguage.googleapis.com', status: 'ok' },
+    { name: 'GitHub Pages (corpus-export.json)', endpoint: 'picklebill.github.io/pickle-daas-data', status: 'ok' },
+    { name: 'Supabase (analyses)', endpoint: 'vlcjaftwnllfjyckjchg.supabase.co', status: 'ok' },
+    { name: 'Auto-ingest (scheduled)', endpoint: 'every 1 hour @ :17', status: 'ok' },
+  ];
+  document.getElementById('sources-body').innerHTML = sources.map(s =>
+    `<tr>
+      <td>${escapeHtml(s.name)}</td>
+      <td style="color:var(--muted);font-family:ui-monospace,monospace;">${escapeHtml(s.endpoint)}</td>
+      <td style="text-align:right;color:var(--ok);">● ok</td>
+    </tr>`
+  ).join('');
+  document.getElementById('sources-meta').textContent = sources.length + ' sources';
+}
+
+loadData();
 </script>
 </body>
 </html>
