@@ -125,6 +125,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .modal-brand{background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.3);color:#00E676}
 .modal-radar-wrap{height:220px;position:relative}
 
+/* Flag-this buttons */
+.flag-btn{padding:7px 14px;border-radius:6px;border:1px solid #1a1a3a;background:#111130;color:#ccc;font-size:0.82rem;cursor:pointer;transition:all 0.15s;font-family:inherit}
+.flag-btn:hover{border-color:#00E676}
+.flag-btn.flag-good:hover{border-color:#00E676;color:#00E676}
+.flag-btn.flag-mid:hover{border-color:#FFC107;color:#FFC107}
+.flag-btn.flag-bad:hover{border-color:#F44336;color:#F44336}
+.flag-btn.flagged{border-color:#00E676;background:rgba(0,230,118,0.15);color:#00E676}
+
 /* Footer */
 .footer{text-align:center;padding:40px 20px;color:#555;font-size:0.8rem;border-top:1px solid #1a1a3a}
 .footer a{color:#00E676;text-decoration:none}
@@ -435,6 +443,17 @@ async function __boot() {
         '<div class="meta-tag" style="padding:6px 12px">Shots: <b>'+c.total_shots+'</b></div>'+
         (c.play_style?'<div class="meta-tag" style="padding:6px 12px">Style: <b>'+c.play_style+'</b></div>':'')+
         (c.signature_move?'<div class="meta-tag" style="padding:6px 12px">Signature: <b style="color:#00BCD4">'+c.signature_move+'</b></div>':'')+
+        (typeof c.analysis_confidence==='number'?'<div class="meta-tag" style="padding:6px 12px">AI confidence: <b style="color:#00E676">'+Math.round(c.analysis_confidence*100)+'%</b></div>':'')+
+      '</div>'+
+      '<div class="info-section" style="border-bottom:none;padding-top:6px">'+
+        '<div class="info-label">This analysis: accurate?</div>'+
+        '<div id="flag-controls" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px">'+
+          '<button class="flag-btn flag-good" data-rating="5" onclick="flagClip('+idx+',5)">✓ Looks right</button>'+
+          '<button class="flag-btn flag-mid" data-rating="3" onclick="flagClip('+idx+',3)">~ Mixed</button>'+
+          '<button class="flag-btn flag-bad" data-rating="1" onclick="flagClip('+idx+',1)">✗ Wrong</button>'+
+          '<span id="flag-status" style="color:#888;font-size:0.8rem;margin-left:8px"></span>'+
+        '</div>'+
+        '<div style="font-size:0.7rem;color:#555;margin-top:10px">Flags save to your browser. Click <a href="#" onclick="exportFlags();return false;" style="color:#00E676">export flags</a> to download as JSONL for commit.</div>'+
       '</div>';
 
     overlay.classList.add('active');
@@ -625,9 +644,67 @@ async function __boot() {
   setInterval(updateTicker,6000);
 
   // Expose functions used by inline HTML handlers
+  // ===== FLAG FEEDBACK (human-in-the-loop) =====
+  function flagClip(idx, rating) {
+    const c = CORPUS[idx];
+    if (!c) return;
+    const clipId = c.uuid || c.video_url || '';
+    const flag = {
+      clip_id: clipId,
+      video_url: c.video_url || '',
+      field_name: 'overall',
+      ai_value: JSON.stringify({
+        quality: c.quality, viral: c.viral,
+        arc: c.arc, dominant_shot: c.dominant_shot,
+        brands: c.brands, badges: c.badges,
+        skills: c.skills
+      }),
+      coach_rating: rating,
+      coach_note: rating === 5 ? 'looks right' : rating === 3 ? 'mixed' : 'wrong',
+      coach_name: 'web-ui',
+      session_id: 'explorer-' + new Date().toISOString().slice(0, 10),
+      created_at: new Date().toISOString()
+    };
+    const key = 'pickleDaas.flags';
+    const prior = JSON.parse(localStorage.getItem(key) || '[]');
+    // Dedupe by (clip_id + rating) — last one wins
+    const filtered = prior.filter(f => !(f.clip_id === flag.clip_id && f.field_name === flag.field_name));
+    filtered.push(flag);
+    localStorage.setItem(key, JSON.stringify(filtered));
+    // Visual feedback
+    document.querySelectorAll('.flag-btn').forEach(b => b.classList.remove('flagged'));
+    document.querySelector('.flag-btn[data-rating="' + rating + '"]').classList.add('flagged');
+    const status = document.getElementById('flag-status');
+    if (status) {
+      status.textContent = '✓ Saved · ' + filtered.length + ' flag' + (filtered.length === 1 ? '' : 's') + ' total';
+      status.style.color = '#00E676';
+    }
+  }
+
+  function exportFlags() {
+    const key = 'pickleDaas.flags';
+    const flags = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!flags.length) {
+      alert('No flags to export. Use the ✓ / ~ / ✗ buttons on a clip first.');
+      return;
+    }
+    const jsonl = flags.map(f => JSON.stringify(f)).join('\n');
+    const blob = new Blob([jsonl], { type: 'application/x-ndjson' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'clip-flags-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.jsonl';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   window.openModal = openModal;
   window.resetFilters = resetFilters;
   window.closeModal = closeModal;
+  window.flagClip = flagClip;
+  window.exportFlags = exportFlags;
 }
 __boot();
 </script>

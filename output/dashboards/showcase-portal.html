@@ -33,7 +33,7 @@
   .hero-links a { padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 13px; font-family: ui-monospace, monospace; transition: all 0.15s; }
   .hero-links a:hover { border-color: var(--ok); color: var(--ok); }
 
-  .stats-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-top: 24px; overflow: hidden; }
+  .stats-bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-top: 24px; overflow: hidden; }
   .stat { padding: 18px 20px; border-right: 1px solid var(--border); }
   .stat:last-child { border-right: none; }
   .stat .value { font-size: 28px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; display: flex; align-items: baseline; gap: 6px; }
@@ -128,6 +128,10 @@
       <div class="label">Avg quality</div>
     </div>
     <div class="stat">
+      <div class="value" id="stat-f1">—<small>%</small></div>
+      <div class="label">Badge F1 <a href="product-workbench.html" style="color:var(--info);text-decoration:none;font-size:10px">ⓘ</a></div>
+    </div>
+    <div class="stat">
       <div class="value" id="stat-cost">—</div>
       <div class="label">Total spend</div>
     </div>
@@ -147,11 +151,17 @@
     <div class="section-desc">Always current · fetched from corpus-export.json on every load</div>
   </div>
   <div class="cards">
-    <a class="card live featured" href="data-lab.html">
+    <a class="card live featured" href="product-workbench.html">
+      <div class="card-icon">🔧</div>
+      <div class="card-title">Product Workbench</div>
+      <div class="card-desc">Vision + accuracy + pipeline + clip inspector in one page. For David, sales, and you. Updated continuously.</div>
+      <div class="card-meta"><span class="status">Live</span><span>new · internal</span></div>
+    </a>
+    <a class="card live" href="data-lab.html">
       <div class="card-icon">🧪</div>
       <div class="card-title">Data Lab</div>
       <div class="card-desc">Internal analytics workbench. 16 preset queries, live insights, pipeline health, brand trends — one place.</div>
-      <div class="card-meta"><span class="status">Live</span><span>new</span></div>
+      <div class="card-meta"><span class="status">Live</span><span>queries</span></div>
     </a>
     <a class="card live" href="visual-intelligence-explorer.html">
       <div class="card-icon">🔍</div>
@@ -428,14 +438,28 @@ async function loadLiveStats() {
     }
 
     document.getElementById('footer-counts').textContent =
-      `${corpus.length} clips · ${brands.size} brands · 4 live pages · 12 showcase demos · 11 player cards`;
+      `${corpus.length} clips · ${brands.size} brands · 5 live pages · 12 showcase demos · 11 player cards`;
+
+    // Optional: pull accuracy.json for the F1 chip (non-fatal if missing)
+    try {
+      const accRes = await fetch('accuracy.json', { cache: 'no-cache' });
+      if (accRes.ok) {
+        const acc = await accRes.json();
+        const f1 = acc?.badge_accuracy?.overall?.f1;
+        const f1El = document.getElementById('stat-f1');
+        if (typeof f1 === 'number' && f1El) {
+          f1El.innerHTML = (f1 * 100).toFixed(0) + '<small>%</small>';
+          f1El.style.color = f1 >= 0.6 ? 'var(--ok)' : f1 >= 0.4 ? 'var(--gold, #eab308)' : 'var(--archive, #64748b)';
+        }
+      }
+    } catch { /* accuracy.json optional */ }
   } catch (e) {
     const banner = document.getElementById('error-banner');
     banner.style.display = 'block';
     banner.textContent = 'Live stats unavailable: ' + (e.message || 'unknown') + '. Dashboards may still work individually.';
-    ['stat-clips', 'stat-brands', 'stat-quality', 'stat-cost', 'stat-updated'].forEach(id => {
+    ['stat-clips', 'stat-brands', 'stat-quality', 'stat-f1', 'stat-cost', 'stat-updated'].forEach(id => {
       const el = document.getElementById(id);
-      if (el && el.textContent === '—') el.textContent = 'offline';
+      if (el && el.textContent.replace(/<[^>]+>/g, '').trim() === '—') el.textContent = 'offline';
     });
   }
 }

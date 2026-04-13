@@ -216,6 +216,12 @@
       <button class="preset-btn" data-q="15"><span class="preset-num">15</span>Shot type breakdown</button>
       <button class="preset-btn" data-q="16"><span class="preset-num">16</span>Play style split</button>
     </div>
+
+    <div class="preset-group">
+      <div class="preset-group-label">Accuracy (human flags)</div>
+      <button class="preset-btn" data-q="17"><span class="preset-num">17</span>Flagged clips this week</button>
+      <button class="preset-btn" data-q="18"><span class="preset-num">18</span>Low-confidence clips</button>
+    </div>
   </aside>
 
   <div>
@@ -268,6 +274,7 @@
 // ===========================================================================
 
 let CORPUS = [];
+let ACCURACY = {};
 
 // Preset questions — each has:
 //   title:   short label
@@ -542,6 +549,45 @@ const QUERIES = {
         .map(([style, clips]) => ({ style, clips, pct: (clips / c.length * 100).toFixed(1) + '%' }));
     }
   },
+  17: {
+    title: '17 · Flagged clips this week',
+    desc: 'Clips humans have rated as wrong/mixed/right (from coaching-feedback.db)',
+    sql: `SELECT clip_id, field_name, coach_rating, coach_note, created_at\nFROM feedback\nWHERE created_at > DATE('now', '-7 days')\nORDER BY created_at DESC;`,
+    run: async (_corpus, _stats, accuracy) => {
+      const recent = accuracy?.human_feedback?.recent || [];
+      if (!recent.length) {
+        return [{ note: 'No flags in accuracy.json yet. Flag a clip in the Explorer, then click "export flags" to download, then run python3 tools/ingest-flags.py ~/Downloads/clip-flags-*.jsonl to import.' }];
+      }
+      return recent.map(r => ({
+        clip: (r.clip_id || '').slice(0, 14) + '...',
+        field: r.field_name || '',
+        rating: r.coach_rating ?? '—',
+        note: r.coach_note || '',
+        when: r.created_at || '—',
+      }));
+    }
+  },
+  18: {
+    title: '18 · Low-confidence clips (AI self-assessed)',
+    desc: 'Clips where the AI said "I am not confident in this analysis"',
+    sql: `SELECT video_url, clip_quality_score AS quality, analysis_confidence\nFROM pickle_daas_analyses\nWHERE analysis_confidence < 0.6\nORDER BY analysis_confidence ASC\nLIMIT 25;`,
+    run: (c) => {
+      const withConf = c.filter(x => typeof x.analysis_confidence === 'number');
+      if (!withConf.length) {
+        return [{ note: 'No analysis_confidence scores yet. Field was added today; next auto-ingest will populate it. Comes back live after the next hour.' }];
+      }
+      return withConf
+        .filter(x => x.analysis_confidence < 0.6)
+        .sort((a, b) => a.analysis_confidence - b.analysis_confidence)
+        .slice(0, 25)
+        .map(x => ({
+          quality: x.quality,
+          confidence: (x.analysis_confidence * 100).toFixed(0) + '%',
+          arc: x.arc,
+          watch: x.video_url,
+        }));
+    }
+  },
 };
 
 function escapeHtml(s) {
@@ -595,10 +641,11 @@ function runPreset(qNum) {
   info.className = 'results-info';
   document.getElementById('results').innerHTML = '<div class="loading">Running</div>';
 
-  setTimeout(() => {
+  setTimeout(async () => {
     const t0 = performance.now();
     try {
-      const rows = q.run(CORPUS);
+      const result = q.run(CORPUS, {}, ACCURACY);
+      const rows = result instanceof Promise ? await result : result;
       const t = Math.round(performance.now() - t0);
       renderTable(rows);
       info.textContent = `${rows.length} row${rows.length === 1 ? '' : 's'}`;
@@ -695,6 +742,12 @@ async function init() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const lastModified = res.headers.get('Last-Modified');
     CORPUS = await res.json();
+
+    // Optional: pull accuracy.json for query 17 (flagged clips). Non-fatal.
+    try {
+      const accRes = await fetch('accuracy.json', { cache: 'no-cache' });
+      if (accRes.ok) ACCURACY = await accRes.json();
+    } catch { /* optional */ }
 
     info.textContent = `Loaded ${CORPUS.length} clips from corpus-export.json`;
     info.className = 'results-info success';

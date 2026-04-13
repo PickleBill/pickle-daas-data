@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Workbench · Pickle DaaS</title>
+<style>
+  :root {
+    --bg: #0a0c14;
+    --surface: #12161f;
+    --surface-2: #1a1f2e;
+    --border: #272d40;
+    --border-strong: #3a4260;
+    --text: #e8eaed;
+    --muted: #8590a3;
+    --muted-strong: #a4aebb;
+    --ok: #22c55e;
+    --ok-dim: rgba(34, 197, 94, 0.12);
+    --warn: #f59e0b;
+    --warn-dim: rgba(245, 158, 11, 0.12);
+    --danger: #ef4444;
+    --danger-dim: rgba(239, 68, 68, 0.12);
+    --info: #3b82f6;
+    --info-dim: rgba(59, 130, 246, 0.1);
+    --gold: #eab308;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.55; }
+  a { color: inherit; text-decoration: none; }
+  .shell { max-width: 1280px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  /* Header */
+  header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  header .title { display: flex; align-items: center; gap: 12px; }
+  header .mark { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--ok), var(--info)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; font-size: 16px; }
+  header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  header .subtitle { color: var(--muted); font-size: 12px; margin-top: 2px; font-family: ui-monospace, monospace; }
+  header .links { display: flex; gap: 8px; flex-wrap: wrap; }
+  header .links a { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 12px; font-family: ui-monospace, monospace; transition: all 0.15s; }
+  header .links a:hover { border-color: var(--ok); color: var(--ok); }
+
+  /* Live pulse */
+  .pulse-row {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 28px; overflow: hidden;
+  }
+  .pulse { padding: 16px 18px; border-right: 1px solid var(--border); }
+  .pulse:last-child { border-right: none; }
+  .pulse .val { font-size: 22px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; display: flex; align-items: baseline; gap: 4px; }
+  .pulse .val.ok { color: var(--ok); }
+  .pulse .val.warn { color: var(--warn); }
+  .pulse .val small { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .pulse .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 6px; font-family: ui-monospace, monospace; }
+
+  /* Section */
+  section { margin-bottom: 48px; }
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+  .section-head h2 { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; display: flex; align-items: baseline; gap: 10px; }
+  .section-head h2 .num { color: var(--muted); font-family: ui-monospace, monospace; font-size: 12px; }
+  .section-head .meta { font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .card h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .four-col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 900px) {
+    .two-col, .three-col, .four-col { grid-template-columns: 1fr; }
+    .pulse-row { grid-template-columns: repeat(3, 1fr); }
+    .pulse:nth-child(3n) { border-right: none; }
+    .pulse:nth-child(-n+3) { border-bottom: 1px solid var(--border); }
+  }
+  @media (max-width: 500px) {
+    .pulse-row { grid-template-columns: repeat(2, 1fr); }
+    .pulse:nth-child(2n) { border-right: none; }
+    .pulse:nth-child(-n+4) { border-bottom: 1px solid var(--border); }
+  }
+
+  /* Vision section */
+  .vision { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 700px) { .vision { grid-template-columns: 1fr; } }
+  .vision-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .vision-block h3 { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; font-family: ui-monospace, monospace; }
+  .vision-block p { font-size: 14px; line-height: 1.6; color: var(--muted-strong); }
+  .vision-block p strong { color: var(--text); }
+  .vision-block ul { margin-top: 8px; padding-left: 18px; color: var(--muted-strong); }
+  .vision-block ul li { margin-bottom: 4px; font-size: 13px; }
+
+  /* Roadmap */
+  .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .roadmap { grid-template-columns: 1fr; } }
+  .roadmap-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; border-top: 3px solid var(--info); }
+  .roadmap-block.near { border-top-color: var(--ok); }
+  .roadmap-block.next { border-top-color: var(--gold); }
+  .roadmap-block.later { border-top-color: var(--info); }
+  .roadmap-block h4 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; font-family: ui-monospace, monospace; }
+  .roadmap-block .period { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+  .roadmap-block ul { padding-left: 16px; font-size: 12px; color: var(--muted-strong); }
+  .roadmap-block ul li { margin-bottom: 4px; }
+
+  /* Accuracy visualization */
+  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-row .label { color: var(--muted-strong); }
+  .metric-row .value { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .metric-row .value.ok { color: var(--ok); }
+  .metric-row .value.warn { color: var(--warn); }
+  .metric-row .value.danger { color: var(--danger); }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 56px; gap: 8px; align-items: center; font-size: 12px; }
+  .bar-row .bar-label { color: var(--muted-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { height: 14px; background: var(--surface-2); border-radius: 3px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .bar-fill.ok { background: var(--ok); }
+  .bar-fill.warn { background: var(--warn); }
+  .bar-fill.danger { background: var(--danger); }
+  .bar-value { text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; color: var(--muted); }
+
+  /* Architecture diagram */
+  .arch-diagram {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px;
+    overflow-x: auto;
+  }
+  .arch-flow { display: flex; align-items: center; gap: 0; justify-content: space-between; min-width: 720px; }
+  .arch-node {
+    flex: 1; text-align: center; padding: 12px 8px; background: var(--surface-2);
+    border: 1px solid var(--border-strong); border-radius: 6px; margin: 0 4px;
+    font-family: ui-monospace, monospace; font-size: 11px;
+  }
+  .arch-node .arch-name { color: var(--ok); font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+  .arch-node .arch-detail { color: var(--muted); font-size: 10px; }
+  .arch-arrow { color: var(--muted); font-size: 18px; padding: 0 4px; }
+
+  /* Business model cards */
+  .biz-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .biz-card .biz-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; font-family: ui-monospace, monospace; }
+  .biz-card .biz-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .biz-card .biz-desc { font-size: 12px; color: var(--muted-strong); line-height: 1.55; }
+  .biz-card .biz-number { font-size: 20px; font-weight: 600; color: var(--ok); margin-top: 10px; font-variant-numeric: tabular-nums; }
+  .biz-card .biz-scale { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* Flagged clips queue */
+  .flag-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .flag-table th { padding: 8px 12px; text-align: left; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; background: var(--surface-2); }
+  .flag-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .flag-table tr:last-child td { border-bottom: none; }
+  .flag-table tr:hover { background: var(--surface-2); }
+
+  /* Status pill */
+  .status { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status.live { background: var(--ok-dim); color: var(--ok); border: 1px solid var(--ok); }
+  .status.live::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; }
+  .status.warn { background: var(--warn-dim); color: var(--warn); border: 1px solid var(--warn); }
+  .status.build { background: var(--info-dim); color: var(--info); border: 1px solid var(--info); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Clip inspector */
+  .inspector { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+  .inspector-search { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .inspector-search input {
+    width: 100%; padding: 9px 12px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; font-family: ui-monospace, monospace;
+    font-size: 13px;
+  }
+  .inspector-search input:focus { border-color: var(--ok); outline: none; }
+  .inspector-body { padding: 16px; max-height: 500px; overflow: auto; }
+  .inspector-clip { display: grid; grid-template-columns: 240px 1fr; gap: 20px; font-size: 13px; }
+  @media (max-width: 700px) { .inspector-clip { grid-template-columns: 1fr; } }
+  .inspector-clip .thumb { width: 100%; aspect-ratio: 16/9; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+  .inspector-clip .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .inspector-clip .meta h4 { font-size: 13px; margin-bottom: 8px; color: var(--ok); font-family: ui-monospace, monospace; }
+  .inspector-clip .meta p { margin-bottom: 6px; color: var(--muted-strong); font-size: 12px; line-height: 1.6; }
+  .inspector-clip .meta p strong { color: var(--text); }
+  .inspector-clip .meta .confidence-bar { margin: 10px 0; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .inspector-clip .meta .confidence-fill { height: 100%; background: var(--ok); }
+  .inspector-json { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 10px; font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted-strong); max-height: 240px; overflow: auto; margin-top: 10px; }
+
+  .loading { padding: 24px; text-align: center; color: var(--muted); font-family: ui-monospace, monospace; font-size: 12px; }
+  .loading::after { content: '...'; animation: dots 1s infinite; }
+  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+
+  .error-card { background: var(--danger-dim); border: 1px solid var(--danger); border-radius: 8px; padding: 14px 18px; color: #f87171; font-size: 13px; margin-bottom: 20px; }
+
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: ui-monospace, monospace; }
+  footer a { color: var(--info); }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<header>
+  <div class="title">
+    <div class="mark">P</div>
+    <div>
+      <h1>Product Workbench</h1>
+      <div class="subtitle">Pickle DaaS · Internal operating view · Bill / David / Sales</div>
+    </div>
+  </div>
+  <div class="links">
+    <a href="showcase-portal.html">← Portal</a>
+    <a href="data-lab.html">Data Lab</a>
+    <a href="pipeline-health.html">Pipeline Health</a>
+    <a href="../corpus-export.json" target="_blank">Raw JSON</a>
+    <a href="accuracy.md" target="_blank">Accuracy Report</a>
+    <a href="https://supabase.com/dashboard/project/vlcjaftwnllfjyckjchg/sql" target="_blank">Supabase SQL ↗</a>
+  </div>
+</header>
+
+<div id="error-banner" class="error-card" style="display:none;"></div>
+
+<!-- Live pulse row -->
+<div class="pulse-row">
+  <div class="pulse"><div class="val ok" id="p-clips">—</div><div class="lbl">Clips in corpus</div></div>
+  <div class="pulse"><div class="val" id="p-brands">—</div><div class="lbl">Brands detected</div></div>
+  <div class="pulse"><div class="val" id="p-confidence">—<small>%</small></div><div class="lbl">AI self-confidence</div></div>
+  <div class="pulse"><div class="val" id="p-f1">—<small>%</small></div><div class="lbl">Badge F1 score</div></div>
+  <div class="pulse"><div class="val" id="p-flags">—</div><div class="lbl">Human flags</div></div>
+  <div class="pulse"><div class="val" id="p-freshness" style="font-size:16px;">—</div><div class="lbl">Last ingest</div></div>
+</div>
+
+<!-- SECTION 1: Vision + Business Case -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">01</span> Vision &amp; Business Case</h2>
+    <span class="meta">The 30-second pitch</span>
+  </div>
+  <div class="vision">
+    <div class="vision-block">
+      <h3>The Problem</h3>
+      <p>Pickleball is the <strong>fastest-growing sport in the US</strong> — 36M+ players, no statcast equivalent. Brands (JOOLA, Selkirk, CRBN) spend on sponsorships with <strong>zero data on exposure or user skill profiles</strong>. Coaches rely on gut feel. Venues have cameras but no intelligence layer.</p>
+    </div>
+    <div class="vision-block">
+      <h3>The Solution</h3>
+      <p>An <strong>AI-powered data-as-a-service pipeline</strong> that turns any pickleball video clip into structured intelligence: shot breakdown, skill profiles across 9 dimensions, brand detection, badge predictions, coaching commentary — for <strong>$0.0054 per clip</strong>.</p>
+    </div>
+    <div class="vision-block">
+      <h3>Why Now</h3>
+      <p>Gemini 2.5 Flash gives us <strong>human-level video understanding at penny-scale cost</strong>. Courtana's 4,097+ clip corpus is the proving ground. We're the only team with hardware, brand relationships, and AI pipeline in one stack.</p>
+    </div>
+    <div class="vision-block">
+      <h3>Proof Points (Today)</h3>
+      <ul>
+        <li><strong id="vp-clips">—</strong> clips analyzed end-to-end</li>
+        <li><strong id="vp-cost">—</strong> total pipeline spend</li>
+        <li><strong>37.9% badge precision, 49% recall</strong> against Courtana ground truth</li>
+        <li><strong id="vp-brand">—</strong> dominates brand detection — measurable at venue level</li>
+        <li>Pipeline runs <strong>hourly, unattended</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: Live Accuracy Panel -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">02</span> How do we know it's working? <span class="status live">Live</span></h2>
+    <span class="meta" id="accuracy-updated">—</span>
+  </div>
+  <div class="three-col">
+    <div class="card">
+      <h3>Badge accuracy vs. ground truth</h3>
+      <div class="metric-row"><span class="label">Precision</span><span class="value" id="m-precision">—</span></div>
+      <div class="metric-row"><span class="label">Recall</span><span class="value" id="m-recall">—</span></div>
+      <div class="metric-row"><span class="label">F1 Score</span><span class="value" id="m-f1">—</span></div>
+      <div class="metric-row"><span class="label">True Positives</span><span class="value" id="m-tp">—</span></div>
+      <div class="metric-row"><span class="label">False Positives</span><span class="value" id="m-fp">—</span></div>
+      <div class="metric-row"><span class="label">False Negatives</span><span class="value" id="m-fn">—</span></div>
+      <div style="color: var(--muted); font-size: 11px; margin-top: 10px;">Source: Courtana awarded 5,148 badges; we measure against them.</div>
+    </div>
+    <div class="card">
+      <h3>Field fill rates (schema health)</h3>
+      <div id="fill-chart" class="bar-chart"><div class="loading">Loading</div></div>
+    </div>
+    <div class="card">
+      <h3>Best &amp; worst badges</h3>
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 11px; color: var(--ok); margin-bottom: 6px; font-family: ui-monospace, monospace;">🟢 MOST ACCURATE</div>
+        <div id="best-badges" style="font-size: 12px;"><div class="loading">Loading</div></div>
+      </div>
+      <div>
+        <div style="font-size: 11px; color: var(--danger); margin-bottom: 6px; font-family: ui-monospace, monospace;">🔴 NEEDS IMPROVEMENT</div>
+        <div id="worst-badges" style="font-size: 12px;"><div class="loading">Loading</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: Living Pipeline Panel -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">03</span> The Living Pipeline <span class="status live">Auto-running</span></h2>
+    <span class="meta">Hourly ingest · auto-deploy · self-verifying</span>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <h3>What's happening right now</h3>
+      <div class="metric-row"><span class="label">Analysis files on disk</span><span class="value ok" id="pipe-total-files">—</span></div>
+      <div class="metric-row"><span class="label">Minutes since last analysis</span><span class="value" id="pipe-freshness">—</span></div>
+      <div class="metric-row"><span class="label">Predictions analyzed</span><span class="value" id="pipe-predictions">—</span></div>
+      <div class="metric-row"><span class="label">Unique clips with predictions</span><span class="value" id="pipe-unique">—</span></div>
+      <div class="metric-row"><span class="label">Ground-truth awards available</span><span class="value" id="pipe-gt">—</span></div>
+    </div>
+    <div class="card">
+      <h3>Unit economics</h3>
+      <div class="metric-row"><span class="label">Cost per clip</span><span class="value ok">$0.0054</span></div>
+      <div class="metric-row"><span class="label">Cost to date</span><span class="value" id="pipe-spend">—</span></div>
+      <div class="metric-row"><span class="label">Cost for 10K clips</span><span class="value">$54</span></div>
+      <div class="metric-row"><span class="label">Cost for 100K clips</span><span class="value">$540</span></div>
+      <div class="metric-row"><span class="label">Cost for 1M clips</span><span class="value">$5,400</span></div>
+      <div style="color: var(--muted); font-size: 11px; margin-top: 10px;">Gemini 2.5 Flash, verified baseline. No fine-tuning yet.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: Interactive Clip Inspector -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">04</span> Clip Inspector</h2>
+    <span class="meta">Drill into any analysis → see confidence, fields, full JSON</span>
+  </div>
+  <div class="inspector">
+    <div class="inspector-search">
+      <input id="inspector-input" type="text" placeholder="Paste a clip UUID or search by brand/arc… (try 'clutch' or 'JOOLA')" />
+    </div>
+    <div class="inspector-body" id="inspector-body">
+      <div class="loading">Enter a search or pick a random high-confidence clip</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: Tech Architecture -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">05</span> Tech Architecture</h2>
+    <span class="meta">How the flywheel spins</span>
+  </div>
+  <div class="arch-diagram">
+    <div class="arch-flow">
+      <div class="arch-node">
+        <div class="arch-name">Courtana CDN</div>
+        <div class="arch-detail">4,097+ clips<br>anon endpoint</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-name">auto-ingest</div>
+        <div class="arch-detail">hourly, 50/run<br>tools/auto-ingest.py</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-name">Gemini 2.5 Flash</div>
+        <div class="arch-detail">structured JSON<br>$0.0054/clip</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-name">Supabase</div>
+        <div class="arch-detail">403+ rows<br>queryable</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-name">gh-pages</div>
+        <div class="arch-detail">corpus-export.json<br>+ 40 dashboards</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-name">Live Pages</div>
+        <div class="arch-detail">fetch on load<br>always current</div>
+      </div>
+    </div>
+  </div>
+  <div class="three-col" style="margin-top: 14px;">
+    <div class="card">
+      <h3>Verification loop</h3>
+      <div style="font-size: 12px; line-height: 1.6; color: var(--muted-strong);">Every prediction cross-referenced against Courtana-awarded badges (5,148 ground-truth records). Reports at <code>tools/accuracy-report.py</code> &amp; <code>tools/badge-warehouse.py</code>.</div>
+    </div>
+    <div class="card">
+      <h3>Human feedback loop</h3>
+      <div style="font-size: 12px; line-height: 1.6; color: var(--muted-strong);">Any clip flagged from Visual Explorer writes to <code>output/coaching-feedback.db</code>. Feeds prompt improvements via <code>badge-warehouse.py feedback</code>.</div>
+    </div>
+    <div class="card">
+      <h3>Observability</h3>
+      <div style="font-size: 12px; line-height: 1.6; color: var(--muted-strong);">Field fill rates, regression detection, cost tracking. <code>tools/model-monitor.py</code> and live panel above.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: Business Model Options -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">06</span> Business Model Options</h2>
+    <span class="meta">Four paths to revenue — not mutually exclusive</span>
+  </div>
+  <div class="four-col">
+    <div class="biz-card">
+      <div class="biz-label">Path A</div>
+      <div class="biz-title">Brand API licensing</div>
+      <div class="biz-desc">Sell brand-exposure data to JOOLA/Selkirk/CRBN. Monthly report + API access.</div>
+      <div class="biz-number">$5–25K/mo</div>
+      <div class="biz-scale">per brand at national scale</div>
+    </div>
+    <div class="biz-card">
+      <div class="biz-label">Path B</div>
+      <div class="biz-title">Coaching platform</div>
+      <div class="biz-desc">Embed player DNA + drill recommendations into coaching app. Per-seat or per-player.</div>
+      <div class="biz-number">$10–30 / player / mo</div>
+      <div class="biz-scale">SaaS via Courtana venues</div>
+    </div>
+    <div class="biz-card">
+      <div class="biz-label">Path C</div>
+      <div class="biz-title">Venue operator subscription</div>
+      <div class="biz-desc">Facilities pay for member retention analytics, sponsor exposure reports, leaderboards.</div>
+      <div class="biz-number">$500–2K / venue / mo</div>
+      <div class="biz-scale">bundled with hardware</div>
+    </div>
+    <div class="biz-card">
+      <div class="biz-label">Path D</div>
+      <div class="biz-title">Data sales / research</div>
+      <div class="biz-desc">Sell anonymized shot-level datasets to DUPR, health insurers, sports science researchers.</div>
+      <div class="biz-number">$50–200K / dataset</div>
+      <div class="biz-scale">one-off licensing</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: Roadmap -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">07</span> Roadmap</h2>
+    <span class="meta">Next 30 / 60 / 90 days</span>
+  </div>
+  <div class="roadmap">
+    <div class="roadmap-block near">
+      <h4>Next 30 days</h4>
+      <div class="period">Productize</div>
+      <ul>
+        <li>Ship Internal Product Workbench (this page) <span class="status live" style="font-size:9px;">done</span></li>
+        <li>Polish investor demo with live figures</li>
+        <li>Generate 5 per-brand reports</li>
+        <li>Build coach demo (lowest priority)</li>
+        <li>Activate human feedback loop in UI</li>
+      </ul>
+    </div>
+    <div class="roadmap-block next">
+      <h4>Next 60 days</h4>
+      <div class="period">Deepen the moat</div>
+      <ul>
+        <li>Multi-modal: frame-level brand detection in auto-ingest</li>
+        <li>Whisper audio transcription (player calls, crowd)</li>
+        <li>Flash-vs-Pro inter-model agreement scoring</li>
+        <li>Curator agent (picks next clips intelligently)</li>
+        <li>Verifier agent (challenges analyses post-ingest)</li>
+      </ul>
+    </div>
+    <div class="roadmap-block later">
+      <h4>Next 90 days</h4>
+      <div class="period">Living system</div>
+      <ul>
+        <li>Fine-tune proprietary classifier (1K+ labeled examples ready)</li>
+        <li>Insights agent (nightly hypothesis generation)</li>
+        <li>Parallel Claude sessions via orchestrator protocol</li>
+        <li>First revenue conversation (JOOLA pilot)</li>
+        <li>DUPR API partnership exploration</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: Flagged Clips Queue -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">08</span> Disputed / Flagged Clips</h2>
+    <span class="meta">Where human feedback disagrees with AI</span>
+  </div>
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <table class="flag-table">
+      <thead>
+        <tr>
+          <th>Clip</th><th>Field</th><th>AI Value</th><th>Rating</th><th>Coach Note</th><th>When</th>
+        </tr>
+      </thead>
+      <tbody id="flags-body">
+        <tr><td colspan="6" class="loading">Loading flagged clips</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div>Pickle DaaS · Product Workbench · Internal use · Updated hourly from accuracy.json</div>
+  <div>
+    <a href="showcase-portal.html">Portal</a> ·
+    <a href="data-lab.html">Data Lab</a> ·
+    <a href="visual-intelligence-explorer.html">Explorer</a> ·
+    <a href="../corpus-export.json" target="_blank">corpus-export.json</a>
+  </div>
+</footer>
+
+</div>
+
+<script>
+// ===========================================================================
+// Product Workbench — loads 3 live sources:
+//   1. corpus-export.json   (400-clip live corpus)
+//   2. dashboard-stats.json (summary)
+//   3. accuracy.json        (precision/recall/F1, fill rates, flags)
+// ===========================================================================
+
+const state = { corpus: [], stats: {}, accuracy: {} };
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function timeAgo(date) {
+  const diff = (Date.now() - date.getTime()) / 1000;
+  if (diff < 60) return Math.round(diff) + 's ago';
+  if (diff < 3600) return Math.round(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.round(diff / 3600) + 'h ago';
+  return Math.round(diff / 86400) + 'd ago';
+}
+
+async function loadAll() {
+  const [corpusRes, statsRes, accuracyRes] = await Promise.allSettled([
+    fetch('../corpus-export.json', { cache: 'no-cache' }),
+    fetch('../dashboard-stats.json', { cache: 'no-cache' }),
+    fetch('accuracy.json', { cache: 'no-cache' }),
+  ]);
+
+  if (corpusRes.status === 'fulfilled' && corpusRes.value.ok) {
+    state.corpus = await corpusRes.value.json();
+  } else {
+    showError('Could not load corpus-export.json. Dashboard may be incomplete.');
+  }
+
+  if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
+    state.stats = await statsRes.value.json();
+  }
+
+  if (accuracyRes.status === 'fulfilled' && accuracyRes.value.ok) {
+    state.accuracy = await accuracyRes.value.json();
+  } else {
+    showError('accuracy.json not found — run `python3 tools/accuracy-report.py` to populate.');
+  }
+
+  render();
+}
+
+function showError(msg) {
+  const b = document.getElementById('error-banner');
+  b.style.display = 'block';
+  b.textContent = '⚠ ' + msg;
+}
+
+function render() {
+  renderPulse();
+  renderVision();
+  renderAccuracy();
+  renderPipeline();
+  renderInspector();
+  renderFlags();
+}
+
+function renderPulse() {
+  const c = state.corpus;
+  const acc = state.accuracy;
+  const n = c.length;
+
+  const brands = new Set();
+  for (const clip of c) for (const b of (clip.brands || [])) if (b) brands.add(String(b).trim());
+
+  document.getElementById('p-clips').textContent = n.toLocaleString();
+  document.getElementById('p-brands').textContent = brands.size;
+  document.getElementById('p-flags').textContent = acc?.human_feedback?.total_flags ?? '—';
+
+  const f1 = acc?.badge_accuracy?.overall?.f1;
+  if (typeof f1 === 'number') {
+    const el = document.getElementById('p-f1');
+    el.innerHTML = (f1 * 100).toFixed(1) + '<small>%</small>';
+    el.className = 'val ' + (f1 >= 0.6 ? 'ok' : f1 >= 0.4 ? 'warn' : 'danger');
+  }
+
+  // AI self-confidence — average of analysis_confidence or, if unavailable, data_richness_score
+  // The corpus export may not carry these yet. Check first clip.
+  const withConf = c.filter(x => typeof x.analysis_confidence === 'number');
+  if (withConf.length) {
+    const avg = withConf.reduce((s, x) => s + x.analysis_confidence, 0) / withConf.length;
+    document.getElementById('p-confidence').innerHTML = (avg * 100).toFixed(0) + '<small>%</small>';
+  } else {
+    // Fallback: report % of corpus that has a data_richness_score (schema completeness)
+    const ff = acc?.field_fill_rates?.per_field;
+    const richness = ff && (ff['daas_signals.data_richness_score'] || ff['data_richness_score']);
+    if (richness) {
+      document.getElementById('p-confidence').innerHTML = (richness.rate * 100).toFixed(0) + '<small>%</small>';
+    }
+  }
+
+  // Freshness
+  const minutes = acc?.corpus_health?.minutes_since_last_analysis;
+  const freshEl = document.getElementById('p-freshness');
+  if (typeof minutes === 'number') {
+    if (minutes < 60) freshEl.textContent = Math.round(minutes) + 'm';
+    else if (minutes < 1440) freshEl.textContent = Math.round(minutes / 60) + 'h';
+    else freshEl.textContent = Math.round(minutes / 1440) + 'd';
+  }
+}
+
+function renderVision() {
+  const n = state.corpus.length;
+  document.getElementById('vp-clips').textContent = n.toLocaleString();
+  document.getElementById('vp-cost').textContent = '$' + (n * 0.0054).toFixed(2);
+
+  // Top brand
+  const counts = {};
+  for (const c of state.corpus) for (const b of (c.brands || [])) if (b) {
+    const norm = String(b).toLowerCase() === 'joola' ? 'JOOLA' : String(b).trim();
+    counts[norm] = (counts[norm] || 0) + 1;
+  }
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  if (top) {
+    document.getElementById('vp-brand').textContent = top[0];
+  }
+}
+
+function renderAccuracy() {
+  const acc = state.accuracy;
+  if (!acc?.badge_accuracy?.overall) return;
+  const o = acc.badge_accuracy.overall;
+
+  const set = (id, val, cls) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    if (cls) el.className = 'value ' + cls;
+  };
+
+  set('m-precision', (o.precision * 100).toFixed(1) + '%', o.precision >= 0.6 ? 'ok' : o.precision >= 0.4 ? 'warn' : 'danger');
+  set('m-recall',    (o.recall * 100).toFixed(1) + '%',    o.recall >= 0.6 ? 'ok' : o.recall >= 0.4 ? 'warn' : 'danger');
+  set('m-f1',        (o.f1 * 100).toFixed(1) + '%',        o.f1 >= 0.6 ? 'ok' : o.f1 >= 0.4 ? 'warn' : 'danger');
+  set('m-tp',        o.true_positives.toLocaleString(),    'ok');
+  set('m-fp',        o.false_positives.toLocaleString(),   'warn');
+  set('m-fn',        o.false_negatives.toLocaleString(),   'danger');
+
+  // Update timestamp
+  if (acc.generated_at) {
+    document.getElementById('accuracy-updated').textContent = 'Last run: ' + timeAgo(new Date(acc.generated_at));
+  }
+
+  // Field fill rate chart
+  const fill = acc.field_fill_rates?.per_field || {};
+  const items = Object.entries(fill)
+    .map(([k, v]) => ({ label: k.split('.').pop(), rate: v.rate, full: k }))
+    .sort((a, b) => a.rate - b.rate)
+    .slice(0, 8);
+  document.getElementById('fill-chart').innerHTML = items.map(it => {
+    const pct = (it.rate * 100).toFixed(0);
+    const cls = it.rate >= 0.95 ? 'ok' : it.rate >= 0.8 ? 'warn' : 'danger';
+    return `<div class="bar-row">
+      <div class="bar-label" title="${escapeHtml(it.full)}">${escapeHtml(it.label)}</div>
+      <div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
+      <div class="bar-value">${pct}%</div>
+    </div>`;
+  }).join('');
+
+  // Best / worst badges (min 5 samples)
+  const perBadge = acc.badge_accuracy.per_badge || [];
+  const meaningful = perBadge.filter(b => (b.tp + b.fp + b.fn) >= 5);
+  const best = [...meaningful].sort((a, b) => b.f1 - a.f1).slice(0, 5);
+  const worst = [...meaningful].sort((a, b) => a.f1 - b.f1).slice(0, 5);
+
+  const renderBadgeList = (list, className) => list.map(b =>
+    `<div style="display:flex;justify-content:space-between;padding:3px 0;">
+      <span style="color: var(--muted-strong);">${escapeHtml(b.badge)}</span>
+      <span style="color: var(--${className}); font-family: ui-monospace, monospace;">F1 ${(b.f1 * 100).toFixed(0)}%</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('best-badges').innerHTML = renderBadgeList(best, 'ok') || '<div style="color: var(--muted);">No data yet</div>';
+  document.getElementById('worst-badges').innerHTML = renderBadgeList(worst, 'danger') || '<div style="color: var(--muted);">No data yet</div>';
+}
+
+function renderPipeline() {
+  const acc = state.accuracy;
+  const ch = acc?.corpus_health || {};
+  const o = acc?.badge_accuracy?.overall || {};
+
+  const setText = (id, v) => {
+    const el = document.getElementById(id);
+    if (el && v != null) el.textContent = v;
+  };
+
+  setText('pipe-total-files', (ch.total_analysis_files || 0).toLocaleString());
+  setText('pipe-freshness', ch.minutes_since_last_analysis != null ? ch.minutes_since_last_analysis.toFixed(1) + ' min' : '—');
+  setText('pipe-predictions', (o.total_predictions || 0).toLocaleString());
+  setText('pipe-unique', (o.unique_clips_predicted || 0).toLocaleString());
+  setText('pipe-gt', (o.ground_truth_awards || 0).toLocaleString());
+  setText('pipe-spend', '$' + (state.corpus.length * 0.0054).toFixed(2));
+}
+
+// ---- Clip Inspector ----
+let inspectorPromptSeed = null;
+function renderInspector() {
+  const input = document.getElementById('inspector-input');
+  const body = document.getElementById('inspector-body');
+  const search = () => {
+    const q = input.value.trim().toLowerCase();
+    if (!q) {
+      const random = state.corpus[Math.floor(Math.random() * state.corpus.length)];
+      return showClip(random);
+    }
+    const match = state.corpus.find(c =>
+      (c.uuid || '').toLowerCase().includes(q) ||
+      (c.brands || []).some(b => String(b).toLowerCase().includes(q)) ||
+      (c.arc || '').toLowerCase().includes(q) ||
+      (c.dominant_shot || '').toLowerCase().includes(q) ||
+      (c.summary || '').toLowerCase().includes(q)
+    );
+    if (match) showClip(match);
+    else body.innerHTML = '<div class="loading" style="color:var(--warn);">No match for "' + escapeHtml(q) + '"</div>';
+  };
+  input.addEventListener('input', () => { clearTimeout(inspectorPromptSeed); inspectorPromptSeed = setTimeout(search, 250); });
+  // Initial: random clip
+  if (state.corpus.length) showClip(state.corpus[Math.floor(Math.random() * state.corpus.length)]);
+}
+
+function showClip(c) {
+  if (!c) return;
+  const body = document.getElementById('inspector-body');
+  const thumb = c.thumbnail || (c.video_url ? c.video_url.replace('.mp4', '.jpeg') : '');
+  const skills = c.skills || {};
+  const brands = (c.brands || []).join(', ') || '—';
+  const conf = typeof c.analysis_confidence === 'number' ? c.analysis_confidence : null;
+
+  body.innerHTML = `
+    <div class="inspector-clip">
+      <div>
+        <div class="thumb"><img src="${escapeHtml(thumb)}" onerror="this.style.display='none'"></div>
+        <a href="${escapeHtml(c.video_url || '#')}" target="_blank" style="display:inline-block;margin-top:8px;color:var(--info);font-size:11px;font-family:ui-monospace,monospace;">▶ open video</a>
+      </div>
+      <div class="meta">
+        <h4>${escapeHtml(c.uuid || 'unknown')}</h4>
+        <p><strong>${c.quality ?? '—'}/10 quality</strong> · <strong>${c.viral ?? '—'}/10 viral</strong> · ${escapeHtml(c.dominant_shot || '—')} · ${escapeHtml(c.arc || '—')}</p>
+        ${conf !== null ? `<p><strong>AI self-confidence:</strong> ${(conf * 100).toFixed(0)}%</p>
+          <div class="confidence-bar"><div class="confidence-fill" style="width:${(conf * 100).toFixed(0)}%"></div></div>` : ''}
+        <p><strong>Brands:</strong> ${escapeHtml(brands)}</p>
+        <p><strong>Badges:</strong> ${escapeHtml((c.badges || []).join(', ') || '—')}</p>
+        <p><strong>Summary:</strong> ${escapeHtml(c.summary || '—')}</p>
+        <p><strong>Skills:</strong>
+          kitchen ${skills.kitchen ?? '—'} ·
+          power ${skills.power ?? '—'} ·
+          touch ${skills.touch ?? '—'} ·
+          court IQ ${skills.court_iq ?? '—'}
+        </p>
+        <details>
+          <summary style="cursor:pointer;color:var(--muted);font-size:11px;font-family:ui-monospace,monospace;">Full JSON</summary>
+          <pre class="inspector-json">${escapeHtml(JSON.stringify(c, null, 2))}</pre>
+        </details>
+      </div>
+    </div>`;
+}
+
+function renderFlags() {
+  const recent = state.accuracy?.human_feedback?.recent || [];
+  const body = document.getElementById('flags-body');
+
+  if (!recent.length) {
+    body.innerHTML = '<tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">No flagged clips yet. <a href="visual-intelligence-explorer.html" style="color:var(--info);">Open the Explorer</a> to flag one.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = recent.map(r => {
+    const when = r.created_at ? new Date(r.created_at) : null;
+    const whenStr = when ? timeAgo(when) : '—';
+    const note = (r.coach_note || '').slice(0, 60);
+    return `<tr>
+      <td style="font-family:ui-monospace,monospace;font-size:11px;">${escapeHtml((r.clip_id || '').slice(0, 14))}...</td>
+      <td style="font-family:ui-monospace,monospace;font-size:11px;color:var(--muted);">${escapeHtml(r.field_name || '')}</td>
+      <td style="color:var(--muted-strong);">${escapeHtml((r.ai_value || '').slice(0, 40))}</td>
+      <td style="font-variant-numeric:tabular-nums;">${r.coach_rating ?? '—'}/5</td>
+      <td>${escapeHtml(note)}</td>
+      <td style="color:var(--muted);font-family:ui-monospace,monospace;font-size:11px;">${escapeHtml(whenStr)}</td>
+    </tr>`;
+  }).join('');
+}
+
+loadAll();
+</script>
+</body>
+</html>
