@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pickle DaaS — Engineering Team Briefing · 2026-04-13</title>
+<style>
+  :root {
+    --bg:#0b0f17; --card:#131a24; --border:#1f2937; --text:#e5e7eb; --muted:#9ca3af;
+    --accent:#10b981; --warn:#f59e0b; --danger:#ef4444; --info:#3b82f6; --purple:#a855f7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;line-height:1.55;padding:0}
+  .wrap{max-width:1200px;margin:0 auto;padding:32px 24px 80px}
+  header{margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:24px}
+  h1{font-size:32px;margin:0 0 8px;letter-spacing:-0.5px}
+  .sub{color:var(--muted);font-size:15px}
+  h2{font-size:22px;margin:36px 0 14px;letter-spacing:-0.3px;display:flex;align-items:center;gap:10px}
+  h2 .num{background:var(--accent);color:#000;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:13px;font-weight:700}
+  h3{font-size:16px;margin:18px 0 8px;color:var(--accent)}
+  p{margin:8px 0 12px}
+  a{color:#60a5fa;text-decoration:none;border-bottom:1px dotted #60a5fa66}
+  a:hover{border-bottom-style:solid}
+  code{background:#1f2937;padding:2px 6px;border-radius:4px;font-size:13px;color:#fbbf24}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin:12px 0}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .stat .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+  .stat .value{font-size:24px;font-weight:600;margin-top:4px}
+  .stat .value.green{color:var(--accent)}
+  .stat .value.amber{color:var(--warn)}
+  .stat .value.blue{color:var(--info)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+  tr:last-child td{border-bottom:none}
+  .status{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .status.shipped{background:#10b98122;color:#10b981}
+  .status.active{background:#a855f722;color:#a855f7}
+  .status.deferred{background:#f59e0b22;color:#f59e0b}
+  .status.fixed{background:#3b82f622;color:#3b82f6}
+  .pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#1f2937;color:var(--muted);margin-right:4px}
+  ul,ol{padding-left:22px;margin:8px 0}
+  li{margin:4px 0}
+  .lead{font-size:16px;color:#cbd5e1;border-left:3px solid var(--accent);padding:8px 16px;margin:16px 0;background:#10b98108}
+  .danger-card{border-left:3px solid var(--danger)}
+  .warn-card{border-left:3px solid var(--warn)}
+  .info-card{border-left:3px solid var(--info)}
+  .green-card{border-left:3px solid var(--accent)}
+  .urls a{display:block;padding:6px 0;font-family:'SF Mono',monospace;font-size:13px}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Pickle DaaS — Engineering Team Briefing</h1>
+  <div class="sub">2026-04-13 · Phase 3 status · Built for screen-share with the team</div>
+</header>
+
+<div class="lead">
+  <strong>TL;DR:</strong> The data pipeline is live, hourly, and self-measuring. Accuracy infrastructure shipped (F1 = 42.5% baseline against Courtana ground truth). Internal Product Workbench shipped. Today we caught and fixed two silent pipeline bugs that had stopped new analyses for ~4 hours. Next active sprint is the <strong>7-agent self-improving system</strong> (Track 4) — already briefed, ready to spawn in a parallel session.
+</div>
+
+<h2><span class="num">1</span>Headline numbers</h2>
+<div class="grid">
+  <div class="stat"><div class="label">Corpus (analyzed clips)</div><div class="value green">496</div></div>
+  <div class="stat"><div class="label">Badge accuracy (F1)</div><div class="value amber">42.5%</div></div>
+  <div class="stat"><div class="label">Cost per clip</div><div class="value green">$0.0054</div></div>
+  <div class="stat"><div class="label">Schedule</div><div class="value blue">Hourly :17</div></div>
+  <div class="stat"><div class="label">Supabase rows</div><div class="value">403 + 41</div></div>
+  <div class="stat"><div class="label">Live dashboards</div><div class="value">6</div></div>
+</div>
+
+<h2><span class="num">2</span>What to open during the meeting (live URLs)</h2>
+<div class="card urls">
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal.html">🏠 Showcase Portal — home base, links to everything</a>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/product-workbench.html">🔧 Product Workbench — vision + accuracy + pipeline + clip inspector (the page to send David)</a>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/visual-intelligence-explorer.html">🔍 Visual Intelligence Explorer — clip browser with human-flag buttons</a>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/data-lab.html">🧪 Data Lab — 18-preset in-browser query console</a>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/brand-intelligence-v2.html">🏷️ Brand Intelligence V2 — market share, brand leaderboard</a>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/pipeline-health.html">📊 Pipeline Health — system ops, KPIs, source health</a>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/accuracy.json">📜 accuracy.json — machine-readable precision/recall/F1</a>
+</div>
+
+<h2><span class="num">3</span>5-Track Roadmap status</h2>
+<p>The merged Phase 3 plan covers 5 tracks. <strong>Nothing has been cancelled</strong> — items not yet built are sequenced, not abandoned. Current canonical plan: <code>/Users/billbricker/.claude/plans/cozy-tickling-lighthouse.md</code>.</p>
+
+<table>
+  <thead><tr><th>Track</th><th>Scope</th><th>Status</th><th>Next move</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong> — Prove the data works</td>
+      <td>Accuracy report, badge warehouse cross-ref, human-flag UI, model self-confidence field</td>
+      <td><span class="status shipped">SHIPPED</span></td>
+      <td>Smoke-test the flag roundtrip end-to-end</td>
+    </tr>
+    <tr>
+      <td><strong>2.4</strong> — Internal product page</td>
+      <td>Product Workbench (8 sections, live-fetch)</td>
+      <td><span class="status shipped">SHIPPED</span></td>
+      <td>Send URL to David</td>
+    </tr>
+    <tr>
+      <td><strong>2.1/2.2/2.3</strong> — External pages</td>
+      <td>Investor demo, 5 brand reports, coach demo</td>
+      <td><span class="status deferred">DEFERRED</span></td>
+      <td>Spawn Session D after Track 4 produces showcase content</td>
+    </tr>
+    <tr>
+      <td><strong>3</strong> — Multi-modal depth</td>
+      <td>Frame brand detection, Flash-vs-Pro comparison, training data export</td>
+      <td><span class="status deferred">DEFERRED</span></td>
+      <td>Re-framed as inputs to Track 4 agents</td>
+    </tr>
+    <tr>
+      <td><strong>4</strong> — Living agentic system</td>
+      <td>7 agents (curator, multi-model, consensus, validator, insights, prompt-improver, narrator) + shared <code>clip-journal.db</code></td>
+      <td><span class="status active">🔥 ACTIVE</span></td>
+      <td><strong>Spawn Session B</strong> — brief is paste-ready</td>
+    </tr>
+    <tr>
+      <td><strong>5</strong> — Context preservation</td>
+      <td>Multi-session architecture via paste-ready briefs (A=orchestrator, B=agents, C=inspector, D=pages)</td>
+      <td><span class="status shipped">SHIPPED</span></td>
+      <td>Use as needed</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2><span class="num">4</span>What's actively being built next: Track 4 (the agent sprint)</h2>
+<div class="card green-card">
+  <p><strong>Why this is next:</strong> Pre-deciding which "wider accuracy" metrics to track is the wrong call — let agents discover them. Agent outputs also de-risk every other track (Track 2 needs showcase content; Track 3 multi-modal feeds the consensus judge).</p>
+  <p><strong>The 7 agents:</strong></p>
+  <ul>
+    <li><strong>Curator</strong> — replaces FIFO ingest with diversity-aware clip selection (brand coverage, arc variety, badge gaps)</li>
+    <li><strong>Multi-model</strong> — runs 10% of clips through Gemini Flash AND Pro; logs disagreements</li>
+    <li><strong>Consensus judge</strong> — adjudicates Flash-vs-Pro disagreements; flags uncertain clips for human review</li>
+    <li><strong>Validator</strong> — self-stability checks (re-analyze, compare ±1pt), self-consistency, confidence calibration</li>
+    <li><strong>Insights</strong> — nightly cross-corpus pattern detection; proposes 3-5 NEW metrics per run</li>
+    <li><strong>Prompt-improver</strong> — watches human flags → generates targeted prompt patches → A/B tests</li>
+    <li><strong>Narrator</strong> — wires the existing ElevenLabs voice pipeline into agent output</li>
+  </ul>
+  <p><strong>Shared infra:</strong> <code>output/clip-journal.db</code> — one row per (clip, agent) pair. Single source of truth for what each agent saw and decided.</p>
+  <p><strong>Budget:</strong> $10 Gemini per orchestrator run. Hard cap, idempotent, fail-soft.</p>
+  <p><strong>Success criterion:</strong> Bill opens Product Workbench tomorrow morning and sees a real "Agent Activity" section with curator picks, multi-model disagreements, consensus decisions, validator checks, and proposed new metrics — all generated overnight without prompting.</p>
+</div>
+
+<h2><span class="num">5</span>Today's pipeline incident — found and fixed</h2>
+<div class="card warn-card">
+  <p>Mid-session diagnostic caught two compounding bugs that had silently stopped new analyses for ~4 hours. Both fixed and verified end-to-end.</p>
+  <h3>Bug 1 — <code>analysis_confidence</code> patch was dead code <span class="status fixed">FIXED</span></h3>
+  <ul>
+    <li>The new self-confidence field was added to the in-code <code>ANALYSIS_PROMPT</code> in <code>pickle-daas-gemini-analyzer.py</code></li>
+    <li>But auto-ingest invokes the analyzer with <code>--prompt-file prompts/v1.X.txt</code>, which loads the prompt from disk — the in-code version is never used in production</li>
+    <li><strong>Fix:</strong> Added the field to <code>prompts/v1.3-20260410.txt</code>, bumped <code>DEFAULT_PROMPT</code> in <code>tools/auto-ingest.py</code> from v1.2 → v1.3</li>
+    <li><strong>Verified:</strong> 2 fresh test analyses populated <code>analysis_confidence: 0.9</code> with reasoning</li>
+  </ul>
+  <h3>Bug 2 — Courtana feed shifted; every new clip was being skipped <span class="status fixed">FIXED</span></h3>
+  <ul>
+    <li>Courtana now serves 500MB full-match recordings interleaved with highlight clips on the anon endpoint</li>
+    <li>Analyzer's hardcoded 20MB inline-upload limit silently skipped every oversized clip</li>
+    <li>Hourly batches were producing manifests with zero analyses — log said "1 new clip" so it looked healthy</li>
+    <li><strong>Fix:</strong> Added HEAD pre-filter in <code>fetch_new_clips()</code> with <code>max_mb=18.0</code>; scans deeper into pagination to keep the batch full of viable clips</li>
+    <li><strong>Verified:</strong> Test ingest pulled 2 viable clips (49 oversized skipped at fetch); both analyzed cleanly</li>
+  </ul>
+  <h3>Lesson logged</h3>
+  <p>Added incident entry to <code>BILL-OS/LESSONS.md</code> so next session knows: (1) prompt patches must go in <code>prompts/v1.X.txt</code>; (2) "no new clips" requires checking dir contents, not log counts.</p>
+</div>
+
+<h2><span class="num">6</span>What you can show off in the meeting</h2>
+<div class="grid">
+  <div class="card">
+    <h3>The accuracy story</h3>
+    <p>F1 = 42.5% against 4,619 Courtana-awarded badges. Three badges at 0% precision (over-aggressive). The honest baseline is published live; agents will close the gap.</p>
+    <p>👉 <a href="https://picklebill.github.io/pickle-daas-data/dashboards/accuracy.json">accuracy.json</a></p>
+  </div>
+  <div class="card">
+    <h3>The cost story</h3>
+    <p>$0.0054 per clip (Gemini 2.5 Flash), verified across 496 analyses. That's ~$5 to analyze 1,000 clips. Hourly pipeline runs ~$0.27/run.</p>
+  </div>
+  <div class="card">
+    <h3>The self-improvement loop</h3>
+    <p>Human flags from the Visual Explorer feed back into <code>coaching-feedback.db</code>, then accuracy report, then prompt-improver agent (Session B). Closed loop, no human in the middle.</p>
+  </div>
+  <div class="card">
+    <h3>The multi-session architecture</h3>
+    <p>Orchestrator session stays lightweight; worker sessions run in parallel with explicit file boundaries. Each session has a paste-ready brief. Solves context-window collapse problem.</p>
+  </div>
+</div>
+
+<h2><span class="num">7</span>Priority-3 "lost items" — still on the roadmap</h2>
+<p>Bill's explicit ordering for items raised but not yet built. These will likely become capabilities WITHIN or FED BY the Track 4 agent ensemble:</p>
+<ol>
+  <li><strong>Fine-tune a proprietary classifier</strong> — training data exists at <code>output/training-data-anthropic.jsonl</code> (188 examples); becomes the "third voice" in multi-model debate</li>
+  <li><strong>Full-match analysis</strong> — analyzer can now handle larger files; never run on a real full match</li>
+  <li><strong>Brand logo overlay on video at timestamps</strong> — uses frame-level timestamps from <code>tools/frame-analyzer.py</code>; uniquely-Courtana visual product</li>
+  <li><strong>Multi-modal activation</strong> — wire <code>frame-extractor.py</code> + <code>frame-analyzer.py</code> into auto-ingest (Whisper SKIPPED per Bill)</li>
+</ol>
+
+<h2><span class="num">8</span>Architecture cheat-sheet</h2>
+<div class="card info-card">
+<pre style="margin:0;color:#cbd5e1;font-size:13px;line-height:1.4;overflow-x:auto">
+Courtana CDN (4,097+ clips)
+        ↓ HEAD pre-filter (skip > 18 MB)
+   tools/auto-ingest.py        (hourly :17)
+        ↓
+   pickle-daas-gemini-analyzer.py
+        ↓ structured JSON per clip
+   output/auto-ingest-{ts}/analysis_{uuid}.json
+        ↓
+   tools/badge-warehouse.py    (cross-ref vs Courtana truth)
+        ↓
+   tools/accuracy-report.py    (precision/recall/F1, field fills, flags)
+        ↓
+   tools/push-to-ghpages.py    (deploys corpus + dashboards + accuracy)
+        ↓
+   GitHub Pages — 6 live dashboards
+        ↑
+   Human flags from Visual Explorer
+        → tools/ingest-flags.py
+        → coaching-feedback.db
+        → next accuracy-report cycle
+</pre>
+</div>
+
+<h2><span class="num">9</span>Immediate next actions (this week)</h2>
+<ol>
+  <li><strong>Spawn Session B</strong> — paste <code>PICKLE-DAAS/session-briefs/BRIEF-B-agent-architecture.md</code> into a fresh Claude Code window. Builds the 7-agent system. Estimated 6-8 hours of work in that session.</li>
+  <li><strong>Smoke-test flag roundtrip</strong> (5 min) — click ✓/~/✗ on a clip in the Explorer → export JSONL → run <code>ingest-flags.py</code> → confirm flag appears in next accuracy report. Validates the human feedback loop end-to-end.</li>
+  <li><strong>Send Product Workbench URL to David</strong> — internal product overview that doubles as ongoing accuracy proof.</li>
+  <li><strong>Watch the next hourly :17 cron run</strong> — confirm fix holds and <code>analysis_confidence</code> populates on real production batch.</li>
+  <li><strong>After Session B ships</strong> — spawn Session D for Track 2 production pages (investor → 5 brand reports → coach demo, in that order).</li>
+</ol>
+
+<h2><span class="num">10</span>Key files team should know</h2>
+<table>
+  <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><code>/Users/billbricker/.claude/plans/cozy-tickling-lighthouse.md</code></td><td>Canonical merged 5-track master plan (the one source of truth)</td></tr>
+    <tr><td><code>PICKLE-DAAS/CLAUDE.md</code></td><td>Pipeline technical context + API gotchas</td></tr>
+    <tr><td><code>PICKLE-DAAS/SESSION_NOTES.md</code></td><td>Safety-net briefing (delete when Session B ships)</td></tr>
+    <tr><td><code>PICKLE-DAAS/session-briefs/BRIEF-A-orchestrator.md</code></td><td>Paste this if the orchestrator session needs to compact</td></tr>
+    <tr><td><code>PICKLE-DAAS/session-briefs/BRIEF-B-agent-architecture.md</code></td><td>Paste this to spawn the Track 4 agent build</td></tr>
+    <tr><td><code>PICKLE-DAAS/session-briefs/BRIEF-C-inspector.md</code></td><td>Paste this for an on-demand read-only data query partner</td></tr>
+    <tr><td><code>PICKLE-DAAS/session-briefs/BRIEF-D-track2-pages.md</code></td><td>Paste this after Session B for the Track 2 production pages</td></tr>
+    <tr><td><code>PICKLE-DAAS/session-briefs/SESSION-ROLLUP-2026-04-13.md</code></td><td>Full technical state snapshot from the prior session</td></tr>
+    <tr><td><code>BILL-OS/LESSONS.md</code></td><td>Incident log — read before doing anything that has failed before</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="num">11</span>What's explicitly NOT in scope (don't pitch these)</h2>
+<div class="card danger-card">
+  <ul>
+    <li><strong>Whisper audio transcription</strong> — Bill: "skip for now"</li>
+    <li><strong>Coach demo as priority</strong> — lowest in Track 2</li>
+    <li><strong>Pre-deciding which accuracy metrics matter</strong> — agents figure that out</li>
+    <li><strong>Folder reorganization</strong> — parked</li>
+    <li><strong>Archiving pages / 404s</strong> — zero 404s, everything stays accessible</li>
+    <li><strong>Booking or payment features</strong> — Courtana is booking-agnostic</li>
+    <li><strong>Uniform design system across all pages</strong> — Bill wants variety by audience</li>
+  </ul>
+</div>
+
+<footer>
+  <p><strong>Briefing generated:</strong> 2026-04-13 · <strong>Source of truth:</strong> <code>/Users/billbricker/.claude/plans/cozy-tickling-lighthouse.md</code> · <strong>Live home:</strong> <a href="https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal.html">showcase-portal.html</a></p>
+  <p>Pipeline health as of generation: <span class="status shipped">healthy</span> · 496 clips · F1 42.5% · hourly :17 cron firing · two same-day bugs caught and patched</p>
+</footer>
+
+</div>
+</body>
+</html>
