@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana Story Hub — The Data Layer for Pickleball</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080b16;--bg2:#0c1024;--green:#22c55e;--gold:#eab308;--text:#e2e8f0;
+  --dim:#64748b;--serif:'Georgia',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--green);color:var(--bg)}
+
+/* ── SCROLL TRACKER ── */
+.scroll-tracker{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:12px}
+.scroll-tracker .dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--dim);background:transparent;cursor:pointer;transition:.3s}
+.scroll-tracker .dot.active{background:var(--green);border-color:var(--green);box-shadow:0 0 8px var(--green)}
+
+/* ── CHAPTER BASE ── */
+.chapter{min-height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 24px;overflow:hidden}
+.chapter-label{font-family:var(--sans);font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--green);margin-bottom:16px;opacity:0.8}
+.chapter h2{font-family:var(--sans);font-weight:800;font-size:clamp(2rem,5vw,3.8rem);text-align:center;line-height:1.15;margin-bottom:24px}
+.chapter h2 .dim{color:var(--dim);display:block;margin-top:8px}
+.narrative{font-family:var(--serif);font-size:clamp(1rem,2vw,1.2rem);max-width:700px;text-align:center;color:#94a3b8;line-height:1.8}
+
+/* ── ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(40px) scale(0.98);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+.reveal-delay-1{transition-delay:.15s}
+.reveal-delay-2{transition-delay:.3s}
+.reveal-delay-3{transition-delay:.45s}
+.reveal-delay-4{transition-delay:.6s}
+
+/* ══════ CHAPTER 1 ══════ */
+#ch1{position:relative;overflow:hidden}
+.thumb-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:4px;z-index:0;will-change:transform}
+.thumb-grid img{width:100%;height:100%;object-fit:cover;filter:blur(3px) brightness(.35)}
+.ch1-overlay{position:absolute;inset:0;background:rgba(8,11,22,.85);z-index:1}
+#ch1 .content{position:relative;z-index:2;text-align:center}
+#ch1 h2{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900}
+.stats-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;margin-top:48px;font-size:.85rem;color:var(--dim)}
+.stats-bar span{white-space:nowrap}
+.stats-bar span::before{content:'';display:inline-block;width:4px;height:4px;background:var(--green);border-radius:50%;margin-right:8px;vertical-align:middle}
+.scroll-arrow{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:2;animation:bounce 2s infinite;color:var(--dim);font-size:1.5rem;cursor:pointer}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
+
+/* ══════ CHAPTER 2 ══════ */
+#ch2 .split{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:1100px;width:100%;align-items:start;margin-top:32px}
+.clip-showcase{position:relative;border-radius:12px;overflow:hidden;border:2px solid var(--green);box-shadow:0 0 40px rgba(34,197,94,.15)}
+.clip-showcase img{width:100%;display:block}
+.data-points{display:flex;flex-direction:column;gap:14px}
+.data-point{padding:10px 16px;background:rgba(34,197,94,.06);border-left:3px solid var(--green);border-radius:0 8px 8px 0;font-size:.9rem;color:var(--text);opacity:0;transform:translateX(20px);transition:opacity .5s ease,transform .5s ease}
+.data-point.visible{opacity:1;transform:translateX(0)}
+.commentary{max-width:1100px;width:100%;margin-top:48px}
+.commentary blockquote{border-left:3px solid var(--gold);padding:16px 24px;font-family:var(--serif);font-style:italic;color:#cbd5e1;background:rgba(234,179,8,.04);border-radius:0 8px 8px 0;margin-bottom:16px;font-size:1.05rem}
+.commentary .coaching{color:var(--dim);font-size:.9rem;padding-left:24px}
+
+/* ══════ CHAPTER 3 ══════ */
+#ch3 .counter-row{display:flex;flex-wrap:wrap;justify-content:center;gap:40px;margin:40px 0}
+.big-counter{text-align:center}
+.big-counter .num{font-size:clamp(2.5rem,5vw,4rem);font-weight:900;font-family:var(--sans);color:var(--green)}
+.big-counter .label{font-size:.85rem;color:var(--dim);margin-top:4px}
+.chart-wrap{max-width:800px;width:100%;margin:0 auto 40px;position:relative;height:300px}
+.cost-row{display:flex;flex-wrap:wrap;justify-content:center;gap:32px;margin-top:40px}
+.cost-card{text-align:center;padding:24px;background:var(--bg2);border-radius:12px;min-width:180px;border:1px solid rgba(255,255,255,.06)}
+.cost-card .val{font-size:2rem;font-weight:800;color:var(--gold)}
+.cost-card .desc{font-size:.8rem;color:var(--dim);margin-top:4px}
+
+/* ══════ CHAPTER 4 ══════ */
+.gauge-wrap{position:relative;width:200px;height:200px;margin:0 auto 24px}
+.gauge-ring{width:200px;height:200px;border-radius:50%;background:conic-gradient(var(--green) 0deg,var(--green) 0deg,rgba(255,255,255,.08) 0deg);transition:background 2s ease}
+.gauge-center{position:absolute;inset:20px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.gauge-center .pct{font-size:2.2rem;font-weight:900;color:var(--green)}
+.gauge-center .sub{font-size:.7rem;color:var(--dim)}
+.trial-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:900px;width:100%;margin-top:40px}
+.trial-card{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:24px}
+.trial-card h4{color:var(--green);font-size:1rem;margin-bottom:8px}
+.trial-card p{font-size:.85rem;color:#94a3b8}
+
+/* ══════ CHAPTER 5 ══════ */
+.dim-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1100px;width:100%;margin-top:32px}
+.dim-card{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.dim-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.dim-card-header{padding:24px;display:flex;justify-content:space-between;align-items:start}
+.dim-card-header h3{font-size:1.1rem;margin-bottom:4px}
+.dim-card-header .stat{font-size:.8rem;color:var(--dim)}
+.dim-card-header .chevron{color:var(--dim);transition:transform .3s;font-size:1.2rem}
+.dim-card.open .chevron{transform:rotate(180deg)}
+.dim-card-body{max-height:0;overflow:hidden;transition:max-height .5s ease;padding:0 24px}
+.dim-card.open .dim-card-body{max-height:800px;padding:0 24px 24px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.8rem}
+.bar-row .bar-label{width:130px;text-align:right;color:var(--dim);flex-shrink:0}
+.bar-row .bar-track{flex:1;height:20px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}
+.bar-row .bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.bar-row .bar-val{width:40px;text-align:right;color:var(--text);font-weight:600}
+.dim-link{display:inline-block;margin-top:12px;color:var(--green);font-size:.85rem;text-decoration:none;border-bottom:1px solid transparent}
+.dim-link:hover{border-bottom-color:var(--green)}
+
+/* Skill bars */
+.skill-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.8rem}
+.skill-row .sk-label{width:110px;text-align:right;color:var(--dim);flex-shrink:0}
+.skill-row .sk-track{flex:1;height:14px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.skill-row .sk-fill{height:100%;background:var(--green);border-radius:3px;transition:width 1s ease}
+.skill-row .sk-val{width:30px;color:var(--text);font-weight:600;font-size:.75rem}
+
+/* Arc bars */
+.arc-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.8rem}
+.arc-row .arc-label{width:120px;text-align:right;color:var(--dim);flex-shrink:0}
+.arc-row .arc-track{flex:1;height:14px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.arc-row .arc-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 1s ease}
+.arc-row .arc-val{width:36px;color:var(--text);font-weight:600;font-size:.75rem}
+
+/* ══════ CHAPTER 6 ══════ */
+.path-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:1000px;width:100%;margin-top:40px}
+.path-card{border-radius:16px;padding:32px;cursor:pointer;transition:transform .3s,box-shadow .3s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.path-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.path-card .icon{font-size:2rem;margin-bottom:4px}
+.path-card h3{font-size:1.2rem;font-weight:700}
+.path-card p{font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.5}
+.path-card .key-stat{margin-top:auto;padding-top:12px;font-size:.9rem;font-weight:700;color:#fff}
+.path-investors{background:linear-gradient(135deg,#0a2e1a,#0c1024)}
+.path-brands{background:linear-gradient(135deg,#2e2205,#0c1024)}
+.path-coaches{background:linear-gradient(135deg,#2e1a05,#0c1024)}
+.path-venues{background:linear-gradient(135deg,#0a2e20,#0c1024)}
+
+/* ══════ CHAPTER 7 ══════ */
+.takeaways{max-width:800px;width:100%;margin:48px auto 0;display:flex;flex-direction:column;gap:16px}
+.takeaway{padding:16px 20px;background:var(--bg2);border-left:3px solid var(--green);border-radius:0 8px 8px 0;font-size:.9rem;color:#cbd5e1}
+.takeaway strong{color:var(--text)}
+.explore-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;max-width:900px;width:100%;margin-top:32px}
+.explore-link{display:block;padding:14px 18px;background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:8px;text-decoration:none;color:var(--text);font-size:.85rem;transition:border-color .3s,transform .3s}
+.explore-link:hover{border-color:var(--green);transform:translateY(-2px)}
+.cta-section{margin-top:64px;text-align:center;padding:48px 24px;border-top:1px solid rgba(255,255,255,.06);max-width:800px;width:100%}
+.cta-section .big{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;margin-bottom:16px}
+.cta-section .sub{color:var(--dim);font-size:1rem;margin-bottom:32px;font-family:var(--serif)}
+.cta-section a.mail{font-size:1.4rem;color:var(--green);text-decoration:none;font-weight:700;display:block;margin-bottom:8px}
+.cta-section a.mail:hover{text-decoration:underline}
+.cta-section .site{color:var(--dim);font-size:.9rem}
+footer{text-align:center;padding:32px 24px;color:var(--dim);font-size:.75rem;border-top:1px solid rgba(255,255,255,.04)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .scroll-tracker{right:8px;gap:8px}
+  .scroll-tracker .dot{width:7px;height:7px}
+  #ch2 .split{grid-template-columns:1fr;gap:24px}
+  .path-grid{grid-template-columns:1fr}
+  .chapter{padding:40px 16px}
+  .chart-wrap{height:220px}
+  .cost-row{gap:16px}
+  .cost-card{min-width:140px;padding:16px}
+  .dim-cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SCROLL TRACKER -->
+<nav class="scroll-tracker" aria-label="Chapter navigation">
+  <div class="dot active" data-ch="ch1" title="The Ordinary World"></div>
+  <div class="dot" data-ch="ch2" title="The Call"></div>
+  <div class="dot" data-ch="ch3" title="The Threshold"></div>
+  <div class="dot" data-ch="ch4" title="The Trials"></div>
+  <div class="dot" data-ch="ch5" title="The Revelation"></div>
+  <div class="dot" data-ch="ch6" title="The Return"></div>
+  <div class="dot" data-ch="ch7" title="The Treasure"></div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 1 — THE ORDINARY WORLD
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch1">
+  <div class="thumb-grid" id="parallaxGrid">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.jpeg" alt="">
+  </div>
+  <div class="ch1-overlay"></div>
+  <div class="content reveal">
+    <div class="chapter-label">Chapter One</div>
+    <h2>Every venue has cameras.<span class="dim">None of them think.</span></h2>
+    <div class="stats-bar reveal reveal-delay-2">
+      <span>12,000+ pickleball venues in the US</span>
+      <span>48.3M players</span>
+      <span>Billions of swings per year</span>
+      <span>Zero intelligence captured</span>
+    </div>
+  </div>
+  <div class="scroll-arrow" onclick="document.getElementById('ch2').scrollIntoView({behavior:'smooth'})">&#8595;</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 2 — THE CALL
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch2">
+  <div class="chapter-label reveal">Chapter Two</div>
+  <h2 class="reveal">What if every swing told a story?</h2>
+  <div class="split">
+    <div class="clip-showcase reveal">
+      <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="High-quality pickleball clip" style="width:100%">
+    </div>
+    <div class="data-points" id="dataPoints">
+      <div class="data-point">40+ structured data points per clip</div>
+      <div class="data-point">3 AI commentary tracks (ESPN / Hype / Coaching)</div>
+      <div class="data-point">9-dimension player skill profile</div>
+      <div class="data-point">Brand detection across 13 categories</div>
+      <div class="data-point">64 unique badge types</div>
+      <div class="data-point">Narrative arc classification</div>
+      <div class="data-point">DUPR estimate</div>
+      <div class="data-point">Social-ready caption</div>
+    </div>
+  </div>
+  <div class="commentary reveal reveal-delay-2">
+    <blockquote>A patient rally unfolds at the net, with both teams exchanging precise dinks. The intensity builds as the ball stays low, until a decisive speed-up attempt sails just wide.</blockquote>
+    <div class="coaching">Coaching: This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle.</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 3 — THE THRESHOLD
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch3">
+  <div class="chapter-label reveal">Chapter Three</div>
+  <h2 class="reveal">From one clip to <span style="color:var(--green)" id="clipCounter">0</span></h2>
+
+  <div class="chart-wrap reveal reveal-delay-1">
+    <canvas id="growthChart"></canvas>
+  </div>
+
+  <div class="cost-row reveal reveal-delay-2">
+    <div class="cost-card">
+      <div class="val" id="costCounter">$0.00</div>
+      <div class="desc">total spend to analyze 818 clips</div>
+    </div>
+    <div class="cost-card">
+      <div class="val" id="outputCounter">0</div>
+      <div class="desc">structured outputs per dollar</div>
+    </div>
+    <div class="cost-card">
+      <div class="val">$0.00034</div>
+      <div class="desc">cost per individual data point</div>
+    </div>
+  </div>
+  <p class="narrative reveal reveal-delay-3" style="margin-top:32px">Most AI companies burn millions training models on synthetic data. We built a proprietary intelligence corpus from real production footage &mdash; for less than the price of a coffee.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 4 — THE TRIALS
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch4">
+  <div class="chapter-label reveal">Chapter Four</div>
+  <h2 class="reveal">Teaching the machine to see</h2>
+
+  <div class="gauge-wrap reveal reveal-delay-1">
+    <div class="gauge-ring" id="gaugeRing">
+      <div class="gauge-center">
+        <div class="pct" id="gaugePct">0%</div>
+        <div class="sub">Badge F1 Score</div>
+      </div>
+    </div>
+  </div>
+  <p class="narrative reveal reveal-delay-1" style="margin-bottom:32px">47.5% badge prediction F1 &mdash; and climbing</p>
+  <p class="narrative reveal reveal-delay-2" style="max-width:750px">We don't hide from accuracy. We measure it. Against 4,619 ground-truth badge awards, our system self-checks every prediction. Multi-model agents (Gemini Flash vs. Pro) compete and improve autonomously.</p>
+
+  <div class="trial-cards reveal reveal-delay-3">
+    <div class="trial-card">
+      <h4>Self-measurement</h4>
+      <p>Every prediction tested against ground truth. Precision, Recall, and F1 published &mdash; not hidden.</p>
+    </div>
+    <div class="trial-card">
+      <h4>Multi-model debate</h4>
+      <p>AI models argue. A consensus judge adjudicates. Bad predictions get flagged automatically.</p>
+    </div>
+    <div class="trial-card">
+      <h4>Human-in-the-loop</h4>
+      <p>One-click feedback from coaches and analysts feeds back into the next analysis cycle.</p>
+    </div>
+  </div>
+  <p class="narrative reveal reveal-delay-4" style="margin-top:32px;color:var(--dim);font-family:var(--sans);font-size:.85rem">64 unique badge types &middot; 2,481 badge awards predicted &middot; Self-improving hourly</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 5 — THE REVELATION
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch5">
+  <div class="chapter-label reveal">Chapter Five</div>
+  <h2 class="reveal">The data nobody else has</h2>
+
+  <div class="dim-cards">
+    <!-- BRAND INTELLIGENCE -->
+    <div class="dim-card reveal" onclick="this.classList.toggle('open')">
+      <div class="dim-card-header">
+        <div>
+          <h3>Brand Intelligence</h3>
+          <div class="stat">55 brands detected across 818 clips</div>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="dim-card-body">
+        <div class="bar-row"><span class="bar-label">JOOLA</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div><span class="bar-val">488</span></div>
+        <div class="bar-row"><span class="bar-label">Nike</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="12%"></div></div><span class="bar-val">59</span></div>
+        <div class="bar-row"><span class="bar-label">PB Kingdom</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="5%"></div></div><span class="bar-val">24</span></div>
+        <div class="bar-row"><span class="bar-label">HEAD</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="4%"></div></div><span class="bar-val">19</span></div>
+        <div class="bar-row"><span class="bar-label">Courtana</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="1.4%"></div></div><span class="bar-val">7</span></div>
+        <div class="bar-row"><span class="bar-label">On</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="1.2%"></div></div><span class="bar-val">6</span></div>
+        <div class="bar-row"><span class="bar-label">PBS</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="1%"></div></div><span class="bar-val">5</span></div>
+        <div class="bar-row"><span class="bar-label">Onix</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="0.8%"></div></div><span class="bar-val">4</span></div>
+        <p style="font-size:.8rem;color:var(--dim);margin-top:12px">JOOLA alone detected 488 times across 13 categories &mdash; paddles, shoes, nets, bags, apparel, court signage...</p>
+        <a class="dim-link" href="brands/joola.html">See the full JOOLA brand report &rarr;</a>
+      </div>
+    </div>
+
+    <!-- PLAYER DNA -->
+    <div class="dim-card reveal reveal-delay-1" onclick="this.classList.toggle('open')">
+      <div class="dim-card-header">
+        <div>
+          <h3>Player DNA</h3>
+          <div class="stat">9 dimensions of every player, updated every session</div>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="dim-card-body">
+        <div class="skill-row"><span class="sk-label">Kitchen</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="78%"></div></div><span class="sk-val">7.8</span></div>
+        <div class="skill-row"><span class="sk-label">Consistency</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="75%"></div></div><span class="sk-val">7.5</span></div>
+        <div class="skill-row"><span class="sk-label">Touch</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="72%"></div></div><span class="sk-val">7.2</span></div>
+        <div class="skill-row"><span class="sk-label">Court IQ</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="70%"></div></div><span class="sk-val">7.0</span></div>
+        <div class="skill-row"><span class="sk-label">Composure</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="68%"></div></div><span class="sk-val">6.8</span></div>
+        <div class="skill-row"><span class="sk-label">Coverage</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="65%"></div></div><span class="sk-val">6.5</span></div>
+        <div class="skill-row"><span class="sk-label">Athleticism</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="60%"></div></div><span class="sk-val">6.0</span></div>
+        <div class="skill-row"><span class="sk-label">Power</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="55%"></div></div><span class="sk-val">5.5</span></div>
+        <div class="skill-row"><span class="sk-label">Creativity</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="50%"></div></div><span class="sk-val">5.0</span></div>
+        <p style="font-size:.8rem;color:var(--dim);margin-top:12px">184 badges earned. Rally Master specialist. DUPR 3.5&ndash;4.0.</p>
+        <a class="dim-link" href="coach-demo.html">See the full coaching demo &rarr;</a>
+      </div>
+    </div>
+
+    <!-- NARRATIVE INTELLIGENCE -->
+    <div class="dim-card reveal reveal-delay-2" onclick="this.classList.toggle('open')">
+      <div class="dim-card-header">
+        <div>
+          <h3>Narrative Intelligence</h3>
+          <div class="stat">18 distinct story arcs identified</div>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="dim-card-body">
+        <div class="arc-row"><span class="arc-label">Strategic</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="69%"></div></div><span class="arc-val">69%</span></div>
+        <div class="arc-row"><span class="arc-label">Dink</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="8%"></div></div><span class="arc-val">8%</span></div>
+        <div class="arc-row"><span class="arc-label">Teaching</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <div class="arc-row"><span class="arc-label">Grind Rally</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <div class="arc-row"><span class="arc-label">Top Play</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <div class="arc-row"><span class="arc-label">Athletic</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="3%"></div></div><span class="arc-val">3%</span></div>
+        <div class="arc-row"><span class="arc-label">Drive</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="2%"></div></div><span class="arc-val">2%</span></div>
+        <div class="arc-row"><span class="arc-label">Volley</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="2%"></div></div><span class="arc-val">2%</span></div>
+        <div class="arc-row"><span class="arc-label">Other</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <p style="font-size:.8rem;color:var(--dim);margin-top:12px">Every clip gets classified. Strategic plays. Teaching moments. Comedy. Athletic highlights. The AI writes the headline.</p>
+        <a class="dim-link" href="visual-intelligence-explorer.html">Explore the Visual Intelligence Explorer &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 6 — THE RETURN
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch6">
+  <div class="chapter-label reveal">Chapter Six</div>
+  <h2 class="reveal">One platform. Four stories.</h2>
+  <p class="narrative reveal reveal-delay-1" style="margin-bottom:16px">Choose your path.</p>
+
+  <div class="path-grid">
+    <a href="investor-demo.html" class="path-card path-investors reveal">
+      <div class="icon" style="color:var(--green)">&#9650;</div>
+      <h3>For Investors</h3>
+      <p>The Bloomberg Terminal of pickleball. Unit economics, TAM/SAM/SOM, data flywheel moat.</p>
+      <div class="key-stat" style="color:var(--green)">$13.9M ARR at 1,000 venues</div>
+    </a>
+    <a href="brands/joola.html" class="path-card path-brands reveal reveal-delay-1">
+      <div class="icon" style="color:var(--gold)">&#9733;</div>
+      <h3>For Brand Partners</h3>
+      <p>Brand intelligence reports for JOOLA, Nike, Selkirk, CRBN, Franklin. See exactly where your logo shows up.</p>
+      <div class="key-stat" style="color:var(--gold)">488 JOOLA detections across 13 categories</div>
+    </a>
+    <a href="coach-demo.html" class="path-card path-coaches reveal reveal-delay-2">
+      <div class="icon" style="color:#f59e0b">&#9883;</div>
+      <h3>For Coaches</h3>
+      <p>AI coaching breakdowns for every player, every session. Skill profiles, badge progress, targeted drills.</p>
+      <div class="key-stat" style="color:#f59e0b">184 badges awarded to one player across 29 sessions</div>
+    </a>
+    <a href="partnership-deck.html" class="path-card path-venues reveal reveal-delay-3">
+      <div class="icon" style="color:var(--green)">&#9964;</div>
+      <h3>For Venue Operators</h3>
+      <p>Your cameras are already smart. Make them profitable. Zero hardware cost, pure software layer.</p>
+      <div class="key-stat" style="color:var(--green)">99.7% gross margin at $800/mo/venue</div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 7 — THE TREASURE
+     ═══════════════════════════════════════════════ -->
+<section class="chapter" id="ch7" style="justify-content:start;padding-top:100px">
+  <div class="chapter-label reveal">Chapter Seven</div>
+  <h2 class="reveal">The data layer is inevitable</h2>
+
+  <p class="narrative reveal reveal-delay-1" style="margin-top:24px">
+    Every sport gets its data layer eventually. Baseball had Statcast. Basketball had Second Spectrum. Tennis has Hawk-Eye. Pickleball &mdash; the fastest-growing sport in America, with 48.3 million players &mdash; has nothing. Until now. Courtana sees every swing, every brand, every player, every story. And the flywheel only spins faster.
+  </p>
+
+  <h3 class="reveal reveal-delay-2" style="margin-top:56px;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--dim)">Key Takeaways</h3>
+  <div class="takeaways">
+    <div class="takeaway reveal">818 clips analyzed for <strong>$4.42</strong> &mdash; AI economics that make traditional video analysis obsolete</div>
+    <div class="takeaway reveal reveal-delay-1"><strong>55 brands</strong> detected automatically &mdash; sponsorship ROI is now measurable for the first time</div>
+    <div class="takeaway reveal reveal-delay-1">Self-improving accuracy &mdash; <strong>47.5% F1</strong> today, with multi-model agents competing to improve hourly</div>
+    <div class="takeaway reveal reveal-delay-2">Player DNA is real &mdash; <strong>9-dimension skill profiles</strong> that update after every session</div>
+    <div class="takeaway reveal reveal-delay-2">The cameras are already there &mdash; Courtana is <strong>booking-agnostic</strong>, layers on top of any venue system</div>
+  </div>
+
+  <h3 class="reveal reveal-delay-3" style="margin-top:56px;font-size:.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--dim)">Explore Further</h3>
+  <div class="explore-grid reveal reveal-delay-3">
+    <a class="explore-link" href="product-workbench.html">Product Workbench</a>
+    <a class="explore-link" href="visual-intelligence-explorer.html">Visual Intelligence Explorer</a>
+    <a class="explore-link" href="brand-intelligence-v2.html">Brand Intelligence Dashboard</a>
+    <a class="explore-link" href="data-lab.html">Data Lab</a>
+    <a class="explore-link" href="pipeline-health.html">Pipeline Health</a>
+    <a class="explore-link" href="accuracy.json">Accuracy Report</a>
+    <a class="explore-link" href="corpus-export.json">Raw Corpus (JSON)</a>
+    <a class="explore-link" href="https://github.com/PickleBill/pickle-daas-data">GitHub</a>
+  </div>
+
+  <div class="cta-section reveal reveal-delay-4">
+    <div class="big">This is just the beginning.</div>
+    <div class="sub">The corpus grows every hour. The AI improves every day. The moat widens with every swing.</div>
+    <a class="mail" href="mailto:bill@picklebill.com">bill@picklebill.com</a>
+    <div class="site"><a href="https://courtana.com" style="color:var(--dim);text-decoration:none">courtana.com</a></div>
+  </div>
+</section>
+
+<footer>
+  Pickle DaaS by Courtana &middot; Snapshot: 2026-04-13 &middot; <a href="https://picklebill.github.io/pickle-daas-data" style="color:var(--dim)">picklebill.github.io/pickle-daas-data</a>
+</footer>
+
+<script>
+/* ── INTERSECTION OBSERVER — REVEAL ON SCROLL ── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── SCROLL TRACKER DOTS ── */
+const chapters = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7'];
+const chapterIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.scroll-tracker .dot').forEach(d => d.classList.remove('active'));
+      const dot = document.querySelector(`.dot[data-ch="${e.target.id}"]`);
+      if (dot) dot.classList.add('active');
+    }
+  });
+}, { threshold: 0.4 });
+chapters.forEach(id => { const el = document.getElementById(id); if (el) chapterIO.observe(el); });
+document.querySelectorAll('.scroll-tracker .dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    document.getElementById(dot.dataset.ch).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+/* ── PARALLAX ON CH1 GRID ── */
+const grid = document.getElementById('parallaxGrid');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y < window.innerHeight * 1.5) {
+    grid.style.transform = `translateY(${y * 0.3}px)`;
+  }
+}, { passive: true });
+
+/* ── CH2 DATA POINTS STAGGER ── */
+const dpIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const pts = document.querySelectorAll('#dataPoints .data-point');
+      pts.forEach((p, i) => { setTimeout(() => p.classList.add('visible'), i * 200); });
+      dpIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+dpIO.observe(document.getElementById('dataPoints'));
+
+/* ── ANIMATED COUNTERS ── */
+function animateCounter(el, target, prefix, suffix, duration, decimals) {
+  let start = null;
+  const step = (ts) => {
+    if (!start) start = ts;
+    const pct = Math.min((ts - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - pct, 3);
+    const val = eased * target;
+    el.textContent = prefix + (decimals ? val.toFixed(decimals) : Math.round(val)) + suffix;
+    if (pct < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+let ch3Animated = false;
+const ch3IO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !ch3Animated) {
+      ch3Animated = true;
+      animateCounter(document.getElementById('clipCounter'), 818, '', '', 2000, 0);
+      animateCounter(document.getElementById('costCounter'), 4.42, '$', '', 2000, 2);
+      animateCounter(document.getElementById('outputCounter'), 2920, '', '', 2000, 0);
+      ch3IO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+ch3IO.observe(document.getElementById('ch3'));
+
+/* ── CH4 GAUGE ── */
+let ch4Animated = false;
+const ch4IO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !ch4Animated) {
+      ch4Animated = true;
+      const ring = document.getElementById('gaugeRing');
+      const pctEl = document.getElementById('gaugePct');
+      const target = 47.5;
+      const deg = (target / 100) * 360;
+      ring.style.background = `conic-gradient(var(--green) 0deg, var(--green) ${deg}deg, rgba(255,255,255,0.08) ${deg}deg)`;
+      let start = null;
+      const step = (ts) => {
+        if (!start) start = ts;
+        const pct = Math.min((ts - start) / 1500, 1);
+        const eased = 1 - Math.pow(1 - pct, 3);
+        pctEl.textContent = (eased * target).toFixed(1) + '%';
+        if (pct < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+  });
+}, { threshold: 0.3 });
+ch4IO.observe(document.getElementById('ch4'));
+
+/* ── CH5 EXPAND BARS ON OPEN ── */
+const dimObserver = new MutationObserver((mutations) => {
+  mutations.forEach(m => {
+    if (m.target.classList.contains('open')) {
+      m.target.querySelectorAll('[data-w]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.w; }, 100);
+      });
+    } else {
+      m.target.querySelectorAll('[data-w]').forEach(bar => { bar.style.width = '0%'; });
+    }
+  });
+});
+document.querySelectorAll('.dim-card').forEach(card => {
+  dimObserver.observe(card, { attributes: true, attributeFilter: ['class'] });
+});
+
+/* ── CHART.JS — CORPUS GROWTH ── */
+let chartDrawn = false;
+const chartIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !chartDrawn) {
+      chartDrawn = true;
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(34,197,94,0.3)');
+      gradient.addColorStop(1, 'rgba(34,197,94,0)');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Mar 24','Mar 31','Apr 7','Apr 10','Apr 11','Apr 12','Apr 13'],
+          datasets: [{
+            data: [1, 8, 45, 115, 319, 521, 818],
+            borderColor: '#22c55e',
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: '#22c55e',
+            pointBorderColor: '#080b16',
+            pointBorderWidth: 2,
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0c1024',
+              titleColor: '#e2e8f0',
+              bodyColor: '#22c55e',
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1,
+              callbacks: { label: (c) => c.parsed.y + ' clips' }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.04)' },
+              ticks: { color: '#64748b', font: { size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.04)' },
+              ticks: { color: '#64748b', font: { size: 11 } },
+              beginAtZero: true
+            }
+          },
+          animation: { duration: 2000, easing: 'easeOutQuart' }
+        }
+      });
+    }
+  });
+}, { threshold: 0.2 });
+chartIO.observe(document.getElementById('growthChart'));
+</script>
+</body>
+</html>
