@@ -1,30 +1,30 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-14T00:40:54.722425+00:00_
+_Generated: 2026-04-14T01:41:28.541567+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 620 clips
-- **Total analysis files on disk:** 1253 (1253 ≥500 bytes)
-- **Minutes since last analysis:** 2.2
-- **Human flags:** 7 total (7 real, rest seed)
+- **Corpus on gh-pages:** 715 clips
+- **Total analysis files on disk:** 1351 (1351 ≥500 bytes)
+- **Minutes since last analysis:** 0.1
+- **Human flags:** 10 total (3 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 42.1%  (460 TP / 1092 predicted)
-- **Recall:**    54.6%  (460 TP / 843 awarded)
-- **F1 Score:**  47.5%
-- **Predictions analyzed:** 2035 across 560 unique clips
+- **Precision:** 42.0%  (468 TP / 1113 predicted)
+- **Recall:**    54.9%  (468 TP / 852 awarded)
+- **F1 Score:**  47.6%
+- **Predictions analyzed:** 2296 across 614 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Kitchen King | 33 | 124 | 0 | 21% | 100% | 35% |
-| Steady Eddie | 97 | 4 | 49 | 96% | 66% | 78% |
-| Rally Master | 106 | 6 | 33 | 95% | 76% | 84% |
+| Kitchen King | 33 | 127 | 0 | 21% | 100% | 34% |
+| Steady Eddie | 98 | 7 | 49 | 93% | 67% | 78% |
+| Rally Master | 108 | 7 | 33 | 94% | 77% | 84% |
 | Dink Machine | 0 | 140 | 0 | 0% | 0% | 0% |
-| Epic Rally | 49 | 83 | 1 | 37% | 98% | 54% |
+| Epic Rally | 50 | 83 | 1 | 38% | 98% | 54% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
 | New Look | 0 | 0 | 76 | 0% | 0% | 0% |
 | Power Player | 0 | 53 | 0 | 0% | 0% | 0% |
@@ -38,8 +38,8 @@ Sampled 500 most-recent analyses.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 224/500 | 45% |
-| brand_detection.brands | 436/500 | 87% |
+| analysis_confidence ⚠️ | 322/500 | 64% |
+| brand_detection.brands | 433/500 | 87% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
@@ -52,23 +52,23 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 7
-- **Real (non-seed) flags:** 7
+- **Total flags captured:** 10
+- **Real (non-seed) flags:** 3
 
 Flags by field:
-- `dupr_estimate` — 2 flag(s)
+- `dupr_estimate` — 3 flag(s)
+- `shot_analysis` — 2 flag(s)
+- `badge_predictions` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
-- `shot_analysis` — 1 flag(s)
 - `coaching_breakdown` — 1 flag(s)
-- `badge_predictions` — 1 flag(s)
 
 ### Recent flags
+- `f9ff7971-2cd...` · `dupr_estimate` rating 1 · Way off - these are clearly 3.0-3.5 level players
+- `d647633e-db9...` · `badge_predictions` rating 3 · Some dinks present but badge feels generous - rally was mixed
+- `bde93ec5-b67...` · `shot_analysis` rating 5 · Spot on - clean forehand drive, good read
 - `139453f3...` · `dupr_estimate` rating 4 · Seems right for this player. Good kitchen fundamentals visible.
 - `139453f3...` · `coaching_breakdown` rating 5 · This is accurate and well-observed. The transition timing is exactly right.
-- `08932731...` · `dupr_estimate` rating 2 · Too low. The footwork and kitchen positioning suggest at least 3.5-4.0.
-- `42520eda...` · `badge_predictions` rating 3 · Kitchen King makes sense but Epic Rally is a stretch for a 6-shot point.
-- `6ee49439...` · `shot_analysis` rating 4 · Correct. Heavy dink-based rally with one speed-up.
 
 ---
 
