@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clip Validator · Pickle DaaS</title>
+<style>
+  :root {
+    --bg: #0a0c14;
+    --surface: #12161f;
+    --surface-2: #1a1f2e;
+    --border: #272d40;
+    --text: #e8eaed;
+    --muted: #8590a3;
+    --ok: #22c55e;
+    --ok-dim: rgba(34, 197, 94, 0.12);
+    --warn: #f59e0b;
+    --warn-dim: rgba(245, 158, 11, 0.12);
+    --danger: #ef4444;
+    --danger-dim: rgba(239, 68, 68, 0.12);
+    --info: #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.55; }
+  a { color: var(--info); text-decoration: none; }
+
+  .shell { max-width: 800px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  header .meta { font-size: 12px; color: var(--muted); font-family: ui-monospace, monospace; }
+  .back-link { font-size: 12px; color: var(--muted); font-family: ui-monospace, monospace; }
+  .back-link:hover { color: var(--ok); }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty h2 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+
+  .clip-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; overflow: hidden; transition: border-color 0.15s; }
+  .clip-card.verdict-approve { border-color: var(--ok); }
+  .clip-card.verdict-needs-work { border-color: var(--warn); }
+  .clip-card.verdict-wrong { border-color: var(--danger); }
+
+  .clip-video { width: 100%; aspect-ratio: 16/9; background: #000; display: block; }
+  .clip-video video { width: 100%; height: 100%; object-fit: contain; }
+  .no-video { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; width: 100%; aspect-ratio: 16/9; background: var(--surface-2); }
+
+  .clip-body { padding: 16px; }
+  .clip-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .clip-uuid { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); }
+  .clip-reason { font-size: 11px; padding: 3px 8px; border-radius: 3px; font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+  .clip-reason.flagged { background: var(--danger-dim); color: var(--danger); }
+  .clip-reason.disagreement { background: var(--warn-dim); color: var(--warn); }
+  .clip-reason.low_confidence { background: rgba(59,130,246,0.1); color: var(--info); }
+  .clip-reason.random_sample { background: rgba(100,116,139,0.1); color: #94a3b8; }
+
+  .clip-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 13px; margin-bottom: 14px; }
+  .clip-details .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+  .clip-details .val { color: var(--text); }
+
+  .confidence-bar { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; margin-top: 4px; }
+  .confidence-bar .fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .confidence-bar .fill.high { background: var(--ok); }
+  .confidence-bar .fill.mid { background: var(--warn); }
+  .confidence-bar .fill.low { background: var(--danger); }
+
+  .clip-summary { font-size: 13px; color: var(--muted); padding: 10px 12px; background: var(--surface-2); border-radius: 6px; margin-bottom: 14px; line-height: 1.5; }
+
+  .verdict-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .verdict-btn { flex: 1; min-width: 80px; padding: 10px 12px; border: 2px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .verdict-btn:hover { transform: translateY(-1px); }
+  .verdict-btn.approve:hover, .verdict-btn.approve.active { border-color: var(--ok); background: var(--ok-dim); color: var(--ok); }
+  .verdict-btn.needs-work:hover, .verdict-btn.needs-work.active { border-color: var(--warn); background: var(--warn-dim); color: var(--warn); }
+  .verdict-btn.wrong:hover, .verdict-btn.wrong.active { border-color: var(--danger); background: var(--danger-dim); color: var(--danger); }
+
+  .notes-input { width: 100%; margin-top: 10px; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; font-family: inherit; resize: vertical; min-height: 36px; }
+  .notes-input::placeholder { color: var(--muted); }
+  .notes-input:focus { outline: none; border-color: var(--info); }
+
+  .actions { display: flex; gap: 12px; margin-top: 24px; justify-content: center; flex-wrap: wrap; }
+  .action-btn { padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .action-btn.primary { background: var(--ok); color: #000; }
+  .action-btn.primary:hover { transform: translateY(-1px); filter: brightness(1.1); }
+  .action-btn.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .action-btn.secondary:hover { border-color: var(--info); }
+
+  .done-banner { text-align: center; padding: 24px; background: var(--ok-dim); border: 1px solid var(--ok); border-radius: 10px; margin-top: 20px; display: none; }
+  .done-banner h3 { color: var(--ok); margin-bottom: 4px; }
+
+  .progress { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 16px; font-family: ui-monospace, monospace; }
+
+  @media (max-width: 600px) {
+    .clip-details { grid-template-columns: 1fr; }
+    .verdict-btn { min-width: 60px; font-size: 13px; padding: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <a class="back-link" href="showcase-portal.html">< Showcase Portal</a>
+  <header>
+    <h1>Clip Validator</h1>
+    <div class="meta" id="queue-meta">Loading...</div>
+  </header>
+
+  <div id="progress" class="progress"></div>
+  <div id="clips-container"></div>
+
+  <div class="actions" id="actions" style="display:none;">
+    <button class="action-btn primary" onclick="submitAndExport()">Submit & Export</button>
+    <button class="action-btn secondary" onclick="resetAll()">Reset All</button>
+  </div>
+
+  <div class="done-banner" id="done-banner">
+    <h3>Review Complete</h3>
+    <p id="done-text"></p>
+  </div>
+</div>
+
+<script>
+let queue = [];
+let verdicts = {};
+
+async function init() {
+  try {
+    const res = await fetch('spot-check-queue.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('spot-check-queue.json not found');
+    const data = await res.json();
+    queue = data.clips || [];
+
+    document.getElementById('queue-meta').textContent =
+      `${queue.length} clips · ${data.generated_at ? new Date(data.generated_at).toLocaleDateString() : ''}`;
+
+    // Load saved verdicts from localStorage
+    try {
+      const saved = localStorage.getItem('pickle-validator-verdicts');
+      if (saved) verdicts = JSON.parse(saved);
+    } catch (e) {}
+
+    renderClips();
+  } catch (e) {
+    document.getElementById('clips-container').innerHTML =
+      `<div class="empty"><h2>No clips to review</h2><p>Run <code>python tools/spot-check.py</code> to generate the queue.</p></div>`;
+    document.getElementById('queue-meta').textContent = 'No data';
+  }
+}
+
+function renderClips() {
+  if (!queue.length) {
+    document.getElementById('clips-container').innerHTML =
+      `<div class="empty"><h2>Queue is empty</h2><p>All caught up. Run spot-check.py to refresh.</p></div>`;
+    return;
+  }
+
+  const reviewed = Object.keys(verdicts).length;
+  document.getElementById('progress').textContent =
+    `${reviewed} of ${queue.length} reviewed`;
+  document.getElementById('actions').style.display = 'flex';
+
+  document.getElementById('clips-container').innerHTML = queue.map((clip, i) => {
+    const v = verdicts[clip.uuid] || {};
+    const cardClass = v.verdict ? `verdict-${v.verdict}` : '';
+    const conf = clip.confidence ?? clip.analysis_confidence;
+    const confPct = conf != null ? Math.round(conf * 100) : null;
+    const confClass = confPct != null ? (confPct >= 70 ? 'high' : confPct >= 40 ? 'mid' : 'low') : '';
+
+    let videoHtml;
+    if (clip.video_url) {
+      videoHtml = `<div class="clip-video"><video controls preload="metadata" poster="${esc(clip.thumbnail_url || '')}"><source src="${esc(clip.video_url)}" type="video/mp4"></video></div>`;
+    } else {
+      videoHtml = `<div class="no-video">No video URL available</div>`;
+    }
+
+    return `
+      <div class="clip-card ${cardClass}" id="card-${i}">
+        ${videoHtml}
+        <div class="clip-body">
+          <div class="clip-header">
+            <span class="clip-uuid">${esc(clip.uuid)}</span>
+            <span class="clip-reason ${clip.reason || ''}">${esc(clip.reason || 'review')}</span>
+          </div>
+          <div class="clip-details">
+            <div><div class="label">Dominant Shot</div><div class="val">${esc(clip.dominant_shot || '?')}</div></div>
+            <div><div class="label">Skill Level</div><div class="val">${esc(clip.skill_level || '?')}</div></div>
+            <div><div class="label">Brands</div><div class="val">${(clip.brands || []).join(', ') || 'none'}</div></div>
+            <div><div class="label">Badges</div><div class="val">${(clip.badges_predicted || []).slice(0,3).join(', ') || 'none'}</div></div>
+            ${confPct != null ? `<div style="grid-column:1/-1"><div class="label">Confidence ${confPct}%</div><div class="confidence-bar"><div class="fill ${confClass}" style="width:${confPct}%"></div></div></div>` : ''}
+          </div>
+          ${clip.summary ? `<div class="clip-summary">${esc(clip.summary)}</div>` : ''}
+          <div class="verdict-row">
+            <button class="verdict-btn approve ${v.verdict === 'approve' ? 'active' : ''}" onclick="setVerdict(${i},'approve')">Approve</button>
+            <button class="verdict-btn needs-work ${v.verdict === 'needs-work' ? 'active' : ''}" onclick="setVerdict(${i},'needs-work')">Needs Work</button>
+            <button class="verdict-btn wrong ${v.verdict === 'wrong' ? 'active' : ''}" onclick="setVerdict(${i},'wrong')">Wrong</button>
+          </div>
+          <textarea class="notes-input" placeholder="Optional notes..." oninput="setNotes(${i}, this.value)">${esc(v.notes || '')}</textarea>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setVerdict(idx, verdict) {
+  const clip = queue[idx];
+  if (!verdicts[clip.uuid]) verdicts[clip.uuid] = {};
+  verdicts[clip.uuid].verdict = verdict;
+  localStorage.setItem('pickle-validator-verdicts', JSON.stringify(verdicts));
+  renderClips();
+}
+
+function setNotes(idx, notes) {
+  const clip = queue[idx];
+  if (!verdicts[clip.uuid]) verdicts[clip.uuid] = {};
+  verdicts[clip.uuid].notes = notes;
+  localStorage.setItem('pickle-validator-verdicts', JSON.stringify(verdicts));
+}
+
+function submitAndExport() {
+  const lines = [];
+  let count = 0;
+  for (const clip of queue) {
+    const v = verdicts[clip.uuid];
+    if (!v || !v.verdict) continue;
+    count++;
+    lines.push(JSON.stringify({
+      clip_uuid: clip.uuid,
+      verdict: v.verdict,
+      notes: v.notes || "",
+      reviewed_at: new Date().toISOString(),
+      reason: clip.reason || "",
+      confidence_at_review: clip.confidence ?? clip.analysis_confidence ?? null,
+    }));
+  }
+
+  if (!count) {
+    alert('No clips reviewed yet. Use the Approve / Needs Work / Wrong buttons first.');
+    return;
+  }
+
+  // Download as JSONL
+  const blob = new Blob([lines.join('\n') + '\n'], { type: 'application/jsonl' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `validator-verdicts-${new Date().toISOString().slice(0,10)}.jsonl`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  document.getElementById('done-banner').style.display = 'block';
+  document.getElementById('done-text').textContent = `${count} clips reviewed. JSONL downloaded.`;
+}
+
+function resetAll() {
+  if (!confirm('Clear all verdicts and notes?')) return;
+  verdicts = {};
+  localStorage.removeItem('pickle-validator-verdicts');
+  document.getElementById('done-banner').style.display = 'none';
+  renderClips();
+}
+
+function esc(s) {
+  return String(s || '').replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+init();
+</script>
+</body>
+</html>

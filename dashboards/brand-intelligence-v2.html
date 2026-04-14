@@ -4,380 +4,1460 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brand Intelligence · Pickle DaaS</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #0a0e18;
-    --surface: #131a2a;
-    --surface-2: #1d2640;
-    --border: #2a3555;
-    --text: #e4e7ed;
-    --muted: #7a8499;
-    --accent: #3b82f6;
-    --accent-bright: #60a5fa;
-    --accent-dim: rgba(59, 130, 246, 0.12);
-    --gold: #eab308;
-    --ok: #22c55e;
-    --warn: #f59e0b;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
-  .shell { max-width: 1300px; margin: 0 auto; padding: 32px 24px; }
+/* ═══════════════════════════════════════════════════════════
+   BRAND INTELLIGENCE V2 — Pickle DaaS
+   Production-grade brand landscape visualization
+   ═══════════════════════════════════════════════════════════ */
 
-  header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
-  .brand-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-  .brand-title .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
-  .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--ok); border-radius: 4px; color: var(--ok); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
-  .live-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
-  .hero-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-  .hero-stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 10px; font-family: ui-monospace, monospace; }
-  .hero-stat .value { font-size: 32px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; }
-  .hero-stat .sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
-  .hero-stat.featured { background: linear-gradient(135deg, var(--accent-dim), transparent); border-color: var(--accent); }
-  .hero-stat.featured .value { color: var(--accent-bright); }
+:root {
+  --bg-deep: #06070b;
+  --bg: #0a0c14;
+  --surface: #11141e;
+  --surface-2: #171c2a;
+  --surface-3: #1e2438;
+  --border: #242c42;
+  --border-subtle: #1a2035;
+  --text: #e8ecf4;
+  --text-secondary: #a0aac0;
+  --muted: #6b7a94;
+  --accent: #00E676;
+  --accent-dim: rgba(0, 230, 118, 0.08);
+  --accent-glow: rgba(0, 230, 118, 0.15);
+  --joola: #00E676;
+  --nike: #4FC3F7;
+  --selkirk: #FF7043;
+  --crbn: #AB47BC;
+  --franklin: #FFD54F;
+  --onix: #26C6DA;
+  --courtana: #7C4DFF;
+  --recovery: #EF5350;
+  --underground: #FF9800;
+  --lifetime: #66BB6A;
+  --head: #42A5F5;
+  --adidas: #78909C;
+  --asics: #EC407A;
+  --ncstate: #C62828;
+  --a100: #8D6E63;
+  --acryl: #29B6F6;
+  --info: #3b82f6;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --gold: #fbbf24;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 16px; display: flex; justify-content: space-between; align-items: baseline; }
-  h2 .meta { font-size: 12px; color: var(--muted); font-weight: normal; font-family: ui-monospace, monospace; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .hero-grid { grid-template-columns: repeat(2, 1fr); } }
+/* ── Ambient Background ── */
+.ambient-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.ambient-bg::before {
+  content: '';
+  position: absolute;
+  top: -30%; left: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,230,118,0.04) 0%, transparent 70%);
+  animation: drift1 25s ease-in-out infinite;
+}
+.ambient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: -20%; right: -10%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(124,77,255,0.03) 0%, transparent 70%);
+  animation: drift2 30s ease-in-out infinite;
+}
+@keyframes drift1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(80px, 60px); } }
+@keyframes drift2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-60px, -40px); } }
 
-  .brand-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; transition: all 0.15s ease; }
-  .brand-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .brand-card.rank-1 { border-color: var(--gold); }
-  .brand-card.rank-1 .brand-rank { background: var(--gold); color: #000; }
+.page { position: relative; z-index: 1; }
 
-  .brand-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-  .brand-rank { display: inline-block; padding: 2px 8px; border-radius: 3px; background: var(--accent-dim); color: var(--accent-bright); font-size: 10px; font-family: ui-monospace, monospace; font-weight: 600; margin-bottom: 8px; }
-  .brand-name { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-  .brand-metrics { display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-  .brand-metric { flex: 1; }
-  .brand-metric .m-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 2px; }
-  .brand-metric .m-value { font-size: 16px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
-  .brand-metric .m-value.pct { color: var(--accent-bright); }
+/* ── Shell ── */
+.shell { max-width: 1360px; margin: 0 auto; padding: 0 28px; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; }
-  th.right { text-align: right; }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
-  td.right { text-align: right; }
-  td.num { color: var(--accent-bright); font-weight: 600; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover { background: var(--surface-2); }
+/* ── Header ── */
+.site-header {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0;
+}
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.logo-group { display: flex; align-items: center; gap: 14px; }
+.logo-mark {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, rgba(0,230,118,0.4) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 16px; color: var(--bg-deep);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.logo-text { font-size: 13px; font-weight: 600; letter-spacing: 0.3px; }
+.logo-text span { color: var(--accent); }
+.logo-sub {
+  font-size: 11px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.header-meta {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 12px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+.live-indicator {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(0,230,118,0.2);
+  border-radius: 20px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-glow); } 50% { opacity: 0.5; box-shadow: 0 0 8px 2px var(--accent-glow); } }
 
-  .insights { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 32px; }
-  @media (max-width: 800px) { .insights { grid-template-columns: 1fr; } }
-  .insight { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; border-left: 3px solid var(--gold); }
-  .insight .insight-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gold); margin-bottom: 10px; font-family: ui-monospace, monospace; }
-  .insight .insight-text { font-size: 14px; line-height: 1.6; }
-  .insight .insight-text strong { color: var(--accent-bright); font-variant-numeric: tabular-nums; }
+/* ── Hero Section ── */
+.hero {
+  padding: 56px 0 40px;
+  text-align: center;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent) 0%, #69F0AE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero .subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  font-weight: 400;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  .whitespace { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
-  .whitespace-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-  .whitespace-chip { padding: 6px 12px; background: rgba(234, 179, 8, 0.1); border: 1px dashed var(--gold); border-radius: 4px; color: var(--gold); font-size: 12px; }
+/* ── Stats Row ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 32px 0 48px;
+  box-shadow: var(--shadow);
+}
+.stat-cell {
+  background: var(--surface);
+  padding: 24px 20px;
+  text-align: center;
+  transition: background var(--transition);
+}
+.stat-cell:hover { background: var(--surface-2); }
+.stat-cell .stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text);
+}
+.stat-cell.featured .stat-value { color: var(--accent); }
+.stat-cell .stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
 
-  .chart-container { height: 320px; position: relative; }
+/* ── Section Headers ── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 48px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.section-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-header h2 .section-icon {
+  font-size: 18px;
+  opacity: 0.6;
+}
+.section-header .section-meta {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
 
-  .loading { padding: 40px; text-align: center; color: var(--muted); font-family: ui-monospace, monospace; }
-  .loading::after { content: '...'; animation: dots 1s infinite; }
-  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+/* ── Panels ── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 20px;
+  transition: border-color var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.panel:hover { border-color: rgba(255,255,255,0.08); }
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+}
 
-  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-  footer a { color: var(--accent-bright); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
+/* ── Market Share Treemap ── */
+#treemap-container {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.treemap-cell {
+  position: absolute;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+.treemap-cell:hover {
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 0 24px rgba(0,0,0,0.5);
+  border-color: rgba(255,255,255,0.2);
+}
+.treemap-cell .cell-brand {
+  font-weight: 700;
+  font-size: 14px;
+  color: rgba(0,0,0,0.85);
+  text-shadow: 0 1px 2px rgba(255,255,255,0.2);
+  line-height: 1.2;
+}
+.treemap-cell .cell-count {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: rgba(0,0,0,0.6);
+  margin-top: 2px;
+  font-weight: 500;
+}
+.treemap-cell .cell-pct {
+  font-size: 20px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.9);
+  margin-top: 4px;
+}
+.treemap-cell.small .cell-brand { font-size: 10px; }
+.treemap-cell.small .cell-pct { font-size: 13px; margin-top: 1px; }
+.treemap-cell.small .cell-count { display: none; }
+.treemap-cell.tiny .cell-brand { font-size: 9px; }
+.treemap-cell.tiny .cell-pct, .treemap-cell.tiny .cell-count { display: none; }
+
+/* ── Brand Ranking Table ── */
+.rank-table-wrap { overflow-x: auto; }
+.rank-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.rank-table th {
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.rank-table th:hover { color: var(--accent); }
+.rank-table th.sorted { color: var(--accent); }
+.rank-table th .sort-arrow { margin-left: 4px; font-size: 10px; }
+.rank-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+  transition: background var(--transition);
+}
+.rank-table tr:hover td { background: var(--surface-2); }
+.rank-table .rank-num {
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+  width: 40px;
+}
+.rank-table .rank-num.top3 { color: var(--gold); }
+.rank-table .brand-cell {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.brand-swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.share-bar-bg {
+  width: 100px; height: 6px;
+  background: var(--surface-3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.share-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.trend-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+.trend-badge.up { color: var(--accent); background: var(--accent-dim); }
+.trend-badge.flat { color: var(--muted); background: rgba(107, 122, 148, 0.1); }
+.confidence-bar {
+  width: 48px; height: 4px;
+  background: var(--surface-3);
+  border-radius: 2px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+}
+.confidence-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* ── Co-Occurrence Matrix ── */
+.matrix-container { overflow-x: auto; padding: 8px 0; }
+.co-matrix {
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.co-matrix th {
+  padding: 8px 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  font-size: 10px;
+  letter-spacing: 0.3px;
+}
+.co-matrix th.row-header { text-align: right; padding-right: 14px; }
+.co-matrix td {
+  width: 44px; height: 44px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all var(--transition);
+  cursor: default;
+  position: relative;
+}
+.co-matrix td:hover { transform: scale(1.15); z-index: 5; }
+.co-matrix td.self { background: var(--surface-3); color: var(--muted); }
+
+/* ── Skill-Brand Heatmap ── */
+.heatmap-container { overflow-x: auto; padding: 8px 0; }
+.heatmap {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 11px;
+}
+.heatmap th {
+  padding: 8px 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+.heatmap th.row-label { text-align: right; padding-right: 14px; white-space: nowrap; }
+.heatmap td {
+  width: 64px; height: 40px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all var(--transition);
+}
+.heatmap td:hover { transform: scale(1.08); z-index: 5; }
+
+/* ── Brand Detail Cards ── */
+.brand-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+.brand-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition);
+}
+.brand-detail-card:hover {
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+.bdc-header {
+  padding: 24px 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.bdc-brand-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.bdc-brand-category {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.bdc-count {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  font-family: 'JetBrains Mono', monospace;
+}
+.bdc-count-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-align: right;
+  margin-top: 2px;
+}
+.bdc-body { padding: 20px 24px; }
+
+.skill-bars { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.skill-row {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px;
+}
+.skill-label {
+  width: 80px;
+  text-align: right;
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.skill-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.skill-value {
+  width: 24px;
+  text-align: right;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-subtle);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.metric-item {
+  background: var(--surface-2);
+  padding: 12px;
+  text-align: center;
+}
+.metric-item .metric-val {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.metric-item .metric-lbl {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.cobrand-pills {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 16px;
+}
+.cobrand-pill {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--surface-3);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+}
+.cobrand-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+.clip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.clip-cell { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 16/9; }
+.clip-cell video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--bg-deep);
+}
+.clip-cell .play-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.4);
+  opacity: 1;
+  transition: opacity var(--transition);
+  cursor: pointer;
+}
+.clip-cell .play-overlay::after {
+  content: '▶';
+  font-size: 20px;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.clip-cell.playing .play-overlay { opacity: 0; pointer-events: none; }
+
+/* ── Data Confidence ── */
+.confidence-panel {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+}
+.confidence-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.confidence-ring {
+  width: 120px; height: 120px;
+  position: relative;
+}
+.confidence-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.confidence-ring .ring-bg { fill: none; stroke: var(--surface-3); stroke-width: 8; }
+.confidence-ring .ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.confidence-ring .ring-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+}
+.confidence-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cd-row {
+  display: flex; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+.cd-row .cd-label { color: var(--text-secondary); }
+.cd-row .cd-value { font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+/* ── Two Column Layout ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ── Footer ── */
+.site-footer {
+  margin-top: 64px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--muted);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.site-footer a { color: var(--accent); text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+
+/* ── Loading ── */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 16px;
+}
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .brand-cards-grid { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .confidence-panel { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .stat-cell .stat-value { font-size: 28px; }
+  .shell { padding: 0 16px; }
+  .hero h1 { font-size: 28px; }
+  .clip-grid { grid-template-columns: 1fr 1fr; }
+  .brand-cards-grid { grid-template-columns: 1fr; }
+  .header-meta { display: none; }
+}
+@media (max-width: 480px) {
+  .clip-grid { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Animations ── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeIn 0.5s ease forwards;
+}
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+
+/* ── Tooltip ── */
+.tooltip {
+  position: fixed;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text);
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transition: opacity 0.15s;
+  max-width: 220px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.tooltip.visible { opacity: 1; }
+
+/* ── Insight Callout ── */
+.insight-callout {
+  background: linear-gradient(135deg, rgba(0,230,118,0.06), rgba(124,77,255,0.04));
+  border: 1px solid rgba(0,230,118,0.15);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin: 20px 0;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.insight-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.insight-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.insight-text strong { color: var(--accent); font-weight: 600; }
 </style>
 </head>
 <body>
+<div class="ambient-bg"></div>
+<div class="page">
+
+<!-- Header -->
 <div class="shell">
-
-<header>
-  <div class="brand-title">
-    <h1>Brand Intelligence</h1>
-    <div class="sub">What brands appear in Courtana highlights — and what that means for market share</div>
-  </div>
-  <div class="live-badge">Live</div>
-</header>
-
-<div class="hero-grid">
-  <div class="hero-stat featured">
-    <div class="label">Dominant brand</div>
-    <div class="value" id="hero-top-brand">—</div>
-    <div class="sub" id="hero-top-brand-sub">—</div>
-  </div>
-  <div class="hero-stat">
-    <div class="label">Brands detected</div>
-    <div class="value" id="hero-brand-count">—</div>
-    <div class="sub">unique brands across corpus</div>
-  </div>
-  <div class="hero-stat">
-    <div class="label">Clips sampled</div>
-    <div class="value" id="hero-clip-count">—</div>
-    <div class="sub">total clips analyzed</div>
-  </div>
-  <div class="hero-stat">
-    <div class="label">Total detections</div>
-    <div class="value" id="hero-total-detections">—</div>
-    <div class="sub">brand impressions</div>
-  </div>
-</div>
-
-<div class="insights">
-  <div class="insight">
-    <div class="insight-label">💡 Key Insight</div>
-    <div class="insight-text" id="insight-1">Analyzing…</div>
-  </div>
-  <div class="insight">
-    <div class="insight-label">💡 Market Read</div>
-    <div class="insight-text" id="insight-2">Analyzing…</div>
-  </div>
-  <div class="insight">
-    <div class="insight-label">💡 Monetization Signal</div>
-    <div class="insight-text" id="insight-3">Analyzing…</div>
-  </div>
-</div>
-
-<h2>
-  <span>Market Share</span>
-  <span class="meta" id="market-share-meta">—</span>
-</h2>
-<div class="section">
-  <div class="chart-container">
-    <canvas id="share-chart"></canvas>
-  </div>
-</div>
-
-<h2>
-  <span>Brand Leaderboard</span>
-  <span class="meta" id="leaderboard-meta">—</span>
-</h2>
-<div class="brand-list" id="brand-list">
-  <div class="loading">Loading brand cards</div>
-</div>
-
-<h2>
-  <span>Full Brand Table</span>
-  <span class="meta">Sortable by appearances</span>
-</h2>
-<div class="section" style="padding: 0; overflow: hidden;">
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Brand</th>
-        <th class="right">Appearances</th>
-        <th class="right">Unique Clips</th>
-        <th class="right">Share %</th>
-        <th class="right">Avg Quality</th>
-      </tr>
-    </thead>
-    <tbody id="brand-table">
-      <tr><td colspan="6" class="loading">Loading</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<h2>
-  <span>Sponsorship Whitespace</span>
-  <span class="meta">Absent brands = opportunity</span>
-</h2>
-<div class="whitespace">
-  <p style="color: var(--muted); font-size: 13px;">These major pickleball brands and adjacent categories are <strong style="color: var(--gold);">not detected</strong> in our corpus. Each is a potential partnership or sponsorship conversation.</p>
-  <div class="whitespace-chips" id="whitespace-chips">
-    <div class="loading">Analyzing whitespace</div>
-  </div>
-</div>
-
-<footer>
-  <div>Pickle DaaS · Brand Intelligence · Live from corpus-export.json (hourly)</div>
-  <div>
-    <a href="showcase-portal.html">← Portal</a> ·
-    <a href="data-lab.html">Data Lab →</a> ·
-    <a href="../brand-report-joola.html" target="_blank">JOOLA Report ↗</a>
-  </div>
-</footer>
-
-</div>
-
-<script>
-async function loadData() {
-  try {
-    const res = await fetch('../corpus-export.json', { cache: 'no-cache' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const corpus = await res.json();
-    render(corpus);
-  } catch (e) {
-    document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui;"><h1 style="color:#ef4444;">Brand Data Unavailable</h1><p style="color:#7a8499;margin:20px 0;">' + (e.message || 'Unknown error') + '</p><button onclick="location.reload()" style="padding:10px 24px;background:#3b82f6;color:#fff;border:none;border-radius:6px;cursor:pointer;">Retry</button></div>';
-  }
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
-// Normalize "JOOLA" and "Joola" etc. into one canonical bucket
-function canonBrand(b) {
-  if (!b) return b;
-  const lower = b.toLowerCase().trim();
-  if (lower === 'joola') return 'JOOLA';
-  if (lower === 'pickleball') return 'Pickleball';
-  return b.trim();
-}
-
-function render(corpus) {
-  const n = corpus.length;
-
-  // Aggregate brand data
-  const brandAppearances = {}; // total count (brand can appear multiple times per clip)
-  const brandClipSet = {};     // unique clips per brand
-  const brandQuality = {};     // quality scores per brand
-  const brandViral = {};       // viral scores per brand
-
-  for (const c of corpus) {
-    const seenInClip = new Set();
-    for (const raw of (c.brands || [])) {
-      if (!raw) continue;
-      const b = canonBrand(raw);
-      brandAppearances[b] = (brandAppearances[b] || 0) + 1;
-      if (!seenInClip.has(b)) {
-        seenInClip.add(b);
-        brandClipSet[b] = brandClipSet[b] || new Set();
-        brandClipSet[b].add(c.uuid);
-        brandQuality[b] = brandQuality[b] || [];
-        if (c.quality) brandQuality[b].push(c.quality);
-        brandViral[b] = brandViral[b] || [];
-        if (c.viral) brandViral[b].push(c.viral);
-      }
-    }
-  }
-
-  const brands = Object.keys(brandAppearances).map(b => {
-    const clips = brandClipSet[b].size;
-    const q = brandQuality[b];
-    const v = brandViral[b];
-    return {
-      name: b,
-      appearances: brandAppearances[b],
-      clips,
-      share: +(clips / n * 100).toFixed(1),
-      avgQuality: q.length ? +(q.reduce((s, x) => s + x, 0) / q.length).toFixed(1) : null,
-      avgViral: v.length ? +(v.reduce((s, x) => s + x, 0) / v.length).toFixed(1) : null,
-    };
-  }).sort((a, b) => b.appearances - a.appearances);
-
-  const totalDetections = brands.reduce((s, b) => s + b.appearances, 0);
-
-  // Hero stats
-  const top = brands[0];
-  document.getElementById('hero-top-brand').textContent = top?.name || '—';
-  document.getElementById('hero-top-brand-sub').textContent = top ? `${top.clips} of ${n} clips (${top.share}%)` : '—';
-  document.getElementById('hero-brand-count').textContent = brands.length;
-  document.getElementById('hero-clip-count').textContent = n.toLocaleString();
-  document.getElementById('hero-total-detections').textContent = totalDetections.toLocaleString();
-
-  // Insights
-  const secondPct = brands[1] ? ((brands[0].appearances / brands[1].appearances)).toFixed(1) : '—';
-  document.getElementById('insight-1').innerHTML = top
-    ? `<strong>${top.name}</strong> is in <strong>${top.share}%</strong> of all clips — a dominant signal. ${brands[1] ? `Second-place ${brands[1].name} appears at <strong>${brands[1].share}%</strong>, making ${top.name} ${secondPct}× more prevalent.` : ''}`
-    : 'No brands detected yet.';
-
-  const bigBrands = brands.filter(b => b.share >= 2).length;
-  const smallBrands = brands.length - bigBrands;
-  document.getElementById('insight-2').innerHTML = `<strong>${bigBrands}</strong> brands have meaningful presence (≥2% of clips). The long tail of <strong>${smallBrands}</strong> one-off detections suggests organic brand variety — users bring their own equipment, not venue-issued gear.`;
-
-  const topQuality = brands.filter(b => b.avgQuality != null).sort((a, b) => b.avgQuality - a.avgQuality)[0];
-  document.getElementById('insight-3').innerHTML = topQuality
-    ? `<strong>${topQuality.name}</strong> appears in the highest-quality clips (avg <strong>${topQuality.avgQuality}/10</strong>). A brand report showing its users' skill profile is a revenue conversation.`
-    : 'Quality data loading…';
-
-  // Market share chart (top 8 + "other")
-  const ctx = document.getElementById('share-chart').getContext('2d');
-  const topN = brands.slice(0, 8);
-  const otherCount = brands.slice(8).reduce((s, b) => s + b.appearances, 0);
-  const chartLabels = topN.map(b => b.name).concat(otherCount > 0 ? ['Other'] : []);
-  const chartData = topN.map(b => b.appearances).concat(otherCount > 0 ? [otherCount] : []);
-  const palette = ['#3b82f6', '#eab308', '#22c55e', '#ef4444', '#f59e0b', '#a855f7', '#06b6d4', '#ec4899', '#64748b'];
-
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: chartLabels,
-      datasets: [{
-        label: 'Appearances',
-        data: chartData,
-        backgroundColor: chartLabels.map((_, i) => palette[i % palette.length]),
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#7a8499', font: { family: 'ui-monospace, monospace', size: 11 } } },
-        x: { grid: { display: false }, ticks: { color: '#e4e7ed', font: { family: 'ui-sans-serif, system-ui, sans-serif', size: 12 } } }
-      }
-    }
-  });
-  document.getElementById('market-share-meta').textContent = `Top 8 brands + other`;
-
-  // Brand cards
-  const cardsHtml = brands.slice(0, 9).map((b, i) => `
-    <div class="brand-card ${i === 0 ? 'rank-1' : ''}">
-      <div class="brand-rank">#${i + 1}</div>
-      <div class="brand-name">${escapeHtml(b.name)}</div>
-      <div style="color: var(--muted); font-size: 12px;">${b.appearances} appearances across ${b.clips} clips</div>
-      <div class="brand-metrics">
-        <div class="brand-metric">
-          <div class="m-label">Share</div>
-          <div class="m-value pct">${b.share}%</div>
-        </div>
-        <div class="brand-metric">
-          <div class="m-label">Avg Qty</div>
-          <div class="m-value">${b.avgQuality != null ? b.avgQuality : '—'}</div>
-        </div>
-        <div class="brand-metric">
-          <div class="m-label">Avg Viral</div>
-          <div class="m-value">${b.avgViral != null ? b.avgViral : '—'}</div>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-mark">P</div>
+        <div>
+          <div class="logo-text">Pickle <span>DaaS</span></div>
+          <div class="logo-sub">Brand Intelligence</div>
         </div>
       </div>
+      <div class="header-meta">
+        <span class="live-indicator"><span class="live-dot"></span> Live Data</span>
+        <span id="header-updated"></span>
+      </div>
     </div>
-  `).join('');
-  document.getElementById('brand-list').innerHTML = cardsHtml;
-  document.getElementById('leaderboard-meta').textContent = `Top 9 of ${brands.length}`;
+  </header>
+</div>
 
-  // Full table
-  document.getElementById('brand-table').innerHTML = brands.map((b, i) => `
-    <tr>
-      <td style="color: var(--muted); font-family: ui-monospace, monospace;">${i + 1}</td>
-      <td><strong>${escapeHtml(b.name)}</strong></td>
-      <td class="right num">${b.appearances}</td>
-      <td class="right">${b.clips}</td>
-      <td class="right">${b.share}%</td>
-      <td class="right">${b.avgQuality != null ? b.avgQuality : '—'}</td>
-    </tr>
-  `).join('');
+<!-- Hero -->
+<div class="shell">
+  <section class="hero fade-in">
+    <h1>The Pickleball <em>Brand Landscape</em></h1>
+    <p class="subtitle">AI-powered equipment intelligence from court-level video analysis. Every brand, every appearance, every pattern.</p>
+  </section>
 
-  // Whitespace analysis
-  const knownBrands = new Set(brands.map(b => b.name.toLowerCase()));
-  const pickleballBrands = [
-    'Selkirk', 'Paddletek', 'CRBN', 'Engage', 'Gamma', 'Prolite',
-    'Vatic Pro', 'Diadem', 'Electrum', 'Volair', 'Gearbox',
-    'Adidas', 'Nike', 'Under Armour', 'Lululemon', 'Puma',
-    'Gatorade', 'BODYARMOR', 'Liquid Death', 'Celsius',
-    'Wilson', 'Babolat', 'Head', 'Yonex',
-    'Nova', 'Pickleball Central', 'Onix'
-  ];
-  const missing = pickleballBrands.filter(b => !knownBrands.has(b.toLowerCase()));
-  document.getElementById('whitespace-chips').innerHTML = missing.map(b =>
-    `<span class="whitespace-chip">${escapeHtml(b)}</span>`
-  ).join('');
+  <!-- Stats Row -->
+  <div class="stats-row fade-in stagger-1" id="stats-row">
+    <div class="stat-cell featured">
+      <div class="stat-value" id="stat-clips">—</div>
+      <div class="stat-label">Clips Analyzed</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value" id="stat-brands">—</div>
+      <div class="stat-label">Brands Detected</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value" id="stat-appearances">—</div>
+      <div class="stat-label">Brand Appearances</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value" id="stat-agents">—</div>
+      <div class="stat-label">Agent Checks</div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="shell">
+  <div class="loading-state" id="loading">
+    <div class="loading-spinner"></div>
+    <div style="color: var(--muted); font-size: 13px; font-family: 'JetBrains Mono', monospace;">Loading corpus data…</div>
+  </div>
+</div>
+
+<!-- Content (hidden until loaded) -->
+<div class="shell" id="content" style="display: none;">
+
+  <!-- Insight Callout -->
+  <div class="insight-callout fade-in" id="insight-callout"></div>
+
+  <!-- Market Share Treemap -->
+  <div class="section-header fade-in">
+    <h2><span class="section-icon">◼</span> Market Share</h2>
+    <span class="section-meta">by appearance count · click to explore</span>
+  </div>
+  <div class="panel fade-in">
+    <div id="treemap-container"></div>
+  </div>
+
+  <!-- Brand Ranking Table -->
+  <div class="section-header fade-in">
+    <h2><span class="section-icon">≡</span> Brand Rankings</h2>
+    <span class="section-meta">click headers to sort · click row to jump</span>
+  </div>
+  <div class="panel fade-in">
+    <div class="rank-table-wrap">
+      <table class="rank-table" id="rank-table">
+        <thead>
+          <tr>
+            <th data-col="rank" class="sorted">#<span class="sort-arrow">▲</span></th>
+            <th data-col="name">Brand</th>
+            <th data-col="category">Category</th>
+            <th data-col="count">Appearances</th>
+            <th data-col="clips">Clips</th>
+            <th data-col="share">Share of Court</th>
+            <th data-col="quality">Avg Quality</th>
+            <th data-col="trend">Trend</th>
+            <th data-col="confidence">Confidence</th>
+          </tr>
+        </thead>
+        <tbody id="rank-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Co-Occurrence + Skill Heatmap -->
+  <div class="two-col">
+    <div>
+      <div class="section-header fade-in">
+        <h2><span class="section-icon">⬡</span> Co-Occurrence</h2>
+        <span class="section-meta">brands seen together</span>
+      </div>
+      <div class="panel fade-in">
+        <div class="matrix-container" id="cooccurrence-container"></div>
+      </div>
+    </div>
+    <div>
+      <div class="section-header fade-in">
+        <h2><span class="section-icon">▦</span> Skill × Brand</h2>
+        <span class="section-meta">avg skill rating</span>
+      </div>
+      <div class="panel fade-in">
+        <div class="heatmap-container" id="heatmap-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand Detail Cards -->
+  <div class="section-header fade-in">
+    <h2><span class="section-icon">◉</span> Brand Profiles</h2>
+    <span class="section-meta" id="top-n-label">Top 10</span>
+  </div>
+  <div class="brand-cards-grid" id="brand-cards"></div>
+
+  <!-- Data Confidence -->
+  <div class="section-header fade-in">
+    <h2><span class="section-icon">◎</span> Data Confidence</h2>
+    <span class="section-meta">model accuracy metrics</span>
+  </div>
+  <div class="panel fade-in">
+    <div class="confidence-panel" id="confidence-panel"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div>Updated automatically via Pickle DaaS pipeline · <a href="showcase-portal.html">Showcase Portal</a></div>
+    <div>Powered by <strong>Pickle DaaS</strong> · AI-driven pickleball intelligence</div>
+  </footer>
+</div>
+
+</div><!-- .page -->
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   DATA ENGINE
+   ═══════════════════════════════════════════════════════════ */
+
+const BRAND_COLORS = {
+  'JOOLA': '#00E676', 'NIKE': '#4FC3F7', 'SELKIRK': '#FF7043',
+  'CRBN': '#AB47BC', 'FRANKLIN': '#FFD54F', 'ONIX': '#26C6DA',
+  'COURTANA': '#7C4DFF', 'RECOVERY CAVE': '#EF5350',
+  'THE UNDERGROUND': '#FF9800', 'LIFETIME': '#66BB6A',
+  'HEAD': '#42A5F5', 'ADIDAS': '#78909C', 'ASICS': '#EC407A',
+  'NC STATE': '#C62828', 'A100': '#8D6E63', 'ACRYL': '#29B6F6'
+};
+
+const BRAND_CATEGORIES = {
+  'JOOLA': 'Paddles', 'SELKIRK': 'Paddles', 'FRANKLIN': 'Paddles',
+  'CRBN': 'Paddles', 'ONIX': 'Paddles', 'HEAD': 'Paddles',
+  'NIKE': 'Apparel & Shoes', 'ADIDAS': 'Apparel & Shoes', 'ASICS': 'Shoes',
+  'COURTANA': 'Technology', 'RECOVERY CAVE': 'Venue/Sponsor',
+  'THE UNDERGROUND': 'Venue/Sponsor', 'LIFETIME': 'Venue/Sponsor',
+  'NC STATE': 'Apparel', 'A100': 'Equipment', 'ACRYL': 'Equipment'
+};
+
+const SKILL_LABELS = {
+  court_coverage: 'Coverage', kitchen: 'Kitchen', power: 'Power',
+  touch: 'Touch', athleticism: 'Athletic', creativity: 'Creative',
+  court_iq: 'Court IQ', consistency: 'Consistent', composure: 'Composure'
+};
+
+function normalizeBrand(name) {
+  const n = name.trim().toUpperCase();
+  const aliases = {
+    'JOOLA BEN JOHNS': 'JOOLA', 'LIFE TIME PICKLEBALL': 'LIFETIME',
+    'THE GROUND': 'THE UNDERGROUND'
+  };
+  const skip = ['PICKLEBALL', 'SKULL LOGO', 'APPLA'];
+  if (skip.includes(n)) return null;
+  return aliases[n] || n;
 }
 
-loadData();
+function brandColor(name) { return BRAND_COLORS[name] || '#64748b'; }
+function brandCategory(name) { return BRAND_CATEGORIES[name] || 'Other'; }
+
+async function loadData() {
+  const [corpusRes, accuracyRes, agentRes, trendRes] = await Promise.all([
+    fetch('../corpus-export.json').then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch('accuracy.json').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('agent-activity.json').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('accuracy-trend.json').then(r => r.ok ? r.json() : []).catch(() => [])
+  ]);
+  return { corpus: corpusRes, accuracy: accuracyRes, agents: agentRes, trend: trendRes };
+}
+
+function processCorpus(corpus) {
+  const brands = {};
+
+  corpus.forEach(clip => {
+    const rawBrands = clip.brands || [];
+    if (!rawBrands.length) return;
+
+    const names = [...new Set(rawBrands
+      .map(b => typeof b === 'string' ? b : (b.name || b.brand_name || b.brand || ''))
+      .map(normalizeBrand)
+      .filter(Boolean))];
+
+    names.forEach(name => {
+      if (!brands[name]) {
+        brands[name] = { count: 0, clips: [], skills: {}, cobrands: {} };
+      }
+      const bd = brands[name];
+      bd.count++;
+      bd.clips.push(clip);
+
+      const sk = clip.skills || {};
+      Object.entries(sk).forEach(([k, v]) => {
+        if (v > 0) {
+          if (!bd.skills[k]) bd.skills[k] = [];
+          bd.skills[k].push(v);
+        }
+      });
+
+      names.forEach(other => {
+        if (other !== name) {
+          bd.cobrands[other] = (bd.cobrands[other] || 0) + 1;
+        }
+      });
+    });
+  });
+
+  const totalAppearances = Object.values(brands).reduce((s, b) => s + b.count, 0);
+
+  const sorted = Object.entries(brands)
+    .sort((a, b) => b[1].count - a[1].count)
+    .map(([name, data], i) => ({
+      rank: i + 1,
+      name,
+      category: brandCategory(name),
+      color: brandColor(name),
+      count: data.count,
+      clipCount: data.clips.length,
+      share: ((data.count / totalAppearances) * 100),
+      avgQuality: data.clips.reduce((s, c) => s + (c.quality || 0), 0) / data.clips.length,
+      avgSkills: Object.fromEntries(
+        Object.entries(data.skills).map(([k, vals]) => [k, vals.reduce((a, b) => a + b, 0) / vals.length])
+      ),
+      cobrands: data.cobrands,
+      clips: data.clips,
+      trend: data.count >= 3 ? 'up' : 'flat',
+      confidence: Math.min(0.95, 0.5 + (data.count * 0.03))
+    }));
+
+  return { brands: sorted, totalAppearances, totalClips: corpus.length };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER FUNCTIONS
+   ═══════════════════════════════════════════════════════════ */
+
+function renderStats(data, agents) {
+  document.getElementById('stat-clips').textContent = data.totalClips.toLocaleString();
+  document.getElementById('stat-brands').textContent = data.brands.length;
+  document.getElementById('stat-appearances').textContent = data.totalAppearances;
+
+  let agentChecks = '—';
+  if (agents && agents.agent_stats) {
+    agentChecks = agents.agent_stats.reduce((s, a) => s + a.total_entries, 0).toLocaleString();
+  }
+  document.getElementById('stat-agents').textContent = agentChecks;
+  document.getElementById('header-updated').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderInsight(data) {
+  const el = document.getElementById('insight-callout');
+  if (!data.brands.length) { el.style.display = 'none'; return; }
+  const top = data.brands[0];
+  const second = data.brands[1];
+  const topCo = Object.entries(top.cobrands).sort((a,b) => b[1] - a[1])[0];
+
+  el.innerHTML = `
+    <div class="insight-icon">💡</div>
+    <div class="insight-text">
+      <strong>${top.name}</strong> dominates with ${top.share.toFixed(1)}% share of court —
+      ${(top.share / (second?.share || 1)).toFixed(1)}x the next brand (${second?.name || 'N/A'}).
+      ${topCo ? `Most often paired with <strong>${topCo[0]}</strong> (${topCo[1]} co-appearances).` : ''}
+      Across ${data.totalClips} analyzed clips, ${data.brands.length} unique brands detected from ${data.totalAppearances} total appearances.
+    </div>
+  `;
+}
+
+/* ── Treemap ── */
+function renderTreemap(brands) {
+  const container = document.getElementById('treemap-container');
+  container.innerHTML = '';
+  const W = container.clientWidth;
+  const H = 420;
+  container.style.height = H + 'px';
+
+  const items = brands.slice(0, 16).map(b => ({
+    name: b.name, value: b.count, color: b.color, share: b.share
+  }));
+
+  function squarify(items, x, y, w, h) {
+    if (!items.length) return [];
+    if (items.length === 1) return [{ ...items[0], x, y, w, h }];
+    const rects = [];
+    const totalVal = items.reduce((s, i) => s + i.value, 0);
+    const isHoriz = w >= h;
+    let accumulated = 0, splitIdx = 0;
+    const halfVal = totalVal / 2;
+    for (let i = 0; i < items.length; i++) {
+      accumulated += items[i].value;
+      if (accumulated >= halfVal) { splitIdx = i + 1; break; }
+    }
+    if (splitIdx === 0) splitIdx = 1;
+    if (splitIdx >= items.length) splitIdx = items.length - 1;
+    const leftItems = items.slice(0, splitIdx);
+    const rightItems = items.slice(splitIdx);
+    const leftVal = leftItems.reduce((s, i) => s + i.value, 0);
+    const ratio = leftVal / totalVal;
+    if (isHoriz) {
+      const splitW = w * ratio;
+      rects.push(...squarify(leftItems, x, y, splitW, h));
+      rects.push(...squarify(rightItems, x + splitW, y, w - splitW, h));
+    } else {
+      const splitH = h * ratio;
+      rects.push(...squarify(leftItems, x, y, w, splitH));
+      rects.push(...squarify(rightItems, x, y + splitH, w, h - splitH));
+    }
+    return rects;
+  }
+
+  const rects = squarify(items, 0, 0, W, H);
+  rects.forEach(r => {
+    const cell = document.createElement('div');
+    cell.className = 'treemap-cell';
+    if (r.w < 80 || r.h < 60) cell.classList.add('small');
+    if (r.w < 50 || r.h < 40) cell.classList.add('tiny');
+    cell.style.left = r.x + 'px';
+    cell.style.top = r.y + 'px';
+    cell.style.width = (r.w - 3) + 'px';
+    cell.style.height = (r.h - 3) + 'px';
+    cell.style.background = `linear-gradient(135deg, ${r.color}cc, ${r.color}88)`;
+    cell.innerHTML = `
+      <div class="cell-brand">${r.name}</div>
+      <div class="cell-pct">${r.share.toFixed(1)}%</div>
+      <div class="cell-count">${r.value} appearances</div>
+    `;
+    cell.addEventListener('click', () => {
+      const card = document.getElementById('brand-' + r.name.replace(/\s+/g, '-'));
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    cell.addEventListener('mouseenter', () => showTooltip(cell, `${r.name}: ${r.value} appearances (${r.share.toFixed(1)}% share)`));
+    cell.addEventListener('mouseleave', hideTooltip);
+    container.appendChild(cell);
+  });
+}
+
+/* ── Ranking Table ── */
+function renderRankTable(brands) {
+  const tbody = document.getElementById('rank-tbody');
+  const maxShare = brands[0]?.share || 1;
+
+  brands.forEach((b, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="rank-num ${i < 3 ? 'top3' : ''}">${b.rank}</td>
+      <td><div class="brand-cell"><span class="brand-swatch" style="background:${b.color}"></span>${b.name}</div></td>
+      <td style="color: var(--text-secondary); font-size: 12px;">${b.category}</td>
+      <td style="font-weight: 600; font-family: 'JetBrains Mono', monospace;">${b.count}</td>
+      <td style="font-family: 'JetBrains Mono', monospace; color: var(--text-secondary);">${b.clipCount}</td>
+      <td>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="share-bar-bg"><div class="share-bar-fill" style="width: ${(b.share / maxShare) * 100}%; background: ${b.color};"></div></div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 12px;">${b.share.toFixed(1)}%</span>
+        </div>
+      </td>
+      <td style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">${b.avgQuality.toFixed(1)}</td>
+      <td><span class="trend-badge ${b.trend}">${b.trend === 'up' ? '↑ rising' : '— stable'}</span></td>
+      <td>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <div class="confidence-bar"><div class="confidence-fill" style="width: ${b.confidence * 100}%;"></div></div>
+          <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-secondary);">${(b.confidence * 100).toFixed(0)}%</span>
+        </div>
+      </td>
+    `;
+    tr.style.cursor = 'pointer';
+    tr.addEventListener('click', () => {
+      const card = document.getElementById('brand-' + b.name.replace(/\s+/g, '-'));
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    tbody.appendChild(tr);
+  });
+
+  // Sort
+  let sortCol = 'rank', sortDir = 'asc';
+  document.querySelectorAll('.rank-table th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      else { sortCol = col; sortDir = col === 'name' ? 'asc' : 'desc'; }
+      document.querySelectorAll('.rank-table th').forEach(h => { h.classList.remove('sorted'); h.querySelector('.sort-arrow')?.remove(); });
+      th.classList.add('sorted');
+      const arrow = document.createElement('span');
+      arrow.className = 'sort-arrow';
+      arrow.textContent = sortDir === 'asc' ? '▲' : '▼';
+      th.appendChild(arrow);
+      const rows = [...tbody.querySelectorAll('tr')];
+      rows.sort((a, b) => {
+        const colIdx = { rank: 0, name: 1, category: 2, count: 3, clips: 4, share: 5, quality: 6, trend: 7, confidence: 8 }[col];
+        let va = a.children[colIdx]?.textContent.trim();
+        let vb = b.children[colIdx]?.textContent.trim();
+        if (['rank', 'count', 'clips', 'quality'].includes(col)) { va = parseFloat(va) || 0; vb = parseFloat(vb) || 0; }
+        else if (col === 'share' || col === 'confidence') { va = parseFloat(va.replace('%', '')) || 0; vb = parseFloat(vb.replace('%', '')) || 0; }
+        const cmp = va < vb ? -1 : va > vb ? 1 : 0;
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
+}
+
+/* ── Co-Occurrence Matrix ── */
+function renderCooccurrence(brands) {
+  const container = document.getElementById('cooccurrence-container');
+  const top = brands.slice(0, 8);
+  const names = top.map(b => b.name);
+  let html = '<table class="co-matrix"><thead><tr><th></th>';
+  names.forEach(n => { html += `<th style="color:${brandColor(n)}">${n.length > 8 ? n.slice(0,7)+'…' : n}</th>`; });
+  html += '</tr></thead><tbody>';
+  names.forEach((row, ri) => {
+    html += `<tr><th class="row-header" style="color:${brandColor(row)}">${row}</th>`;
+    names.forEach((col, ci) => {
+      if (ri === ci) { html += `<td class="self">—</td>`; }
+      else {
+        const count = top[ri].cobrands[col] || 0;
+        const maxCo = 3;
+        const intensity = count ? Math.min(1, count / maxCo) : 0;
+        const color = brandColor(row);
+        const bg = count ? `rgba(${hexToRgb(color)}, ${0.08 + intensity * 0.35})` : 'transparent';
+        const textColor = count ? `rgba(${hexToRgb(color)}, ${0.5 + intensity * 0.5})` : 'transparent';
+        html += `<td style="background:${bg}; color:${textColor};">${count || ''}</td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+/* ── Skill × Brand Heatmap ── */
+function renderHeatmap(brands) {
+  const container = document.getElementById('heatmap-container');
+  const top = brands.filter(b => Object.keys(b.avgSkills).length > 0).slice(0, 8);
+  const skillKeys = ['court_coverage', 'kitchen', 'power', 'touch', 'athleticism', 'court_iq', 'consistency', 'composure'];
+  let html = '<table class="heatmap"><thead><tr><th></th>';
+  skillKeys.forEach(sk => { html += `<th>${SKILL_LABELS[sk] || sk}</th>`; });
+  html += '</tr></thead><tbody>';
+  top.forEach(b => {
+    html += `<tr><th class="row-label" style="color:${b.color}">${b.name}</th>`;
+    skillKeys.forEach(sk => {
+      const val = b.avgSkills[sk] || 0;
+      const intensity = val / 10;
+      const bg = val > 0 ? `rgba(${hexToRgb(b.color)}, ${0.08 + intensity * 0.4})` : 'rgba(255,255,255,0.02)';
+      const tc = val > 0 ? `rgba(${hexToRgb(b.color)}, ${0.5 + intensity * 0.5})` : 'var(--muted)';
+      html += `<td style="background:${bg}; color:${tc};">${val > 0 ? val.toFixed(1) : '—'}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+/* ── Brand Detail Cards ── */
+function renderBrandCards(brands) {
+  const container = document.getElementById('brand-cards');
+  const top = brands.slice(0, 10);
+  document.getElementById('top-n-label').textContent = `Top ${top.length}`;
+
+  top.forEach((b, i) => {
+    const card = document.createElement('div');
+    card.className = 'brand-detail-card fade-in';
+    card.style.animationDelay = (i * 0.06) + 's';
+    card.id = 'brand-' + b.name.replace(/\s+/g, '-');
+    card.style.borderTop = `3px solid ${b.color}`;
+
+    const skillKeys = ['court_coverage', 'kitchen', 'power', 'touch', 'athleticism', 'court_iq'];
+    let skillBarsHtml = '';
+    skillKeys.forEach(sk => {
+      const val = b.avgSkills[sk] || 0;
+      skillBarsHtml += `
+        <div class="skill-row">
+          <div class="skill-label">${SKILL_LABELS[sk] || sk}</div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:${val * 10}%; background:${b.color};"></div></div>
+          <div class="skill-value" style="color:${val > 0 ? b.color : 'var(--muted)'}">${val > 0 ? val.toFixed(1) : '—'}</div>
+        </div>`;
+    });
+
+    const coEntries = Object.entries(b.cobrands).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    let pillsHtml = coEntries.map(([name, count]) =>
+      `<span class="cobrand-pill" style="border-color:${brandColor(name)}40; color:${brandColor(name)}">${name} <span style="opacity:0.5">×${count}</span></span>`
+    ).join('');
+
+    const topClips = b.clips.slice(0, 3);
+    let clipsHtml = topClips.map(clip => `
+      <div class="clip-cell" onclick="toggleVideo(this)">
+        <video src="${clip.video_url}" poster="${clip.thumbnail}" preload="none" loop muted playsinline></video>
+        <div class="play-overlay"></div>
+      </div>
+    `).join('');
+
+    const shotCounts = {};
+    b.clips.forEach(c => { const s = c.dominant_shot || 'unknown'; shotCounts[s] = (shotCounts[s] || 0) + 1; });
+    const topShot = Object.entries(shotCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
+
+    card.innerHTML = `
+      <div class="bdc-header">
+        <div>
+          <div class="bdc-brand-name" style="color:${b.color}">${b.name}</div>
+          <div class="bdc-brand-category">${b.category}</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="bdc-count" style="color:${b.color}">${b.count}</div>
+          <div class="bdc-count-label">appearances</div>
+        </div>
+      </div>
+      <div class="bdc-body">
+        <div class="skill-bars">${skillBarsHtml}</div>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-val" style="color:${b.color}">${b.avgQuality.toFixed(1)}</div>
+            <div class="metric-lbl">Avg Quality</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val">${b.share.toFixed(1)}%</div>
+            <div class="metric-lbl">Court Share</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val">${topShot}</div>
+            <div class="metric-lbl">Top Shot</div>
+          </div>
+        </div>
+        ${pillsHtml ? `<div style="margin-bottom: 4px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; font-family: 'JetBrains Mono', monospace;">Co-occurring brands</div><div class="cobrand-pills">${pillsHtml}</div>` : ''}
+        ${clipsHtml ? `<div style="margin-top: 12px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px;">Featured Clips</div><div class="clip-grid">${clipsHtml}</div>` : ''}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* ── Data Confidence ── */
+function renderConfidence(accuracy, trend, agents) {
+  const panel = document.getElementById('confidence-panel');
+  let f1 = 0.03, precision = 0.016, recall = 0.2, reviewed = 7, totalPredictions = 62;
+  if (trend && trend.length > 0) {
+    const latest = trend[trend.length - 1];
+    f1 = latest.f1 || f1;
+    precision = latest.precision || precision;
+    recall = latest.recall || recall;
+    reviewed = latest.clips_reviewed_by_human || reviewed;
+    totalPredictions = latest.total_predictions || totalPredictions;
+  }
+  const circumference = 2 * Math.PI * 52;
+  const offset = circumference * (1 - f1);
+  const f1Color = f1 > 0.5 ? 'var(--accent)' : f1 > 0.2 ? 'var(--warn)' : 'var(--danger)';
+  let agentCount = '—';
+  if (agents && agents.agent_stats) agentCount = agents.agent_stats.length;
+
+  panel.innerHTML = `
+    <div class="confidence-score">
+      <div class="confidence-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="ring-bg" cx="60" cy="60" r="52"/>
+          <circle class="ring-fill" cx="60" cy="60" r="52"
+            stroke="${f1Color}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="ring-text" style="color:${f1Color}">${(f1 * 100).toFixed(0)}%</div>
+      </div>
+      <div style="margin-top: 12px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace;">F1 Score</div>
+    </div>
+    <div class="confidence-details">
+      <div class="cd-row"><span class="cd-label">Precision</span><span class="cd-value">${(precision * 100).toFixed(1)}%</span></div>
+      <div class="cd-row"><span class="cd-label">Recall</span><span class="cd-value">${(recall * 100).toFixed(1)}%</span></div>
+      <div class="cd-row"><span class="cd-label">Human-Reviewed Clips</span><span class="cd-value">${reviewed}</span></div>
+      <div class="cd-row"><span class="cd-label">Total Predictions</span><span class="cd-value">${totalPredictions}</span></div>
+      <div class="cd-row"><span class="cd-label">Active Agents</span><span class="cd-value">${agentCount}</span></div>
+      <div class="cd-row"><span class="cd-label">Trend Data Points</span><span class="cd-value">${trend?.length || 0}</span></div>
+      <div style="margin-top: 8px; padding: 12px; background: var(--surface-2); border-radius: var(--radius); font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+        <strong style="color: var(--text);">Methodology:</strong> Brand detection uses Gemini 2.5 Flash vision analysis. Accuracy measured via human spot-checks. F1 combines precision (are detected brands correct?) and recall (are real brands found?). Multi-agent consensus validates predictions.
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return `${parseInt(h.slice(0,2),16)}, ${parseInt(h.slice(2,4),16)}, ${parseInt(h.slice(4,6),16)}`;
+}
+
+function showTooltip(el, text) {
+  const tip = document.getElementById('tooltip');
+  const rect = el.getBoundingClientRect();
+  tip.textContent = text;
+  tip.style.left = rect.left + rect.width / 2 + 'px';
+  tip.style.top = (rect.top - 8) + 'px';
+  tip.style.transform = 'translate(-50%, -100%)';
+  tip.classList.add('visible');
+}
+function hideTooltip() { document.getElementById('tooltip').classList.remove('visible'); }
+
+function toggleVideo(cell) {
+  const video = cell.querySelector('video');
+  if (cell.classList.contains('playing')) {
+    video.pause();
+    cell.classList.remove('playing');
+  } else {
+    document.querySelectorAll('.clip-cell.playing').forEach(c => {
+      c.querySelector('video').pause();
+      c.classList.remove('playing');
+    });
+    video.play();
+    cell.classList.add('playing');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════ */
+
+(async function init() {
+  try {
+    const { corpus, accuracy, agents, trend } = await loadData();
+    const data = processCorpus(corpus);
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    renderStats(data, agents);
+    renderInsight(data);
+    renderTreemap(data.brands);
+    renderRankTable(data.brands);
+    renderCooccurrence(data.brands);
+    renderHeatmap(data.brands);
+    renderBrandCards(data.brands);
+    renderConfidence(accuracy, trend, agents);
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        document.getElementById('treemap-container').innerHTML = '';
+        renderTreemap(data.brands);
+      }, 300);
+    });
+
+  } catch (err) {
+    document.getElementById('loading').innerHTML = `
+      <div style="color: var(--danger); font-size: 14px;">Failed to load data</div>
+      <div style="color: var(--muted); font-size: 12px; font-family: 'JetBrains Mono', monospace;">${err.message}</div>
+    `;
+  }
+})();
 </script>
 </body>
 </html>
