@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session B Summary — Agent Architecture Build</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface-2: #22262f;
+    --border: #2d3140; --text: #e1e4eb; --muted: #6b7280;
+    --muted-strong: #9ca3af; --ok: #34d399; --ok-dim: rgba(52,211,153,0.08);
+    --warn: #fbbf24; --warn-dim: rgba(251,191,36,0.08);
+    --info: #60a5fa; --info-dim: rgba(96,165,250,0.08);
+    --danger: #f87171; --danger-dim: rgba(248,113,113,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  .shell { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+  header { margin-bottom: 48px; }
+  header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  header .subtitle { font-size: 14px; color: var(--muted-strong); }
+  header .meta { font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; margin-top: 12px; }
+  section { margin-bottom: 48px; }
+  h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h2 .num { color: var(--ok); font-family: ui-monospace, monospace; font-size: 13px; margin-right: 8px; }
+  h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; color: var(--info); }
+  p { margin-bottom: 12px; font-size: 14px; color: var(--muted-strong); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+  .card h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .card .status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card .status.ok { background: var(--ok-dim); color: var(--ok); }
+  .card .status.pending { background: var(--warn-dim); color: var(--warn); }
+  .card .status.info { background: var(--info-dim); color: var(--info); }
+  .card p { font-size: 13px; margin-bottom: 4px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .stat .value { font-size: 28px; font-weight: 700; color: var(--ok); font-variant-numeric: tabular-nums; }
+  .stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; margin-top: 4px; }
+  code { background: var(--surface-2); padding: 2px 6px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 12px; color: var(--info); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; font-family: ui-monospace, monospace; font-size: 12px; overflow-x: auto; margin: 12px 0; color: var(--muted-strong); line-height: 1.6; }
+  ul { padding-left: 20px; margin-bottom: 12px; }
+  li { font-size: 13px; color: var(--muted-strong); margin-bottom: 6px; }
+  li strong { color: var(--text); }
+  .insight-card { background: var(--surface); border-left: 3px solid var(--warn); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 10px; }
+  .insight-card h4 { font-size: 13px; font-weight: 600; color: var(--warn); margin-bottom: 4px; }
+  .insight-card p { font-size: 12px; margin-bottom: 2px; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header>
+  <h1>Session B — Agent Architecture Build</h1>
+  <div class="subtitle">Multi-agent system for the Pickle DaaS pipeline: competing, validating, learning</div>
+  <div class="meta">Built: 2026-04-13 | Track 4 of Phase 3 | 7 agents + shared infrastructure</div>
+</header>
+
+<!-- STATS -->
+<div class="stat-grid">
+  <div class="stat"><div class="value">7</div><div class="label">Agents Built</div></div>
+  <div class="stat"><div class="value">107</div><div class="label">Journal Entries</div></div>
+  <div class="stat"><div class="value">97</div><div class="label">Clips Validated</div></div>
+  <div class="stat"><div class="value">19</div><div class="label">Insights Found</div></div>
+  <div class="stat"><div class="value">4,988</div><div class="label">Clips Scored</div></div>
+  <div class="stat"><div class="value">3</div><div class="label">Prompt Patches</div></div>
+</div>
+
+<!-- WHAT WAS BUILT -->
+<section>
+  <h2><span class="num">01</span> What Was Built</h2>
+
+  <div class="card">
+    <h4>agents/shared.py — Shared Infrastructure</h4>
+    <span class="status ok">working</span>
+    <p>Central module all agents import. Clip-journal.db CRUD, corpus scanning (1,280+ files across 15+ directories), UUID extraction (fixed facility-vs-clip UUID bug), Gemini API helpers with cost tracking, ground-truth badge loading.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/orchestrator.py — Agent Ensemble Runner</h4>
+    <span class="status ok">working</span>
+    <p>Runs all agents in dependency order with fail-soft error handling. Configurable via CLI (<code>--agents</code>, <code>--nightly</code>, <code>--budget</code>). Generates run summaries as JSON + Markdown, plus <code>agent-activity.json</code> for the dashboard. All 4 tested agents completed in 0.3s.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/curator.py — Intelligent Clip Selection</h4>
+    <span class="status ok">working</span>
+    <p>Replaces FIFO ingest. Fetches from Courtana anon endpoint (4,988 clips found), scores by badge coverage gaps, player diversity, recency, and brand potential. Produces ranked candidate lists with per-clip reasoning. Identified 404 already-analyzed clips and scored all 4,988 remaining.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/multi-model.py — Flash vs Pro Comparison</h4>
+    <span class="status info">built + dry-run tested</span>
+    <p>Selects 10% sample of standard-schema clips, runs through both Gemini 2.5 Flash and Pro. Diffs on 9 skill scores, badge predictions, story arc, and dominant shot. Hard budget cap ($5/run). Writes to <code>output/model-agreement/</code> and journal. Dry-run verified clip selection (762 candidates). Live API test running on 2 clips.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/consensus.py — Disagreement Adjudicator</h4>
+    <span class="status info">built, awaiting multi-model data</span>
+    <p>Reads model-agreement files, adjudicates using ground truth (806 clips with badges), confidence scores, and field-type heuristics. Subjective fields (arc, shot type) accepted as valid uncertainty. High-disagreement clips flagged for human review. Outputs verification reports.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/validator.py — Self-Consistency Checker</h4>
+    <span class="status ok">working</span>
+    <p>Checked 97 clips. Average consistency score: 98.1%. Found 23 clips with issues (all low/info severity). Most common issue: narrative_arc_alignment (22 clips) — the narrative summary doesn't reference the story arc label. Confidence calibration: 5 clips with values, all in high-confidence bucket.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/insights.py — Cross-Corpus Pattern Detection</h4>
+    <span class="status ok">working</span>
+    <p>Analyzed 1,282 clips across 4 analysis dimensions. Generated 19 raw insights, selected top 7. Discovered real patterns: badge co-occurrence (Consistency King + Dink Machine at 2.0x lift), player archetype clustering (Power Artists vs Hammers), and Court IQ predicting composure under pressure.</p>
+  </div>
+
+  <div class="card">
+    <h4>agents/prompt-improver.py — Prompt Patch Generator</h4>
+    <span class="status ok">working</span>
+    <p>Ingested 10 human feedback entries, 40 badge accuracy patterns, and 0 model disagreements (pending multi-model output). Generated 3 prompt patches: (1) reduce false-positive badges (7 zero-precision badges identified), (2) confidence calibration guidance, (3) general accuracy improvement.</p>
+  </div>
+</section>
+
+<!-- TEST RESULTS -->
+<section>
+  <h2><span class="num">02</span> Test Results (Real Corpus Data)</h2>
+
+  <h3>Orchestrator Run</h3>
+  <p>Ran 4 agents (validator, insights, prompt-improver, consensus) in 0.3 seconds. All succeeded. Generated <code>output/agent-runs/20260413-212944.json</code> and <code>agent-activity.json</code> for the dashboard.</p>
+
+  <h3>Curator Output</h3>
+  <p>Fetched 4,988 clips from Courtana API (10 pages, 100/page). After filtering 404 already-analyzed clips, scored all 4,988 unanalyzed candidates. Top candidates scored 90.0 points (new badges to test + multi-player clips + recent).</p>
+
+  <h3>Validator Results</h3>
+  <ul>
+    <li><strong>97 clips</strong> passed self-consistency checks (98.1% average score)</li>
+    <li><strong>22 clips</strong> had narrative_arc_alignment issues (summary doesn't reference arc label)</li>
+    <li><strong>3 clips</strong> had novel story arcs not in the known set</li>
+    <li><strong>0 high-severity issues</strong> found (no out-of-range skill scores or impossible values)</li>
+    <li><strong>5 clips</strong> had confidence values for calibration (all in high-confidence bucket)</li>
+  </ul>
+
+  <h3>Prompt Patches Generated</h3>
+  <ul>
+    <li><strong>Patch 1 [HIGH]:</strong> Reduce false-positive badge predictions for Battle Tested, Consistency King, Dink Machine, Power Player, Quick Hands, Speed Demon, Teaching Moment (all 0% precision)</li>
+    <li><strong>Patch 2 [LOW]:</strong> Improve confidence calibration — provide concrete scale definitions</li>
+    <li><strong>Patch 3 [LOW]:</strong> General accuracy improvement guidance</li>
+  </ul>
+</section>
+
+<!-- INSIGHTS DISCOVERED -->
+<section>
+  <h2><span class="num">03</span> Insights Discovered</h2>
+
+  <div class="insight-card">
+    <h4>Consistency King + Dink Machine co-occur 2.0x more than expected</h4>
+    <p>188 co-occurrences vs 93 expected. Lift = 2.0x. Suggests a compound play pattern — players who dink well also tend to be consistent. Could become a "combo badge."</p>
+  </div>
+
+  <div class="insight-card">
+    <h4>Power-Creativity split reveals two player archetypes</h4>
+    <p>Of clips with power >= 7: only 1 also has creativity >= 7, while 109 have creativity < 4. This defines "Power Artists" vs "Hammers" — a real coaching signal.</p>
+  </div>
+
+  <div class="insight-card">
+    <h4>High Court IQ predicts composure under pressure</h4>
+    <p>40 clips with court_iq >= 8 average 8.1 composure vs corpus average 6.9. The "mental game" correlation is a valuable metric for player profiling.</p>
+  </div>
+
+  <div class="insight-card">
+    <h4>Confidence varies by story arc context</h4>
+    <p>grind_rally clips average 0.88 confidence vs corpus average 3.36 (note: scale mismatch between 0-1 new clips and 1-10 old clips — the insights agent caught this naturally).</p>
+  </div>
+
+  <div class="insight-card">
+    <h4>7 badges have 0% prediction precision</h4>
+    <p>Battle Tested, Consistency King, Dink Machine, Power Player, Quick Hands, Speed Demon, Teaching Moment — every prediction was a false positive. High-priority prompt fix target.</p>
+  </div>
+</section>
+
+<!-- ARCHITECTURE DECISIONS -->
+<section>
+  <h2><span class="num">04</span> Architecture Decisions</h2>
+
+  <ul>
+    <li><strong>Single shared.py module</strong> — all agents import from one place. Prevents drift in UUID extraction, corpus scanning, journal writes. Every agent gets the same view of the corpus.</li>
+    <li><strong>clip-journal.db as single source of truth</strong> — SQLite WAL mode for concurrent reads. One row per (clip, agent, timestamp). Idempotency guard prevents double-processing within 24 hours.</li>
+    <li><strong>UUID extraction from filename, not URL</strong> — discovered that CDN URLs have facility UUID first and clip UUID second. Filename pattern <code>analysis_{clip_uuid}_{timestamp}.json</code> is the most reliable source.</li>
+    <li><strong>Fail-soft orchestrator</strong> — each agent runs in its own try/except. A single clip or agent failure logs and continues. No cascading failures.</li>
+    <li><strong>Budget-aware multi-model</strong> — tracks cost per clip and stops when budget is exhausted. Flash + Pro on one clip costs ~$0.02-0.05 depending on video length.</li>
+    <li><strong>Insights agent uses statistical patterns, not LLM calls</strong> — pure Python computation over the corpus. Zero API cost, instant results, reproducible.</li>
+    <li><strong>Prompt patches are recommendations, not auto-applied</strong> — written as Markdown with human-readable instructions. Bill or the orchestrator decides when to apply.</li>
+  </ul>
+</section>
+
+<!-- OPPORTUNITIES SPOTTED -->
+<section>
+  <h2><span class="num">05</span> Opportunities Spotted</h2>
+
+  <ul>
+    <li><strong>Confidence scale mismatch:</strong> Old clips use 1-10 scale, new clips use 0.0-1.0 for analysis_confidence. The insights agent caught this naturally. A migration script should normalize historical values.</li>
+    <li><strong>Curator badge scoring:</strong> Some Courtana clips have empty badge_awards arrays but still score high. The scoring could weight badge-rich clips higher once the API returns badge data consistently.</li>
+    <li><strong>Narrative alignment is the #1 consistency issue:</strong> 22/97 clips have narrative summaries that don't reference the story arc label. This is a cheap prompt fix — tell the model to mention the arc type in the narrative.</li>
+    <li><strong>Combo badges:</strong> The Consistency King + Dink Machine co-occurrence pattern (2.0x lift) suggests a new compound badge. The insights agent could propose these automatically.</li>
+    <li><strong>Player archetype classification:</strong> The power-creativity split is clean enough to become a first-class feature — classify every player as Power Artist, Hammer, Finesse, or All-Rounder.</li>
+    <li><strong>Agent scheduling:</strong> The orchestrator could become a Claude scheduled task running nightly, producing a morning summary for Bill. Curator runs hourly (before auto-ingest), others nightly.</li>
+  </ul>
+</section>
+
+<!-- KNOWN ISSUES -->
+<section>
+  <h2><span class="num">06</span> Known Issues / Next Steps</h2>
+
+  <ul>
+    <li><strong>Multi-model needs live API validation:</strong> Dry-run tested; live run in progress on 2 clips. Once confirmed, consensus agent can adjudicate real disagreements.</li>
+    <li><strong>Curator badge scoring sees empty strings:</strong> Some Courtana API badge_awards have empty name fields. The curator scores these as "never tested" (correct behavior but noisy).</li>
+    <li><strong>Self-stability check not yet implemented:</strong> The validator has self-consistency and calibration, but not re-analysis stability (would require API calls). Stubbed for future.</li>
+    <li><strong>Narrator agent deferred:</strong> Was in the plan as a 7th agent wrapping ElevenLabs. Not built this session — the 6 analytical agents were prioritized.</li>
+    <li><strong>agent-activity.json path resolution:</strong> The workbench HTML tries 3 paths for the JSON. May need adjustment depending on gh-pages deploy.</li>
+  </ul>
+</section>
+
+<!-- HOW TO RUN -->
+<section>
+  <h2><span class="num">07</span> How to Run</h2>
+
+  <h3>Full orchestrator run (all non-API agents)</h3>
+  <pre>cd PICKLE-DAAS
+python3 agents/orchestrator.py --agents validator,insights,prompt-improver,consensus</pre>
+
+  <h3>Full run including multi-model (costs ~$0.05-0.50)</h3>
+  <pre>python3 agents/orchestrator.py --budget 2.0</pre>
+
+  <h3>Nightly run (includes insights + prompt-improver)</h3>
+  <pre>python3 agents/orchestrator.py --nightly</pre>
+
+  <h3>Individual agents</h3>
+  <pre>python3 agents/curator.py --top 20
+python3 agents/multi-model.py --count 3 --budget 1.0
+python3 agents/consensus.py
+python3 agents/validator.py --sample 100
+python3 agents/insights.py
+python3 agents/prompt-improver.py --stdout</pre>
+
+  <h3>Check journal state</h3>
+  <pre>python3 -c "
+from agents.shared import get_journal_db
+conn = get_journal_db()
+rows = conn.execute('SELECT agent_name, COUNT(*) as c FROM journal GROUP BY agent_name').fetchall()
+for r in rows: print(f'  {r[\"agent_name\"]}: {r[\"c\"]} entries')
+"</pre>
+</section>
+
+<footer>
+  Pickle DaaS &middot; Session B &middot; Agent Architecture Build &middot; 2026-04-13 &middot; Track 4 Phase 3
+</footer>
+
+</div>
+</body>
+</html>

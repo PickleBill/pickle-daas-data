@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-04-14T01:21:07.881649+00:00",
+  "generator": "tools/investor-data-prep.py",
+  "corpus": {
+    "total_clips_in_corpus_export": 177,
+    "total_raw_analysis_files": 1236,
+    "auto_ingest_batches": 41,
+    "clips_per_day_rate": 410.4,
+    "days_of_ingestion": 1.7,
+    "avg_quality_score": 8.04,
+    "avg_viral_potential": 4.42,
+    "high_quality_clips": 120
+  },
+  "cost": {
+    "cost_per_clip_usd": 0.0054,
+    "total_estimated_spend_usd": 6.67,
+    "model": "Gemini 2.5 Flash",
+    "note": "Verified April 2026. Includes prompt + completion tokens."
+  },
+  "arr_projections": [
+    {
+      "venues": 10,
+      "tier_label": "Early Adopter",
+      "price_per_venue_month_usd": 500,
+      "arr_usd": 60000,
+      "annual_clips": 50000,
+      "annual_cogs_usd": 270.0,
+      "gross_margin_usd": 59730.0,
+      "gross_margin_pct": 99.6
+    },
+    {
+      "venues": 100,
+      "tier_label": "Growth",
+      "price_per_venue_month_usd": 300,
+      "arr_usd": 360000,
+      "annual_clips": 500000,
+      "annual_cogs_usd": 2700.0,
+      "gross_margin_usd": 357300.0,
+      "gross_margin_pct": 99.2
+    },
+    {
+      "venues": 1000,
+      "tier_label": "Scale",
+      "price_per_venue_month_usd": 200,
+      "arr_usd": 2400000,
+      "annual_clips": 5000000,
+      "annual_cogs_usd": 27000.0,
+      "gross_margin_usd": 2373000.0,
+      "gross_margin_pct": 98.9
+    }
+  ],
+  "brand_detection": {
+    "unique_brands_detected": 33,
+    "total_brand_mentions": 1862,
+    "top_brands": [
+      {
+        "name": "JOOLA",
+        "mentions": 1574
+      },
+      {
+        "name": "Nike",
+        "mentions": 151
+      },
+      {
+        "name": "HEAD",
+        "mentions": 38
+      },
+      {
+        "name": "Pickleball Kingdom",
+        "mentions": 32
+      },
+      {
+        "name": "Courtana",
+        "mentions": 6
+      },
+      {
+        "name": "Adidas",
+        "mentions": 5
+      },
+      {
+        "name": "Recovery Cave",
+        "mentions": 5
+      },
+      {
+        "name": "Pickleball",
+        "mentions": 4
+      },
+      {
+        "name": "Pklr",
+        "mentions": 3
+      },
+      {
+        "name": "Life Time",
+        "mentions": 3
+      },
+      {
+        "name": "Franklin",
+        "mentions": 3
+      },
+      {
+        "name": "Pushit",
+        "mentions": 3
+      },
+      {
+        "name": "Nicol",
+        "mentions": 3
+      },
+      {
+        "name": "Onix",
+        "mentions": 3
+      },
+      {
+        "name": "The Underground",
+        "mentions": 3
+      }
+    ],
+    "categories_present": [
+      "paddle_manufacturers",
+      "apparel",
+      "venues",
+      "recovery",
+      "accessories",
+      "sponsors"
+    ]
+  },
+  "accuracy": {
+    "current_f1": 0.475,
+    "current_precision": 0.421,
+    "current_recall": 0.546,
+    "total_predictions": 2035,
+    "ground_truth_awards": 4619,
+    "unique_clips_predicted": 560,
+    "strong_badges_count": 6,
+    "strong_badges": [
+      "Steady Eddie",
+      "Rally Master",
+      "Net Magnet",
+      "Spike!",
+      "Third Shot Drop Artist",
+      "Speed Up Specialist"
+    ],
+    "weak_badges_count": 6,
+    "target_f1_30_day": 0.65,
+    "target_f1_90_day": 0.8,
+    "field_fill_rate_avg": 0.938,
+    "total_analysis_files": 1253
+  },
+  "data_moat": {
+    "proprietary_signal_categories": 8,
+    "proprietary_signals_list": [
+      "shot_analysis (dominant shot, rally length, shot sequence)",
+      "skill_ratings (9 dimensions: kitchen, power, court IQ, etc.)",
+      "brand_detection (paddle, apparel, venue, sponsor logos)",
+      "badge_predictions (25 badge types with confidence)",
+      "player_dna (play style, DUPR estimate, signature moves)",
+      "commentary (4 voice personas: ESPN, hype, coaching, social)",
+      "storytelling (narrative arc, viral potential, watchability)",
+      "daas_signals (data richness, clip summary, highlight category)"
+    ],
+    "clips_per_day_rate": 410.4,
+    "projected_clips_per_month": 12312,
+    "unique_story_arcs": 10,
+    "unique_shot_types": 9,
+    "unique_brands_tracked": 33,
+    "total_raw_analyses": 1236,
+    "moat_thesis": "Every clip analyzed adds to a proprietary dataset that no competitor can replicate. Brand exposure data, player skill profiles, and shot analytics compound into a defensible intelligence layer."
+  },
+  "human_feedback": {
+    "total_flags": 7,
+    "real_flags": 7,
+    "fields_flagged": [
+      "dupr_estimate",
+      "skill_ratings",
+      "signature_move",
+      "shot_analysis",
+      "coaching_breakdown",
+      "badge_predictions"
+    ],
+    "feedback_loop": "Explorer UI -> JSONL export -> ingest-flags.py -> coaching-feedback.db -> accuracy-report.py"
+  },
+  "courtana_platform": {
+    "total_clips_on_platform": 4097,
+    "note": "Courtana CDN hosts 4,097+ clips. Our corpus is a growing subset.",
+    "coverage_pct": 30.2
+  }
+}

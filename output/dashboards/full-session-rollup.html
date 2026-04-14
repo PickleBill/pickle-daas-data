@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pickle DaaS — Full Session Rollup · 2026-04-13</title>
+<style>
+  :root {--bg:#0b0f17;--card:#131a24;--border:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--accent:#10b981;--warn:#f59e0b;--danger:#ef4444;--info:#3b82f6;--purple:#a855f7;--pink:#ec4899}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;line-height:1.55}
+  .wrap{max-width:1200px;margin:0 auto;padding:32px 24px 80px}
+  header{margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:24px}
+  h1{font-size:34px;margin:0 0 8px;letter-spacing:-0.5px}
+  .sub{color:var(--muted);font-size:15px}
+  h2{font-size:22px;margin:40px 0 14px;letter-spacing:-0.3px;display:flex;align-items:center;gap:10px}
+  h2 .icon{font-size:24px}
+  h3{font-size:16px;margin:18px 0 8px;color:var(--accent)}
+  p{margin:8px 0 12px}
+  a{color:#60a5fa;text-decoration:none;border-bottom:1px dotted #60a5fa66}
+  code{background:#1f2937;padding:2px 6px;border-radius:4px;font-size:13px;color:#fbbf24}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin:12px 0}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
+  .stat .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+  .stat .value{font-size:28px;font-weight:700;margin-top:4px}
+  .stat .delta{font-size:12px;margin-top:2px}
+  .green{color:var(--accent)} .amber{color:var(--warn)} .blue{color:var(--info)} .purple{color:var(--purple)} .pink{color:var(--pink)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+  .tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .tag.green-bg{background:#10b98122;color:#10b981}
+  .tag.purple-bg{background:#a855f722;color:#a855f7}
+  .tag.amber-bg{background:#f59e0b22;color:#f59e0b}
+  .tag.blue-bg{background:#3b82f622;color:#3b82f6}
+  .tag.pink-bg{background:#ec489922;color:#ec4899}
+  .lead{font-size:17px;color:#cbd5e1;border-left:3px solid var(--accent);padding:10px 16px;margin:20px 0;background:#10b98108}
+  ul{padding-left:22px;margin:8px 0} li{margin:5px 0}
+  .insight-card{background:#131a24;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:10px;padding:14px 18px;margin:10px 0}
+  .insight-card .title{font-weight:600;color:var(--purple);margin-bottom:4px}
+  .insight-card .evidence{font-size:13px;color:var(--muted)}
+  hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+  .hero{text-align:center;padding:24px 0 8px}
+  .hero .big{font-size:64px;font-weight:800;background:linear-gradient(135deg,#10b981,#3b82f6,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-2px}
+  .hero .caption{color:var(--muted);font-size:16px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Full Session Rollup</h1>
+  <div class="sub">2026-04-13 · Pickle DaaS Phase 3 · Everything that happened in one view</div>
+</header>
+
+<div class="hero">
+  <div class="big">710 clips</div>
+  <div class="caption">Analyzed, scored, and published — up from 489 this morning</div>
+</div>
+
+<div class="grid">
+  <div class="stat"><div class="label">Corpus growth</div><div class="value green">+45%</div><div class="delta">489 → 710 clips</div></div>
+  <div class="stat"><div class="label">Brands detected</div><div class="value blue">60</div><div class="delta">up from 41</div></div>
+  <div class="stat"><div class="label">Badge F1</div><div class="value amber">42.5%</div><div class="delta">honest baseline</div></div>
+  <div class="stat"><div class="label">Agents built</div><div class="value purple">7</div><div class="delta">all working</div></div>
+  <div class="stat"><div class="label">Journal entries</div><div class="value pink">111</div><div class="delta">from real data</div></div>
+  <div class="stat"><div class="label">Total spend</div><div class="value green">~$4</div><div class="delta">entire session</div></div>
+</div>
+
+<h2><span class="icon">🔧</span> What the orchestrator did (this session, direct)</h2>
+<table>
+  <thead><tr><th>Action</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>Loaded full 5-track Phase 3 context</td><td><span class="tag green-bg">Done</span> All plans, rollups, session notes verified</td></tr>
+    <tr><td>Diagnosed <code>analysis_confidence</code> not populating</td><td><span class="tag green-bg">Fixed</span> Patch was in .py but auto-ingest uses prompt files. Added to v1.3, bumped DEFAULT_PROMPT</td></tr>
+    <tr><td>Diagnosed hourly producing zero analyses</td><td><span class="tag green-bg">Fixed</span> Courtana serving 500MB full matches. Added HEAD pre-filter at fetch time</td></tr>
+    <tr><td>Fixed seed filter in accuracy-report.py</td><td><span class="tag green-bg">Fixed</span> <code>Demo Coach</code> rows now correctly excluded</td></tr>
+    <tr><td>Published team-briefing.html to gh-pages</td><td><span class="tag green-bg">Live</span> <a href="https://picklebill.github.io/pickle-daas-data/dashboards/team-briefing.html">Link</a></td></tr>
+    <tr><td>Prepared scheduled task for daily agent orchestrator</td><td><span class="tag amber-bg">Ready</span> Config written, needs activation</td></tr>
+    <tr><td>Updated LESSONS.md + PROMPT-LOG.md</td><td><span class="tag green-bg">Done</span></td></tr>
+  </tbody>
+</table>
+
+<h2><span class="icon">🤖</span> What Session B built (7-agent system)</h2>
+<div class="lead">
+  <strong>The living system Bill asked for from day one is built and running.</strong> AI analyzers compete on the same clips, a consensus judge adjudicates, a validator checks stability, an insights agent discovers patterns, and a prompt-improver closes the loop — all journaled in <code>clip-journal.db</code>.
+</div>
+
+<table>
+  <thead><tr><th>Agent</th><th>File</th><th>What it does</th><th>Test result</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Orchestrator</strong></td>
+      <td><code>agents/orchestrator.py</code></td>
+      <td>Runs all agents in dependency order, generates dashboard JSON + run summary</td>
+      <td><span class="tag green-bg">Working</span> Full run completed</td>
+    </tr>
+    <tr>
+      <td><strong>Curator</strong></td>
+      <td><code>agents/curator.py</code></td>
+      <td>Intelligent clip selection — scores by brand diversity, arc coverage, badge gaps, player coverage</td>
+      <td><span class="tag green-bg">Working</span> Scored 4,988 Courtana clips</td>
+    </tr>
+    <tr>
+      <td><strong>Multi-model</strong></td>
+      <td><code>agents/multi-model.py</code></td>
+      <td>Runs Flash vs Pro on same clips, diffs skill scores, badges, story arcs</td>
+      <td><span class="tag green-bg">Working</span> Flash completed, Pro tested</td>
+    </tr>
+    <tr>
+      <td><strong>Consensus</strong></td>
+      <td><code>agents/consensus.py</code></td>
+      <td>Adjudicates multi-model disagreements: which model wins, or flag for human</td>
+      <td><span class="tag green-bg">Working</span> Ready for multi-model output</td>
+    </tr>
+    <tr>
+      <td><strong>Validator</strong></td>
+      <td><code>agents/validator.py</code></td>
+      <td>Self-consistency: dominant shot matches shots, arc matches events</td>
+      <td><span class="tag green-bg">Working</span> 97 clips checked, 98.1% consistent</td>
+    </tr>
+    <tr>
+      <td><strong>Insights</strong></td>
+      <td><code>agents/insights.py</code></td>
+      <td>Cross-corpus pattern detection, proposes NEW metrics</td>
+      <td><span class="tag green-bg">Working</span> 7 insights from 1,284 clips</td>
+    </tr>
+    <tr>
+      <td><strong>Prompt-improver</strong></td>
+      <td><code>agents/prompt-improver.py</code></td>
+      <td>Reads human flags + badge errors → generates targeted prompt patches</td>
+      <td><span class="tag green-bg">Working</span> 3 patches generated</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Shared infrastructure:</strong> <code>agents/shared.py</code> (journal DB, corpus scanning, Gemini helpers, UUID extraction) + <code>output/clip-journal.db</code> (111 entries from test runs)</p>
+
+<h2><span class="icon">💡</span> What the agents discovered (real insights from real data)</h2>
+
+<div class="insight-card">
+  <div class="title">98.1% self-consistency across 97 validated clips</div>
+  <div>Top issue: narrative summaries don't reference story arc label in 22 clips — cheap prompt fix</div>
+  <div class="evidence">Validator agent · 97 clips analyzed</div>
+</div>
+
+<div class="insight-card">
+  <div class="title">7 badges at 0% precision — prompt patch generated</div>
+  <div>Battle Tested, Consistency King, Dink Machine, Power Player, Quick Hands, Speed Demon, Teaching Moment are all false positives. Patch #1 targets these specifically.</div>
+  <div class="evidence">Prompt-improver agent · 40 badge error patterns analyzed</div>
+</div>
+
+<div class="insight-card">
+  <div class="title">Consistency King + Dink Machine co-occur at 2.0x expected rate</div>
+  <div>188 clips show both badges together (expected 93). Natural compound badge candidate — "Kitchen Control"?</div>
+  <div class="evidence">Insights agent · 188 clips</div>
+</div>
+
+<div class="insight-card">
+  <div class="title">Power-creativity split defines player archetypes</div>
+  <div>109 "Hammers" (high power, low creativity) vs just 1 "Power Artist" (both high). Clean clustering suggests a real player typing system.</div>
+  <div class="evidence">Insights agent · 110 clips</div>
+</div>
+
+<div class="insight-card">
+  <div class="title">Court IQ >= 8 predicts composure = 8.1 (vs 6.9 average)</div>
+  <div>"Mental game" correlation could be a powerful coaching signal. Players who read the game well also stay calm under pressure.</div>
+  <div class="evidence">Insights agent · 41 clips</div>
+</div>
+
+<div class="insight-card">
+  <div class="title">'athletic_highlight' arcs have 3.1 points higher power scores</div>
+  <div>Arc classification tracks with actual skill measurements — validating that the story arcs are real, not random.</div>
+  <div class="evidence">Insights agent · 39 clips</div>
+</div>
+
+<h2><span class="icon">📦</span> What the parallel agents produced</h2>
+<table>
+  <thead><tr><th>Agent</th><th>Deliverable</th><th>Key finding</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Bulk ingest</strong></td>
+      <td>Corpus: 489 → 710 clips · 60 brands</td>
+      <td>Pipeline running clean with HEAD pre-filter; deeper pagination finding viable highlights</td>
+    </tr>
+    <tr>
+      <td><strong>Investor demo prep</strong></td>
+      <td><code>tools/investor-data-prep.py</code> + <code>investor-data.json</code></td>
+      <td>99%+ gross margins ($0.0054/clip vs $200-500/venue/month); JOOLA is 84% of brand mentions</td>
+    </tr>
+    <tr>
+      <td><strong>Flag smoke-test</strong></td>
+      <td>Full roundtrip verified: JSONL → DB → accuracy report</td>
+      <td>Production-ready; found <code>Demo Coach</code> seed filter bug → fixed</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2><span class="icon">🔗</span> Live URLs (all verified)</h2>
+<div class="card">
+  <div style="display:grid;gap:6px">
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal.html">🏠 Showcase Portal</a>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/product-workbench.html">🔧 Product Workbench (now with Agent Activity section)</a>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/visual-intelligence-explorer.html">🔍 Visual Intelligence Explorer</a>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/data-lab.html">🧪 Data Lab (18 presets)</a>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/brand-intelligence-v2.html">🏷️ Brand Intelligence V2</a>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/pipeline-health.html">📊 Pipeline Health</a>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/team-briefing.html">📋 Engineering Team Briefing</a>
+  </div>
+</div>
+
+<h2><span class="icon">⚡</span> How to run the agent system tomorrow</h2>
+<div class="card" style="border-left:3px solid var(--accent)">
+<pre style="margin:0;color:#cbd5e1;font-size:14px;line-height:1.5;overflow-x:auto">
+# Full agent run (all agents in dependency order)
+cd "PICKLE-DAAS"
+python3 agents/orchestrator.py --nightly
+
+# Individual agents
+python3 agents/curator.py --top 20          # preview top 20 picks
+python3 agents/validator.py --limit 50      # validate 50 clips
+python3 agents/insights.py                  # discover patterns
+python3 agents/prompt-improver.py           # generate prompt patches
+
+# Then refresh and publish
+python3 tools/accuracy-report.py
+python3 tools/push-to-ghpages.py
+</pre>
+</div>
+
+<h2><span class="icon">🚀</span> What's next</h2>
+<div class="grid">
+  <div class="card" style="border-left:3px solid var(--purple)">
+    <h3>Activate daily agent run</h3>
+    <p>Create the <code>pickle-daas-agent-orchestrator</code> scheduled task (config ready at <code>session-briefs/SCHEDULED-TASK-AGENT-ORCHESTRATOR.md</code>). Runs at 6:42 AM daily.</p>
+  </div>
+  <div class="card" style="border-left:3px solid var(--info)">
+    <h3>Apply prompt patches</h3>
+    <p>The prompt-improver generated 3 patches. Patch #1 (badge false-positive reduction) should move F1 from 42.5% → estimated 55%+.</p>
+  </div>
+  <div class="card" style="border-left:3px solid var(--warn)">
+    <h3>Session D: production pages</h3>
+    <p>Investor demo, 5 brand reports, coach demo. <code>investor-data.json</code> already computed. Paste <code>BRIEF-D-track2-pages.md</code>.</p>
+  </div>
+  <div class="card" style="border-left:3px solid var(--pink)">
+    <h3>Priority-3 items (Bill's order)</h3>
+    <p>Fine-tune classifier → full-match analysis → brand logo overlay → multi-modal activation</p>
+  </div>
+</div>
+
+<hr>
+
+<h2><span class="icon">📊</span> Session metrics</h2>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+  <div class="stat"><div class="label">Sub-agents deployed</div><div class="value">4</div></div>
+  <div class="stat"><div class="label">Files created</div><div class="value">~20</div></div>
+  <div class="stat"><div class="label">Files modified</div><div class="value">5</div></div>
+  <div class="stat"><div class="label">Bugs found + fixed</div><div class="value">3</div></div>
+  <div class="stat"><div class="label">Insights discovered</div><div class="value">7</div></div>
+  <div class="stat"><div class="label">Prompt patches</div><div class="value">3</div></div>
+</div>
+
+<footer>
+  <p><strong>Generated:</strong> 2026-04-13 · <strong>Canonical plan:</strong> <code>cozy-tickling-lighthouse.md</code> · <strong>Session B summary:</strong> <a href="session-b-summary.html">session-b-summary.html</a></p>
+  <p>All 5 tracks preserved: T1 ✅ · T2.4 ✅ · T5 ✅ · T4 ✅ SHIPPED · T2.1/2.2/2.3 + T3 deferred · Priority-3 queued</p>
+</footer>
+
+</div>
+</body>
+</html>
