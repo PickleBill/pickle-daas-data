@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — End-to-End Clip Analysis Walkthrough</title>
+<style>
+:root {
+  --bg: #0a0e1a;
+  --card: #111827;
+  --card2: #1a2332;
+  --border: #1e3a5f;
+  --accent: #00d4aa;
+  --accent2: #7c3aed;
+  --warn: #f59e0b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --pink: #ec4899;
+  --blue: #3b82f6;
+  --green: #10b981;
+  --red: #ef4444;
+  --orange: #f97316;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.hero { text-align: center; padding: 40px 20px 30px; background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(124,58,237,0.08)); border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+.hero h1 { font-size: 2.2em; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.hero p { color: var(--muted); font-size: 1.1em; max-width: 800px; margin: 0 auto; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 600; text-transform: uppercase; }
+.badge-live { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+.badge-new { background: rgba(124,58,237,0.15); color: var(--accent2); border: 1px solid rgba(124,58,237,0.3); }
+
+/* Pipeline Flow */
+.pipeline-flow { display: flex; align-items: center; justify-content: center; gap: 0; margin: 30px 0; flex-wrap: wrap; padding: 20px; }
+.pipeline-step { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; text-align: center; min-width: 140px; transition: all 0.3s; cursor: pointer; position: relative; }
+.pipeline-step:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,212,170,0.15); }
+.pipeline-step.active { border-color: var(--accent); background: rgba(0,212,170,0.08); }
+.pipeline-step .step-num { font-size: 0.7em; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.pipeline-step .step-name { font-size: 0.95em; font-weight: 600; margin-top: 4px; }
+.pipeline-step .step-detail { font-size: 0.75em; color: var(--muted); margin-top: 2px; }
+.pipeline-arrow { font-size: 1.5em; color: var(--accent); padding: 0 8px; }
+
+/* Sections */
+.section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+.section-title { font-size: 1.3em; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.section-title .icon { font-size: 1.3em; }
+
+/* Clip Selector */
+.clip-tabs { display: flex; gap: 12px; margin-bottom: 24px; }
+.clip-tab { flex: 1; background: var(--card2); border: 2px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s; text-align: center; }
+.clip-tab:hover { border-color: var(--accent); }
+.clip-tab.active { border-color: var(--accent); background: rgba(0,212,170,0.05); }
+.clip-tab .clip-label { font-size: 0.75em; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.clip-tab .clip-title { font-size: 1em; font-weight: 600; margin-top: 4px; }
+.clip-tab .clip-meta { font-size: 0.8em; color: var(--muted); margin-top: 4px; }
+
+/* Video + Thumbnail */
+.media-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.media-box { background: var(--card2); border-radius: 12px; overflow: hidden; }
+.media-box video, .media-box img { width: 100%; display: block; }
+.media-label { padding: 10px 16px; font-size: 0.85em; color: var(--muted); border-top: 1px solid var(--border); }
+
+/* Data Blocks */
+.data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.data-block { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.data-block h3 { font-size: 0.9em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.data-block .field { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.85em; }
+.data-block .field .label { color: var(--muted); }
+.data-block .field .value { font-weight: 600; text-align: right; max-width: 60%; }
+
+/* Score bars */
+.score-bar-container { margin: 4px 0; }
+.score-bar-label { font-size: 0.8em; color: var(--muted); display: flex; justify-content: space-between; }
+.score-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 2px; }
+.score-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+/* Brand detection detail */
+.brand-card { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.brand-card .brand-header { display: flex; justify-content: space-between; align-items: center; }
+.brand-card .brand-name { font-weight: 700; font-size: 1.1em; }
+.brand-card .brand-conf { font-size: 0.8em; padding: 2px 10px; border-radius: 10px; }
+.brand-card .brand-conf.high { background: rgba(16,185,129,0.15); color: var(--green); }
+.brand-card .brand-conf.medium { background: rgba(245,158,11,0.15); color: var(--warn); }
+.brand-card .brand-conf.low { background: rgba(239,68,68,0.15); color: var(--red); }
+.brand-card .brand-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; font-size: 0.82em; }
+.brand-card .brand-details .bd-label { color: var(--muted); }
+
+/* Shot timeline */
+.shot-timeline { display: flex; gap: 4px; align-items: end; margin: 10px 0; height: 80px; }
+.shot-bar { flex: 1; border-radius: 4px 4px 0 0; position: relative; cursor: pointer; min-width: 20px; transition: all 0.3s; }
+.shot-bar:hover { opacity: 0.8; transform: scaleY(1.05); }
+.shot-bar .shot-tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 0.75em; white-space: nowrap; z-index: 10; }
+.shot-bar:hover .shot-tip { display: block; }
+
+/* Commentary tabs */
+.comm-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.comm-tab { padding: 6px 14px; border-radius: 20px; font-size: 0.8em; cursor: pointer; background: var(--card2); border: 1px solid var(--border); transition: all 0.2s; }
+.comm-tab:hover, .comm-tab.active { background: rgba(0,212,170,0.1); border-color: var(--accent); color: var(--accent); }
+.comm-content { background: var(--card2); border-radius: 12px; padding: 16px; font-size: 0.95em; line-height: 1.7; min-height: 80px; }
+
+/* Badge grid */
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.badge-item { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.badge-item .badge-label { font-weight: 700; font-size: 0.95em; margin-bottom: 4px; }
+.badge-item .badge-reason { font-size: 0.8em; color: var(--muted); }
+.badge-item .badge-conf { font-size: 0.7em; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-bottom: 6px; }
+
+/* JSON viewer */
+.json-viewer { background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.78em; max-height: 500px; overflow-y: auto; white-space: pre-wrap; color: #c9d1d9; }
+.json-key { color: #79c0ff; }
+.json-str { color: #a5d6ff; }
+.json-num { color: #ffa657; }
+.json-bool { color: #ff7b72; }
+
+/* Skill radar placeholder */
+.skill-radar { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.skill-row { display: flex; align-items: center; gap: 10px; }
+.skill-name { width: 120px; font-size: 0.82em; color: var(--muted); text-align: right; }
+.skill-bar-bg { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 4px; }
+.skill-val { width: 30px; font-size: 0.82em; font-weight: 700; }
+
+/* Future architecture */
+.arch-flow { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.arch-box { background: var(--card2); border: 1px dashed var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.arch-box.future { border-color: var(--accent2); background: rgba(124,58,237,0.05); }
+.arch-box h4 { font-size: 0.9em; margin-bottom: 6px; }
+.arch-box p { font-size: 0.78em; color: var(--muted); }
+.arch-box .arch-icon { font-size: 2em; margin-bottom: 8px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .media-row { grid-template-columns: 1fr; }
+  .pipeline-flow { flex-direction: column; }
+  .pipeline-arrow { transform: rotate(90deg); }
+  .data-grid { grid-template-columns: 1fr; }
+}
+
+/* Animate in */
+.fade-in { animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Tabs content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="margin-bottom: 8px;">
+    <span class="badge badge-live">LIVE DEMO</span>
+    <span class="badge badge-new">April 14, 2026</span>
+  </div>
+  <h1>End-to-End Clip Analysis Walkthrough</h1>
+  <p>From raw Courtana video to 295 structured data fields — see exactly how the Pickle DaaS pipeline transforms pickleball clips into actionable intelligence</p>
+</div>
+
+<div class="container">
+
+<!-- STEP 1: Pipeline Overview -->
+<div class="section">
+  <div class="section-title"><span class="icon">&#x1F3D7;</span> The Pipeline — 6 Steps, Fully Automated</div>
+  <div class="pipeline-flow">
+    <div class="pipeline-step active" onclick="scrollToSection('source')">
+      <div class="step-num">Step 1</div>
+      <div class="step-name">API Fetch</div>
+      <div class="step-detail">Courtana Anon API</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step" onclick="scrollToSection('filter')">
+      <div class="step-num">Step 2</div>
+      <div class="step-name">HEAD Filter</div>
+      <div class="step-detail">&lt;18 MB only</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step" onclick="scrollToSection('gemini')">
+      <div class="step-num">Step 3</div>
+      <div class="step-name">Gemini Analysis</div>
+      <div class="step-detail">2.5 Flash + v1.3 prompt</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step" onclick="scrollToSection('output')">
+      <div class="step-num">Step 4</div>
+      <div class="step-name">JSON Output</div>
+      <div class="step-detail">13 data blocks</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step" onclick="scrollToSection('agents')">
+      <div class="step-num">Step 5</div>
+      <div class="step-name">Agent Pipeline</div>
+      <div class="step-detail">7 self-improving agents</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step" onclick="scrollToSection('deploy')">
+      <div class="step-num">Step 6</div>
+      <div class="step-name">Deploy</div>
+      <div class="step-detail">gh-pages + corpus</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIP SELECTOR -->
+<div class="section" id="source">
+  <div class="section-title"><span class="icon">&#x1F3AC;</span> Step 1: Source — Random Clips from Courtana API</div>
+  <p style="color: var(--muted); margin-bottom: 16px; font-size: 0.9em;">
+    Clips are fetched from <code style="color: var(--accent);">courtana.com/app/anon-highlight-groups/?page=N&page_size=100</code><br>
+    The API returns highlight groups (game sessions), each containing 1-6 individual highlight clips with CDN video URLs.<br>
+    Current corpus: <strong style="color: var(--text);">8,274 highlight groups</strong> &mdash; we selected 3 random clips from pages 5, 22, and 40.
+  </p>
+  <div class="clip-tabs" id="clipTabs">
+    <div class="clip-tab active" onclick="selectClip(0)">
+      <div class="clip-label">Clip 1 &mdash; Kitchen Speed-Up</div>
+      <div class="clip-title">C2UI6c6EgtRE</div>
+      <div class="clip-meta">Apr 7 &bull; 6.1 MB &bull; 20s &bull; 4 players</div>
+    </div>
+    <div class="clip-tab" onclick="selectClip(1)">
+      <div class="clip-label">Clip 2 &mdash; Dink Rally Drama</div>
+      <div class="clip-title">68nxErrmv6hw</div>
+      <div class="clip-meta">Apr 13 &bull; 4.5 MB &bull; 19s &bull; 4 players</div>
+    </div>
+  </div>
+
+  <!-- Video + Thumbnail -->
+  <div class="media-row" id="mediaRow">
+    <div class="media-box">
+      <video id="clipVideo" controls preload="metadata" poster="">
+        <source src="" type="video/mp4">
+      </video>
+      <div class="media-label" id="videoLabel">Video source: CDN URL via Courtana API</div>
+    </div>
+    <div class="media-box">
+      <img id="clipThumb" src="" alt="Thumbnail" onerror="this.style.display='none'">
+      <div class="media-label" id="thumbLabel">Thumbnail: auto-generated by Courtana cameras</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: HEAD Filter -->
+<div class="section" id="filter">
+  <div class="section-title"><span class="icon">&#x1F50D;</span> Step 2: HEAD Pre-Filter &mdash; Size Gate</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+    <div class="data-block">
+      <h3>Clip 1: C2UI6c6EgtRE</h3>
+      <div class="field"><span class="label">HEAD Content-Length</span><span class="value" style="color: var(--green);">6.1 MB</span></div>
+      <div class="field"><span class="label">Threshold</span><span class="value">18.0 MB</span></div>
+      <div class="field"><span class="label">Verdict</span><span class="value" style="color: var(--green);">PASS</span></div>
+    </div>
+    <div class="data-block">
+      <h3>Clip 2: 8OqrC6Qgdwlk</h3>
+      <div class="field"><span class="label">HEAD Content-Length</span><span class="value" style="color: var(--green);">3.0 MB</span></div>
+      <div class="field"><span class="label">Threshold</span><span class="value">18.0 MB</span></div>
+      <div class="field"><span class="label">Verdict</span><span class="value" style="color: var(--green);">PASS</span></div>
+    </div>
+    <div class="data-block">
+      <h3>Clip 3: 68nxErrmv6hw</h3>
+      <div class="field"><span class="label">HEAD Content-Length</span><span class="value" style="color: var(--green);">4.5 MB</span></div>
+      <div class="field"><span class="label">Threshold</span><span class="value">18.0 MB</span></div>
+      <div class="field"><span class="label">Verdict</span><span class="value" style="color: var(--green);">PASS</span></div>
+    </div>
+  </div>
+  <p style="color: var(--muted); margin-top: 12px; font-size: 0.85em;">
+    <strong>Why this matters:</strong> Courtana's API now mixes 500MB full-match recordings with highlight clips. Without the HEAD pre-filter, the analyzer would try to download 500MB files and time out. The <code style="color: var(--accent);">_head_size_mb()</code> function sends a lightweight HTTP HEAD request (no download) to check Content-Length before committing.
+  </p>
+</div>
+
+<!-- STEP 3: Gemini Analysis -->
+<div class="section" id="gemini">
+  <div class="section-title"><span class="icon">&#x1F9E0;</span> Step 3: Gemini Analysis &mdash; Video-to-JSON</div>
+  <div class="data-grid">
+    <div class="data-block">
+      <h3>Model Configuration</h3>
+      <div class="field"><span class="label">Model</span><span class="value">gemini-2.5-flash</span></div>
+      <div class="field"><span class="label">Temperature</span><span class="value">0.2 (deterministic)</span></div>
+      <div class="field"><span class="label">Max output</span><span class="value">8,192 tokens</span></div>
+      <div class="field"><span class="label">Prompt version</span><span class="value" style="color: var(--accent);">v1.3-20260410</span></div>
+      <div class="field"><span class="label">Prompt length</span><span class="value">328 lines / ~4K tokens</span></div>
+    </div>
+    <div class="data-block">
+      <h3>What Gemini Receives</h3>
+      <div class="field"><span class="label">Input 1</span><span class="value">Full prompt text (v1.3)</span></div>
+      <div class="field"><span class="label">Input 2</span><span class="value">Video file URI (CDN URL)</span></div>
+      <div class="field"><span class="label">MIME type</span><span class="value">video/mp4</span></div>
+      <div class="field"><span class="label">Processing</span><span class="value">Gemini watches the video</span></div>
+      <div class="field"><span class="label">Output</span><span class="value">Single JSON object</span></div>
+    </div>
+    <div class="data-block">
+      <h3 id="perfTitle">Performance (Clip 1)</h3>
+      <div class="field"><span class="label">Analysis time</span><span class="value" id="perfTime">208.1s</span></div>
+      <div class="field"><span class="label">Input tokens</span><span class="value" id="perfIn">6,149</span></div>
+      <div class="field"><span class="label">Output tokens</span><span class="value" id="perfOut">4,141</span></div>
+      <div class="field"><span class="label">Est. cost</span><span class="value" style="color: var(--green);" id="perfCost">~$0.005</span></div>
+      <div class="field"><span class="label">Fields produced</span><span class="value" style="color: var(--accent);">~295</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: Output Deep Dive — 13 Data Blocks -->
+<div class="section" id="output">
+  <div class="section-title"><span class="icon">&#x1F4CA;</span> Step 4: The Output &mdash; 13 Data Blocks, 295 Fields</div>
+
+  <!-- 4.1 Clip Meta -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">1. clip_meta &mdash; Quality Scores</h3>
+    <div id="clipMetaScores" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;"></div>
+  </div>
+
+  <!-- 4.2 Players Detected -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">2. players_detected &mdash; Who's on Court</h3>
+    <div id="playersGrid" class="data-grid"></div>
+  </div>
+
+  <!-- 4.3 Shot Analysis Timeline -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">3. shot_analysis &mdash; Shot-by-Shot Timeline</h3>
+    <div style="background: var(--card2); border-radius: 12px; padding: 16px;">
+      <div id="shotTimeline" class="shot-timeline"></div>
+      <div id="shotSummary" style="margin-top: 12px; display: flex; gap: 20px; font-size: 0.85em; color: var(--muted);"></div>
+    </div>
+  </div>
+
+  <!-- 4.4 Skill Indicators -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">4. skill_indicators &mdash; Player DNA</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: var(--card2); border-radius: 12px; padding: 16px;">
+        <div id="skillBars" class="skill-radar"></div>
+      </div>
+      <div style="background: var(--card2); border-radius: 12px; padding: 16px;">
+        <div id="skillMeta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.5 Brand Detection (THE DEEP DIVE) -->
+  <div style="margin-bottom: 24px; border: 2px solid var(--accent2); border-radius: 16px; padding: 20px; background: rgba(124,58,237,0.03);">
+    <h3 style="color: var(--accent2); margin-bottom: 4px; font-size: 1.2em;">5. brand_detection &mdash; Commercial Intelligence</h3>
+    <p style="color: var(--muted); font-size: 0.85em; margin-bottom: 16px;">This is where Pickle DaaS becomes a revenue engine. Every brand sighting = measurable exposure value.</p>
+    <div id="brandCards"></div>
+    <div id="brandWhitespace" style="margin-top: 16px;"></div>
+  </div>
+
+  <!-- 4.6 Paddle Intel -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">6. paddle_intel &mdash; Equipment Analysis</h3>
+    <div id="paddleIntel" class="data-grid"></div>
+  </div>
+
+  <!-- 4.7 Storytelling -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">7. storytelling &mdash; Narrative Arc</h3>
+    <div id="storytelling" class="data-grid"></div>
+  </div>
+
+  <!-- 4.8 Badge Intelligence -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">8. badge_intelligence &mdash; Predicted Awards</h3>
+    <div id="badgeGrid" class="badge-grid"></div>
+  </div>
+
+  <!-- 4.9 Commentary (11 voice styles) -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">9. commentary &mdash; 11 Voice Styles</h3>
+    <div class="comm-tabs" id="commTabs"></div>
+    <div class="comm-content" id="commContent"></div>
+  </div>
+
+  <!-- 4.10 DaaS Signals -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">10. daas_signals &mdash; Business Intelligence</h3>
+    <div id="daasSignals" class="data-grid"></div>
+  </div>
+
+  <!-- 4.11 Wildcard Observations -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">11. wildcard_observations &mdash; Unexpected Finds</h3>
+    <div id="wildcardObs" class="data-grid"></div>
+  </div>
+
+  <!-- 4.12 Analysis Confidence -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">12. analysis_confidence &mdash; Self-Assessment</h3>
+    <div id="confidenceBlock" class="data-grid"></div>
+  </div>
+
+  <!-- 4.13 Metadata -->
+  <div style="margin-bottom: 24px;">
+    <h3 style="color: var(--accent); margin-bottom: 12px;">13. _metadata &mdash; Pipeline Provenance</h3>
+    <div id="metadataBlock" class="data-grid"></div>
+  </div>
+</div>
+
+<!-- STEP 5: Agent Pipeline -->
+<div class="section" id="agents">
+  <div class="section-title"><span class="icon">&#x1F916;</span> Step 5: 7-Agent Self-Improving System</div>
+  <p style="color: var(--muted); margin-bottom: 16px; font-size: 0.9em;">After Gemini produces the raw analysis, 7 agents process the data further &mdash; validating, comparing models, discovering patterns, and improving the prompt for next time.</p>
+  <div class="arch-flow">
+    <div class="arch-box"><div class="arch-icon">&#x1F3AF;</div><h4>Curator</h4><p>Selects diverse clips to fill gaps in corpus coverage</p></div>
+    <div class="arch-box"><div class="arch-icon">&#x1F504;</div><h4>Multi-Model</h4><p>Runs Flash vs Pro vs Flash-Lite comparison</p></div>
+    <div class="arch-box"><div class="arch-icon">&#x2696;</div><h4>Consensus</h4><p>Adjudicates disagreements between models</p></div>
+    <div class="arch-box"><div class="arch-icon">&#x2705;</div><h4>Validator</h4><p>Checks internal consistency (98.1% pass rate)</p></div>
+    <div class="arch-box"><div class="arch-icon">&#x1F4A1;</div><h4>Insights</h4><p>Discovers cross-corpus patterns (19 insights found)</p></div>
+    <div class="arch-box"><div class="arch-icon">&#x270D;</div><h4>Prompt Improver</h4><p>Auto-generates prompt patches from error signals</p></div>
+    <div class="arch-box"><div class="arch-icon">&#x1F4D6;</div><h4>Narrator</h4><p>Produces human-readable summaries + reports</p></div>
+  </div>
+</div>
+
+<!-- STEP 6: Deployment -->
+<div class="section" id="deploy">
+  <div class="section-title"><span class="icon">&#x1F680;</span> Step 6: Deployment &mdash; gh-pages + Corpus</div>
+  <div class="data-grid">
+    <div class="data-block">
+      <h3>Corpus Growth</h3>
+      <div class="field"><span class="label">Current corpus</span><span class="value" style="color: var(--accent);">459+ clips</span></div>
+      <div class="field"><span class="label">API available</span><span class="value">8,274 groups</span></div>
+      <div class="field"><span class="label">Target scale</span><span class="value">400K clips</span></div>
+      <div class="field"><span class="label">Cost at scale</span><span class="value" style="color: var(--green);">$2,160</span></div>
+    </div>
+    <div class="data-block">
+      <h3>Live Deployment</h3>
+      <div class="field"><span class="label">Host</span><span class="value">GitHub Pages</span></div>
+      <div class="field"><span class="label">Branch</span><span class="value">gh-pages</span></div>
+      <div class="field"><span class="label">Dashboards</span><span class="value">25+ live pages</span></div>
+      <div class="field"><span class="label">Auto-deploy</span><span class="value">push-to-ghpages.py</span></div>
+    </div>
+    <div class="data-block">
+      <h3>Data Outputs</h3>
+      <div class="field"><span class="label">corpus-export.json</span><span class="value">All clips normalized</span></div>
+      <div class="field"><span class="label">dashboard-stats.json</span><span class="value">Aggregated metrics</span></div>
+      <div class="field"><span class="label">clip-journal.db</span><span class="value">Agent observations</span></div>
+      <div class="field"><span class="label">accuracy.json</span><span class="value">Quality tracking</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FUTURE: Frame Extraction Architecture -->
+<div class="section" style="border-color: var(--accent2);">
+  <div class="section-title"><span class="icon">&#x1F52E;</span> Next Frontier: Frame Extraction + Multi-Modal Comparison</div>
+  <p style="color: var(--muted); margin-bottom: 20px; font-size: 0.9em;">The current pipeline sends whole videos to Gemini. The next evolution extracts key frames and runs targeted analysis &mdash; enabling paddle brand identification, player tracking, and court mapping at pixel level.</p>
+
+  <div class="arch-flow">
+    <div class="arch-box future">
+      <div class="arch-icon">&#x1F3A5;</div>
+      <h4>Frame Extraction</h4>
+      <p>FFmpeg extracts keyframes at serve, speed-up, and celebration moments identified by Gemini timestamps</p>
+    </div>
+    <div class="arch-box future">
+      <div class="arch-icon">&#x1F50E;</div>
+      <h4>Object Detection</h4>
+      <p>YOLO / SAM2 identifies paddle brands, court markings, player positions at pixel precision</p>
+    </div>
+    <div class="arch-box future">
+      <div class="arch-icon">&#x1F3A8;</div>
+      <h4>Multi-Modal Fusion</h4>
+      <p>Gemini video + frame-level CLIP embeddings + OCR for text/logos = 3-signal consensus</p>
+    </div>
+    <div class="arch-box future">
+      <div class="arch-icon">&#x1F4CA;</div>
+      <h4>Spatial Analytics</h4>
+      <p>Court heatmaps, player movement tracking, shot trajectory mapping from frame sequences</p>
+    </div>
+    <div class="arch-box future">
+      <div class="arch-icon">&#x1F50D;</div>
+      <h4>Brand Verification</h4>
+      <p>Cross-reference Gemini's brand calls with actual frame OCR/logo detection for ground truth</p>
+    </div>
+    <div class="arch-box future">
+      <div class="arch-icon">&#x1F9EC;</div>
+      <h4>Player Re-ID</h4>
+      <p>Track same player across clips using appearance embeddings &mdash; enable longitudinal skill tracking</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; background: var(--card2); border-radius: 12px; padding: 16px;">
+    <h4 style="margin-bottom: 8px; color: var(--accent2);">Architecture: 3-Layer Processing</h4>
+    <div style="font-family: monospace; font-size: 0.82em; color: var(--muted); line-height: 2;">
+      <span style="color: var(--green);">Layer 1 (Current):</span> Video &rarr; Gemini Flash &rarr; 295-field JSON &rarr; $0.005/clip<br>
+      <span style="color: var(--warn);">Layer 2 (Next):</span>&nbsp;&nbsp; Video &rarr; FFmpeg keyframes &rarr; CLIP embeddings + OCR &rarr; Brand verification &rarr; +$0.002/clip<br>
+      <span style="color: var(--accent2);">Layer 3 (Future):</span> Frame sequence &rarr; SAM2 segmentation &rarr; Player tracking &rarr; Court heatmap &rarr; +$0.01/clip
+    </div>
+  </div>
+</div>
+
+<!-- RAW JSON VIEWER -->
+<div class="section">
+  <div class="section-title"><span class="icon">&#x1F4C4;</span> Raw JSON Output (Full Analysis)</div>
+  <p style="color: var(--muted); margin-bottom: 12px; font-size: 0.85em;">The complete JSON object produced by Gemini for the selected clip. This is what gets stored in <code>output/auto-ingest-{timestamp}/</code> and pushed to the corpus.</p>
+  <div class="json-viewer" id="jsonViewer"></div>
+</div>
+
+</div> <!-- /container -->
+
+<div style="text-align: center; padding: 30px; color: var(--muted); font-size: 0.8em;">
+  Pickle DaaS &mdash; End-to-End Walkthrough &mdash; Generated April 14, 2026<br>
+  <a href="https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal.html" style="color: var(--accent); text-decoration: none;">Back to Showcase Portal</a>
+</div>
+
+<script>
+// CLIP DATA
+const clips = [
+  // Clip 1: Kitchen Speed-Up
+  {
+    id: "C2UI6c6EgtRE",
+    label: "Kitchen Speed-Up",
+    video: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1faeb221-acfc-4db9-b805-60a714136c68.mp4",
+    thumb: "https://cdn.courtana.com/files/production/u/faad1826-b310-4602-89d2-cc8eea8444f6/d78191a6-e3a0-4130-979f-d4040f341bb9.jpg",
+    perf: { time: "208.1s", tokIn: "6,149", tokOut: "4,141", cost: "~$0.005" },
+    analysis: {"analyzed_at":"2024-07-30T12:00:00Z","model_used":"gemini-2.5-flash","prompt_version":"v1.3-20260410","clip_meta":{"duration_seconds":20,"clip_quality_score":8,"viral_potential_score":6,"watchability_score":7,"cinematic_score":7},"players_detected":[{"approximate_position":"left","side":"near","dominance_in_clip":"primary","estimated_skill_level":"advanced_intermediate","energy_level":"focused","handedness":"right","height_estimate":"medium","movement_style":"reactive","apparel_summary":"Teal and white striped tank top, pink/salmon shorts, black shoes."},{"approximate_position":"right","side":"near","dominance_in_clip":"primary","estimated_skill_level":"advanced_intermediate","energy_level":"focused","handedness":"right","height_estimate":"medium","movement_style":"explosive","apparel_summary":"White t-shirt, black shorts, white hat, white shoes."},{"approximate_position":"left","side":"far","dominance_in_clip":"secondary","estimated_skill_level":"intermediate","energy_level":"moderate","handedness":"right","height_estimate":"medium","movement_style":"reactive","apparel_summary":"Red t-shirt, dark shorts."},{"approximate_position":"right","side":"far","dominance_in_clip":"secondary","estimated_skill_level":"intermediate","energy_level":"moderate","handedness":"right","height_estimate":"medium","movement_style":"reactive","apparel_summary":"Green t-shirt, dark shorts."}],"shot_analysis":{"shots":[{"shot_type":"serve","player_position":"baseline","quality_score":7,"difficulty_score":5,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":10.5},{"shot_type":"return","player_position":"baseline","quality_score":7,"difficulty_score":5,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":11.3},{"shot_type":"volley","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":4,"timestamp_approximate_seconds":12},{"shot_type":"volley","player_position":"kitchen","quality_score":6,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":12.4},{"shot_type":"volley","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":4,"timestamp_approximate_seconds":13},{"shot_type":"volley","player_position":"kitchen","quality_score":6,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":13.4},{"shot_type":"speed_up","player_position":"kitchen","quality_score":8,"difficulty_score":7,"outcome":"winner","wow_factor":7,"timestamp_approximate_seconds":14},{"shot_type":"block","player_position":"kitchen","quality_score":3,"difficulty_score":8,"outcome":"error","wow_factor":2,"timestamp_approximate_seconds":14.4}],"dominant_shot_type":"volley","total_shots_estimated":8,"rally_length_estimated":8,"longest_exchange_type":"kitchen_battle"},"skill_indicators":{"court_coverage_rating":7,"kitchen_mastery_rating":7,"power_game_rating":7,"touch_and_feel_rating":6,"athleticism_rating":6,"creativity_rating":6,"court_iq_rating":7,"consistency_rating":7,"composure_under_pressure":7,"paddle_control_rating":7,"grip_pressure_estimate":"medium","aggression_style":"balanced","play_style_tags":["kitchen specialist","net rusher","speed-up artist"],"signature_move_detected":"Player 2's decisive forehand speed-up from the kitchen line to win the point.","tactical_tendencies":["prefers to advance to the net quickly","looks for opportunities to speed up from the kitchen","maintains cross-court dink rallies"],"physical_descriptors":["good lateral movement at the net","quick reflexes for volleys","stable base for power shots"],"improvement_opportunities":["Far side players could improve their defensive resets under pressure to neutralize attacks."]},"brand_detection":{"brands":[{"brand_name":"SIX ZERO","category":"paddle","confidence":"high","player_side":"both_sides","visibility_quality":"clear","estimated_visible_seconds":5,"color_scheme_noted":"Black/white logos","location_detail":"On all four players' paddle faces"},{"brand_name":"Pickleball","category":"net","confidence":"high","player_side":"court_equipment","visibility_quality":"clear","estimated_visible_seconds":10,"color_scheme_noted":"White text on black net tape","location_detail":"On the main court net tape"},{"brand_name":"JOOLA","category":"net","confidence":"medium","player_side":"court_equipment","visibility_quality":"partial","estimated_visible_seconds":3,"color_scheme_noted":"White logo on black net tape","location_detail":"On the net of the far court, partially visible"},{"brand_name":"Life Time","category":"fitness_chain","confidence":"low","player_side":"background","visibility_quality":"blurry","estimated_visible_seconds":1,"color_scheme_noted":"White text on dark banner","location_detail":"Faintly visible on a banner in the far background"}],"total_brands_detected":4,"unidentified_equipment_notes":"Standard pickleball net, blue/light blue court surface, yellow ball bucket.","unidentified_products_notes":"Red chairs on the sideline, a large screen in the background showing unknown content.","sponsorship_whitespace":["Athletic apparel brands (Nike, Adidas, Lululemon)","Sports drink brands (Gatorade, BODYARMOR)","Footwear brands (New Balance, K-Swiss)"]},"paddle_intel":{"paddle_brand":"SIX ZERO","paddle_model_estimate":null,"paddle_color_scheme":"Black/white logos on various paddle colors","paddle_shape_estimate":"standard","paddle_grip_style_observed":"one_handed","grip_color":"black","overgrip_present":false,"lead_tape_visible":false,"confidence":"high","notes":"All four players are using paddles from the same brand, SIX ZERO, which is a strong brand presence."},"storytelling":{"story_arc":"athletic_highlight","emotional_tone":"competitive","defining_moment_timestamp_seconds":14,"crowd_energy_detected":false,"player_celebration_detected":true,"trash_talk_detected":false,"turning_point_visible":true,"narrative_arc_summary":"A quick kitchen exchange culminates in a decisive speed-up for the winning team."},"badge_intelligence":{"predicted_badges":[{"badge_name":"Rally Master","confidence":"high","reasoning":"The rally consists of 8 consecutive shots without an error from the winning team."},{"badge_name":"Speed Up Specialist","confidence":"high","reasoning":"Player 2 successfully speeds up the dink rally with a well-timed attack that wins the point."},{"badge_name":"Firefight Victor","confidence":"high","reasoning":"The winning team engages in and wins a fast hands battle at the kitchen line with quick reflexes."},{"badge_name":"Two Up Pressure","confidence":"high","reasoning":"Both partners on the near side advance to the kitchen line together and win the point with coordinated net play."},{"badge_name":"Steady Eddie","confidence":"high","reasoning":"The winning team (Player 1 and Player 2) goes through the entire rally without making an unforced error."},{"badge_name":"Paddle Tap Celebration","confidence":"high","reasoning":"Players on the winning team tap paddles together after winning the point at 0:16."},{"badge_name":"Out of Bounds","confidence":"high","reasoning":"Player 4 hits the ball out of bounds, resulting in an error and the loss of the point."}],"badge_trigger_moments":["0:10 - Serve initiates rally","0:12-0:14 - Rapid volley exchange at the kitchen line","0:14 - Player 2's speed-up winner","0:14 - Player 4's error out of bounds","0:16 - Winning team's paddle tap celebration"],"highlight_reel_worthy":true,"top_10_play_candidate":false},"commentary":{"neutral_announcer_espn":"A quick exchange at the net sees the near-side team maintain pressure, culminating in a decisive speed-up to secure the point. Excellent net play and quick reflexes on display.","hype_announcer_charged":"BOOM! That's how you finish a rally! A flurry of hands at the kitchen, and then a lightning-fast speed-up to seal the deal! You love to see that aggressive net play!","coaching_breakdown":"Notice how the near-side team maintained their kitchen line position, patiently dinking until the opportunity arose. Player 2's speed-up was well-timed, targeting the opponent's body, forcing the error. The far-side team needs to work on resetting those aggressive attacks to stay in the point.","social_media_caption":"Kitchen chaos to a clean finish!","social_media_hashtags":["#pickleball","#speedup","#kitchenbattle","#pickleballhighlights","#winningpoint","#netplay","#sixzeropickleball"],"ron_burgundy_voice":"Well, that escalated quickly! A veritable ballet of paddles at the net, followed by a shot so swift, it could only be described as... quite swift. Truly, a magnificent display of pickleball prowess, San Diego.","chuck_norris_voice":"The ball dared to challenge the net. It lost. The winning team's paddles moved with the precision of a Chuck Norris roundhouse kick, leaving no doubt.","color_commentator_banter":"You know, that's the kind of point that really gets the blood flowing. Just a few dinks, then BAM! Someone decides it's time to go for it. And it paid off big time. Love the aggression!","crowd_chant_if_epic":null,"trash_talk_friendly":"Couldn't handle the heat in the kitchen, huh? Maybe next time bring a fire extinguisher!","announcement_text_for_tts":"A quick exchange at the net sees the near-side team maintain pressure, culminating in a decisive speed-up to secure the point."},"daas_signals":{"highlight_category":"athletic_highlight","clip_summary_one_sentence":"Near-side team wins a quick kitchen rally with a decisive speed-up.","search_tags":["pickleball rally","kitchen volley","speed up shot","pickleball highlight","indoor pickleball","doubles pickleball","net play","pickleball strategy","six zero paddles","pickleball point","fast hands","pickleball win","athletic play","pickleball court","paddle tap"],"content_use_cases":["social_media","coaching_tool","fan_engagement","sponsor_pitch","player_recruitment"],"estimated_player_rating_dupr":"3.5-4.0","match_context_inferred":"casual","data_richness_score":8},"wildcard_observations":{"unexpected_brands":[],"environmental_details":"The clip is filmed indoors in a dedicated pickleball facility with multiple blue and light blue courts.","lifestyle_signals":"The consistent use of 'SIX ZERO' paddles by all four players suggests either a strong brand preference within this group, a club affiliation that promotes the brand, or potentially a sponsored play session.","content_opportunity":"The prevalence of 'SIX ZERO' paddles across all players presents a strong content opportunity for the brand.","anomaly_detected":"All four players in the clip are using paddles from the same brand, 'SIX ZERO', which is an unusually high concentration for a casual game."},"_source_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/1faeb221-acfc-4db9-b805-60a714136c68.mp4","_model_used":"gemini-2.5-flash","_analyzed_at":"2026-04-14T14:43:32.268240","_highlight_meta":{"uuid":"C2UI6c6EgtRE","badge_awards":[],"group_id":8061}}
+  },
+  // Clip 2: Dink Rally
+  {
+    id: "68nxErrmv6hw",
+    label: "Dink Rally Drama",
+    video: "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e3707d04-811a-4852-ac52-a2db3bfde843.mp4",
+    thumb: "https://cdn.courtana.com/files/production/u/faad1826-b310-4602-89d2-cc8eea8444f6/2d2c7f6e-3913-4317-bd2f-438b8c58be22.jpg",
+    perf: { time: "45.3s", tokIn: "6,149", tokOut: "4,089", cost: "~$0.005" },
+    analysis: {"analyzed_at":"2024-05-16T12:00:00Z","model_used":"gemini-2.5-flash","prompt_version":"v1.3-20260410","clip_meta":{"duration_seconds":19,"clip_quality_score":8,"viral_potential_score":4,"watchability_score":6,"cinematic_score":7},"players_detected":[{"approximate_position":"left","side":"near","dominance_in_clip":"primary","estimated_skill_level":"advanced_intermediate","energy_level":"focused","handedness":"right","height_estimate":"medium","movement_style":"reactive","apparel_summary":"Grey tank top, light yellow athletic shorts, white athletic shoes."},{"approximate_position":"right","side":"near","dominance_in_clip":"secondary","estimated_skill_level":"advanced_intermediate","energy_level":"moderate","handedness":"right","height_estimate":"medium","movement_style":"methodical","apparel_summary":"White t-shirt with graphic, dark athletic shorts, dark athletic shoes."},{"approximate_position":"left","side":"far","dominance_in_clip":"secondary","estimated_skill_level":"intermediate","energy_level":"focused","handedness":"right","height_estimate":"medium","movement_style":"reactive","apparel_summary":"Dark tank top, light athletic shorts, white athletic shoes."},{"approximate_position":"right","side":"far","dominance_in_clip":"secondary","estimated_skill_level":"intermediate","energy_level":"focused","handedness":"right","height_estimate":"medium","movement_style":"reactive","apparel_summary":"Dark tank top, light athletic shorts, white athletic shoes."}],"shot_analysis":{"shots":[{"shot_type":"serve","player_position":"baseline","quality_score":7,"difficulty_score":4,"outcome":"rally_continues","wow_factor":2,"timestamp_approximate_seconds":0.5},{"shot_type":"return","player_position":"baseline","quality_score":7,"difficulty_score":5,"outcome":"rally_continues","wow_factor":2,"timestamp_approximate_seconds":1.5},{"shot_type":"dink","player_position":"transition","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":2.5},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":3},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":3.5},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":4},{"shot_type":"overhead","player_position":"mid_court","quality_score":8,"difficulty_score":7,"outcome":"rally_continues","wow_factor":6,"timestamp_approximate_seconds":5.5},{"shot_type":"block","player_position":"kitchen","quality_score":7,"difficulty_score":7,"outcome":"rally_continues","wow_factor":5,"timestamp_approximate_seconds":6},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":7.5},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":8},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":9},{"shot_type":"dink","player_position":"kitchen","quality_score":7,"difficulty_score":6,"outcome":"rally_continues","wow_factor":3,"timestamp_approximate_seconds":10.5},{"shot_type":"dink","player_position":"kitchen","quality_score":5,"difficulty_score":5,"outcome":"error","wow_factor":1,"timestamp_approximate_seconds":12}],"dominant_shot_type":"dink","total_shots_estimated":13,"rally_length_estimated":12,"longest_exchange_type":"mixed"},"skill_indicators":{"court_coverage_rating":7,"kitchen_mastery_rating":7,"power_game_rating":6,"touch_and_feel_rating":7,"athleticism_rating":6,"creativity_rating":5,"court_iq_rating":6,"consistency_rating":6,"composure_under_pressure":6,"paddle_control_rating":7,"grip_pressure_estimate":"medium","aggression_style":"balanced","play_style_tags":["kitchen specialist","dinker","forehand dominant"],"signature_move_detected":"Primary player's consistent forehand dink placement, favoring the cross-court angle.","tactical_tendencies":["Prefers dink rallies at the NVZ","Utilizes cross-court dinks to maintain pressure","Waits for an opportunity to speed up or for opponent error"],"physical_descriptors":["Good lateral movement at the kitchen line","Controlled, compact swings for dinks","Primary player is right-handed"],"improvement_opportunities":["Primary player could improve consistency on critical dinks to avoid unforced errors under pressure.","Near side team could work on better follow-up after a speed-up (P2's overhead smash)."]},"brand_detection":{"brands":[{"brand_name":"VEO","category":"tech_accessory","confidence":"high","player_side":"background","visibility_quality":"clear","estimated_visible_seconds":19,"color_scheme_noted":"Black and white logo","location_detail":"On a black stand to the right of the court"}],"total_brands_detected":1,"unidentified_equipment_notes":"All paddles are generic or have unidentifiable logos.","unidentified_products_notes":"Several chairs are visible in the background, but no identifiable brands.","sponsorship_whitespace":["Pickleball paddle brands (e.g., Selkirk, JOOLA)","Athletic apparel brands (e.g., Nike, Adidas)","Sports drink brands (e.g., Gatorade, BODYARMOR)","Court surface providers"]},"paddle_intel":{"paddle_brand":null,"paddle_model_estimate":null,"paddle_color_scheme":"pink","paddle_shape_estimate":"elongated","paddle_grip_style_observed":"one_handed","grip_color":"black","overgrip_present":false,"lead_tape_visible":false,"confidence":"low","notes":"Primary player uses a pink paddle, likely an elongated shape, but no brand or model is discernible."},"storytelling":{"story_arc":"grind_rally","emotional_tone":"focused","defining_moment_timestamp_seconds":12,"crowd_energy_detected":false,"player_celebration_detected":false,"trash_talk_detected":false,"turning_point_visible":false,"narrative_arc_summary":"A sustained dink rally at the kitchen line ends with an unforced error into the net."},"badge_intelligence":{"predicted_badges":[{"badge_name":"Rally Master","confidence":"high","reasoning":"The rally sustained for 12 consecutive shots (excluding the serve), exceeding the 8+ shot requirement."},{"badge_name":"Kitchen King","confidence":"high","reasoning":"The primary player executed 3+ quality dinks at the kitchen line."},{"badge_name":"Speed Up Specialist","confidence":"medium","reasoning":"The near-side male player successfully sped up the dink rally with an overhead smash."},{"badge_name":"Net Magnet","confidence":"high","reasoning":"The primary player's final shot clearly went into the net, ending the point."}],"badge_trigger_moments":["0:00-0:12: Sustained dink rally at the kitchen line","0:05: Near-side male player's overhead smash","0:12: Primary player's dink into the net"],"highlight_reel_worthy":false,"top_10_play_candidate":false},"commentary":{"neutral_announcer_espn":"A steady rally unfolds at the kitchen line, showcasing consistent dinking from both sides.","hype_announcer_charged":"Oh, the dink battle is ON! Back and forth, these players are locked in a kitchen war!","coaching_breakdown":"This clip highlights good dink consistency, but the primary player needs to maintain focus on the last ball.","social_media_caption":"Dink rally drama! Who's been there?","social_media_hashtags":["#pickleball","#dinkbattle","#pickleballrally","#unforcederror","#kitchenline"],"ron_burgundy_voice":"By the beard of Zeus, what a dink-a-thon! These athletes, with their paddles of destiny, engaged in a ballet of precision, until, alas, the cruel mistress of the net claimed her due.","chuck_norris_voice":"A dink rally of this magnitude would merely be a warm-up for Chuck Norris.","color_commentator_banter":"You know, sometimes you just get caught up in the rhythm of the dink, and that last one just gets away from you.","crowd_chant_if_epic":null,"trash_talk_friendly":"Almost had it! Next one's ours!","announcement_text_for_tts":"A steady rally unfolds at the kitchen line, showcasing consistent dinking from both sides."},"daas_signals":{"highlight_category":"grind_rally","clip_summary_one_sentence":"A long dink rally ends with the primary player hitting the ball into the net.","search_tags":["pickleball rally","dink exchange","kitchen line play","unforced error","indoor pickleball","mixed doubles","pickleball strategy","overhead smash","paddle sports","recreational pickleball"],"content_use_cases":["social_media","coaching_tool","fan_engagement"],"estimated_player_rating_dupr":"3.5-4.0","match_context_inferred":"casual","data_richness_score":7},"wildcard_observations":{"unexpected_brands":[],"environmental_details":"Indoor pickleball court with blue playing surface and darker blue non-volley zones.","lifestyle_signals":"The players appear to be recreational enthusiasts, playing in a dedicated indoor facility.","content_opportunity":"For a paddle brand, this clip could highlight paddle control and touch for consistent dinking.","anomaly_detected":"No significant anomalies detected."},"_source_url":"https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e3707d04-811a-4852-ac52-a2db3bfde843.mp4","_model_used":"gemini-2.5-flash","_analyzed_at":"2026-04-14T14:45:05.664526","_highlight_meta":{"uuid":"68nxErrmv6hw","badge_awards":[""],"group_id":8236}}
+  }
+];
+
+let currentClip = 0;
+
+function selectClip(idx) {
+  currentClip = idx;
+  document.querySelectorAll('.clip-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  renderClip();
+}
+
+function renderClip() {
+  const c = clips[currentClip];
+  const a = c.analysis;
+
+  // Media
+  document.getElementById('clipVideo').src = c.video;
+  document.getElementById('clipVideo').poster = c.thumb;
+  document.getElementById('clipVideo').load();
+  document.getElementById('clipThumb').src = c.thumb;
+  document.getElementById('videoLabel').textContent = `Video: ${c.video.split('/').pop()} (from CDN)`;
+  document.getElementById('thumbLabel').textContent = `Thumbnail: auto-generated frame capture`;
+
+  // Performance
+  document.getElementById('perfTitle').textContent = `Performance (${c.label})`;
+  document.getElementById('perfTime').textContent = c.perf.time;
+  document.getElementById('perfIn').textContent = c.perf.tokIn;
+  document.getElementById('perfOut').textContent = c.perf.tokOut;
+  document.getElementById('perfCost').textContent = c.perf.cost;
+
+  // Clip Meta Scores
+  const cm = a.clip_meta;
+  const scoreNames = ['clip_quality_score', 'viral_potential_score', 'watchability_score', 'cinematic_score', 'duration_seconds'];
+  const scoreLabels = ['Quality', 'Viral Potential', 'Watchability', 'Cinematic', 'Duration'];
+  const scoreColors = ['#10b981', '#ec4899', '#3b82f6', '#f59e0b', '#94a3b8'];
+  let cmHtml = '';
+  scoreNames.forEach((k, i) => {
+    const v = cm[k];
+    const isScore = k !== 'duration_seconds';
+    cmHtml += `<div style="background: var(--card2); border-radius: 12px; padding: 16px; text-align: center;">
+      <div style="font-size: 2em; font-weight: 800; color: ${scoreColors[i]};">${v}${isScore ? '/10' : 's'}</div>
+      <div style="font-size: 0.82em; color: var(--muted); margin-top: 4px;">${scoreLabels[i]}</div>
+    </div>`;
+  });
+  document.getElementById('clipMetaScores').innerHTML = cmHtml;
+
+  // Players
+  let pHtml = '';
+  a.players_detected.forEach((p, i) => {
+    pHtml += `<div class="data-block">
+      <h3>Player ${i+1} (${p.side} / ${p.approximate_position})</h3>
+      <div class="field"><span class="label">Role</span><span class="value">${p.dominance_in_clip}</span></div>
+      <div class="field"><span class="label">Skill</span><span class="value">${p.estimated_skill_level}</span></div>
+      <div class="field"><span class="label">Energy</span><span class="value">${p.energy_level}</span></div>
+      <div class="field"><span class="label">Hand</span><span class="value">${p.handedness}</span></div>
+      <div class="field"><span class="label">Movement</span><span class="value">${p.movement_style}</span></div>
+      <div class="field"><span class="label">Apparel</span><span class="value" style="font-size:0.78em;">${p.apparel_summary}</span></div>
+    </div>`;
+  });
+  document.getElementById('playersGrid').innerHTML = pHtml;
+
+  // Shot Timeline
+  const shots = a.shot_analysis.shots;
+  const shotColors = { serve: '#3b82f6', return: '#8b5cf6', dink: '#10b981', volley: '#f59e0b', speed_up: '#ef4444', block: '#6b7280', overhead: '#ec4899', drive: '#f97316', lob: '#14b8a6', drop: '#06b6d4' };
+  let stHtml = '';
+  shots.forEach(s => {
+    const h = (s.quality_score / 10) * 80;
+    const col = shotColors[s.shot_type] || '#94a3b8';
+    stHtml += `<div class="shot-bar" style="height: ${h}px; background: ${col};">
+      <div class="shot-tip">${s.shot_type} @ ${s.timestamp_approximate_seconds}s<br>Quality: ${s.quality_score}/10 | ${s.outcome}</div>
+    </div>`;
+  });
+  document.getElementById('shotTimeline').innerHTML = stHtml;
+  document.getElementById('shotSummary').innerHTML = `
+    <span>Dominant: <strong>${a.shot_analysis.dominant_shot_type}</strong></span>
+    <span>Total shots: <strong>${a.shot_analysis.total_shots_estimated}</strong></span>
+    <span>Rally length: <strong>${a.shot_analysis.rally_length_estimated}</strong></span>
+    <span>Exchange type: <strong>${a.shot_analysis.longest_exchange_type}</strong></span>
+  `;
+
+  // Skills
+  const si = a.skill_indicators;
+  const skillKeys = ['court_coverage_rating','kitchen_mastery_rating','power_game_rating','touch_and_feel_rating','athleticism_rating','creativity_rating','court_iq_rating','consistency_rating','composure_under_pressure'];
+  const skillLabels2 = ['Court Coverage','Kitchen Mastery','Power','Touch & Feel','Athleticism','Creativity','Court IQ','Consistency','Composure'];
+  const skillGradient = (v) => v >= 7 ? '#10b981' : v >= 5 ? '#f59e0b' : '#ef4444';
+  let skHtml = '';
+  skillKeys.forEach((k, i) => {
+    const v = si[k];
+    skHtml += `<div class="skill-row">
+      <div class="skill-name">${skillLabels2[i]}</div>
+      <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: ${v*10}%; background: ${skillGradient(v)};"></div></div>
+      <div class="skill-val" style="color: ${skillGradient(v)};">${v}</div>
+    </div>`;
+  });
+  document.getElementById('skillBars').innerHTML = skHtml;
+  document.getElementById('skillMeta').innerHTML = `
+    <div style="margin-bottom: 12px;"><span style="color: var(--muted); font-size: 0.82em;">Signature Move</span><br><strong style="font-size: 0.95em;">${si.signature_move_detected}</strong></div>
+    <div style="margin-bottom: 12px;"><span style="color: var(--muted); font-size: 0.82em;">Play Style</span><br>${(si.play_style_tags||[]).map(t => `<span style="display:inline-block; padding:2px 10px; border-radius:10px; background:rgba(0,212,170,0.1); color:var(--accent); font-size:0.82em; margin:2px;">${t}</span>`).join('')}</div>
+    <div style="margin-bottom: 12px;"><span style="color: var(--muted); font-size: 0.82em;">Aggression</span><br><strong>${si.aggression_style}</strong></div>
+    <div><span style="color: var(--muted); font-size: 0.82em;">Improvement</span><br><span style="font-size: 0.85em; color: var(--warn);">${(si.improvement_opportunities||[]).join('; ')}</span></div>
+  `;
+
+  // Brand Detection (THE DEEP DIVE)
+  const brands = a.brand_detection.brands || [];
+  let bHtml = '';
+  brands.forEach(b => {
+    bHtml += `<div class="brand-card">
+      <div class="brand-header">
+        <span class="brand-name">${b.brand_name}</span>
+        <span class="brand-conf ${b.confidence}">${b.confidence} confidence</span>
+      </div>
+      <div class="brand-details">
+        <div><span class="bd-label">Category:</span> ${b.category}</div>
+        <div><span class="bd-label">Location:</span> ${b.player_side}</div>
+        <div><span class="bd-label">Visibility:</span> ${b.visibility_quality}</div>
+        <div><span class="bd-label">Exposure:</span> ${b.estimated_visible_seconds}s</div>
+        <div><span class="bd-label">Colors:</span> ${b.color_scheme_noted}</div>
+        <div><span class="bd-label">Detail:</span> ${b.location_detail}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('brandCards').innerHTML = bHtml || '<p style="color: var(--muted);">No brands detected</p>';
+
+  const ws = a.brand_detection.sponsorship_whitespace || [];
+  if (ws.length) {
+    document.getElementById('brandWhitespace').innerHTML = `
+      <div style="background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 14px;">
+        <h4 style="color: var(--warn); margin-bottom: 8px;">Sponsorship Whitespace (Opportunity)</h4>
+        <ul style="font-size: 0.85em; color: var(--muted); padding-left: 20px;">${ws.map(w => `<li>${w}</li>`).join('')}</ul>
+      </div>`;
+  }
+
+  // Paddle Intel
+  const pi = a.paddle_intel;
+  document.getElementById('paddleIntel').innerHTML = `<div class="data-block">
+    <h3>Paddle Details</h3>
+    <div class="field"><span class="label">Brand</span><span class="value">${pi.paddle_brand || 'Unknown'}</span></div>
+    <div class="field"><span class="label">Shape</span><span class="value">${pi.paddle_shape_estimate}</span></div>
+    <div class="field"><span class="label">Color</span><span class="value">${pi.paddle_color_scheme}</span></div>
+    <div class="field"><span class="label">Grip</span><span class="value">${pi.paddle_grip_style_observed}</span></div>
+    <div class="field"><span class="label">Overgrip</span><span class="value">${pi.overgrip_present ? 'Yes' : 'No'}</span></div>
+    <div class="field"><span class="label">Lead tape</span><span class="value">${pi.lead_tape_visible ? 'Yes' : 'No'}</span></div>
+    <div class="field"><span class="label">Confidence</span><span class="value">${pi.confidence}</span></div>
+    <div class="field"><span class="label">Notes</span><span class="value" style="font-size:0.78em;">${pi.notes}</span></div>
+  </div>`;
+
+  // Storytelling
+  const st = a.storytelling;
+  document.getElementById('storytelling').innerHTML = `<div class="data-block">
+    <h3>Narrative</h3>
+    <div class="field"><span class="label">Story Arc</span><span class="value">${st.story_arc}</span></div>
+    <div class="field"><span class="label">Tone</span><span class="value">${st.emotional_tone}</span></div>
+    <div class="field"><span class="label">Defining moment</span><span class="value">${st.defining_moment_timestamp_seconds}s</span></div>
+    <div class="field"><span class="label">Celebration</span><span class="value">${st.player_celebration_detected ? 'Yes' : 'No'}</span></div>
+    <div class="field"><span class="label">Turning point</span><span class="value">${st.turning_point_visible ? 'Yes' : 'No'}</span></div>
+    <div class="field"><span class="label">Summary</span><span class="value" style="font-size:0.78em;">${st.narrative_arc_summary}</span></div>
+  </div>`;
+
+  // Badges
+  const badges = a.badge_intelligence.predicted_badges || [];
+  let bgHtml = '';
+  badges.forEach(b => {
+    const confColor = b.confidence === 'high' ? 'rgba(16,185,129,0.15)' : b.confidence === 'medium' ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)';
+    const confText = b.confidence === 'high' ? '#10b981' : b.confidence === 'medium' ? '#f59e0b' : '#ef4444';
+    bgHtml += `<div class="badge-item">
+      <span class="badge-conf" style="background:${confColor}; color:${confText};">${b.confidence}</span>
+      <div class="badge-label">${b.badge_name}</div>
+      <div class="badge-reason">${b.reasoning}</div>
+    </div>`;
+  });
+  document.getElementById('badgeGrid').innerHTML = bgHtml;
+
+  // Commentary
+  const comm = a.commentary;
+  const commKeys = Object.keys(comm).filter(k => comm[k] && k !== 'social_media_hashtags');
+  const commLabels = {
+    neutral_announcer_espn: 'ESPN',
+    hype_announcer_charged: 'Hype',
+    coaching_breakdown: 'Coach',
+    social_media_caption: 'Social',
+    ron_burgundy_voice: 'Ron Burgundy',
+    chuck_norris_voice: 'Chuck Norris',
+    color_commentator_banter: 'Color',
+    crowd_chant_if_epic: 'Chant',
+    trash_talk_friendly: 'Trash Talk',
+    announcement_text_for_tts: 'TTS'
+  };
+  let ctHtml = '';
+  commKeys.forEach((k, i) => {
+    ctHtml += `<div class="comm-tab ${i===0?'active':''}" onclick="showComm('${k}', this)">${commLabels[k] || k}</div>`;
+  });
+  document.getElementById('commTabs').innerHTML = ctHtml;
+  document.getElementById('commContent').textContent = comm[commKeys[0]] || '';
+
+  // DaaS Signals
+  const ds = a.daas_signals;
+  document.getElementById('daasSignals').innerHTML = `
+    <div class="data-block">
+      <h3>Classification</h3>
+      <div class="field"><span class="label">Category</span><span class="value">${ds.highlight_category}</span></div>
+      <div class="field"><span class="label">DUPR estimate</span><span class="value">${ds.estimated_player_rating_dupr}</span></div>
+      <div class="field"><span class="label">Match context</span><span class="value">${ds.match_context_inferred}</span></div>
+      <div class="field"><span class="label">Data richness</span><span class="value" style="color: var(--accent);">${ds.data_richness_score}/10</span></div>
+    </div>
+    <div class="data-block">
+      <h3>Summary</h3>
+      <div style="font-size: 0.95em; margin-bottom: 10px;"><strong>${ds.clip_summary_one_sentence}</strong></div>
+      <div style="font-size: 0.82em; color: var(--muted);">Content uses: ${(ds.content_use_cases||[]).join(', ')}</div>
+      <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px;">
+        ${(ds.search_tags||[]).slice(0,8).map(t => `<span style="padding:2px 8px; background:rgba(59,130,246,0.1); color:#3b82f6; border-radius:8px; font-size:0.75em;">${t}</span>`).join('')}
+      </div>
+    </div>`;
+
+  // Wildcard
+  const wc = a.wildcard_observations;
+  document.getElementById('wildcardObs').innerHTML = `
+    <div class="data-block">
+      <h3>Environment</h3>
+      <p style="font-size:0.85em; color:var(--muted);">${wc.environmental_details}</p>
+    </div>
+    <div class="data-block">
+      <h3>Lifestyle Signals</h3>
+      <p style="font-size:0.85em; color:var(--muted);">${wc.lifestyle_signals}</p>
+    </div>
+    <div class="data-block">
+      <h3>Content Opportunity</h3>
+      <p style="font-size:0.85em; color:var(--warn);">${wc.content_opportunity}</p>
+    </div>
+    ${wc.anomaly_detected ? `<div class="data-block"><h3>Anomaly</h3><p style="font-size:0.85em; color:var(--pink);">${wc.anomaly_detected}</p></div>` : ''}`;
+
+  // Confidence
+  document.getElementById('confidenceBlock').innerHTML = `<div class="data-block">
+    <h3>Self-Assessment</h3>
+    <div class="field"><span class="label">analysis_confidence</span><span class="value">${a.analysis_confidence || 'Not reported (v1.3 field)'}</span></div>
+    <div class="field"><span class="label">Note</span><span class="value" style="font-size:0.78em;">This field was added in prompt v1.3. Clips analyzed before the patch report 0.</span></div>
+  </div>`;
+
+  // Metadata
+  document.getElementById('metadataBlock').innerHTML = `<div class="data-block">
+    <h3>Pipeline Provenance</h3>
+    <div class="field"><span class="label">Source URL</span><span class="value" style="font-size:0.7em; word-break:break-all;">${a._source_url}</span></div>
+    <div class="field"><span class="label">Model</span><span class="value">${a._model_used}</span></div>
+    <div class="field"><span class="label">Analyzed at</span><span class="value">${a._analyzed_at}</span></div>
+    <div class="field"><span class="label">UUID</span><span class="value">${a._highlight_meta.uuid}</span></div>
+    <div class="field"><span class="label">Group ID</span><span class="value">${a._highlight_meta.group_id}</span></div>
+  </div>`;
+
+  // Raw JSON
+  document.getElementById('jsonViewer').innerHTML = syntaxHighlight(JSON.stringify(a, null, 2));
+}
+
+function showComm(key, el) {
+  const a = clips[currentClip].analysis;
+  document.querySelectorAll('.comm-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('commContent').textContent = a.commentary[key] || 'N/A';
+}
+
+function syntaxHighlight(json) {
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+    let cls = 'json-num';
+    if (/^"/.test(match)) {
+      cls = /:$/.test(match) ? 'json-key' : 'json-str';
+    } else if (/true|false/.test(match)) {
+      cls = 'json-bool';
+    }
+    return '<span class="' + cls + '">' + match + '</span>';
+  });
+}
+
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Initial render
+renderClip();
+</script>
+</body>
+</html>
