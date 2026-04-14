@@ -1,28 +1,28 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-13T23:40:40.578678+00:00_
+_Generated: 2026-04-14T00:03:06.372291+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 496 clips
-- **Total analysis files on disk:** 1108 (1108 ≥500 bytes)
-- **Minutes since last analysis:** 109.4
+- **Corpus on gh-pages:** 558 clips
+- **Total analysis files on disk:** 1206 (1206 ≥500 bytes)
+- **Minutes since last analysis:** 0.2
 - **Human flags:** 7 total (7 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 43.3%  (460 TP / 1062 predicted)
+- **Precision:** 42.8%  (460 TP / 1074 predicted)
 - **Recall:**    54.6%  (460 TP / 843 awarded)
-- **F1 Score:**  48.3%
-- **Predictions analyzed:** 1657 across 451 unique clips
+- **F1 Score:**  48.0%
+- **Predictions analyzed:** 1878 across 513 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Kitchen King | 33 | 120 | 0 | 22% | 100% | 36% |
-| Steady Eddie | 97 | 0 | 49 | 100% | 66% | 80% |
-| Rally Master | 106 | 2 | 33 | 98% | 76% | 86% |
+| Kitchen King | 33 | 122 | 0 | 21% | 100% | 35% |
+| Steady Eddie | 97 | 2 | 49 | 98% | 66% | 79% |
+| Rally Master | 106 | 4 | 33 | 96% | 76% | 85% |
 | Dink Machine | 0 | 140 | 0 | 0% | 0% | 0% |
 | Epic Rally | 49 | 83 | 1 | 37% | 98% | 54% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
@@ -38,8 +38,8 @@ Sampled 500 most-recent analyses.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 79/500 | 16% |
-| brand_detection.brands | 446/500 | 89% |
+| analysis_confidence ⚠️ | 177/500 | 35% |
+| brand_detection.brands | 437/500 | 87% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
