@@ -3,876 +3,514 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pickle DaaS — Sprint Showcase</title>
+<title>Pickle DaaS · Showcase Portal</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0c14;
+    --surface: #12161f;
+    --surface-2: #1a1f2e;
+    --border: #272d40;
+    --text: #e8eaed;
+    --muted: #8590a3;
+    --ok: #22c55e;
+    --ok-dim: rgba(34, 197, 94, 0.12);
+    --gold: #eab308;
+    --info: #3b82f6;
+    --info-dim: rgba(59, 130, 246, 0.1);
+    --archive: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.55; }
+  a { color: inherit; text-decoration: none; }
+  .shell { max-width: 1280px; margin: 0 auto; padding: 32px 24px 60px; }
 
-:root {
-  --bg: #07071a;
-  --surface: #0d0d25;
-  --card: #111130;
-  --card-border: #1a1a3a;
-  --accent: #00E676;
-  --blue: #4285F4;
-  --red: #FF6B6B;
-  --gold: #FFD54F;
-  --text: #e8e8f0;
-  --text-muted: #8888aa;
-  --text-dim: #555577;
-  --radius: 10px;
-}
+  .hero { margin-bottom: 28px; }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .hero h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.1; }
+  .hero h1 .accent { color: var(--ok); }
+  .hero .tagline { color: var(--muted); font-size: 15px; margin-top: 8px; max-width: 540px; }
+  .hero-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-links a { padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 13px; font-family: ui-monospace, monospace; transition: all 0.15s; }
+  .hero-links a:hover { border-color: var(--ok); color: var(--ok); }
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+  .stats-bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-top: 24px; overflow: hidden; }
+  .stat { padding: 18px 20px; border-right: 1px solid var(--border); }
+  .stat:last-child { border-right: none; }
+  .stat .value { font-size: 28px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; display: flex; align-items: baseline; gap: 6px; }
+  .stat .value.accent { color: var(--ok); }
+  .stat .value small { font-size: 14px; color: var(--muted); font-weight: normal; }
+  .stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 6px; font-family: ui-monospace, monospace; }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; margin-right: 6px; vertical-align: middle; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-a { color: inherit; text-decoration: none; }
+  section { margin-top: 48px; }
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+  .section-head h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .section-head h2 .badge { font-size: 11px; padding: 3px 8px; border-radius: 3px; margin-left: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; vertical-align: middle; }
+  .section-head h2 .badge.live { background: var(--ok-dim); color: var(--ok); border: 1px solid var(--ok); }
+  .section-head h2 .badge.cached { background: var(--info-dim); color: var(--info); border: 1px solid var(--info); }
+  .section-head h2 .badge.archive { background: rgba(100, 116, 139, 0.1); color: var(--archive); border: 1px solid var(--archive); }
+  .section-head .section-desc { color: var(--muted); font-size: 13px; }
 
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; transition: all 0.15s ease; display: flex; flex-direction: column; gap: 12px; min-height: 150px; position: relative; }
+  .card:hover { border-color: var(--ok); transform: translateY(-2px); }
+  .card.cached:hover { border-color: var(--info); }
+  .card.archive:hover { border-color: var(--archive); }
+  .card .card-icon { font-size: 20px; margin-bottom: 4px; }
+  .card .card-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .card .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; flex-grow: 1; }
+  .card .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px; }
+  .card .card-meta .status { display: flex; align-items: center; gap: 4px; }
+  .card.live .card-meta .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+  .card.cached .card-meta .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--info); }
+  .card.archive .card-meta .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--archive); }
 
-/* ── HERO ── */
-.hero {
-  padding: 80px 0 60px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
+  .card.featured { background: linear-gradient(135deg, var(--ok-dim), transparent); border-color: var(--ok); }
+  .card.featured .card-title { color: var(--ok); }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -120px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0,230,118,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
+  .player-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+  .player-strip::-webkit-scrollbar { height: 6px; }
+  .player-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .player-card { flex: 0 0 auto; width: 140px; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; text-align: center; scroll-snap-align: start; transition: all 0.15s; }
+  .player-card:hover { border-color: var(--ok); transform: translateY(-1px); }
+  .player-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-2); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; color: var(--ok); font-weight: 600; font-size: 15px; text-transform: uppercase; }
+  .player-name { font-size: 13px; font-weight: 500; }
 
-.hero-eyebrow {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
-  padding: 6px 16px;
-  border: 1px solid rgba(0,230,118,0.2);
-  border-radius: 100px;
-}
+  footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--info); }
+  footer a:hover { text-decoration: underline; }
 
-.hero h1 {
-  font-size: clamp(36px, 5vw, 56px);
-  font-weight: 700;
-  letter-spacing: -1.5px;
-  color: #fff;
-  margin-bottom: 16px;
-}
+  details.archive-section summary { cursor: pointer; list-style: none; }
+  details.archive-section summary::-webkit-details-marker { display: none; }
+  details.archive-section summary::before { content: '▸'; display: inline-block; margin-right: 6px; color: var(--archive); transition: transform 0.15s; }
+  details.archive-section[open] summary::before { transform: rotate(90deg); }
 
-.hero-subtitle {
-  font-size: 17px;
-  color: var(--text-muted);
-  max-width: 640px;
-  margin: 0 auto 48px;
-  font-weight: 400;
-}
+  .error-banner { display: none; padding: 14px 18px; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; border-radius: 6px; color: #f87171; font-size: 13px; margin-top: 12px; }
 
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
-}
-
-.stat {
-  text-align: center;
-}
-
-.stat-number {
-  font-size: 40px;
-  font-weight: 700;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-top: 4px;
-}
-
-/* ── SECTION CHROME ── */
-.section {
-  padding: 48px 0;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.section-header h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-}
-
-.section-header::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, var(--card-border), transparent);
-}
-
-.section-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-
-/* ── CARDS: SHARED ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  padding: 28px;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(0,230,118,0.3);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,230,118,0.1);
-}
-
-.card-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.card-desc {
-  font-size: 14px;
-  color: var(--text-muted);
-  line-height: 1.55;
-  flex: 1;
-}
-
-.card-arrow {
-  position: absolute;
-  top: 28px;
-  right: 28px;
-  color: var(--text-dim);
-  transition: color 0.2s ease, transform 0.2s ease;
-  font-size: 18px;
-}
-
-.card:hover .card-arrow {
-  color: var(--accent);
-  transform: translate(2px, -2px);
-}
-
-/* ── BADGE (design system) ── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
-  margin-top: 16px;
-  width: fit-content;
-}
-
-.badge-boardroom { background: rgba(0,230,118,0.1); color: var(--accent); }
-.badge-workbench { background: rgba(66,133,244,0.1); color: var(--blue); }
-.badge-arena { background: rgba(255,165,0,0.1); color: #FFA726; }
-.badge-broadcast { background: rgba(255,255,255,0.06); color: #999; }
-
-/* ── HERO ASSETS: 2-col large ── */
-.grid-hero {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.card-hero {
-  padding: 36px;
-}
-
-.card-hero .card-title {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-.card-hero .card-desc {
-  font-size: 15px;
-}
-
-.card-hero .card-icon {
-  font-size: 28px;
-  margin-bottom: 16px;
-  display: block;
-  width: 52px;
-  height: 52px;
-  line-height: 52px;
-  text-align: center;
-  background: rgba(0,230,118,0.08);
-  border-radius: 12px;
-}
-
-/* ── INTELLIGENCE: 3-col medium ── */
-.grid-intel {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-/* ── PLAYER CARDS: horizontal scroll ── */
-.scroll-row {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.scroll-row::-webkit-scrollbar { height: 4px; }
-.scroll-row::-webkit-scrollbar-track { background: var(--surface); border-radius: 2px; }
-.scroll-row::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 2px; }
-
-.card-player {
-  min-width: 160px;
-  max-width: 160px;
-  padding: 20px 16px;
-  text-align: center;
-  scroll-snap-align: start;
-  flex-shrink: 0;
-}
-
-.card-player .player-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--card-border), var(--surface));
-  margin: 0 auto 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.card-player .card-title {
-  font-size: 13px;
-  margin-bottom: 0;
-}
-
-/* ── APP MOCKUPS: 3-col ── */
-.grid-mockups {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-/* ── SPECIALTY: 3-col ── */
-.grid-specialty {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-/* ── API REFERENCE ── */
-.api-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.api-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  transition: border-color 0.2s ease;
-}
-
-.api-row:hover {
-  border-color: rgba(66,133,244,0.3);
-}
-
-.api-method {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--accent);
-  background: rgba(0,230,118,0.08);
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-}
-
-.api-path {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 14px;
-  color: #fff;
-  flex: 1;
-}
-
-.api-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ── FOOTER ── */
-.footer {
-  padding: 48px 0 32px;
-  text-align: center;
-  border-top: 1px solid var(--card-border);
-  margin-top: 32px;
-}
-
-.footer p {
-  font-size: 13px;
-  color: var(--text-dim);
-}
-
-.footer-logo {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 8px;
-}
-
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .grid-hero { grid-template-columns: 1fr; }
-  .grid-intel { grid-template-columns: repeat(2, 1fr); }
-  .grid-mockups { grid-template-columns: repeat(2, 1fr); }
-  .grid-specialty { grid-template-columns: repeat(2, 1fr); }
-  .stats-row { gap: 32px; }
-}
-
-@media (max-width: 600px) {
-  .grid-intel { grid-template-columns: 1fr; }
-  .grid-mockups { grid-template-columns: 1fr; }
-  .grid-specialty { grid-template-columns: 1fr; }
-  .hero { padding: 48px 0 40px; }
-  .stat-number { font-size: 32px; }
-  .stats-row { gap: 24px; }
-}
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 26px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2n) { border-right: none; }
+    .stat:nth-child(odd) { border-right: 1px solid var(--border); }
+    .stat:nth-child(-n+3) { border-bottom: 1px solid var(--border); }
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div class="shell">
 
-  <!-- ══════════════ HERO ══════════════ -->
-  <section class="hero">
-    <div class="hero-eyebrow">Sprint Showcase</div>
-    <h1>Pickle DaaS</h1>
-    <p class="hero-subtitle">The proprietary data intelligence layer for pickleball. Built in one sprint by AI.</p>
-    <div class="stats-row">
-      <div class="stat">
-        <div class="stat-number" data-target="46">0</div>
-        <div class="stat-label">Clips Analyzed</div>
-      </div>
-      <div class="stat">
-        <div class="stat-number" data-target="24">0</div>
-        <div class="stat-label">Brands Detected</div>
-      </div>
-      <div class="stat">
-        <div class="stat-number" data-target="9">0</div>
-        <div class="stat-label">Skill Dimensions</div>
-      </div>
-      <div class="stat">
-        <div class="stat-number" data-target="4">0</div>
-        <div class="stat-label">AI Models</div>
-      </div>
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <h1>Pickle <span class="accent">DaaS</span></h1>
+      <div class="tagline">The internal portal for Courtana's AI-powered video analysis platform. Live dashboards, showcase demos, and data for internal and external use.</div>
     </div>
-  </section>
-
-  <!-- ══════════════ STRATEGIC COMMAND CENTER ══════════════ -->
-  <section class="section">
-    <div class="section-header"><h2>Command Center</h2></div>
-    <div class="grid-hero">
-      <a href="gtm-war-room.html" class="card card-hero" style="background:linear-gradient(135deg, rgba(239,68,68,0.08), var(--card));border-color:rgba(239,68,68,0.3);">
-        <div class="card-icon" style="background:rgba(239,68,68,0.1);">🎯</div>
-        <div class="card-title" style="color:#ef4444;">GTM War Room</div>
-        <div class="card-desc">Full business analysis: 10 deals, $300K+ pipeline, 5-vector distribution strategy, data moat roadmap, 30-day action sprint. Cross-referenced from Slack, Fireflies, Gmail, Drive.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge" style="background:rgba(239,68,68,0.1);color:#ef4444;">Strategic</div>
-      </a>
-      <a href="story-hub.html" class="card card-hero" style="background:linear-gradient(135deg, rgba(0,230,118,0.08), var(--card));border-color:rgba(0,230,118,0.3);">
-        <div class="card-icon">✦</div>
-        <div class="card-title" style="color:var(--accent);">The Courtana Story</div>
-        <div class="card-desc">7-chapter cinematic narrative: the hero's journey of AI-powered pickleball intelligence. For any stakeholder — investor, brand, coach, venue operator.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Narrative</div>
-      </a>
+    <div class="hero-links">
+      <a href="https://supabase.com/dashboard/project/vlcjaftwnllfjyckjchg" target="_blank">Supabase ↗</a>
+      <a href="../corpus-export.json" target="_blank">Raw JSON ↗</a>
+      <a href="https://github.com/PickleBill/pickle-daas-data" target="_blank">GitHub ↗</a>
     </div>
-  </section>
+  </div>
 
-  <!-- ══════════════ AUDIENCE-TARGETED PAGES ══════════════ -->
-  <section class="section">
-    <div class="section-header"><h2>Audience Pages</h2></div>
-    <div class="grid-intel">
-      <a href="investor-demo.html" class="card">
-        <div class="card-title">Investor Demo</div>
-        <div class="card-desc">Premium dark editorial. Animated KPIs, TAM/SAM/SOM, data flywheel, $13.9M ARR projections. The Bloomberg of pickleball.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Investor</div>
-      </a>
-      <a href="partnership-deck.html" class="card">
-        <div class="card-title">Venue Partnership Deck</div>
-        <div class="card-desc">Revenue pitch for operators. "Your cameras are already smart." Revenue calculator, 3-step setup, brand intelligence.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Venues</div>
-      </a>
-      <a href="coach-demo.html" class="card">
-        <div class="card-title">Coach Demo · PickleBill</div>
-        <div class="card-desc">Cinematic coaching narrative. Player DNA, 3 teaching clips with ESPN + coaching breakdowns, targeted drill plan.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge" style="background:rgba(232,168,56,0.1);color:#e8a838;">Coaches</div>
-      </a>
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="value accent" id="stat-clips">—</div>
+      <div class="label"><span class="live-dot"></span>Clips analyzed</div>
     </div>
-    <div class="grid-intel" style="margin-top:16px;">
-      <a href="../brands/joola.html" class="card">
-        <div class="card-title">JOOLA Brand Report</div>
-        <div class="card-desc">488 clips, 13 categories, $28.5K media value. Gold-themed. Exposure depth, competitive position, player profile.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge" style="background:rgba(234,179,8,0.1);color:#eab308;">Brand</div>
-      </a>
-      <a href="../brands/nike.html" class="card">
-        <div class="card-title">Nike Brand Report</div>
-        <div class="card-desc">59 clips. Black-themed. Shoes + apparel category leader. Real exposure data + CPM model.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge" style="background:rgba(255,255,255,0.05);color:#999;">Brand</div>
-      </a>
-      <a href="../brands/selkirk.html" class="card">
-        <div class="card-title">+ Selkirk · CRBN · Franklin</div>
-        <div class="card-desc">3 more brand reports with brand-specific color themes. All auto-generated from corpus.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge" style="background:rgba(66,133,244,0.1);color:var(--blue);">Brands</div>
-      </a>
+    <div class="stat">
+      <div class="value" id="stat-brands">—</div>
+      <div class="label">Unique brands</div>
     </div>
-  </section>
-
-  <!-- ══════════════ DESIGN EXPERIMENTS ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>Design Experiments</h2>
+    <div class="stat">
+      <div class="value" id="stat-quality">—<small>/10</small></div>
+      <div class="label">Avg quality</div>
     </div>
-    <div class="grid-intel">
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/visual-intelligence-explorer.html" target="_blank" class="card">
-        <div class="card-title">Original Explorer</div>
-        <div class="card-desc">The original Visual Intelligence Explorer -- full corpus browser with video, radar charts, and brand overlays.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/visual-intelligence-explorer-v2.html" target="_blank" class="card">
-        <div class="card-title">Arena V2 (Sport Energy)</div>
-        <div class="card-desc">High-energy sport aesthetic redesign with bold typography and dynamic layout.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-demo-boardroom.html" target="_blank" class="card">
-        <div class="card-title">Boardroom (Editorial)</div>
-        <div class="card-desc">Clean editorial style designed for investor and executive audiences.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Boardroom</div>
-      </a>
-
+    <div class="stat">
+      <div class="value" id="stat-f1">—<small>%</small></div>
+      <div class="label">Badge F1 <a href="product-workbench.html" style="color:var(--info);text-decoration:none;font-size:10px">ⓘ</a></div>
     </div>
-  </section>
-
-  <!-- ══════════════ HERO ASSETS ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>The Showstoppers</h2>
+    <div class="stat">
+      <div class="value" id="stat-cost">—</div>
+      <div class="label">Total spend</div>
     </div>
-    <div class="grid-hero">
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/visual-intelligence-explorer.html" target="_blank" class="card card-hero">
-        <span class="card-icon">&#9670;</span>
-        <div class="card-title">Visual Intelligence Explorer</div>
-        <div class="card-desc">Browse 46 clips with video playback, AI commentary, skill radar charts, and brand detection overlays.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/pickle-daas-investor-demo.html" target="_blank" class="card card-hero">
-        <span class="card-icon">&#9650;</span>
-        <div class="card-title">Investor Demo</div>
-        <div class="card-desc">The pitch -- ROI models, competitive positioning, market sizing, and the data flywheel thesis.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Boardroom</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/data-explorer.html" target="_blank" class="card card-hero">
-        <span class="card-icon">&#9632;</span>
-        <div class="card-title">Data Explorer</div>
-        <div class="card-desc">Full corpus browser with embedded video thumbnails, multi-column filtering, and export.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/command-center.html" target="_blank" class="card card-hero">
-        <span class="card-icon">&#9679;</span>
-        <div class="card-title">Command Center</div>
-        <div class="card-desc">Operational dashboard for pipeline health, ingest status, and system metrics.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
+    <div class="stat">
+      <div class="value" id="stat-updated" style="font-size: 18px; font-weight: 500;">—</div>
+      <div class="label">Last update</div>
     </div>
-  </section>
+  </div>
 
-  <!-- ══════════════ INTELLIGENCE DASHBOARDS ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>Intelligence Dashboards</h2>
+  <div class="error-banner" id="error-banner"></div>
+</div>
+
+<!-- LIVE OPS -->
+<section>
+  <div class="section-head">
+    <h2>Live Ops <span class="badge live">Live data</span></h2>
+    <div class="section-desc">Always current · fetched from corpus-export.json on every load</div>
+  </div>
+  <div class="cards">
+    <a class="card live featured" href="data-lab.html">
+      <div class="card-icon">🧪</div>
+      <div class="card-title">Data Lab</div>
+      <div class="card-desc">Internal analytics workbench. 16 preset queries, live insights, pipeline health, brand trends — one place.</div>
+      <div class="card-meta"><span class="status">Live</span><span>new</span></div>
+    </a>
+    <a class="card live" href="visual-intelligence-explorer.html">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">Visual Intelligence Explorer</div>
+      <div class="card-desc">The clip browser. Every analyzed clip with thumbnails, video modal, AI commentary, and filters.</div>
+      <div class="card-meta"><span class="status">Live</span><span>fetches corpus</span></div>
+    </a>
+    <a class="card live" href="brand-intelligence-v2.html">
+      <div class="card-icon">🏷️</div>
+      <div class="card-title">Brand Intelligence</div>
+      <div class="card-desc">Market share analysis, brand leaderboard, whitespace opportunities. Updates as new clips come in.</div>
+      <div class="card-meta"><span class="status">Live</span><span>fetches corpus</span></div>
+    </a>
+    <a class="card live" href="pipeline-health.html">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Pipeline Health</div>
+      <div class="card-desc">System status, ingest throughput, data source health, corpus growth trends.</div>
+      <div class="card-meta"><span class="status">Live</span><span>fetches corpus</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- SHOWCASE GALLERY -->
+<section>
+  <div class="section-head">
+    <h2>Showcase Gallery <span class="badge cached">Cached snapshots</span></h2>
+    <div class="section-desc">External demos · safe to share · rebuilt on demand</div>
+  </div>
+  <div class="cards">
+    <!-- ═══ NEW: Strategic Command Center ═══ -->
+    <a class="card cached featured" href="gtm-war-room.html" style="background:linear-gradient(135deg, rgba(239,68,68,0.1), transparent);border-color:rgba(239,68,68,0.4);">
+      <div class="card-icon">🎯</div>
+      <div class="card-title" style="color:#ef4444;">GTM War Room</div>
+      <div class="card-desc">Full business analysis: 10 deals, $300K+ pipeline, 5-vector distribution strategy, data moat roadmap, 30-day action sprint. Cross-referenced from Slack, Fireflies, Gmail, Drive.</div>
+      <div class="card-meta"><span class="status" style="color:#ef4444;">Strategic</span><span>new · command center</span></div>
+    </a>
+    <a class="card cached featured" href="story-hub.html">
+      <div class="card-icon">✦</div>
+      <div class="card-title">The Courtana Story</div>
+      <div class="card-desc">7-chapter cinematic hero's journey. From "every venue has cameras" to "$13.9M ARR at scale." For any stakeholder — investor, brand, coach, venue operator.</div>
+      <div class="card-meta"><span class="status">Narrative</span><span>new · interactive</span></div>
+    </a>
+
+    <!-- ═══ NEW: Audience-Targeted Pages ═══ -->
+    <a class="card cached" href="investor-demo.html">
+      <div class="card-icon">💰</div>
+      <div class="card-title">Investor Demo (v2)</div>
+      <div class="card-desc">Premium dark editorial. Animated KPIs, TAM/SAM/SOM, data flywheel moat, unit economics, real proof grid. The Bloomberg of pickleball.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>investor · v2</span></div>
+    </a>
+    <a class="card cached" href="partnership-deck.html">
+      <div class="card-icon">🏟️</div>
+      <div class="card-title">Venue Partnership Deck</div>
+      <div class="card-desc">"Your cameras are already smart." Revenue calculator, 3-step setup, brand intelligence, player engagement — for venue operators.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>venues · new</span></div>
+    </a>
+    <a class="card cached" href="coach-demo.html">
+      <div class="card-icon">🎬</div>
+      <div class="card-title">Coach Demo · PickleBill</div>
+      <div class="card-desc">Cinematic coaching narrative. Player DNA, 3 teaching clips with ESPN + coaching breakdowns, targeted drill plan. Film-room aesthetic.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>coaches · new</span></div>
+    </a>
+    <a class="card cached" href="../brands/joola.html">
+      <div class="card-icon">🟡</div>
+      <div class="card-title">JOOLA Brand Report</div>
+      <div class="card-desc">488 clips, 13 detection categories, $28.5K media value. Gold-themed. Exposure depth, competitive position, player profile.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>brand · new</span></div>
+    </a>
+    <a class="card cached" href="../brands/nike.html">
+      <div class="card-icon">⚫</div>
+      <div class="card-title">Nike Brand Report</div>
+      <div class="card-desc">59 clips. Black-themed. Shoes + apparel category leader with transparent CPM media value model.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>brand · new</span></div>
+    </a>
+    <a class="card cached" href="../brands/selkirk.html">
+      <div class="card-icon">🔵</div>
+      <div class="card-title">Selkirk · CRBN · Franklin</div>
+      <div class="card-desc">3 more brand reports with brand-specific color themes. Auto-generated from corpus via tools/generate-brand-report.py.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>brands · new</span></div>
+    </a>
+
+    <!-- ═══ ORIGINAL: Existing showcase cards (preserved) ═══ -->
+    <a class="card cached" href="investor-demo-boardroom.html">
+      <div class="card-icon">💼</div>
+      <div class="card-title">Investor Demo · Boardroom</div>
+      <div class="card-desc">Light-mode editorial pitch. Clean data presentation for investor conversations.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>investor</span></div>
+    </a>
+    <a class="card cached" href="../pickle-daas-investor-demo.html">
+      <div class="card-icon">📜</div>
+      <div class="card-title">Investor Demo (original)</div>
+      <div class="card-desc">First-generation investor pitch format. Kept for reference.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>investor · v1</span></div>
+    </a>
+    <a class="card cached" href="../output/courtana-data-platform-demo.html">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Courtana Data Platform Demo</div>
+      <div class="card-desc">End-to-end platform vision. Uses exact Courtana design tokens.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>platform</span></div>
+    </a>
+    <a class="card cached" href="../brand-report-joola.html">
+      <div class="card-icon">🏷️</div>
+      <div class="card-title">JOOLA Brand Report</div>
+      <div class="card-desc">Template for brand-specific deliverables. Clips, skill profiles, market position.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>brand partner</span></div>
+    </a>
+    <a class="card cached" href="visual-intelligence-explorer-v2.html">
+      <div class="card-icon">🏟️</div>
+      <div class="card-title">Arena Explorer (v2)</div>
+      <div class="card-desc">Alternative design: sport energy, warm orange accents. Design experiment.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>design alt</span></div>
+    </a>
+    <a class="card cached" href="coaching-studio.html">
+      <div class="card-icon">🎬</div>
+      <div class="card-title">Coaching Studio</div>
+      <div class="card-desc">Cinematic video-first coaching view. For coaches reviewing game footage.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>coach-facing</span></div>
+    </a>
+    <a class="card cached" href="social-clip-cards.html">
+      <div class="card-icon">📱</div>
+      <div class="card-title">Social Clip Cards</div>
+      <div class="card-desc">Instagram-story-sized shareable cards. Bold, vertical, touchable.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>social</span></div>
+    </a>
+    <a class="card cached" href="../data-explorer.html">
+      <div class="card-icon">📋</div>
+      <div class="card-title">Data Explorer (original)</div>
+      <div class="card-desc">First-generation clip browser with 97 embedded clips.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>reference</span></div>
+    </a>
+    <a class="card cached" href="../creative-badges.html">
+      <div class="card-icon">🏆</div>
+      <div class="card-title">Creative Badges</div>
+      <div class="card-desc">20 AI-invented badges derived from corpus patterns.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>badges</span></div>
+    </a>
+    <a class="card cached" href="../leaderboards.html">
+      <div class="card-icon">🥇</div>
+      <div class="card-title">Leaderboards</div>
+      <div class="card-desc">Top clips, top players, rankings. Snapshot from corpus.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>rankings</span></div>
+    </a>
+    <a class="card cached" href="../top-discoveries.html">
+      <div class="card-icon">💎</div>
+      <div class="card-title">Top Discoveries</div>
+      <div class="card-desc">Standout insights surfaced by the discovery engine.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>insights</span></div>
+    </a>
+    <a class="card cached" href="multi-model-comparison.html">
+      <div class="card-icon">🤖</div>
+      <div class="card-title">Multi-Model Comparison</div>
+      <div class="card-desc">Gemini vs Claude analyzing same clips — side-by-side comparison.</div>
+      <div class="card-meta"><span class="status">Cached</span><span>research</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- PLAYER CARDS -->
+<section>
+  <div class="section-head">
+    <h2>Player Cards <span class="badge cached">Cached</span></h2>
+    <div class="section-desc">12 players · AI skill profiles with radar charts</div>
+  </div>
+  <div class="player-strip">
+    <a class="player-card" href="../player-cards/picklebill.html"><div class="player-avatar">PB</div><div class="player-name">PickleBill</div></a>
+    <a class="player-card" href="../player-cards/ironvarr.html"><div class="player-avatar">IV</div><div class="player-name">Ironvarr</div></a>
+    <a class="player-card" href="../player-cards/pmcintosh.html"><div class="player-avatar">PM</div><div class="player-name">Pmcintosh</div></a>
+    <a class="player-card" href="../player-cards/santinofuntila.html"><div class="player-avatar">SF</div><div class="player-name">Santinofuntila</div></a>
+    <a class="player-card" href="../player-cards/khamille06.html"><div class="player-avatar">K6</div><div class="player-name">Khamille06</div></a>
+    <a class="player-card" href="../player-cards/daniella.html"><div class="player-avatar">DA</div><div class="player-name">Daniella</div></a>
+    <a class="player-card" href="../player-cards/david.html"><div class="player-avatar">DV</div><div class="player-name">David</div></a>
+    <a class="player-card" href="../player-cards/riccj.html"><div class="player-avatar">RC</div><div class="player-name">Riccj</div></a>
+    <a class="player-card" href="../player-cards/adam.html"><div class="player-avatar">AD</div><div class="player-name">Adam</div></a>
+    <a class="player-card" href="../player-cards/tmf.html"><div class="player-avatar">TM</div><div class="player-name">Tmf</div></a>
+    <a class="player-card" href="../player-cards/cmagee.html"><div class="player-avatar">CM</div><div class="player-name">Cmagee</div></a>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<details class="archive-section">
+  <summary>
+    <div class="section-head">
+      <h2>Archive <span class="badge archive">Earlier iterations</span></h2>
+      <div class="section-desc">Previous versions kept accessible · click to expand</div>
     </div>
-    <div class="grid-intel">
+  </summary>
+  <div class="cards">
+    <a class="card archive" href="../command-center.html">
+      <div class="card-icon">📟</div>
+      <div class="card-title">Command Center (v1)</div>
+      <div class="card-desc">Earlier operational dashboard. Superseded by Data Lab.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>v1</span></div>
+    </a>
+    <a class="card archive" href="../pickle-daas-master-dashboard.html">
+      <div class="card-icon">📐</div>
+      <div class="card-title">Master Dashboard</div>
+      <div class="card-desc">Multi-panel command view. Preserved for reference.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>ref</span></div>
+    </a>
+    <a class="card archive" href="../picklebill-intel-card.html">
+      <div class="card-icon">🪪</div>
+      <div class="card-title">PickleBill Intel Card</div>
+      <div class="card-desc">Personal intel card prototype.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>ref</span></div>
+    </a>
+    <a class="card archive" href="../coaching-profile-picklebill.html">
+      <div class="card-icon">🎓</div>
+      <div class="card-title">Coaching Profile (early)</div>
+      <div class="card-desc">First-pass coaching profile. Superseded by Coaching Studio.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>ref</span></div>
+    </a>
+    <a class="card archive" href="../tmnt-broadcast-dashboard.html">
+      <div class="card-icon">📺</div>
+      <div class="card-title">TMNT Broadcast</div>
+      <div class="card-desc">Theatrical broadcast dashboard. Design experiment.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>experiment</span></div>
+    </a>
+    <a class="card archive" href="../badge-analytics-dashboard.html">
+      <div class="card-icon">📈</div>
+      <div class="card-title">Badge Analytics</div>
+      <div class="card-desc">Precision/recall metrics for badge predictions.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>analytics</span></div>
+    </a>
+    <a class="card archive" href="../brand-intelligence-report-sample.html">
+      <div class="card-icon">🔖</div>
+      <div class="card-title">Brand Intel Report (sample)</div>
+      <div class="card-desc">Sample brand report format.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>sample</span></div>
+    </a>
+    <a class="card archive" href="../model-monitor-dashboard.html">
+      <div class="card-icon">📡</div>
+      <div class="card-title">Model Monitor</div>
+      <div class="card-desc">Model performance tracking dashboard.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>ops</span></div>
+    </a>
+    <a class="card archive" href="player-intelligence-v2.html">
+      <div class="card-icon">🧑</div>
+      <div class="card-title">Player Intelligence V2</div>
+      <div class="card-desc">Template page for player dashboard work.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>template</span></div>
+    </a>
+    <a class="card archive" href="../mobile-hub.html">
+      <div class="card-icon">📱</div>
+      <div class="card-title">Mobile Hub</div>
+      <div class="card-desc">Mobile-first navigation prototype.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>proto</span></div>
+    </a>
+    <a class="card archive" href="../preview-dashboard.html">
+      <div class="card-icon">👁️</div>
+      <div class="card-title">Preview Dashboard</div>
+      <div class="card-desc">Generic preview layout.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>proto</span></div>
+    </a>
+    <a class="card archive" href="../output/app-mockups/index.html">
+      <div class="card-icon">🎨</div>
+      <div class="card-title">App Mockups</div>
+      <div class="card-desc">Court TV overlay, game report, highlight cards, DNA tab.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>mockups</span></div>
+    </a>
+    <a class="card archive" href="../output/lobby-display.html">
+      <div class="card-icon">📺</div>
+      <div class="card-title">Lobby TV Display</div>
+      <div class="card-desc">Venue TV screen — pulls live Courtana API data.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>venue</span></div>
+    </a>
+    <a class="card archive" href="../output/ai-coo-status-20260411.html">
+      <div class="card-icon">🤖</div>
+      <div class="card-title">AI COO Status</div>
+      <div class="card-desc">Snapshot of the AI COO build status (Apr 11).</div>
+      <div class="card-meta"><span class="status">Archive</span><span>snapshot</span></div>
+    </a>
+    <a class="card archive" href="clip-selector.html">
+      <div class="card-icon">🔎</div>
+      <div class="card-title">Clip Selector</div>
+      <div class="card-desc">Manual clip selection UI for curated analysis runs.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>tool</span></div>
+    </a>
+    <a class="card archive" href="intelligence-preview.html">
+      <div class="card-icon">🔮</div>
+      <div class="card-title">Intelligence Preview</div>
+      <div class="card-desc">Earlier intelligence preview page.</div>
+      <div class="card-meta"><span class="status">Archive</span><span>preview</span></div>
+    </a>
+  </div>
+</details>
 
-      <a href="https://picklebill.github.io/pickle-daas-data/brand-intelligence-report-sample.html" target="_blank" class="card">
-        <div class="card-title">Brand Intelligence Report</div>
-        <div class="card-desc">Cross-brand visibility analysis with exposure metrics and detection confidence.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Boardroom</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/brand-report-joola.html" target="_blank" class="card">
-        <div class="card-title">JOOLA Brand Report</div>
-        <div class="card-desc">Deep-dive brand analysis for JOOLA -- visibility, context, and player associations.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Boardroom</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/badge-analytics-dashboard.html" target="_blank" class="card">
-        <div class="card-title">Badge Analytics</div>
-        <div class="card-desc">Achievement system metrics -- unlock rates, rarity distribution, player progression.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/creative-badges.html" target="_blank" class="card">
-        <div class="card-title">Creative Badges</div>
-        <div class="card-desc">Visual badge gallery with animated designs and unlock criteria.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/model-monitor-dashboard.html" target="_blank" class="card">
-        <div class="card-title">Model Monitor</div>
-        <div class="card-desc">Multi-model performance tracking -- latency, accuracy, cost per analysis across GPT-4o, Gemini, Claude.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/leaderboards.html" target="_blank" class="card">
-        <div class="card-title">Leaderboards</div>
-        <div class="card-desc">Player rankings across skill dimensions with ELO-style rating system.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/command-center.html" target="_blank" class="card">
-        <div class="card-title">Command Center</div>
-        <div class="card-desc">Operational dashboard for pipeline health, ingest status, and system metrics.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/pickle-daas-master-dashboard.html" target="_blank" class="card">
-        <div class="card-title">Master Dashboard</div>
-        <div class="card-desc">The original overview -- corpus stats, model outputs, and pipeline summary.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/top-discoveries.html" target="_blank" class="card">
-        <div class="card-title">Top Discoveries</div>
-        <div class="card-desc">AI-surfaced standout moments -- the best plays, insights, and anomalies from the corpus.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ══════════════ PLAYER CARDS ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>Player Cards</h2>
-    </div>
-    <div class="scroll-row">
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/picklebill.html" target="_blank" class="card card-player">
-        <div class="player-avatar">PB</div>
-        <div class="card-title">picklebill</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/ironvarr.html" target="_blank" class="card card-player">
-        <div class="player-avatar">IV</div>
-        <div class="card-title">ironvarr</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/santinofuntila.html" target="_blank" class="card card-player">
-        <div class="player-avatar">SF</div>
-        <div class="card-title">santinofuntila</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/pmcintosh.html" target="_blank" class="card card-player">
-        <div class="player-avatar">PM</div>
-        <div class="card-title">pmcintosh</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/khamille06.html" target="_blank" class="card card-player">
-        <div class="player-avatar">K6</div>
-        <div class="card-title">khamille06</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/daniella.html" target="_blank" class="card card-player">
-        <div class="player-avatar">DA</div>
-        <div class="card-title">daniella</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/david.html" target="_blank" class="card card-player">
-        <div class="player-avatar">DV</div>
-        <div class="card-title">david</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/riccj.html" target="_blank" class="card card-player">
-        <div class="player-avatar">RJ</div>
-        <div class="card-title">riccj</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/adam.html" target="_blank" class="card card-player">
-        <div class="player-avatar">AD</div>
-        <div class="card-title">adam</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/tmf.html" target="_blank" class="card card-player">
-        <div class="player-avatar">TF</div>
-        <div class="card-title">tmf</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/player-cards/cmagee.html" target="_blank" class="card card-player">
-        <div class="player-avatar">CM</div>
-        <div class="card-title">cmagee</div>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ══════════════ APP MOCKUPS ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>App Mockups</h2>
-    </div>
-    <div class="grid-mockups">
-
-      <a href="https://picklebill.github.io/pickle-daas-data/output/app-mockups/court-tv-overlay.html" target="_blank" class="card">
-        <div class="card-title">Court TV Overlay</div>
-        <div class="card-desc">Live broadcast overlay with real-time stats, player names, and score ticker.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-broadcast">Broadcast</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/output/app-mockups/game-report.html" target="_blank" class="card">
-        <div class="card-title">Game Report</div>
-        <div class="card-desc">Post-match summary with play-by-play, momentum charts, and key moments.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/output/app-mockups/highlight-intelligence-card.html" target="_blank" class="card">
-        <div class="card-title">Highlight Intelligence Card</div>
-        <div class="card-desc">AI-generated highlight card with context, skill tags, and shareability.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/output/app-mockups/player-dna-tab.html" target="_blank" class="card">
-        <div class="card-title">Player DNA Tab</div>
-        <div class="card-desc">Deep player profile -- skill fingerprint, tendencies, strengths, coaching notes.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/output/app-mockups/venue-intelligence-panel.html" target="_blank" class="card">
-        <div class="card-title">Venue Intelligence Panel</div>
-        <div class="card-desc">Venue-level analytics -- court utilization, peak hours, player demographics.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Boardroom</div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ══════════════ SPECIALTY VIEWS ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>Specialty Views</h2>
-    </div>
-    <div class="grid-specialty">
-
-      <a href="https://picklebill.github.io/pickle-daas-data/picklebill-intel-card.html" target="_blank" class="card">
-        <div class="card-title">PickleBill Intel Card</div>
-        <div class="card-desc">Founder's personal highlight reel and AI-generated intelligence summary.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/coaching-profile-picklebill.html" target="_blank" class="card">
-        <div class="card-title">Coaching Profile</div>
-        <div class="card-desc">AI coaching assessment with improvement priorities and drill recommendations.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/tmnt-broadcast-dashboard.html" target="_blank" class="card">
-        <div class="card-title">TMNT Broadcast</div>
-        <div class="card-desc">Theatrical broadcast concept -- tournament-grade production overlay.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-broadcast">Broadcast</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/pipeline-health.html" target="_blank" class="card">
-        <div class="card-title">Pipeline Health</div>
-        <div class="card-desc">Pipeline monitoring dashboard -- ingest rates, error tracking, and throughput metrics.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-workbench">Workbench</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/player-intelligence-v2.html" target="_blank" class="card">
-        <div class="card-title">Player Intelligence V2</div>
-        <div class="card-desc">Next-gen player analytics with advanced skill breakdowns and trend analysis.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-arena">Arena</div>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboards/brand-intelligence-v2.html" target="_blank" class="card">
-        <div class="card-title">Brand Intelligence V2</div>
-        <div class="card-desc">Enhanced brand detection dashboard with deeper exposure analytics.</div>
-        <span class="card-arrow">&nearr;</span>
-        <div class="badge badge-boardroom">Boardroom</div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ══════════════ DATA & API ══════════════ -->
-  <section class="section">
-    <div class="section-header">
-      <h2>Data &amp; API</h2>
-    </div>
-    <p class="section-label">gh-pages JSON endpoints</p>
-    <div class="api-list">
-
-      <a href="https://picklebill.github.io/pickle-daas-data/corpus-export.json" target="_blank" class="api-row">
-        <span class="api-method">GET</span>
-        <span class="api-path">/corpus-export.json</span>
-        <span class="api-desc">46 clips with full skill scores, AI commentary, and brand detections</span>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/dashboard-stats.json" target="_blank" class="api-row">
-        <span class="api-method">GET</span>
-        <span class="api-path">/dashboard-stats.json</span>
-        <span class="api-desc">Aggregate statistics for dashboards and KPI cards</span>
-      </a>
-
-      <a href="https://picklebill.github.io/pickle-daas-data/enriched-corpus.json" target="_blank" class="api-row">
-        <span class="api-method">GET</span>
-        <span class="api-path">/enriched-corpus.json</span>
-        <span class="api-desc">Multi-model enriched corpus with Gemini, GPT-4o, and Claude outputs</span>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- ══════════════ FOOTER ══════════════ -->
-  <footer class="footer">
-    <div class="footer-logo">PickleBill</div>
-    <p>Pickle DaaS Sprint Showcase &middot; Built with multi-model AI &middot; April 2026</p>
-  </footer>
+<footer>
+  <div>
+    Pickle DaaS · Internal portal · <span id="footer-counts">—</span>
+  </div>
+  <div>
+    <a href="https://picklebill.github.io/pickle-daas-data/corpus-export.json" target="_blank">corpus-export.json</a> ·
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboard-stats.json" target="_blank">dashboard-stats.json</a> ·
+    <a href="https://supabase.com/dashboard/project/vlcjaftwnllfjyckjchg/sql" target="_blank">Supabase SQL ↗</a>
+  </div>
+</footer>
 
 </div>
 
 <script>
-// Animated stat counters
-function animateCounters() {
-  const counters = document.querySelectorAll('.stat-number[data-target]');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.dataset.target, 10);
-        let current = 0;
-        const step = Math.max(1, Math.floor(target / 30));
-        const interval = setInterval(() => {
-          current += step;
-          if (current >= target) {
-            current = target;
-            clearInterval(interval);
-          }
-          el.textContent = current;
-        }, 35);
-        observer.unobserve(el);
-      }
-    });
-  }, { threshold: 0.3 });
-  counters.forEach(c => observer.observe(c));
-}
-animateCounters();
-</script>
+async function loadLiveStats() {
+  try {
+    const res = await fetch('../corpus-export.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const corpus = await res.json();
+    const lastMod = res.headers.get('Last-Modified');
 
+    const brands = new Set();
+    let qSum = 0, qN = 0;
+    for (const c of corpus) {
+      for (const b of (c.brands || [])) if (b) brands.add(String(b).trim());
+      if (c.quality) { qSum += c.quality; qN++; }
+    }
+
+    document.getElementById('stat-clips').textContent = corpus.length.toLocaleString();
+    document.getElementById('stat-brands').textContent = brands.size;
+    document.getElementById('stat-quality').innerHTML = (qN ? (qSum / qN).toFixed(1) : '—') + '<small>/10</small>';
+    document.getElementById('stat-cost').textContent = '$' + (corpus.length * 0.0054).toFixed(2);
+
+    if (lastMod) {
+      const ago = Math.round((Date.now() - new Date(lastMod).getTime()) / 60000);
+      if (ago < 60) document.getElementById('stat-updated').textContent = ago + 'm ago';
+      else if (ago < 1440) document.getElementById('stat-updated').textContent = Math.round(ago / 60) + 'h ago';
+      else document.getElementById('stat-updated').textContent = Math.round(ago / 1440) + 'd ago';
+    } else {
+      document.getElementById('stat-updated').textContent = 'live';
+    }
+
+    document.getElementById('footer-counts').textContent =
+      `${corpus.length} clips · ${brands.size} brands · 5 live pages · 20 showcase demos · 11 player cards`;
+
+    // Pull F1 from accuracy.json (optional — non-fatal if missing)
+    try {
+      const accRes = await fetch('accuracy.json', { cache: 'no-cache' });
+      if (accRes.ok) {
+        const acc = await accRes.json();
+        const f1 = acc?.badge_accuracy?.overall?.f1;
+        const f1El = document.getElementById('stat-f1');
+        if (typeof f1 === 'number' && f1El) {
+          f1El.innerHTML = (f1 * 100).toFixed(0) + '<small>%</small>';
+          f1El.style.color = f1 >= 0.6 ? 'var(--ok)' : f1 >= 0.4 ? 'var(--gold, #eab308)' : 'var(--archive, #64748b)';
+        }
+      }
+    } catch { /* accuracy.json optional */ }
+  } catch (e) {
+    const banner = document.getElementById('error-banner');
+    banner.style.display = 'block';
+    banner.textContent = 'Live stats unavailable: ' + (e.message || 'unknown') + '. Dashboards may still work individually.';
+    ['stat-clips', 'stat-brands', 'stat-quality', 'stat-f1', 'stat-cost', 'stat-updated'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.textContent.replace(/<[^>]+>/g, '').trim() === '—') el.textContent = 'offline';
+    });
+  }
+}
+loadLiveStats();
+</script>
 </body>
 </html>
