@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Data Product Design</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0e18;
+  --surface: #131a2a;
+  --surface-2: #1d2640;
+  --border: #2a3555;
+  --text: #e4e7ed;
+  --muted: #7a8499;
+  --accent: #3b82f6;
+  --accent-bright: #60a5fa;
+  --accent-dim: rgba(59, 130, 246, 0.12);
+  --gold: #eab308;
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --purple: #a855f7;
+  --teal: #14b8a6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+.shell { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+
+/* Header */
+header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+.brand-title h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.brand-title .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(34,197,94,0.1); border: 1px solid var(--ok); border-radius: 4px; color: var(--ok); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+.live-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+/* Nav tabs */
+.nav { display: flex; gap: 2px; margin-bottom: 28px; background: var(--surface); border-radius: 8px; padding: 4px; overflow-x: auto; }
+.nav button { padding: 10px 18px; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 500; border-radius: 6px; white-space: nowrap; transition: all 0.2s; }
+.nav button:hover { color: var(--text); background: var(--surface-2); }
+.nav button.active { color: var(--accent-bright); background: var(--accent-dim); }
+
+/* Sections */
+.section { display: none; }
+.section.active { display: block; }
+
+/* Hero stats */
+.hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 32px; }
+.hero-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.hero-stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; font-family: ui-monospace, monospace; }
+.hero-stat .value { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.hero-stat .sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.hero-stat.featured { background: linear-gradient(135deg, var(--accent-dim), transparent); border-color: var(--accent); }
+.hero-stat.gold { background: linear-gradient(135deg, rgba(234,179,8,0.1), transparent); border-color: var(--gold); }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+.card h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.card h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+/* Tier cards */
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 32px; }
+.tier-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+.tier-card:hover { border-color: var(--accent); }
+.tier-card .tier-num { position: absolute; top: 16px; right: 20px; font-size: 48px; font-weight: 800; color: rgba(59,130,246,0.08); line-height: 1; }
+.tier-card .tier-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-bright); margin-bottom: 6px; font-family: ui-monospace, monospace; }
+.tier-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.tier-card .tagline { color: var(--muted); font-size: 13px; margin-bottom: 16px; font-style: italic; }
+.tier-card .price { font-size: 22px; font-weight: 700; color: var(--ok); margin-bottom: 16px; }
+.tier-card .price span { font-size: 13px; font-weight: 400; color: var(--muted); }
+.tier-card .target { font-size: 12px; color: var(--muted); margin-bottom: 14px; padding: 8px 12px; background: var(--surface-2); border-radius: 6px; }
+.tier-card ul { list-style: none; margin-bottom: 16px; }
+.tier-card ul li { padding: 4px 0; font-size: 13px; color: var(--text); }
+.tier-card ul li::before { content: '+'; color: var(--accent-bright); margin-right: 8px; font-weight: 600; }
+.tier-card .moat { padding: 12px; background: rgba(234,179,8,0.06); border: 1px solid rgba(234,179,8,0.15); border-radius: 6px; font-size: 12px; color: var(--gold); }
+
+/* API section */
+.endpoint { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; }
+.endpoint .method { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; font-family: ui-monospace, monospace; white-space: nowrap; }
+.method-GET { background: rgba(34,197,94,0.15); color: var(--ok); }
+.method-POST { background: rgba(59,130,246,0.15); color: var(--accent-bright); }
+.method-WebSocket { background: rgba(168,85,247,0.15); color: var(--purple); }
+.endpoint .path { font-family: ui-monospace, monospace; font-size: 14px; font-weight: 500; }
+.endpoint .desc { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+/* Code block */
+pre.code { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 20px; overflow-x: auto; font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.5; color: #c9d1d9; max-height: 500px; }
+
+/* Economics table */
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th { text-align: left; padding: 10px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; }
+td { padding: 12px 14px; border-bottom: 1px solid rgba(42,53,85,0.5); font-size: 13px; }
+tr:hover td { background: var(--surface-2); }
+
+/* Moat pills */
+.moat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.moat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; border-left: 3px solid var(--gold); }
+.moat-card h4 { font-size: 14px; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+.moat-card p { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.moat-card .cost { font-size: 12px; color: var(--danger); font-family: ui-monospace, monospace; }
+
+/* Chart container */
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+.chart-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.chart-box h4 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; font-family: ui-monospace, monospace; }
+canvas { max-height: 280px; }
+
+/* Fill rate bars */
+.fill-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.fill-bar-label { width: 160px; font-size: 12px; font-family: ui-monospace, monospace; color: var(--muted); text-align: right; }
+.fill-bar-track { flex: 1; height: 20px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.fill-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.fill-bar-pct { width: 50px; font-size: 12px; font-family: ui-monospace, monospace; color: var(--text); }
+
+/* Competitive table */
+.comp-row { display: grid; grid-template-columns: 140px 200px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(42,53,85,0.4); align-items: start; }
+.comp-row .name { font-weight: 600; font-size: 14px; }
+.comp-row .has { font-size: 13px; color: var(--muted); }
+.comp-row .gap { font-size: 13px; color: var(--warn); }
+
+@media (max-width: 768px) {
+  .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .tier-grid { grid-template-columns: 1fr; }
+  .chart-row { grid-template-columns: 1fr; }
+  .comp-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header>
+  <div class="brand-title">
+    <h1>Pickle DaaS Data Products</h1>
+    <div class="sub">Series A Data Product Architecture &mdash; Generated April 14, 2026</div>
+  </div>
+  <div class="live-badge">Corpus Growing Hourly</div>
+</header>
+
+<div class="nav" id="nav">
+  <button class="active" onclick="showSection('overview')">Overview</button>
+  <button onclick="showSection('tiers')">Product Tiers</button>
+  <button onclick="showSection('api')">API Spec</button>
+  <button onclick="showSection('economics')">Economics</button>
+  <button onclick="showSection('tam')">TAM Analysis</button>
+  <button onclick="showSection('moat')">Defensibility</button>
+  <button onclick="showSection('sample')">Sample API Response</button>
+  <button onclick="showSection('projection')">12-Mo Projection</button>
+</div>
+
+<!-- ═══════ OVERVIEW ═══════ -->
+<div class="section active" id="sec-overview">
+  <div class="hero-grid">
+    <div class="hero-stat featured">
+      <div class="label">Clips Analyzed</div>
+      <div class="value">661</div>
+      <div class="sub">of 20,034 available</div>
+    </div>
+    <div class="hero-stat gold">
+      <div class="label">Total Data Points</div>
+      <div class="value">195,156</div>
+      <div class="sub">~295 per clip</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Analysis Cost</div>
+      <div class="value">$0.0015</div>
+      <div class="sub">per clip (Gemini Flash)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Unique Brands</div>
+      <div class="value">58</div>
+      <div class="sub">66 badge types</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Year 1 Revenue Target</div>
+      <div class="value">$415,888</div>
+      <div class="sub">$827,256 ARR by M12</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Total TAM</div>
+      <div class="value">$86M</div>
+      <div class="sub">across 5 tiers</div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:16px; font-size:16px;">Field Fill Rates (Production Readiness)</h3>
+  <div class="card" style="margin-bottom:24px;">
+    <div class="fill-bar-row">
+      <div class="fill-bar-label">clip_meta</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">players_detected</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">shot_analysis</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">skill_indicators</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">brand_detection</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">storytelling</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">badge_intelligence</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">commentary</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">daas_signals</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.3%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.3%</div>
+    </div><div class="fill-bar-row">
+      <div class="fill-bar-label">paddle_intel</div>
+      <div class="fill-bar-track"><div class="fill-bar-fill" style="width:94.1%;background:var(--ok)"></div></div>
+      <div class="fill-bar-pct">94.1%</div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart-box">
+      <h4>Brand Distribution (Top 12)</h4>
+      <canvas id="brandChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h4>Shot Type Distribution</h4>
+      <canvas id="shotChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <h4>Story Arc Distribution</h4>
+      <canvas id="arcChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h4>Skill Radar (Average Across Corpus)</h4>
+      <canvas id="skillRadar"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PRODUCT TIERS ═══════ -->
+<div class="section" id="sec-tiers">
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tier-num">1</div>
+      <div class="tier-label">Tier 1</div>
+      <h3>Market Intelligence</h3>
+      <div class="tagline">See what the pros are using before anyone else</div>
+      <div class="price">$1,000-$5,000<span>/month</span></div>
+      <div class="target">Equipment brands (JOOLA, Selkirk, HEAD, Franklin, CRBN, etc.)</div>
+      <ul><li>Brand market share by venue/region</li><li>Equipment correlation with player skill levels</li><li>Competitive positioning dashboards (brand vs brand)</li><li>Paddle preference trends over time</li><li>Apparel brand visibility scoring</li></ul>
+      <div class="moat">Only source of real-game brand usage data. Surveys ask what people buy; we see what they actually play with.</div>
+    </div><div class="tier-card">
+      <div class="tier-num">2</div>
+      <div class="tier-label">Tier 2</div>
+      <h3>Player Analytics</h3>
+      <div class="tagline">Every player, every shot, every skill — quantified</div>
+      <div class="price">$500-$2,000<span>/month</span></div>
+      <div class="target">Leagues, tournaments, DUPR, APP, PPA, MLP</div>
+      <ul><li>DUPR estimate validation/enhancement</li><li>Player archetype classification (9 skill dimensions)</li><li>Skill progression tracking over time</li><li>Match prediction model inputs</li><li>Player DNA profiles (signature moves, play styles)</li></ul>
+      <div class="moat">9-dimension skill profiling from actual gameplay video, not self-reported data. Cross-references with DUPR estimates.</div>
+    </div><div class="tier-card">
+      <div class="tier-num">3</div>
+      <div class="tier-label">Tier 3</div>
+      <h3>Content Intelligence</h3>
+      <div class="tagline">Know what will go viral before you post it</div>
+      <div class="price">$2,000-$10,000<span>/month</span></div>
+      <div class="target">Media companies, content creators, broadcast networks</div>
+      <ul><li>Viral potential scoring (1-10 scale)</li><li>Auto-generated highlight reels (clip ranking)</li><li>Story arc classification for narrative content</li><li>Social media caption/hashtag optimization</li><li>Multi-voice commentary generation (ESPN, hype, comedy)</li></ul>
+      <div class="moat">AI-generated narrative layer on raw footage. No human editor needed. 6 commentary voices, story arc classification, viral prediction.</div>
+    </div><div class="tier-card">
+      <div class="tier-num">4</div>
+      <div class="tier-label">Tier 4</div>
+      <h3>Venue Operations</h3>
+      <div class="tagline">Turn every court into a content machine</div>
+      <div class="price">$200-$500<span>/month</span></div>
+      <div class="target">Venue owners, chains (Life Time, Chicken N Pickle, etc.)</div>
+      <ul><li>Player demographics and skill distribution per venue</li><li>Equipment brand popularity at venue</li><li>Auto-generated social media content</li><li>Coaching program optimization data</li><li>Player retention and engagement signals</li></ul>
+      <div class="moat">Turns existing camera infrastructure into a data and content platform. Zero additional hardware needed.</div>
+    </div><div class="tier-card">
+      <div class="tier-num">5</div>
+      <div class="tier-label">Tier 5</div>
+      <h3>Raw Data Feed</h3>
+      <div class="tagline">Full-resolution pickleball intelligence, programmatic access</div>
+      <div class="price">$0.01-$0.05<span>/clip</span></div>
+      <div class="target">Analytics companies, betting/gaming platforms, data aggregators</div>
+      <ul><li>Full JSON analysis per clip via REST API</li><li>Streaming new analyses via WebSocket</li><li>Historical corpus bulk access</li><li>Custom analysis on submitted clips</li><li>Batch processing endpoints</li></ul>
+      <div class="moat">295+ data points per clip at $0.0015 COGS. 10-30x markup. Only structured pickleball data feed in the market.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ API SPEC ═══════ -->
+<div class="section" id="sec-api">
+  <div class="card">
+    <h3>API Specification</h3>
+    <p style="color:var(--muted);margin-bottom:4px;">Base URL: <code style="color:var(--accent-bright);">https://api.pickledaas.com/v1</code></p>
+    <p style="color:var(--muted);margin-bottom:20px;">Auth: Bearer token | Rate limits: Free 100/day, Pro 10K/day, Enterprise unlimited</p>
+    <div class="endpoint">
+      <div>
+        <span class="method method-GET">GET</span>
+      </div>
+      <div>
+        <div class="path">/clips</div>
+        <div class="desc">List analyzed clips with filters</div>
+      </div>
+    </div><div class="endpoint">
+      <div>
+        <span class="method method-GET">GET</span>
+      </div>
+      <div>
+        <div class="path">/clips/{uuid}</div>
+        <div class="desc">Full analysis for a single clip</div>
+      </div>
+    </div><div class="endpoint">
+      <div>
+        <span class="method method-GET">GET</span>
+      </div>
+      <div>
+        <div class="path">/players</div>
+        <div class="desc">Aggregated player profiles with skill DNA</div>
+      </div>
+    </div><div class="endpoint">
+      <div>
+        <span class="method method-GET">GET</span>
+      </div>
+      <div>
+        <div class="path">/brands</div>
+        <div class="desc">Brand intelligence and market share data</div>
+      </div>
+    </div><div class="endpoint">
+      <div>
+        <span class="method method-GET">GET</span>
+      </div>
+      <div>
+        <div class="path">/venues/{id}/insights</div>
+        <div class="desc">Venue-level analytics and insights</div>
+      </div>
+    </div><div class="endpoint">
+      <div>
+        <span class="method method-POST">POST</span>
+      </div>
+      <div>
+        <div class="path">/analyze</div>
+        <div class="desc">Submit a clip for AI analysis</div>
+      </div>
+    </div><div class="endpoint">
+      <div>
+        <span class="method method-WebSocket">WebSocket</span>
+      </div>
+      <div>
+        <div class="path">/stream</div>
+        <div class="desc">Real-time stream of new analyses as they complete</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ECONOMICS ═══════ -->
+<div class="section" id="sec-economics">
+  <div class="card">
+    <h3>Unit Economics by Tier</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Avg Price</th>
+          <th>COGS</th>
+          <th>Gross Margin</th>
+          <th>Breakeven</th>
+          <th>Revenue @ 10 Customers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600;">Market Intelligence</td>
+          <td style="color:var(--ok);">$3,000/mo</td>
+          <td>$50/mo</td>
+          <td style="color:var(--ok);">95%</td>
+          <td>3</td>
+          <td style="color:var(--accent-bright);">$30,000/mo</td>
+        </tr><tr>
+          <td style="font-weight:600;">Player Analytics</td>
+          <td style="color:var(--ok);">$1,250/mo</td>
+          <td>$30/mo</td>
+          <td style="color:var(--ok);">97%</td>
+          <td>2</td>
+          <td style="color:var(--accent-bright);">$12,500/mo</td>
+        </tr><tr>
+          <td style="font-weight:600;">Content Intelligence</td>
+          <td style="color:var(--ok);">$6,000/mo</td>
+          <td>$100/mo</td>
+          <td style="color:var(--ok);">95%</td>
+          <td>2</td>
+          <td style="color:var(--accent-bright);">$60,000/mo</td>
+        </tr><tr>
+          <td style="font-weight:600;">Venue Operations</td>
+          <td style="color:var(--ok);">$350/mo</td>
+          <td>$15/mo</td>
+          <td style="color:var(--ok);">93%</td>
+          <td>10</td>
+          <td style="color:var(--accent-bright);">$3,500/mo</td>
+        </tr><tr>
+          <td style="font-weight:600;">Raw Data Feed</td>
+          <td style="color:var(--ok);">$0.030/clip</td>
+          <td>$0.0015/clip</td>
+          <td style="color:var(--ok);">95%</td>
+          <td>5,000 clips/mo</td>
+          <td style="color:var(--accent-bright);">$3,000/mo @100K clips</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Key Insight: Software-Like Margins</h3>
+    <p style="color:var(--muted);line-height:1.8;">Analysis COGS is <strong style="color:var(--ok);">$0.0015 per clip</strong> using Gemini Flash. Even at our lowest price point ($0.01/clip for raw data), we operate at <strong style="color:var(--ok);">85% gross margin</strong>. At subscription tiers, margins exceed 93%. This is a data business with SaaS margins.</p>
+  </div>
+</div>
+
+<!-- ═══════ TAM ═══════ -->
+<div class="section" id="sec-tam">
+  <div class="hero-grid">
+    <div class="hero-stat gold">
+      <div class="label">Total TAM</div>
+      <div class="value">$86M</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">US Players</div>
+      <div class="value">48.8M</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">US Venues</div>
+      <div class="value">12,000</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Equipment Market</div>
+      <div class="value">$2.1B</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>TAM by Tier</h3>
+    <table>
+      <thead><tr><th>Tier</th><th>Addressable</th><th>Avg Annual Contract</th><th>TAM</th><th>Year 1 Target</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Tier 1 Equipment Brands</td>
+          <td>150</td>
+          <td>$30,000</td>
+          <td style="color:var(--gold);">$4,500,000</td>
+          <td style="color:var(--ok);">$90,000</td>
+        </tr><tr>
+          <td>Tier 2 Leagues Tournaments</td>
+          <td>500</td>
+          <td>$15,000</td>
+          <td style="color:var(--gold);">$7,500,000</td>
+          <td style="color:var(--ok);">$75,000</td>
+        </tr><tr>
+          <td>Tier 3 Media Content</td>
+          <td>300</td>
+          <td>$72,000</td>
+          <td style="color:var(--gold);">$21,600,000</td>
+          <td style="color:var(--ok);">$144,000</td>
+        </tr><tr>
+          <td>Tier 4 Venues</td>
+          <td>12,000</td>
+          <td>$4,200</td>
+          <td style="color:var(--gold);">$50,400,000</td>
+          <td style="color:var(--ok);">$105,000</td>
+        </tr><tr>
+          <td>Tier 5 Raw Data</td>
+          <td>50</td>
+          <td>$36,000</td>
+          <td style="color:var(--gold);">$1,800,000</td>
+          <td style="color:var(--ok);">$72,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Best Margin x TAM: Content Intelligence (Tier 3)</h3>
+    <p style="color:var(--muted);line-height:1.8;">At 95% gross margin and $21.6M TAM, Content Intelligence has the best margin-weighted TAM of any tier. Media companies pay premium for content optimization and automated highlight production. <strong style="color:var(--accent-bright);">Venue Operations (Tier 4)</strong> has the largest raw TAM ($50.4M) but lower per-venue pricing. For Series A pitch positioning, lead with Tier 3 + Tier 4 as the primary growth engines.</p>
+  </div>
+</div>
+
+<!-- ═══════ MOAT ═══════ -->
+<div class="section" id="sec-moat">
+  <h3 style="margin-bottom:20px;">Why This Data Is Defensible</h3>
+  <div class="moat-grid">
+    <div class="moat-card">
+      <h4>Exclusive Camera Network</h4>
+      <p>Courtana camera infrastructure at venues provides raw video feed. No competitor has this installed base.</p>
+      <div class="cost">Replication: $50M+ to build equivalent camera network | 3-5 years</div>
+    </div><div class="moat-card">
+      <h4>Proprietary Analysis Schema</h4>
+      <p>134K+ data points with unique 9-dimension skill profiling, shot-by-shot analysis, and brand detection trained on real gameplay.</p>
+      <div class="cost">Replication: 6+ months of ML development + domain expertise | 12-18 months</div>
+    </div><div class="moat-card">
+      <h4>Compounding Data Flywheel</h4>
+      <p>Every new clip makes the corpus more valuable. Historical data cannot be recreated. Network effects: more venues = more data = better models = more venues.</p>
+      <div class="cost">Replication: Cannot be replicated retroactively | Never (historical data is gone)</div>
+    </div><div class="moat-card">
+      <h4>Cost Advantage</h4>
+      <p>$0.0015/clip analysis cost via Gemini Flash. Competitors using GPT-4 Vision would pay 50-100x more.</p>
+      <div class="cost">Replication: N/A — architectural advantage | 6 months to match architecture</div>
+    </div><div class="moat-card">
+      <h4>First-Mover Data Monopoly</h4>
+      <p>No other company has structured pickleball game data at scale. Sports betting, fantasy, and analytics companies have zero pickleball data sources today.</p>
+      <div class="cost">Replication: Requires camera partnerships + ML pipeline | 2-3 years minimum</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Competitive Landscape</h3>
+    <div style="margin-top:16px;">
+      <div class="comp-row" style="border-bottom:2px solid var(--border);">
+        <div class="name" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Company</div>
+        <div class="has" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Their Data</div>
+        <div class="gap" style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Gap vs Pickle DaaS</div>
+      </div>
+      <div class="comp-row">
+        <div class="name">DUPR</div>
+        <div class="has">Player ratings only</div>
+        <div class="gap">No video analysis, no brand data, no shot-level data</div>
+      </div><div class="comp-row">
+        <div class="name">SwingVision</div>
+        <div class="has">Tennis-focused video analysis</div>
+        <div class="gap">Tennis-first, limited pickleball, no brand detection</div>
+      </div><div class="comp-row">
+        <div class="name">PlaySight</div>
+        <div class="has">Court-level video (acquired by Genius Sports)</div>
+        <div class="gap">Tennis/basketball focus, no pickleball-specific AI</div>
+      </div><div class="comp-row">
+        <div class="name">Courtana</div>
+        <div class="has">Raw video capture</div>
+        <div class="gap">No analysis layer — that is what Pickle DaaS adds</div>
+      </div><div class="comp-row">
+        <div class="name">APP/PPA</div>
+        <div class="has">Match scores and rankings</div>
+        <div class="gap">No video analysis, no recreational player data</div>
+      </div><div class="comp-row">
+        <div class="name">Nobody</div>
+        <div class="has">Structured pickleball gameplay data at scale</div>
+        <div class="gap">THIS IS THE WHITESPACE</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SAMPLE API ═══════ -->
+<div class="section" id="sec-sample">
+  <div class="card">
+    <h3>Sample API Response: GET /api/v1/clips/{uuid}</h3>
+    <p style="color:var(--muted);margin-bottom:16px;">Real data from an analyzed clip in our corpus. This is what buyers get per clip.</p>
+    <pre class="code">{
+  "analyzed_at": "2026-04-11T01:10:00.000000Z",
+  "model_used": "gemini-2.5-flash",
+  "prompt_version": "v1.2-20260410",
+  "clip_meta": {
+    "duration_seconds": 20.0,
+    "clip_quality_score": 7,
+    "viral_potential_score": 4,
+    "watchability_score": 6,
+    "cinematic_score": 5
+  },
+  "players_detected": [
+    {
+      "approximate_position": "center",
+      "side": "near",
+      "dominance_in_clip": "primary",
+      "estimated_skill_level": "advanced intermediate",
+      "energy_level": "moderate",
+      "handedness": "right",
+      "height_estimate": "medium",
+      "movement_style": "methodical",
+      "apparel_summary": "Black t-shirt, black shorts, pink shoes"
+    },
+    {
+      "approximate_position": "center",
+      "side": "near",
+      "dominance_in_clip": "secondary",
+      "estimated_skill_level": "advanced intermediate",
+      "energy_level": "moderate",
+      "handedness": "right",
+      "height_estimate": "medium",
+      "movement_style": "methodical",
+      "apparel_summary": "Blue t-shirt, blue shorts, white shoes, white hat"
+    },
+    {
+      "approximate_position": "center",
+      "side": "far",
+      "dominance_in_clip": "background",
+      "estimated_skill_level": "intermediate",
+      "energy_level": "moderate",
+      "handedness": "right",
+      "height_estimate": "medium",
+      "movement_style": "defensive",
+      "apparel_summary": "Black t-shirt, black shorts, white shoes"
+    },
+    {
+      "approximate_position": "center",
+      "side": "far",
+      "dominance_in_clip": "background",
+      "estimated_skill_level": "intermediate",
+      "energy_level": "moderate",
+      "handedness": "right",
+      "height_estimate": "medium",
+      "movement_style": "defensive",
+      "apparel_summary": "Red t-shirt, black shorts, white shoes"
+    },
+    {
+      "approximate_position": "right",
+      "side": "sideline",
+      "dominance_in_clip": "background",
+      "estimated_skill_level": "unknown",
+      "energy_level": "calm",
+      "handedness": "unknown",
+      "height_estimate": "medium",
+      "movement_style": "unknown",
+      "apparel_summary": "Seated, wearing various casual clothing"
+    }
+  ],
+  "shot_analysis": {
+    "shots": [
+      {
+        "shot_type": "serve",
+        "player_position": "baseline",
+        "quality_score": 6,
+        "difficulty_score": 3,
+        "outcome": "rally_continues",
+        "wow_factor": 2,
+        "timestamp_approximate_seconds": 0.5
+      },
+      {
+        "shot_type": "return",
+        "player_position": "baseline",
+        "quality_score": 7,
+        "difficulty_score": 4,
+        "outcome": "rally_continues",
+        "wow_factor": 3,
+        "timestamp_approximate_seconds": 1.2
+      },
+      {
+        "shot_type": "dink",
+        "player_position": "kitchen",
+        "quality_score": 8,
+        "difficulty_score": 5,
+        "outcome": "rally_continues",
+        "wow_factor": 5,
+        "timestamp_approximate_seconds": 2.0
+      },
+      {
+        "shot_type": "dink",
+        "player_position": "kitchen",
+        "quality_score": 7,
+        "difficulty_score": 4,
+        "outcome": "rally_continues",
+        "wow_factor": 4,
+        "timestamp_approximate_seconds": 2.8
+      },
+      {
+        "shot_type": "dink",
+        "player_position": "kitchen",
+        "quality_score": 9,
+        "difficulty_score": 6,
+        "outcome": "rally_continues",
+        "wow_factor": 6,
+        "timestamp_approximate_seconds": 3.5
+      }
+    ],
+    "dominant_shot_type": "dink",
+    "total_shots_estimated": 15,
+    "rally_length_estimated": 15,
+    "longest_exchange_type": "kitchen_battle",
+    "_truncated": "Showing 5 of 11 shots"
+  },
+  "skill_indicators": {
+    "court_coverage_rating": 7,
+    "kitchen_mastery_rating": 8,
+    "power_game_rating": 6,
+    "touch_and_feel_rating": 8,
+    "athleticism_rating": 6,
+    "creativity_rating": 5,
+    "court_iq_rating": 7,
+    "consistency_rating": 9,
+    "composure_under_pressure": 8,
+    "paddle_control_rating": 8,
+    "grip_pressure_estimate": "medium",
+    "aggression_style": "balanced",
+    "play_style_tags": [
+      "kitchen specialist",
+      "consistent",
+      "patient"
+    ],
+    "signature_move_detected": "Patient dinking from the kitchen line, patiently waiting for an opportunity to speed up the ball.",
+    "tactical_tendencies": [
+      "Prefers to keep the ball in play with dinks",
+      "Looks for opportunities to transition from dinking to a speed-up"
+    ],
+    "physical_descriptors": [
+      "Right-handed",
+      "Methodical movement"
+    ],
+    "improvement_opportunities": [
+      "Varying the pace and placement of dinks more",
+      "Developing a more aggressive net game to finish points quicker"
+    ]
+  },
+  "brand_detection": {
+    "brands": [
+      {
+        "brand_name": "JOOLA",
+        "category": "paddle",
+        "confidence": "low",
+        "player_side": "left",
+        "visibility_quality": "blurry",
+        "estimated_visible_seconds": 1.0,
+        "color_scheme_noted": "white, black, red",
+        "location_detail": "paddle face"
+      },
+      {
+        "brand_name": "JOOLA",
+        "category": "paddle",
+        "confidence": "low",
+        "player_side": "right",
+        "visibility_quality": "blurry",
+        "estimated_visible_seconds": 1.0,
+        "color_scheme_noted": "white, black, red",
+        "location_detail": "paddle face"
+      },
+      {
+        "brand_name": "JOOLA",
+        "category": "net",
+        "confidence": "medium",
+        "player_side": "court_equipment",
+        "visibility_quality": "clear",
+        "estimated_visible_seconds": 20.0,
+        "color_scheme_noted": "blue, black, white",
+        "location_detail": "pickleball net"
+      }
+    ],
+    "total_brands_detected": 3,
+    "unidentified_equipment_notes": "Player on the left (blue shirt) has a white paddle with a black grip. Player on the far side (black shirt) has a black paddle. Player on the far side (red shirt) has a black paddle.",
+    "unidentified_products_notes": "Several water bottles and bags are visible on the sideline, but brands are unreadable.",
+    "sponsorship_whitespace": [
+      "Pickleball paddle brands (e.g., Selkirk, Engage, HEAD, Paddletek, Franklin, Onix, Gearbox, Six Zero, Prince, Wilson, Electrum, Vatic, Legacy, Bread &amp; Butter, Prolite)",
+      "Apparel brands (e.g., Nike, adidas, Lululemon, Fabletics, Vuori, Under Armour, Fila, HEAD, JOOLA, Selkirk, Dude Clothing, PKLR, Ace Pickleball, BadPickleball, Recess Pickleball)",
+      "Shoe brands (e.g., Nike, ASICS, New Balance, K-Swiss, Skechers, adidas, On, HOKA, Brooks, Fila, Puma, Reebok)",
+      "Drink brands (e.g., Gatorade, BODYARMOR, Prime, Liquid IV)",
+      "Eyewear brands (e.g., Oakley, Goodr, Rudy Project)",
+      "Fitness chains (e.g., Life Time, LA Fitness)"
+    ]
+  },
+  "paddle_intel": {
+    "paddle_brand": "JOOLA",
+    "paddle_model_estimate": null,
+    "paddle_color_scheme": "white, black, red",
+    "paddle_shape_estimate": "standard",
+    "paddle_grip_style_observed": "one_handed",
+    "grip_color": "black",
+    "overgrip_present": null,
+    "lead_tape_visible": false,
+    "confidence": "low",
+    "notes": "Paddles are difficult to discern clearly due to distance and resolution."
+  },
+  "storytelling": {
+    "story_arc": "grind_rally",
+    "emotional_tone": "focused",
+    "defining_moment_timestamp_seconds": 7.8,
+    "crowd_energy_detected": false,
+    "player_celebration_detected": false,
+    "trash_talk_detected": false,
+    "turning_point_visible": true,
+    "narrative_arc_summary": "A patient rally focused on dinks culminates in a decisive speed-up winner."
+  },
+  "badge_intelligence": {
+    "predicted_badges": [
+      {
+        "badge_name": "Epic Rally",
+        "confidence": "high",
+        "reasoning": "The rally consisted of approximately 15 shots, demonstrating sustained play."
+      },
+      {
+        "badge_name": "Dink Machine",
+        "confidence": "high",
+        "reasoning": "A significant portion of the rally involved controlled dinks from the kitchen line."
+      },
+      {
+        "badge_name": "Speed Demon",
+        "confidence": "medium",
+        "reasoning": "The primary player executed a successful speed-up shot that resulted in a winner."
+      },
+      {
+        "badge_name": "Kitchen King",
+        "confidence": "medium",
+        "reasoning": "The rally was largely contested within the kitchen area, with players demonstrating control."
+      },
+      {
+        "badge_name": "Consistency King",
+        "confidence": "high",
+        "reasoning": "The primary player (Santinofuntila) played the entire clip without any unforced errors."
+      }
+    ],
+    "badge_trigger_moments": [
+      "The sustained exchange of dinks between players at the net.",
+      "The decisive speed-up shot that ended the rally."
+    ],
+    "highlight_reel_worthy": false,
+    "top_10_play_candidate": false
+  },
+  "commentary": {
+    "neutral_announcer_espn": "A lengthy rally unfolds, characterized by precise dinks from the kitchen. The primary player, Santinofuntila, demonstrates remarkable consistency, eventually finding an opening to transition to a powerful speed-up that secures the point.",
+    "hype_announcer_charged": "WOAH! Look at this battle at the net! DINK, DINK, DINK! The tension is building! And BAM! Santinofuntila unleashes the fury! A laser beam winner! That's how you finish!",
+    "coaching_breakdown": "Notice the patience here. The player in black is content to stay in the kitchen and exchange dinks, waiting for the opponent to overcommit or present a clear opportunity. When that opportunity arises, she transitions effectively to a speed-up. This is textbook controlled aggression. We need to see more variation in the dinks to keep the opponent guessing.",
+    "social_media_caption": "Patient dinks lead to a powerful finish! \ud83d\udca5 #pickleball",
+    "social_media_hashtags": [
+      "#pickleball",
+      "#pickleballhighlights",
+      "#pickleballaddict",
+      "#pickleballislife",
+      "#kitchenbattle",
+      "#dinkgame"
+    ],
+    "ron_burgundy_voice": "Well, it appears we have a rather spirited game of pickleball underway. The players are engaged in a series of delicate volleys, a true test of their mettle. It's a real nail-biter, folks, much like a documentary about the mating habits of the Patagonian toothfish.",
+    "chuck_norris_voice": "Chuck Norris doesn't play pickleball; pickleball plays Chuck Norris. This rally, however, was worthy of his attention, showcasing a level of control that would make a brain surgeon envious.",
+    "color_commentator_banter": "You know, I love watching these kitchen battles. It's like a chess match, but with paddles. You gotta have the touch, the patience... and then, WHAM! You gotta have the hammer!",
+    "crowd_chant_if_epic": null,
+    "trash_talk_friendly": null,
+    "announcement_text_for_tts": "A rally featuring consistent dinks from the kitchen, culminating in a decisive speed-up winner. The primary player demonstrated excellent control and patience throughout the exchange."
+  },
+  "daas_signals": {
+    "highlight_category": "strategic",
+    "clip_summary_one_sentence": "A patient rally of dinks ends with a decisive speed-up winner.",
+    "search_tags": [
+      "pickleball",
+      "pickleball rally",
+      "kitchen pickleball",
+      "dink shot",
+      "speed up shot",
+      "pickleball highlights",
+      "pickleball strategy",
+      "indoor pickleball",
+      "pickleball court",
+      "pickleball match",
+      "pickleball player",
+      "pickleball skills",
+      "pickleball tips"
+    ],
+    "content_use_cases": [
+      "social_media",
+      "coaching_tool",
+      "fan_engagement"
+    ],
+    "estimated_player_rating_dupr": "3.5-4.0",
+    "match_context_inferred": "casual",
+    "data_richness_score": 8,
+    "clip_rank_in_batch": 1,
+    "relative_quality_vs_batch": "above_average"
+  }
+}</pre>
+  </div>
+</div>
+
+<!-- ═══════ PROJECTION ═══════ -->
+<div class="section" id="sec-projection">
+  <div class="hero-grid">
+    <div class="hero-stat featured">
+      <div class="label">Year 1 Total</div>
+      <div class="value">$415,888</div>
+    </div>
+    <div class="hero-stat gold">
+      <div class="label">Month 12 ARR</div>
+      <div class="value">$827,256</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">M12 Customers</div>
+      <div class="value">56</div>
+    </div>
+    <div class="hero-stat">
+      <div class="label">Year 2 Target</div>
+      <div class="value">$1,944,000</div>
+      <div class="sub">4x growth</div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <h4>Monthly Revenue Ramp</h4>
+      <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h4>Customer Growth</h4>
+      <canvas id="customerChart"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Revenue by Tier (Month 12)</h3>
+    <table>
+      <thead><tr><th>Tier</th><th>Customers</th><th>Monthly Revenue</th><th>% of Total</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Market Intelligence</td>
+          <td>6.0</td>
+          <td style="color:var(--ok);">$18,000</td>
+          <td>26%</td>
+        </tr><tr>
+          <td>Player Analytics</td>
+          <td>7.8</td>
+          <td style="color:var(--ok);">$9,688</td>
+          <td>14%</td>
+        </tr><tr>
+          <td>Content Intelligence</td>
+          <td>3.4</td>
+          <td style="color:var(--ok);">$20,400</td>
+          <td>30%</td>
+        </tr><tr>
+          <td>Venue Operations</td>
+          <td>36.0</td>
+          <td style="color:var(--ok);">$12,600</td>
+          <td>18%</td>
+        </tr><tr>
+          <td>Raw Data Feed</td>
+          <td>2.8</td>
+          <td style="color:var(--ok);">$8,250</td>
+          <td>12%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Growth Assumptions</h3>
+    <p style="color:var(--muted);line-height:1.8;">Year 1 assumes conservative ramp: 1-3 customers per tier at launch, adding 0.25-3 customers/month depending on tier. Venue Operations (Tier 4) scales fastest due to Courtana's existing venue relationships. Content Intelligence (Tier 3) and Market Intelligence (Tier 1) drive highest per-customer revenue. Year 2 assumes 4x growth from expanding venue coverage and adding international markets.</p>
+  </div>
+</div>
+
+</div><!-- .shell -->
+
+<script>
+// Tab navigation
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Chart defaults
+Chart.defaults.color = '#7a8499';
+Chart.defaults.borderColor = '#2a3555';
+Chart.defaults.font.family = "ui-sans-serif, system-ui, -apple-system, sans-serif";
+
+const brandCtx = document.getElementById('brandChart');
+if (brandCtx) new Chart(brandCtx, {
+  type: 'bar',
+  data: {
+    labels: ["JOOLA", "Nike", "HEAD", "PICKLEBALL KINGDOM", "On", "Unknown", "Franklin", "PBS", "adidas", "PICKLEBALL", "Onix", "PKLR"],
+    datasets: [{ label: 'Appearances', data: [1461, 160, 33, 23, 13, 9, 5, 5, 4, 4, 3, 3], backgroundColor: 'rgba(59,130,246,0.6)', borderColor: 'rgba(59,130,246,1)', borderWidth: 1, borderRadius: 4 }]
+  },
+  options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#1d2640' } }, y: { grid: { display: false } } } }
+});
+
+const shotCtx = document.getElementById('shotChart');
+if (shotCtx) new Chart(shotCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ["dink", "drive", "volley", "reset", "return", "speed_up", "serve", "overhead", "block", "smash"],
+    datasets: [{ data: [6800, 2706, 293, 142, 135, 124, 105, 36, 17, 16], backgroundColor: ['#3b82f6','#22c55e','#eab308','#ef4444','#a855f7','#14b8a6','#f97316','#ec4899','#6366f1','#84cc16'], borderWidth: 0 }]
+  },
+  options: { plugins: { legend: { position: 'right', labels: { boxWidth: 12, padding: 8, font: { size: 11 } } } } }
+});
+
+const arcCtx = document.getElementById('arcChart');
+if (arcCtx) new Chart(arcCtx, {
+  type: 'bar',
+  data: {
+    labels: ["grind_rally", "athletic_highlight", "dominant_performance", "teaching_moment", "pure_fun", "error_highlight", "strategic_play", "unknown", "clutch_moment"],
+    datasets: [{ label: 'Clips', data: [557, 43, 17, 11, 10, 8, 8, 4, 3], backgroundColor: 'rgba(168,85,247,0.6)', borderColor: 'rgba(168,85,247,1)', borderWidth: 1, borderRadius: 4 }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#1d2640' } } } }
+});
+
+const skillCtx = document.getElementById('skillRadar');
+if (skillCtx) new Chart(skillCtx, {
+  type: 'radar',
+  data: {
+    labels: ["Court Coverage", "Kitchen Mastery", "Power Game", "Touch And Feel", "Athleticism", "Creativity", "Court Iq", "Consistency", "Composure Under Pressure"],
+    datasets: [{ label: 'Avg Rating', data: [5.95, 7.07, 4.08, 6.96, 5.19, 2.93, 6.41, 7.66, 6.88], backgroundColor: 'rgba(59,130,246,0.2)', borderColor: 'rgba(59,130,246,1)', pointBackgroundColor: 'rgba(59,130,246,1)', borderWidth: 2 }]
+  },
+  options: { scales: { r: { min: 0, max: 10, grid: { color: '#1d2640' }, angleLines: { color: '#1d2640' }, pointLabels: { font: { size: 11 } } } }, plugins: { legend: { display: false } } }
+});
+
+const revCtx = document.getElementById('revenueChart');
+if (revCtx) new Chart(revCtx, {
+  type: 'bar',
+  data: {
+    labels: ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12"],
+    datasets: [{ label: 'Monthly Revenue', data: [1050, 5100, 8900, 18388, 26675, 32712, 38750, 44788, 50825, 56862, 62900, 68938], backgroundColor: 'rgba(34,197,94,0.6)', borderColor: 'rgba(34,197,94,1)', borderWidth: 1, borderRadius: 4 }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#1d2640' }, ticks: { callback: v => '$'+v.toLocaleString() } } } }
+});
+
+const custCtx = document.getElementById('customerChart');
+if (custCtx) new Chart(custCtx, {
+  type: 'line',
+  data: {
+    labels: ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12"],
+    datasets: [{ label: 'Customers', data: [3, 7, 12, 17, 22, 27, 32, 37, 42, 46, 51, 56], borderColor: 'rgba(59,130,246,1)', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3, borderWidth: 2 }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#1d2640' } } } }
+});
+</script>
+</body>
+</html>

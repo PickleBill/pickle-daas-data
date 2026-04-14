@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venue Intelligence Platform | Pickle DaaS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2332;
+    --border: #1e2d3d;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --accent: #22d3ee;
+    --accent2: #a78bfa;
+    --green: #34d399;
+    --orange: #fb923c;
+    --red: #f87171;
+    --pink: #f472b6;
+    --yellow: #fbbf24;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; }
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+/* Header */
+.header { text-align: center; padding: 40px 0 24px; }
+.header h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header .subtitle { color: var(--text-dim); font-size: 0.95rem; margin-top: 4px; }
+.header .meta { display: flex; justify-content: center; gap: 24px; margin-top: 16px; font-size: 0.85rem; color: var(--text-dim); }
+.header .meta span { background: var(--surface); padding: 4px 12px; border-radius: 12px; border: 1px solid var(--border); }
+
+/* KPI Cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+.kpi-value { font-size: 2rem; font-weight: 800; }
+.kpi-label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+.kpi-sub { font-size: 0.75rem; color: var(--accent); margin-top: 4px; }
+.kpi-accent { color: var(--accent); }
+.kpi-green { color: var(--green); }
+.kpi-orange { color: var(--orange); }
+.kpi-purple { color: var(--accent2); }
+
+/* Section headers */
+.section { margin: 40px 0 20px; }
+.section h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.section h2 .badge { font-size: 0.7rem; background: var(--accent); color: var(--bg); padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+
+/* Charts grid */
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.chart-card h3 { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.chart-wrap { position: relative; height: 280px; }
+
+/* Social cards */
+.social-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.social-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s; }
+.social-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+.social-card-header { display: flex; justify-content: space-between; padding: 8px 12px; }
+.social-card-rank { font-weight: 800; color: var(--accent); }
+.social-card-score { background: var(--accent); color: var(--bg); padding: 2px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; }
+.social-card-thumb { height: 160px; background: var(--surface2); background-size: cover; background-position: center; position: relative; }
+.social-card-arc { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+.social-card-caption { padding: 12px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; }
+
+/* Calendar */
+.cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.cal-day { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.cal-day-name { font-weight: 700; color: var(--accent); margin-bottom: 8px; font-size: 0.9rem; }
+.cal-post { margin-bottom: 8px; padding: 6px 8px; background: var(--surface2); border-radius: 6px; }
+.cal-slot { display: block; font-size: 0.7rem; color: var(--orange); font-weight: 600; text-transform: uppercase; }
+.cal-caption { display: block; font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+
+/* Pricing tiers */
+.tiers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.tier-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; text-align: center; }
+.tier-card.tier-highlight { border-color: var(--accent); box-shadow: 0 0 30px rgba(34,211,238,0.1); position: relative; }
+.tier-card.tier-highlight::before { content: 'RECOMMENDED'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); font-size: 0.65rem; font-weight: 800; padding: 2px 12px; border-radius: 8px; }
+.tier-name { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.tier-price { font-size: 2.2rem; font-weight: 800; color: var(--accent); margin: 8px 0; }
+.tier-price span { font-size: 0.9rem; color: var(--text-dim); font-weight: 400; }
+.tier-target { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 16px; }
+.tier-features { list-style: none; text-align: left; margin: 16px 0; }
+.tier-features li { padding: 4px 0; font-size: 0.85rem; color: var(--text-dim); }
+.tier-features li::before { content: '\2713 '; color: var(--green); font-weight: 700; }
+.tier-annual { font-size: 0.8rem; color: var(--text-dim); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* Comparison table */
+.compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+.compare-table th, .compare-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+.compare-table th { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; }
+.compare-table td { font-size: 0.9rem; }
+.compare-table .cost-manual { color: var(--red); }
+.compare-table .cost-courtana { color: var(--green); }
+.compare-table tr:hover { background: var(--surface2); }
+
+/* Business case callout */
+.callout { background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(167,139,250,0.08)); border: 1px solid var(--accent); border-radius: 14px; padding: 24px; margin: 24px 0; }
+.callout h3 { color: var(--accent); font-size: 1.1rem; margin-bottom: 8px; }
+.callout p { color: var(--text-dim); font-size: 0.9rem; }
+.callout .stat { font-size: 1.8rem; font-weight: 800; color: var(--green); }
+
+/* Venue report card */
+.report-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 24px 0; }
+.report-card h3 { font-size: 1.2rem; margin-bottom: 16px; color: var(--accent); }
+.grade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.grade { text-align: center; }
+.grade-circle { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+.grade-label { font-size: 0.8rem; color: var(--text-dim); }
+
+footer { text-align: center; padding: 40px 0 20px; color: var(--text-dim); font-size: 0.8rem; }
+footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1>Venue Intelligence Platform</h1>
+    <div class="subtitle">Pickle DaaS -- AI-Powered Venue Analytics</div>
+    <div class="meta">
+        <span>804 clips analyzed</span>
+        <span>Generated Apr 14, 2026</span>
+        <span>Venue: Demo (Single-Venue Sample)</span>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+    <div class="kpi">
+        <div class="kpi-value kpi-accent">6.4</div>
+        <div class="kpi-label">Avg Content Quality</div>
+        <div class="kpi-sub">out of 10</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-value kpi-green">14.6%</div>
+        <div class="kpi-label">Social-Media-Worthy</div>
+        <div class="kpi-sub">117 clips ready to post</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-value kpi-orange">4.8</div>
+        <div class="kpi-label">Avg Skill Level</div>
+        <div class="kpi-sub">Intermediate</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-value kpi-purple">7.3</div>
+        <div class="kpi-label">Shareable Moments/Day</div>
+        <div class="kpi-sub">at 50 clips/day</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-value" style="color: var(--pink)">84</div>
+        <div class="kpi-label">Auto Posts/Month</div>
+        <div class="kpi-sub">fully automated</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-value kpi-green">76.2%</div>
+        <div class="kpi-label">Content Cost Reduction</div>
+        <div class="kpi-sub">vs manual creation</div>
+    </div>
+</div>
+
+<!-- Venue Report Card -->
+<div class="section"><h2>Venue Report Card <span class="badge">SAMPLE</span></h2></div>
+<div class="report-card">
+    <h3>What Your Venue Data Says</h3>
+    <div class="grade-grid">
+        <div class="grade">
+            <div class="grade-circle" style="background: rgba(34,211,238,0.15); color: var(--accent);">6.4</div>
+            <div class="grade-label">Content Quality</div>
+        </div>
+        <div class="grade">
+            <div class="grade-circle" style="background: rgba(52,211,153,0.15); color: var(--green);">3.4</div>
+            <div class="grade-label">Viral Potential</div>
+        </div>
+        <div class="grade">
+            <div class="grade-circle" style="background: rgba(251,146,60,0.15); color: var(--orange);">4.8</div>
+            <div class="grade-label">Player Skill</div>
+        </div>
+        <div class="grade">
+            <div class="grade-circle" style="background: rgba(167,139,250,0.15); color: var(--accent2);">13</div>
+            <div class="grade-label">Arc Variety</div>
+        </div>
+        <div class="grade">
+            <div class="grade-circle" style="background: rgba(244,114,182,0.15); color: var(--pink);">7</div>
+            <div class="grade-label">Paddle Brands</div>
+        </div>
+        <div class="grade">
+            <div class="grade-circle" style="background: rgba(251,191,36,0.15); color: var(--yellow);">15%</div>
+            <div class="grade-label">Share Rate</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="section"><h2>Analytics Deep Dive</h2></div>
+<div class="charts-grid">
+    <div class="chart-card">
+        <h3>Story Arc Distribution</h3>
+        <div class="chart-wrap"><canvas id="arcChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+        <h3>Player Skill Ratings</h3>
+        <div class="chart-wrap"><canvas id="skillChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+        <h3>Paddle Brand Ecosystem</h3>
+        <div class="chart-wrap"><canvas id="brandChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+        <h3>Content Quality Distribution</h3>
+        <div class="chart-wrap"><canvas id="qualityChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+        <h3>Coaching Needs</h3>
+        <div class="chart-wrap"><canvas id="coachingChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+        <h3>Cost Comparison</h3>
+        <div class="chart-wrap"><canvas id="costChart"></canvas></div>
+    </div>
+</div>
+
+<!-- Social Media Content Preview -->
+<div class="section"><h2>Auto-Generated Social Content <span class="badge">PREVIEW</span></h2></div>
+<div class="social-grid">
+
+        <div class="social-card">
+            <div class="social-card-header">
+                <div class="social-card-rank">#1</div>
+                <div class="social-card-score">7.9/10</div>
+            </div>
+            <div class="social-card-thumb" style="background-image: url('https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b673a406-c3a3-43ce-92f4-347336ad484a.jpeg')">
+                <div class="social-card-arc">Competitive Intensity</div>
+            </div>
+            <div class="social-card-caption">What a rally! 🔥 From dinks to rapid-fire volleys at the kitchen, this point had it all! Who's got the faster hands? 🤯 #pickleball #rally #ki</div>
+        </div>
+        <div class="social-card">
+            <div class="social-card-header">
+                <div class="social-card-rank">#2</div>
+                <div class="social-card-score">7.6/10</div>
+            </div>
+            <div class="social-card-thumb" style="background-image: url('https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg')">
+                <div class="social-card-arc">Athletic Highlight</div>
+            </div>
+            <div class="social-card-caption">Dink, dink, BANG! 💥 What a finish!</div>
+        </div>
+        <div class="social-card">
+            <div class="social-card-header">
+                <div class="social-card-rank">#3</div>
+                <div class="social-card-score">7.6/10</div>
+            </div>
+            <div class="social-card-thumb" style="background-image: url('https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8a171472-cfcd-4d42-89f0-94802800f69c.jpeg')">
+                <div class="social-card-arc">Competitive Intensity</div>
+            </div>
+            <div class="social-card-caption">Patience pays off! 🤯 This dink battle turned into a lightning-fast volley exchange at the kitchen! Who else loves a good speedup? #picklebal</div>
+        </div>
+        <div class="social-card">
+            <div class="social-card-header">
+                <div class="social-card-rank">#4</div>
+                <div class="social-card-score">7.6/10</div>
+            </div>
+            <div class="social-card-thumb" style="background-image: url('https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/79c89496-1746-4e45-b243-de688e541db3.jpeg')">
+                <div class="social-card-arc">Competitive Intensity</div>
+            </div>
+            <div class="social-card-caption">Kitchen line mastery! 🤯 This dink battle was next level, ending with some lightning-fast volleys. Who else loves a good kitchen showdown? #P</div>
+        </div>
+        <div class="social-card">
+            <div class="social-card-header">
+                <div class="social-card-rank">#5</div>
+                <div class="social-card-score">7.6/10</div>
+            </div>
+            <div class="social-card-thumb" style="background-image: url('https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0.jpeg')">
+                <div class="social-card-arc">Athletic Rally</div>
+            </div>
+            <div class="social-card-caption">Kitchen battle heating up! 🔥 That overhead smash was pure 🔥! Who else loves a good dink exchange turned power play? #pickleball #rally #over</div>
+        </div>
+</div>
+
+<!-- Content Calendar -->
+<div class="section"><h2>7-Day Content Calendar <span class="badge">AUTO</span></h2></div>
+<div class="cal-grid">
+
+        <div class="cal-day">
+            <div class="cal-day-name">Monday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">What a rally! 🔥 From dinks to rapid-fire volleys a...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">Dink, dink, BANG! 💥 What a finish!</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">Patience pays off! 🤯 This dink battle turned into ...</span>
+            </div>
+        </div>
+        <div class="cal-day">
+            <div class="cal-day-name">Tuesday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">Kitchen line mastery! 🤯 This dink battle was next ...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">Kitchen battle heating up! 🔥 That overhead smash w...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">Airborne for the WIN! 🚀 #Pickleball</span>
+            </div>
+        </div>
+        <div class="cal-day">
+            <div class="cal-day-name">Wednesday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">Kitchen battle royale! 🔥 What a rally! #pickleball</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">When the rally is short but the lessons are long. ...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">Epic 16-shot rally ending with a thunderous smash!...</span>
+            </div>
+        </div>
+        <div class="cal-day">
+            <div class="cal-day-name">Thursday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">Kitchen battle to an airborne smash! 🔥 #Pickleball</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">Kitchen battle to a speed-up winner! 🔥 #Pickleball...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">When the pickleball gods are on your side! 🍀 #NetC...</span>
+            </div>
+        </div>
+        <div class="cal-day">
+            <div class="cal-day-name">Friday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">Epic kitchen battle! 🤯 These volleys just kept goi...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">When you keep hitting it out but still gotta celeb...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">Talk about a dink battle! 🤯 This rally just kept g...</span>
+            </div>
+        </div>
+        <div class="cal-day">
+            <div class="cal-day-name">Saturday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">Dink battle turns into a speed-up showdown! 💥 #Pic...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">The ultimate dink battle! 🤯 Who knew staying patie...</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">Dink, dink, dink... SMASH! 🔥 What a rally!</span>
+            </div>
+        </div>
+        <div class="cal-day">
+            <div class="cal-day-name">Sunday</div>
+            
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F305; Morning Post</span>
+                <span class="cal-caption">Kitchen battle to a speedy finish! 🔥 #Pickleball</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x2600;&#xFE0F; Afternoon Story</span>
+                <span class="cal-caption">Kitchen chaos! 🤯 Who wins this dink battle?</span>
+            </div>
+            <div class="cal-post">
+                <span class="cal-slot">&#x1F319; Evening Reel</span>
+                <span class="cal-caption">That speedup was 🔥! Quick hands at the kitchen for...</span>
+            </div>
+        </div>
+</div>
+
+<!-- Business Case -->
+<div class="section"><h2>Why Venues Would Pay For This</h2></div>
+
+<div class="callout">
+    <h3>The Content Creation Problem</h3>
+    <p>Venues know social media drives bookings. But creating content manually costs $500-3,000/month and 10-15 hours/week of staff time. Courtana automates it entirely.</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; text-align: center;">
+        <div><div class="stat">$5.94</div><div style="font-size: 0.8rem; color: var(--text-dim);">Cost per post (Courtana)</div></div>
+        <div><div class="stat">$25</div><div style="font-size: 0.8rem; color: var(--text-dim);">Cost per post (Manual)</div></div>
+        <div><div class="stat">3.0x at Pro tier</div><div style="font-size: 0.8rem; color: var(--text-dim);">ROI vs Part-Time Manager</div></div>
+    </div>
+</div>
+
+<table class="compare-table">
+<thead>
+<tr><th>Approach</th><th>Monthly Cost</th><th>Posts/Month</th><th>Cost/Post</th><th>Staff Hours/Week</th></tr>
+</thead>
+<tbody>
+<tr><td>Freelancer</td><td class="cost-manual">$500</td><td>12</td><td>$42</td><td>5-8</td></tr>
+<tr><td>Part-Time Manager</td><td class="cost-manual">$1,500</td><td>60</td><td>$25</td><td>10-15</td></tr>
+<tr><td>Dedicated Creator</td><td class="cost-manual">$3,000</td><td>90</td><td>$33</td><td>20+</td></tr>
+<tr><td style="font-weight:700;">Courtana Pro</td><td class="cost-courtana" style="font-weight:700;">$499</td><td style="font-weight:700;">84</td><td class="cost-courtana" style="font-weight:700;">$5.94</td><td class="cost-courtana" style="font-weight:700;">&lt;1</td></tr>
+</tbody>
+</table>
+
+<!-- Pricing Tiers -->
+<div class="section"><h2>Pricing Tiers</h2></div>
+<div class="tiers-grid">
+
+        <div class="tier-card">
+            <div class="tier-name">Starter</div>
+            <div class="tier-price">$199<span>/mo</span></div>
+            <div class="tier-target">Small clubs, rec centers</div>
+            <ul class="tier-features"><li>Auto highlight reels</li><li>5 social posts/week</li><li>Basic venue report card</li></ul>
+            <div class="tier-annual">$2388/year</div>
+        </div>
+        <div class="tier-card tier-highlight">
+            <div class="tier-name">Pro</div>
+            <div class="tier-price">$499<span>/mo</span></div>
+            <div class="tier-target">Dedicated pickleball venues</div>
+            <ul class="tier-features"><li>Unlimited auto highlights</li><li>Daily social calendar (21 posts/week)</li><li>Full venue intelligence report</li><li>Player skill tracking</li><li>Brand exposure analytics</li><li>Coaching recommendations</li></ul>
+            <div class="tier-annual">$5988/year</div>
+        </div>
+        <div class="tier-card">
+            <div class="tier-name">Enterprise</div>
+            <div class="tier-price">$999<span>/mo</span></div>
+            <div class="tier-target">Multi-venue operators, franchises</div>
+            <ul class="tier-features"><li>Everything in Pro</li><li>White-label content</li><li>Sponsorship activation tools</li><li>Custom branded overlays</li><li>API access</li><li>Multi-venue dashboard</li><li>Player retention analytics</li></ul>
+            <div class="tier-annual">$11988/year</div>
+        </div>
+</div>
+
+<!-- Sponsorship -->
+<div class="callout" style="margin-top: 32px;">
+    <h3>Sponsorship Activation Opportunity</h3>
+    <p>Brand exposure data enables venues to monetize their court time through targeted sponsorships.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 16px; text-align: center;">
+        <div><div class="stat">JOOLA</div><div style="font-size: 0.8rem; color: var(--text-dim);">Top Brand</div></div>
+        <div><div class="stat">$4200</div><div style="font-size: 0.8rem; color: var(--text-dim);">Monthly Sponsorship Value</div></div>
+        <div><div class="stat">$50,400</div><div style="font-size: 0.8rem; color: var(--text-dim);">Annual Potential</div></div>
+    </div>
+</div>
+
+<footer>
+    Pickle DaaS Venue Intelligence Platform | Built on 804 analyzed clips<br>
+    <a href="https://courtana.com">courtana.com</a> | Data as of April 2026
+</footer>
+
+</div>
+
+<script>
+const colors = ['#22d3ee','#a78bfa','#34d399','#fb923c','#f87171','#fbbf24','#f472b6','#6ee7b7'];
+const gridColor = 'rgba(148,163,184,0.1)';
+const textColor = '#94a3b8';
+Chart.defaults.color = textColor;
+Chart.defaults.borderColor = gridColor;
+
+// Arc Chart
+new Chart(document.getElementById('arcChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ["Grind Rally", "Competitive Intensity", "Athletic Highlight", "Teaching Moment", "Dominant Performance", "Pure Fun", "Strategic Play", "Error Highlight"],
+        datasets: [{ data: [604, 74, 42, 23, 16, 11, 10, 9], backgroundColor: colors, borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } } } }
+});
+
+// Skill Radar
+new Chart(document.getElementById('skillChart'), {
+    type: 'radar',
+    data: {
+        labels: ["Court Coverage", "Kitchen Mastery", "Power Game", "Touch And Feel", "Athleticism", "Creativity", "Court Iq", "Consistency"],
+        datasets: [{
+            label: 'Avg Rating',
+            data: [6.0, 7.0, 4.1, 6.9, 5.3, 2.9, 6.4, 7.7],
+            backgroundColor: 'rgba(34,211,238,0.15)',
+            borderColor: '#22d3ee',
+            borderWidth: 2,
+            pointBackgroundColor: '#22d3ee',
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, color: textColor }, grid: { color: gridColor }, pointLabels: { font: { size: 10 }, color: textColor } } },
+        plugins: { legend: { display: false } }
+    }
+});
+
+// Brand Chart
+new Chart(document.getElementById('brandChart'), {
+    type: 'bar',
+    data: {
+        labels: ["JOOLA", "HEAD", "ONIX", "Selkirk", "PKLR", "Franklin"],
+        datasets: [{ data: [1564, 37, 5, 4, 3, 3], backgroundColor: colors.slice(0, 6), borderRadius: 6 }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: { x: { grid: { color: gridColor } }, y: { grid: { display: false } } },
+        plugins: { legend: { display: false } }
+    }
+});
+
+// Quality Distribution
+new Chart(document.getElementById('qualityChart'), {
+    type: 'bar',
+    data: {
+        labels: ["10", "3", "4", "5", "6", "7", "8", "9"],
+        datasets: [{ label: 'Clips', data: [2, 13, 25, 53, 374, 232, 78, 27], backgroundColor: '#22d3ee', borderRadius: 6 }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { x: { title: { display: true, text: 'Quality Score' }, grid: { display: false } }, y: { title: { display: true, text: 'Count' }, grid: { color: gridColor } } },
+        plugins: { legend: { display: false } }
+    }
+});
+
+// Coaching Needs
+new Chart(document.getElementById('coachingChart'), {
+    type: 'bar',
+    data: {
+        labels: ["Kitchen Play", "Patience", "Power Control", "Net Play", "Positioning", "Serve/Return"],
+        datasets: [{ data: [668, 376, 350, 277, 166, 158], backgroundColor: '#fb923c', borderRadius: 6 }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        scales: { x: { grid: { color: gridColor } }, y: { grid: { display: false } } },
+        plugins: { legend: { display: false } }
+    }
+});
+
+// Cost Comparison
+new Chart(document.getElementById('costChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Freelancer', 'PT Manager', 'Creator', 'Courtana Pro'],
+        datasets: [
+            { label: 'Monthly Cost ($)', data: [500, 1500, 3000, 499], backgroundColor: ['#f87171','#f87171','#f87171','#34d399'], borderRadius: 6 },
+        ]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { y: { grid: { color: gridColor }, title: { display: true, text: 'Monthly Cost ($)' } }, x: { grid: { display: false } } },
+        plugins: { legend: { display: false } }
+    }
+});
+</script>
+</body>
+</html>

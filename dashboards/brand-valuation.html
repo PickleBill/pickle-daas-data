@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Exposure Valuation Engine | Pickle DaaS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #06080f;
+  --surface: #0d1117;
+  --surface-2: #161b22;
+  --surface-3: #1c2333;
+  --border: #21262d;
+  --border-bright: #30363d;
+  --text: #e6edf3;
+  --text-secondary: #8b949e;
+  --muted: #484f58;
+  --accent: #58a6ff;
+  --accent-bright: #79c0ff;
+  --accent-dim: rgba(56,139,253,0.1);
+  --gold: #e3b341;
+  --gold-dim: rgba(227,179,65,0.12);
+  --green: #3fb950;
+  --green-dim: rgba(63,185,80,0.12);
+  --orange: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --gradient-brand: linear-gradient(135deg, #58a6ff 0%, #bc8cff 50%, #f778ba 100%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }
+
+/* ─── Header ─── */
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.masthead h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.masthead .sub {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 6px;
+}
+.engine-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(227,179,65,0.3);
+  border-radius: 6px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+}
+.engine-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+/* ─── Hero Stats ─── */
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.hero-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-stat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--border-bright);
+}
+.hero-stat.featured::before { background: var(--gradient-brand); }
+.hero-stat .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.hero-stat .value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.hero-stat.featured .value { color: var(--accent-bright); }
+.hero-stat .sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 10px;
+}
+
+/* ─── Sections ─── */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: -0.3px;
+}
+.section-title .meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  font-family: ui-monospace, monospace;
+}
+
+/* ─── Leaderboard Table ─── */
+.lb-table { width: 100%; border-collapse: collapse; }
+.lb-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  font-family: ui-monospace, monospace;
+  font-weight: 500;
+}
+.lb-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.lb-table tr:hover { background: var(--surface-2); }
+.lb-table .rank {
+  font-weight: 700;
+  color: var(--text-secondary);
+  width: 40px;
+  font-family: ui-monospace, monospace;
+}
+.lb-table .brand-name { font-weight: 600; }
+.lb-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, monospace;
+}
+.lb-table .val { color: var(--green); font-weight: 600; }
+.cat-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sov-bar-wrap {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sov-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  border-radius: 4px;
+  min-width: 2px;
+  transition: width 0.6s ease;
+}
+.sov-label {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ─── Grid layouts ─── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+@media (max-width: 1100px) {
+  .hero-grid { grid-template-columns: repeat(3, 1fr); }
+  .three-col { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .two-col { grid-template-columns: 1fr; }
+}
+
+/* ─── JOOLA Report ─── */
+.joola-header {
+  background: linear-gradient(135deg, #1a1500 0%, #2d2200 50%, #1a1a00 100%);
+  border: 1px solid rgba(227,179,65,0.25);
+  border-radius: 12px;
+  padding: 36px 32px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.joola-header::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(227,179,65,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.joola-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+.joola-header .summary {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 900px;
+}
+.joola-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+.joola-kpi {
+  background: rgba(227,179,65,0.06);
+  border: 1px solid rgba(227,179,65,0.15);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+.joola-kpi .kval {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.joola-kpi .klbl {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 6px;
+  font-family: ui-monospace, monospace;
+}
+
+/* ─── Activation cards ─── */
+.activation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.activation-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.activation-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.ac-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+.ac-header h4 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.diff-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 2px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.activation-card p {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.ac-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+  font-family: ui-monospace, monospace;
+}
+
+/* ─── Pricing ─── */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.pricing-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.pricing-card:hover { transform: translateY(-3px); }
+.pricing-card.featured {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(56,139,253,0.06) 0%, var(--surface-2) 100%);
+  position: relative;
+}
+.pricing-card.featured::before {
+  content: 'RECOMMENDED';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 12px;
+  border-radius: 10px;
+  letter-spacing: 1px;
+}
+.tier-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+.tier-price {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  letter-spacing: -2px;
+}
+.tier-price span {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.pricing-card ul {
+  list-style: none;
+  text-align: left;
+}
+.pricing-card li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.pricing-card li::before {
+  content: '\2713 ';
+  color: var(--green);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* ─── TAM ─── */
+.tam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tam-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.tam-card .tam-val {
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 6px;
+}
+.tam-card .tam-lbl {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tam-card.tam { border-color: var(--purple); }
+.tam-card.tam .tam-val { color: var(--purple); }
+.tam-card.sam { border-color: var(--accent); }
+.tam-card.sam .tam-val { color: var(--accent); }
+.tam-card.som { border-color: var(--green); }
+.tam-card.som .tam-val { color: var(--green); }
+
+/* ─── Chart containers ─── */
+.chart-wrap { position: relative; height: 320px; }
+.chart-wrap.tall { height: 400px; }
+
+/* ─── Divider ─── */
+.divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 48px 0;
+}
+
+/* ─── Footer ─── */
+.footer {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ═══ HEADER ═══ -->
+<header class="masthead">
+  <div>
+    <h1>Brand Exposure Valuation Engine</h1>
+    <div class="sub">Pickle DaaS &mdash; Quantifying brand value in the Courtana video ecosystem</div>
+  </div>
+  <div class="engine-badge">Engine v1.0.0</div>
+</header>
+
+<!-- ═══ HERO STATS ═══ -->
+<div class="hero-grid">
+  <div class="hero-stat featured">
+    <div class="label">Total Brand Value</div>
+    <div class="value">$771,897</div>
+    <div class="sub">Across 818 clips</div>
+  </div>
+  <div class="hero-stat">
+    <div class="label">Brands Detected</div>
+    <div class="value">61</div>
+    <div class="sub">78.1% detection rate</div>
+  </div>
+  <div class="hero-stat">
+    <div class="label">Total Impressions</div>
+    <div class="value">19,942,519</div>
+    <div class="sub">Multi-channel estimated</div>
+  </div>
+  <div class="hero-stat">
+    <div class="label">Value / Clip</div>
+    <div class="value">$943.64</div>
+    <div class="sub">Average across corpus</div>
+  </div>
+  <div class="hero-stat">
+    <div class="label">Analytics TAM</div>
+    <div class="value">$15M</div>
+    <div class="sub">Annual US market</div>
+  </div>
+</div>
+
+<!-- ═══ BRAND LEADERBOARD ═══ -->
+<div class="section">
+  <div class="section-title">
+    Brand Leaderboard
+    <span class="meta">ranked by estimated media value</span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="lb-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th style="text-align:right">Appearances</th>
+          <th>Share of Voice</th>
+          <th style="text-align:right">Est. Value</th>
+          <th style="text-align:right">eCPM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rank">1</td>
+          <td class="brand-name">JOOLA</td>
+          <td><span class="cat-badge" style="background:#eab30820;color:#eab308;border:1px solid #eab30840">paddle</span></td>
+          <td class="num">1,620</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:81.24%"></div>
+              <span class="sov-label">81.2%</span>
+            </div>
+          </td>
+          <td class="num val">$627,111.96</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">2</td>
+          <td class="brand-name">Nike</td>
+          <td><span class="cat-badge" style="background:#3b82f620;color:#3b82f6;border:1px solid #3b82f640">apparel</span></td>
+          <td class="num">170</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:8.47%"></div>
+              <span class="sov-label">8.5%</span>
+            </div>
+          </td>
+          <td class="num val">$65,355.53</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">3</td>
+          <td class="brand-name">HEAD</td>
+          <td><span class="cat-badge" style="background:#eab30820;color:#eab308;border:1px solid #eab30840">paddle</span></td>
+          <td class="num">37</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:1.66%"></div>
+              <span class="sov-label">1.7%</span>
+            </div>
+          </td>
+          <td class="num val">$12,818.98</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">4</td>
+          <td class="brand-name">PICKLEBALL KINGDOM</td>
+          <td><span class="cat-badge" style="background:#22c55e20;color:#22c55e;border:1px solid #22c55e40">venue</span></td>
+          <td class="num">24</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:1.55%"></div>
+              <span class="sov-label">1.6%</span>
+            </div>
+          </td>
+          <td class="num val">$11,928.35</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">5</td>
+          <td class="brand-name">Courtana</td>
+          <td><span class="cat-badge" style="background:#a855f720;color:#a855f7;border:1px solid #a855f740">technology</span></td>
+          <td class="num">8</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.75%"></div>
+              <span class="sov-label">0.8%</span>
+            </div>
+          </td>
+          <td class="num val">$5,769.43</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">6</td>
+          <td class="brand-name">On</td>
+          <td><span class="cat-badge" style="background:#3b82f620;color:#3b82f6;border:1px solid #3b82f640">apparel</span></td>
+          <td class="num">13</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.72%"></div>
+              <span class="sov-label">0.7%</span>
+            </div>
+          </td>
+          <td class="num val">$5,566.54</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">7</td>
+          <td class="brand-name">PBS</td>
+          <td><span class="cat-badge" style="background:#ec489920;color:#ec4899;border:1px solid #ec489940">media</span></td>
+          <td class="num">5</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.3%"></div>
+              <span class="sov-label">0.3%</span>
+            </div>
+          </td>
+          <td class="num val">$2,349.96</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">8</td>
+          <td class="brand-name">Recovery Cave</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.29%"></div>
+              <span class="sov-label">0.3%</span>
+            </div>
+          </td>
+          <td class="num val">$2,209.68</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">9</td>
+          <td class="brand-name">The Underground</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.28%"></div>
+              <span class="sov-label">0.3%</span>
+            </div>
+          </td>
+          <td class="num val">$2,127.98</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">10</td>
+          <td class="brand-name">adidas</td>
+          <td><span class="cat-badge" style="background:#3b82f620;color:#3b82f6;border:1px solid #3b82f640">apparel</span></td>
+          <td class="num">4</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.25%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,894.91</td>
+          <td class="num">$38.70</td>
+        </tr>
+        <tr>
+          <td class="rank">11</td>
+          <td class="brand-name">LIFE TIME PICKLEBALL</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.24%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,862.80</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">12</td>
+          <td class="brand-name">PICKLEBALL</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">4</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.24%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,850.87</td>
+          <td class="num">$38.70</td>
+        </tr>
+        <tr>
+          <td class="rank">13</td>
+          <td class="brand-name">Pickleball</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">2</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.22%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,719.24</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">14</td>
+          <td class="brand-name">APPLA</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">2</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.19%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,485.50</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">15</td>
+          <td class="brand-name">Onix</td>
+          <td><span class="cat-badge" style="background:#eab30820;color:#eab308;border:1px solid #eab30840">paddle</span></td>
+          <td class="num">5</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.18%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,374.68</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">16</td>
+          <td class="brand-name">CRBN</td>
+          <td><span class="cat-badge" style="background:#eab30820;color:#eab308;border:1px solid #eab30840">paddle</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.18%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,356.73</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">17</td>
+          <td class="brand-name">The Ground</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">1</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.17%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,310.74</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">18</td>
+          <td class="brand-name">Nicol</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.16%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,236.25</td>
+          <td class="num">$38.71</td>
+        </tr>
+        <tr>
+          <td class="rank">19</td>
+          <td class="brand-name">H2</td>
+          <td><span class="cat-badge" style="background:#64748b20;color:#64748b;border:1px solid #64748b40">other</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.16%"></div>
+              <span class="sov-label">0.2%</span>
+            </div>
+          </td>
+          <td class="num val">$1,232.60</td>
+          <td class="num">$38.70</td>
+        </tr>
+        <tr>
+          <td class="rank">20</td>
+          <td class="brand-name">Life Time</td>
+          <td><span class="cat-badge" style="background:#22c55e20;color:#22c55e;border:1px solid #22c55e40">venue</span></td>
+          <td class="num">3</td>
+          <td>
+            <div class="sov-bar-wrap">
+              <div class="sov-bar" style="width:0.15%"></div>
+              <span class="sov-label">0.1%</span>
+            </div>
+          </td>
+          <td class="num val">$1,160.27</td>
+          <td class="num">$38.71</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SHARE OF VOICE + VALUE CHARTS ═══ -->
+<div class="two-col">
+  <div class="section">
+    <div class="section-title">Share of Voice</div>
+    <div class="chart-wrap"><canvas id="sovChart"></canvas></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Brand Value Distribution</div>
+    <div class="chart-wrap"><canvas id="valueChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ═══ QUALITY-WEIGHTED EXPOSURE ═══ -->
+<div class="section">
+  <div class="section-title">
+    Quality-Weighted Exposure Index
+    <span class="meta">quality x viral potential x frequency</span>
+  </div>
+  <div class="chart-wrap"><canvas id="qweChart"></canvas></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ JOOLA DEEP DIVE ═══ -->
+<div class="joola-header">
+  <h2>JOOLA Brand Report</h2>
+  <p class="summary">JOOLA dominates pickleball brand exposure in the Courtana ecosystem with 81.2% share of voice across 1,620 detected appearances. Estimated total media value: $627,111.96 at an effective CPM of $38.71. JOOLA's net branding is the single most visible brand asset in the corpus, appearing primarily as court equipment with high-confidence detection.</p>
+  <div class="joola-kpis">
+    <div class="joola-kpi">
+      <div class="kval">81.2%</div>
+      <div class="klbl">Share of Voice</div>
+    </div>
+    <div class="joola-kpi">
+      <div class="kval">1,620</div>
+      <div class="klbl">Appearances</div>
+    </div>
+    <div class="joola-kpi">
+      <div class="kval">$627,112</div>
+      <div class="klbl">Media Value</div>
+    </div>
+    <div class="joola-kpi">
+      <div class="kval">29.5x</div>
+      <div class="klbl">vs Competitors</div>
+    </div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="section">
+    <div class="section-title">JOOLA Exposure by Channel</div>
+    <div class="chart-wrap"><canvas id="joolaChannelChart"></canvas></div>
+  </div>
+  <div class="section">
+    <div class="section-title">JOOLA: Clip Story Arcs</div>
+    <div class="chart-wrap"><canvas id="joolaArcChart"></canvas></div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="section">
+    <div class="section-title">Competitive Position: Paddle Brands</div>
+    <div class="chart-wrap"><canvas id="competitiveChart"></canvas></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Player Skill Profile (JOOLA Courts)</div>
+    <div class="chart-wrap"><canvas id="skillRadar"></canvas></div>
+  </div>
+</div>
+
+<!-- ═══ ACTIVATION OPPORTUNITIES ═══ -->
+<div class="section">
+  <div class="section-title">Sponsorship Activation Opportunities</div>
+  <div class="activation-grid">
+        <div class="activation-card">
+          <div class="ac-header">
+            <h4>Player Highlight Sponsorship</h4>
+            <span class="diff-badge" style="color:#22c55e;border-color:#22c55e">Low</span>
+          </div>
+          <p>Sponsor top-performing player highlights featuring JOOLA nets for social distribution</p>
+          <div class="ac-value">$2,500-5,000/month per venue</div>
+        </div>
+        <div class="activation-card">
+          <div class="ac-header">
+            <h4>Brand Moment Alerts</h4>
+            <span class="diff-badge" style="color:#f59e0b;border-color:#f59e0b">Medium</span>
+          </div>
+          <p>Real-time notification when JOOLA equipment appears in viral-potential clips (quality 8+)</p>
+          <div class="ac-value">$500-1,500/month in content licensing</div>
+        </div>
+        <div class="activation-card">
+          <div class="ac-header">
+            <h4>Coaching Integration</h4>
+            <span class="diff-badge" style="color:#f59e0b;border-color:#f59e0b">Medium</span>
+          </div>
+          <p>Co-branded coaching content featuring JOOLA equipment in skill-building clips</p>
+          <div class="ac-value">$3,000-8,000/month across venues</div>
+        </div>
+        <div class="activation-card">
+          <div class="ac-header">
+            <h4>Tournament Analytics Package</h4>
+            <span class="diff-badge" style="color:#ef4444;border-color:#ef4444">High</span>
+          </div>
+          <p>Real-time brand exposure dashboard during tournaments with JOOLA nets</p>
+          <div class="ac-value">$5,000-15,000 per tournament</div>
+        </div>
+        <div class="activation-card">
+          <div class="ac-header">
+            <h4>Player Archetype Targeting</h4>
+            <span class="diff-badge" style="color:#22c55e;border-color:#22c55e">Low</span>
+          </div>
+          <p>Target All-Court players who over-index on JOOLA court usage for paddle cross-sell campaigns</p>
+          <div class="ac-value">$1,000-3,000/month in attribution data</div>
+        </div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ VENUE PROJECTIONS ═══ -->
+<div class="section">
+  <div class="section-title">
+    Venue-Level Brand Value Projections
+    <span class="meta">annual estimated media value at scale</span>
+  </div>
+  <div class="chart-wrap tall"><canvas id="projChart"></canvas></div>
+</div>
+
+<!-- ═══ WHAT SPONSORS WOULD PAY ═══ -->
+<div class="section">
+  <div class="section-title">What Sponsors Pay for This Intelligence</div>
+  <p style="color:var(--text-secondary);margin-bottom:24px;max-width:800px;line-height:1.7">
+    Sports sponsorship analytics platforms (SponsorPulse, Relo Metrics, GumGum Sports) charge $500-$5,000/month
+    for brand exposure tracking across traditional broadcast. Pickle DaaS brings this capability to
+    recreational venue sports for the first time &mdash; at price points accessible to every facility.
+  </p>
+  <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="tier-name">Brand Pulse</div>
+          <div class="tier-price">$499<span>/mo</span></div>
+          <ul><li>Monthly brand exposure report</li><li>Share of voice tracking</li><li>Basic impression estimates</li><li>Up to 5 tracked brands</li></ul>
+        </div>
+        <div class="pricing-card featured">
+          <div class="tier-name">Brand Intelligence Pro</div>
+          <div class="tier-price">$1,499<span>/mo</span></div>
+          <ul><li>Real-time brand detection alerts</li><li>Player archetype x brand analysis</li><li>Competitive positioning dashboard</li><li>Unlimited brand tracking</li><li>Weekly trend reports</li><li>API access</li></ul>
+        </div>
+        <div class="pricing-card">
+          <div class="tier-name">Brand Command Center</div>
+          <div class="tier-price">$4,999<span>/mo</span></div>
+          <ul><li>Multi-venue brand portfolio view</li><li>Custom valuation models</li><li>Sponsorship ROI calculator</li><li>White-label reports for sponsors</li><li>Dedicated data science support</li><li>Historical trend analysis</li><li>Predictive exposure modeling</li></ul>
+        </div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ TAM ═══ -->
+<div class="section">
+  <div class="section-title">Total Addressable Market: Pickleball Brand Analytics</div>
+  <div class="tam-grid">
+    <div class="tam-card tam">
+      <div class="tam-val">$15M</div>
+      <div class="tam-lbl">TAM (8% of sponsorship spend)</div>
+    </div>
+    <div class="tam-card sam">
+      <div class="tam-val">$78.7M</div>
+      <div class="tam-lbl">SAM (camera-enabled venues)</div>
+    </div>
+    <div class="tam-card som">
+      <div class="tam-val">$899K</div>
+      <div class="tam-lbl">SOM Year 1 (50 venues)</div>
+    </div>
+  </div>
+  <div style="margin-top:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:var(--text)">48.8M</div>
+      <div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px">US Players</div>
+    </div>
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:var(--text)">12,500</div>
+      <div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px">Venues (2026)</div>
+    </div>
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:var(--text)">35%</div>
+      <div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px">Camera Adoption</div>
+    </div>
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:var(--text)">18%</div>
+      <div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px">YoY Growth</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ METHODOLOGY ═══ -->
+<div class="section" style="margin-top:24px">
+  <div class="section-title">Methodology</div>
+  <div style="color:var(--text-secondary);font-size:13px;line-height:1.8;columns:2;column-gap:32px">
+    <p style="margin-bottom:12px"><strong style="color:var(--text)">Impression Model:</strong> Multi-channel weighted: venue screen (100 base), social organic (500), social paid (2500), coaching feed (300)</p>
+    <p style="margin-bottom:12px"><strong style="color:var(--text)">Quality Factor:</strong> Clip quality score (1-10) mapped to 0.3-2.0 multiplier</p>
+    <p style="margin-bottom:12px"><strong style="color:var(--text)">Viral Factor:</strong> Viral potential (1-10) mapped to 0.5-3.0 multiplier</p>
+    <p style="margin-bottom:12px"><strong style="color:var(--text)">Arc Engagement:</strong> Story arc type applies engagement multiplier (0.7x routine to 1.8x athletic highlight)</p>
+    <p style="margin-bottom:12px"><strong style="color:var(--text)">CPM Sources:</strong> eMarketer + IAB Sports Media benchmarks, adjusted for niche sports premium</p>
+  </div>
+</div>
+
+<div class="footer">
+  Pickle DaaS &middot; Brand Exposure Valuation Engine v1.0.0 &middot; Generated 2026-04-14
+</div>
+
+</div><!-- .shell -->
+
+<script>
+const chartFont = { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", size: 12 };
+Chart.defaults.font = chartFont;
+Chart.defaults.color = '#8b949e';
+const gridColor = 'rgba(33,38,45,0.8)';
+
+// ── Share of Voice Doughnut ──
+new Chart(document.getElementById('sovChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ["JOOLA", "Nike", "HEAD", "PICKLEBALL KINGDOM", "Courtana", "On", "PBS", "Recovery Cave", "The Underground", "adidas", "LIFE TIME PICKLEBALL", "PICKLEBALL"],
+    datasets: [{
+      data: [81.24, 8.47, 1.66, 1.55, 0.75, 0.72, 0.3, 0.29, 0.28, 0.25, 0.24, 0.24],
+      backgroundColor: [
+        '#e3b341','#58a6ff','#bc8cff','#f778ba','#3fb950','#d29922',
+        '#79c0ff','#f85149','#a5d6ff','#7ee787','#ff7b72','#d2a8ff'
+      ],
+      borderColor: '#0d1117',
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: { position: 'right', labels: { padding: 12, usePointStyle: true, pointStyle: 'circle' } },
+    },
+  },
+});
+
+// ── Brand Value Bars ──
+new Chart(document.getElementById('valueChart'), {
+  type: 'bar',
+  data: {
+    labels: ["JOOLA", "Nike", "HEAD", "PICKLEBALL KINGDOM", "Courtana", "On", "PBS", "Recovery Cave", "The Underground", "adidas", "LIFE TIME PICKLEBALL", "PICKLEBALL"],
+    datasets: [{
+      label: 'Estimated Value ($)',
+      data: [627111.96, 65355.53, 12818.98, 11928.35, 5769.43, 5566.54, 2349.96, 2209.68, 2127.98, 1894.91, 1862.8, 1850.87],
+      backgroundColor: 'rgba(88,166,255,0.7)',
+      borderColor: '#58a6ff',
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { callback: v => '$' + v.toFixed(0) } },
+      y: { grid: { display: false } },
+    },
+  },
+});
+
+// ── Quality-Weighted Exposure ──
+new Chart(document.getElementById('qweChart'), {
+  type: 'bar',
+  data: {
+    labels: ["JOOLA", "Nike", "HEAD", "PICKLEBALL KINGDOM", "Courtana", "On", "PBS", "Recovery Cave", "The Underground", "adidas", "LIFE TIME PICKLEBALL", "PICKLEBALL"],
+    datasets: [{
+      label: 'QWE Index',
+      data: [5344.2, 526.8, 113.0, 93.1, 55.2, 39.7, 19.0, 15.5, 14.5, 11.3, 15.4, 18.9],
+      backgroundColor: (ctx) => {
+        const g = ctx.chart.ctx.createLinearGradient(0, 0, ctx.chart.width, 0);
+        g.addColorStop(0, 'rgba(88,166,255,0.8)');
+        g.addColorStop(1, 'rgba(188,140,255,0.8)');
+        return g;
+      },
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { grid: { color: gridColor }, beginAtZero: true },
+      x: { grid: { display: false } },
+    },
+  },
+});
+
+// ── JOOLA Channel Breakdown ──
+new Chart(document.getElementById('joolaChannelChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ["venue_screen", "social_organic", "social_paid", "coaching_feed"],
+    datasets: [{
+      data: [8815.8, 63140.09, 476528.82, 78627.25],
+      backgroundColor: ['#e3b341','#58a6ff','#bc8cff','#3fb950'],
+      borderColor: '#0d1117',
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '50%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } },
+    },
+  },
+});
+
+// ── JOOLA Arc Distribution ──
+new Chart(document.getElementById('joolaArcChart'), {
+  type: 'polarArea',
+  data: {
+    labels: ["strategic", "top_play", "grind_rally", "athletic", "teaching_moment"],
+    datasets: [{
+      data: [1338, 81, 66, 56, 42],
+      backgroundColor: [
+        'rgba(227,179,65,0.6)','rgba(88,166,255,0.6)','rgba(188,140,255,0.6)',
+        'rgba(63,185,80,0.6)','rgba(210,153,34,0.6)','rgba(248,81,73,0.6)'
+      ],
+      borderColor: '#0d1117',
+      borderWidth: 1,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 10, usePointStyle: true } },
+    },
+    scales: {
+      r: { grid: { color: gridColor }, ticks: { display: false } },
+    },
+  },
+});
+
+// ── Competitive Paddle Chart ──
+new Chart(document.getElementById('competitiveChart'), {
+  type: 'bar',
+  data: {
+    labels: ["JOOLA", "HEAD", "Onix", "CRBN", "Selkirk", "Franklin", "PKLR"],
+    datasets: [
+      {
+        label: 'Estimated Value ($)',
+        data: [627111.96, 12818.98, 1374.68, 1356.73, 1092.83, 1009.28, 911.55],
+        backgroundColor: 'rgba(227,179,65,0.7)',
+        borderColor: '#e3b341',
+        borderWidth: 1,
+        borderRadius: 4,
+        yAxisID: 'y',
+      },
+      {
+        label: 'Appearances',
+        data: [1620, 37, 5, 3, 4, 3, 3],
+        backgroundColor: 'rgba(88,166,255,0.4)',
+        borderColor: '#58a6ff',
+        borderWidth: 1,
+        borderRadius: 4,
+        yAxisID: 'y1',
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { labels: { usePointStyle: true } } },
+    scales: {
+      y: { position: 'left', grid: { color: gridColor }, ticks: { callback: v => '$' + v } },
+      y1: { position: 'right', grid: { display: false } },
+      x: { grid: { display: false } },
+    },
+  },
+});
+
+// ── Skill Radar ──
+new Chart(document.getElementById('skillRadar'), {
+  type: 'radar',
+  data: {
+    labels: ["court_coverage", "kitchen", "power", "touch", "athleticism", "creativity", "court_iq", "consistency"],
+    datasets: [{
+      label: 'JOOLA Courts Avg',
+      data: [6.0, 7.1, 4.1, 7.0, 5.2, 2.9, 6.5, 7.8],
+      backgroundColor: 'rgba(227,179,65,0.15)',
+      borderColor: '#e3b341',
+      borderWidth: 2,
+      pointBackgroundColor: '#e3b341',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      r: {
+        min: 0, max: 10,
+        grid: { color: gridColor },
+        angleLines: { color: gridColor },
+        ticks: { display: false },
+        pointLabels: { font: { size: 11 } },
+      },
+    },
+  },
+});
+
+// ── Venue Projections ──
+new Chart(document.getElementById('projChart'), {
+  type: 'line',
+  data: {
+    labels: [1, 10, 50, 100, 500, 1000],
+    datasets: [
+      {
+        label: '50 clips/day',
+        data: [17221418.84, 172214188.45, 861070942.24, 1722141884.47, 8610709422.37, 17221418844.74],
+        borderColor: '#58a6ff',
+        backgroundColor: 'rgba(88,166,255,0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#58a6ff',
+      },
+      {
+        label: '100 clips/day',
+        data: [34442837.69, 344428376.89, 1722141884.47, 3444283768.95, 17221418844.74, 34442837689.49],
+        borderColor: '#bc8cff',
+        backgroundColor: 'rgba(188,140,255,0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#bc8cff',
+      },
+      {
+        label: '200 clips/day',
+        data: [68885675.38, 688856753.79, 3444283768.95, 6888567537.9, 34442837689.49, 68885675378.97],
+        borderColor: '#e3b341',
+        backgroundColor: 'rgba(227,179,65,0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#e3b341',
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { labels: { usePointStyle: true } } },
+    scales: {
+      x: { title: { display: true, text: 'Number of Venues' }, grid: { color: gridColor } },
+      y: { title: { display: true, text: 'Annual Brand Value ($)' }, grid: { color: gridColor },
+            ticks: { callback: v => v >= 1000000 ? '$' + (v/1000000).toFixed(1) + 'M' : v >= 1000 ? '$' + (v/1000).toFixed(0) + 'K' : '$' + v } },
+    },
+  },
+});
+</script>
+</body>
+</html>

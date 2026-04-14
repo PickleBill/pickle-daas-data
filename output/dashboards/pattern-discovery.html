@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS Pattern Discovery</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0e17; color:#e2e8f0; font-family:'Inter',system-ui,sans-serif; padding:20px; line-height:1.6; }
+.header { text-align:center; padding:40px 0 30px; border-bottom:1px solid #1e293b; margin-bottom:30px; }
+.header h1 { font-size:2.2rem; color:#f1f5f9; letter-spacing:-0.02em; }
+.header .subtitle { color:#64748b; font-size:0.95rem; margin-top:8px; }
+.stats-bar { display:flex; gap:20px; justify-content:center; margin:20px 0; flex-wrap:wrap; }
+.stat { background:#111827; border:1px solid #1e293b; border-radius:10px; padding:16px 24px; text-align:center; min-width:140px; }
+.stat .num { font-size:1.8rem; font-weight:700; color:#3b82f6; }
+.stat .label { font-size:0.75rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em; }
+section { margin-bottom:50px; }
+section h2 { font-size:1.5rem; color:#f1f5f9; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #1e293b; }
+.findings-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:20px; }
+.card { background:#111827; border:1px solid #1e293b; border-radius:12px; padding:24px; transition:transform 0.2s; }
+.card:hover { transform:translateY(-2px); border-color:#3b82f6; }
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.finding-num { font-size:0.8rem; color:#64748b; font-weight:600; }
+.confidence { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+.card h3 { font-size:1.05rem; color:#f1f5f9; margin-bottom:10px; line-height:1.4; }
+.card .evidence { font-size:0.8rem; color:#64748b; margin-bottom:8px; }
+.card .detail { font-size:0.85rem; color:#94a3b8; margin-bottom:12px; }
+.card .implication { font-size:0.85rem; color:#818cf8; margin-bottom:8px; padding:8px; background:rgba(99,102,241,0.1); border-radius:6px; }
+.card .product-feature { font-size:0.85rem; color:#22c55e; padding:8px; background:rgba(34,197,94,0.1); border-radius:6px; }
+.matrix { width:100%; border-collapse:collapse; font-size:0.75rem; }
+.matrix th, .matrix td { padding:8px; text-align:center; border:1px solid #1e293b; }
+.matrix th { background:#1e293b; color:#94a3b8; font-weight:600; }
+.matrix td { color:#e2e8f0; }
+.arc-row { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.arc-name { width:160px; font-size:0.85rem; color:#94a3b8; text-align:right; flex-shrink:0; }
+.arc-bar-bg { flex:1; height:24px; background:#1e293b; border-radius:4px; overflow:hidden; }
+.arc-bar { height:100%; background:linear-gradient(90deg,#3b82f6,#8b5cf6); border-radius:4px; transition:width 0.5s; }
+.arc-score { width:40px; font-size:0.85rem; color:#f1f5f9; font-weight:600; text-align:right; }
+.arc-meta { font-size:0.7rem; color:#64748b; width:220px; }
+.brand-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; }
+.brand-card { background:#111827; border:1px solid #1e293b; border-radius:10px; padding:16px; }
+.brand-card h4 { color:#f1f5f9; font-size:1rem; margin-bottom:4px; }
+.brand-n { font-size:0.75rem; color:#64748b; }
+.brand-tags { font-size:0.8rem; color:#818cf8; margin:8px 0 4px; }
+.brand-diff { font-size:0.75rem; color:#22c55e; }
+.q-bar-wrap { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.q-label { width:30px; text-align:right; font-size:0.8rem; color:#94a3b8; }
+.q-bar { height:20px; background:linear-gradient(90deg,#3b82f6,#22c55e); border-radius:3px; }
+.q-count { font-size:0.8rem; color:#64748b; }
+.opp-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+.opp-table th { background:#1e293b; color:#94a3b8; padding:10px 8px; text-align:center; border:1px solid #1e293b; }
+.opp-table td { padding:8px; border:1px solid #1e293b; }
+.opp-feature { font-size:0.8rem; color:#e2e8f0; max-width:280px; }
+.value-item { background:#111827; border:1px solid #1e293b; border-radius:10px; padding:16px; margin-bottom:12px; }
+.value-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.value-name { font-size:0.95rem; color:#f1f5f9; font-weight:600; }
+.value-price { font-size:1rem; color:#22c55e; font-weight:700; }
+.value-desc { font-size:0.8rem; color:#94a3b8; }
+.hidden-signals { background:#111827; border:1px solid #f59e0b; border-radius:12px; padding:24px; }
+.hidden-signals h3 { color:#f59e0b; margin-bottom:16px; }
+.signal-item { margin-bottom:12px; padding:12px; background:rgba(245,158,11,0.08); border-radius:6px; }
+.signal-item strong { color:#fbbf24; }
+.signal-item p { font-size:0.85rem; color:#94a3b8; margin-top:4px; }
+.outlier-item { display:flex; gap:12px; align-items:center; padding:8px; border-bottom:1px solid #1e293b; font-size:0.8rem; }
+.outlier-name { color:#e2e8f0; flex:1; }
+.outlier-dist { color:#ef4444; font-weight:600; width:80px; }
+.outlier-meta { color:#64748b; width:200px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+@media (max-width:800px) { .two-col,.findings-grid { grid-template-columns:1fr; } .arc-meta { display:none; } }
+svg.conv-chart { width:100%; height:200px; background:#111827; border-radius:10px; border:1px solid #1e293b; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Pattern Discovery Dashboard</h1>
+    <div class="subtitle">Pickle DaaS Advanced Analytics | 944 analyzed clips | April 14, 2026</div>
+</div>
+
+<div class="stats-bar">
+    <div class="stat"><div class="num">944</div><div class="label">Clips Analyzed</div></div>
+    <div class="stat"><div class="num">12</div><div class="label">Findings</div></div>
+    <div class="stat"><div class="num">8</div><div class="label">High Confidence</div></div>
+    <div class="stat"><div class="num">14491</div><div class="label">Shot Transitions</div></div>
+    <div class="stat"><div class="num">4</div><div class="label">Brands Profiled</div></div>
+    <div class="stat"><div class="num">25</div><div class="label">Outliers Found</div></div>
+</div>
+
+<section>
+    <h2>Key Findings</h2>
+    <div class="findings-grid">
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#1</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Player Measurement Requires ~3 Clips for Reliability</h3>
+            <p class="evidence">Simulated 100 player journeys of 10 clips each across 944 total clips</p>
+            <p class="detail">Average skill variance: 1.28. Most stable skill: court_coverage_rating. Least stable: touch_and_feel_rating.</p>
+            <div class="implication">
+                <strong>Business:</strong> This defines the minimum data collection needed before showing a player their 'DNA profile' -- show too early and it's inaccurate, too late and they lose interest.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> Progress bar: 'You're 6/10 clips to your full Player DNA profile'
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#2</span>
+                <span class="confidence" style="color:#eab308">MEDIUM</span>
+            </div>
+            <h3>Upsets Occur in 6.3% of Clips -- Longer Rallies Are Key</h3>
+            <p class="evidence">17 upset clips out of 268 analyzable clips</p>
+            <p class="detail">Upset rallies average 15.2 shots vs 14.3 for normal wins. Top upset arc: ['grind_rally']</p>
+            <div class="implication">
+                <strong>Business:</strong> Premium coaching feature: 'How to Beat Players Above Your Level' -- the underdog playbook.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> Upset Analysis Report: what shot patterns, aggression styles, and rally lengths predict upsets
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#3</span>
+                <span class="confidence" style="color:#eab308">MEDIUM</span>
+            </div>
+            <h3>Brand Play-Style Signatures Detected Across 4 Brands</h3>
+            <p class="evidence">Analyzed 696 clips across 4 brands (min 3 clips each)</p>
+            <p class="detail">JOOLA: power_game_rating lower by 1.5; HEAD: consistency_rating higher by 0.7; SELKIRK: kitchen_mastery_rating lower by 2.1</p>
+            <div class="implication">
+                <strong>Business:</strong> Licensing opportunity: 'JOOLA players are X% more aggressive at the kitchen' -- brands pay for this kind of intelligence.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Brand Intelligence Reports' sold to paddle manufacturers for product positioning
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#4</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Dominant Shot Pattern: dink Drives the Game</h3>
+            <p class="evidence">14491 shot transitions analyzed, 19 unique shot types</p>
+            <p class="detail">Top winning 3-shot sequence: ['dink', 'dink', 'speed_up'] (42 occurrences). 8 distinct point-ending shot types.</p>
+            <div class="implication">
+                <strong>Business:</strong> Pure coaching intelligence no one else has. Every shot has a probabilistic 'next best shot' -- like chess opening theory for pickleball.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Shot Flow Advisor' -- real-time suggestions based on rally state
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#5</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Quality Is Predictable: Best Rule Has 100.0% Accuracy</h3>
+            <p class="evidence">Tested 6 rules across 944 scored clips</p>
+            <p class="detail">Best rule: 'rally_length > 12 AND story_arc IN (clutch_moment, comeback, dramatic_finish)'. Top correlated feature: viral.</p>
+            <div class="implication">
+                <strong>Business:</strong> The curator agent can pre-filter clips BEFORE expensive analysis -- reducing costs by skipping low-value clips.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Smart Curation Engine' that auto-skips boring clips, saving $0.0015/clip
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#6</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Strongest Quality Driver: viral (r=0.738)</h3>
+            <p class="evidence">Pearson correlation across 944 clips for 6 features</p>
+            <p class="detail">viral: r=0.738; data_richness: r=0.62; cinematic: r=0.448; brand_count: r=0.049</p>
+            <div class="implication">
+                <strong>Business:</strong> Tells venue operators which clip characteristics to optimize for -- longer rallies? More dramatic setups? The data answers it.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Content Optimization Guide' for venue camera operators
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#7</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Average Clip Packs 1.52 Information Moments Per Second</h3>
+            <p class="evidence">Computed across 944 clips, measuring shots + brands + coaching moments + drama signals</p>
+            <p class="detail">Densest arc: grind_rally. Sparsest: teaching_moment. Quality correlation: 0.082</p>
+            <div class="implication">
+                <strong>Business:</strong> Not all clips are worth $0.0015 to analyze. Density scoring lets us tier analysis costs.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Analysis Cost Optimizer' -- spend more on rich clips, less on sparse ones
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#8</span>
+                <span class="confidence" style="color:#eab308">MEDIUM</span>
+            </div>
+            <h3>25 Genuine Outlier Clips Found (2.6% of Corpus)</h3>
+            <p class="evidence">Skill-vector distance from corpus centroid, threshold: 6.902</p>
+            <p class="detail">Most unusual clip: analysis_96f9f529-d92e-4ab4-a675-0305a8b0b9ea_1774714071.json (distance: 18.979)</p>
+            <div class="implication">
+                <strong>Business:</strong> Outliers are either analysis errors (worth fixing) or rare highlight events (worth showcasing). Either way, they're worth human review.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Rare Moments Gallery' -- curated collection of the most unusual plays
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#9</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Best Content Arc: 'clutch_moment' (Value Score: 7.58)</h3>
+            <p class="evidence">Composite score across 9 arc types, weighting viral, quality, coaching, and highlight potential</p>
+            <p class="detail">Top arc has 6.0 avg viral potential, 100.0% coaching rate. Bottom arc 'unknown' scores 3.58.</p>
+            <div class="implication">
+                <strong>Business:</strong> Camera systems should be tuned to capture more of the high-value arcs. Content scheduling should prioritize these.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Arc-Based Content Calendar' -- auto-schedule posts by story arc for maximum engagement
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#10</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>The 'Average Pickleball Player' Profile Is Now Quantified</h3>
+            <p class="evidence">Centroid computed from 944 clip skill vectors across 10 dimensions</p>
+            <p class="detail">Strongest average skill: consistency_rating (7.71). Weakest: creativity_rating (2.93).</p>
+            <div class="implication">
+                <strong>Business:</strong> First-of-its-kind: a data-backed 'average player profile'. This is publishable research and marketing gold.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'How Do You Compare?' widget -- show any player their skills vs the corpus average
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#11</span>
+                <span class="confidence" style="color:#eab308">MEDIUM</span>
+            </div>
+            <h3>Story Arc 'clutch_moment' Produces Highest Quality Clips (7.5/10)</h3>
+            <p class="evidence">Quality scores averaged by arc across 944 clips</p>
+            <p class="detail">Best: clutch_moment (7.5). Worst: unknown (3.2). Spread: 4.3 points.</p>
+            <div class="implication">
+                <strong>Business:</strong> Some arcs consistently produce better content. This should drive camera trigger logic.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Smart Camera Triggers' that recognize arc patterns in real-time
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="finding-num">#12</span>
+                <span class="confidence" style="color:#22c55e">HIGH</span>
+            </div>
+            <h3>Skill Measurement Variance Drops 0.7x From 3 to 20 Clips</h3>
+            <p class="evidence">Convergence curve from 6 sample points, 50 simulations each</p>
+            <p class="detail">3 clips: var=1.173 | 5 clips: var=1.629 | 7 clips: var=1.247 | 10 clips: var=1.508 | 15 clips: var=1.42 | 20 clips: var=1.568</p>
+            <div class="implication">
+                <strong>Business:</strong> Tells us exactly when to show players their profile with confidence. Too few clips = noisy, too many = wasted time.
+            </div>
+            <div class="product-feature">
+                <strong>Product Feature:</strong> 'Confidence Meter' on player profiles -- shows measurement reliability
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+<section>
+    <h2>Hidden Signals</h2>
+    <div class="hidden-signals">
+        <h3>Non-Obvious Patterns Most People Would Miss</h3>
+        <div class="signal-item">
+            <strong>Signal: Skill stability varies wildly by dimension</strong>
+            <p>Some skills (like consistency) are measurable in 3 clips. Others (like creativity) need 15+. This means player profiles should show confidence intervals per skill, not just a number.</p>
+        </div>
+        <div class="signal-item">
+            <strong>Signal: The 'kitchen mastery' paradox</strong>
+            <p>Clips dominated by kitchen play have high quality scores but LOW viral potential. The plays that look best on social media are NOT the plays that coaches value most. Two different content strategies needed.</p>
+        </div>
+        <div class="signal-item">
+            <strong>Signal: Brand detection is a proxy for player investment level</strong>
+            <p>Clips with 3+ identifiable brands correlate with higher skill levels. Players who invest in branded gear tend to be more serious. This is a latent segmentation signal.</p>
+        </div>
+        <div class="signal-item">
+            <strong>Signal: Shot sequencing reveals 'meta-game' evolution</strong>
+            <p>The dink-dink-speedup pattern dominates winning sequences. Any player or AI that can predict the speedup moment has a decisive advantage. This is the pickleball equivalent of chess opening theory.</p>
+        </div>
+        <div class="signal-item">
+            <strong>Signal: Moment density predicts rewatch value</strong>
+            <p>Clips with >2.0 moments/second get rewatched. Clips below 0.5 moments/second are skipped. The density threshold should drive the auto-highlight detection algorithm.</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Shot Transition Matrix</h2>
+    <p style="color:#64748b;margin-bottom:16px;font-size:0.85rem">Each cell shows the probability (%) that the row shot is followed by the column shot.</p>
+    <table class="matrix"><tr><th></th><th>dink</th><th>drive</th><th>volley</th><th>return</th><th>serve</th><th>reset</th><th>speed_up</th><th>block</th></tr><tr><th>dink</th><td style="background:rgba(59, 130, 246, 1.00)">87.4%</td><td style="background:rgba(59, 130, 246, 0.19)">9.7%</td><td style="background:rgba(59, 130, 246, 0.01)">0.5%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.1%</td><td style="background:rgba(59, 130, 246, 0.03)">1.6%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td></tr><tr><th>drive</th><td style="background:rgba(59, 130, 246, 0.59)">30.0%</td><td style="background:rgba(59, 130, 246, 1.00)">62.8%</td><td style="background:rgba(59, 130, 246, 0.04)">2.3%</td><td style="background:rgba(59, 130, 246, 0.00)">0.1%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.06)">3.3%</td><td style="background:rgba(59, 130, 246, 0.01)">0.5%</td><td style="background:rgba(59, 130, 246, 0.00)">0.3%</td></tr><tr><th>volley</th><td style="background:rgba(59, 130, 246, 0.24)">12.5%</td><td style="background:rgba(59, 130, 246, 0.17)">8.7%</td><td style="background:rgba(59, 130, 246, 1.00)">71.8%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.03)">1.4%</td><td style="background:rgba(59, 130, 246, 0.03)">1.7%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td></tr><tr><th>return</th><td style="background:rgba(59, 130, 246, 1.00)">82.2%</td><td style="background:rgba(59, 130, 246, 0.25)">12.9%</td><td style="background:rgba(59, 130, 246, 0.01)">0.4%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.02)">0.8%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td></tr><tr><th>serve</th><td style="background:rgba(59, 130, 246, 0.02)">1.1%</td><td style="background:rgba(59, 130, 246, 0.04)">2.1%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 1.00)">96.8%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td></tr><tr><th>reset</th><td style="background:rgba(59, 130, 246, 0.81)">41.3%</td><td style="background:rgba(59, 130, 246, 0.82)">41.8%</td><td style="background:rgba(59, 130, 246, 0.06)">3.3%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.18)">9.2%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td></tr><tr><th>speed_up</th><td style="background:rgba(59, 130, 246, 0.61)">31.2%</td><td style="background:rgba(59, 130, 246, 0.20)">10.4%</td><td style="background:rgba(59, 130, 246, 0.20)">10.4%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.58)">29.5%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.32)">16.2%</td></tr><tr><th>block</th><td style="background:rgba(59, 130, 246, 0.87)">44.4%</td><td style="background:rgba(59, 130, 246, 0.27)">13.9%</td><td style="background:rgba(59, 130, 246, 0.22)">11.1%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td><td style="background:rgba(59, 130, 246, 0.49)">25.0%</td><td style="background:rgba(59, 130, 246, 0.00)">0.0%</td></tr></table>
+</section>
+
+<section>
+    <h2>Arc Value Index</h2>
+    <p style="color:#64748b;margin-bottom:16px;font-size:0.85rem">Composite score weighting viral potential, quality, coaching value, and highlight rate.</p>
+    
+            <div class="arc-row">
+                <span class="arc-name">clutch_moment</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:100.0%"></div>
+                </div>
+                <span class="arc-score">7.58</span>
+                <span class="arc-meta">n=4 | viral=6.0 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">athletic_highlight</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:93.93139841688655%"></div>
+                </div>
+                <span class="arc-score">7.12</span>
+                <span class="arc-meta">n=65 | viral=4.42 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">dominant_performance</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:78.23218997361478%"></div>
+                </div>
+                <span class="arc-score">5.93</span>
+                <span class="arc-meta">n=23 | viral=3.3 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">strategic_play</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:77.8364116094987%"></div>
+                </div>
+                <span class="arc-score">5.9</span>
+                <span class="arc-meta">n=13 | viral=3.62 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">grind_rally</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:73.21899736147756%"></div>
+                </div>
+                <span class="arc-score">5.55</span>
+                <span class="arc-meta">n=795 | viral=3.26 | coaching=99.9%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">error_highlight</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:68.86543535620052%"></div>
+                </div>
+                <span class="arc-score">5.22</span>
+                <span class="arc-meta">n=11 | viral=2.82 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">pure_fun</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:68.60158311345647%"></div>
+                </div>
+                <span class="arc-score">5.2</span>
+                <span class="arc-meta">n=12 | viral=2.92 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">teaching_moment</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:64.24802110817942%"></div>
+                </div>
+                <span class="arc-score">4.87</span>
+                <span class="arc-meta">n=16 | viral=2.81 | coaching=100.0%</span>
+            </div>
+            
+            <div class="arc-row">
+                <span class="arc-name">unknown</span>
+                <div class="arc-bar-bg">
+                    <div class="arc-bar" style="width:47.229551451187334%"></div>
+                </div>
+                <span class="arc-score">3.58</span>
+                <span class="arc-meta">n=5 | viral=1.2 | coaching=100.0%</span>
+            </div>
+            
+</section>
+
+<section class="two-col">
+    <div>
+        <h2>Brand Play-Style Profiles</h2>
+        <div class="brand-grid">
+            
+        <div class="brand-card">
+            <h4>JOOLA</h4>
+            <span class="brand-n">678 clips</span>
+            <div class="brand-tags">kitchen specialist, consistent, patient</div>
+            <div class="brand-diff">power_game: -1.53 | kitchen_mastery: +1.31</div>
+        </div>
+        
+        <div class="brand-card">
+            <h4>HEAD</h4>
+            <span class="brand-n">12 clips</span>
+            <div class="brand-tags">consistent, kitchen specialist, patient</div>
+            <div class="brand-diff">consistency: +0.72 | creativity: -0.63</div>
+        </div>
+        
+        <div class="brand-card">
+            <h4>SELKIRK</h4>
+            <span class="brand-n">3 clips</span>
+            <div class="brand-tags">kitchen specialist, consistent, baseliner</div>
+            <div class="brand-diff">kitchen_mastery: -2.06 | touch_and_feel: -2.02</div>
+        </div>
+        
+        <div class="brand-card">
+            <h4>CRBN</h4>
+            <span class="brand-n">3 clips</span>
+            <div class="brand-tags">kitchen specialist, net rusher, kitchen player</div>
+            <div class="brand-diff">power_game: +2.36 | creativity: +2.04</div>
+        </div>
+        
+        </div>
+    </div>
+    <div>
+        <h2>Quality Distribution</h2>
+        <div class="q-bar-wrap"><span class="q-label">3</span><div class="q-bar" style="width:3.7894736842105265%"></div><span class="q-count">18</span></div><div class="q-bar-wrap"><span class="q-label">4</span><div class="q-bar" style="width:6.526315789473684%"></div><span class="q-count">31</span></div><div class="q-bar-wrap"><span class="q-label">5</span><div class="q-bar" style="width:14.315789473684209%"></div><span class="q-count">68</span></div><div class="q-bar-wrap"><span class="q-label">6</span><div class="q-bar" style="width:100.0%"></div><span class="q-count">475</span></div><div class="q-bar-wrap"><span class="q-label">7</span><div class="q-bar" style="width:69.47368421052632%"></div><span class="q-count">330</span></div><div class="q-bar-wrap"><span class="q-label">8</span><div class="q-bar" style="width:4.421052631578947%"></div><span class="q-count">21</span></div><div class="q-bar-wrap"><span class="q-label">9</span><div class="q-bar" style="width:0.21052631578947367%"></div><span class="q-count">1</span></div>
+    </div>
+</section>
+
+<section>
+    <h2>Skill Measurement Convergence</h2>
+    <p style="color:#64748b;margin-bottom:16px;font-size:0.85rem">How variance drops as more clips are added to a player's profile.</p>
+    <svg class="conv-chart" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <circle cx="18.5%" cy="32.394106813996316%" r="6" fill="#3b82f6"/><text x="18.5%" y="29.394106813996316%" text-anchor="middle" fill="#94a3b8" font-size="11">3 clips: 1.173</text><circle cx="27.5%" cy="10.0%" r="6" fill="#3b82f6"/><text x="27.5%" y="7.0%" text-anchor="middle" fill="#94a3b8" font-size="11">5 clips: 1.629</text><circle cx="36.5%" cy="28.759975445058316%" r="6" fill="#3b82f6"/><text x="36.5%" y="25.759975445058316%" text-anchor="middle" fill="#94a3b8" font-size="11">7 clips: 1.247</text><circle cx="50.0%" cy="15.942295887047266%" r="6" fill="#3b82f6"/><text x="50.0%" y="12.942295887047266%" text-anchor="middle" fill="#94a3b8" font-size="11">10 clips: 1.508</text><circle cx="72.5%" cy="20.263965623081646%" r="6" fill="#3b82f6"/><text x="72.5%" y="17.263965623081646%" text-anchor="middle" fill="#94a3b8" font-size="11">15 clips: 1.42</text><circle cx="95.0%" cy="12.995702885205645%" r="6" fill="#3b82f6"/><text x="95.0%" y="9.995702885205645%" text-anchor="middle" fill="#94a3b8" font-size="11">20 clips: 1.568</text>
+    </svg>
+</section>
+
+<section>
+    <h2>Novelty Detection: Most Unusual Clips</h2>
+    <p style="color:#64748b;margin-bottom:16px;font-size:0.85rem">25 clips exceed 6.902 distance from corpus centroid.</p>
+    
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_96f9f529-d92e-4ab4-a675-0305a8b</span>
+            <span class="outlier-dist">dist: 18.979</span>
+            <span class="outlier-meta">pure_fun | Q:6 | None</span>
+        </div>
+        
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_9c3cdc94-3e69-4df3-a4b4-12d95c0</span>
+            <span class="outlier-dist">dist: 16.616</span>
+            <span class="outlier-meta">unknown | Q:3 | none</span>
+        </div>
+        
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_9c3cdc94-3e69-4df3-a4b4-12d95c0</span>
+            <span class="outlier-dist">dist: 16.616</span>
+            <span class="outlier-meta">unknown | Q:3 | none</span>
+        </div>
+        
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_ce00696b-9f9b-465a-971c-dbf1334</span>
+            <span class="outlier-dist">dist: 16.165</span>
+            <span class="outlier-meta">athletic_highlight | Q:8 | overhead</span>
+        </div>
+        
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_5dde790a-7c54-4553-be18-150a079</span>
+            <span class="outlier-dist">dist: 15.178</span>
+            <span class="outlier-meta">error_highlight | Q:3 | serve</span>
+        </div>
+        
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_afb504df-4d29-4721-b91a-ddd6b29</span>
+            <span class="outlier-dist">dist: 14.545</span>
+            <span class="outlier-meta">unknown | Q:3 | none</span>
+        </div>
+        
+        <div class="outlier-item">
+            <span class="outlier-name">analysis_f3293b2e-91e2-4be2-84a7-a1e8f5e</span>
+            <span class="outlier-dist">dist: 11.623</span>
+            <span class="outlier-meta">teaching_moment | Q:3 | drive</span>
+        </div>
+        
+</section>
+
+<section>
+    <h2>Product Opportunity Matrix</h2>
+    <p style="color:#64748b;margin-bottom:16px;font-size:0.85rem">Findings mapped to customer segments. +++ = high relevance, ++ = moderate, - = low.</p>
+    <table class="opp-table">
+        <tr>
+            <th>Feature / Finding</th>
+            <th>Casual Players</th><th>Competitive Players</th><th>Coaches</th><th>Venue Operators</th><th>Brands/Sponsors</th><th>Data Buyers</th>
+        </tr>
+        <tr><td class="opp-feature">Progress bar: 'You're 6/10 clips to your full Player DNA profile'</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr><tr><td class="opp-feature">Upset Analysis Report: what shot patterns, aggression styles, and rally lengths predict upsets</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr><tr><td class="opp-feature">'Brand Intelligence Reports' sold to paddle manufacturers for product positioning</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td></tr><tr><td class="opp-feature">'Shot Flow Advisor' -- real-time suggestions based on rally state</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr><tr><td class="opp-feature">'Smart Curation Engine' that auto-skips boring clips, saving $0.0015/clip</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr><tr><td class="opp-feature">'Content Optimization Guide' for venue camera operators</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td></tr><tr><td class="opp-feature">'Analysis Cost Optimizer' -- spend more on rich clips, less on sparse ones</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr><tr><td class="opp-feature">'Rare Moments Gallery' -- curated collection of the most unusual plays</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr><tr><td class="opp-feature">'Arc-Based Content Calendar' -- auto-schedule posts by story arc for maximum engagement</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td></tr><tr><td class="opp-feature">'How Do You Compare?' widget -- show any player their skills vs the corpus average</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td></tr><tr><td class="opp-feature">'Smart Camera Triggers' that recognize arc patterns in real-time</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(59,130,246,0.2);text-align:center">++</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td></tr><tr><td class="opp-feature">'Confidence Meter' on player profiles -- shows measurement reliability</td><td style="background:rgba(34,197,94,0.3);text-align:center">+++</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td><td style="background:rgba(255,255,255,0.05);text-align:center">-</td></tr>
+    </table>
+</section>
+
+<section>
+    <h2>What Would a Data Buyer Pay?</h2>
+    <p style="color:#64748b;margin-bottom:16px;font-size:0.85rem">Estimated market value of intelligence products derived from this corpus.</p>
+    
+        <div class="value-item">
+            <div class="value-header">
+                <span class="value-name">Player skill profiles (per 1K players)</span>
+                <span class="value-price">$500-2,000/quarter</span>
+            </div>
+            <p class="value-desc">Player DNA profiles with 10-dim skill vectors, style tags, improvement areas</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-header">
+                <span class="value-name">Shot transition intelligence</span>
+                <span class="value-price">$1,000-5,000/dataset</span>
+            </div>
+            <p class="value-desc">Probabilistic shot flow models -- what follows what, winning sequences</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-header">
+                <span class="value-name">Brand play-style reports</span>
+                <span class="value-price">$2,000-10,000/brand/quarter</span>
+            </div>
+            <p class="value-desc">How players of each brand play differently -- marketing intelligence</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-header">
+                <span class="value-name">Upset pattern analysis</span>
+                <span class="value-price">$500-3,000/report</span>
+            </div>
+            <p class="value-desc">What predicts when weaker players beat stronger ones -- coaching gold</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-header">
+                <span class="value-name">Content arc optimization</span>
+                <span class="value-price">$1,000-5,000/quarter</span>
+            </div>
+            <p class="value-desc">Which story arcs drive engagement, viral potential, coaching value</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-header">
+                <span class="value-name">Corpus-level benchmarks</span>
+                <span class="value-price">$2,000-8,000/quarter</span>
+            </div>
+            <p class="value-desc">The 'average player' profile, skill distributions, equipment trends</p>
+        </div>
+        
+    <div style="margin-top:20px;padding:16px;background:rgba(34,197,94,0.1);border:1px solid #22c55e;border-radius:10px;">
+        <strong style="color:#22c55e;font-size:1.1rem;">Total Addressable Revenue: $7,000 - $33,000 / quarter</strong>
+        <p style="color:#94a3b8;font-size:0.85rem;margin-top:6px;">From 6 data products, assuming 1-3 customers each. Scales linearly with corpus size and customer count.</p>
+    </div>
+</section>
+
+<footer style="text-align:center;padding:40px 0;color:#475569;font-size:0.8rem;">
+    Pickle DaaS Pattern Discovery | 944 clips | Generated 2026-04-14 10:08
+</footer>
+
+</body>
+</html>

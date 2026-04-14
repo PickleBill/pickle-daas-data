@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana Coaching Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: #0a0e17;
+    --surface: #131925;
+    --surface2: #1a2235;
+    --border: #2a3550;
+    --text: #e8ecf4;
+    --text2: #8892a8;
+    --accent: #00d4aa;
+    --accent2: #0088ff;
+    --warn: #ff6b35;
+    --danger: #ff4466;
+    --gold: #ffd700;
+    --radius: 16px;
+}
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+/* Navigation */
+.nav { position: sticky; top: 0; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 16px; backdrop-filter: blur(20px); }
+.nav-logo { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-tabs { display: flex; gap: 4px; margin-left: auto; }
+.nav-tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; color: var(--text2); font-size: 13px; font-weight: 500; transition: all 0.2s; border: none; background: none; }
+.nav-tab:hover { color: var(--text); background: var(--surface); }
+.nav-tab.active { color: var(--accent); background: var(--accent)10; }
+
+/* Layout */
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.section { display: none; }
+.section.active { display: block; }
+.section-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.section-subtitle { color: var(--text2); font-size: 15px; margin-bottom: 24px; }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+.card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.card-title .icon { font-size: 20px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+@media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .nav-tabs { flex-wrap: wrap; }
+}
+
+/* Player Report */
+.player-header { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.player-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #4488FF, #4488FF88); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; }
+.player-meta { flex: 1; }
+.player-name { font-size: 24px; font-weight: 700; }
+.player-archetype { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 4px; background: #4488FF20; color: #4488FF; border: 1px solid #4488FF40; }
+.player-tagline { color: var(--text2); font-size: 14px; margin-top: 4px; }
+
+/* Stat pills */
+.stat-pill { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 10px; margin-bottom: 6px; }
+.stat-pill.strength { background: var(--accent)10; border: 1px solid var(--accent)30; }
+.stat-pill.growth { background: var(--warn)10; border: 1px solid var(--warn)30; }
+.pill-label { flex: 1; font-size: 14px; font-weight: 500; }
+.pill-value { font-size: 20px; font-weight: 700; }
+.stat-pill.strength .pill-value { color: var(--accent); }
+.stat-pill.growth .pill-value { color: var(--warn); }
+.pill-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--surface2); color: var(--text2); }
+
+/* Signature move */
+.signature-card { background: linear-gradient(135deg, var(--surface), var(--surface2)); border: 1px solid var(--gold)40; }
+.signature-label { font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.signature-move { font-size: 18px; font-weight: 600; margin-top: 4px; }
+
+/* Priority bars */
+.priority-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.priority-label { flex: 0 0 220px; font-size: 13px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.priority-bar { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.priority-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width 0.6s ease; }
+.priority-count { font-size: 13px; color: var(--text2); min-width: 35px; text-align: right; }
+
+/* Drills */
+.drill-card { padding: 16px; background: var(--surface2); border-radius: 12px; margin-bottom: 10px; border-left: 3px solid var(--accent2); }
+.drill-name { font-weight: 600; font-size: 15px; }
+.drill-desc { color: var(--text2); font-size: 13px; margin-top: 4px; }
+.drill-meta { display: flex; gap: 12px; margin-top: 8px; }
+.drill-tag { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: var(--accent2)15; color: var(--accent2); }
+
+/* Coach Dashboard */
+.student-card { padding: 14px; background: var(--surface2); border-radius: 12px; margin-bottom: 8px; }
+.student-header { display: flex; align-items: center; gap: 12px; }
+.student-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent2)30; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--accent2); }
+.student-info { flex: 1; }
+.student-name { font-weight: 600; font-size: 14px; }
+.archetype-badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; margin-top: 2px; }
+.student-clips { font-size: 12px; color: var(--text2); }
+.student-focus { font-size: 12px; color: var(--text2); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+
+/* Heatmap */
+.heatmap { overflow-x: auto; }
+.heatmap table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.heatmap th { padding: 8px 6px; text-align: center; color: var(--text2); font-weight: 500; font-size: 11px; }
+.heatmap td { padding: 8px 6px; text-align: center; border-radius: 4px; }
+.heatmap td.name-cell { text-align: left; font-weight: 500; }
+
+/* Progression */
+.progression-step { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; position: relative; }
+.progression-step::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: -16px; width: 2px; background: var(--border); }
+.progression-step:last-child::before { display: none; }
+.progression-dot { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.progression-content { flex: 1; }
+.progression-label { font-weight: 600; font-size: 15px; }
+.progression-desc { color: var(--text2); font-size: 13px; margin-top: 2px; }
+
+/* Pricing */
+.pricing-card { text-align: center; padding: 28px 20px; border-radius: var(--radius); transition: transform 0.2s; }
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured { border: 2px solid var(--accent); }
+.pricing-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.pricing-price { font-size: 36px; font-weight: 800; margin: 12px 0; }
+.pricing-price span { font-size: 16px; font-weight: 400; color: var(--text2); }
+.pricing-feature { font-size: 13px; color: var(--text2); padding: 4px 0; text-align: left; padding-left: 20px; position: relative; }
+.pricing-feature::before { content: '\2713'; position: absolute; left: 0; color: var(--accent); }
+.pricing-margin { font-size: 12px; color: var(--accent); margin-top: 12px; padding: 6px 12px; background: var(--accent)10; border-radius: 8px; display: inline-block; }
+
+/* Metrics */
+.metric-big { text-align: center; padding: 20px; }
+.metric-value { font-size: 42px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.metric-label { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+/* Defensibility */
+.moat-item { padding: 14px; background: var(--surface2); border-radius: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+.moat-number { font-size: 24px; font-weight: 800; color: var(--accent); min-width: 80px; }
+.moat-desc { font-size: 13px; color: var(--text2); }
+.moat-label { font-size: 14px; font-weight: 600; }
+
+/* Answer badge */
+.answer-card { background: linear-gradient(135deg, var(--accent)08, var(--accent2)08); border: 1px solid var(--accent)30; padding: 24px; border-radius: var(--radius); margin-bottom: 24px; }
+.answer-label { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; }
+.answer-text { font-size: 18px; font-weight: 600; line-height: 1.5; }
+.answer-detail { color: var(--text2); font-size: 14px; margin-top: 8px; }
+
+/* Coaching breakdown quotes */
+.coaching-quote { font-size: 13px; color: var(--text2); padding: 10px 14px; border-left: 2px solid var(--accent2); margin-bottom: 8px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-logo">Courtana Coach</div>
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showSection('player')">Player Report</button>
+        <button class="nav-tab" onclick="showSection('coach')">Coach Dashboard</button>
+        <button class="nav-tab" onclick="showSection('drills')">Drill Engine</button>
+        <button class="nav-tab" onclick="showSection('progression')">Progression</button>
+        <button class="nav-tab" onclick="showSection('business')">Business Case</button>
+    </div>
+</nav>
+
+<div class="container">
+
+<!-- PLAYER REPORT -->
+<div id="section-player" class="section active">
+    <div class="player-header">
+        <div class="player-avatar">DP</div>
+        <div class="player-meta">
+            <div class="player-name">Demo Player (Top-20 Aggregate)</div>
+            <div class="player-archetype">Wall</div>
+            <div class="player-tagline">Immovable at the kitchen line. Outlasts opponents. &middot; 20 clips analyzed</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">Skill Radar</div>
+            <canvas id="radarChart" height="280"></canvas>
+        </div>
+        <div>
+            <div class="card">
+                <div class="card-title">Top Strengths</div>
+                <div class="stat-pill strength"><span class="pill-label">Paddle Control</span><span class="pill-value">7.3</span><span class="pill-badge">Above Average</span></div><div class="stat-pill strength"><span class="pill-label">Kitchen Mastery</span><span class="pill-value">7.2</span><span class="pill-badge">Above Average</span></div><div class="stat-pill strength"><span class="pill-label">Composure</span><span class="pill-value">7.2</span><span class="pill-badge">Top 25%</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Growth Areas</div>
+                <div class="stat-pill growth"><span class="pill-label">Court IQ</span><span class="pill-value">6.8</span><span class="pill-badge">Above Average</span></div><div class="stat-pill growth"><span class="pill-label">Power Game</span><span class="pill-value">6.5</span><span class="pill-badge">Top 25%</span></div><div class="stat-pill growth"><span class="pill-label">Creativity</span><span class="pill-value">5.7</span><span class="pill-badge">Top 10%</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card signature-card">
+            <div class="signature-label">Your Signature Move</div>
+            <div class="signature-move">The near-left player consistently executes controlled forehand dinks, often cross-court, maintaining rally rhythm.</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Shot Profile</div>
+            <div style="font-size:14px; color: var(--text2)">
+                <div><strong>240</strong> total shots analyzed</div>
+                <div>Average quality: <strong>7.2/10</strong></div>
+                <div style="margin-top:8px">Most common: dink (108x), speed_up (26x), serve (20x), return (20x)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Improvement Priorities (from AI coaching analysis)</div>
+        <div class="priority-row"><span class="priority-label">more consistent speed-ups</span><div class="priority-bar"><div class="priority-fill" style="width:10.0%"></div></div><span class="priority-count">1x</span></div><div class="priority-row"><span class="priority-label">better shot selection under pressure</span><div class="priority-bar"><div class="priority-fill" style="width:10.0%"></div></div><span class="priority-count">1x</span></div><div class="priority-row"><span class="priority-label">develop more effective speed-up placement and consistency</span><div class="priority-bar"><div class="priority-fill" style="width:10.0%"></div></div><span class="priority-count">1x</span></div><div class="priority-row"><span class="priority-label">incorporate more offensive dinks to create openings</span><div class="priority-bar"><div class="priority-fill" style="width:10.0%"></div></div><span class="priority-count">1x</span></div><div class="priority-row"><span class="priority-label">improve decision-making on when to attack</span><div class="priority-bar"><div class="priority-fill" style="width:10.0%"></div></div><span class="priority-count">1x</span></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">AI Coaching Observations</div>
+        <div class="coaching-quote">This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle. Consider a more controlled attack or another dink to open up a better op</div><div class="coaching-quote">This rally highlights the importance of patience and consistency at the kitchen line. The final speed-up was a good idea to break the rhythm, but the execution lacked precision. Focus on aiming for th</div><div class="coaching-quote">Notice the consistent depth on the dinks, keeping opponents honest at the NVZ. The male player's patience to wait for the right moment to speed up is key, and the female player's quick hands for the b</div><div class="coaching-quote">Notice how the player in green patiently dinks until the opponent's ball pops up slightly. That's the cue for the speed-up. The execution was clean, driving through the ball rather than just flicking </div><div class="coaching-quote">Good job maintaining kitchen position and patience during the dink exchange. However, the final speed-up needs better control and placement. Consider aiming for the opponent's feet or a wider angle to</div>
+    </div>
+</div>
+
+<!-- COACH DASHBOARD -->
+<div id="section-coach" class="section">
+    <div class="section-title">Coach Dashboard</div>
+    <div class="section-subtitle">Student roster, skill gaps, and group lesson planning</div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">Student Roster</div>
+            
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">A</div>
+                <div class="student-info">
+                    <div class="student-name">Alex Rivera</div>
+                    <div class="archetype-badge" style="background:#FF444420; color:#FF4444; border: 1px solid #FF444440">Hammer</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Incorporate more net play and dinking to vary attack.</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">J</div>
+                <div class="student-info">
+                    <div class="student-name">Jordan Chen</div>
+                    <div class="archetype-badge" style="background:#FFD70020; color:#FFD700; border: 1px solid #FFD70040">Elite</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Develop more aggressive shot selection to finish points quicker</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">S</div>
+                <div class="student-info">
+                    <div class="student-name">Sam Patel</div>
+                    <div class="archetype-badge" style="background:#FFD70020; color:#FFD700; border: 1px solid #FFD70040">Elite</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Varying shot selection to keep opponents guessing</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">M</div>
+                <div class="student-info">
+                    <div class="student-name">Morgan Williams</div>
+                    <div class="archetype-badge" style="background:#4488FF20; color:#4488FF; border: 1px solid #4488FF40">Wall</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: incorporate more varied speed-ups or lobs from the kitchen</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">C</div>
+                <div class="student-info">
+                    <div class="student-name">Casey O'Brien</div>
+                    <div class="archetype-badge" style="background:#4488FF20; color:#4488FF; border: 1px solid #4488FF40">Wall</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Develop more aggressive shot selection to finish points</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">T</div>
+                <div class="student-info">
+                    <div class="student-name">Taylor Kim</div>
+                    <div class="archetype-badge" style="background:#88888820; color:#888888; border: 1px solid #88888840">Developing</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Develop more aggressive shot selection from the kitchen</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">R</div>
+                <div class="student-info">
+                    <div class="student-name">Riley Brooks</div>
+                    <div class="archetype-badge" style="background:#4488FF20; color:#4488FF; border: 1px solid #4488FF40">Wall</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Incorporate occasional speed-ups to keep opponents off balance.</div>
+        </div>
+        <div class="student-card">
+            <div class="student-header">
+                <div class="student-avatar">D</div>
+                <div class="student-info">
+                    <div class="student-name">Drew Martinez</div>
+                    <div class="archetype-badge" style="background:#4488FF20; color:#4488FF; border: 1px solid #4488FF40">Wall</div>
+                </div>
+                <div class="student-clips">20 clips</div>
+            </div>
+            <div class="student-focus">Focus: Vary shot selection more to keep opponents guessing</div>
+        </div>
+        </div>
+        <div>
+            <div class="card">
+                <div class="card-title">Group Lesson Priorities</div>
+                <div class="section-subtitle" style="margin-bottom:12px">Most common improvement areas across all students</div>
+                <div class="priority-row"><span class="priority-label">Develop more aggressive shot selection to finish points</span><div class="priority-bar"><div class="priority-fill" style="width:100%"></div></div><span class="priority-count">41</span></div><div class="priority-row"><span class="priority-label">Develop more aggressive shot selection from the kitchen</span><div class="priority-bar"><div class="priority-fill" style="width:92.6829268292683%"></div></div><span class="priority-count">38</span></div><div class="priority-row"><span class="priority-label">Develop more aggressive shot selection to finish points quicker</span><div class="priority-bar"><div class="priority-fill" style="width:87.8048780487805%"></div></div><span class="priority-count">36</span></div><div class="priority-row"><span class="priority-label">Improve court coverage to handle wider shots</span><div class="priority-bar"><div class="priority-fill" style="width:87.8048780487805%"></div></div><span class="priority-count">36</span></div><div class="priority-row"><span class="priority-label">Vary shot selection to keep opponents guessing</span><div class="priority-bar"><div class="priority-fill" style="width:73.17073170731707%"></div></div><span class="priority-count">30</span></div><div class="priority-row"><span class="priority-label">Incorporate more power drives to keep opponents honest</span><div class="priority-bar"><div class="priority-fill" style="width:65.85365853658537%"></div></div><span class="priority-count">27</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Skill Gap Heatmap</div>
+        <div class="heatmap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align:left">Student</th>
+                        <th>Type</th>
+                        <th>Kitche</th><th>Power </th><th>Consis</th><th>Creati</th><th>Court </th><th>Compos</th><th>Paddle</th><th>Court </th>
+                    </tr>
+                </thead>
+                <tbody id="heatmapBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- DRILL ENGINE -->
+<div id="section-drills" class="section">
+    <div class="section-title">Drill Recommendation Engine</div>
+    <div class="section-subtitle">Personalized drills based on skill gaps and improvement priorities</div>
+
+    <div class="grid-2">
+        <div>
+            <div class="card">
+                <div class="card-title">Recommended for You</div>
+                <div id="drillsList"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">How It Works</div>
+            <div style="font-size:14px; color: var(--text2); line-height: 1.8">
+                <p><strong>1. Analyze</strong> &mdash; AI watches your clips and rates 8 skill dimensions</p>
+                <p><strong>2. Identify</strong> &mdash; Lowest skills become drill targets</p>
+                <p><strong>3. Match</strong> &mdash; Database of 24 drills mapped to skill gaps</p>
+                <p><strong>4. Personalize</strong> &mdash; Difficulty matched to your current level</p>
+                <p><strong>5. Track</strong> &mdash; Re-analyze after practice to measure improvement</p>
+            </div>
+            <div style="margin-top: 16px">
+                <div class="card-title">Drill Coverage</div>
+                <div style="font-size:13px; color: var(--text2)">
+                    Kitchen Mastery: 3 drills<br>Power Game: 3 drills<br>Consistency: 3 drills<br>Creativity: 3 drills<br>Court IQ: 3 drills<br>Composure: 3 drills<br>Paddle Control: 3 drills<br>Court Coverage: 3 drills
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PROGRESSION -->
+<div id="section-progression" class="section">
+    <div class="section-title">Skill Progression Concept</div>
+    <div class="section-subtitle">How coaching intelligence improves with more clips</div>
+
+    <div class="answer-card">
+        <div class="answer-label">Key Finding</div>
+        <div class="answer-text">5 clips is the tipping point where coaching becomes genuinely useful versus generic advice.</div>
+        <div class="answer-detail">At 5 clips, skill profiles stabilize enough for targeted drill recommendations. Below that, archetype classification has only 55% accuracy and recommendations are too broad. At 10 clips, you get coach-equivalent personalization.</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Personalization Ladder</div>
+        <div id="progressionSteps"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Simulated Progression (20 sessions)</div>
+        <canvas id="progressionChart" height="200"></canvas>
+    </div>
+</div>
+
+<!-- BUSINESS CASE -->
+<div id="section-business" class="section">
+    <div class="section-title">Business Case</div>
+    <div class="section-subtitle">Coaching product metrics, unit economics, and defensibility</div>
+
+    <div class="grid-3">
+        <div class="card metric-big">
+            <div class="metric-value">348</div>
+            <div class="metric-label">Coaching-Grade Clips (36.9%)</div>
+        </div>
+        <div class="card metric-big">
+            <div class="metric-value">10.13</div>
+            <div class="metric-label">Insights per Clip</div>
+        </div>
+        <div class="card metric-big">
+            <div class="metric-value">9,555</div>
+            <div class="metric-label">Total Coaching Moments</div>
+        </div>
+    </div>
+
+    <div class="section-title" style="font-size:22px; margin-top:32px; margin-bottom:16px">Pricing & Unit Economics</div>
+    <div class="grid-3" id="pricingCards"></div>
+
+    <div class="card" style="margin-top:16px">
+        <div class="card-title">COGS Breakdown</div>
+        <div style="font-size:14px; color:var(--text2)">
+            <div class="grid-3">
+                <div class="metric-big"><div class="metric-value" style="font-size:28px">$0.002</div><div class="metric-label">AI Cost per Clip</div></div>
+                <div class="metric-big"><div class="metric-value" style="font-size:28px">$0.02</div><div class="metric-label">AI Cost / User / Month</div></div>
+                <div class="metric-big"><div class="metric-value" style="font-size:28px">$0.52</div><div class="metric-label">Total COGS / User / Month</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title" style="font-size:22px; margin-top:32px; margin-bottom:16px">What Makes This Defensible</div>
+    <div class="moat-item">
+        <div class="moat-number">9,555</div>
+        <div><div class="moat-label">Proprietary Coaching Data Points</div><div class="moat-desc">Every clip analyzed adds unique coaching intelligence to our knowledge graph</div></div>
+    </div>
+    <div class="moat-item">
+        <div class="moat-number">922</div>
+        <div><div class="moat-label">Unique Coaching Patterns</div><div class="moat-desc">Distinct improvement opportunity combinations detected across corpus</div></div>
+    </div>
+    <div class="moat-item">
+        <div class="moat-number">943</div>
+        <div><div class="moat-label">Archetype Classifications</div><div class="moat-desc">Training data for player classification that improves with scale</div></div>
+    </div>
+    <div class="moat-item">
+        <div class="moat-number">10K+</div>
+        <div><div class="moat-label">Players = Unassailable Moat</div><div class="moat-desc">Pattern matching across thousands of players becomes impossible to replicate without the same corpus of analyzed video</div></div>
+    </div>
+</div>
+
+</div>
+
+<script>
+// Tab navigation
+function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('section-' + name).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// Radar Chart
+const radarCtx = document.getElementById('radarChart').getContext('2d');
+new Chart(radarCtx, {
+    type: 'radar',
+    data: {
+        labels: ["Kitchen Mastery", "Power Game", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Control", "Court Coverage"],
+        datasets: [
+            {
+                label: 'Player',
+                data: [7.2, 6.5, 7.1, 5.7, 6.8, 7.2, 7.3, 7.0],
+                borderColor: '#00d4aa',
+                backgroundColor: 'rgba(0, 212, 170, 0.15)',
+                borderWidth: 2,
+                pointRadius: 4,
+                pointBackgroundColor: '#00d4aa',
+            },
+            {
+                label: 'Corpus Average',
+                data: [7.11, 4.1, 7.73, 2.94, 6.45, 6.88, 7.22, 5.99],
+                borderColor: '#555',
+                backgroundColor: 'rgba(85, 85, 85, 0.08)',
+                borderWidth: 1,
+                borderDash: [4, 4],
+                pointRadius: 3,
+                pointBackgroundColor: '#555',
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            r: {
+                min: 0, max: 10,
+                ticks: { stepSize: 2, color: '#555', backdropColor: 'transparent' },
+                grid: { color: '#2a3550' },
+                angleLines: { color: '#2a3550' },
+                pointLabels: { color: '#8892a8', font: { size: 11 } }
+            }
+        },
+        plugins: { legend: { labels: { color: '#8892a8', font: { size: 11 } } } }
+    }
+});
+
+// Heatmap
+const heatmapData = [{"name": "Alex Rivera", "archetype": "Hammer", "Kitchen Mastery": 6, "Power Game": 8.2, "Consistency": 8, "Creativity": 4.0, "Court IQ": 6.9, "Composure": 7.4, "Paddle Control": 7.5, "Court Coverage": 7.2}, {"name": "Jordan Chen", "archetype": "Elite", "Kitchen Mastery": 9, "Power Game": 3.9, "Consistency": 9.1, "Creativity": 3.8, "Court IQ": 8.0, "Composure": 8.1, "Paddle Control": 8.9, "Court Coverage": 7.0}, {"name": "Sam Patel", "archetype": "Elite", "Kitchen Mastery": 8.4, "Power Game": 6.0, "Consistency": 8.7, "Creativity": 5, "Court IQ": 7.4, "Composure": 8.0, "Paddle Control": 8.2, "Court Coverage": 7.2}, {"name": "Morgan Williams", "archetype": "Wall", "Kitchen Mastery": 7.5, "Power Game": 6.2, "Consistency": 7.3, "Creativity": 5.5, "Court IQ": 6.8, "Composure": 6.8, "Paddle Control": 7.4, "Court Coverage": 6.8}, {"name": "Casey O'Brien", "archetype": "Wall", "Kitchen Mastery": 7.7, "Power Game": 3.5, "Consistency": 8.9, "Creativity": 3.0, "Court IQ": 6.8, "Composure": 8.2, "Paddle Control": 7.6, "Court Coverage": 6.2}, {"name": "Taylor Kim", "archetype": "Developing", "Kitchen Mastery": 3.5, "Power Game": 2.9, "Consistency": 3.7, "Creativity": 1.6, "Court IQ": 3.4, "Composure": 4.4, "Paddle Control": 4, "Court Coverage": 3.5}, {"name": "Riley Brooks", "archetype": "Wall", "Kitchen Mastery": 7.8, "Power Game": 4.3, "Consistency": 8.3, "Creativity": 3.1, "Court IQ": 6.9, "Composure": 7.1, "Paddle Control": 7.8, "Court Coverage": 7.2}, {"name": "Drew Martinez", "archetype": "Wall", "Kitchen Mastery": 7.7, "Power Game": 3.5, "Consistency": 9, "Creativity": 2.9, "Court IQ": 6.8, "Composure": 7.3, "Paddle Control": 7.8, "Court Coverage": 6.0}];
+const heatmapBody = document.getElementById('heatmapBody');
+heatmapData.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="name-cell">${row.name}</td><td style="font-size:11px;color:var(--text2)">${row.archetype}</td>`;
+    const skills = ["Kitchen Mastery", "Power Game", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Control", "Court Coverage"];
+    skills.forEach(skill => {
+        const val = row[skill] || 0;
+        const hue = val >= 8 ? 160 : val >= 6 ? 40 : 0;
+        const sat = val >= 8 ? '70%' : val >= 6 ? '60%' : '60%';
+        const light = val >= 8 ? '25%' : val >= 6 ? '25%' : '20%';
+        const textColor = val >= 8 ? '#00d4aa' : val >= 6 ? '#ffd700' : '#ff6b35';
+        tr.innerHTML += `<td style="background:hsla(${hue},${sat},${light},0.4);color:${textColor};font-weight:600">${val}</td>`;
+    });
+    heatmapBody.appendChild(tr);
+});
+
+// Drills
+const drills = [{"name": "Shot Selection Journal", "desc": "After each game, note 3 shots you'd change. Builds tactical awareness.", "duration": "5 min", "level": "all", "target_skill": "Court IQ", "current_score": 6.8}, {"name": "Stacking Drill", "desc": "Practice switching sides with partner. Focus on communication and positioning.", "duration": "15 min", "level": "intermediate", "target_skill": "Court IQ", "current_score": 6.8}, {"name": "Overhead Smash Reps", "desc": "Partner lobs, you put away overhead. Track placement accuracy to corners.", "duration": "10 min", "level": "all", "target_skill": "Power Game", "current_score": 6.5}, {"name": "Drive & Reset Combo", "desc": "Alternate between hard drives and soft resets from mid-court. Build shot selection.", "duration": "15 min", "level": "intermediate", "target_skill": "Power Game", "current_score": 6.5}, {"name": "Around-the-World Dinks", "desc": "Hit dinks to 6 different targets in sequence. Develops angle variety.", "duration": "10 min", "level": "all", "target_skill": "Creativity", "current_score": 5.7}, {"name": "Spin Serve Lab", "desc": "Practice 5 serve variations: topspin, slice, deep, short, body. Track which return weakly.", "duration": "15 min", "level": "intermediate", "target_skill": "Creativity", "current_score": 5.7}];
+const drillsList = document.getElementById('drillsList');
+drills.forEach(d => {
+    drillsList.innerHTML += `
+        <div class="drill-card">
+            <div class="drill-name">${d.name}</div>
+            <div class="drill-desc">${d.desc}</div>
+            <div class="drill-meta">
+                <span class="drill-tag">Target: ${d.target_skill} (${d.current_score}/10)</span>
+                <span class="drill-tag">${d.duration}</span>
+                <span class="drill-tag">${d.level}</span>
+            </div>
+        </div>`;
+});
+
+// Progression steps
+const progData = {"1_clip": {"personalization": "Low", "accuracy": "30%", "value": "Basic archetype guess, generic tips"}, "3_clips": {"personalization": "Moderate", "accuracy": "55%", "value": "Reliable archetype, top 2 weaknesses identified"}, "5_clips": {"personalization": "Good", "accuracy": "70%", "value": "Stable skill profile, targeted drills, meaningful comparisons"}, "10_clips": {"personalization": "High", "accuracy": "85%", "value": "Full coaching report, session tracking, pattern detection"}, "20_clips": {"personalization": "Very High", "accuracy": "92%", "value": "Coach-equivalent insights, progression tracking, matchup analysis"}, "50_clips": {"personalization": "Elite", "accuracy": "97%", "value": "Predictive coaching, periodization, tournament readiness"}};
+const progSteps = document.getElementById('progressionSteps');
+const progColors = ['#888', '#ff6b35', '#ffd700', '#00d4aa', '#0088ff', '#aa44ff'];
+let i = 0;
+for (const [key, val] of Object.entries(progData)) {
+    const clips = key.replace('_', ' ');
+    const color = progColors[i % progColors.length];
+    const isLast = i === Object.keys(progData).length - 1;
+    progSteps.innerHTML += `
+        <div class="progression-step">
+            <div class="progression-dot" style="background:${color}20;color:${color};border:2px solid ${color}">${clips.split(' ')[0]}</div>
+            <div class="progression-content">
+                <div class="progression-label">${clips} clips &mdash; ${val.personalization} Personalization (${val.accuracy} accuracy)</div>
+                <div class="progression-desc">${val.value}</div>
+            </div>
+        </div>`;
+    i++;
+}
+
+// Progression chart (simulated)
+const progCtx = document.getElementById('progressionChart').getContext('2d');
+const sessions = Array.from({length: 20}, (_, i) => `S${i+1}`);
+const simKitchen = [6,6.2,6.5,6.3,6.8,7,7.1,7.4,7.3,7.6,7.8,7.7,8,8.1,8,8.3,8.2,8.5,8.4,8.6];
+const simPower = [4,4.1,4.3,4.5,4.4,4.8,5,5.2,5.1,5.5,5.4,5.7,5.9,6,6.2,6.1,6.4,6.3,6.5,6.7];
+const simCreativity = [3,3,3.2,3.1,3.4,3.5,3.3,3.7,3.6,3.9,4,4.1,4.3,4.2,4.5,4.6,4.4,4.8,4.7,5];
+new Chart(progCtx, {
+    type: 'line',
+    data: {
+        labels: sessions,
+        datasets: [
+            { label: 'Kitchen Mastery', data: simKitchen, borderColor: '#00d4aa', tension: 0.3, pointRadius: 2 },
+            { label: 'Power Game', data: simPower, borderColor: '#ff6b35', tension: 0.3, pointRadius: 2 },
+            { label: 'Creativity', data: simCreativity, borderColor: '#aa44ff', tension: 0.3, pointRadius: 2 },
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { min: 0, max: 10, grid: { color: '#2a3550' }, ticks: { color: '#8892a8' } },
+            x: { grid: { color: '#2a3550' }, ticks: { color: '#8892a8' } }
+        },
+        plugins: { legend: { labels: { color: '#8892a8' } } }
+    }
+});
+
+// Pricing cards
+const pricing = {"Basic": {"price": 9.99, "clips_month": 10, "features": ["Skill radar after each session", "Basic archetype", "3 drill recommendations"], "margin_pct": 94.8}, "Pro": {"price": 19.99, "clips_month": 30, "features": ["Everything in Basic", "Session-over-session tracking", "Personalized drill programs", "Coach sharing"], "margin_pct": 94.8}, "Coach": {"price": 49.99, "clips_month": 100, "features": ["Everything in Pro", "Student roster dashboard", "Group lesson planning", "Drill recommendation engine", "White-label reports"], "margin_pct": 94.8}};
+const pricingCards = document.getElementById('pricingCards');
+const tierOrder = ['Basic', 'Pro', 'Coach'];
+tierOrder.forEach((tier, idx) => {
+    const p = pricing[tier];
+    const featured = idx === 1 ? 'featured' : '';
+    pricingCards.innerHTML += `
+        <div class="card pricing-card ${featured}">
+            <div class="pricing-name">${tier}</div>
+            <div class="pricing-price">${p.price}<span>/mo</span></div>
+            ${p.features.map(f => `<div class="pricing-feature">${f}</div>`).join('')}
+            <div class="pricing-margin">${p.margin_pct}% margin</div>
+        </div>`;
+});
+</script>
+</body>
+</html>
