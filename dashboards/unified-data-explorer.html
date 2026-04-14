@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS · Unified Data Explorer</title>
+<style>
+  :root {
+    --bg: #0a0c14;
+    --surface: #12161f;
+    --surface-2: #1a1f2e;
+    --surface-3: #222840;
+    --border: #272d40;
+    --border-2: #2f3650;
+    --text: #e8eaed;
+    --muted: #8590a3;
+    --dim: #5a6275;
+    --ok: #22c55e;
+    --ok-dim: rgba(34, 197, 94, 0.12);
+    --ok-mid: rgba(34, 197, 94, 0.25);
+    --info: #3b82f6;
+    --info-dim: rgba(59, 130, 246, 0.1);
+    --warn: #f59e0b;
+    --warn-dim: rgba(245, 158, 11, 0.12);
+    --danger: #ef4444;
+    --danger-dim: rgba(239, 68, 68, 0.12);
+    --purple: #a855f7;
+    --purple-dim: rgba(168, 85, 247, 0.12);
+    --gold: #eab308;
+    --silver: #94a3b8;
+    --bronze: #a16207;
+    --teal: #14b8a6;
+    --teal-dim: rgba(20, 184, 166, 0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.55; min-height: 100vh; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Layout */
+  .shell { max-width: 1400px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* Hero */
+  .hero { margin-bottom: 28px; }
+  .hero-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .hero h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.6px; line-height: 1.1; }
+  .hero h1 .accent { color: var(--ok); }
+  .hero h1 .accent2 { color: var(--teal); }
+  .hero .tagline { color: var(--muted); font-size: 13px; margin-top: 6px; max-width: 560px; }
+  .back-link { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 7px 12px; font-family: ui-monospace, monospace; transition: all 0.15s; white-space: nowrap; }
+  .back-link:hover { color: var(--ok); border-color: var(--ok); }
+
+  /* Stats bar */
+  .stats-bar { display: grid; grid-template-columns: repeat(6, 1fr); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
+  @media(max-width: 900px) { .stats-bar { grid-template-columns: repeat(3, 1fr); } }
+  @media(max-width: 500px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
+  .stat { padding: 16px 18px; border-right: 1px solid var(--border); border-bottom: 1px solid transparent; }
+  .stat:last-child { border-right: none; }
+  .stat .val { font-size: 26px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat .val.green { color: var(--ok); }
+  .stat .val.teal { color: var(--teal); }
+  .stat .val.gold { color: var(--gold); }
+  .stat .val.purple { color: var(--purple); }
+  .stat .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 5px; font-family: ui-monospace, monospace; }
+  .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: pulse 2s infinite; margin-right: 5px; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  /* Filters */
+  .filters-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-top: 20px; }
+  .filters-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .filter-group { display: flex; flex-direction: column; gap: 5px; }
+  .filter-group label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; font-family: ui-monospace, monospace; }
+  .filter-group select,
+  .filter-group input[type="range"] { background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 5px; color: var(--text); font-size: 13px; padding: 6px 10px; outline: none; cursor: pointer; min-width: 140px; }
+  .filter-group select:focus { border-color: var(--ok); }
+  .toggle-btn { padding: 7px 14px; border: 1px solid var(--border-2); border-radius: 5px; font-size: 12px; cursor: pointer; background: var(--surface-2); color: var(--muted); transition: all 0.15s; white-space: nowrap; font-family: ui-monospace, monospace; }
+  .toggle-btn.active { background: var(--ok-dim); border-color: var(--ok); color: var(--ok); }
+  .results-count { font-size: 12px; color: var(--muted); font-family: ui-monospace, monospace; margin-left: auto; align-self: flex-end; padding-bottom: 2px; }
+  .range-val { font-size: 12px; color: var(--muted); font-family: ui-monospace, monospace; }
+  input[type="range"] { accent-color: var(--ok); width: 100px; }
+
+  /* Section */
+  section { margin-top: 32px; }
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+  .section-head h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; display: flex; align-items: center; gap: 10px; }
+  .badge-tag { font-size: 10px; padding: 2px 8px; border-radius: 3px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+  .badge-tag.live { background: var(--ok-dim); color: var(--ok); border: 1px solid var(--ok); }
+  .badge-tag.teal { background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal); }
+  .section-desc { color: var(--muted); font-size: 12px; }
+
+  /* Clip Grid */
+  .clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  @media(max-width: 500px) { .clip-grid { grid-template-columns: 1fr; } }
+
+  .clip-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all 0.2s; display: flex; flex-direction: column; }
+  .clip-card:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .clip-card.linked { border-left: 3px solid var(--ok); }
+  .clip-card.unlinked { border-left: 3px solid var(--border); }
+
+  /* Video */
+  .clip-video { position: relative; background: #000; aspect-ratio: 16/9; overflow: hidden; }
+  .clip-video video { width: 100%; height: 100%; object-fit: contain; }
+  .clip-video .overlay-badge { position: absolute; top: 8px; right: 8px; }
+  .linked-pill { font-size: 9px; padding: 3px 8px; border-radius: 20px; font-family: ui-monospace, monospace; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .linked-pill.yes { background: var(--ok-dim); color: var(--ok); border: 1px solid var(--ok); }
+  .linked-pill.no { background: rgba(139,148,158,0.15); color: var(--dim); border: 1px solid var(--border); }
+
+  /* Card body split */
+  .card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; }
+  .side { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .side.daas { border-right: 1px solid var(--border); }
+  .side-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: ui-monospace, monospace; font-weight: 600; padding-bottom: 5px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
+  .side-label .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+  .side-label .dot.blue { background: var(--info); }
+  .side-label .dot.green { background: var(--ok); }
+
+  .clip-summary { font-size: 11px; color: var(--muted); line-height: 1.45; }
+  .scores-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .score-chip { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-family: ui-monospace, monospace; font-weight: 600; }
+  .score-chip.quality { background: var(--info-dim); color: var(--info); }
+  .score-chip.viral { background: var(--purple-dim); color: var(--purple); }
+  .score-chip.shot { background: var(--surface-3); color: var(--muted); }
+
+  .skill-bars { display: flex; flex-direction: column; gap: 3px; }
+  .skill-row { display: flex; align-items: center; gap: 6px; }
+  .skill-name { font-size: 9px; color: var(--dim); width: 58px; flex-shrink: 0; font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .skill-bar-bg { flex: 1; height: 4px; background: var(--surface-3); border-radius: 2px; overflow: hidden; }
+  .skill-bar-fill { height: 100%; background: var(--info); border-radius: 2px; transition: width 0.4s; }
+  .skill-val { font-size: 9px; color: var(--dim); width: 14px; text-align: right; font-family: ui-monospace, monospace; }
+
+  /* Courtana side */
+  .no-courtana { font-size: 11px; color: var(--dim); font-style: italic; display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; }
+  .participant-list { display: flex; flex-direction: column; gap: 4px; }
+  .participant { display: flex; align-items: center; gap: 6px; }
+  .participant-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-3); overflow: hidden; flex-shrink: 0; }
+  .participant-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .participant-name { font-size: 11px; color: var(--text); font-weight: 500; }
+  .participant-rank { font-size: 9px; color: var(--muted); font-family: ui-monospace, monospace; }
+
+  .badge-list { display: flex; flex-direction: column; gap: 5px; }
+  .badge-item { display: flex; align-items: flex-start; gap: 6px; }
+  .badge-tier { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-family: ui-monospace, monospace; font-weight: 700; text-transform: uppercase; flex-shrink: 0; }
+  .badge-tier.gold { background: rgba(234,179,8,0.15); color: var(--gold); border: 1px solid rgba(234,179,8,0.3); }
+  .badge-tier.silver { background: rgba(148,163,184,0.15); color: var(--silver); border: 1px solid rgba(148,163,184,0.3); }
+  .badge-tier.bronze { background: rgba(161,98,7,0.15); color: #d97706; border: 1px solid rgba(161,98,7,0.3); }
+  .badge-tier.default { background: var(--surface-3); color: var(--muted); border: 1px solid var(--border); }
+  .badge-name { font-size: 11px; color: var(--text); line-height: 1.3; }
+  .badge-who { font-size: 10px; color: var(--muted); }
+  .badge-reason { font-size: 10px; color: var(--dim); line-height: 1.35; font-style: italic; margin-top: 2px; }
+
+  /* Comparison strip */
+  .comparison-strip { padding: 10px 16px; background: var(--surface-2); border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .cmp-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; flex-shrink: 0; }
+  .cmp-chip { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-family: ui-monospace, monospace; font-weight: 600; }
+  .cmp-chip.match { background: var(--ok-dim); color: var(--ok); }
+  .cmp-chip.miss { background: var(--danger-dim); color: var(--danger); }
+  .cmp-chip.neutral { background: var(--surface-3); color: var(--muted); }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .empty-icon { font-size: 42px; margin-bottom: 14px; }
+  .empty-state p { font-size: 14px; }
+  .load-more { display: block; margin: 24px auto 0; padding: 10px 28px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 6px; color: var(--muted); font-size: 13px; cursor: pointer; transition: all 0.15s; font-family: ui-monospace, monospace; }
+  .load-more:hover { border-color: var(--teal); color: var(--teal); }
+  .load-more:disabled { opacity: 0.4; cursor: default; }
+
+  /* Data quality section */
+  .quality-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  .quality-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .quality-card .q-uuid { font-size: 10px; color: var(--dim); font-family: ui-monospace, monospace; }
+  .q-section { display: flex; flex-direction: column; gap: 4px; }
+  .q-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; font-family: ui-monospace, monospace; }
+  .q-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+
+  /* Loading */
+  .loading { text-align: center; padding: 80px 20px; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--ok); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { color: var(--muted); font-size: 13px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--surface); } ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-row">
+      <div>
+        <h1>Unified <span class="accent">Data</span> <span class="accent2">Explorer</span></h1>
+        <p class="tagline">DaaS intelligence + Courtana ground truth — merged per clip. The full picture: what our AI predicts vs. what actually happened.</p>
+      </div>
+      <a class="back-link" href="showcase-portal.html">← Showcase Portal</a>
+    </div>
+    <div class="stats-bar" id="statsBar">
+      <div class="stat"><div class="val" id="statTotal">—</div><div class="lbl"><span class="live-dot"></span>Total Clips</div></div>
+      <div class="stat"><div class="val green" id="statLinked">—</div><div class="lbl">Courtana-Linked</div></div>
+      <div class="stat"><div class="val teal" id="statPct">—</div><div class="lbl">Link Rate</div></div>
+      <div class="stat"><div class="val gold" id="statBadges">—</div><div class="lbl">Ground Truth Badges</div></div>
+      <div class="stat"><div class="val purple" id="statParticipants">—</div><div class="lbl">Unique Players</div></div>
+      <div class="stat"><div class="val" id="statDaasOnly">—</div><div class="lbl">DaaS-Only</div></div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label>Brand</label>
+        <select id="filterBrand"><option value="">All Brands</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Badge</label>
+        <select id="filterBadge"><option value="">All Badges</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Player</label>
+        <select id="filterPlayer"><option value="">All Players</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Story Arc</label>
+        <select id="filterArc"><option value="">All Arcs</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Min Quality <span class="range-val" id="qualityVal">0</span></label>
+        <input type="range" id="filterQuality" min="0" max="10" value="0" step="1">
+      </div>
+      <button class="toggle-btn" id="toggleLinked">Courtana-Linked Only</button>
+      <button class="toggle-btn" id="toggleBadged">Has Badges Only</button>
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+  </div>
+
+  <!-- Clip Grid -->
+  <section>
+    <div class="section-head">
+      <h2>Clip Intelligence <span class="badge-tag teal">Unified View</span></h2>
+      <span class="section-desc">DaaS analysis left · Courtana ground truth right</span>
+    </div>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading merged corpus…</p>
+    </div>
+    <div class="clip-grid" id="clipGrid" style="display:none"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon">🔍</div>
+      <p>No clips match these filters.</p>
+    </div>
+    <button class="load-more" id="loadMore" style="display:none">Load more clips</button>
+  </section>
+
+  <!-- Data Quality Comparison -->
+  <section id="qualitySection" style="display:none">
+    <div class="section-head">
+      <h2>Prediction vs Ground Truth <span class="badge-tag live">Validation</span></h2>
+      <span class="section-desc">DaaS predicted badges vs Courtana actual awards — green = match, red = miss</span>
+    </div>
+    <div class="quality-grid" id="qualityGrid"></div>
+  </section>
+
+</div>
+
+<script>
+// ── Data + State ─────────────────────────────────────────────────────────────
+let ALL_CLIPS = [];
+let FILTERED = [];
+let PAGE = 0;
+const PAGE_SIZE = 24;
+
+const SKILL_KEYS = ['kitchen','court_coverage','court_iq','athleticism','power','touch','consistency','composure','creativity'];
+const SKILL_LABELS = {kitchen:'Kitchen',court_coverage:'Coverage',court_iq:'IQ',athleticism:'Athleticism',power:'Power',touch:'Touch',consistency:'Consistency',composure:'Composure',creativity:'Creativity'};
+
+// ── Fetch ─────────────────────────────────────────────────────────────────────
+async function loadData() {
+  const sources = ['../merged-corpus.json', 'merged-corpus.json', '../corpus-export.json', 'corpus-export.json'];
+  for (const src of sources) {
+    try {
+      const r = await fetch(src);
+      if (!r.ok) continue;
+      const data = await r.json();
+      ALL_CLIPS = Array.isArray(data) ? data : (data.clips || []);
+      if (ALL_CLIPS.length > 0) {
+        console.log(`Loaded ${ALL_CLIPS.length} clips from ${src}`);
+        return true;
+      }
+    } catch(e) { /* try next */ }
+  }
+  return false;
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function computeStats(clips) {
+  const linked = clips.filter(c => c.courtana_linked).length;
+  const badges = clips.reduce((s, c) => s + (c.courtana_badges || c.courtana_badge_awards || []).length, 0);
+  const players = new Set(
+    clips.flatMap(c => (c.participants || c.courtana_participants || []).map(p => p.username).filter(Boolean))
+  );
+  return { total: clips.length, linked, pct: clips.length ? Math.round(linked/clips.length*100) : 0, badges, players: players.size, daasOnly: clips.length - linked };
+}
+
+function renderStats(clips) {
+  const s = computeStats(clips);
+  document.getElementById('statTotal').textContent = s.total.toLocaleString();
+  document.getElementById('statLinked').textContent = s.linked.toLocaleString();
+  document.getElementById('statPct').textContent = s.pct + '%';
+  document.getElementById('statBadges').textContent = s.badges.toLocaleString();
+  document.getElementById('statParticipants').textContent = s.players.toLocaleString();
+  document.getElementById('statDaasOnly').textContent = s.daasOnly.toLocaleString();
+}
+
+// ── Filters ───────────────────────────────────────────────────────────────────
+function populateFilters() {
+  const brands = new Set(), arcs = new Set(), badges = new Set(), players = new Set();
+  for (const c of ALL_CLIPS) {
+    (c.brands || []).forEach(b => b && brands.add(b));
+    if (c.arc && c.arc !== 'unknown') arcs.add(c.arc);
+    const cBadges = c.courtana_badges || c.courtana_badge_awards || [];
+    cBadges.forEach(b => b.badge_name && badges.add(b.badge_name));
+    const parts = c.participants || c.courtana_participants || [];
+    parts.forEach(p => p.username && players.add(p.username));
+  }
+  fill('filterBrand', [...brands].sort());
+  fill('filterArc', [...arcs].sort());
+  fill('filterBadge', [...badges].sort());
+  fill('filterPlayer', [...players].sort());
+}
+
+function fill(id, opts) {
+  const sel = document.getElementById(id);
+  opts.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o; opt.textContent = o;
+    sel.appendChild(opt);
+  });
+}
+
+function getFilters() {
+  return {
+    brand: document.getElementById('filterBrand').value,
+    badge: document.getElementById('filterBadge').value,
+    player: document.getElementById('filterPlayer').value,
+    arc: document.getElementById('filterArc').value,
+    quality: parseInt(document.getElementById('filterQuality').value),
+    linkedOnly: document.getElementById('toggleLinked').classList.contains('active'),
+    badgedOnly: document.getElementById('toggleBadged').classList.contains('active'),
+  };
+}
+
+function applyFilters() {
+  const f = getFilters();
+  FILTERED = ALL_CLIPS.filter(c => {
+    if (f.linkedOnly && !c.courtana_linked) return false;
+    const cBadges = c.courtana_badges || c.courtana_badge_awards || [];
+    if (f.badgedOnly && !cBadges.length) return false;
+    if (f.brand && !(c.brands || []).includes(f.brand)) return false;
+    if (f.badge && !cBadges.some(b => b.badge_name === f.badge)) return false;
+    const parts = c.participants || c.courtana_participants || [];
+    if (f.player && !parts.some(p => p.username === f.player)) return false;
+    if (f.arc && c.arc !== f.arc) return false;
+    if ((c.quality || 0) < f.quality) return false;
+    return true;
+  });
+  PAGE = 0;
+  renderCount();
+  renderGrid(true);
+  renderQualitySection();
+}
+
+function renderCount() {
+  document.getElementById('resultsCount').textContent = `${FILTERED.length} clips`;
+}
+
+// ── Clip Card ─────────────────────────────────────────────────────────────────
+function clipCard(clip) {
+  const linked = clip.courtana_linked;
+  const cBadges = clip.courtana_badges || clip.courtana_badge_awards || [];
+  const parts = clip.participants || clip.courtana_participants || [];
+  const daasB = clip.badges || [];
+  const skills = clip.skills || {};
+
+  const card = document.createElement('div');
+  card.className = `clip-card ${linked ? 'linked' : 'unlinked'}`;
+
+  // Video
+  const videoUrl = clip.video_url || '';
+  const thumb = clip.thumbnail || videoUrl.replace('.mp4', '.jpeg');
+
+  card.innerHTML = `
+    <div class="clip-video">
+      <video src="${videoUrl}" poster="${thumb}" preload="none" controls playsinline muted
+        style="width:100%;height:100%;object-fit:contain;background:#000">
+      </video>
+      <div class="overlay-badge">
+        <span class="linked-pill ${linked ? 'yes' : 'no'}">${linked ? '✓ Linked' : 'DaaS only'}</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="side daas">
+        <div class="side-label"><span class="dot blue"></span>DaaS Intelligence</div>
+        <p class="clip-summary">${clip.summary || 'No summary yet.'}</p>
+        <div class="scores-row">
+          <span class="score-chip quality">Q${clip.quality || 0}</span>
+          <span class="score-chip viral">V${clip.viral || 0}</span>
+          <span class="score-chip shot">${clip.dominant_shot || '—'}</span>
+          <span class="score-chip shot">${clip.arc || '—'}</span>
+        </div>
+        <div class="skill-bars">${renderSkillBars(skills)}</div>
+        ${daasB.length ? `<div style="margin-top:4px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-family:ui-monospace,monospace;margin-bottom:3px">Predicted Badges</div><div style="display:flex;flex-wrap:wrap;gap:3px">${daasB.map(b => `<span class="cmp-chip neutral">${typeof b==='string'?b:(b.badge_name||b)}</span>`).join('')}</div></div>` : ''}
+      </div>
+      <div class="side">
+        <div class="side-label"><span class="dot green"></span>Courtana Ground Truth</div>
+        ${linked ? `
+          ${parts.length ? `<div class="participant-list">${parts.map(participantHTML).join('')}</div>` : ''}
+          ${cBadges.length ? `<div class="badge-list">${cBadges.map(badgeHTML).join('')}</div>` : `<p class="clip-summary" style="color:var(--dim)">No badges awarded this clip.</p>`}
+        ` : `<div class="no-courtana">Not in Courtana<br>API index yet</div>`}
+      </div>
+    </div>
+    ${linked && (cBadges.length || daasB.length) ? comparisonStrip(daasB, cBadges) : ''}
+  `;
+  return card;
+}
+
+function renderSkillBars(skills) {
+  return SKILL_KEYS.filter(k => skills[k] > 0).slice(0, 5).map(k => `
+    <div class="skill-row">
+      <span class="skill-name">${SKILL_LABELS[k]}</span>
+      <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:${(skills[k]||0)*10}%"></div></div>
+      <span class="skill-val">${skills[k]||0}</span>
+    </div>
+  `).join('');
+}
+
+function participantHTML(p) {
+  const initials = (p.username||'?').slice(0,2).toUpperCase();
+  return `<div class="participant">
+    <div class="participant-avatar">${p.avatar_file ? `<img src="${p.avatar_file}" alt="${p.username}" loading="lazy">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);font-weight:700">${initials}</div>`}</div>
+    <div>
+      <div class="participant-name">@${p.username||'?'}</div>
+      ${p.rank_name ? `<div class="participant-rank">${p.rank_name}${p.level ? ` · Lv${p.level}` : ''}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function badgeHTML(b) {
+  const tier = (b.badge_tier || '').toLowerCase();
+  const tierClass = ['gold','silver','bronze'].includes(tier) ? tier : 'default';
+  return `<div class="badge-item">
+    <span class="badge-tier ${tierClass}">${tier || '★'}</span>
+    <div>
+      <div class="badge-name">${b.badge_name || 'Badge'}</div>
+      ${b.profile_username ? `<div class="badge-who">→ @${b.profile_username}</div>` : ''}
+      ${b.gemini_reason ? `<div class="badge-reason">"${b.gemini_reason.slice(0,80)}${b.gemini_reason.length>80?'…':''}"</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function comparisonStrip(daasB, courtanaB) {
+  const courtanaNames = new Set(courtanaB.map(b => (b.badge_name||'').toLowerCase()));
+  const daasNames = (daasB || []).map(b => typeof b==='string'?b:(b.badge_name||b));
+
+  const chips = daasNames.map(n => {
+    const match = courtanaNames.has((n||'').toLowerCase());
+    return `<span class="cmp-chip ${match?'match':'miss'}">${n}</span>`;
+  });
+
+  // Courtana-only badges (not predicted)
+  courtanaB.forEach(b => {
+    const n = (b.badge_name||'').toLowerCase();
+    if (!daasNames.some(d => (d||'').toLowerCase()===n)) {
+      chips.push(`<span class="cmp-chip neutral">+${b.badge_name}</span>`);
+    }
+  });
+
+  if (!chips.length) return '';
+  return `<div class="comparison-strip"><span class="cmp-label">Badge Match:</span>${chips.join('')}</div>`;
+}
+
+// ── Grid Render ───────────────────────────────────────────────────────────────
+function renderGrid(reset) {
+  const grid = document.getElementById('clipGrid');
+  const empty = document.getElementById('emptyState');
+  const btn = document.getElementById('loadMore');
+
+  if (reset) {
+    grid.innerHTML = '';
+    PAGE = 0;
+  }
+
+  if (FILTERED.length === 0) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    btn.style.display = 'none';
+    return;
+  }
+
+  const start = PAGE * PAGE_SIZE;
+  const slice = FILTERED.slice(start, start + PAGE_SIZE);
+
+  grid.style.display = 'grid';
+  empty.style.display = 'none';
+
+  slice.forEach(c => grid.appendChild(clipCard(c)));
+  PAGE++;
+
+  const hasMore = PAGE * PAGE_SIZE < FILTERED.length;
+  btn.style.display = hasMore ? 'block' : 'none';
+  btn.disabled = false;
+}
+
+// ── Quality Comparison Section ─────────────────────────────────────────────────
+function renderQualitySection() {
+  const section = document.getElementById('qualitySection');
+  const grid = document.getElementById('qualityGrid');
+  const candidates = FILTERED.filter(c => {
+    const daasB = c.badges || [];
+    const courtanaB = c.courtana_badges || c.courtana_badge_awards || [];
+    return daasB.length > 0 && courtanaB.length > 0;
+  });
+  if (!candidates.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  grid.innerHTML = '';
+  candidates.slice(0, 20).forEach(c => {
+    const daasB = (c.badges||[]).map(b=>typeof b==='string'?b:(b.badge_name||b));
+    const courtanaB = c.courtana_badges || c.courtana_badge_awards || [];
+    const courtanaNames = new Set(courtanaB.map(b=>(b.badge_name||'').toLowerCase()));
+    const matches = daasB.filter(n => courtanaNames.has((n||'').toLowerCase()));
+    const misses = daasB.filter(n => !courtanaNames.has((n||'').toLowerCase()));
+    const novel = courtanaB.filter(b => !daasB.some(d=>(d||'').toLowerCase()===(b.badge_name||'').toLowerCase()));
+
+    const el = document.createElement('div');
+    el.className = 'quality-card';
+    el.innerHTML = `
+      <div class="q-uuid">${(c.uuid||'').slice(0,8)}…</div>
+      ${matches.length ? `<div class="q-section"><div class="q-label">✓ Matches (${matches.length})</div><div class="q-chips">${matches.map(n=>`<span class="cmp-chip match">${n}</span>`).join('')}</div></div>` : ''}
+      ${misses.length ? `<div class="q-section"><div class="q-label">✗ Predicted not awarded (${misses.length})</div><div class="q-chips">${misses.map(n=>`<span class="cmp-chip miss">${n}</span>`).join('')}</div></div>` : ''}
+      ${novel.length ? `<div class="q-section"><div class="q-label">+ Courtana-only awards (${novel.length})</div><div class="q-chips">${novel.map(b=>`<span class="cmp-chip neutral">${b.badge_name}</span>`).join('')}</div></div>` : ''}
+    `;
+    grid.appendChild(el);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+(async () => {
+  const ok = await loadData();
+  document.getElementById('loading').style.display = 'none';
+
+  if (!ok || ALL_CLIPS.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('emptyState').innerHTML = '<div class="empty-icon">⚠️</div><p>Could not load merged corpus. Run <code>merge-data-layers.py</code> first.</p>';
+    return;
+  }
+
+  renderStats(ALL_CLIPS);
+  populateFilters();
+
+  FILTERED = [...ALL_CLIPS];
+  renderCount();
+  renderGrid(true);
+  renderQualitySection();
+
+  // Filter events
+  ['filterBrand','filterBadge','filterPlayer','filterArc'].forEach(id =>
+    document.getElementById(id).addEventListener('change', applyFilters)
+  );
+  document.getElementById('filterQuality').addEventListener('input', e => {
+    document.getElementById('qualityVal').textContent = e.target.value;
+    applyFilters();
+  });
+  ['toggleLinked','toggleBadged'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      e.target.classList.toggle('active');
+      applyFilters();
+    });
+  });
+  document.getElementById('loadMore').addEventListener('click', () => renderGrid(false));
+})();
+</script>
+</body>
+</html>
