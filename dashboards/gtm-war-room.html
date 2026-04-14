@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana GTM War Room</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-base: #080b16;
+  --bg-card: #0f1424;
+  --bg-card-hover: #161d33;
+  --bg-elevated: #1a2238;
+  --border: #1e2a45;
+  --border-bright: #2a3a5c;
+  --text-primary: #e8edf5;
+  --text-secondary: #8b95a8;
+  --text-muted: #5a6478;
+  --green: #22c55e;
+  --green-dim: rgba(34, 197, 94, 0.15);
+  --green-glow: rgba(34, 197, 94, 0.3);
+  --gold: #eab308;
+  --gold-dim: rgba(234, 179, 8, 0.15);
+  --red: #ef4444;
+  --red-dim: rgba(239, 68, 68, 0.15);
+  --blue: #3b82f6;
+  --blue-dim: rgba(59, 130, 246, 0.15);
+  --purple: #a855f7;
+  --purple-dim: rgba(168, 85, 247, 0.15);
+  --gray: #6b7280;
+  --gray-dim: rgba(107, 114, 128, 0.15);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+/* Layout */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-in-delay-1 { transition-delay: 0.1s; }
+.fade-in-delay-2 { transition-delay: 0.2s; }
+.fade-in-delay-3 { transition-delay: 0.3s; }
+
+/* Header */
+.war-room-header {
+  padding: 60px 0 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.war-room-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--green-dim);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+}
+.header-badge .pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+}
+.war-room-header h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  background: linear-gradient(135deg, #fff 0%, #22c55e 50%, #eab308 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+.war-room-header .subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.war-room-header .subtitle strong {
+  color: var(--text-primary);
+}
+
+/* Navigation */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8, 11, 22, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+.nav-inner {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav-link {
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+
+/* Section */
+.section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+.section-label .num {
+  background: var(--green-dim);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+.section h2 {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 32px;
+  color: var(--text-primary);
+}
+.section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+/* KPI Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.kpi-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-2px);
+}
+.kpi-card .kpi-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.kpi-card .kpi-value {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+.kpi-card .kpi-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.kpi-card.green .kpi-value { color: var(--green); }
+.kpi-card.green::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, var(--green-dim), transparent 70%); }
+.kpi-card.gold .kpi-value { color: var(--gold); }
+.kpi-card.gold::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, var(--gold-dim), transparent 70%); }
+.kpi-card.red .kpi-value { color: var(--red); }
+.kpi-card.red::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, var(--red-dim), transparent 70%); }
+.kpi-card.blue .kpi-value { color: var(--blue); }
+.kpi-card.blue::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, var(--blue-dim), transparent 70%); }
+
+/* Two Goals */
+.goals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+@media (max-width: 768px) { .goals-grid { grid-template-columns: 1fr; } }
+.goal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.goal-card .goal-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+.goal-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.goal-card .goal-target {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.goal-card .goal-detail {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.goal-card.distribution { border-left: 3px solid var(--green); }
+.goal-card.distribution .goal-target { color: var(--green); }
+.goal-card.data { border-left: 3px solid var(--gold); }
+.goal-card.data .goal-target { color: var(--gold); }
+
+/* Deal Pipeline Cards */
+.deal-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.deal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: start;
+  transition: border-color 0.3s, background 0.3s;
+}
+.deal-card:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-card-hover);
+}
+.deal-card .deal-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.deal-card .deal-name {
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.deal-card .deal-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.deal-card .deal-meta span { display: inline-flex; align-items: center; gap: 4px; }
+.deal-card .deal-action {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+.deal-card .deal-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.deal-card .deal-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.badge-live { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.3); }
+.badge-active { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.3); }
+.badge-stalled { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(234, 179, 8, 0.3); }
+.badge-overdue { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge-lost { background: var(--gray-dim); color: var(--gray); border: 1px solid rgba(107, 114, 128, 0.3); }
+.badge-prospect { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+.badge-vc { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+
+.risk-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.risk-low { background: var(--green-dim); color: var(--green); }
+.risk-medium { background: var(--gold-dim); color: var(--gold); }
+.risk-high { background: var(--red-dim); color: var(--red); }
+.risk-normal { background: var(--gray-dim); color: var(--text-secondary); }
+
+/* Pipeline Summary */
+.pipeline-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 24px;
+}
+.pipeline-stat { text-align: center; }
+.pipeline-stat .ps-value { font-size: 24px; font-weight: 800; }
+.pipeline-stat .ps-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+/* Charts */
+.chart-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.chart-container h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-secondary);
+}
+.chart-wrap { position: relative; height: 300px; }
+
+/* Strategy Vectors */
+.vector-list { display: grid; gap: 20px; margin-bottom: 40px; }
+.vector-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.vector-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+.vector-card.v1::before { background: var(--green); }
+.vector-card.v2::before { background: var(--gold); }
+.vector-card.v3::before { background: var(--blue); }
+.vector-card.v4::before { background: var(--purple); }
+.vector-card.v5::before { background: #f97316; }
+.vector-card .vector-num {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+.vector-card.v1 .vector-num { color: var(--green); }
+.vector-card.v2 .vector-num { color: var(--gold); }
+.vector-card.v3 .vector-num { color: var(--blue); }
+.vector-card.v4 .vector-num { color: var(--purple); }
+.vector-card.v5 .vector-num { color: #f97316; }
+.vector-card h3 { font-size: 20px; margin-bottom: 12px; }
+.vector-card .vector-body { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.vector-card .vector-body ul { padding-left: 20px; margin-top: 8px; }
+.vector-card .vector-body li { margin-bottom: 6px; }
+.vector-card .vector-impact {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.vector-card .impact-item { font-size: 13px; }
+.vector-card .impact-item .il { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; display: block; }
+.vector-card .impact-item .iv { font-weight: 700; color: var(--text-primary); }
+
+/* Friction Map */
+.friction-list { display: grid; gap: 12px; margin-bottom: 40px; }
+.friction-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: start;
+}
+.friction-num {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: var(--red-dim);
+  color: var(--red);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+}
+.friction-item .fi-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.friction-item .fi-desc { font-size: 13px; color: var(--text-secondary); }
+.friction-item .fi-status {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Competitive Table */
+.comp-table-wrap { overflow-x: auto; margin-bottom: 40px; }
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.comp-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: var(--bg-elevated);
+  border-bottom: 2px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.comp-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.comp-table tr:hover td { background: rgba(255,255,255,0.02); }
+.comp-table .comp-name { font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+.comp-table .advantage { color: var(--green); font-weight: 600; }
+
+/* Data Assets */
+.data-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.data-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+.data-stat .ds-value { font-size: 28px; font-weight: 800; color: var(--gold); }
+.data-stat .ds-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Revenue Vectors */
+.rev-vector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.rev-vector {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+.rev-vector .rv-price { font-size: 20px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
+.rev-vector .rv-name { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.rev-vector .rv-desc { font-size: 13px; color: var(--text-secondary); }
+
+/* Moat */
+.moat-list { display: grid; gap: 10px; margin-bottom: 32px; }
+.moat-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.moat-rank {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  background: var(--green-dim);
+  color: var(--green);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+.moat-text { font-size: 14px; font-weight: 600; }
+
+/* Sprint Section */
+.sprint-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.sprint-week {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+}
+.sprint-week .sw-header {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.sprint-week .sw-dates {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sprint-week.w1 .sw-header { color: var(--red); }
+.sprint-week.w2 .sw-header { color: var(--gold); }
+.sprint-week.w3 .sw-header { color: var(--blue); }
+.sprint-week.w4 .sw-header { color: var(--green); }
+.sprint-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+.sprint-item:hover { color: var(--text-primary); }
+.sprint-item.checked { color: var(--text-muted); text-decoration: line-through; }
+.sprint-check {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border: 2px solid var(--border-bright);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: all 0.2s;
+}
+.sprint-item.checked .sprint-check {
+  background: var(--green);
+  border-color: var(--green);
+}
+.sprint-item.checked .sprint-check::after {
+  content: '\2713';
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Asset Inventory */
+.asset-section { margin-bottom: 28px; }
+.asset-section h4 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+.asset-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.asset-link:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-bright);
+}
+.asset-dot {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  border-radius: 50%;
+}
+.asset-dot.live { background: var(--green); }
+.asset-dot.proto { background: var(--blue); }
+.asset-dot.needed { background: var(--red); animation: pulse 2s infinite; }
+.asset-tag {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+/* Takeaways */
+.takeaway-list { display: grid; gap: 16px; }
+.takeaway-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  display: flex;
+  gap: 20px;
+  align-items: start;
+}
+.takeaway-num {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background: linear-gradient(135deg, var(--green), #059669);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+}
+.takeaway-card .tc-title { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+.takeaway-card .tc-body { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+/* Urgency callout */
+.urgency-banner {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(234, 179, 8, 0.1));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+}
+.urgency-banner h3 {
+  color: var(--red);
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.urgency-banner ul {
+  padding-left: 20px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.urgency-banner li { margin-bottom: 6px; }
+.urgency-banner li strong { color: var(--text-primary); }
+
+/* Scale math */
+.scale-box {
+  background: var(--bg-card);
+  border: 1px solid var(--green);
+  border-radius: 12px;
+  padding: 28px;
+  margin: 32px 0;
+}
+.scale-box h4 {
+  color: var(--green);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+.scale-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.scale-row:last-child { border: none; }
+.scale-row .sr-label { color: var(--text-secondary); }
+.scale-row .sr-value { font-weight: 700; color: var(--text-primary); }
+.scale-row .sr-value.highlight { color: var(--green); font-size: 18px; }
+
+/* Footer */
+.war-room-footer {
+  padding: 40px 0;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--green); }
+.footer-credit {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-credit a { color: var(--green); text-decoration: none; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 0 16px; }
+  .section { padding: 40px 0; }
+  .deal-card { grid-template-columns: 1fr; }
+  .deal-card .deal-right { flex-direction: row; align-items: center; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .sprint-grid { grid-template-columns: 1fr; }
+  .takeaway-card { flex-direction: column; gap: 12px; }
+  .vector-card .vector-impact { flex-direction: column; gap: 8px; }
+}
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .nav-link { padding: 12px 14px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="war-room-header">
+  <div class="container">
+    <div class="header-badge"><span class="pulse"></span> Live Intelligence</div>
+    <h1>Courtana GTM War Room</h1>
+    <p class="subtitle">Comprehensive business analysis &middot; Distribution + Data strategy &middot; <strong>April 2026</strong></p>
+  </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="nav-bar">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#situation" class="nav-link active">Situation</a>
+      <a href="#pipeline" class="nav-link">Pipeline</a>
+      <a href="#distribution" class="nav-link">Distribution</a>
+      <a href="#data" class="nav-link">Data Moat</a>
+      <a href="#competitive" class="nav-link">Competitive</a>
+      <a href="#assets" class="nav-link">Assets</a>
+      <a href="#sprint" class="nav-link">30-Day Sprint</a>
+      <a href="#takeaways" class="nav-link">Takeaways</a>
+    </div>
+  </div>
+</nav>
+
+<!-- SECTION 1: EXECUTIVE SUMMARY -->
+<section id="situation" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">01</span> Executive Summary</div>
+      <h2>State of the Business</h2>
+    </div>
+
+    <div class="kpi-grid fade-in">
+      <div class="kpi-card green">
+        <div class="kpi-label">Live Venues</div>
+        <div class="kpi-value">2</div>
+        <div class="kpi-sub">The Underground (paying) + Peak (deploying May 9)</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Monthly Revenue</div>
+        <div class="kpi-value">$9,200</div>
+        <div class="kpi-sub">The Underground MRR &mdash; reference site</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-label">Capital Raised</div>
+        <div class="kpi-value">$396K</div>
+        <div class="kpi-sub">of $1.3M &mdash; $104K gap to close Tranche 1</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Clips Analyzed</div>
+        <div class="kpi-value">818+</div>
+        <div class="kpi-sub">for $4.42 total &mdash; proving data economics at scale</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-label">Pipeline Deals</div>
+        <div class="kpi-value">10</div>
+        <div class="kpi-sub">$300K&ndash;$600K potential first-year revenue</div>
+      </div>
+    </div>
+
+    <div class="goals-grid fade-in">
+      <div class="goal-card distribution">
+        <div class="goal-icon">&#9889;</div>
+        <h3>Goal 1: Distribution</h3>
+        <div class="goal-target">100 Courts in 12 Months</div>
+        <div class="goal-detail">Current: ~10 courts across 2 venues. Target: $1.2M ARR at $99&ndash;$250/court/month.</div>
+      </div>
+      <div class="goal-card data">
+        <div class="goal-icon">&#128200;</div>
+        <h3>Goal 2: Data Moat</h3>
+        <div class="goal-target">50,000 Clips Analyzed</div>
+        <div class="goal-detail">Current: 818 clips. At scale: proprietary intelligence asset nobody can replicate.</div>
+      </div>
+    </div>
+
+    <div class="urgency-banner fade-in">
+      <h3>3 Items OVERDUE &mdash; Losing Momentum</h3>
+      <ul>
+        <li><strong>George Kaminis COO equity proposal</strong> &mdash; represents a COO hire for the company</li>
+        <li><strong>Barrett at Rally Pickleball</strong> &mdash; re-engagement needed, venue deal going cold</li>
+        <li><strong>Charles Famulare equity proposal</strong> &mdash; unlocks 30,000-coach distribution channel</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: DEAL PIPELINE -->
+<section id="pipeline" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">02</span> Deal Pipeline</div>
+      <h2>Active Deals &amp; Opportunities</h2>
+    </div>
+
+    <div class="deal-grid">
+      <!-- The Underground -->
+      <div class="deal-card fade-in">
+        <div class="deal-main">
+          <div class="deal-name">The Underground <span class="badge badge-live">Live</span></div>
+          <div class="deal-meta">
+            <span>Reference site</span>
+            <span>Ongoing</span>
+          </div>
+          <div class="deal-action">Expand to 44 courts. Currently the paying proof point for every pitch.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$9,200/mo</div>
+          <span class="risk-badge risk-low">Low Risk</span>
+        </div>
+      </div>
+
+      <!-- Peak Pickleball -->
+      <div class="deal-card fade-in fade-in-delay-1">
+        <div class="deal-main">
+          <div class="deal-name">Peak Pickleball <span class="badge badge-active">Deploying</span></div>
+          <div class="deal-meta">
+            <span>Chris Kepko</span>
+            <span>16 courts &middot; $99/court + rev share</span>
+            <span>3 weeks out</span>
+          </div>
+          <div class="deal-action">Ship mini PCs, May 9 grand opening. 300 players see Courtana for the first time. Tournament May 1&ndash;3.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$1,584/mo</div>
+          <span class="risk-badge risk-medium">Medium</span>
+        </div>
+      </div>
+
+      <!-- Court Kings -->
+      <div class="deal-card fade-in fade-in-delay-2">
+        <div class="deal-main">
+          <div class="deal-name">Court Kings <span class="badge badge-stalled">NDA Stage</span></div>
+          <div class="deal-meta">
+            <span>Rich Williams, Bryan Pettit</span>
+            <span>$250K&ndash;$500K JV</span>
+            <span>Rich back Apr 24</span>
+          </div>
+          <div class="deal-action">Send NDA + engagement outline (sitting in Gmail drafts!). Deploy Kings Court Coach demo before Apr 24. Every new Court Kings facility ships with Courtana coaching.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$250&ndash;500K</div>
+          <span class="risk-badge risk-high">High (on hold)</span>
+        </div>
+      </div>
+
+      <!-- Concord Pickleball -->
+      <div class="deal-card fade-in">
+        <div class="deal-main">
+          <div class="deal-name">Concord Pickleball <span class="badge badge-active">Objection Handling</span></div>
+          <div class="deal-meta">
+            <span>Chris Williams</span>
+            <span>4+ courts &middot; $99/court</span>
+            <span>1 week</span>
+          </div>
+          <div class="deal-action">Apr 14 follow-up call. Address CourtReserve integration concern &mdash; this is the #1 objection. Interface feels &ldquo;gamey&rdquo; per their feedback.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$396/mo</div>
+          <span class="risk-badge risk-medium">Medium</span>
+        </div>
+      </div>
+
+      <!-- Charles Famulare -->
+      <div class="deal-card fade-in fade-in-delay-1">
+        <div class="deal-main">
+          <div class="deal-name">Charles Famulare Coach Network <span class="badge badge-overdue">Overdue</span></div>
+          <div class="deal-meta">
+            <span>Charles Famulare</span>
+            <span>Equity-based &middot; 30K coaches</span>
+            <span>OVERDUE</span>
+          </div>
+          <div class="deal-action">Send equity proposal. Path to 30,000 paying coaches/instructors at $20&ndash;25/session. Coaches bring their venues.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">30K coaches</div>
+          <span class="risk-badge risk-high">High (stalled)</span>
+        </div>
+      </div>
+
+      <!-- Trackman -->
+      <div class="deal-card fade-in fade-in-delay-2">
+        <div class="deal-main">
+          <div class="deal-name">Trackman / Frederick <span class="badge badge-active">Exploration</span></div>
+          <div class="deal-meta">
+            <span>Claus Borum (bridge)</span>
+            <span>Strategic investment</span>
+            <span>TBD</span>
+          </div>
+          <div class="deal-action">Copenhagen visit prep. Gold standard in sports tech exploring pickleball adjacency.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">Strategic</div>
+          <span class="risk-badge risk-low">Low Risk</span>
+        </div>
+      </div>
+
+      <!-- Rally Pickleball -->
+      <div class="deal-card fade-in">
+        <div class="deal-main">
+          <div class="deal-name">Rally Pickleball <span class="badge badge-overdue">No Response</span></div>
+          <div class="deal-meta">
+            <span>Barrett</span>
+            <span>TBD value</span>
+            <span>OVERDUE</span>
+          </div>
+          <div class="deal-action">Re-engage via Nora Dunnan intro. iPad-at-court-entry model is the UX benchmark.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">TBD</div>
+          <span class="risk-badge risk-high">High</span>
+        </div>
+      </div>
+
+      <!-- Carolina Pickleball -->
+      <div class="deal-card fade-in fade-in-delay-1">
+        <div class="deal-main">
+          <div class="deal-name">Carolina Pickleball <span class="badge badge-stalled">Early</span></div>
+          <div class="deal-meta">
+            <span>Callista + Nash</span>
+            <span>$99/court</span>
+            <span>OVERDUE</span>
+          </div>
+          <div class="deal-action">David schedule Zoom. Regional NC expansion opportunity.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$99/court</div>
+          <span class="risk-badge risk-medium">Medium</span>
+        </div>
+      </div>
+
+      <!-- Cold Outbound -->
+      <div class="deal-card fade-in fade-in-delay-2">
+        <div class="deal-main">
+          <div class="deal-name">5 Cold Outbound <span class="badge badge-prospect">Prospecting</span></div>
+          <div class="deal-meta">
+            <span>Greenville, ATP, HomeCourt, Ace, Pickleball AU</span>
+            <span>$99/court each</span>
+            <span>Ongoing</span>
+          </div>
+          <div class="deal-action">Await replies, follow up on non-responders in Week 2.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$99/court</div>
+          <span class="risk-badge risk-normal">Normal</span>
+        </div>
+      </div>
+
+      <!-- a16z -->
+      <div class="deal-card fade-in">
+        <div class="deal-main">
+          <div class="deal-name">a16z Speedrun <span class="badge badge-vc">VC Exploration</span></div>
+          <div class="deal-meta">
+            <span>David Garcia</span>
+            <span>$1M seed program</span>
+            <span>Pending</span>
+          </div>
+          <div class="deal-action">Apply, share deck. Accelerated seed investment program.</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-value">$1M seed</div>
+          <span class="risk-badge risk-low">Low Risk</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline Summary -->
+    <div class="pipeline-summary fade-in">
+      <div class="pipeline-stat">
+        <div class="ps-value" style="color:var(--green)">2</div>
+        <div class="ps-label">Live</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="ps-value" style="color:var(--blue)">2</div>
+        <div class="ps-label">Active</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="ps-value" style="color:var(--gold)">3</div>
+        <div class="ps-label">Stalled / Overdue</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="ps-value" style="color:var(--purple)">3</div>
+        <div class="ps-label">Prospecting</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="ps-value" style="color:var(--text-primary)">$300&ndash;600K</div>
+        <div class="ps-label">Potential First-Year Revenue</div>
+      </div>
+    </div>
+
+    <!-- Pipeline Funnel Chart -->
+    <div class="chart-container fade-in" style="margin-top:24px;">
+      <h3>Pipeline Funnel</h3>
+      <div class="chart-wrap"><canvas id="funnelChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: DISTRIBUTION STRATEGY -->
+<section id="distribution" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">03</span> Distribution Strategy</div>
+      <h2>How We Get to 100 Courts</h2>
+    </div>
+
+    <div class="kpi-grid fade-in" style="margin-bottom:40px;">
+      <div class="kpi-card blue">
+        <div class="kpi-label">Current Courts</div>
+        <div class="kpi-value">~10</div>
+        <div class="kpi-sub">Across 2 venues</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">12-Month Target</div>
+        <div class="kpi-value">100</div>
+        <div class="kpi-sub">= $1.2M ARR at blended pricing</div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-label">Gap to Close</div>
+        <div class="kpi-value">90</div>
+        <div class="kpi-sub">courts needed &mdash; ~7.5 courts/month run rate</div>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <h3 style="color:var(--red); margin-bottom:20px;">The Friction Map &mdash; What Slows Distribution</h3>
+    </div>
+
+    <div class="friction-list fade-in">
+      <div class="friction-item">
+        <div class="friction-num">1</div>
+        <div>
+          <div class="fi-title">CourtReserve Integration</div>
+          <div class="fi-desc">THE #1 objection. Peak, Concord, and others all use it. Save My Play has it. We don't. David tasked to initiate contact, Cedric can build it.</div>
+          <div class="fi-status">Status: Highest-ROI action in the company</div>
+        </div>
+      </div>
+      <div class="friction-item">
+        <div class="friction-num">2</div>
+        <div>
+          <div class="fi-title">Hardware Deployment</div>
+          <div class="fi-desc">Mini PCs need security lockdown + shipping logistics. Cedric is the bottleneck for configuration.</div>
+          <div class="fi-status">Status: Blocking Peak deployment</div>
+        </div>
+      </div>
+      <div class="friction-item">
+        <div class="friction-num">3</div>
+        <div>
+          <div class="fi-title">Onboarding Friction</div>
+          <div class="fi-desc">Multi-player signup is clunky. Badge reveal is the &ldquo;wow&rdquo; moment but everything before it is friction. Rally&rsquo;s iPad-at-court-entry model is the fix.</div>
+          <div class="fi-status">Status: UX improvement needed</div>
+        </div>
+      </div>
+      <div class="friction-item">
+        <div class="friction-num">4</div>
+        <div>
+          <div class="fi-title">Sales Bandwidth</div>
+          <div class="fi-desc">David is the only field salesperson. NC regional focus limits geographic expansion to SF, Austin, NJ.</div>
+          <div class="fi-status">Status: Need field reps or outsourced install teams</div>
+        </div>
+      </div>
+      <div class="friction-item">
+        <div class="friction-num">5</div>
+        <div>
+          <div class="fi-title">Perception</div>
+          <div class="fi-desc">Interface feels &ldquo;gamey&rdquo; per Concord feedback. Venue operators want professional, not playful.</div>
+          <div class="fi-status">Status: Design refresh consideration</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <h3 style="margin-bottom:20px;">The Playbook &mdash; 5 Vectors to 100 Courts</h3>
+    </div>
+
+    <div class="vector-list">
+      <!-- Vector 1 -->
+      <div class="vector-card v1 fade-in">
+        <div class="vector-num">Vector 1 &mdash; Highest Leverage</div>
+        <h3>CourtReserve Partnership</h3>
+        <div class="vector-body">
+          Build the integration. Period. This one action unblocks Peak, Concord, and every CourtReserve venue in the country.
+          <ul>
+            <li>CourtReserve would likely LIST Courtana on their site (per Cedric's assessment)</li>
+            <li>This turns a sales objection into a distribution channel</li>
+            <li>Cedric confirmed feasibility &mdash; 2&ndash;4 week build</li>
+          </ul>
+        </div>
+        <div class="vector-impact">
+          <div class="impact-item"><span class="il">Timeline</span><span class="iv">2&ndash;4 weeks</span></div>
+          <div class="impact-item"><span class="il">Addressable Market</span><span class="iv" style="color:var(--green)">2,000+ venues</span></div>
+          <div class="impact-item"><span class="il">Status</span><span class="iv" style="color:var(--red)">Not started</span></div>
+        </div>
+      </div>
+
+      <!-- Vector 2 -->
+      <div class="vector-card v2 fade-in">
+        <div class="vector-num">Vector 2 &mdash; Scale Play</div>
+        <h3>Coaches as GTM Wedge</h3>
+        <div class="vector-body">
+          Charles Famulare claims a path to 30,000 paying coaches/instructors. Court Kings coaching platform adds recurring subscription revenue with global reach.
+          <ul>
+            <li>Coaches bring their venues. If 100 coaches each bring 1 venue = 100 venues</li>
+            <li>Revenue: $20&ndash;25 per AI coaching session at unlimited scale</li>
+            <li>Court Kings: every new facility ships with Courtana coaching built in</li>
+          </ul>
+        </div>
+        <div class="vector-impact">
+          <div class="impact-item"><span class="il">Potential</span><span class="iv" style="color:var(--gold)">30,000 coaches</span></div>
+          <div class="impact-item"><span class="il">Risk</span><span class="iv" style="color:var(--red)">Equity proposal OVERDUE</span></div>
+          <div class="impact-item"><span class="il">Court Kings</span><span class="iv">On hold until Apr 24</span></div>
+        </div>
+      </div>
+
+      <!-- Vector 3 -->
+      <div class="vector-card v3 fade-in">
+        <div class="vector-num">Vector 3 &mdash; Enterprise Play</div>
+        <h3>Land-and-Expand at Multi-Court Chains</h3>
+        <div class="vector-body">
+          One enterprise deal can add 44+ courts overnight. This is the franchise playbook.
+          <ul>
+            <li>Court Kings: every new facility ships with Courtana coaching</li>
+            <li>Pickle Rage: 44-court facility, early intro, LOI-stage</li>
+            <li>Revenue: $95&ndash;250/court/month &times; 44+ courts = $50K&ndash;$130K ARR per chain</li>
+          </ul>
+        </div>
+        <div class="vector-impact">
+          <div class="impact-item"><span class="il">Per Chain</span><span class="iv" style="color:var(--blue)">$50K&ndash;$130K ARR</span></div>
+          <div class="impact-item"><span class="il">Courts Per Deal</span><span class="iv">44+</span></div>
+        </div>
+      </div>
+
+      <!-- Vector 4 -->
+      <div class="vector-card v4 fade-in">
+        <div class="vector-num">Vector 4 &mdash; Geographic Expansion</div>
+        <h3>SF, Austin, NJ Markets</h3>
+        <div class="vector-body">
+          <ul>
+            <li>SF venue target list compiled (Google Drive)</li>
+            <li>Austin Q1 target (referenced in investor meetings)</li>
+            <li>NJ: Katherine Lynch / Vamos Padel, Pickle Kingdom investor demo site</li>
+            <li>Need field reps OR outsourced installation teams in each market</li>
+          </ul>
+        </div>
+        <div class="vector-impact">
+          <div class="impact-item"><span class="il">Blocker</span><span class="iv" style="color:var(--red)">No field presence outside NC today</span></div>
+          <div class="impact-item"><span class="il">Markets</span><span class="iv">SF, Austin, NJ</span></div>
+        </div>
+      </div>
+
+      <!-- Vector 5 -->
+      <div class="vector-card v5 fade-in">
+        <div class="vector-num">Vector 5 &mdash; Organic Flywheel</div>
+        <h3>Viral Content Flywheel</h3>
+        <div class="vector-body">
+          Every match generates shareable highlights. This is the &ldquo;no-sales-call-needed&rdquo; acquisition channel.
+          <ul>
+            <li>Nick Troxell validated: gated sharing model leads to ~20% conversion to install</li>
+            <li>Players share &rarr; friends install &rarr; venue sees engagement &rarr; venue signs up</li>
+            <li>Currently UNDERLEVERAGED &mdash; needs referral/credits system</li>
+            <li>Strong organic interest confirmed in user research</li>
+          </ul>
+        </div>
+        <div class="vector-impact">
+          <div class="impact-item"><span class="il">Conversion</span><span class="iv" style="color:var(--green)">~20% from shares</span></div>
+          <div class="impact-item"><span class="il">Status</span><span class="iv" style="color:var(--gold)">Underleveraged</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: DATA STRATEGY -->
+<section id="data" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">04</span> Data Strategy</div>
+      <h2>How We Build the Moat</h2>
+    </div>
+
+    <div class="data-stat-grid fade-in">
+      <div class="data-stat">
+        <div class="ds-value">818</div>
+        <div class="ds-label">Clips Analyzed</div>
+      </div>
+      <div class="data-stat">
+        <div class="ds-value">$4.42</div>
+        <div class="ds-label">Total Spend</div>
+      </div>
+      <div class="data-stat">
+        <div class="ds-value">12,899</div>
+        <div class="ds-label">Structured Outputs</div>
+      </div>
+      <div class="data-stat">
+        <div class="ds-value">55</div>
+        <div class="ds-label">Brands Detected</div>
+      </div>
+      <div class="data-stat">
+        <div class="ds-value">4,619</div>
+        <div class="ds-label">Ground-Truth Badges</div>
+      </div>
+      <div class="data-stat">
+        <div class="ds-value">563</div>
+        <div class="ds-label">Players Rated (9D)</div>
+      </div>
+    </div>
+
+    <div class="fade-in" style="margin-bottom:12px;">
+      <h3>The Flywheel</h3>
+      <p style="color:var(--text-secondary); font-size:14px; margin-bottom:24px;">More venues &rarr; more clips &rarr; better AI models &rarr; better intelligence &rarr; more brand value &rarr; more venues</p>
+    </div>
+
+    <!-- Corpus Growth Chart -->
+    <div class="chart-container fade-in">
+      <h3>Projected Corpus Growth</h3>
+      <div class="chart-wrap"><canvas id="corpusChart"></canvas></div>
+    </div>
+
+    <div class="fade-in">
+      <h3 style="margin-top:16px;">Revenue Vectors from Data</h3>
+    </div>
+    <div class="rev-vector-grid fade-in">
+      <div class="rev-vector">
+        <div class="rv-price">$5K&ndash;50K/brand/year</div>
+        <div class="rv-name">Brand Intelligence</div>
+        <div class="rv-desc">JOOLA alone has 488 detections. Brand exposure reports are BUILT and live. This is the first sellable data product.</div>
+      </div>
+      <div class="rev-vector">
+        <div class="rv-price">$2&ndash;5/clip</div>
+        <div class="rv-name">Automated Media</div>
+        <div class="rv-desc">AI-generated highlights, coaching clips, social cards. Premium content at marginal cost.</div>
+      </div>
+      <div class="rev-vector">
+        <div class="rv-price">Per-query pricing</div>
+        <div class="rv-name">Predictive Analytics</div>
+        <div class="rv-desc">Kitchen mastery ladders, DUPR predictions, match outcome models. Intelligence-as-a-service.</div>
+      </div>
+      <div class="rev-vector">
+        <div class="rv-price">$100K&ndash;$1M/year</div>
+        <div class="rv-name">Data Licensing</div>
+        <div class="rv-desc">Anonymized player data to paddle manufacturers, betting platforms, media companies at scale.</div>
+      </div>
+    </div>
+
+    <div class="scale-box fade-in">
+      <h4>Scale Math &mdash; At 100 Venues</h4>
+      <div class="scale-row">
+        <span class="sr-label">Venues</span>
+        <span class="sr-value">100</span>
+      </div>
+      <div class="scale-row">
+        <span class="sr-label">Clips per venue per year</span>
+        <span class="sr-value">5,000</span>
+      </div>
+      <div class="scale-row">
+        <span class="sr-label">Total clips per year</span>
+        <span class="sr-value">500,000</span>
+      </div>
+      <div class="scale-row">
+        <span class="sr-label">Gemini cost (500K &times; $0.0054)</span>
+        <span class="sr-value">$2,700/year</span>
+      </div>
+      <div class="scale-row">
+        <span class="sr-label">Structured data points</span>
+        <span class="sr-value highlight">20,000,000+</span>
+      </div>
+      <div class="scale-row">
+        <span class="sr-label">Conclusion</span>
+        <span class="sr-value" style="color:var(--gold);">At this scale, the corpus IS the product</span>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <h3>Defensibility Stack (Moat Ranking)</h3>
+    </div>
+    <div class="moat-list fade-in">
+      <div class="moat-item"><div class="moat-rank">1</div><div class="moat-text">Proprietary clip corpus (818 and growing &mdash; competitors start at 0)</div></div>
+      <div class="moat-item"><div class="moat-rank">2</div><div class="moat-text">Hardware + venue relationships (physical presence = switching costs)</div></div>
+      <div class="moat-item"><div class="moat-rank">3</div><div class="moat-text">Multi-model AI agent ensemble (self-improving accuracy)</div></div>
+      <div class="moat-item"><div class="moat-rank">4</div><div class="moat-text">Brand detection taxonomy (13 categories nobody else captures)</div></div>
+      <div class="moat-item"><div class="moat-rank">5</div><div class="moat-text">Player DNA profiles (cross-venue, cross-session longitudinal data)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: COMPETITIVE LANDSCAPE -->
+<section id="competitive" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">05</span> Competitive Landscape</div>
+      <h2>How We Compare</h2>
+    </div>
+
+    <div class="comp-table-wrap fade-in">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Competitor</th>
+            <th>Strength</th>
+            <th>Weakness</th>
+            <th>Courtana Advantage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="comp-name">PlaySight</td>
+            <td>Enterprise installed base, tennis heritage</td>
+            <td>Expensive, not pickleball-specific, facility-focused</td>
+            <td class="advantage">Player-first, pickleball-native, 10x cheaper</td>
+          </tr>
+          <tr>
+            <td class="comp-name">Save My Play</td>
+            <td>CourtReserve integration built</td>
+            <td>$29.99/match player cost, commodity hardware, no AI</td>
+            <td class="advantage">AI intelligence layer, brand detection, coaching</td>
+          </tr>
+          <tr>
+            <td class="comp-name">Pod Play</td>
+            <td>Content creation focus</td>
+            <td>No analytics, no player profiles, no brand detection</td>
+            <td class="advantage">Full intelligence stack, not just video</td>
+          </tr>
+          <tr>
+            <td class="comp-name">SwingVision</td>
+            <td>Mobile app, consumer-friendly</td>
+            <td>Requires player&rsquo;s own phone, no venue integration</td>
+            <td class="advantage">Venue-installed, automatic, no player setup</td>
+          </tr>
+          <tr>
+            <td class="comp-name">Trackman</td>
+            <td>Gold standard in sports tech</td>
+            <td>Tennis/golf focused, $$$$ enterprise pricing</td>
+            <td class="advantage">Pickleball-first, 100x cheaper per court</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="urgency-banner fade-in" style="border-color:rgba(234,179,8,0.3); background:linear-gradient(135deg, rgba(234,179,8,0.05), rgba(239,68,68,0.05));">
+      <h3 style="color:var(--gold);">Competitive Loss &mdash; Lesson Learned</h3>
+      <ul>
+        <li><strong>Dill Dinkers chose PlaySight</strong> &mdash; enterprise sales motion and existing tennis relationships won the deal</li>
+        <li>Takeaway: CourtReserve integration and a professional (not gamey) UI are non-negotiable for enterprise venues</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: ASSET INVENTORY -->
+<section id="assets" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">06</span> Asset Inventory</div>
+      <h2>What We&rsquo;ve Built</h2>
+    </div>
+
+    <div class="asset-section fade-in">
+      <h4>Live Production (courtana.com)</h4>
+      <div class="asset-grid">
+        <a href="https://courtana.com" class="asset-link" target="_blank"><span class="asset-dot live"></span>8+ smart courts across 2 venues<span class="asset-tag">Live</span></a>
+        <a href="https://courtana.com" class="asset-link" target="_blank"><span class="asset-dot live"></span>4,097+ highlight groups<span class="asset-tag">Live</span></a>
+        <a href="https://courtana.com" class="asset-link" target="_blank"><span class="asset-dot live"></span>25+ active leaderboard players<span class="asset-tag">Live</span></a>
+        <a href="https://courtana.com" class="asset-link" target="_blank"><span class="asset-dot live"></span>82+ badge types<span class="asset-tag">Live</span></a>
+      </div>
+    </div>
+
+    <div class="asset-section fade-in fade-in-delay-1">
+      <h4>Data Intelligence (gh-pages &mdash; 10 Live URLs)</h4>
+      <div class="asset-grid">
+        <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/story-hub.html" class="asset-link" target="_blank"><span class="asset-dot live"></span>Story Hub (hero&rsquo;s journey narrative)<span class="asset-tag">Live</span></a>
+        <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/investor-demo.html" class="asset-link" target="_blank"><span class="asset-dot live"></span>Investor Demo (Bloomberg editorial)<span class="asset-tag">Live</span></a>
+        <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/coach-demo.html" class="asset-link" target="_blank"><span class="asset-dot live"></span>Coach Demo (cinematic session)<span class="asset-tag">Live</span></a>
+        <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/partnership-deck.html" class="asset-link" target="_blank"><span class="asset-dot live"></span>Partnership Deck (venue pitch)<span class="asset-tag">Live</span></a>
+        <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/showcase-portal.html" class="asset-link" target="_blank"><span class="asset-dot live"></span>Showcase Portal (master hub)<span class="asset-tag">Live</span></a>
+        <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/brands/" class="asset-link" target="_blank"><span class="asset-dot live"></span>5 Brand Reports (JOOLA, Nike, etc.)<span class="asset-tag">Live</span></a>
+      </div>
+    </div>
+
+    <div class="asset-section fade-in fade-in-delay-2">
+      <h4>Lovable Builds (6 Active Prototypes)</h4>
+      <div class="asset-grid">
+        <a href="https://peakcourtana.lovable.app" class="asset-link" target="_blank"><span class="asset-dot proto"></span>Peak Courtana<span class="asset-tag">Proto</span></a>
+        <a href="https://courtana-coach-pro.lovable.app" class="asset-link" target="_blank"><span class="asset-dot proto"></span>Courtana Coach Pro<span class="asset-tag">Proto</span></a>
+        <a href="https://courtana-venue-connect.lovable.app" class="asset-link" target="_blank"><span class="asset-dot proto"></span>Venue Connect<span class="asset-tag">Proto</span></a>
+        <a href="https://cocortanaconcord.lovable.app" class="asset-link" target="_blank"><span class="asset-dot proto"></span>CoCortana Concord<span class="asset-tag">Proto</span></a>
+        <a href="https://vibeco.lovable.app" class="asset-link" target="_blank"><span class="asset-dot proto"></span>VibeCo Labs<span class="asset-tag">Proto</span></a>
+        <a href="https://freak-flow-hub.lovable.app" class="asset-link" target="_blank"><span class="asset-dot proto"></span>Freak Flow Hub<span class="asset-tag">Proto</span></a>
+      </div>
+    </div>
+
+    <div class="asset-section fade-in">
+      <h4>Not Yet Deployed (High Priority)</h4>
+      <div class="asset-grid">
+        <div class="asset-link" style="cursor:default;"><span class="asset-dot needed"></span>Kings Court Coach Demo &mdash; for the $250&ndash;500K Court Kings deal<span class="asset-tag" style="color:var(--red)">Needed</span></div>
+        <div class="asset-link" style="cursor:default;"><span class="asset-dot needed"></span>CourtReserve Integration &mdash; the #1 distribution unlocker<span class="asset-tag" style="color:var(--red)">Needed</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: 30-DAY SPRINT -->
+<section id="sprint" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">07</span> 30-Day Sprint</div>
+      <h2>What to Do Now</h2>
+    </div>
+
+    <div class="sprint-grid">
+      <!-- Week 1 -->
+      <div class="sprint-week w1 fade-in">
+        <div class="sw-header">Week 1: Unblock</div>
+        <div class="sw-dates">Apr 14 &ndash; 20</div>
+        <div class="sprint-item" data-key="w1-1">
+          <div class="sprint-check"></div>
+          <span>Mon: David delivers Concord follow-up call with ROI brief</span>
+        </div>
+        <div class="sprint-item" data-key="w1-2">
+          <div class="sprint-check"></div>
+          <span>Mon: Send NDA + engagement outline to Court Kings (in Gmail drafts!)</span>
+        </div>
+        <div class="sprint-item" data-key="w1-3">
+          <div class="sprint-check"></div>
+          <span>Tue: Cedric initiates CourtReserve integration conversation</span>
+        </div>
+        <div class="sprint-item" data-key="w1-4">
+          <div class="sprint-check"></div>
+          <span>Wed: Send George Kaminis COO equity proposal (OVERDUE)</span>
+        </div>
+        <div class="sprint-item" data-key="w1-5">
+          <div class="sprint-check"></div>
+          <span>Thu: Re-engage Barrett at Rally Pickleball via Nora</span>
+        </div>
+        <div class="sprint-item" data-key="w1-6">
+          <div class="sprint-check"></div>
+          <span>Fri: David schedules Carolina Pickleball Zoom</span>
+        </div>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="sprint-week w2 fade-in fade-in-delay-1">
+        <div class="sw-header">Week 2: Close</div>
+        <div class="sw-dates">Apr 21 &ndash; 27</div>
+        <div class="sprint-item" data-key="w2-1">
+          <div class="sprint-check"></div>
+          <span>Ship mini PCs to Peak (Cedric &mdash; security lockdown)</span>
+        </div>
+        <div class="sprint-item" data-key="w2-2">
+          <div class="sprint-check"></div>
+          <span>Court Kings: Rich returns Apr 24 &mdash; deploy Kings Court Coach demo</span>
+        </div>
+        <div class="sprint-item" data-key="w2-3">
+          <div class="sprint-check"></div>
+          <span>Follow up with Scot McClintic (BetFanatics) on investment</span>
+        </div>
+        <div class="sprint-item" data-key="w2-4">
+          <div class="sprint-check"></div>
+          <span>CourtReserve integration MVP (Cedric 2-week sprint)</span>
+        </div>
+        <div class="sprint-item" data-key="w2-5">
+          <div class="sprint-check"></div>
+          <span>Follow up on all 5 cold outbound emails (non-responders)</span>
+        </div>
+      </div>
+
+      <!-- Week 3 -->
+      <div class="sprint-week w3 fade-in fade-in-delay-2">
+        <div class="sw-header">Week 3: Deploy</div>
+        <div class="sw-dates">Apr 28 &ndash; May 4</div>
+        <div class="sprint-item" data-key="w3-1">
+          <div class="sprint-check"></div>
+          <span>Peak Pickleball cameras LIVE &mdash; test before grand opening</span>
+        </div>
+        <div class="sprint-item" data-key="w3-2">
+          <div class="sprint-check"></div>
+          <span>Tournament May 1&ndash;3 at Peak: 300 players see Courtana</span>
+        </div>
+        <div class="sprint-item" data-key="w3-3">
+          <div class="sprint-check"></div>
+          <span>Court Kings demo meeting with Rich + Bryan</span>
+        </div>
+        <div class="sprint-item" data-key="w3-4">
+          <div class="sprint-check"></div>
+          <span>Charles Famulare coach network activation (if equity accepted)</span>
+        </div>
+        <div class="sprint-item" data-key="w3-5">
+          <div class="sprint-check"></div>
+          <span>Begin SF venue outreach from Drive target list</span>
+        </div>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="sprint-week w4 fade-in fade-in-delay-3">
+        <div class="sw-header">Week 4: Launch</div>
+        <div class="sw-dates">May 5 &ndash; 11</div>
+        <div class="sprint-item" data-key="w4-1">
+          <div class="sprint-check"></div>
+          <span>Peak Pickleball GRAND OPENING May 9 &mdash; Courtana showcase</span>
+        </div>
+        <div class="sprint-item" data-key="w4-2">
+          <div class="sprint-check"></div>
+          <span>Collect testimonials + case study content from Peak</span>
+        </div>
+        <div class="sprint-item" data-key="w4-3">
+          <div class="sprint-check"></div>
+          <span>CourtReserve integration announcement (if ready)</span>
+        </div>
+        <div class="sprint-item" data-key="w4-4">
+          <div class="sprint-check"></div>
+          <span>Update investor deck with Peak as second reference site</span>
+        </div>
+        <div class="sprint-item" data-key="w4-5">
+          <div class="sprint-check"></div>
+          <span>Close Tranche 1 ($104K remaining)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: KEY TAKEAWAYS -->
+<section id="takeaways" class="section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label"><span class="num">08</span> Key Takeaways</div>
+      <h2>The 5 Things That Matter Most</h2>
+    </div>
+
+    <div class="takeaway-list">
+      <div class="takeaway-card fade-in">
+        <div class="takeaway-num">1</div>
+        <div>
+          <div class="tc-title">CourtReserve integration is the single highest-ROI action in the company right now.</div>
+          <div class="tc-body">It unblocks Peak, Concord, and potentially 2,000+ venues. Build it before anything else. Cedric confirmed feasibility. This turns a sales objection into a distribution channel.</div>
+        </div>
+      </div>
+      <div class="takeaway-card fade-in fade-in-delay-1">
+        <div class="takeaway-num">2</div>
+        <div>
+          <div class="tc-title">The Court Kings NDA is sitting in Gmail drafts unsent.</div>
+          <div class="tc-body">This is a $250&ndash;500K deal with Rich Williams and Bryan Pettit. Rich returns April 24. Send the NDA Monday. Deploy the Kings Court Coach demo before he gets back.</div>
+        </div>
+      </div>
+      <div class="takeaway-card fade-in fade-in-delay-2">
+        <div class="takeaway-num">3</div>
+        <div>
+          <div class="tc-title">Coaches are the scalable GTM wedge, not just venues.</div>
+          <div class="tc-body">Charles Famulare&rsquo;s 30,000 coaches + Court Kings coaching platform = distribution that doesn&rsquo;t require field sales in every market. But the equity proposal is OVERDUE. Send it this week.</div>
+        </div>
+      </div>
+      <div class="takeaway-card fade-in fade-in-delay-3">
+        <div class="takeaway-num">4</div>
+        <div>
+          <div class="tc-title">The data moat is real and growing.</div>
+          <div class="tc-body">818 clips, 55 brands, 2,920 outputs per dollar. At 100 venues &times; 5,000 clips/year, nobody can catch up. Brand intelligence reports are already built and ready to sell.</div>
+        </div>
+      </div>
+      <div class="takeaway-card fade-in">
+        <div class="takeaway-num">5</div>
+        <div>
+          <div class="tc-title">Three things are OVERDUE and losing momentum.</div>
+          <div class="tc-body">George Kaminis COO proposal, Barrett at Rally Pickleball re-engagement, Charles Famulare equity proposal. These represent a COO hire, a venue deal, and a 30,000-coach distribution channel respectively. Every day they sit is momentum lost.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="war-room-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://courtana.com" target="_blank">courtana.com</a>
+      <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/story-hub.html" target="_blank">Story Hub</a>
+      <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/showcase-portal.html" target="_blank">Showcase Portal</a>
+      <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/investor-demo.html" target="_blank">Investor Demo</a>
+      <a href="https://picklebill.github.io/pickleball-data-pipeline/dashboards/partnership-deck.html" target="_blank">Partnership Deck</a>
+      <a href="https://github.com/PickleBill" target="_blank">GitHub</a>
+    </div>
+    <div class="footer-credit">
+      Generated by <a href="https://courtana.com">Courtana AI</a> &middot; April 2026 &middot; bill@picklebill.com
+    </div>
+  </div>
+</footer>
+
+<script>
+// =============================================
+// SCROLL ANIMATIONS (IntersectionObserver)
+// =============================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// =============================================
+// ACTIVE NAV HIGHLIGHT
+// =============================================
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.2, rootMargin: '-80px 0px -60% 0px' });
+
+sections.forEach(s => navObserver.observe(s));
+
+// =============================================
+// SPRINT CHECKBOXES (localStorage persistence)
+// =============================================
+const STORAGE_KEY = 'courtana-gtm-sprint-v1';
+
+function loadCheckedState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  } catch { return {}; }
+}
+
+function saveCheckedState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
+const checkedState = loadCheckedState();
+
+document.querySelectorAll('.sprint-item').forEach(item => {
+  const key = item.dataset.key;
+  if (checkedState[key]) item.classList.add('checked');
+
+  item.addEventListener('click', () => {
+    item.classList.toggle('checked');
+    checkedState[key] = item.classList.contains('checked');
+    saveCheckedState(checkedState);
+  });
+});
+
+// =============================================
+// CHART.JS — Pipeline Funnel
+// =============================================
+const funnelCtx = document.getElementById('funnelChart').getContext('2d');
+new Chart(funnelCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Live', 'Deploying', 'NDA/Active', 'Objection Handling', 'Stalled/Overdue', 'Prospecting', 'VC'],
+    datasets: [{
+      label: 'Deals',
+      data: [1, 1, 2, 1, 3, 1, 1],
+      backgroundColor: [
+        'rgba(34, 197, 94, 0.7)',
+        'rgba(34, 197, 94, 0.5)',
+        'rgba(59, 130, 246, 0.6)',
+        'rgba(59, 130, 246, 0.4)',
+        'rgba(234, 179, 8, 0.6)',
+        'rgba(168, 85, 247, 0.5)',
+        'rgba(99, 102, 241, 0.5)'
+      ],
+      borderColor: [
+        '#22c55e',
+        '#22c55e',
+        '#3b82f6',
+        '#3b82f6',
+        '#eab308',
+        '#a855f7',
+        '#6366f1'
+      ],
+      borderWidth: 1,
+      borderRadius: 6
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a2238',
+        titleColor: '#e8edf5',
+        bodyColor: '#8b95a8',
+        borderColor: '#2a3a5c',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(30,42,69,0.5)' },
+        ticks: { color: '#5a6478', font: { size: 12 } },
+        title: { display: true, text: 'Number of Deals', color: '#5a6478', font: { size: 12 } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#8b95a8', font: { size: 13, weight: '600' } }
+      }
+    }
+  }
+});
+
+// =============================================
+// CHART.JS — Corpus Growth Projection
+// =============================================
+const corpusCtx = document.getElementById('corpusChart').getContext('2d');
+new Chart(corpusCtx, {
+  type: 'line',
+  data: {
+    labels: ['Apr 26', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan 27', 'Feb', 'Mar', 'Apr 27'],
+    datasets: [
+      {
+        label: 'Clips Analyzed (Conservative)',
+        data: [818, 2000, 5000, 10000, 18000, 28000, 40000, 55000, 75000, 100000, 130000, 170000, 220000],
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#22c55e',
+        borderWidth: 2
+      },
+      {
+        label: 'Clips Analyzed (Aggressive)',
+        data: [818, 3000, 10000, 25000, 50000, 80000, 120000, 170000, 230000, 300000, 370000, 440000, 500000],
+        borderColor: '#eab308',
+        backgroundColor: 'rgba(234, 179, 8, 0.05)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: '#eab308',
+        borderWidth: 2,
+        borderDash: [5, 5]
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: '#8b95a8', font: { size: 12 }, usePointStyle: true, pointStyle: 'circle' }
+      },
+      tooltip: {
+        backgroundColor: '#1a2238',
+        titleColor: '#e8edf5',
+        bodyColor: '#8b95a8',
+        borderColor: '#2a3a5c',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          label: function(ctx) {
+            return ctx.dataset.label + ': ' + ctx.raw.toLocaleString() + ' clips';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(30,42,69,0.5)' },
+        ticks: { color: '#5a6478', font: { size: 11 } }
+      },
+      y: {
+        grid: { color: 'rgba(30,42,69,0.5)' },
+        ticks: {
+          color: '#5a6478',
+          font: { size: 11 },
+          callback: function(v) {
+            if (v >= 1000000) return (v/1000000).toFixed(0) + 'M';
+            if (v >= 1000) return (v/1000).toFixed(0) + 'K';
+            return v;
+          }
+        },
+        title: { display: true, text: 'Clips', color: '#5a6478', font: { size: 12 } }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
