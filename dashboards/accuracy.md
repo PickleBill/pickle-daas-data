@@ -1,45 +1,45 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-14T01:41:28.541567+00:00_
+_Generated: 2026-04-14T02:40:41.019647+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 715 clips
-- **Total analysis files on disk:** 1351 (1351 ≥500 bytes)
+- **Corpus on gh-pages:** 719 clips
+- **Total analysis files on disk:** 1438 (1438 ≥500 bytes)
 - **Minutes since last analysis:** 0.1
 - **Human flags:** 10 total (3 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 42.0%  (468 TP / 1113 predicted)
-- **Recall:**    54.9%  (468 TP / 852 awarded)
-- **F1 Score:**  47.6%
-- **Predictions analyzed:** 2296 across 614 unique clips
+- **Precision:** 43.9%  (523 TP / 1191 predicted)
+- **Recall:**    56.2%  (523 TP / 930 awarded)
+- **F1 Score:**  49.3%
+- **Predictions analyzed:** 2609 across 700 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Kitchen King | 33 | 127 | 0 | 21% | 100% | 34% |
-| Steady Eddie | 98 | 7 | 49 | 93% | 67% | 78% |
-| Rally Master | 108 | 7 | 33 | 94% | 77% | 84% |
+| Steady Eddie | 110 | 12 | 49 | 90% | 69% | 78% |
+| Kitchen King | 36 | 133 | 0 | 21% | 100% | 35% |
+| Rally Master | 119 | 11 | 33 | 92% | 78% | 84% |
 | Dink Machine | 0 | 140 | 0 | 0% | 0% | 0% |
-| Epic Rally | 50 | 83 | 1 | 38% | 98% | 54% |
+| Epic Rally | 55 | 83 | 1 | 40% | 98% | 57% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
-| New Look | 0 | 0 | 76 | 0% | 0% | 0% |
+| New Look | 0 | 0 | 86 | 0% | 0% | 0% |
 | Power Player | 0 | 53 | 0 | 0% | 0% | 0% |
-| Two Up Pressure | 24 | 0 | 26 | 100% | 48% | 65% |
-| Fresh Fit | 1 | 0 | 46 | 100% | 2% | 4% |
+| Two Up Pressure | 25 | 0 | 26 | 100% | 49% | 66% |
+| Fresh Fit | 1 | 0 | 50 | 100% | 2% | 4% |
 
 ## Field Fill Rates (Schema Completeness)
 
 Sampled 500 most-recent analyses.
-**1** fields are below 80% population.
+**0** fields are below 80% population.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 322/500 | 64% |
-| brand_detection.brands | 433/500 | 87% |
+| analysis_confidence | 409/500 | 82% |
+| brand_detection.brands | 420/500 | 84% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
