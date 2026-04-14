@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS - Data Science Report | Experiment 4</title>
+<style>
+:root {
+    --bg: #0a0e17;
+    --surface: #131a2b;
+    --surface2: #1a2235;
+    --accent: #00e676;
+    --accent2: #7c4dff;
+    --accent3: #ff6d00;
+    --text: #e0e0e0;
+    --text-dim: #78909c;
+    --border: #263238;
+    --red: #ef5350;
+    --gold: #ffd740;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+}
+header h1 {
+    font-size: 2.2em;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+}
+header .subtitle { color: var(--text-dim); font-size: 1.1em; }
+header .meta {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+header .meta .stat {
+    text-align: center;
+}
+header .meta .stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent);
+}
+header .meta .stat-label {
+    font-size: 0.8em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.section {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+}
+.section h2 {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.section h2 .icon { font-size: 1.2em; }
+.section h3 {
+    font-size: 1.1em;
+    margin: 20px 0 12px;
+    color: var(--text);
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+.kpi-card {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+.kpi-card .kpi-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent);
+}
+.kpi-card .kpi-label {
+    font-size: 0.8em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+.kpi-card.purple .kpi-value { color: var(--accent2); }
+.kpi-card.orange .kpi-value { color: var(--accent3); }
+.kpi-card.gold .kpi-value { color: var(--gold); }
+.kpi-card.red .kpi-value { color: var(--red); }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+table th {
+    background: var(--surface2);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-size: 0.75em;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border);
+}
+table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+}
+table tr:hover { background: rgba(255,255,255,0.02); }
+.heatmap-table td { padding: 0; }
+.heatmap-table .row-label {
+    font-size: 10px;
+    padding: 6px 8px;
+    background: var(--surface2);
+    white-space: nowrap;
+}
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.bar-label {
+    min-width: 180px;
+    font-size: 0.85em;
+    color: var(--text);
+    text-align: right;
+}
+.bar-track {
+    flex: 1;
+    height: 20px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 4px;
+    transition: width 0.5s;
+}
+.arc-fill {
+    background: linear-gradient(90deg, var(--accent3), var(--gold));
+}
+.coaching-fill {
+    background: linear-gradient(90deg, var(--red), var(--accent3));
+}
+.skill-fill {
+    background: linear-gradient(90deg, var(--accent2), #00bcd4);
+}
+.bar-value {
+    min-width: 60px;
+    font-size: 0.8em;
+    color: var(--text-dim);
+}
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+.rarity-legendary { background: #ff6d00; color: #fff; }
+.rarity-rare { background: #7c4dff; color: #fff; }
+.rarity-uncommon { background: #00bcd4; color: #fff; }
+.rarity-common { background: #37474f; color: #ccc; }
+.insight-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95em;
+}
+.insight-box.warning { border-left-color: var(--accent3); }
+.insight-box.critical { border-left-color: var(--red); }
+.insight-box strong { color: var(--accent); }
+.play-style-tag {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.8em;
+    margin: 3px;
+    color: var(--text-dim);
+}
+.moat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+.moat-card {
+    background: linear-gradient(135deg, var(--surface2), #1e2a3a);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+.moat-card .moat-value {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--accent);
+}
+.moat-card .moat-label {
+    font-size: 0.75em;
+    color: var(--text-dim);
+    margin-top: 4px;
+}
+.nav {
+    position: sticky;
+    top: 0;
+    background: rgba(10, 14, 23, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 12px 24px;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.8em;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+.nav a:hover { color: var(--accent); border-color: var(--accent); }
+footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-dim);
+    font-size: 0.8em;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="#moat">Data Moat</a>
+    <a href="#skills">Skill Correlations</a>
+    <a href="#brands">Brand Intelligence</a>
+    <a href="#arcs">Story Arcs</a>
+    <a href="#coaching">Coaching Signals</a>
+    <a href="#temporal">Temporal Trends</a>
+    <a href="#quality">Data Quality</a>
+    <a href="#monetization">Monetization</a>
+</nav>
+
+<div class="container">
+
+<header>
+    <h1>Pickle DaaS -- Deep Corpus Analysis</h1>
+    <div class="subtitle">Experiment 4: Statistical Mining of 897 Video Clip Analyses</div>
+    <div class="subtitle" style="margin-top:4px;font-size:0.9em;">AI-discovered patterns at $0.005/clip -- Generated April 13, 2026</div>
+    <div class="meta">
+        <div class="stat">
+            <div class="stat-value">897</div>
+            <div class="stat-label">Clips Analyzed</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">15,495</div>
+            <div class="stat-label">Shots Tracked</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">61</div>
+            <div class="stat-label">Brands Detected</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">$4.49</div>
+            <div class="stat-label">Total Cost</div>
+        </div>
+    </div>
+</header>
+
+<!-- DATA MOAT -->
+<section class="section" id="moat">
+    <h2><span class="icon">&#x1f6e1;</span> Data Moat Metrics</h2>
+    <p style="color:var(--text-dim);margin-bottom:20px;">What makes this dataset defensible and irreplaceable.</p>
+    <div class="moat-grid">
+        <div class="moat-card">
+            <div class="moat-value">134,550</div>
+            <div class="moat-label">Total Data Points</div>
+        </div>
+        <div class="moat-card">
+            <div class="moat-value">1,661</div>
+            <div class="moat-label">Unique Player Appearances</div>
+        </div>
+        <div class="moat-card">
+            <div class="moat-value">64</div>
+            <div class="moat-label">Brands Tracked</div>
+        </div>
+        <div class="moat-card">
+            <div class="moat-value">3,239</div>
+            <div class="moat-label">Badges Predicted</div>
+        </div>
+        <div class="moat-card">
+            <div class="moat-value">$2,242</div>
+            <div class="moat-label">Human Annotation Cost</div>
+        </div>
+        <div class="moat-card">
+            <div class="moat-value">500x</div>
+            <div class="moat-label">AI Cost Advantage</div>
+        </div>
+    </div>
+    <div class="insight-box" style="margin-top:20px;">
+        <strong>Investor Insight:</strong> This dataset cost $4.49 to produce with AI.
+        A human annotator would charge ~$2,242 for the same work --
+        a 500x cost advantage. Every new clip deepens the moat.
+    </div>
+</section>
+
+<!-- SKILL CORRELATIONS -->
+<section class="section" id="skills">
+    <h2><span class="icon">&#x1f4ca;</span> Skill Correlations Matrix</h2>
+    <p style="color:var(--text-dim);margin-bottom:16px;">Pearson correlations across 896 clips with complete skill data. Green = positive, red = negative.</p>
+
+    <div style="overflow-x:auto;">
+    <table class="heatmap-table">
+        <tr><th></th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Court Coverage</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Kitchen Mastery</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Power Game</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Touch & Feel</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Athleticism</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Creativity</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Court IQ</th><th style="font-size:10px;padding:4px;writing-mode:vertical-rl;text-orientation:mixed;">Consistency</th></tr>
+        <tr><td class="row-label">Court Coverage</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#c8e6c9;color:#fff;text-align:center;font-size:11px;padding:6px;">0.36</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.46</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.41</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">0.83</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.61</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.71</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.48</td></tr>
+<tr><td class="row-label">Kitchen Mastery</td><td style="background:#c8e6c9;color:#fff;text-align:center;font-size:11px;padding:6px;">0.36</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#ffcdd2;color:#fff;text-align:center;font-size:11px;padding:6px;">-0.39</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">0.90</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.09</td><td style="background:#c8e6c9;color:#fff;text-align:center;font-size:11px;padding:6px;">0.33</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.74</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.57</td></tr>
+<tr><td class="row-label">Power Game</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.46</td><td style="background:#ffcdd2;color:#fff;text-align:center;font-size:11px;padding:6px;">-0.39</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#ffcdd2;color:#fff;text-align:center;font-size:11px;padding:6px;">-0.36</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.68</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.42</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.04</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">-0.07</td></tr>
+<tr><td class="row-label">Touch & Feel</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.41</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">0.90</td><td style="background:#ffcdd2;color:#fff;text-align:center;font-size:11px;padding:6px;">-0.36</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.14</td><td style="background:#c8e6c9;color:#fff;text-align:center;font-size:11px;padding:6px;">0.37</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.76</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.61</td></tr>
+<tr><td class="row-label">Athleticism</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">0.83</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.09</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.68</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.14</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.64</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.50</td><td style="background:#c8e6c9;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.27</td></tr>
+<tr><td class="row-label">Creativity</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.61</td><td style="background:#c8e6c9;color:#fff;text-align:center;font-size:11px;padding:6px;">0.33</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.42</td><td style="background:#c8e6c9;color:#fff;text-align:center;font-size:11px;padding:6px;">0.37</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.64</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.50</td><td style="background:#c8e6c9;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.26</td></tr>
+<tr><td class="row-label">Court IQ</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.71</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.74</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.04</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.76</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.50</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.50</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.72</td></tr>
+<tr><td class="row-label">Consistency</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.48</td><td style="background:#a5d6a7;color:#fff;text-align:center;font-size:11px;padding:6px;">0.57</td><td style="background:#37474f;color:#ccc;text-align:center;font-size:11px;padding:6px;">-0.07</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.61</td><td style="background:#c8e6c9;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.27</td><td style="background:#c8e6c9;color:#ccc;text-align:center;font-size:11px;padding:6px;">0.26</td><td style="background:#66bb6a;color:#fff;text-align:center;font-size:11px;padding:6px;">0.72</td><td style="background:#00e676;color:#fff;text-align:center;font-size:11px;padding:6px;">1.00</td></tr>
+
+    </table>
+    </div>
+
+    <div class="grid-2" style="margin-top:24px;">
+        <div>
+            <h3>Strongest Correlations</h3>
+            <table>
+                <tr><th>Skill 1</th><th>Skill 2</th><th>r</th></tr>
+                <tr>
+            <td>Kitchen Mastery</td>
+            <td>Touch & Feel</td>
+            <td style="color:#00e676;font-weight:bold;">+0.901</td>
+        </tr>
+<tr>
+            <td>Court Coverage</td>
+            <td>Athleticism</td>
+            <td style="color:#00e676;font-weight:bold;">+0.834</td>
+        </tr>
+<tr>
+            <td>Touch & Feel</td>
+            <td>Court IQ</td>
+            <td style="color:#00e676;font-weight:bold;">+0.755</td>
+        </tr>
+<tr>
+            <td>Kitchen Mastery</td>
+            <td>Court IQ</td>
+            <td style="color:#00e676;font-weight:bold;">+0.743</td>
+        </tr>
+<tr>
+            <td>Court IQ</td>
+            <td>Consistency</td>
+            <td style="color:#00e676;font-weight:bold;">+0.724</td>
+        </tr>
+<tr>
+            <td>Court Coverage</td>
+            <td>Court IQ</td>
+            <td style="color:#00e676;font-weight:bold;">+0.712</td>
+        </tr>
+<tr>
+            <td>Power Game</td>
+            <td>Athleticism</td>
+            <td style="color:#00e676;font-weight:bold;">+0.683</td>
+        </tr>
+<tr>
+            <td>Athleticism</td>
+            <td>Creativity</td>
+            <td style="color:#00e676;font-weight:bold;">+0.640</td>
+        </tr>
+
+            </table>
+        </div>
+        <div>
+            <h3>Corpus Skill Profile</h3>
+            <div class="bar-row">
+            <span class="bar-label">Court Coverage</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:59.800000000000004%"></div></div>
+            <span class="bar-value">5.98/10 (sd=0.83)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Kitchen Mastery</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:71.10000000000001%"></div></div>
+            <span class="bar-value">7.11/10 (sd=1.46)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Power Game</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:40.8%"></div></div>
+            <span class="bar-value">4.08/10 (sd=1.93)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Touch & Feel</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:70.0%"></div></div>
+            <span class="bar-value">7.0/10 (sd=1.22)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Athleticism</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:51.8%"></div></div>
+            <span class="bar-value">5.18/10 (sd=0.94)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Creativity</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:29.1%"></div></div>
+            <span class="bar-value">2.91/10 (sd=0.9)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Court IQ</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:64.6%"></div></div>
+            <span class="bar-value">6.46/10 (sd=0.85)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Consistency</span>
+            <div class="bar-track"><div class="bar-fill skill-fill" style="width:77.5%"></div></div>
+            <span class="bar-value">7.75/10 (sd=1.15)</span>
+        </div>
+
+        </div>
+    </div>
+
+    <div class="insight-box"><strong>Skill Cluster:</strong> Court Coverage, Athleticism, Creativity, Court IQ tend to travel together.</div><div class="insight-box"><strong>Skill Cluster:</strong> Kitchen Mastery, Touch & Feel, Consistency tend to travel together.</div>
+    
+</section>
+
+<!-- BRAND INTELLIGENCE -->
+<section class="section" id="brands">
+    <h2><span class="icon">&#x1f4b0;</span> Brand Intelligence</h2>
+
+    <div class="grid-4" style="margin-bottom:24px;">
+        <div class="kpi-card">
+            <div class="kpi-value">2,449</div>
+            <div class="kpi-label">Brand Detections</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-value">61</div>
+            <div class="kpi-label">Unique Brands</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-value">783</div>
+            <div class="kpi-label">Clips with Brands</div>
+        </div>
+        <div class="kpi-card gold">
+            <div class="kpi-value">232.3x</div>
+            <div class="kpi-label">Top/10th Brand Ratio</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div>
+            <h3>Brand Frequency Distribution</h3>
+            <div class="bar-row">
+            <span class="bar-label">JOOLA</span>
+            <div class="bar-track"><div class="bar-fill" style="width:100.0%"></div></div>
+            <span class="bar-value">697</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Nike</span>
+            <div class="bar-track"><div class="bar-fill" style="width:11.047345767575322%"></div></div>
+            <span class="bar-value">77</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">PICKLEBALL KINGDOM</span>
+            <div class="bar-track"><div class="bar-fill" style="width:4.4476327116212335%"></div></div>
+            <span class="bar-value">31</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">HEAD</span>
+            <div class="bar-track"><div class="bar-fill" style="width:3.1563845050215207%"></div></div>
+            <span class="bar-value">22</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">PBS</span>
+            <div class="bar-track"><div class="bar-fill" style="width:1.4347202295552368%"></div></div>
+            <span class="bar-value">10</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">On</span>
+            <div class="bar-track"><div class="bar-fill" style="width:1.291248206599713%"></div></div>
+            <span class="bar-value">9</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">USA</span>
+            <div class="bar-track"><div class="bar-fill" style="width:1.0043041606886658%"></div></div>
+            <span class="bar-value">7</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Foscam</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.5738880918220947%"></div></div>
+            <span class="bar-value">4</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">ONIX</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.5738880918220947%"></div></div>
+            <span class="bar-value">4</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">PKLR</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.430416068866571%"></div></div>
+            <span class="bar-value">3</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">H2</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.430416068866571%"></div></div>
+            <span class="bar-value">3</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Life Time</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.430416068866571%"></div></div>
+            <span class="bar-value">3</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Adidas</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.430416068866571%"></div></div>
+            <span class="bar-value">3</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Franklin</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.430416068866571%"></div></div>
+            <span class="bar-value">3</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">PICKLEBALL</span>
+            <div class="bar-track"><div class="bar-fill" style="width:0.430416068866571%"></div></div>
+            <span class="bar-value">3</span>
+        </div>
+
+        </div>
+        <div>
+            <h3>Brand Exposure Value (Est.)</h3>
+            <table>
+                <tr><th>Brand</th><th>Clips</th><th>Total Vis.</th><th>Avg/Clip</th><th>Est. Value</th></tr>
+                <tr>
+            <td>JOOLA</td>
+            <td>697</td>
+            <td>34530.6s</td>
+            <td>17.2s</td>
+            <td style="color:#00e676;font-weight:bold;">$108199.18</td>
+        </tr>
+<tr>
+            <td>Nike</td>
+            <td>77</td>
+            <td>3421.5s</td>
+            <td>18.1s</td>
+            <td style="color:#00e676;font-weight:bold;">$10375.59</td>
+        </tr>
+<tr>
+            <td>PICKLEBALL KINGDOM</td>
+            <td>31</td>
+            <td>842.0s</td>
+            <td>27.2s</td>
+            <td style="color:#00e676;font-weight:bold;">$2838.35</td>
+        </tr>
+<tr>
+            <td>HEAD</td>
+            <td>22</td>
+            <td>530.3s</td>
+            <td>14.0s</td>
+            <td style="color:#00e676;font-weight:bold;">$1663.32</td>
+        </tr>
+<tr>
+            <td>On</td>
+            <td>9</td>
+            <td>371.3s</td>
+            <td>20.6s</td>
+            <td style="color:#00e676;font-weight:bold;">$1155.16</td>
+        </tr>
+<tr>
+            <td>LIFE TIME PICKLEBALL</td>
+            <td>3</td>
+            <td>239s</td>
+            <td>79.7s</td>
+            <td style="color:#00e676;font-weight:bold;">$836.50</td>
+        </tr>
+<tr>
+            <td>PBS</td>
+            <td>10</td>
+            <td>147.0s</td>
+            <td>14.7s</td>
+            <td style="color:#00e676;font-weight:bold;">$463.05</td>
+        </tr>
+<tr>
+            <td>ADVANCED</td>
+            <td>2</td>
+            <td>126s</td>
+            <td>63s</td>
+            <td style="color:#00e676;font-weight:bold;">$441.00</td>
+        </tr>
+<tr>
+            <td>INTERMEDIATE</td>
+            <td>2</td>
+            <td>118s</td>
+            <td>59s</td>
+            <td style="color:#00e676;font-weight:bold;">$354.00</td>
+        </tr>
+<tr>
+            <td>USA</td>
+            <td>7</td>
+            <td>103.0s</td>
+            <td>14.7s</td>
+            <td style="color:#00e676;font-weight:bold;">$345.79</td>
+        </tr>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="insight-box" style="margin-top:20px;">
+        <strong>Brand Manager Insight:</strong> The brand distribution follows a power law -- the top brand appears 232.3x more often than the 10th brand. This concentration means sponsor reports for top brands will have statistical significance.
+    </div>
+</section>
+
+<!-- STORY ARCS -->
+<section class="section" id="arcs">
+    <h2><span class="icon">&#x1f3ac;</span> Story Arc Analysis</h2>
+
+    <div class="grid-3" style="margin-bottom:20px;">
+        <div class="kpi-card">
+            <div class="kpi-value">8</div>
+            <div class="kpi-label">Unique Story Arcs</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-value">6</div>
+            <div class="kpi-label">Rare/Legendary Arcs</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-value">892</div>
+            <div class="kpi-label">Arcs Classified</div>
+        </div>
+    </div>
+
+    <h3>Arc Distribution (with rarity tiers)</h3>
+    <div class="bar-row">
+            <span class="bar-label">grind_rally <span class="badge rarity-common">common</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:100.0%"></div></div>
+            <span class="bar-value">762 (85.4%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">athletic_highlight <span class="badge rarity-uncommon">uncommon</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:7.217847769028872%"></div></div>
+            <span class="bar-value">55 (6.2%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">dominant_performance <span class="badge rarity-rare">rare</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:3.0183727034120733%"></div></div>
+            <span class="bar-value">23 (2.6%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">teaching_moment <span class="badge rarity-legendary">legendary</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:1.968503937007874%"></div></div>
+            <span class="bar-value">15 (1.7%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">strategic_play <span class="badge rarity-legendary">legendary</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:1.7060367454068242%"></div></div>
+            <span class="bar-value">13 (1.5%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">error_highlight <span class="badge rarity-legendary">legendary</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:1.4435695538057742%"></div></div>
+            <span class="bar-value">11 (1.2%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">pure_fun <span class="badge rarity-legendary">legendary</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:1.3123359580052494%"></div></div>
+            <span class="bar-value">10 (1.1%)</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">clutch_moment <span class="badge rarity-legendary">legendary</span></span>
+            <div class="bar-track"><div class="bar-fill arc-fill" style="width:0.3937007874015748%"></div></div>
+            <span class="bar-value">3 (0.3%)</span>
+        </div>
+
+
+    <div class="insight-box" style="margin-top:16px;">
+        <strong>Product Opportunity:</strong> 6 rare/legendary arcs detected - prime for 'You just had a rare moment!' notifications
+    </div>
+</section>
+
+<!-- COACHING SIGNALS -->
+<section class="section" id="coaching">
+    <h2><span class="icon">&#x1f3d3;</span> Coaching Signal Mining</h2>
+
+    <div class="grid-3" style="margin-bottom:20px;">
+        <div class="kpi-card">
+            <div class="kpi-value">6.15</div>
+            <div class="kpi-label">Avg Coaching Moments/Clip</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-value">5.17</div>
+            <div class="kpi-label">Avg Skill Gap (Best-Worst)</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-value">897</div>
+            <div class="kpi-label">Clips with 3+ Coaching Moments</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div>
+            <h3>Top Improvement Needs</h3>
+            <div class="bar-row">
+            <span class="bar-label">Vary shot selection</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:100.0%"></div></div>
+            <span class="bar-value">813</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Better transition zone play</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:47.97047970479705%"></div></div>
+            <span class="bar-value">390</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Be more aggressive/attack-minded</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:35.67035670356704%"></div></div>
+            <span class="bar-value">290</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Develop power/speed</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:18.696186961869618%"></div></div>
+            <span class="bar-value">152</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Improve dinking consistency</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:10.947109471094711%"></div></div>
+            <span class="bar-value">89</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Improve lob game</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:7.134071340713407%"></div></div>
+            <span class="bar-value">58</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Better court positioning</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:5.658056580565805%"></div></div>
+            <span class="bar-value">46</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Improve footwork</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:5.289052890528906%"></div></div>
+            <span class="bar-value">43</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Improve court coverage to handle wider shots</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:4.305043050430505%"></div></div>
+            <span class="bar-value">35</span>
+        </div>
+<div class="bar-row">
+            <span class="bar-label">Develop third shot drop</span>
+            <div class="bar-track"><div class="bar-fill coaching-fill" style="width:2.706027060270603%"></div></div>
+            <span class="bar-value">22</span>
+        </div>
+
+        </div>
+        <div>
+            <h3>Play Style Tags</h3>
+            <div style="padding:12px;"><span class="play-style-tag">kitchen specialist (683)</span> <span class="play-style-tag">consistent (523)</span> <span class="play-style-tag">patient (520)</span> <span class="play-style-tag">dinker (111)</span> <span class="play-style-tag">baseliner (107)</span> <span class="play-style-tag">patient player (105)</span> <span class="play-style-tag">kitchen player (86)</span> <span class="play-style-tag">defensive (81)</span> <span class="play-style-tag">power player (77)</span> <span class="play-style-tag">resetter (34)</span> <span class="play-style-tag">transition zone attacker (34)</span> <span class="play-style-tag">strategic (32)</span> </div>
+            <h3 style="margin-top:16px;">Most Common Weaknesses</h3>
+            <div class="insight-box">Creativity: appears as weakest skill in 513 clips</div><div class="insight-box">Power Game: appears as weakest skill in 371 clips</div><div class="insight-box">Kitchen Mastery: appears as weakest skill in 9 clips</div>
+        </div>
+    </div>
+
+    <div class="insight-box" style="margin-top:16px;">
+        <strong>Coach's Take:</strong> The average clip generates 6.15 actionable coaching moments.
+        897 clips (100.0%) are "coaching-dense" with 3+ improvement signals.
+    </div>
+</section>
+
+<!-- TEMPORAL -->
+<section class="section" id="temporal">
+    <h2><span class="icon">&#x1f4c5;</span> Temporal Trends</h2>
+    <p style='color:var(--text-dim);'>Tracking quality and consistency across 2026-04-10 to 2026-04-13</p>
+
+    <table style="margin-top:16px;">
+        <tr><th>Date</th><th>Clips</th><th>Mean Quality</th><th>Mean Confidence</th><th>Quality StDev</th></tr>
+        <tr>
+            <td>2026-04-10</td>
+            <td>12</td>
+            <td>7.67</td>
+            <td>None</td>
+            <td>0.65</td>
+        </tr>
+<tr>
+            <td>2026-04-12</td>
+            <td>446</td>
+            <td>6.04</td>
+            <td>None</td>
+            <td>0.85</td>
+        </tr>
+<tr>
+            <td>2026-04-13</td>
+            <td>426</td>
+            <td>6.26</td>
+            <td>0.878</td>
+            <td>0.85</td>
+        </tr>
+
+    </table>
+</section>
+
+<!-- DATA QUALITY -->
+<section class="section" id="quality">
+    <h2><span class="icon">&#x2705;</span> Data Quality Assessment</h2>
+
+    <div class="grid-4" style="margin-bottom:20px;">
+        <div class="kpi-card">
+            <div class="kpi-value">897</div>
+            <div class="kpi-label">Total Valid Analyses</div>
+        </div>
+        <div class="kpi-card ">
+            <div class="kpi-value">2</div>
+            <div class="kpi-label">Uniform Profiles (Suspect)</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-value">0</div>
+            <div class="kpi-label">Perfect 10 Scores</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">0</div>
+            <div class="kpi-label">Very Low Scores (1-2)</div>
+        </div>
+    </div>
+
+    <h3>Schema Completeness</h3>
+    <table>
+        <tr><th>Field</th><th>Present</th><th>Missing</th><th>Rate</th></tr>
+        <tr><td>clip_meta</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>players_detected</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>shot_analysis</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>skill_indicators</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>brand_detection</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>storytelling</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>badge_intelligence</td><td>897</td><td>0</td><td style="color:var(--accent)">100.0%</td></tr><tr><td>commentary</td><td>896</td><td>1</td><td style="color:var(--accent)">99.9%</td></tr><tr><td>daas_signals</td><td>896</td><td>1</td><td style="color:var(--accent)">99.9%</td></tr>
+    </table>
+
+    <h3 style="margin-top:20px;">Models & Versions</h3>
+    <div class="grid-2">
+        <div>
+            <table>
+                <tr><th>Schema Version</th><th>Count</th></tr>
+                <tr><td>v1.3-20260410</td><td>409</td></tr><tr><td>v1.2-20260410</td><td>463</td></tr><tr><td>unknown</td><td>25</td></tr>
+            </table>
+        </div>
+        <div>
+            <table>
+                <tr><th>Model</th><th>Count</th></tr>
+                <tr><td>gemini-2.5-flash-lite</td><td>872</td></tr><tr><td>unknown</td><td>25</td></tr>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- MONETIZATION -->
+<section class="section" id="monetization">
+    <h2><span class="icon">&#x1f4b5;</span> Monetization Signals</h2>
+
+    <div class="grid-4" style="margin-bottom:20px;">
+        <div class="kpi-card">
+            <div class="kpi-value">655</div>
+            <div class="kpi-label">Sponsor-Grade Clips</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-value">329</div>
+            <div class="kpi-label">Coaching-Grade Clips</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-value">80</div>
+            <div class="kpi-label">Content-Grade Clips</div>
+        </div>
+        <div class="kpi-card gold">
+            <div class="kpi-value">99</div>
+            <div class="kpi-label">Highlight Reel Worthy</div>
+        </div>
+    </div>
+
+    <h3>Revenue Use Cases</h3>
+    <table>
+        <tr><th>Use Case</th><th>Eligible Clips</th><th>% of Corpus</th><th>Description</th></tr>
+        <tr><td style="font-weight:bold;">Sponsor Reports</td><td>655</td><td>73.0%</td><td style="color:var(--text-dim);font-size:0.85em;">Monthly brand exposure reports for paddle/apparel companies</td></tr><tr><td style="font-weight:bold;">Coaching Subscriptions</td><td>329</td><td>36.7%</td><td style="color:var(--text-dim);font-size:0.85em;">AI coaching insights per clip for subscribed players</td></tr><tr><td style="font-weight:bold;">Content Licensing</td><td>80</td><td>8.9%</td><td style="color:var(--text-dim);font-size:0.85em;">Licensed highlight clips for social media, training content</td></tr><tr><td style="font-weight:bold;">Highlight Packages</td><td>99</td><td>11.0%</td><td style="color:var(--text-dim);font-size:0.85em;">Curated highlight reels with commentary</td></tr>
+    </table>
+
+    <div class="insight-box" style="margin-top:20px;">
+        <strong>Unit Economics:</strong> At $0.005/clip to analyze,
+        329 clips are coaching-grade (36.7% yield).
+        If coaching subscriptions generate $14.99/mo per player and each player generates ~10 clips/session,
+        the data cost per coaching-ready clip is far below revenue potential.
+    </div>
+</section>
+
+</div>
+
+<footer>
+    Pickle DaaS -- Experiment 4: Deep Corpus Mining | 897 analyses | Generated 2026-04-13 23:41
+    <br>AI-powered sports data intelligence at scale
+</footer>
+
+</body>
+</html>

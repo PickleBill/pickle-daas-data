@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Archetypes · Pickle DaaS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e18;
+    --surface: #131a2a;
+    --surface-2: #1d2640;
+    --border: #2a3555;
+    --text: #e4e7ed;
+    --muted: #7a8499;
+    --accent: #3b82f6;
+    --accent-bright: #60a5fa;
+    --accent-dim: rgba(59, 130, 246, 0.12);
+    --gold: #eab308;
+    --ok: #22c55e;
+    --warn: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+  .shell { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+  .brand-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  .brand-title .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .exp-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(168,85,247,0.1); border: 1px solid var(--purple); border-radius: 4px; color: var(--purple); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+
+  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
+  .hero-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .hero-stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 10px; font-family: ui-monospace, monospace; }
+  .hero-stat .value { font-size: 32px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; }
+  .hero-stat .sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .hero-stat.featured { background: linear-gradient(135deg, var(--accent-dim), transparent); border-color: var(--accent); }
+  .hero-stat.featured .value { color: var(--accent-bright); }
+
+  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 16px; display: flex; justify-content: space-between; align-items: baseline; }
+  h2 .meta { font-size: 12px; color: var(--muted); font-weight: normal; font-family: ui-monospace, monospace; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 1100px) { .three-col { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .hero-grid { grid-template-columns: repeat(2, 1fr); } .three-col { grid-template-columns: 1fr; } }
+
+  /* Distribution chart */
+  .dist-chart { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .dist-chart canvas { max-width: 280px; max-height: 280px; }
+  .dist-legend { flex: 1; min-width: 200px; }
+  .dist-legend-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .dist-legend-item:last-child { border-bottom: none; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .legend-name { flex: 1; font-weight: 500; }
+  .legend-count { font-family: ui-monospace, monospace; color: var(--muted); }
+  .legend-pct { font-family: ui-monospace, monospace; font-weight: 600; width: 50px; text-align: right; }
+
+  /* Archetype cards */
+  .archetype-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; transition: all 0.15s ease; border-top: 3px solid var(--accent); }
+  .archetype-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .arch-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .arch-emoji { font-size: 28px; }
+  .arch-info h3 { font-size: 16px; font-weight: 600; }
+  .arch-tagline { font-size: 12px; color: var(--muted); }
+  .arch-count { margin-left: auto; text-align: center; font-size: 24px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .arch-count span { display: block; font-size: 10px; color: var(--muted); font-weight: 400; text-transform: uppercase; letter-spacing: 0.5px; }
+  .arch-desc { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+  .arch-radar { width: 100%; height: 180px; margin-bottom: 14px; }
+  .arch-clips h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 8px; }
+  .clip-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(42,53,85,0.5); font-size: 12px; flex-wrap: wrap; }
+  .clip-rank { color: var(--muted); font-family: ui-monospace, monospace; width: 24px; }
+  .clip-id { font-family: ui-monospace, monospace; color: var(--accent-bright); }
+  .clip-quality { background: var(--surface-2); padding: 2px 6px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 11px; }
+  .clip-skills { display: flex; gap: 4px; flex-wrap: wrap; }
+  .skill-badge { padding: 1px 6px; border-radius: 3px; font-size: 10px; font-family: ui-monospace, monospace; }
+  .skill-badge.high { background: rgba(34,197,94,0.15); color: var(--ok); }
+  .skill-badge.mid { background: rgba(59,130,246,0.1); color: var(--accent-bright); }
+  .arch-tip { margin-top: 14px; padding: 10px 12px; background: var(--surface-2); border-radius: 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .arch-tip strong { color: var(--text); }
+  .no-clips { color: var(--muted); font-size: 12px; font-style: italic; }
+
+  /* Brand cross-tab */
+  .brand-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .brand-table th { text-align: left; padding: 8px 6px; border-bottom: 2px solid var(--border); font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .brand-table td { padding: 6px; border-bottom: 1px solid var(--border); text-align: center; font-family: ui-monospace, monospace; }
+  .brand-table .brand-name { text-align: left; font-weight: 500; color: var(--text); font-family: inherit; }
+  .brand-table .brand-total { text-align: right; color: var(--muted); }
+  .brand-table tr:hover td { background: rgba(59,130,246,0.05); }
+  .brand-table-wrap { overflow-x: auto; }
+
+  /* Player profile mockup */
+  .profile-mockup { background: linear-gradient(135deg, #131a2a 0%, #1a1040 100%); border: 1px solid var(--border); border-radius: 16px; padding: 32px; max-width: 500px; margin: 0 auto; }
+  .profile-header { text-align: center; margin-bottom: 24px; }
+  .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #a855f788); display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 16px; }
+  .profile-name { font-size: 20px; font-weight: 700; }
+  .profile-arch { font-size: 14px; color: #a855f7; font-weight: 600; margin-top: 4px; }
+  .profile-tagline { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .profile-radar { width: 100%; height: 260px; margin: 20px 0; }
+  .profile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .p-stat { text-align: center; }
+  .p-stat .p-val { font-size: 22px; font-weight: 700; color: var(--accent-bright); }
+  .p-stat .p-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .profile-cta { text-align: center; margin-top: 20px; }
+  .profile-cta a { display: inline-block; padding: 10px 24px; background: #a855f7; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; }
+  .phone-frame { background: #000; border-radius: 28px; padding: 12px; max-width: 360px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .phone-screen { border-radius: 18px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header>
+    <div class="brand-title">
+        <h1>Player Archetypes</h1>
+        <div class="sub">Experiment 2 · Pickle DaaS Chief Data Scientist Initiative</div>
+    </div>
+    <div class="exp-badge">EXP-002 · 20 clips analyzed</div>
+</header>
+
+<!-- Hero Stats -->
+<div class="hero-grid">
+    <div class="hero-stat featured">
+        <div class="label">Total Clips</div>
+        <div class="value">20</div>
+        <div class="sub">Classified into archetypes</div>
+    </div>
+    <div class="hero-stat">
+        <div class="label">Archetypes Found</div>
+        <div class="value">7</div>
+        <div class="sub">Distinct player types</div>
+    </div>
+    <div class="hero-stat">
+        <div class="label">Dominant Type</div>
+        <div class="value">🎯 All-Court</div>
+        <div class="sub">295 clips (1475%)</div>
+    </div>
+    <div class="hero-stat">
+        <div class="label">Rarest Type</div>
+        <div class="value">🎨 Artist</div>
+        <div class="sub">26 clips (130.0%)</div>
+    </div>
+</div>
+
+<!-- Distribution -->
+<h2>Archetype Distribution <span class="meta">rule-based classification · 10 skill dimensions</span></h2>
+<div class="section">
+    <div class="dist-chart">
+        <canvas id="pieChart" width="280" height="280"></canvas>
+        <div class="dist-legend" id="distLegend"></div>
+    </div>
+</div>
+
+<!-- Quality comparison -->
+<h2>Average Quality by Archetype <span class="meta">clip_quality_score (1-10)</span></h2>
+<div class="section">
+    <canvas id="qualityChart" height="80"></canvas>
+</div>
+
+<!-- Archetype Cards -->
+<h2>Archetype Profiles <span class="meta">avg skill ratings · top clips · coaching tips</span></h2>
+<div class="three-col">
+
+        <div class="archetype-card" style="--accent:#22c55e">
+            <div class="arch-header">
+                <span class="arch-emoji">🎯</span>
+                <div class="arch-info">
+                    <h3>All-Court</h3>
+                    <p class="arch-tagline">The Balanced Player</p>
+                </div>
+                <div class="arch-count">295<span>clips</span></div>
+            </div>
+            <p class="arch-desc">No glaring weaknesses, no standout strengths. Solid all-around game.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[7.3, 4.6, 7.4, 3.1, 6.4, 6.6, 7.2, 6.1, 7.1, 5.3]' data-color='#22c55e'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">6e3140af-e22a-42</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 7</span><span class="skill-badge mid">Power 5</span><span class="skill-badge mid">Court IQ 6</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">69216bcf-19dc-4c</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge mid">Power 5</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">ec75837e-6366-4a</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge mid">Kitchen 6</span><span class="skill-badge mid">Power 5</span><span class="skill-badge mid">Court IQ 6</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">b6395b3f-9ac7-46</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge mid">Power 6</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">efe98024-bb19-4e</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Power 7</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> You're well-rounded. Pick one skill to push to elite level — that's your path to the next tier.
+            </div>
+        </div>
+        <div class="archetype-card" style="--accent:#64748b">
+            <div class="arch-header">
+                <span class="arch-emoji">🌱</span>
+                <div class="arch-info">
+                    <h3>Developing</h3>
+                    <p class="arch-tagline">On the Rise</p>
+                </div>
+                <div class="arch-count">235<span>clips</span></div>
+            </div>
+            <p class="arch-desc">Still building their game. No skills at dominant level yet.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[7.2, 2.2, 7.4, 2.2, 6.1, 6.6, 6.9, 5.3, 6.9, 4.3]' data-color='#64748b'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">95f74618-4f4f-47</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">c9d087c2-956b-49</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">419e2ad5-7b87-44</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">9bf6583d-ac5c-46</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">1934d3d1-becf-4a</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> Focus on kitchen mastery and consistency first — they're the foundation of every great player.
+            </div>
+        </div>
+        <div class="archetype-card" style="--accent:#f97316">
+            <div class="arch-header">
+                <span class="arch-emoji">⚔️</span>
+                <div class="arch-info">
+                    <h3>Warrior</h3>
+                    <p class="arch-tagline">The Mental Game Specialist</p>
+                </div>
+                <div class="arch-count">106<span>clips</span></div>
+            </div>
+            <p class="arch-desc">Unshakeable composure with rock-solid consistency. Wins pressure points.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[7.9, 3.5, 9, 3, 6.9, 8.0, 7.8, 6.2, 7.8, 5.3]' data-color='#f97316'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">36fdfb9a-0224-4d</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">9aa31d43-db6f-4f</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 7</span><span class="skill-badge mid">Power 6</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">8b1d6563-1422-44</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">0d0165ae-d1b2-41</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">fc6cebac-2d7e-4b</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> Your mental game is elite. Add more shot variety to close out points faster.
+            </div>
+        </div>
+        <div class="archetype-card" style="--accent:#ef4444">
+            <div class="arch-header">
+                <span class="arch-emoji">🔨</span>
+                <div class="arch-info">
+                    <h3>Hammer</h3>
+                    <p class="arch-tagline">Dominant Power Game</p>
+                </div>
+                <div class="arch-count">101<span>clips</span></div>
+            </div>
+            <p class="arch-desc">Overpowering force on the court. High power, lower creativity — wins through sheer force.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[4.1, 7.0, 7.2, 2.5, 5.8, 6.6, 6.3, 6.1, 4.8, 5.8]' data-color='#ef4444'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">24cc8112-26a9-40</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Power 7</span><span class="skill-badge mid">Court IQ 5</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">63acd957-bf38-42</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge mid">Kitchen 6</span><span class="skill-badge high">Power 7</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">e1e98b1a-df43-48</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Power 7</span><span class="skill-badge mid">Court IQ 5</span><span class="skill-badge mid">Composure 6</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">0026ad09-1943-4e</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge mid">Kitchen 5</span><span class="skill-badge high">Power 7</span><span class="skill-badge mid">Court IQ 6</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">0eedd43b-41d2-4e</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge mid">Kitchen 5</span><span class="skill-badge high">Power 7</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> Your power is your weapon. Develop your soft game to become unstoppable at the kitchen.
+            </div>
+        </div>
+        <div class="archetype-card" style="--accent:#eab308">
+            <div class="arch-header">
+                <span class="arch-emoji">👑</span>
+                <div class="arch-info">
+                    <h3>Elite</h3>
+                    <p class="arch-tagline">The Complete Package</p>
+                </div>
+                <div class="arch-count">58<span>clips</span></div>
+            </div>
+            <p class="arch-desc">Rare, complete player with excellence across multiple dimensions. 3+ skills at 8 or above.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[8.5, 5.2, 8.8, 4, 7.6, 7.9, 8.6, 7.0, 8.4, 6.3]' data-color='#eab308'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">adff89dd-4168-4c</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Power 7</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">d016202b-42ca-40</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Power 7</span><span class="skill-badge mid">Creativity 5</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">1c9e4399-dc83-41</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 9</span><span class="skill-badge high">Court IQ 8</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">77f343f2-304a-4c</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Power 7</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">53a457da-92b7-49</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 7</span><span class="skill-badge high">Power 8</span><span class="skill-badge mid">Creativity 5</span><span class="skill-badge high">Court IQ 8</span><span class="skill-badge high">Composure 8</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> You're operating at the highest level. Focus on maintaining consistency and mentoring others.
+            </div>
+        </div>
+        <div class="archetype-card" style="--accent:#3b82f6">
+            <div class="arch-header">
+                <span class="arch-emoji">🧱</span>
+                <div class="arch-info">
+                    <h3>Wall</h3>
+                    <p class="arch-tagline">The Defensive Grinder</p>
+                </div>
+                <div class="arch-count">51<span>clips</span></div>
+            </div>
+            <p class="arch-desc">Immovable at the kitchen line. High consistency and kitchen mastery — outlasts opponents.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[8.1, 2.6, 9, 2.8, 6.9, 7.1, 7.9, 6, 7.9, 5.0]' data-color='#3b82f6'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">61293a6a-58dd-4a</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">16dfe16b-4c11-4f</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">4ec39b5c-3625-4d</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">f9ff7971-2cdb-4e</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">0d3e6a2f-0c50-47</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> You frustrate opponents with patience. Add occasional power shots to keep them guessing.
+            </div>
+        </div>
+        <div class="archetype-card" style="--accent:#a855f7">
+            <div class="arch-header">
+                <span class="arch-emoji">🎨</span>
+                <div class="arch-info">
+                    <h3>Artist</h3>
+                    <p class="arch-tagline">The Creative Strategist</p>
+                </div>
+                <div class="arch-count">26<span>clips</span></div>
+            </div>
+            <p class="arch-desc">Inventive shotmaker with high court IQ. Wins with angles, spins, and surprise.</p>
+            <div class="arch-radar" data-labels='["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"]' data-values='[8.2, 5.2, 8.5, 4.8, 7.3, 7.5, 8, 7, 8.0, 6.2]' data-color='#a855f7'></div>
+            <div class="arch-clips">
+                <h4>Top Clips</h4>
+                <div class="clip-row">
+                <span class="clip-rank">#1</span>
+                <span class="clip-id">e48580ea-5f5a-42</span>
+                <span class="clip-quality">Q8</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 9</span><span class="skill-badge mid">Power 5</span><span class="skill-badge high">Court IQ 8</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#2</span>
+                <span class="clip-id">2516eddb-50ed-47</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge mid">Power 6</span><span class="skill-badge mid">Creativity 5</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#3</span>
+                <span class="clip-id">c4be1aab-c36f-41</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge mid">Power 6</span><span class="skill-badge mid">Creativity 5</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 7</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#4</span>
+                <span class="clip-id">9b628e45-abb4-44</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 9</span><span class="skill-badge high">Court IQ 8</span><span class="skill-badge high">Composure 8</span></div>
+            </div><div class="clip-row">
+                <span class="clip-rank">#5</span>
+                <span class="clip-id">7e76c2d2-7fe3-45</span>
+                <span class="clip-quality">Q7</span>
+                <div class="clip-skills"><span class="skill-badge high">Kitchen 8</span><span class="skill-badge mid">Power 5</span><span class="skill-badge mid">Creativity 5</span><span class="skill-badge high">Court IQ 7</span><span class="skill-badge high">Composure 8</span></div>
+            </div>
+            </div>
+            <div class="arch-tip">
+                <strong>Coaching Tip:</strong> Your creativity is your edge. Build consistency so your creative plays land more often.
+            </div>
+        </div>
+</div>
+
+<!-- Brand Cross-tab -->
+<h2>Brand x Archetype <span class="meta">paddle brands detected · top 2</span></h2>
+<div class="section brand-table-wrap">
+    <table class="brand-table">
+        <thead>
+            <tr>
+                <th>Brand</th>
+                <th>Total</th>
+                <th style="color:#22c55e">🎯 All-Co</th><th style="color:#64748b">🌱 Develo</th><th style="color:#f97316">⚔️ Warrio</th><th style="color:#ef4444">🔨 Hammer</th><th style="color:#eab308">👑 Elite</th><th style="color:#3b82f6">🧱 Wall</th><th style="color:#a855f7">🎨 Artist</th>
+            </tr>
+        </thead>
+        <tbody>
+<tr><td class="brand-name">JOOLA</td><td class="brand-total">669</td><td style="background:rgba(59,130,246,0.71)">238</td><td style="background:rgba(59,130,246,0.51)">170</td><td style="background:rgba(59,130,246,0.25)">85</td><td style="background:rgba(59,130,246,0.24)">79</td><td style="background:rgba(59,130,246,0.12)">41</td><td style="background:rgba(59,130,246,0.11)">37</td><td style="background:rgba(59,130,246,0.10)">19</td></tr>
+<tr><td class="brand-name">HEAD</td><td class="brand-total">20</td><td style="background:rgba(59,130,246,0.60)">6</td><td style="background:rgba(59,130,246,0.40)">4</td><td style="background:rgba(59,130,246,0.10)">1</td><td style="background:rgba(59,130,246,0.60)">6</td><td style="background:rgba(59,130,246,0.20)">2</td><td style="background:rgba(59,130,246,0.10)">1</td><td style="background:rgba(59,130,246,0.10)">0</td></tr>
+
+        </tbody>
+    </table>
+</div>
+
+<!-- Player Profile Mockup -->
+<h2>Product Concept: Your Archetype Profile <span class="meta">what players see in the app</span></h2>
+<div class="section" style="background: transparent; border: none; padding: 0;">
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <div class="profile-mockup">
+                <div class="profile-header">
+                    <div class="profile-avatar">🎨</div>
+                    <div class="profile-name">Your Player Profile</div>
+                    <div class="profile-arch">Artist</div>
+                    <div class="profile-tagline">The Creative Strategist</div>
+                </div>
+                <canvas class="profile-radar" id="profileRadar"></canvas>
+                <div class="profile-stats">
+                    <div class="p-stat"><div class="p-val">8</div><div class="p-label">Quality</div></div>
+                    <div class="p-stat"><div class="p-val">10</div><div class="p-label">Skills Rated</div></div>
+                    <div class="p-stat"><div class="p-val">7</div><div class="p-label">Elite Skills</div></div>
+                </div>
+                <div class="arch-tip" style="margin-top: 20px;">
+                    <strong>Your Path:</strong> Your creativity is your edge. Build consistency so your creative plays land more often.
+                </div>
+                <div class="profile-cta"><a href="#">Share Your Archetype</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- .shell -->
+
+<script>
+// ── Chart.js defaults ────────────────────────────────────────────────
+Chart.defaults.color = '#7a8499';
+Chart.defaults.font.family = "ui-sans-serif, system-ui, -apple-system, sans-serif";
+
+// ── Distribution pie ─────────────────────────────────────────────────
+const archetypes = ["All-Court", "Developing", "Warrior", "Hammer", "Elite", "Wall", "Artist"];
+const counts = [295, 235, 106, 101, 58, 51, 26];
+const colors = ["#22c55e", "#64748b", "#f97316", "#ef4444", "#eab308", "#3b82f6", "#a855f7"];
+const emojis = ["\ud83c\udfaf", "\ud83c\udf31", "\u2694\ufe0f", "\ud83d\udd28", "\ud83d\udc51", "\ud83e\uddf1", "\ud83c\udfa8"];
+const total = 20;
+
+new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: {
+        labels: archetypes,
+        datasets: [{ data: counts, backgroundColor: colors, borderColor: '#0a0e18', borderWidth: 2 }]
+    },
+    options: {
+        cutout: '55%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => `${ctx.label}: ${ctx.parsed} (${(ctx.parsed/total*100).toFixed(1)}%)`
+                }
+            }
+        }
+    }
+});
+
+// Legend
+const legendEl = document.getElementById('distLegend');
+archetypes.forEach((a, i) => {
+    const pct = (counts[i]/total*100).toFixed(1);
+    legendEl.innerHTML += `<div class="dist-legend-item">
+        <div class="legend-dot" style="background:${colors[i]}"></div>
+        <span class="legend-name">${emojis[i]} ${a}</span>
+        <span class="legend-count">${counts[i]}</span>
+        <span class="legend-pct">${pct}%</span>
+    </div>`;
+});
+
+// ── Quality bar chart ────────────────────────────────────────────────
+const qualities = [6.2, 5.5, 6.6, 6.1, 6.9, 6.4, 7.0];
+new Chart(document.getElementById('qualityChart'), {
+    type: 'bar',
+    data: {
+        labels: archetypes.map((a, i) => emojis[i] + ' ' + a),
+        datasets: [{
+            data: qualities,
+            backgroundColor: colors.map(c => c + '44'),
+            borderColor: colors,
+            borderWidth: 1,
+            borderRadius: 4
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        scales: {
+            x: { min: 0, max: 10, grid: { color: '#1d2640' } },
+            y: { grid: { display: false } }
+        },
+        plugins: { legend: { display: false },
+            tooltip: { callbacks: { label: ctx => `Avg Quality: ${ctx.parsed.x}` } }
+        }
+    }
+});
+
+// ── Radar charts for each archetype card ─────────────────────────────
+document.querySelectorAll('.arch-radar').forEach(el => {
+    const labels = JSON.parse(el.dataset.labels);
+    const values = JSON.parse(el.dataset.values);
+    const color = el.dataset.color;
+    const canvas = document.createElement('canvas');
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    el.appendChild(canvas);
+    new Chart(canvas, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: color + '22',
+                borderColor: color,
+                borderWidth: 2,
+                pointBackgroundColor: color,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    min: 0, max: 10,
+                    ticks: { display: false, stepSize: 2 },
+                    grid: { color: '#2a3555' },
+                    angleLines: { color: '#2a3555' },
+                    pointLabels: { font: { size: 9 }, color: '#7a8499' }
+                }
+            },
+            plugins: { legend: { display: false } },
+            animation: { duration: 600 }
+        }
+    });
+});
+
+// ── Profile radar ────────────────────────────────────────────────────
+new Chart(document.getElementById('profileRadar'), {
+    type: 'radar',
+    data: {
+        labels: ["Kitchen", "Power", "Consistency", "Creativity", "Court IQ", "Composure", "Paddle Ctrl", "Coverage", "Touch", "Athleticism"],
+        datasets: [{
+            data: [9, 5, 9, 4, 8, 8, 8, 8, 8, 7],
+            backgroundColor: '#a855f722',
+            borderColor: '#a855f7',
+            borderWidth: 2,
+            pointBackgroundColor: '#a855f7',
+            pointRadius: 4
+        }]
+    },
+    options: {
+        scales: {
+            r: {
+                min: 0, max: 10,
+                ticks: { display: false, stepSize: 2 },
+                grid: { color: '#2a3555' },
+                angleLines: { color: '#2a3555' },
+                pointLabels: { font: { size: 10 }, color: '#7a8499' }
+            }
+        },
+        plugins: { legend: { display: false } }
+    }
+});
+</script>
+</body>
+</html>
