@@ -185,6 +185,22 @@
 
   .error-card { background: var(--danger-dim); border: 1px solid var(--danger); border-radius: 8px; padding: 14px 18px; color: #f87171; font-size: 13px; margin-bottom: 20px; }
 
+  /* Agent Activity section */
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .agent-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .agent-card .agent-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-family: ui-monospace, monospace; margin-bottom: 6px; }
+  .agent-card .agent-stat { font-size: 20px; font-weight: 600; color: var(--ok); font-variant-numeric: tabular-nums; }
+  .agent-card .agent-detail { font-size: 11px; color: var(--muted-strong); margin-top: 4px; }
+  .agent-timeline { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0; overflow: hidden; }
+  .agent-timeline-row { display: grid; grid-template-columns: 90px 90px 1fr auto; gap: 8px; padding: 8px 14px; font-size: 12px; border-bottom: 1px solid var(--border); align-items: center; }
+  .agent-timeline-row:last-child { border-bottom: none; }
+  .agent-timeline-row:hover { background: var(--surface-2); }
+  .agent-timeline-row .at-agent { font-family: ui-monospace, monospace; font-size: 11px; color: var(--info); }
+  .agent-timeline-row .at-action { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted-strong); }
+  .agent-timeline-row .at-clip { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); }
+  .agent-timeline-row .at-flag { color: var(--warn); font-weight: 600; font-size: 11px; }
+  .agent-timeline-head { background: var(--surface-2); font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; font-family: ui-monospace, monospace; }
+
   footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: ui-monospace, monospace; }
   footer a { color: var(--info); }
   footer a:hover { text-decoration: underline; }
@@ -490,6 +506,33 @@
   </div>
 </section>
 
+<!-- SECTION 9: Agent Activity -->
+<section>
+  <div class="section-head">
+    <h2><span class="num">09</span> Agent Activity</h2>
+    <span class="meta">Living agentic system — competing, validating, learning</span>
+  </div>
+
+  <div id="agent-stats" class="agent-grid">
+    <div class="agent-card"><div class="agent-name">Loading...</div><div class="agent-detail">Fetching agent-activity.json</div></div>
+  </div>
+
+  <div style="font-size: 13px; font-weight: 600; margin: 16px 0 8px; color: var(--muted-strong);">Recent Activity</div>
+  <div class="agent-timeline">
+    <div class="agent-timeline-row agent-timeline-head">
+      <div>Agent</div><div>Action</div><div>Clip</div><div>Status</div>
+    </div>
+    <div id="agent-timeline-body">
+      <div class="agent-timeline-row"><div class="at-agent" style="grid-column:1/-1;">Loading agent activity...</div></div>
+    </div>
+  </div>
+
+  <div style="font-size: 11px; color: var(--muted); margin-top: 10px; font-family: ui-monospace, monospace;">
+    Run orchestrator: <code>python agents/orchestrator.py --nightly</code> &middot;
+    Data: <a href="agent-activity.json" style="color:var(--info);">agent-activity.json</a>
+  </div>
+</section>
+
 <footer>
   <div>Pickle DaaS · Product Workbench · Internal use · Updated hourly from accuracy.json</div>
   <div>
@@ -786,6 +829,63 @@ function renderFlags() {
   }).join('');
 }
 
+// --- Agent Activity Section ---
+async function loadAgentActivity() {
+  try {
+    const resp = await fetch('../dashboards/agent-activity.json');
+    if (!resp.ok) { const r2 = await fetch('agent-activity.json'); if (!r2.ok) throw new Error('not found'); return await r2.json(); }
+    return await resp.json();
+  } catch(e) {
+    try { const r3 = await fetch('../output/dashboards/agent-activity.json'); if (r3.ok) return await r3.json(); } catch(_){}
+    return null;
+  }
+}
+
+async function renderAgentActivity() {
+  const data = await loadAgentActivity();
+  const statsEl = document.getElementById('agent-stats');
+  const timelineEl = document.getElementById('agent-timeline-body');
+
+  if (!data) {
+    statsEl.innerHTML = '<div class="agent-card"><div class="agent-name">No Data</div><div class="agent-detail">Run <code>python agents/orchestrator.py</code> to populate</div></div>';
+    timelineEl.innerHTML = '<div class="agent-timeline-row"><div class="at-agent" style="grid-column:1/-1;color:var(--muted);">No agent runs yet</div></div>';
+    return;
+  }
+
+  // Agent stats cards
+  const agents = data.agent_stats || [];
+  if (agents.length === 0) {
+    statsEl.innerHTML = '<div class="agent-card"><div class="agent-name">No agents</div><div class="agent-detail">No agent data recorded yet</div></div>';
+  } else {
+    statsEl.innerHTML = agents.map(a => {
+      const conf = a.avg_confidence !== null ? (a.avg_confidence * 100).toFixed(0) + '%' : '--';
+      const flagged = a.flagged || 0;
+      return `<div class="agent-card">
+        <div class="agent-name">${escapeHtml(a.agent)}</div>
+        <div class="agent-stat">${a.total_entries}</div>
+        <div class="agent-detail">entries &middot; ${conf} avg conf${flagged > 0 ? ` &middot; <span style="color:var(--warn)">${flagged} flagged</span>` : ''}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Recent activity timeline
+  const recent = data.recent_activity || [];
+  if (recent.length === 0) {
+    timelineEl.innerHTML = '<div class="agent-timeline-row"><div class="at-agent" style="grid-column:1/-1;color:var(--muted);">No recent activity</div></div>';
+  } else {
+    timelineEl.innerHTML = recent.map(r => {
+      const flag = r.flagged ? '<span class="at-flag">FLAGGED</span>' : (r.confidence !== null ? `<span style="color:var(--muted);font-size:11px;">${(r.confidence * 100).toFixed(0)}%</span>` : '');
+      return `<div class="agent-timeline-row">
+        <div class="at-agent">${escapeHtml(r.agent)}</div>
+        <div class="at-action">${escapeHtml(r.action || '')}</div>
+        <div class="at-clip">${escapeHtml(r.clip || '')}</div>
+        <div>${flag}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+renderAgentActivity();
 loadAll();
 </script>
 </body>

@@ -1,377 +1,617 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pickle DaaS · Investor Demo</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Pickle DaaS — Investor Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg: oklch(97.5% 0.008 145);
-  --bg-alt: oklch(94.5% 0.012 145);
-  --surface: oklch(100% 0 0);
-  --border: oklch(88% 0.012 155);
-  --text: oklch(18% 0.015 155);
-  --text-2: oklch(44% 0.016 155);
-  --text-3: oklch(62% 0.01 155);
-  --accent: oklch(42% 0.14 155);
-  --accent-soft: oklch(94% 0.04 155);
-  --accent-border: oklch(84% 0.06 155);
-  --gold: oklch(58% 0.14 85);
-  --warn: oklch(56% 0.15 50);
-  --ff-d: 'Bricolage Grotesque', system-ui, sans-serif;
-  --ff-b: 'Literata', Georgia, serif;
-  --ff-m: 'Azeret Mono', monospace;
-  --r: 12px;
-  --r-l: 18px;
-  --shadow: 0 4px 16px oklch(0% 0 0 / 0.06);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--bg2:#0f1629;--bg3:#161d33;--bg4:#1e2845;
+  --green:#22c55e;--green-dim:#16a34a;--green-glow:rgba(34,197,94,.12);--green-glow2:rgba(34,197,94,.06);
+  --white:#f1f5f9;--cream:#cbd5e1;--muted:#94a3b8;--faint:#475569;
+  --serif:'Georgia','Times New Roman',serif;
+  --sans:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --gold:#fbbf24;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; }
-body { background: var(--bg); color: var(--text); font-family: var(--ff-b); line-height: 1.65; }
-img { display: block; max-width: 100%; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:var(--serif);color:var(--cream);background:var(--bg);line-height:1.72;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(34,197,94,.3);color:var(--white)}
 
-nav { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; justify-content: space-between; align-items: center; }
-.nav-l { font-family: var(--ff-d); font-weight: 700; font-size: 0.95rem; }
-.nav-l span { color: var(--accent); }
-.nav-r { font-family: var(--ff-d); font-size: 0.8rem; color: var(--text-2); display: flex; gap: 18px; }
-.nav-r a { color: var(--text-2); }
-.nav-r a:hover { color: var(--accent); text-decoration: none; }
-.nav-pill { font-family: var(--ff-m); font-size: 0.7rem; padding: 3px 10px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; }
+/* Typography */
+h1,h2,h3,h4,h5,h6,.kpi-val,.nav-brand,.cta-headline{font-family:var(--sans);font-weight:700;line-height:1.1}
+h2.section-title{font-size:clamp(1.8rem,4vw,3.2rem);margin-bottom:.3em;letter-spacing:-.025em;color:var(--white)}
+h2.section-title span{color:var(--green)}
+.section-sub{font-size:clamp(.92rem,1.6vw,1.1rem);color:var(--muted);max-width:680px;margin:0 auto 2.5rem;line-height:1.72}
+.text-center{text-align:center}
 
-.shell { max-width: 1080px; margin: 0 auto; padding: 0 28px 80px; }
+/* Layout */
+.container{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem)}
+section{padding:clamp(4rem,10vw,8rem) 0}
 
-.hero { padding: 80px 0 32px; }
-.eyebrow { font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
-h1.hero-h { font-family: var(--ff-d); font-size: 4rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; color: var(--text); margin-bottom: 24px; }
-h1.hero-h .punch { display: inline-block; position: relative; }
-h1.hero-h .punch::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 110px; height: 4px; background: var(--accent); border-radius: 2px; }
-.hero-sub { font-size: 1.15rem; color: var(--text-2); max-width: 620px; margin-bottom: 36px; }
+/* Divider */
+.section-divider{width:40px;height:2px;background:linear-gradient(90deg,var(--green),transparent);margin:0 auto 2.5rem;opacity:.6}
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-top: 32px; }
-.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 22px; }
-.kpi-num { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
-.kpi-num small { font-size: 0.85rem; color: var(--text-3); font-weight: 500; }
-.kpi-label { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 8px; }
-.kpi.primary { background: var(--accent-soft); border-color: var(--accent-border); }
-.kpi.primary .kpi-num { color: var(--accent); }
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.85rem 0;backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);background:rgba(10,14,26,.72);border-bottom:1px solid rgba(255,255,255,.04);transition:all .3s}
+nav .container{display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-size:1.05rem;color:var(--white);letter-spacing:-.01em;font-weight:800}
+.nav-brand span{color:var(--green)}
+.nav-pill{font-family:var(--sans);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;padding:.4em 1.1em;border:1px solid rgba(34,197,94,.5);color:var(--green);border-radius:100px;text-decoration:none;transition:all .3s}
+.nav-pill:hover{background:var(--green);color:var(--bg);box-shadow:0 0 20px rgba(34,197,94,.25)}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-link{font-family:var(--sans);font-size:.78rem;color:var(--faint);text-decoration:none;transition:color .25s}
+.nav-link:hover{color:var(--white)}
+@media(max-width:700px){.nav-link{display:none}}
 
-section.block { margin-top: 72px; }
-.section-head { margin-bottom: 24px; }
-.section-head h2 { font-family: var(--ff-d); font-size: 1.7rem; font-weight: 700; letter-spacing: -0.015em; }
-.section-head .desc { color: var(--text-2); margin-top: 6px; }
+/* ===== HERO ===== */
+.hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding-top:5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-30%;width:90vw;height:90vw;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.055) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-20%;left:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.03) 0%,transparent 60%);pointer-events:none}
+.hero-eyebrow{font-family:var(--sans);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:var(--green);margin-bottom:1.2rem;opacity:.9}
+.hero-headline{font-family:var(--sans);font-size:clamp(2.6rem,7vw,5.5rem);font-weight:900;line-height:1.02;letter-spacing:-.035em;color:var(--white);margin-bottom:1.5rem}
+.hero-headline .accent{color:var(--green);display:inline}
+.hero-sub{font-size:clamp(.98rem,1.8vw,1.18rem);color:var(--muted);max-width:700px;margin-bottom:3.5rem;line-height:1.75}
 
-.thesis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.thesis { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 22px 24px; }
-.thesis .marker { font-family: var(--ff-m); font-size: 0.72rem; color: var(--accent); margin-bottom: 8px; }
-.thesis h3 { font-family: var(--ff-d); font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
-.thesis p { font-size: 0.95rem; color: var(--text-2); line-height: 1.55; }
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:.85rem;margin-top:1rem}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.kpi-strip{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:1.3rem 1rem;text-align:center;transition:all .35s ease}
+.kpi-card:hover{border-color:rgba(34,197,94,.2);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.kpi-val{font-size:clamp(1.3rem,2.8vw,1.9rem);font-weight:800;color:var(--white);display:block;line-height:1.2}
+.kpi-label{font-family:var(--sans);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-top:.4rem;display:block;font-weight:600}
 
-.proof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
-.proof-clip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; display: block; color: inherit; }
-.proof-clip:hover { transform: translateY(-2px); box-shadow: var(--shadow); text-decoration: none; }
-.proof-thumb-wrap { position: relative; aspect-ratio: 16/9; background: var(--bg-alt); }
-.proof-thumb { width: 100%; height: 100%; object-fit: cover; }
-.proof-thumb.placeholder { background: linear-gradient(135deg, var(--bg-alt), var(--accent-soft)); }
-.proof-q { position: absolute; top: 8px; right: 8px; background: oklch(18% 0.015 155 / 0.85); color: oklch(99% 0 0); font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
-.proof-summary { padding: 12px 14px 14px; font-size: 0.92rem; color: var(--text); line-height: 1.45; min-height: 4em; }
+/* ===== CLIP GRID ===== */
+.clip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+@media(max-width:700px){.clip-grid{grid-template-columns:repeat(2,1fr)}}
+.clip-card{position:relative;border-radius:14px;overflow:hidden;background:var(--bg2);border:1px solid rgba(255,255,255,.04);transition:all .4s ease;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.clip-card:hover{transform:translateY(-5px);border-color:rgba(34,197,94,.25);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.clip-card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;transition:all .5s ease}
+.clip-card img.lazy{opacity:0;transform:scale(1.02)}
+.clip-card img.loaded{opacity:1;transform:scale(1)}
+.clip-card:hover img{transform:scale(1.04)}
+.clip-badge{position:absolute;top:.65rem;right:.65rem;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);color:var(--gold);font-family:var(--sans);font-size:.68rem;font-weight:800;padding:.2em .6em;border-radius:8px;letter-spacing:.02em}
+.clip-arc{display:inline-block;font-family:var(--sans);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.22em .7em;border-radius:100px;background:var(--green-glow);color:var(--green);margin-top:.5rem}
+.clip-info{padding:.8rem 1rem 1rem}
+.clip-summary{font-size:.82rem;color:var(--cream);line-height:1.5;font-family:var(--serif)}
+.clip-play{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s;background:rgba(0,0,0,.25);pointer-events:none}
+.clip-card:hover .clip-play{opacity:1}
+.play-icon{width:50px;height:50px;border-radius:50%;background:rgba(34,197,94,.88);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(34,197,94,.3)}
+.play-icon::after{content:'';display:block;width:0;height:0;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff;margin-left:3px}
+.proof-note{text-align:center;margin-top:2.5rem;font-size:.92rem;color:var(--muted);max-width:700px;margin-left:auto;margin-right:auto;line-height:1.72}
+.proof-note strong{color:var(--white);font-weight:700}
 
-.econ-card { background: linear-gradient(135deg, var(--accent-soft), var(--surface)); border: 1px solid var(--accent-border); border-radius: var(--r-l); padding: 32px; }
-.econ-eq { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 18px; align-items: end; margin-top: 14px; }
-.econ-num { font-family: var(--ff-d); font-size: 1.8rem; font-weight: 800; color: var(--accent); line-height: 1; }
-.econ-label { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px; }
-.econ-detail { font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); line-height: 1.6; }
+/* ===== COMMENTARY TRIPTYCH ===== */
+.triptych{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-bottom:3rem}
+@media(max-width:700px){.triptych{grid-template-columns:1fr}}
+.commentary-card{background:linear-gradient(160deg,var(--bg3),var(--bg2));border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:1.6rem;position:relative;overflow:hidden}
+.commentary-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.commentary-card.espn::before{background:linear-gradient(90deg,#ef4444,#f97316)}
+.commentary-card.hype::before{background:linear-gradient(90deg,#a855f7,#ec4899)}
+.commentary-card.coaching::before{background:linear-gradient(90deg,#22c55e,#06b6d4)}
+.commentary-label{font-family:var(--sans);font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.16em;margin-bottom:.8rem;display:block}
+.commentary-card.espn .commentary-label{color:#f97316}
+.commentary-card.hype .commentary-label{color:#ec4899}
+.commentary-card.coaching .commentary-label{color:#06b6d4}
+.commentary-text{font-size:.86rem;color:var(--cream);line-height:1.68;font-style:italic}
 
-.proj-table { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; border-collapse: collapse; }
-.proj-table th, .proj-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); }
-.proj-table th { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-alt); }
-.proj-table tr:last-child td { border-bottom: none; }
-.proj-table .num { font-family: var(--ff-m); font-variant-numeric: tabular-nums; text-align: right; }
-.proj-table .arr { font-family: var(--ff-d); font-weight: 700; color: var(--accent); font-size: 1.1rem; }
-.proj-table .stage-cell { font-family: var(--ff-d); font-weight: 600; }
-.proj-table tr.hl { background: var(--accent-soft); }
+/* Data points grid */
+.dp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;max-width:560px;margin:0 auto}
+@media(max-width:480px){.dp-grid{grid-template-columns:repeat(2,1fr)}}
+.dp-item{font-family:var(--sans);font-size:.7rem;font-weight:600;color:var(--faint);text-align:center;padding:.7rem .5rem;background:var(--bg3);border-radius:10px;border:1px solid rgba(255,255,255,.03);transition:all .3s ease}
+.dp-item:hover{border-color:rgba(34,197,94,.18);color:var(--green);transform:translateY(-2px)}
+.dp-icon{font-size:1.05rem;margin-bottom:.25rem;display:block}
 
-.cta { margin-top: 80px; padding: 56px 32px; text-align: center; background: var(--text); color: oklch(97% 0.005 145); border-radius: var(--r-l); }
-.cta h3 { font-family: var(--ff-d); font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
-.cta p { color: oklch(75% 0.01 145); font-size: 1.05rem; max-width: 560px; margin: 0 auto 28px; }
-.cta a.btn { display: inline-block; background: oklch(99% 0.005 145); color: var(--text); font-family: var(--ff-d); font-weight: 600; padding: 14px 32px; border-radius: 999px; transition: transform 0.15s; }
-.cta a.btn:hover { transform: translateY(-1px); text-decoration: none; }
+/* ===== MARKET ===== */
+.market-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2.5rem}
+@media(max-width:700px){.market-cols{grid-template-columns:1fr}}
+.market-ring{text-align:center;padding:2.2rem 1.5rem;border-radius:16px;position:relative;transition:transform .35s ease}
+.market-ring:hover{transform:translateY(-3px)}
+.market-ring.tam{background:linear-gradient(150deg,rgba(34,197,94,.1),rgba(34,197,94,.02));border:1px solid rgba(34,197,94,.15)}
+.market-ring.sam{background:linear-gradient(150deg,rgba(56,189,248,.08),rgba(56,189,248,.015));border:1px solid rgba(56,189,248,.12)}
+.market-ring.som{background:linear-gradient(150deg,rgba(168,85,247,.08),rgba(168,85,247,.015));border:1px solid rgba(168,85,247,.12)}
+.market-tag{font-family:var(--sans);font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.22em;margin-bottom:.5rem;display:block}
+.market-ring.tam .market-tag{color:var(--green)}
+.market-ring.sam .market-tag{color:#38bdf8}
+.market-ring.som .market-tag{color:#a855f7}
+.market-big{font-family:var(--sans);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:var(--white);display:block;margin-bottom:.3rem;letter-spacing:-.02em}
+.market-detail{font-size:.84rem;color:var(--muted);line-height:1.55}
+.market-insight{text-align:center;font-size:.98rem;color:var(--cream);max-width:620px;margin:0 auto;padding:1.4rem 2rem;background:var(--bg3);border-radius:14px;border-left:3px solid var(--green);line-height:1.65}
+.market-insight em{color:var(--white);font-style:normal;font-weight:600}
 
-footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); }
+/* ===== MOAT / FLYWHEEL ===== */
+.flywheel{display:flex;justify-content:center;align-items:center;margin:1.5rem auto 3.5rem;flex-wrap:wrap;gap:0}
+.fw-node{font-family:var(--sans);font-size:.72rem;font-weight:700;color:var(--white);background:var(--bg3);border:1px solid rgba(34,197,94,.18);padding:.6rem 1.1rem;border-radius:100px;white-space:nowrap;transition:all .3s}
+.fw-node:hover{background:var(--green-glow);border-color:rgba(34,197,94,.4)}
+.fw-arrow{color:var(--green);font-size:1.3rem;padding:0 .35rem;font-family:var(--sans);opacity:.6}
+@media(max-width:600px){.flywheel{flex-direction:column;gap:.4rem}.fw-arrow{transform:rotate(90deg)}}
+.moat-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:3rem}
+@media(max-width:700px){.moat-pillars{grid-template-columns:1fr}}
+.moat-card{background:linear-gradient(160deg,var(--bg3),var(--bg2));border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:1.8rem 1.5rem;transition:all .35s}
+.moat-card:hover{border-color:rgba(34,197,94,.15);transform:translateY(-2px)}
+.moat-card h4{font-size:.95rem;color:var(--white);margin-bottom:.5rem;font-weight:700}
+.moat-card p{font-size:.85rem;color:var(--muted);line-height:1.62}
+.moat-stat{font-family:var(--sans);font-size:2rem;font-weight:900;color:var(--green);display:block;margin-bottom:.5rem;letter-spacing:-.02em}
+.chart-wrap{max-width:680px;margin:0 auto;background:linear-gradient(160deg,var(--bg3),var(--bg2));border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:1.5rem 1.5rem 1rem}
+.chart-title{font-family:var(--sans);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;text-align:center}
 
-@media (max-width: 700px) {
-  .hero { padding: 56px 0 24px; }
-  h1.hero-h { font-size: 2.6rem; }
-  .hero-sub { font-size: 1rem; }
-  .proj-table th:nth-child(3), .proj-table td:nth-child(3) { display: none; }
-  .proj-table th:nth-child(4), .proj-table td:nth-child(4) { display: none; }
-  .cta h3 { font-size: 1.6rem; }
-  .cta { padding: 40px 22px; }
-}
+/* ===== UNIT ECONOMICS ===== */
+.econ-layout{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+@media(max-width:700px){.econ-layout{grid-template-columns:1fr}}
+.econ-equation{background:linear-gradient(160deg,var(--bg3),var(--bg2));border:1px solid rgba(255,255,255,.04);border-radius:16px;padding:2rem}
+.econ-line{font-family:var(--sans);font-size:.82rem;color:var(--muted);margin-bottom:.7rem;display:flex;justify-content:space-between;align-items:baseline;padding:.15rem 0}
+.econ-line .val{color:var(--white);font-weight:800;font-size:.95rem}
+.econ-line.highlight{background:var(--green-glow);margin:1rem -1.25rem 0;padding:.85rem 1.25rem;border-radius:10px}
+.econ-line.highlight .val{color:var(--green);font-size:1.4rem;font-weight:900}
+.econ-table{width:100%}
+.econ-table table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:.82rem}
+.econ-table th{text-align:left;color:var(--faint);font-weight:700;font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.econ-table td{padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.03);color:var(--cream)}
+.econ-table td:last-child{text-align:right;font-weight:800;color:var(--green)}
+.econ-table tr:last-child td{border-bottom:none;font-size:1.05rem}
+.econ-table tr{transition:background .2s}
+.econ-table tr:hover td{background:rgba(255,255,255,.02)}
+.econ-note{font-size:.76rem;color:var(--faint);text-align:center;margin-top:2rem;font-style:italic;font-family:var(--sans)}
+
+/* ===== CTA ===== */
+.cta-section{background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;bottom:-30%;left:50%;transform:translateX(-50%);width:80vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.06),transparent 60%);pointer-events:none}
+.cta-headline{font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:900;color:var(--white);letter-spacing:-.03em;margin-bottom:.7rem}
+.cta-sub{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto 2.2rem;line-height:1.7}
+.cta-btn{display:inline-block;font-family:var(--sans);font-size:.92rem;font-weight:800;color:var(--bg);background:var(--green);padding:.9rem 2.8rem;border-radius:100px;text-decoration:none;transition:all .35s ease;box-shadow:0 0 40px rgba(34,197,94,.18);letter-spacing:-.01em}
+.cta-btn:hover{background:#4ade80;box-shadow:0 0 60px rgba(34,197,94,.3);transform:translateY(-3px)}
+
+/* ===== FOOTER ===== */
+footer{padding:2.5rem 0;border-top:1px solid rgba(255,255,255,.03)}
+footer .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-family:var(--sans);font-size:.72rem;color:var(--faint);text-decoration:none;transition:color .25s}
+.footer-links a:hover{color:var(--green)}
+.footer-stamp{font-family:var(--sans);font-size:.65rem;color:var(--faint);letter-spacing:.02em}
+
+/* ===== ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--faint)}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="nav-l">Pickle <span>DaaS</span></div>
-  <div class="nav-r">
-    <span class="nav-pill">For investors</span>
-    <a href="../dashboards/showcase-portal.html">Portal ↗</a>
-    <a href="mailto:bill@picklebill.com">bill@picklebill.com</a>
+  <div class="container">
+    <div class="nav-brand">Pickle<span>DaaS</span></div>
+    <div class="nav-links">
+      <a href="#proof" class="nav-link">Proof</a>
+      <a href="#intelligence" class="nav-link">Intelligence</a>
+      <a href="#market" class="nav-link">Market</a>
+      <a href="#moat" class="nav-link">Moat</a>
+      <a href="#economics" class="nav-link">Economics</a>
+      <a href="mailto:bill@picklebill.com" class="nav-link">Contact</a>
+      <a href="#cta" class="nav-pill">For Investors</a>
+    </div>
   </div>
 </nav>
 
-<div class="shell">
-
-  <header class="hero">
-    <div class="eyebrow">Investor demo · 2026-04-13 20:55 UTC</div>
-    <h1 class="hero-h">The data layer<br>under <span class="punch">every paddle</span><br>in pickleball.</h1>
-    <p class="hero-sub">
-      Courtana's AI watches every clip from every camera, extracts structured intelligence —
-      shot type, brand visibility, skill rating, narrative arc — and feeds it back into venues,
-      brands, coaches, and players. 510 clips analyzed and counting. $0.0054 per clip.
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow reveal">The data layer for pickleball</div>
+    <h1 class="hero-headline reveal reveal-delay-1">
+      Every swing. Every brand.<br><span class="accent">Every insight.</span>
+    </h1>
+    <p class="hero-sub reveal reveal-delay-2">
+      Courtana's AI watches every clip from every court camera, extracts 40+ structured data points per swing &mdash; and turns raw footage into a proprietary intelligence layer for venues, brands, coaches, and 48.3&nbsp;million players.
     </p>
-
-    <div class="kpi-row">
-      <div class="kpi primary">
-        <div class="kpi-num">510</div>
-        <div class="kpi-label">Clips analyzed</div>
+    <div class="kpi-strip">
+      <div class="kpi-card reveal">
+        <span class="kpi-val" data-target="681" data-format="int">0</span>
+        <span class="kpi-label">Clips Analyzed</span>
       </div>
-      <div class="kpi">
-        <div class="kpi-num">39</div>
-        <div class="kpi-label">Unique brands detected</div>
+      <div class="kpi-card reveal">
+        <span class="kpi-val" data-target="55" data-format="int">0</span>
+        <span class="kpi-label">Brands Detected</span>
       </div>
-      <div class="kpi">
-        <div class="kpi-num">6.1<small>/10</small></div>
-        <div class="kpi-label">Avg clip quality</div>
+      <div class="kpi-card reveal">
+        <span class="kpi-val" data-target="0.0054" data-prefix="$" data-format="money4">$0</span>
+        <span class="kpi-label">Cost / Clip</span>
       </div>
-      <div class="kpi">
-        <div class="kpi-num">$0.0054</div>
-        <div class="kpi-label">Cost per clip</div>
+      <div class="kpi-card reveal">
+        <span class="kpi-val" data-target="3.68" data-prefix="$" data-format="money2">$0</span>
+        <span class="kpi-label">Total Spend</span>
       </div>
-      <div class="kpi">
-        <div class="kpi-num">42<small>%</small></div>
-        <div class="kpi-label">Badge F1 (live)</div>
+      <div class="kpi-card reveal">
+        <span class="kpi-val" data-target="82.5" data-suffix="%" data-format="pct1">0%</span>
+        <span class="kpi-label">Commentary Rate</span>
       </div>
-      <div class="kpi">
-        <div class="kpi-num">$2.75</div>
-        <div class="kpi-label">Total spend to date</div>
-      </div>
-    </div>
-  </header>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Why this matters</h2>
-      <div class="desc">Three things make the data layer defensible.</div>
-    </div>
-    <div class="thesis-grid">
-      <div class="thesis">
-        <div class="marker">01</div>
-        <h3>Booking-agnostic</h3>
-        <p>Courtana layers on top of any reservation system. Venues don't have to switch — they just plug in cameras and start receiving intelligence.</p>
-      </div>
-      <div class="thesis">
-        <div class="marker">02</div>
-        <h3>Data flywheel as moat</h3>
-        <p>Every clip improves the next analysis. Brand detection, badge prediction, skill ratings — all calibrate against ground truth. Competitors start at zero; we already have 510.</p>
-      </div>
-      <div class="thesis">
-        <div class="marker">03</div>
-        <h3>Multi-sided market</h3>
-        <p>Venues pay for retention. Brands pay for intelligence (JOOLA alone shows up in 323 clips). Coaches pay for personalized feedback. Players pay for highlights and gamification.</p>
+      <div class="kpi-card reveal">
+        <span class="kpi-val" data-target="47.5" data-suffix="%" data-format="pct1">0%</span>
+        <span class="kpi-label">Badge F1</span>
       </div>
     </div>
-  </section>
-
-  
-  <section class="block">
-    <div class="section-head">
-      <h2>What we're seeing</h2>
-      <div class="desc">Top 6 clips by quality + viral potential. Click any to play the actual video.</div>
-    </div>
-    <div class="proof-grid">
-      
-    <a class="proof-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.mp4" target="_blank" rel="noopener">
-      <div class="proof-thumb-wrap">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="" class="proof-thumb">
-        <div class="proof-q">★ 9/10</div>
-      </div>
-      <div class="proof-summary">A long pickleball dink rally culminates in a speed-up error at the kitchen line.</div>
-    </a>
-    
-    <a class="proof-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4" target="_blank" rel="noopener">
-      <div class="proof-thumb-wrap">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg" alt="" class="proof-thumb">
-        <div class="proof-q">★ 8/10</div>
-      </div>
-      <div class="proof-summary">A rally of drives and blocks ends with a lucky net cord dink winner.</div>
-    </a>
-    
-    <a class="proof-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4" target="_blank" rel="noopener">
-      <div class="proof-thumb-wrap">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg" alt="" class="proof-thumb">
-        <div class="proof-q">★ 8/10</div>
-      </div>
-      <div class="proof-summary">A pickleball rally culminates in an athletic jump smash for a winner after a kitchen battle.</div>
-    </a>
-    
-    <a class="proof-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.mp4" target="_blank" rel="noopener">
-      <div class="proof-thumb-wrap">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.jpeg" alt="" class="proof-thumb">
-        <div class="proof-q">★ 8/10</div>
-      </div>
-      <div class="proof-summary">A long kitchen dink rally ends with a decisive speed-up winner and a team celebration.</div>
-    </a>
-    
-    <a class="proof-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4" target="_blank" rel="noopener">
-      <div class="proof-thumb-wrap">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="" class="proof-thumb">
-        <div class="proof-q">★ 8/10</div>
-      </div>
-      <div class="proof-summary">A patient dink rally ends with an explosive forehand speed-up for a decisive winner.</div>
-    </a>
-    
-    <a class="proof-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4" target="_blank" rel="noopener">
-      <div class="proof-thumb-wrap">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg" alt="" class="proof-thumb">
-        <div class="proof-q">★ 8/10</div>
-      </div>
-      <div class="proof-summary">Player executes an explosive jumping overhead smash for a highlight-reel winner.</div>
-    </a>
-    
-    </div>
-  </section>
-  
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Unit economics</h2>
-      <div class="desc">A single clip costs $0.0054 to analyze. A typical venue generates ~5,000 clips per year.</div>
-    </div>
-    <div class="econ-card">
-      <div class="econ-eq">
-        <div>
-          <div class="econ-num">$0.0054</div>
-          <div class="econ-label">Analysis cost / clip</div>
-        </div>
-        <div>
-          <div class="econ-num">5,000</div>
-          <div class="econ-label">Clips / venue / year</div>
-        </div>
-        <div>
-          <div class="econ-num">$27</div>
-          <div class="econ-label">COGS / venue / year</div>
-        </div>
-        <div>
-          <div class="econ-num">$9,600</div>
-          <div class="econ-label">ARR / venue (standard)</div>
-        </div>
-        <div>
-          <div class="econ-num">99.7<small>%</small></div>
-          <div class="econ-label">Gross margin</div>
-        </div>
-      </div>
-      <div class="econ-detail">
-        Verified pricing: Gemini 2.5 Flash @ $0.0054/clip across 510 real production clips.
-        Standard tier ARR assumes $800/mo per venue (cameras, analysis, dashboard, brand reports).
-        Enterprise tier (multi-court venues, custom data feeds) priced at $2,000/mo.
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Financial projections</h2>
-      <div class="desc">ARR at three scale milestones, with explicit enterprise-mix assumptions.</div>
-    </div>
-    <table class="proj-table">
-      <thead>
-        <tr>
-          <th>Stage</th>
-          <th class="num">Venues</th>
-          <th class="num">Annual clips</th>
-          <th class="num">COGS</th>
-          <th class="num">ARR</th>
-          <th class="num">Gross margin</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="stage-cell">Pilot · 10 venues</td>
-          <td class="num">10</td>
-          <td class="num">50,000</td>
-          <td class="num">$270</td>
-          <td class="num arr">$96.0K</td>
-          <td class="num">99.7%</td>
-        </tr>
-        <tr class="hl">
-          <td class="stage-cell">Growth · 100 venues</td>
-          <td class="num">100</td>
-          <td class="num">500,000</td>
-          <td class="num">$2.7K</td>
-          <td class="num arr">$1.2M</td>
-          <td class="num">99.8%</td>
-        </tr>
-        <tr>
-          <td class="stage-cell">Scale · 1,000 venues</td>
-          <td class="num">1,000</td>
-          <td class="num">5,000,000</td>
-          <td class="num">$27.0K</td>
-          <td class="num arr">$13.9M</td>
-          <td class="num">99.8%</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="econ-detail" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;margin-top:14px;">
-      Assumptions are public and reproducible. 100-venue stage assumes 15% enterprise mix. 1,000-venue stage assumes 30% enterprise mix.
-      Unit economics scale linearly because Gemini API cost is the only variable expense — every other layer (deploy, dashboards, brand reports) is shared infrastructure.
-      Brand-partnership revenue (paddle, apparel, venue sponsorships) is layered on top of these venue-ARR figures and is not included.
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Where we are</h2>
-      <div class="desc">Live, in production, with self-checking accuracy.</div>
-    </div>
-    <div class="thesis-grid">
-      <div class="thesis">
-        <div class="marker">SHIPPED</div>
-        <h3>510 clips analyzed</h3>
-        <p>Real Courtana corpus, hourly auto-ingest pipeline, deployed to GitHub Pages with 5 live dashboards.</p>
-      </div>
-      <div class="thesis">
-        <div class="marker">SHIPPED</div>
-        <h3>42% badge F1 (and improving)</h3>
-        <p>Self-measuring accuracy against 4,619 ground-truth badge awards. Multi-model agent (Gemini Flash vs Pro) actively reducing false positives.</p>
-      </div>
-      <div class="thesis">
-        <div class="marker">ACTIVE</div>
-        <h3>Living agentic system</h3>
-        <p>Curator + multi-model + consensus + insights agents running on an hourly schedule. The system gets smarter while we sleep.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="cta">
-    <h3>Let's talk numbers.</h3>
-    <p>30-minute demo with the live system. Real clips, real costs, real F1 dashboard. We'll walk you through unit economics and the brand-partnership pipeline.</p>
-    <a class="btn" href="mailto:bill@picklebill.com?subject=Pickle%20DaaS%20investor%20intro">bill@picklebill.com</a>
   </div>
+</section>
 
-  <footer>
-    <div>Pickle DaaS · Snapshot rebuilt 2026-04-13 20:55 UTC</div>
-    <div>
-      <a href="../dashboards/product-workbench.html">Product Workbench ↗</a> ·
-      <a href="../dashboards/accuracy.json">accuracy.json ↗</a> ·
-      <a href="https://github.com/PickleBill/pickle-daas-data" target="_blank">GitHub ↗</a>
+<!-- ==================== PROOF ==================== -->
+<section id="proof">
+  <div class="container">
+    <div class="section-divider"></div>
+    <h2 class="section-title text-center reveal">Don't take our word for it. <span>Watch.</span></h2>
+    <div class="clip-grid">
+
+      <a class="clip-card reveal" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.mp4" target="_blank" rel="noopener">
+        <img class="lazy" data-src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="Dink rally speed-up error" loading="lazy">
+        <div class="clip-badge">&#9733; 9</div>
+        <div class="clip-play"><div class="play-icon"></div></div>
+        <div class="clip-info">
+          <div class="clip-summary">A long dink rally culminates in a speed-up error</div>
+          <span class="clip-arc">Rally &rarr; Error</span>
+        </div>
+      </a>
+
+      <a class="clip-card reveal" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.mp4" target="_blank" rel="noopener">
+        <img class="lazy" data-src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="Forehand speed-up winner" loading="lazy">
+        <div class="clip-badge">&#9733; 8</div>
+        <div class="clip-play"><div class="play-icon"></div></div>
+        <div class="clip-info">
+          <div class="clip-summary">Patient dink rally ends with an explosive forehand speed-up winner</div>
+          <span class="clip-arc">JOOLA &bull; Decisive Winner</span>
+        </div>
+      </a>
+
+      <a class="clip-card reveal" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4" target="_blank" rel="noopener">
+        <img class="lazy" data-src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg" alt="Jumping overhead smash" loading="lazy">
+        <div class="clip-badge">&#9733; 8</div>
+        <div class="clip-play"><div class="play-icon"></div></div>
+        <div class="clip-info">
+          <div class="clip-summary">Player executes an explosive jumping overhead smash</div>
+          <span class="clip-arc">JOOLA + Courtana &bull; Power Play</span>
+        </div>
+      </a>
+
+      <a class="clip-card reveal" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.mp4" target="_blank" rel="noopener">
+        <img class="lazy" data-src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.jpeg" alt="Kitchen rally overhead smash" loading="lazy">
+        <div class="clip-badge">&#9733; 8</div>
+        <div class="clip-play"><div class="play-icon"></div></div>
+        <div class="clip-info">
+          <div class="clip-summary">Intense kitchen rally concludes with a powerful overhead smash</div>
+          <span class="clip-arc">CRBN + JOOLA &bull; Smash Finish</span>
+        </div>
+      </a>
+
+      <a class="clip-card reveal" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.mp4" target="_blank" rel="noopener">
+        <img class="lazy" data-src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg" alt="Net cord dink winner" loading="lazy">
+        <div class="clip-badge">&#9733; 8</div>
+        <div class="clip-play"><div class="play-icon"></div></div>
+        <div class="clip-info">
+          <div class="clip-summary">A rally of drives ends with a lucky net cord dink winner</div>
+          <span class="clip-arc">Comedy &bull; Net Cord</span>
+        </div>
+      </a>
+
+      <a class="clip-card reveal" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.mp4" target="_blank" rel="noopener">
+        <img class="lazy" data-src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg" alt="Athletic jump smash winner" loading="lazy">
+        <div class="clip-badge">&#9733; 8</div>
+        <div class="clip-play"><div class="play-icon"></div></div>
+        <div class="clip-info">
+          <div class="clip-summary">Athletic jump smash for a winner after kitchen battle</div>
+          <span class="clip-arc">Athletic &bull; Winner</span>
+        </div>
+      </a>
+
     </div>
-  </footer>
 
-</div>
+    <p class="proof-note reveal">
+      <strong>681 clips and counting.</strong> Every clip gets 40+ structured data points, 3 AI commentary tracks, 9-dimension skill ratings, and badge predictions &mdash; all for <strong>$0.0054</strong>.
+    </p>
+  </div>
+</section>
 
-</body></html>
+<!-- ==================== INTELLIGENCE ==================== -->
+<section id="intelligence" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-divider"></div>
+    <h2 class="section-title text-center reveal">What one clip <span>produces</span></h2>
+
+    <div class="triptych reveal">
+      <div class="commentary-card espn">
+        <span class="commentary-label">ESPN-Style</span>
+        <p class="commentary-text">&ldquo;A patient rally unfolds at the net, with both teams exchanging precise dinks. The intensity builds as the ball stays low, until a decisive speed-up attempt sails just wide, concluding a hard-fought point.&rdquo;</p>
+      </div>
+      <div class="commentary-card hype">
+        <span class="commentary-label">Hype</span>
+        <p class="commentary-text">&ldquo;OH! The dink game is on FIRE! Back and forth, these players are surgical at the net! And then, a BANGER! But it just misses! What a point!&rdquo;</p>
+      </div>
+      <div class="commentary-card coaching">
+        <span class="commentary-label">Coaching</span>
+        <p class="commentary-text">&ldquo;This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle. Consider a more controlled attack or another dink to open up a better opportunity.&rdquo;</p>
+      </div>
+    </div>
+
+    <p class="section-sub text-center reveal">Plus: brand detection, skill ratings, badge predictions, shot analysis, narrative arc classification, social captions, and search tags. Every field structured. Every field queryable.</p>
+
+    <div class="dp-grid reveal">
+      <div class="dp-item"><span class="dp-icon">&#127992;</span>Brand Detection</div>
+      <div class="dp-item"><span class="dp-icon">&#127919;</span>Skill Radar</div>
+      <div class="dp-item"><span class="dp-icon">&#127942;</span>Badge Prediction</div>
+      <div class="dp-item"><span class="dp-icon">&#9889;</span>Shot Analysis</div>
+      <div class="dp-item"><span class="dp-icon">&#128214;</span>Narrative Arc</div>
+      <div class="dp-item"><span class="dp-icon">&#128247;</span>Social Caption</div>
+      <div class="dp-item"><span class="dp-icon">&#128200;</span>DUPR Estimate</div>
+      <div class="dp-item"><span class="dp-icon">&#127908;</span>Commentary &times;3</div>
+      <div class="dp-item"><span class="dp-icon">&#128269;</span>Search Tags</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MARKET ==================== -->
+<section id="market">
+  <div class="container">
+    <div class="section-divider"></div>
+    <h2 class="section-title text-center reveal">The market <span>nobody's serving</span></h2>
+
+    <div class="market-cols reveal">
+      <div class="market-ring tam">
+        <span class="market-tag">TAM</span>
+        <span class="market-big">$2.3B</span>
+        <span class="market-detail">Pickleball industry, growing 15&ndash;20% annually. 48.3 million players in the US (2024&nbsp;APP&nbsp;data).</span>
+      </div>
+      <div class="market-ring sam">
+        <span class="market-tag">SAM</span>
+        <span class="market-big">12,000+</span>
+        <span class="market-detail">Pickleball venues in the US. Cameras already installed at a growing share. No intelligence layer exists today.</span>
+      </div>
+      <div class="market-ring som">
+        <span class="market-tag">SOM &mdash; Year 1</span>
+        <span class="market-big">$1.2M</span>
+        <span class="market-detail">100 venues at $800/mo average. DUPR sweet spot 3.5&ndash;4.0 = mass market.</span>
+      </div>
+    </div>
+
+    <div class="market-insight reveal">
+      The cameras are already there. Courtana is booking-agnostic &mdash; it layers on top of <em>any</em> reservation system. Zero hardware cost to deploy.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MOAT ==================== -->
+<section id="moat" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-divider"></div>
+    <h2 class="section-title text-center reveal">The data <span>flywheel</span></h2>
+
+    <div class="flywheel reveal">
+      <div class="fw-node">More Clips</div>
+      <span class="fw-arrow">&rarr;</span>
+      <div class="fw-node">Better Models</div>
+      <span class="fw-arrow">&rarr;</span>
+      <div class="fw-node">Better Insights</div>
+      <span class="fw-arrow">&rarr;</span>
+      <div class="fw-node">More Venues</div>
+      <span class="fw-arrow">&rarr;</span>
+      <div class="fw-node">More Clips</div>
+    </div>
+
+    <div class="moat-pillars reveal">
+      <div class="moat-card">
+        <span class="moat-stat">681</span>
+        <h4>Proprietary Corpus</h4>
+        <p>681 clips with 4,619 ground-truth badge awards, growing hourly. This dataset doesn't exist anywhere else in pickleball.</p>
+      </div>
+      <div class="moat-card">
+        <span class="moat-stat">2&times;</span>
+        <h4>Multi-Model Consensus</h4>
+        <p>AI agents compete (Gemini Flash vs. Pro). Accuracy improves autonomously with every batch. 458 commentary outputs per dollar.</p>
+      </div>
+      <div class="moat-card">
+        <span class="moat-stat">449</span>
+        <h4>Brand Intelligence</h4>
+        <p>JOOLA detected 449 times across 13 categories &mdash; paddles, nets, shoes, bags, apparel, banners. Nobody else captures this.</p>
+      </div>
+    </div>
+
+    <div class="chart-wrap reveal">
+      <div class="chart-title">JOOLA Brand Detection &mdash; Detections by Category</div>
+      <div style="position:relative;height:280px">
+        <canvas id="brandChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== UNIT ECONOMICS ==================== -->
+<section id="economics">
+  <div class="container">
+    <div class="section-divider"></div>
+    <h2 class="section-title text-center reveal">Unit economics <span>that scale</span></h2>
+
+    <div class="econ-layout reveal">
+      <div class="econ-equation">
+        <div class="econ-line">
+          <span>Cost per clip</span>
+          <span class="val">$0.0054</span>
+        </div>
+        <div class="econ-line">
+          <span>Clips / venue / year</span>
+          <span class="val">5,000</span>
+        </div>
+        <div class="econ-line">
+          <span>COGS / venue / year</span>
+          <span class="val">$27</span>
+        </div>
+        <div class="econ-line">
+          <span>ARR / venue</span>
+          <span class="val">$9,600</span>
+        </div>
+        <div class="econ-line highlight">
+          <span>Gross margin</span>
+          <span class="val">99.7%</span>
+        </div>
+      </div>
+
+      <div class="econ-table">
+        <table>
+          <thead>
+            <tr><th>Scale</th><th>Mix</th><th style="text-align:right">ARR</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>10 venues</td><td>Standard</td><td>$96K</td></tr>
+            <tr><td>100 venues</td><td>15% enterprise</td><td>$1.2M</td></tr>
+            <tr><td>1,000 venues</td><td>30% enterprise</td><td>$13.9M</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="econ-note reveal">Brand partnership revenue layers on top. Not included in these projections.</p>
+  </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section id="cta" class="cta-section">
+  <div class="container text-center">
+    <div class="section-divider"></div>
+    <h2 class="cta-headline reveal">Let's talk numbers.</h2>
+    <p class="cta-sub reveal">30-minute demo with the live system. Real clips, real costs, real accuracy dashboard.</p>
+    <a href="mailto:bill@picklebill.com?subject=Pickle%20DaaS%20Demo%20Request" class="cta-btn reveal">bill@picklebill.com</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="product-workbench.html">Product Workbench</a>
+      <a href="https://github.com/PickleBill" target="_blank" rel="noopener">GitHub</a>
+      <a href="showcase-portal.html">Showcase Portal</a>
+    </div>
+    <div class="footer-stamp">Snapshot rebuilt 2026-04-13</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---- Easing ---- */
+  function easeOutExpo(t){return t===1?1:1-Math.pow(2,-10*t)}
+
+  /* ---- Format helpers ---- */
+  function fmt(el,v){
+    var p=el.dataset.prefix||'',s=el.dataset.suffix||'',f=el.dataset.format,r;
+    if(f==='int')r=Math.round(v).toLocaleString();
+    else if(f==='money4')r=v.toFixed(4);
+    else if(f==='money2')r=v.toFixed(2);
+    else if(f==='pct1')r=v.toFixed(1);
+    else r=String(v);
+    return p+r+s;
+  }
+
+  /* ---- Count-up ---- */
+  function countUp(el){
+    var target=parseFloat(el.dataset.target),dur=1600,start=performance.now();
+    (function tick(now){
+      var p=Math.min((now-start)/dur,1),cur=target*easeOutExpo(p);
+      el.textContent=fmt(el,cur);
+      if(p<1)requestAnimationFrame(tick);
+      else el.textContent=fmt(el,target);
+    })(start);
+  }
+
+  /* ---- IntersectionObserver for reveals ---- */
+  var revealObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting)return;
+      e.target.classList.add('visible');
+      var kv=e.target.querySelector('.kpi-val[data-target]');
+      if(kv&&!kv._done){kv._done=true;countUp(kv)}
+      revealObs.unobserve(e.target);
+    });
+  },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){revealObs.observe(el)});
+
+  /* ---- Lazy images ---- */
+  var imgObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting)return;
+      var img=e.target;
+      img.src=img.dataset.src;
+      img.onload=function(){img.classList.remove('lazy');img.classList.add('loaded')};
+      img.onerror=function(){img.style.background='var(--bg3)'};
+      imgObs.unobserve(img);
+    });
+  },{rootMargin:'300px'});
+  document.querySelectorAll('img.lazy').forEach(function(img){imgObs.observe(img)});
+
+  /* ---- Smooth scroll ---- */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(ev){
+      var t=document.querySelector(this.getAttribute('href'));
+      if(t){ev.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+    });
+  });
+
+  /* ---- Chart.js — JOOLA brand detection ---- */
+  function renderChart(){
+    if(typeof Chart==='undefined')return;
+    var ctx=document.getElementById('brandChart');
+    if(!ctx)return;
+    new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:['Paddle','Net','Apparel (Top)','Court Surface','Shoes','Sponsor Banner','Bag','Apparel (Bottom)'],
+        datasets:[{
+          data:[965,111,51,32,26,26,20,8],
+          backgroundColor:function(c){
+            var colors=['rgba(34,197,94,.92)','rgba(34,197,94,.78)','rgba(34,197,94,.66)','rgba(34,197,94,.54)','rgba(34,197,94,.45)','rgba(34,197,94,.38)','rgba(34,197,94,.30)','rgba(34,197,94,.22)'];
+            return colors[c.dataIndex]||colors[0];
+          },
+          borderRadius:6,
+          barThickness:20
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,
+        maintainAspectRatio:false,
+        layout:{padding:{right:8}},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            backgroundColor:'rgba(10,14,26,.92)',
+            borderColor:'rgba(34,197,94,.2)',
+            borderWidth:1,
+            titleFont:{family:"'Inter',system-ui,sans-serif",size:12,weight:'700'},
+            bodyFont:{family:"'Inter',system-ui,sans-serif",size:12},
+            padding:12,
+            cornerRadius:10,
+            callbacks:{label:function(c){return c.raw.toLocaleString()+' detections'}}
+          }
+        },
+        scales:{
+          x:{
+            grid:{color:'rgba(255,255,255,.03)',drawBorder:false},
+            ticks:{color:'#64748b',font:{family:"'Inter',system-ui,sans-serif",size:11}}
+          },
+          y:{
+            grid:{display:false,drawBorder:false},
+            ticks:{color:'#e2e8f0',font:{family:"'Inter',system-ui,sans-serif",size:12,weight:'600'},padding:4}
+          }
+        }
+      }
+    });
+  }
+  if(document.readyState==='complete')renderChart();
+  else window.addEventListener('load',renderChart);
+})();
+</script>
+</body>
+</html>

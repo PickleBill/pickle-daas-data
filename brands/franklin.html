@@ -2,178 +2,773 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Franklin · Brand Intelligence Report — Pickle DaaS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Franklin Brand Intelligence Report | Pickle DaaS</title>
 <style>
+/* ===== CUSTOM PROPERTIES ===== */
 :root {
-  --bg: oklch(97.5% 0.008 145);
-  --surface: oklch(100% 0 0);
-  --surface-2: oklch(95% 0.012 145);
-  --border: oklch(88% 0.012 155);
-  --text: oklch(18% 0.015 155);
-  --text-2: oklch(44% 0.016 155);
-  --text-3: oklch(62% 0.01 155);
-  --accent: oklch(42% 0.14 155);
-  --accent-soft: oklch(94% 0.04 155);
-  --gold: oklch(58% 0.14 85);
-  --warn: oklch(56% 0.15 50);
-  --ff-d: 'Bricolage Grotesque', system-ui, sans-serif;
-  --ff-b: 'Literata', Georgia, serif;
-  --ff-m: 'Azeret Mono', monospace;
-  --r: 12px;
-  --r-l: 18px;
+  --accent: hsl(25, 90%, 50%);
+  --accent-soft: hsl(25, 60%, 93%);
+  --accent-dark: hsl(25, 90%, 38%);
+  --text-on-accent: #ffffff;
+  --grad-from: hsl(25, 90%, 50%);
+  --grad-to: hsl(15, 95%, 42%);
+
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f5f5f4;
+  --border: #e7e5e4;
+  --border-light: #f0eeec;
+  --text: #1c1917;
+  --text-2: #57534e;
+  --text-3: #a8a29e;
+
+  --ff-h: 'Inter', system-ui, -apple-system, sans-serif;
+  --ff-b: 'Georgia', 'Times New Roman', serif;
+  --ff-m: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; }
-body { background: var(--bg); color: var(--text); font-family: var(--ff-b); line-height: 1.65; }
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { background: var(--bg); color: var(--text); font-family: var(--ff-b); line-height: 1.7; font-size: 16px; }
 img { display: block; max-width: 100%; }
-a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent-dark); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-.shell { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
+/* ===== LAYOUT ===== */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
 
-nav { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
-.nav-l { font-family: var(--ff-d); font-weight: 700; font-size: 0.95rem; }
-.nav-l span { color: var(--accent); }
-.nav-r { font-family: var(--ff-d); font-size: 0.8rem; color: var(--text-2); display: flex; gap: 16px; }
-.nav-r a { color: var(--text-2); }
-.nav-r a:hover { color: var(--accent); text-decoration: none; }
+/* ===== HERO ACCENT BAR ===== */
+.hero-bar {
+  height: 6px;
+  background: linear-gradient(90deg, var(--grad-from), var(--grad-to));
+}
 
-.hero { padding: 56px 0 32px; }
-.eyebrow { font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-h1.brand-name { font-family: var(--ff-d); font-size: 3.4rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; color: var(--text); margin-bottom: 18px; }
-.hero-sub { font-size: 1.1rem; color: var(--text-2); max-width: 620px; margin-bottom: 28px; }
+/* ===== NAV ===== */
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.92);
+}
+.nav-brand {
+  font-family: var(--ff-h);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+}
+.nav-brand span { color: var(--accent-dark); }
+.nav-links {
+  display: flex;
+  gap: 18px;
+  font-family: var(--ff-h);
+  font-size: 0.8rem;
+}
+.nav-links a { color: var(--text-2); }
+.nav-links a:hover { color: var(--accent-dark); text-decoration: none; }
 
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-top: 28px; }
-.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; }
-.kpi-num { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
-.kpi-num small { font-size: 0.85rem; color: var(--text-3); font-weight: 500; }
-.kpi-label { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 8px; }
-.kpi.accent { background: var(--accent-soft); border-color: oklch(84% 0.06 155); }
-.kpi.accent .kpi-num { color: var(--accent); }
+/* ===== HERO SECTION ===== */
+.hero {
+  padding: 72px 0 48px;
+}
+.eyebrow {
+  font-family: var(--ff-h);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--accent);
+}
+h1.brand-title {
+  font-family: var(--ff-h);
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
+}
+h1.brand-title::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 5px;
+  background: var(--accent);
+  border-radius: 3px;
+  margin-top: 4px;
+}
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-2);
+  max-width: 640px;
+  margin: 20px 0 36px;
+  line-height: 1.65;
+}
 
-section.block { margin-top: 56px; }
-.section-head { margin-bottom: 20px; }
-.section-head h2 { font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
-.section-head .desc { color: var(--text-2); font-size: 0.95rem; margin-top: 6px; }
+/* ===== KPI ROW ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.kpi-value {
+  font-family: var(--ff-h);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.kpi-value small {
+  font-size: 0.7em;
+  color: var(--text-3);
+  font-weight: 600;
+}
+.kpi-label {
+  font-family: var(--ff-h);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 8px;
+}
+.kpi-accent {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  border-width: 1.5px;
+}
+.kpi-accent .kpi-value {
+  color: var(--accent-dark);
+}
 
-.clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-.clip-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; display: block; color: inherit; }
-.clip-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px oklch(0% 0 0 / 0.08); text-decoration: none; }
-.clip-thumb-wrap { position: relative; aspect-ratio: 16/9; background: var(--surface-2); }
-.clip-thumb { width: 100%; height: 100%; object-fit: cover; }
-.clip-thumb.placeholder { background: linear-gradient(135deg, var(--surface-2), var(--accent-soft)); }
-.clip-quality { position: absolute; top: 8px; right: 8px; background: oklch(18% 0.015 155 / 0.85); color: oklch(99% 0 0); font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
-.clip-body { padding: 12px 14px 14px; }
-.clip-summary { font-size: 0.95rem; color: var(--text); line-height: 1.45; margin-bottom: 10px; min-height: 2.7em; }
-.clip-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.meta-pill { font-family: var(--ff-d); font-size: 0.68rem; padding: 2px 8px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; font-weight: 600; }
-.meta-uuid { font-family: var(--ff-m); font-size: 0.7rem; color: var(--text-3); margin-left: auto; }
+/* ===== SECTION BLOCKS ===== */
+section.section {
+  margin-top: 72px;
+}
+.section-header {
+  margin-bottom: 28px;
+}
+.section-header h2 {
+  font-family: var(--ff-h);
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.section-header .section-desc {
+  color: var(--text-2);
+  font-size: 0.95rem;
+  margin-top: 8px;
+  max-width: 640px;
+}
 
-.skill-grid { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; }
-.skill-row { display: grid; grid-template-columns: 160px 1fr 40px; gap: 14px; align-items: center; padding: 8px 0; }
-.skill-label { font-family: var(--ff-d); font-size: 0.85rem; color: var(--text-2); }
-.skill-bar-bg { background: var(--surface-2); height: 10px; border-radius: 5px; overflow: hidden; }
-.skill-bar-fill { background: var(--accent); height: 100%; border-radius: 5px; transition: width 0.5s; }
-.skill-value { font-family: var(--ff-m); font-size: 0.85rem; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+/* ===== EXPOSURE DEPTH ===== */
+.exposure-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+.exposure-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 110px;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.exposure-row:last-child { border-bottom: none; }
+.exposure-label {
+  font-family: var(--ff-h);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.exposure-bar-wrap {
+  height: 12px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.exposure-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--grad-from), var(--grad-to));
+  border-radius: 6px;
+  transition: width 0.6s ease;
+}
+.exposure-count {
+  font-family: var(--ff-m);
+  font-size: 0.85rem;
+  color: var(--text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.exposure-pct {
+  color: var(--text-3);
+  font-size: 0.8em;
+}
+.insight-callout {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: var(--ff-h);
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+}
 
-.comp-table { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; border-collapse: collapse; }
-.comp-table th, .comp-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
-.comp-table th { font-family: var(--ff-d); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; background: var(--surface-2); }
+/* ===== CLIP GRID ===== */
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.clip-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+  color: inherit;
+}
+.clip-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+.clip-thumb-wrap {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.clip-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.clip-card:hover .clip-thumb { transform: scale(1.04); }
+.clip-thumb.placeholder {
+  background: linear-gradient(135deg, var(--surface-2), var(--accent-soft));
+}
+.clip-badges {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+}
+.clip-badge {
+  font-family: var(--ff-h);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+.badge-high { background: rgba(16, 185, 129, 0.9); color: #fff; }
+.badge-mid { background: rgba(245, 158, 11, 0.9); color: #fff; }
+.badge-low { background: rgba(156, 163, 175, 0.85); color: #fff; }
+.clip-body { padding: 14px 16px 16px; }
+.clip-summary {
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.clip-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.arc-pill {
+  font-family: var(--ff-h);
+  font-size: 0.67rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+.clip-uuid {
+  font-family: var(--ff-m);
+  font-size: 0.7rem;
+  color: var(--text-3);
+  margin-left: auto;
+}
+
+/* ===== PLAYER SKILL PROFILE ===== */
+.skill-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+.skill-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 44px;
+  gap: 16px;
+  align-items: center;
+  padding: 9px 0;
+}
+.skill-label {
+  font-family: var(--ff-h);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.skill-track {
+  background: var(--surface-2);
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.skill-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--grad-from), var(--grad-to));
+  border-radius: 5px;
+  transition: width 0.5s ease;
+}
+.skill-value {
+  font-family: var(--ff-m);
+  font-size: 0.85rem;
+  color: var(--text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== COMPETITIVE TABLE ===== */
+.comp-table {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border-collapse: collapse;
+}
+.comp-table th {
+  font-family: var(--ff-h);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--surface-2);
+  padding: 14px 16px;
+  text-align: left;
+}
+.comp-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.92rem;
+}
 .comp-table tr:last-child td { border-bottom: none; }
-.comp-table tr.row-self { background: var(--accent-soft); font-weight: 600; }
-.comp-table .rank-cell { font-family: var(--ff-d); font-weight: 700; color: var(--text-3); width: 50px; }
-.comp-table .num-cell { font-family: var(--ff-m); text-align: right; font-variant-numeric: tabular-nums; width: 80px; }
-.comp-bar-bg { background: var(--surface-2); height: 8px; border-radius: 4px; min-width: 80px; }
-.comp-bar-fill { background: var(--accent); height: 100%; border-radius: 4px; }
+.comp-table .row-highlight {
+  background: var(--accent-soft);
+}
+.comp-table .row-highlight .brand-cell {
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+.comp-table .rank-cell {
+  font-family: var(--ff-h);
+  font-weight: 700;
+  color: var(--text-3);
+  width: 55px;
+}
+.comp-table .brand-cell {
+  font-family: var(--ff-h);
+  font-weight: 600;
+}
+.comp-table .num-cell {
+  font-family: var(--ff-m);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  width: 75px;
+}
+.bar-cell { min-width: 100px; }
+.bar-track {
+  background: var(--surface-2);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: var(--border);
+  border-radius: 4px;
+  transition: width 0.4s;
+}
+.bar-self {
+  background: linear-gradient(90deg, var(--grad-from), var(--grad-to));
+}
 
-.media-card { background: linear-gradient(135deg, var(--accent-soft), var(--surface)); border: 1px solid oklch(84% 0.06 155); border-radius: var(--r-l); padding: 32px; }
-.media-card .big-num { font-family: var(--ff-d); font-size: 3.5rem; font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
-.media-card .sub { font-size: 1.05rem; color: var(--text-2); margin-top: 8px; }
-.media-card .formula { font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+/* ===== MEDIA VALUE ===== */
+.media-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.media-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--grad-from), var(--grad-to));
+}
+.media-big-num {
+  font-family: var(--ff-h);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: var(--accent-dark);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.media-subtitle {
+  font-size: 1rem;
+  color: var(--text-2);
+  margin-top: 10px;
+  max-width: 600px;
+  line-height: 1.55;
+}
+.media-formula {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-family: var(--ff-m);
+  font-size: 0.78rem;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+.media-note {
+  margin-top: 12px;
+  font-family: var(--ff-h);
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--text-3);
+}
 
-.cta { margin-top: 64px; padding: 44px 32px; text-align: center; background: var(--text); color: oklch(97% 0.005 145); border-radius: var(--r-l); }
-.cta h3 { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
-.cta p { color: oklch(75% 0.01 145); font-size: 1.05rem; max-width: 560px; margin: 0 auto 24px; }
-.cta a.btn { display: inline-block; background: oklch(99% 0.005 145); color: var(--text); font-family: var(--ff-d); font-weight: 600; padding: 12px 28px; border-radius: 999px; transition: transform 0.15s; }
-.cta a.btn:hover { transform: translateY(-1px); text-decoration: none; }
+/* ===== TAKEAWAYS ===== */
+.takeaway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+}
+.takeaway-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.takeaway-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.takeaway-num {
+  font-family: var(--ff-h);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-on-accent);
+  background: var(--accent);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.takeaway-content { flex: 1; }
+.takeaway-title {
+  font-family: var(--ff-h);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-dark);
+  margin-bottom: 6px;
+}
+.takeaway-text {
+  font-size: 0.92rem;
+  color: var(--text-2);
+  line-height: 1.55;
+}
 
-.empty-note { padding: 24px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--r); color: var(--text-3); text-align: center; font-style: italic; }
+/* ===== CTA BLOCK ===== */
+.cta-block {
+  margin-top: 80px;
+  padding: 56px 40px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--grad-from), var(--grad-to));
+  border-radius: var(--radius-lg);
+  color: var(--text-on-accent);
+}
+.cta-block h3 {
+  font-family: var(--ff-h);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.cta-block p {
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto 28px;
+  opacity: 0.88;
+  line-height: 1.6;
+}
+.cta-btn {
+  display: inline-block;
+  background: var(--text-on-accent);
+  color: var(--accent-dark);
+  font-family: var(--ff-h);
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 14px 32px;
+  border-radius: 999px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: -0.01em;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+  text-decoration: none;
+}
 
-footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); }
+/* ===== FOOTER ===== */
+footer {
+  margin-top: 80px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-family: var(--ff-m);
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
 footer a { color: var(--text-3); }
-footer a:hover { color: var(--accent); }
+footer a:hover { color: var(--accent-dark); }
 
+/* ===== UTILITIES ===== */
+.empty-note {
+  padding: 28px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-3);
+  text-align: center;
+  font-style: italic;
+  font-size: 0.92rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 @media (max-width: 700px) {
-  h1.brand-name { font-size: 2.4rem; }
-  .skill-row { grid-template-columns: 110px 1fr 36px; }
-  .comp-table th:nth-child(3), .comp-table td:nth-child(3) { display: none; }
-  .media-card .big-num { font-size: 2.6rem; }
-  .cta { padding: 32px 20px; }
-  .cta h3 { font-size: 1.5rem; }
+  h1.brand-title { font-size: 2.4rem; }
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-value { font-size: 1.6rem; }
+  .exposure-row {
+    grid-template-columns: 110px 1fr 80px;
+  }
+  .skill-row {
+    grid-template-columns: 110px 1fr 36px;
+  }
+  .comp-table .bar-cell { display: none; }
+  .takeaway-grid {
+    grid-template-columns: 1fr;
+  }
+  .cta-block {
+    padding: 40px 24px;
+  }
+  .cta-block h3 { font-size: 1.5rem; }
+  .media-big-num { font-size: 2.2rem; }
+  .hero { padding: 48px 0 32px; }
+  section.section { margin-top: 48px; }
+}
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .exposure-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .exposure-bar-wrap { width: 100%; }
+  .exposure-count { text-align: left; }
 }
 </style>
 </head>
 <body>
 
+<!-- HERO ACCENT BAR -->
+<div class="hero-bar"></div>
+
+<!-- NAV -->
 <nav>
-  <div class="nav-l">Pickle <span>DaaS</span> · Brand Intelligence</div>
-  <div class="nav-r">
-    <a href="../dashboards/showcase-portal.html">Portal ↗</a>
+  <div class="nav-brand">Pickle <span>DaaS</span> &middot; Brand Intelligence</div>
+  <div class="nav-links">
+    <a href="../dashboards/showcase-portal.html">Portal</a>
     <a href="mailto:data@courtana.com">data@courtana.com</a>
   </div>
 </nav>
 
-<div class="shell">
+<div class="container">
 
+  <!-- ===== 1. HERO ===== -->
   <header class="hero">
     <div class="eyebrow">Brand Intelligence Report</div>
-    <h1 class="brand-name">Franklin</h1>
-    <p class="hero-sub">
-      Real exposure data from 510 pickleball clips analyzed by Courtana's AI.
-      Every number on this page references a clip with a verifiable UUID — generated 2026-04-13 20:56 UTC.
+    <h1 class="brand-title">Franklin</h1>
+    <p class="hero-subtitle">
+      Real exposure data from <strong>722</strong> pickleball clips analyzed by Courtana's AI.
     </p>
 
-    <div class="kpi-row">
-      <div class="kpi accent">
-        <div class="kpi-num">3</div>
+    <div class="kpi-grid">
+      <div class="kpi kpi-accent">
+        <div class="kpi-value">3</div>
         <div class="kpi-label">Clips featuring Franklin</div>
       </div>
       <div class="kpi">
-        <div class="kpi-num">0.6<small>%</small></div>
-        <div class="kpi-label">Market share of corpus</div>
+        <div class="kpi-value">0.4<small>%</small></div>
+        <div class="kpi-label">Market share</div>
       </div>
       <div class="kpi">
-        <div class="kpi-num">0.6<small>%</small></div>
+        <div class="kpi-value">0.4<small>%</small></div>
         <div class="kpi-label">Share of voice</div>
       </div>
       <div class="kpi">
-        <div class="kpi-num">#12</div>
-        <div class="kpi-label">Brand rank in corpus</div>
+        <div class="kpi-value">#14</div>
+        <div class="kpi-label">Brand rank</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">$24</div>
+        <div class="kpi-label">Est. media value</div>
       </div>
     </div>
   </header>
 
-  <section class="block">
-    <div class="section-head">
-      <h2>Top 3 clips featuring Franklin</h2>
-      <div class="desc">Ranked by quality × viral potential. Click any thumbnail to play.</div>
+  <!-- ===== 2. EXPOSURE DEPTH ===== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Where Franklin appears</h2>
+      <div class="section-desc">Brand detection categories across all clips featuring Franklin.</div>
+    </div>
+    <div class="exposure-panel">
+      
+          <div class="exposure-row">
+            <div class="exposure-label">Paddle</div>
+            <div class="exposure-bar-wrap">
+              <div class="exposure-bar" style="width:100.0%"></div>
+            </div>
+            <div class="exposure-count">1 <span class="exposure-pct">(33%)</span></div>
+          </div>
+        
+          <div class="exposure-row">
+            <div class="exposure-label">Ball</div>
+            <div class="exposure-bar-wrap">
+              <div class="exposure-bar" style="width:100.0%"></div>
+            </div>
+            <div class="exposure-count">1 <span class="exposure-pct">(33%)</span></div>
+          </div>
+        
+          <div class="exposure-row">
+            <div class="exposure-label">Other / unclassified</div>
+            <div class="exposure-bar-wrap">
+              <div class="exposure-bar" style="width:100.0%"></div>
+            </div>
+            <div class="exposure-count">1 <span class="exposure-pct">(33%)</span></div>
+          </div>
+        
+      <div class="insight-callout">
+        Not just logos &mdash; <strong>Franklin</strong> is detected across <strong>3</strong> distinct touchpoints from paddles to shoes to court signage.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 3. TOP CLIPS ===== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Best clips featuring Franklin</h2>
+      <div class="section-desc">Ranked by quality and viral potential. Click any thumbnail to play.</div>
     </div>
     <div class="clip-grid">
       
     <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/27a1ef10-e52b-45c1-b22b-6dab29d274f6.mp4" target="_blank" rel="noopener">
       <div class="clip-thumb-wrap">
         <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/27a1ef10-e52b-45c1-b22b-6dab29d274f6.jpeg" alt="" class="clip-thumb">
-        <div class="clip-quality">★ 7/10</div>
+        <div class="clip-badges">
+          <span class="clip-badge badge-high">Quality 7/10</span>
+          <span class="clip-badge badge-mid">Viral 5/10</span>
+        </div>
       </div>
       <div class="clip-body">
         <div class="clip-summary">Players engaged in a long kitchen dink rally, finishing with a decisive volley exchange.</div>
         <div class="clip-meta">
-          <span class="meta-pill">strategic</span>
-          <span class="meta-pill">viral 5/10</span>
-          <span class="meta-uuid">27a1ef10</span>
+          <span class="arc-pill">strategic</span>
+          <span class="clip-uuid">27a1ef10</span>
         </div>
       </div>
     </a>
@@ -181,14 +776,16 @@ footer a:hover { color: var(--accent); }
     <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.mp4" target="_blank" rel="noopener">
       <div class="clip-thumb-wrap">
         <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac0e1a1b-d8a6-4c6e-8148-4660e819a486.jpeg" alt="" class="clip-thumb">
-        <div class="clip-quality">★ 8/10</div>
+        <div class="clip-badges">
+          <span class="clip-badge badge-high">Quality 8/10</span>
+          <span class="clip-badge badge-low">Viral 2/10</span>
+        </div>
       </div>
       <div class="clip-body">
         <div class="clip-summary">A player serves the pickleball, which is then returned by an opponent, showcasing fundamental shots.</div>
         <div class="clip-meta">
-          <span class="meta-pill">teaching moment</span>
-          <span class="meta-pill">viral 2/10</span>
-          <span class="meta-uuid">ac0e1a1b</span>
+          <span class="arc-pill">teaching moment</span>
+          <span class="clip-uuid">ac0e1a1b</span>
         </div>
       </div>
     </a>
@@ -196,14 +793,16 @@ footer a:hover { color: var(--accent); }
     <a class="clip-card" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96112123-785b-4bef-bdd2-43fa667569d8.mp4" target="_blank" rel="noopener">
       <div class="clip-thumb-wrap">
         <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/96112123-785b-4bef-bdd2-43fa667569d8.jpeg" alt="" class="clip-thumb">
-        <div class="clip-quality">★ 6/10</div>
+        <div class="clip-badges">
+          <span class="clip-badge badge-mid">Quality 6/10</span>
+          <span class="clip-badge badge-mid">Viral 4/10</span>
+        </div>
       </div>
       <div class="clip-body">
         <div class="clip-summary">Two players engage in a patient kitchen dink rally.</div>
         <div class="clip-meta">
-          <span class="meta-pill">grind rally</span>
-          <span class="meta-pill">viral 4/10</span>
-          <span class="meta-uuid">96112123</span>
+          <span class="arc-pill">grind rally</span>
+          <span class="clip-uuid">96112123</span>
         </div>
       </div>
     </a>
@@ -211,176 +810,238 @@ footer a:hover { color: var(--accent); }
     </div>
   </section>
 
-  <section class="block">
-    <div class="section-head">
-      <h2>Player skill profile</h2>
-      <div class="desc">Average skill ratings (0–10) across players whose clips feature Franklin.</div>
+  <!-- ===== 4. PLAYER SKILL PROFILE ===== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Players who choose Franklin</h2>
+      <div class="section-desc">Average skill ratings (0&ndash;10) across players whose clips feature Franklin.</div>
     </div>
-    <div class="skill-grid">
+    <div class="skill-panel">
       
           <div class="skill-row">
             <div class="skill-label">Court coverage</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:65.0%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:65.0%"></div>
+            </div>
             <div class="skill-value">6.5</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Kitchen mastery</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:90%"></div>
+            </div>
             <div class="skill-value">9.0</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Power game</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:45.0%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:45.0%"></div>
+            </div>
             <div class="skill-value">4.5</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Touch & feel</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:90%"></div>
+            </div>
             <div class="skill-value">9.0</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Athleticism</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:60%"></div>
+            </div>
             <div class="skill-value">6.0</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Creativity</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:40%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:40%"></div>
+            </div>
             <div class="skill-value">4.0</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Court IQ</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:70%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:70%"></div>
+            </div>
             <div class="skill-value">7.0</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Consistency</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:80%"></div>
+            </div>
             <div class="skill-value">8.0</div>
           </div>
         
           <div class="skill-row">
             <div class="skill-label">Composure</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75.0%"></div></div>
+            <div class="skill-track">
+              <div class="skill-fill" style="width:75.0%"></div>
+            </div>
             <div class="skill-value">7.5</div>
           </div>
         
     </div>
   </section>
 
-  <section class="block">
-    <div class="section-head">
-      <h2>Competitive position</h2>
-      <div class="desc">Franklin ranked against the top brands detected across the corpus.</div>
+  <!-- ===== 5. COMPETITIVE POSITION ===== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Market position</h2>
+      <div class="section-desc">Franklin ranked against the top brands detected across the corpus.</div>
     </div>
     <table class="comp-table">
       <thead>
-        <tr><th></th><th>Brand</th><th>Share</th><th>Clips</th><th>%</th></tr>
+        <tr><th>Rank</th><th>Brand</th><th>Share</th><th>Clips</th><th>%</th></tr>
       </thead>
       <tbody>
         
           <tr>
             <td class="rank-cell">#1</td>
-            <td>JOOLA</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:100.0%"></div></div></td>
-            <td class="num-cell">323</td>
-            <td class="num-cell">63.3%</td>
+            <td class="brand-cell">JOOLA</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:100.0%"></div></div></td>
+            <td class="num-cell">488</td>
+            <td class="num-cell">67.6%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#2</td>
-            <td>Nike</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:13.6%"></div></div></td>
-            <td class="num-cell">44</td>
-            <td class="num-cell">8.6%</td>
+            <td class="brand-cell">Nike</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:12.1%"></div></div></td>
+            <td class="num-cell">59</td>
+            <td class="num-cell">8.2%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#3</td>
-            <td>PICKLEBALL KINGDOM</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:6.8%"></div></div></td>
-            <td class="num-cell">22</td>
-            <td class="num-cell">4.3%</td>
+            <td class="brand-cell">PICKLEBALL KINGDOM</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:4.9%"></div></div></td>
+            <td class="num-cell">24</td>
+            <td class="num-cell">3.3%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#4</td>
-            <td>HEAD</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:5.6%"></div></div></td>
-            <td class="num-cell">18</td>
-            <td class="num-cell">3.5%</td>
+            <td class="brand-cell">HEAD</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:3.9%"></div></div></td>
+            <td class="num-cell">19</td>
+            <td class="num-cell">2.6%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#5</td>
-            <td>On</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.9%"></div></div></td>
-            <td class="num-cell">6</td>
-            <td class="num-cell">1.2%</td>
+            <td class="brand-cell">Courtana</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:1.4%"></div></div></td>
+            <td class="num-cell">7</td>
+            <td class="num-cell">1.0%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#6</td>
-            <td>PBS</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.5%"></div></div></td>
-            <td class="num-cell">5</td>
-            <td class="num-cell">1.0%</td>
+            <td class="brand-cell">On</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:1.2%"></div></div></td>
+            <td class="num-cell">6</td>
+            <td class="num-cell">0.8%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#7</td>
-            <td>Courtana</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.5%"></div></div></td>
+            <td class="brand-cell">PBS</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:1.0%"></div></div></td>
             <td class="num-cell">5</td>
-            <td class="num-cell">1.0%</td>
+            <td class="num-cell">0.7%</td>
           </tr>
         
           <tr>
             <td class="rank-cell">#8</td>
-            <td>Onix</td>
-            <td><div class="comp-bar-bg"><div class="comp-bar-fill" style="width:1.2%"></div></div></td>
+            <td class="brand-cell">PICKLEBALL</td>
+            <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:0.8%"></div></div></td>
             <td class="num-cell">4</td>
-            <td class="num-cell">0.8%</td>
+            <td class="num-cell">0.6%</td>
           </tr>
         
       </tbody>
     </table>
   </section>
 
-  <section class="block">
-    <div class="section-head">
+  <!-- ===== 6. MEDIA VALUE ===== -->
+  <section class="section">
+    <div class="section-header">
       <h2>Equivalent media value</h2>
-      <div class="desc">Estimated impression-equivalent value of Franklin's on-court visibility, based on detected screen time and a transparent CPM model.</div>
+      <div class="section-desc">Estimated impression-equivalent value of Franklin's on-court visibility.</div>
     </div>
     <div class="media-card">
-      <div class="big-num">$24</div>
-      <div class="sub">3 clips × 1,500 blended views/clip × 6s avg visibility ≈ 950 30-second spot equivalents @ $25 CPM</div>
-      <div class="formula">
-        Method: clips × views/clip → impressions; impressions × (visible_seconds / 30s spot) × CPM ÷ 1000.
+      <div class="media-big-num">$24</div>
+      <div class="media-subtitle">
+        3 clips &times; 1,500 blended views/clip &times; 6s avg visibility
+        &asymp; 950 30-second spot equivalents @ $25 CPM
+      </div>
+      <div class="media-formula">
+        Method: clips &times; views/clip &rarr; impressions; impressions &times; (visible_seconds / 30s spot) &times; CPM &divide; 1,000.
         Assumes 1,500 blended venue-screen + social views per clip and $25 sports CPM.
-        Excludes broadcast amplification and brand-equity halo. Updates as the corpus and partnerships grow.
+      </div>
+      <div class="media-note">
+        Conservative estimate &mdash; excludes social replay amplification, broadcast rights, and brand-equity halo.
       </div>
     </div>
   </section>
 
-  <div class="cta">
+  <!-- ===== 7. WHAT THIS MEANS ===== -->
+  <section class="section">
+    <div class="section-header">
+      <h2>What this means for Franklin</h2>
+    </div>
+    <div class="takeaway-grid">
+      
+          <div class="takeaway-card">
+            <div class="takeaway-num">1</div>
+            <div class="takeaway-content">
+              <div class="takeaway-title">Awareness</div>
+              <div class="takeaway-text">Franklin appears in 0.4% of all analyzed clips, making it in the upper half of detected brands (#14 of 57).</div>
+            </div>
+          </div>
+        
+          <div class="takeaway-card">
+            <div class="takeaway-num">2</div>
+            <div class="takeaway-content">
+              <div class="takeaway-title">Player profile</div>
+              <div class="takeaway-text">Players using Franklin index highest on Kitchen mastery (9.0/10). They tend to be finesse players who dominate at the net.</div>
+            </div>
+          </div>
+        
+          <div class="takeaway-card">
+            <div class="takeaway-num">3</div>
+            <div class="takeaway-content">
+              <div class="takeaway-title">Opportunity</div>
+              <div class="takeaway-text">Franklin is detected across 3 distinct touchpoint categories. Consider amplifying visibility in underrepresented categories to maximize total on-screen time.</div>
+            </div>
+          </div>
+        
+    </div>
+  </section>
+
+  <!-- ===== 8. CTA ===== -->
+  <div class="cta-block">
     <h3>Partner with Courtana</h3>
-    <p>Brand intelligence reports like this are part of Courtana's data layer for paddle, apparel, and venue partners. Reach out to scope a custom brief.</p>
-    <a class="btn" href="mailto:data@courtana.com?subject=Franklin%20brand%20intelligence">data@courtana.com</a>
+    <p>Custom brand intelligence reports, real-time exposure tracking, sponsorship ROI dashboards.</p>
+    <a class="cta-btn" href="mailto:data@courtana.com?subject=Franklin%20brand%20intelligence">data@courtana.com</a>
   </div>
 
+  <!-- FOOTER -->
   <footer>
-    <div>Pickle DaaS · 2026-04-13 20:56 UTC · 510 clips analyzed</div>
+    <div>Pickle DaaS &middot; 2026-04-14 01:35 UTC &middot; 722 clips analyzed</div>
     <div>
-      <a href="../../corpus-export.json">corpus-export.json ↗</a> ·
-      <a href="../dashboards/showcase-portal.html">Showcase Portal ↗</a>
+      <a href="../../corpus-export.json">corpus-export.json</a> &middot;
+      <a href="../dashboards/showcase-portal.html">Showcase Portal</a>
     </div>
   </footer>
 

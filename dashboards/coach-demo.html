@@ -1,322 +1,834 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coach Demo · PickleBill — Pickle DaaS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Pickle DaaS — AI Coach Demo</title>
 <style>
-:root {
-  --bg: oklch(98% 0.005 80);
-  --bg-alt: oklch(95% 0.012 80);
-  --surface: oklch(100% 0 0);
-  --border: oklch(88% 0.012 80);
-  --text: oklch(18% 0.015 80);
-  --text-2: oklch(44% 0.016 80);
-  --text-3: oklch(62% 0.01 80);
-  --accent: oklch(48% 0.18 50);   /* warm coach orange */
-  --accent-soft: oklch(95% 0.04 60);
-  --accent-border: oklch(85% 0.08 55);
-  --green: oklch(52% 0.13 155);
-  --green-soft: oklch(94% 0.04 155);
-  --ff-d: 'Bricolage Grotesque', system-ui, sans-serif;
-  --ff-b: 'Literata', Georgia, serif;
-  --ff-m: 'Azeret Mono', monospace;
-  --r: 12px;
-  --r-l: 18px;
-  --shadow: 0 4px 16px oklch(0% 0 0 / 0.06);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; }
-body { background: var(--bg); color: var(--text); font-family: var(--ff-b); line-height: 1.65; }
-img { display: block; max-width: 100%; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-nav { position: sticky; top: 0; z-index: 50; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
-.nav-l { font-family: var(--ff-d); font-weight: 700; font-size: 0.95rem; }
-.nav-l span { color: var(--accent); }
-.nav-r { font-family: var(--ff-d); font-size: 0.8rem; color: var(--text-2); display: flex; gap: 16px; }
-.nav-r a { color: var(--text-2); }
-.nav-pill { font-family: var(--ff-m); font-size: 0.7rem; padding: 3px 10px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; }
+  :root {
+    --bg-base: #0f1118;
+    --bg-surface: #161b26;
+    --bg-elevated: #1e2433;
+    --amber: #e8a838;
+    --amber-soft: #fef3c7;
+    --amber-dark: #78350f;
+    --amber-glow: rgba(232, 168, 56, 0.12);
+    --text-primary: #f0ece4;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --border: rgba(255,255,255,0.06);
+    --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-body: 'Georgia', 'Times New Roman', serif;
+  }
 
-.shell { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+  html { scroll-behavior: smooth; }
 
-.hero { padding: 64px 0 32px; }
-.eyebrow { font-family: var(--ff-d); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-h1.hero-h { font-family: var(--ff-d); font-size: 3.2rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 18px; }
-.hero-sub { font-size: 1.1rem; color: var(--text-2); max-width: 600px; }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
 
-.player-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-l); padding: 28px; margin-top: 36px; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; box-shadow: var(--shadow); }
-.player-avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--accent); color: oklch(98% 0.005 80); display: flex; align-items: center; justify-content: center; font-family: var(--ff-d); font-weight: 800; font-size: 1.6rem; }
-.player-meta h2 { font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
-.player-meta .style { font-family: var(--ff-d); color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-.player-stats { font-size: 0.95rem; color: var(--text-2); line-height: 1.6; }
+  /* ========== NAV ========== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(15, 17, 24, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .logo {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+  nav .logo span { color: var(--amber); }
+  nav .nav-right { display: flex; gap: 1rem; align-items: center; }
+  nav .pill {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid rgba(232,168,56,0.3);
+    border-radius: 100px;
+    color: var(--amber);
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  nav .pill:hover { background: rgba(232,168,56,0.1); border-color: var(--amber); }
+  nav .contact-link {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  nav .contact-link:hover { color: var(--amber); }
 
-section.block { margin-top: 64px; }
-.section-head h2 { font-family: var(--ff-d); font-size: 1.7rem; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 6px; }
-.section-head .desc { color: var(--text-2); margin-bottom: 24px; }
+  /* ========== COMMON ========== */
+  section { padding: 6rem 2rem; max-width: 960px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .section-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 640px;
+    line-height: 1.6;
+  }
 
-.dna-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; }
-.skill-row { display: grid; grid-template-columns: 160px 1fr 40px; gap: 14px; align-items: center; padding: 8px 0; }
-.skill-label { font-family: var(--ff-d); font-size: 0.88rem; color: var(--text-2); }
-.skill-bar-bg { background: var(--bg-alt); height: 12px; border-radius: 6px; overflow: hidden; }
-.skill-bar-fill { background: linear-gradient(90deg, var(--accent), oklch(58% 0.16 50)); height: 100%; border-radius: 6px; transition: width 0.5s; }
-.skill-value { font-family: var(--ff-m); font-size: 0.88rem; text-align: right; font-variant-numeric: tabular-nums; }
+  /* ========== REVEAL ANIMATION ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-.scene { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-l); padding: 28px; margin-bottom: 20px; }
-.scene-num { font-family: var(--ff-m); font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; }
-.scene-role { font-family: var(--ff-d); font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-top: 4px; }
-.scene-role-desc { font-size: 0.95rem; color: var(--text-2); margin: 6px 0 18px; font-style: italic; }
-.scene-clip { display: block; aspect-ratio: 16/9; border-radius: var(--r); overflow: hidden; background: var(--bg-alt); position: relative; margin-bottom: 18px; transition: transform 0.15s; }
-.scene-clip:hover { transform: translateY(-2px); }
-.scene-thumb { width: 100%; height: 100%; object-fit: cover; }
-.scene-thumb.placeholder { background: linear-gradient(135deg, var(--bg-alt), var(--accent-soft)); }
-.scene-q { position: absolute; top: 12px; right: 12px; background: oklch(18% 0.015 80 / 0.85); color: oklch(99% 0 0); font-family: var(--ff-d); font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
-.scene-text { display: grid; gap: 14px; }
-.scene-label { font-family: var(--ff-d); font-size: 0.7rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
-.scene-summary { font-size: 1rem; color: var(--text); }
-.scene-espn { font-size: 0.95rem; color: var(--text-2); font-style: italic; padding-left: 12px; border-left: 3px solid var(--accent); }
-.scene-coaching { font-size: 0.98rem; color: var(--text); background: var(--green-soft); padding: 14px 18px; border-radius: var(--r); border-left: 3px solid var(--green); }
+  /* ========== HERO ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 5rem;
+    background: linear-gradient(180deg, var(--bg-base) 0%, #12151f 50%, var(--bg-base) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,168,56,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero .section-eyebrow { margin-bottom: 2rem; }
+  .hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em {
+    color: var(--amber);
+    font-style: normal;
+  }
+  .hero .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 3.5rem;
+  }
 
-.drill { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start; padding: 22px 0; border-bottom: 1px solid var(--border); }
-.drill:last-child { border-bottom: none; }
-.drill-num { width: 48px; height: 48px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-family: var(--ff-d); font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; }
-.drill-body h4 { font-family: var(--ff-d); font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-.drill-targets { font-family: var(--ff-m); font-size: 0.75rem; color: var(--text-3); margin-bottom: 6px; }
-.drill-body p { font-size: 0.95rem; color: var(--text-2); }
+  /* Player card */
+  .player-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem 3rem;
+  }
+  .player-avatar {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber), #d4922e);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--bg-base);
+    box-shadow: 0 0 40px rgba(232,168,56,0.2);
+  }
+  .player-name {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .player-style {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    background: var(--amber-glow);
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+  }
+  .player-stats {
+    display: flex;
+    gap: 2rem;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+  .player-stats strong { color: var(--text-primary); font-weight: 600; }
 
-.cta { margin-top: 80px; padding: 48px 32px; text-align: center; background: var(--text); color: oklch(97% 0.005 80); border-radius: var(--r-l); }
-.cta h3 { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
-.cta p { color: oklch(75% 0.01 80); font-size: 1.05rem; max-width: 540px; margin: 0 auto 24px; }
-.cta a.btn { display: inline-block; background: oklch(99% 0.005 80); color: var(--text); font-family: var(--ff-d); font-weight: 600; padding: 12px 28px; border-radius: 999px; }
-.cta a.btn:hover { transform: translateY(-1px); text-decoration: none; }
+  /* ========== PLAYER DNA ========== */
+  .dna-section { padding-top: 5rem; }
+  .skill-bars { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .skill-row { display: flex; align-items: center; gap: 1rem; }
+  .skill-label {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    width: 140px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .skill-track {
+    flex: 1;
+    height: 10px;
+    background: var(--bg-elevated);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--amber-dark), var(--amber));
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .skill-value {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    width: 36px;
+    text-align: left;
+    flex-shrink: 0;
+  }
+  .dna-summary {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .dna-summary strong { color: var(--amber); font-weight: 600; }
+  .dna-tag {
+    margin-top: 1rem;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
 
-footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-family: var(--ff-m); font-size: 0.78rem; color: var(--text-3); }
+  /* ========== FILM ROOM ========== */
+  .film-section { padding-top: 5rem; }
+  .clip-block { margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border); }
+  .clip-block:first-of-type { border-top: none; padding-top: 2rem; }
+  .clip-number {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.25rem;
+  }
+  .clip-role-desc {
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
 
-@media (max-width: 700px) {
-  h1.hero-h { font-size: 2.2rem; }
-  .player-card { grid-template-columns: 1fr; padding: 20px; }
-  .skill-row { grid-template-columns: 110px 1fr 36px; }
-  .scene { padding: 20px; }
-  .scene-role { font-size: 1.2rem; }
-  .cta h3 { font-size: 1.5rem; }
-}
+  /* Video container */
+  .video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--bg-elevated);
+    margin-bottom: 1.5rem;
+  }
+  .video-container img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.4s;
+  }
+  .video-container video {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: none;
+    border-radius: 12px;
+  }
+  .video-container.playing img { opacity: 0; }
+  .video-container.playing video { display: block; }
+  .play-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px; height: 64px;
+    background: rgba(232, 168, 56, 0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s, background 0.3s;
+    pointer-events: none;
+  }
+  .video-container:hover .play-btn {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: var(--amber);
+  }
+  .video-container.playing .play-btn { display: none; }
+  .play-btn svg { width: 24px; height: 24px; fill: var(--bg-base); margin-left: 3px; }
+
+  .clip-badges {
+    position: absolute;
+    top: 12px; left: 12px;
+    display: flex; gap: 0.5rem;
+    z-index: 2;
+  }
+  .clip-badge {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(15,17,24,0.8);
+    backdrop-filter: blur(8px);
+    color: var(--amber);
+    border: 1px solid rgba(232,168,56,0.3);
+  }
+
+  /* Commentary */
+  .commentary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .commentary-col h4 {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .commentary-col p {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+  .coaching-col {
+    border-left: 3px solid var(--amber);
+    padding-left: 1.25rem;
+  }
+  .coaching-col p { color: var(--text-primary); }
+
+  .clip-summary {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 2rem;
+  }
+  .clip-summary::before {
+    content: '\201C';
+    position: absolute;
+    left: 0.75rem;
+    top: 0.6rem;
+    font-size: 1.8rem;
+    color: var(--amber);
+    line-height: 1;
+    font-style: normal;
+  }
+
+  /* ========== DRILL PLAN ========== */
+  .drill-section { padding-top: 5rem; }
+  .drill-cards { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .drill-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 10px;
+    padding: 1.75rem 2rem;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .drill-num {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: rgba(232,168,56,0.25);
+    line-height: 1;
+  }
+  .drill-target {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.3rem;
+  }
+  .drill-name {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  .drill-desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* ========== PROMISE ========== */
+  .promise-section {
+    padding-top: 6rem;
+    padding-bottom: 2rem;
+    text-align: center;
+  }
+  .promise-text {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 2rem auto 0;
+    line-height: 1.8;
+  }
+  .promise-text strong { color: var(--text-primary); font-style: normal; }
+
+  .thumb-grid {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .thumb-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15,17,24,0.3) 0%, rgba(15,17,24,0.7) 100%);
+    pointer-events: none;
+  }
+  .thumb-grid img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+    opacity: 0.5;
+  }
+
+  /* ========== CTA ========== */
+  .cta-section {
+    max-width: 100%;
+    padding: 5rem 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-base) 0%, #1a1610 40%, #1a1610 60%, var(--bg-base) 100%);
+    border-top: 1px solid rgba(232,168,56,0.08);
+    border-bottom: 1px solid rgba(232,168,56,0.08);
+  }
+  .cta-inner { max-width: 640px; margin: 0 auto; }
+  .cta-section h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  .cta-section p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+  .cta-btn {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--bg-base);
+    background: linear-gradient(135deg, var(--amber), #d4922e);
+    padding: 0.85rem 2.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 24px rgba(232,168,56,0.25);
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(232,168,56,0.35);
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  footer .footer-brand {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  footer .footer-links a {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  footer .footer-links a:hover { color: var(--amber); }
+
+  /* ========== MOBILE ========== */
+  @media (max-width: 700px) {
+    section { padding: 4rem 1.25rem; }
+    nav { padding: 0.75rem 1.25rem; }
+    .hero h1 { font-size: 2.8rem; }
+    .player-card { padding: 2rem 1.5rem; }
+    .player-stats { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .skill-label { width: 100px; font-size: 0.7rem; }
+    .commentary { grid-template-columns: 1fr; gap: 1.5rem; }
+    .coaching-col { border-left: 3px solid var(--amber); padding-left: 1rem; }
+    .drill-card { grid-template-columns: 36px 1fr; padding: 1.25rem; }
+    .thumb-grid { grid-template-columns: repeat(2, 1fr); }
+    .section-title { font-size: 1.6rem; }
+    .cta-section h2 { font-size: 1.6rem; }
+  }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="nav-l">Pickle <span>DaaS</span> · Coach Demo</div>
-  <div class="nav-r">
-    <span class="nav-pill">For coaches</span>
-    <a href="../showcase-portal.html">Portal ↗</a>
-    <a href="mailto:bill@picklebill.com">contact</a>
+  <div class="logo"><span>Pickle DaaS</span> &middot; Coach Demo</div>
+  <div class="nav-right">
+    <a href="#cta" class="pill">For Coaches</a>
+    <a href="mailto:bill@picklebill.com" class="contact-link">Contact</a>
   </div>
 </nav>
 
-<div class="shell">
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <p class="section-eyebrow">AI Coaching Session &middot; Live Demo</p>
+  <h1>Meet <em>PickleBill.</em></h1>
+  <p class="hero-sub">This is what AI coaching looks like &mdash; after every session, automatically.</p>
+  <div class="player-card reveal">
+    <div class="player-avatar">PB</div>
+    <div class="player-name">PickleBill</div>
+    <div class="player-style">Grind Rally Specialist</div>
+    <div class="player-stats">
+      <span><strong>29</strong> clips analyzed</span>
+      <span><strong>184</strong> badges earned</span>
+      <span>DUPR <strong>3.5&ndash;4.0</strong></span>
+    </div>
+  </div>
+</section>
 
-  <header class="hero">
-    <div class="eyebrow">A real session · 2026-04-13 20:55 UTC</div>
-    <h1 class="hero-h">Meet PickleBill.<br>This is what AI coaching looks like.</h1>
-    <p class="hero-sub">
-      Every clip PickleBill plays gets analyzed automatically — shot-by-shot. The AI calls out strengths,
-      pinpoints growth areas, prescribes drills. No coach manually reviewing tape. No paid tier required to start.
-      Just watch.
-    </p>
-
-    <div class="player-card">
-      <div class="player-avatar">PI</div>
-      <div class="player-meta">
-        <h2>PickleBill</h2>
-        <div class="style">Grind Rally · 29 clips analyzed of 61 total</div>
-        <div class="player-stats">
-          <div><strong>Top brands worn:</strong> JOOLA (36) · SMASHWORKS (4) · STRONGSIDE (2)</div>
-          <div><strong>Earned badges:</strong> Rally Master (45) · Steady Eddie (39) · Epic Rally (21) · Kitchen King (16) · Two Up Pressure (12)</div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Player DNA</h2>
-      <p class="desc">Skill ratings 0–10, averaged across every analyzed clip. Updates after every match.</p>
-    </div>
-    <div class="dna-card">
-      
-      <div class="skill-row">
-        <div class="skill-label">Court coverage</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:59.0%"></div></div>
-        <div class="skill-value">5.9</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Kitchen mastery</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:70.0%"></div></div>
-        <div class="skill-value">7.0</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Power game</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:41.0%"></div></div>
-        <div class="skill-value">4.1</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Touch &amp; feel</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:69.0%"></div></div>
-        <div class="skill-value">6.9</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Athleticism</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:51.0%"></div></div>
-        <div class="skill-value">5.1</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Creativity</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:29.0%"></div></div>
-        <div class="skill-value">2.9</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Court IQ</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:65.0%"></div></div>
-        <div class="skill-value">6.5</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Consistency</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:79.0%"></div></div>
-        <div class="skill-value">7.9</div>
-      </div>
-    
-      <div class="skill-row">
-        <div class="skill-label">Composure</div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:70.0%"></div></div>
-        <div class="skill-value">7.0</div>
-      </div>
-    
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Three teaching moments from this session</h2>
-      <p class="desc">The AI picks clips that span a strength, a growth area, and a turning point — then writes the coaching note. Real clips, real commentary.</p>
-    </div>
-    
-    <div class="scene">
-      <div class="scene-num">Clip 1</div>
-      <div class="scene-role">Strength</div>
-      <p class="scene-role-desc">Where the player is operating at their peak.</p>
-      <a class="scene-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.mp4" target="_blank" rel="noopener">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="" class="scene-thumb">
-        <div class="scene-q">★ 9/10 · play ↗</div>
-      </a>
-      <div class="scene-text">
-        <div class="scene-label">What happened</div>
-        <p class="scene-summary">A long pickleball dink rally culminates in a speed-up error at the kitchen line.</p>
-        <div class="scene-label">ESPN call</div><p class="scene-espn">A patient rally unfolds at the net, with both teams exchanging precise dinks. The intensity builds as the ball stays low, until a decisive speed-up attempt sails just wide, concluding a hard-fought point.</p>
-        <div class="scene-label">Coaching breakdown</div>
-        <p class="scene-coaching">This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle. Consider a more controlled attack or another dink to open up a better opportunity. Focus on keeping the ball in play and waiting for the high ball.</p>
-      </div>
-    </div>
-    
-    <div class="scene">
-      <div class="scene-num">Clip 2</div>
-      <div class="scene-role">Teaching moment</div>
-      <p class="scene-role-desc">AI-detected pattern worth focused practice.</p>
-      <a class="scene-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3cb70b63-fdc5-4217-8c77-d5a078f1c7b0.mp4" target="_blank" rel="noopener">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3cb70b63-fdc5-4217-8c77-d5a078f1c7b0.jpeg" alt="" class="scene-thumb">
-        <div class="scene-q">★ 7/10 · play ↗</div>
-      </a>
-      <div class="scene-text">
-        <div class="scene-label">What happened</div>
-        <p class="scene-summary">Players execute strategic dinks and a key third shot drop, ending with a volley error.</p>
-        <div class="scene-label">ESPN call</div><p class="scene-espn">A well-executed third shot drop by the near team's player in the blue shirt sets up a strategic advantage. The rally then transitions into a patient dink exchange at the net, showcasing control and touch.</p>
-        <div class="scene-label">Coaching breakdown</div>
-        <p class="scene-coaching">Notice the excellent depth on that third shot drop, forcing the opponents back. The subsequent dinks show good control and patience. The key is to maintain that position and look for opportunities to attack or reset. The volley error at the end highlights the need for consistent footwork and paddle preparation under pressure.</p>
-      </div>
-    </div>
-    
-    <div class="scene">
-      <div class="scene-num">Clip 3</div>
-      <div class="scene-role">Growth area</div>
-      <p class="scene-role-desc">Where intentional reps will compound the fastest.</p>
-      <a class="scene-clip" href="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/52f6ee3d-c53c-4038-90d9-8ca92edd2a7a.mp4" target="_blank" rel="noopener">
-        <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/52f6ee3d-c53c-4038-90d9-8ca92edd2a7a.jpeg" alt="" class="scene-thumb">
-        <div class="scene-q">★ 6/10 · play ↗</div>
-      </a>
-      <div class="scene-text">
-        <div class="scene-label">What happened</div>
-        <p class="scene-summary">Two pairs of players engage in a consistent rally of baseline drives.</p>
-        <div class="scene-label">ESPN call</div><p class="scene-espn">In this pickleball rally, we see a sustained exchange of drives from both sides of the court. The players are demonstrating solid consistency, keeping the ball in play with impressive depth and pace. It's a testament to their focus and control.</p>
-        <div class="scene-label">Coaching breakdown</div>
-        <p class="scene-coaching">Notice the consistent depth on these drives. The players are effectively using the baseline to their advantage, forcing their opponents to react. However, there's a lack of variety; incorporating some dinks or a well-placed drop shot could open up opportunities to move forward and finish points at the net.</p>
-      </div>
-    </div>
-    
-  </section>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Drills, targeted at this week's weakest dimensions</h2>
-      <p class="desc">Recommendations are weighted by your three lowest skill ratings. They change as your DNA improves.</p>
-    </div>
-    <div class="dna-card">
-      
-    <div class="drill">
-      <div class="drill-num">1</div>
-      <div class="drill-body">
-        <div class="drill-targets">Targets: Creativity · current rating 2.9/10</div>
-        <h4>ATP and ernie repetition</h4>
-        <p>Partner feeds wide angle balls; player works around-the-post and erne shots until comfortable improvising.</p>
-      </div>
-    </div>
-    
-    <div class="drill">
-      <div class="drill-num">2</div>
-      <div class="drill-body">
-        <div class="drill-targets">Targets: Power game · current rating 4.1/10</div>
-        <h4>Drive-and-recover ladder</h4>
-        <p>Baseline drives off feeds, immediately split-step and recover to NVZ. 3 sets of 10. Builds explosive transitions.</p>
-      </div>
-    </div>
-    
-    <div class="drill">
-      <div class="drill-num">3</div>
-      <div class="drill-body">
-        <div class="drill-targets">Targets: Athleticism · current rating 5.1/10</div>
-        <h4>Lateral footwork wall drill</h4>
-        <p>Side-shuffle with paddle out, simulating opponent angle changes. 30s on, 30s off, 5 rounds.</p>
-      </div>
-    </div>
-    
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="section-head">
-      <h2>Imagine this for every session.</h2>
-      <p class="desc">No setup. Just play. The cameras are already at your venue — Courtana already records every clip. We turn each one into this.</p>
-    </div>
-  </section>
-
-  <div class="cta">
-    <h3>Bring this to your venue.</h3>
-    <p>Coaches see every player's progress. Players see their own DNA evolve. Venues see retention rise. Booking-agnostic — it layers on top of whatever you already use.</p>
-    <a class="btn" href="mailto:bill@picklebill.com?subject=Coach%20demo%20followup">Talk to us</a>
+<!-- ==================== PLAYER DNA ==================== -->
+<section class="dna-section">
+  <div class="reveal">
+    <p class="section-eyebrow">Player DNA</p>
+    <h2 class="section-title">9-dimension skill profile, updated after every analyzed clip.</h2>
   </div>
 
-  <footer>
-    <div>Pickle DaaS · Snapshot rebuilt 2026-04-13 20:55 UTC</div>
-    <div><a href="../../player-cards/picklebill.html">Full player card ↗</a> · <a href="../showcase-portal.html">Showcase ↗</a></div>
-  </footer>
+  <div class="skill-bars reveal" id="skillBars"></div>
 
-</div>
-</body></html>
+  <p class="dna-summary reveal">
+    <strong>Strongest:</strong> Kitchen Mastery (7.8) &middot; Consistency (7.5).<br>
+    <strong>Growth areas:</strong> Creativity (5.0) &middot; Power (5.5).
+  </p>
+  <p class="dna-tag reveal">184 badge awards earned across 29 analyzed clips</p>
+</section>
+
+<!-- ==================== FILM ROOM ==================== -->
+<section class="film-section">
+  <div class="reveal">
+    <p class="section-eyebrow">Session Film Room</p>
+    <h2 class="section-title">Three moments that tell the story</h2>
+    <p class="section-subtitle">The AI picks a strength, a pattern to break, and a growth area &mdash; then writes the coaching note.</p>
+  </div>
+
+  <!-- CLIP 1 — STRENGTH -->
+  <div class="clip-block reveal">
+    <p class="clip-number">01 &mdash; Strength</p>
+    <p class="clip-role-desc">Where you dominate</p>
+    <div class="video-container" data-video="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.mp4">
+      <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.jpeg" alt="Kitchen battle highlight">
+      <video preload="none" playsinline></video>
+      <div class="clip-badges">
+        <span class="clip-badge">Quality 9</span>
+        <span class="clip-badge">Grind Rally</span>
+      </div>
+      <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+    </div>
+    <div class="commentary">
+      <div class="commentary-col">
+        <h4>ESPN Call</h4>
+        <p>A masterclass in kitchen play. Both teams trade surgical dinks for nearly 30 seconds before the decisive error comes from the far side. PickleBill's composure under sustained pressure is the difference-maker.</p>
+      </div>
+      <div class="commentary-col coaching-col">
+        <h4>Coaching Breakdown</h4>
+        <p>This rally highlights exceptional patience at the kitchen line. PickleBill's soft hands and consistent dink placement forced errors from the opponent. The key takeaway: don't speed up when you're winning the patience game &mdash; let the opponent make the mistake.</p>
+      </div>
+    </div>
+    <div class="clip-summary">Dink, dink, win! Patience pays off in this epic kitchen battle!</div>
+  </div>
+
+  <!-- CLIP 2 — TEACHING MOMENT -->
+  <div class="clip-block reveal">
+    <p class="clip-number">02 &mdash; Teaching Moment</p>
+    <p class="clip-role-desc">The pattern to break</p>
+    <div class="video-container" data-video="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.mp4">
+      <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.jpeg" alt="Baseline driving exchange">
+      <video preload="none" playsinline></video>
+      <div class="clip-badges">
+        <span class="clip-badge">Quality 8</span>
+        <span class="clip-badge">Grind Rally</span>
+      </div>
+      <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+    </div>
+    <div class="commentary">
+      <div class="commentary-col">
+        <h4>ESPN Call</h4>
+        <p>A hard-hitting exchange from the baseline. Both teams trade driving shots, neither willing to approach the net. The point is decided by who maintains consistency longest.</p>
+      </div>
+      <div class="commentary-col coaching-col">
+        <h4>Coaching Breakdown</h4>
+        <p>Here we see PickleBill's tendency to stay at the baseline too long during driving exchanges. While the drives have decent pace, there's an opportunity to transition to the kitchen earlier. Work on the third-shot drop to create approach opportunities.</p>
+      </div>
+    </div>
+    <div class="clip-summary">Baseline battle! Who wins this driving duel?</div>
+  </div>
+
+  <!-- CLIP 3 — GROWTH AREA -->
+  <div class="clip-block reveal">
+    <p class="clip-number">03 &mdash; Growth Area</p>
+    <p class="clip-role-desc">Where to focus next</p>
+    <div class="video-container" data-video="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.mp4">
+      <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.jpeg" alt="Kitchen dink exchange">
+      <video preload="none" playsinline></video>
+      <div class="clip-badges">
+        <span class="clip-badge">Quality 8</span>
+        <span class="clip-badge">Grind Rally</span>
+      </div>
+      <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+    </div>
+    <div class="commentary">
+      <div class="commentary-col">
+        <h4>ESPN Call</h4>
+        <p>A classic kitchen-line exchange featuring patient shot selection and excellent touch from both sides.</p>
+      </div>
+      <div class="commentary-col coaching-col">
+        <h4>Coaching Breakdown</h4>
+        <p>PickleBill shows strong touch but limited creativity at the kitchen. Every dink follows the same cross-court pattern. Adding an occasional inside-out dink or lob would make the soft game much harder to read. Creativity (5.0/10) is the biggest growth lever.</p>
+      </div>
+    </div>
+    <div class="clip-summary">Dink battle at the net! Who's got the touch?</div>
+  </div>
+</section>
+
+<!-- ==================== DRILL PLAN ==================== -->
+<section class="drill-section">
+  <div class="reveal">
+    <p class="section-eyebrow">This Week's Drill Plan</p>
+    <h2 class="section-title">Targeting the three lowest dimensions</h2>
+    <p class="section-subtitle">Updates as your DNA evolves. Every week, the AI recalculates what matters most.</p>
+  </div>
+
+  <div class="drill-cards">
+    <div class="drill-card reveal">
+      <div class="drill-num">01</div>
+      <div class="drill-body">
+        <p class="drill-target">Creativity &middot; 5.0 / 10</p>
+        <p class="drill-name">ATP and Erne Repetition</p>
+        <p class="drill-desc">Partner feeds wide angle balls; work around-the-post and erne shots until comfortable improvising. The goal is making unpredictable shots feel natural so opponents can't read your kitchen game.</p>
+      </div>
+    </div>
+    <div class="drill-card reveal">
+      <div class="drill-num">02</div>
+      <div class="drill-body">
+        <p class="drill-target">Power &middot; 5.5 / 10</p>
+        <p class="drill-name">Drive-and-Recover Ladder</p>
+        <p class="drill-desc">Baseline drives off feeds, immediately split-step and recover to NVZ. 3 sets of 10. Builds explosive transitions so you stop getting stuck at the baseline during driving exchanges.</p>
+      </div>
+    </div>
+    <div class="drill-card reveal">
+      <div class="drill-num">03</div>
+      <div class="drill-body">
+        <p class="drill-target">Athleticism &middot; 6.0 / 10</p>
+        <p class="drill-name">Lateral Footwork Wall Drill</p>
+        <p class="drill-desc">Side-shuffle with paddle out, simulating opponent angle changes. 30 seconds on, 30 seconds off, 5 rounds. Builds the lateral quickness to cover wider angles at the kitchen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== THE PROMISE ==================== -->
+<section class="promise-section">
+  <div class="reveal">
+    <p class="section-eyebrow">The Promise</p>
+    <h2 class="section-title">Imagine this for every session.</h2>
+    <p class="promise-text">
+      No setup. No coaching fee. No manual film review.<br><br>
+      The cameras are already at your venue. Courtana watches every clip, every swing, every play &mdash; and turns it into <strong>this</strong>. Automatically.
+    </p>
+  </div>
+
+  <div class="thumb-grid reveal">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e48580ea-5f5a-42bb-97c4-d78dcce254f5.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3a564f4c-591e-4932-863d-b7a4e9411277.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/fc185d74-4601-4355-97a9-3b12f82dd6fb.jpeg" alt="">
+  </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner reveal">
+    <h2>Bring AI coaching to your venue.</h2>
+    <p>Players see their DNA evolve. Coaches track progress. Venues see retention rise.</p>
+    <a href="mailto:bill@picklebill.com" class="cta-btn">Talk to us</a>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <p class="footer-brand">Pickle DaaS &middot; Snapshot rebuilt 2026-04-13</p>
+  <div class="footer-links">
+    <a href="https://courtana.com/players/01915c59-9bb7-4683-bd53-e28bddcae12e" target="_blank" rel="noopener">PickleBill player card &#8599;</a>
+    <a href="showcase-portal.html" target="_blank" rel="noopener">Showcase Portal &#8599;</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+  /* --- Skill bars --- */
+  var skills = [
+    { name: 'Kitchen Mastery', value: 7.8 },
+    { name: 'Consistency',     value: 7.5 },
+    { name: 'Touch',           value: 7.2 },
+    { name: 'Court IQ',        value: 7.0 },
+    { name: 'Composure',       value: 6.8 },
+    { name: 'Court Coverage',  value: 6.5 },
+    { name: 'Athleticism',     value: 6.0 },
+    { name: 'Power',           value: 5.5 },
+    { name: 'Creativity',      value: 5.0 }
+  ];
+
+  var barsContainer = document.getElementById('skillBars');
+  skills.forEach(function(s) {
+    var row = document.createElement('div');
+    row.className = 'skill-row';
+    row.innerHTML =
+      '<span class="skill-label">' + s.name + '</span>' +
+      '<div class="skill-track"><div class="skill-fill" data-width="' + (s.value * 10) + '"></div></div>' +
+      '<span class="skill-value">' + s.value.toFixed(1) + '</span>';
+    barsContainer.appendChild(row);
+  });
+
+  /* --- IntersectionObserver for reveals + skill bar animation --- */
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.skill-fill');
+        if (fills.length) {
+          fills.forEach(function(fill, i) {
+            setTimeout(function() {
+              fill.style.width = fill.getAttribute('data-width') + '%';
+            }, i * 80);
+          });
+        }
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(function(el) { observer.observe(el); });
+
+  /* --- Video play/pause --- */
+  document.querySelectorAll('.video-container').forEach(function(container) {
+    var videoEl = container.querySelector('video');
+    var videoSrc = container.getAttribute('data-video');
+
+    container.addEventListener('click', function() {
+      if (container.classList.contains('playing')) {
+        videoEl.pause();
+        container.classList.remove('playing');
+      } else {
+        if (!videoEl.src) videoEl.src = videoSrc;
+        container.classList.add('playing');
+        videoEl.play();
+      }
+    });
+
+    videoEl.addEventListener('ended', function() {
+      container.classList.remove('playing');
+    });
+  });
+})();
+</script>
+</body>
+</html>
