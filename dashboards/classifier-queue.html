@@ -97,6 +97,28 @@
     color: var(--accent); font-size: 11px; font-weight: 600;
     white-space: nowrap;
   }
+  .override-row {
+    display: flex; gap: 12px; align-items: center; margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .override-label {
+    font-size: 11px; color: var(--mute); text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .override-select {
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 8px; font-size: 12px; font-family: inherit;
+    cursor: pointer;
+  }
+  .override-select.changed {
+    border-color: var(--warn); color: var(--warn); font-weight: 600;
+  }
+  .value-chip { font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+  .value-chip.high { background: #4ade80; color: #0b0f14; }
+  .value-chip.medium { background: #60a5fa; color: #0b0f14; }
+  .value-chip.low { background: var(--panel-hi); color: var(--mute); }
+  .value-chip.none { background: var(--panel-hi); color: var(--mute); }
   details summary { cursor: pointer; color: var(--mute); font-size: 12px; margin-top: 8px; }
   details pre {
     background: var(--bg); padding: 10px; border-radius: 6px; overflow-x: auto;
@@ -190,7 +212,17 @@ python3 tools/push-to-ghpages.py</pre>
   let proposals = [];
   let decisions = {};  // { brand_key: 'approve' | 'reject' | 'investigate' }
   let comments = {};   // { brand_key: 'free-text note' }
+  let overrides = {};  // { brand_key: { category: str, value: str } }
   const COMMENTS_KEY = 'classifier-comments-v1';
+  const OVERRIDES_KEY = 'classifier-overrides-v1';
+
+  const CATEGORY_OPTIONS = [
+    'paddle', 'shoes', 'apparel', 'bag', 'ball', 'accessory',
+    'camera', 'broadcast_tech', 'net_system', 'court_surface',
+    'scoreboard', 'sponsor_signage', 'facility_chain', 'venue_brand',
+    'venue_equipment', 'unknown'
+  ];
+  const VALUE_OPTIONS = ['high', 'medium', 'low', 'none'];
 
   function loadDecisions() {
     try {
@@ -201,16 +233,35 @@ python3 tools/push-to-ghpages.py</pre>
       const c = localStorage.getItem(COMMENTS_KEY);
       comments = c ? JSON.parse(c) : {};
     } catch(e) { comments = {}; }
+    try {
+      const o = localStorage.getItem(OVERRIDES_KEY);
+      overrides = o ? JSON.parse(o) : {};
+    } catch(e) { overrides = {}; }
   }
   function saveDecisions() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(decisions));
     localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
+    localStorage.setItem(OVERRIDES_KEY, JSON.stringify(overrides));
   }
   function setComment(key, text) {
     if (text && text.trim()) comments[key] = text.trim();
     else delete comments[key];
     saveDecisions();
     updateStats();
+  }
+  function setOverride(key, field, value) {
+    overrides[key] = overrides[key] || {};
+    overrides[key][field] = value;
+    saveDecisions();
+    updateStats();
+  }
+  function overrideCategory(k, proposal) {
+    return (overrides[k] && overrides[k].category)
+           || (proposal.classifications && proposal.classifications[0] && proposal.classifications[0].category_primary)
+           || 'unknown';
+  }
+  function overrideValue(k, proposal) {
+    return (overrides[k] && overrides[k].value) || proposal.revenue_potential || 'low';
   }
   function keyFor(p) { return (p.brand || '').toLowerCase().trim(); }
 
@@ -253,6 +304,19 @@ python3 tools/push-to-ghpages.py</pre>
             <span>cats: ${escapeHtml(cats)}</span>
           </div>
           ${p.rationale ? `<div class="rationale">${escapeHtml(p.rationale)}</div>` : ''}
+          <div class="override-row">
+            <span class="override-label">Category →</span>
+            <select class="override-select ${overrides[k] && overrides[k].category && overrides[k].category !== (cls.category_primary||'unknown') ? 'changed' : ''}"
+                    onchange="setOverride('${k}','category',this.value)">
+              ${CATEGORY_OPTIONS.map(o => `<option value="${o}" ${overrideCategory(k, p) === o ? 'selected' : ''}>${o}</option>`).join('')}
+            </select>
+            <span class="override-label" style="margin-left:8px">Value →</span>
+            <select class="override-select ${overrides[k] && overrides[k].value && overrides[k].value !== (p.revenue_potential||'low') ? 'changed' : ''}"
+                    onchange="setOverride('${k}','value',this.value)">
+              ${VALUE_OPTIONS.map(o => `<option value="${o}" ${overrideValue(k, p) === o ? 'selected' : ''}>${o}</option>`).join('')}
+            </select>
+            <span class="value-chip ${overrideValue(k, p)}">${overrideValue(k, p)}</span>
+          </div>
           <div class="actions">
             <button class="success" onclick="decide('${k}','approve')">✅ Approve</button>
             <button class="danger"  onclick="decide('${k}','reject')">❌ Reject</button>
@@ -307,15 +371,18 @@ python3 tools/push-to-ghpages.py</pre>
     const lines = proposals
       .filter(p => {
         const k = keyFor(p);
-        return decisions[k] || comments[k];
+        return decisions[k] || comments[k] || overrides[k];
       })
       .map(p => {
         const k = keyFor(p);
+        const o = overrides[k] || {};
         return JSON.stringify({
           brand: p.brand,
           aliases: p.aliases || [],
           decision: decisions[k] || 'investigate',
           note: comments[k] || '',
+          override_category: o.category || '',
+          override_value: o.value || '',
           classifications: p.classifications || [],
           revenue_potential: p.revenue_potential || 'low',
           rationale: p.rationale || '',
