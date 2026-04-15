@@ -204,17 +204,20 @@
 <div class="stat-grid" id="stats"></div>
 
 <div class="toolbar">
-  <span>Bulk:</span>
-  <button class="primary" onclick="approveAndShip()">⚡ Approve ≥0.85 + Reject Cross-Sport + Download</button>
-  <button class="success" onclick="approveAllHighConfidence()">✅ Approve ≥0.85</button>
+  <span>Autopilot ON — conservative mode. You only see items needing judgment.</span>
   <button class="danger" onclick="rejectAllCrossSport()">❌ Reject Cross-Sport</button>
-  <button onclick="approveAll()">Approve All</button>
-  <button onclick="rejectAll()">Reject All</button>
   <button onclick="clearDecisions()">Clear</button>
-  <span style="margin-left:auto">⚡ = one-click batch ship</span>
 </div>
 
 <div id="proposals"></div>
+
+<div class="section-head">🤖 Autopilot activity (no action needed)</div>
+<details id="autopilot-details" style="margin-bottom:20px">
+  <summary style="cursor:pointer;padding:8px 12px;background:var(--panel);border:1px solid var(--border);border-radius:6px">
+    <span id="autopilot-summary">Loading…</span>
+  </summary>
+  <div id="autopilot-content" style="padding:12px;background:var(--panel);border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px"></div>
+</details>
 
 <div class="section-head">Approved Taxonomy</div>
 <div id="taxonomy"></div>
@@ -223,12 +226,10 @@
 <div class="rationale" style="border-left-color:var(--warn)">
   When you click <b>Submit Batch</b>, your decisions are downloaded as
   <code>classifier-decisions.jsonl</code>. Drop that file in
-  <code>PICKLE-DAAS/output/classifier/</code> and run:
-  <pre style="background:var(--bg); padding:8px; margin-top:6px; border-radius:4px">python3 tools/apply-decisions.py
-python3 tools/apply-classification.py
-python3 tools/push-to-ghpages.py</pre>
-  Or: decisions are also saved to <code>localStorage</code> — you can reload this
-  page and they'll still be there.
+  <code>PICKLE-DAAS/output/classifier/</code> and run ONE command:
+  <pre style="background:var(--bg); padding:8px; margin-top:6px; border-radius:4px">python3 tools/commit-classifier-batch.py</pre>
+  That replaces the old 3-command sequence. Decisions also save to <code>localStorage</code>
+  — you can reload this page and they'll still be there.
 </div>
 
 </main>
@@ -240,7 +241,11 @@ python3 tools/push-to-ghpages.py</pre>
   const PROPOSALS_URL = '../classifier/proposed-rules.json';
   const TAXONOMY_URL = '../classifier/approved-rules.json';
   const STATS_URL = '../classification-stats.json';
+  const AUTO_SKIP_URL = '../classifier/auto-skipped.json';
+  const DEFERRED_URL = '../classifier/deferred-investigate.json';
+  const AUTO_APPROVAL_URL = '../classifier/auto-approvals-log.json';
   const STORAGE_KEY = 'classifier-decisions-v1';
+  const MAX_QUEUE_DISPLAY = 15;  // Conservative autopilot — show at most this many
 
   let proposals = [];
   let decisions = {};  // { brand_key: 'approve' | 'reject' | 'investigate' }
@@ -349,11 +354,29 @@ python3 tools/push-to-ghpages.py</pre>
 
   function renderProposals() {
     const container = document.getElementById('proposals');
-    if (!proposals.length) {
-      container.innerHTML = '<div class="empty">No pending proposals. Run <code>python3 agents/analysts/classifier.py --quick</code> to generate some.</div>';
+    // Filter to items that actually need a decision: skip auto-confidence items the autopilot already handled
+    const needsReview = proposals.filter(p => {
+      const conf = +p.confidence || 0;
+      // Keep things in the "needs judgment" band: 0.30-0.90
+      // Also keep cross-sport (Bill should see them to confirm reject)
+      if (p.cross_sport_warning) return true;
+      if (conf >= 0.30 && conf <= 0.90) return true;
+      return false;
+    });
+    const displayed = needsReview.slice(0, MAX_QUEUE_DISPLAY);
+    const hiddenCount = needsReview.length - displayed.length;
+
+    if (!displayed.length) {
+      container.innerHTML = `<div class="empty">
+        <p><b>Queue is empty.</b> Autopilot handled everything.</p>
+        <p style="font-size:12px;margin-top:8px">${proposals.length} proposals processed — ${needsReview.length} needed human review (all ${displayed.length} shown).</p>
+      </div>`;
       return;
     }
-    container.innerHTML = proposals.map(p => {
+    container.innerHTML = `<p class="sub" style="color:var(--mute);font-size:12px;margin-bottom:12px">
+      Showing <b>${displayed.length}</b> items needing your judgment${hiddenCount ? ` (+${hiddenCount} more hidden — narrow queue to stay fresh)` : ''}.
+      Autopilot silently handled the rest. See footer for details.
+    </p>` + displayed.map(p => {
       const k = keyFor(p);
       const dec = decisions[k];
       const conf = +p.confidence || 0;
@@ -546,6 +569,50 @@ python3 tools/push-to-ghpages.py</pre>
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  async function renderAutopilotFooter() {
+    const [skipped, deferred, approvals] = await Promise.all([
+      fetch(AUTO_SKIP_URL, {cache:'no-store'}).then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(DEFERRED_URL, {cache:'no-store'}).then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(AUTO_APPROVAL_URL, {cache:'no-store'}).then(r => r.ok ? r.json() : null).catch(() => null),
+    ]);
+
+    const skipCount = skipped?.skipped?.length || 0;
+    const deferCount = deferred?.brands?.length || 0;
+    const autoApproveCount = approvals?.log?.length || 0;
+
+    document.getElementById('autopilot-summary').innerHTML =
+      `🤖 Silent decisions: <b style="color:var(--accent)">${autoApproveCount}</b> auto-approved · <b>${skipCount}</b> skipped as OCR junk · <b>${deferCount}</b> deferred after repeat investigate. Click to expand.`;
+
+    let body = '';
+    if (autoApproveCount) {
+      const recent = (approvals.log || []).slice(-8).reverse();
+      body += `<h4 style="margin:0 0 8px;color:var(--accent)">Auto-approved (research-confirmed, conf ≥ 0.90):</h4>
+        <ul style="list-style:none;padding:0;margin:0 0 16px">
+          ${recent.map(a => `<li style="padding:4px 0;font-size:13px;color:var(--mute)">
+            <b style="color:var(--text)">${escapeHtml(a.brand)}</b>
+            <span style="font-size:11px;margin-left:8px">conf ${(a.confidence*100).toFixed(0)}%</span>
+          </li>`).join('')}
+        </ul>`;
+    }
+    if (skipCount) {
+      const top = (skipped.skipped || []).slice(0, 12);
+      body += `<h4 style="margin:0 0 8px;color:var(--mute)">Auto-skipped (OCR artifacts, Wi-Fi SSIDs, dates):</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px">
+          ${top.map(s => `<span class="category-chip" style="font-size:11px" title="${escapeAttr(s.reason)} · ${s.detections} detections">${escapeHtml(s.brand)}</span>`).join('')}
+          ${skipped.skipped.length > 12 ? `<span class="category-chip" style="color:var(--mute)">+${skipped.skipped.length - 12} more</span>` : ''}
+        </div>`;
+    }
+    if (deferCount) {
+      const top = (deferred.brands || []).slice(0, 10);
+      body += `<h4 style="margin:0 0 8px;color:var(--warn)">Deferred (proposed 3+ times, parked):</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          ${top.map(d => `<span class="category-chip" style="font-size:11px">${escapeHtml(d.brand)}</span>`).join('')}
+        </div>`;
+    }
+    if (!body) body = '<p style="color:var(--mute);font-size:13px;margin:0">No autopilot activity yet.</p>';
+    document.getElementById('autopilot-content').innerHTML = body;
+  }
+
   async function boot() {
     loadDecisions();
     try {
@@ -564,6 +631,7 @@ python3 tools/push-to-ghpages.py</pre>
     } catch(e) { renderTaxonomy({rules: []}); }
     renderProposals();
     updateStats();
+    renderAutopilotFooter();
   }
   boot();
 </script>

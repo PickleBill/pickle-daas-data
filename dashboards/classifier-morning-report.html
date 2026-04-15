@@ -37,28 +37,39 @@
 <body>
 <header>
   <h1>Classifier — Morning Report</h1>
-  <div class="sub">Generated 2026-04-15 04:29 · Taxonomy v5 · Coverage 92.6%</div>
+  <div class="sub">Generated 2026-04-15 11:54 · Taxonomy v6 · Coverage 91.5%</div>
 </header>
 <main>
 
+<div style="padding:14px 18px;background:rgba(251,191,36,0.12);border:1px solid var(--warn);border-left:4px solid var(--warn);border-radius:8px;margin-bottom:24px;color:var(--text);font-size:14px;line-height:1.5">
+  <b>⚠ Ingest diversity — known limitation:</b> All 1968+ corpus clips come from ONE
+  Courtana user account (UUID <code>01915c59-...</code>). Courtana's anon endpoint is
+  server-side filtered to that account. This is a Courtana backend ticket, not a DaaS
+  issue. Classification engine still ships value; new user accounts will auto-expand
+  diversity when backend is updated. See
+  <code>PICKLE-DAAS/INGEST-DIVERSITY-FINDING.md</code>.
+</div>
+
 <a class="cta" href="classifier-queue.html">→ Open the Queue</a>
 <a class="cta" href="brand-intelligence-v2.html" style="background:var(--panel);color:var(--text);border:1px solid var(--border)">Brand Intel V2</a>
+<a class="cta" href="../api/sponsors.json" style="background:var(--panel);color:var(--text);border:1px solid var(--border)" target="_blank">sponsors.json</a>
+<a class="cta" href="../api/player-equipment.json" style="background:var(--panel);color:var(--text);border:1px solid var(--border)" target="_blank">player-equipment.json</a>
 
 <section>
 <h2>Status</h2>
 <div class="stat-grid">
   <div class="stat">
-            <div class="stat-value" style="">49</div>
+            <div class="stat-value" style="">54</div>
             <div class="stat-label">Approved rules</div>
             
         </div>
   <div class="stat">
-            <div class="stat-value" style="">40</div>
+            <div class="stat-value" style="">15</div>
             <div class="stat-label">Pending in queue</div>
             <div class="stat-sub">review now</div>
         </div>
   <div class="stat">
-            <div class="stat-value" style="">92.6%</div>
+            <div class="stat-value" style="">91.5%</div>
             <div class="stat-label">Coverage</div>
             <div class="stat-sub">rule-classified</div>
         </div>
@@ -68,17 +79,17 @@
             <div class="stat-sub">non-PB pollution</div>
         </div>
   <div class="stat">
-            <div class="stat-value" style="">50</div>
+            <div class="stat-value" style="">60</div>
             <div class="stat-label">Investigate queue</div>
             <div class="stat-sub">needs deeper look</div>
         </div>
   <div class="stat">
-            <div class="stat-value" style="color:var(--warn)">5</div>
+            <div class="stat-value" style="color:var(--warn)">9</div>
             <div class="stat-label">Cross-sport warnings</div>
             <div class="stat-sub">from auto-research</div>
         </div>
   <div class="stat">
-            <div class="stat-value" style="">4</div>
+            <div class="stat-value" style="">8</div>
             <div class="stat-label">High-relevance brands</div>
             <div class="stat-sub">auto-discovered</div>
         </div>
@@ -90,19 +101,19 @@
 </div>
 </section>
 
-<section><h2>🚨 Cross-sport pollution found</h2><table><thead><tr><th>Brand</th><th>What it is</th><th>Action</th></tr></thead><tbody><tr><td><b>ELGOUNA</b></td><td>El Gouna is a squash resort and tournament venue; cross-sport contamination in dataset</td><td class="warn">El Gouna is a squash tournament and resort venue in Egypt; this is cross-sport data pollution and should be excluded from pickleball sponsor</td></tr><tr><td><b>COLUMBIA</b></td><td>Columbia Sportswear, national outdoor apparel company; detected in squash tournament context</td><td class="warn">Columbia Sportswear is a general sportswear brand appearing in squash tournament footage; cross-sport data pollution. While they could spons</td></tr><tr><td><b>MALAYSIA</b></td><td>Country name; likely OCR error or text fragment from larger sponsor name in squash tournament context</td><td class="warn">Country name detected in squash tournament footage; data quality issue.</td></tr><tr><td><b>SQUASH CUP</b></td><td>Tournament name or squash event sponsorship; not relevant to pickleball</td><td class="warn">Squash Cup is a squash tournament sponsorship; cross-sport contamination. This video should be excluded from pickleball dataset.</td></tr><tr><td><b>IB</b></td><td>Two-letter acronym from squash tournament context; likely financial services brand (e.g., Islamic Bank) but insufficient</td><td class="warn">Detected in squash tournament footage; cross-sport data contamination.</td></tr></tbody></table></section>
+<section><h2>🚨 Cross-sport pollution found</h2><table><thead><tr><th>Brand</th><th>What it is</th><th>Action</th></tr></thead><tbody><tr><td><b>ELGOUNA</b></td><td>El Gouna is a squash resort and tournament venue; cross-sport contamination in dataset</td><td class="warn">El Gouna is a squash tournament and resort venue in Egypt; this is cross-sport data pollution and should be excluded from pickleball sponsor</td></tr><tr><td><b>COLUMBIA</b></td><td>Columbia Sportswear, national outdoor apparel company; detected in squash tournament context</td><td class="warn">Columbia Sportswear is a general sportswear brand appearing in squash tournament footage; cross-sport data pollution. While they could spons</td></tr><tr><td><b>MALAYSIA</b></td><td>Country name; likely OCR error or text fragment from larger sponsor name in squash tournament context</td><td class="warn">Country name detected in squash tournament footage; data quality issue.</td></tr><tr><td><b>SQUASH CUP</b></td><td>Tournament name or squash event sponsorship; not relevant to pickleball</td><td class="warn">Squash Cup is a squash tournament sponsorship; cross-sport contamination. This video should be excluded from pickleball dataset.</td></tr><tr><td><b>IB</b></td><td>Two-letter acronym from squash tournament context; likely financial services brand (e.g., Islamic Bank) but insufficient</td><td class="warn">Detected in squash tournament footage; cross-sport data contamination.</td></tr><tr><td><b>Fila</b></td><td>Italian athletic footwear and apparel brand.</td><td class="warn">Fila is a cross-sport athletic brand; detections on shoes/apparel are equipment-based rather than venue sponsorship.</td></tr><tr><td><b>Odyssey</b></td><td>Honda Odyssey minivan vehicle model.</td><td class="warn">Vehicle brand with no pickleball venue or sponsorship relevance; likely background parking lot signage.</td></tr><tr><td><b>New Balance</b></td><td>Boston-based athletic footwear and apparel manufacturer.</td><td class="warn">New Balance is a cross-sport athletic brand; detections on shoes are equipment-based rather than venue sponsorship.</td></tr><tr><td><b>ASICS</b></td><td>Japanese multinational athletic footwear and apparel company.</td><td class="warn">ASICS is a cross-sport athletic brand; detections on shoes are equipment-based rather than venue sponsorship.</td></tr></tbody></table></section>
 
-<section><h2>⭐ High pickleball relevance (newly researched)</h2><table><thead><tr><th>Brand</th><th>What it is</th><th>Subtype</th><th>Website</th></tr></thead><tbody><tr><td><b>PUSHIT</b></td><td>Pickleball apparel and equipment brand</td><td>technology</td><td>—</td></tr><tr><td><b>PKLR</b></td><td>Pickleball-specific apparel brand</td><td>technology</td><td>—</td></tr><tr><td><b>PBS</b></td><td>Pickleball apparel brand (likely independent label, not PBS public broadcasting)</td><td>technology</td><td>—</td></tr><tr><td><b>PSA</b></td><td>Pickleball-related sponsorship or venue partner (acronym; full name unclear without visual confirmation)</td><td>other_corporate</td><td>—</td></tr></tbody></table></section>
+<section><h2>⭐ High pickleball relevance (newly researched)</h2><table><thead><tr><th>Brand</th><th>What it is</th><th>Subtype</th><th>Website</th></tr></thead><tbody><tr><td><b>PUSHIT</b></td><td>Pickleball apparel and equipment brand</td><td>technology</td><td>—</td></tr><tr><td><b>PKLR</b></td><td>Pickleball-specific apparel brand</td><td>technology</td><td>—</td></tr><tr><td><b>PBS</b></td><td>Pickleball apparel brand (likely independent label, not PBS public broadcasting)</td><td>technology</td><td>—</td></tr><tr><td><b>PSA</b></td><td>Pickleball-related sponsorship or venue partner (acronym; full name unclear without visual confirmation)</td><td>other_corporate</td><td>—</td></tr><tr><td><b>THE UNDERGROUND PICKLEBALL</b></td><td>Pickleball facility and venue chain with multiple locations.</td><td>regional_corporate</td><td>—</td></tr><tr><td><b>Wilson</b></td><td>Major multinational sporting goods manufacturer specializing in racquets, balls, and athletic equipment.</td><td>national_corporate</td><td><a href="https://www.wilson.com" target="_blank">link</a></td></tr><tr><td><b>THE RECOVERY CAVE</b></td><td>Wellness and recovery facility offering cryotherapy, compression, and other recovery services.</td><td>wellness_recovery</td><td>—</td></tr><tr><td><b>BODYARMOR</b></td><td>Sports beverage brand owned by The Coca-Cola Company, marketed for athletic hydration.</td><td>food_beverage_sponsor</td><td><a href="https://www.bodyarmorsports.com" target="_blank">link</a></td></tr></tbody></table></section>
 
-<section><h2>Sponsor sub-type distribution</h2><div><span class="mute">none yet</span></div></section>
+<section><h2>Sponsor sub-type distribution</h2><div><span class="chip">national_corporate: <b>2</b></span><span class="chip">regional_corporate: <b>1</b></span><span class="chip">wellness_recovery: <b>1</b></span><span class="chip">food_beverage_sponsor: <b>1</b></span></div></section>
 
-<section><h2>Pending in queue (top 8)</h2><ul class="pending"><li><b>Foz_Bullet</b> <span class="chip">camera</span> <span class="mute">conf 0.70</span></li><li><b>R&amp;M_foz_wifi_goomba</b> <span class="chip">unknown</span> <span class="mute">conf 0.20</span></li><li><b>N</b> <span class="chip">unknown</span> <span class="mute">conf 0.15</span></li><li><b>4K</b> <span class="chip">unknown</span> <span class="mute">conf 0.10</span></li><li><b>ODESSA</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.60</span></li><li><b>PSA</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.50</span></li><li><b>PKLR</b> <span class="chip">apparel</span> <span class="mute">conf 0.65</span></li><li><b>W</b> <span class="chip">unknown</span> <span class="mute">conf 0.20</span></li></ul></section>
+<section><h2>Pending in queue (top 8)</h2><ul class="pending"><li><b>ODESSA</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.75</span></li><li><b>PSA</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.65</span></li><li><b>PKLR</b> <span class="chip">apparel</span> <span class="mute">conf 0.70</span></li><li><b>FANADIR</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.65</span></li><li><b>READY TO PLAY</b> <span class="chip">facility_chain</span> <span class="mute">conf 0.75</span></li><li><b>Fila</b> <span class="chip">shoes</span> <span class="mute">conf 0.30</span></li><li><b>VAERSA</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.65</span></li><li><b>DUDE</b> <span class="chip">apparel</span> <span class="mute">conf 0.70</span></li></ul></section>
 
 <section><h2>Roadmap status</h2>
 <div class="roadmap">
-  <div class="roadmap-card">✅ <b>Classification engine</b> — taxonomy v5, 49 rules, 92.6% coverage</div>
+  <div class="roadmap-card">✅ <b>Classification engine</b> — taxonomy v6, 54 rules, 91.5% coverage</div>
   <div class="roadmap-card">✅ <b>Visual evidence on cards</b> — thumbnails + click-to-play</div>
-  <div class="roadmap-card">✅ <b>Sponsor sub-types</b> — 0 categories in active use</div>
+  <div class="roadmap-card">✅ <b>Sponsor sub-types</b> — 4 categories in active use</div>
   <div class="roadmap-card">✅ <b>Auto-research</b> — Claude identifies unknown brands, flags cross-sport pollution</div>
   <div class="roadmap-card">✅ <b>Capture source axis</b> — courtana_venue vs manual_upload tagged on every clip</div>
   <div class="roadmap-card">✅ <b>Quarantine system</b> — non-PB clips flagged but kept in corpus</div>

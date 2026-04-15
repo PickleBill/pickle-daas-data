@@ -1,6 +1,6 @@
 {
   "run_id": "classifier-lab-2026-04-15",
-  "generated_at": "2026-04-15T08:16:47.850418+00:00",
+  "generated_at": "2026-04-15T14:53:12.526576+00:00",
   "mode": "full",
   "researchers_run": 6,
   "corpus_stats": {
@@ -17,149 +17,149 @@
   },
   "top_strategic": [
     {
-      "finding_id": "wildcard-20260415-2375",
+      "finding_id": "wildcard-20260415-1166",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938812+00:00",
-      "title": "Brand Safety Engine for Sports Streaming",
-      "confidence": 0.92,
-      "evidence_summary": "Every sports streamer fears misattribution and brand safety disasters. Offer a white-label real-time classifier that flags brand appearances, validates them against streamer's approved list, and auto-blocks or flags unsafe associations. Your 49-rule corpus becomes the gold standard; you own the SLA for accuracy.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: platform_play play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.92,
-        "category": "platform_play"
-      },
-      "composite_score": 0.936,
-      "counterargument": {
-        "argument": "Streamers already have legal+compliance teams reviewing brand safety \u2014 this adds a dependency on your classifier's recall, not their existing workflows.",
-        "risk": "If your classifier misses a brand appearance (false negative), the streamer's compliance team still catches it, but now they distrust your system and stop using it. If you over-flag (false positive), you create alert fatigue and the streamer disables the feature. Either way, you've inserted yourself into a critical safety path without solving the core problem \u2014 human review is still required.",
-        "severity": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-7851",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938840+00:00",
-      "title": "Venue Operating System: Sponsor Dashboard",
+      "generated_at": "2026-04-15T14:52:59.163084+00:00",
+      "title": "Taxonomy Franchise: 'Brand Rules Engine for [Sport]'",
       "confidence": 0.88,
-      "evidence_summary": "Embed the classifier into venue software. Real-time sponsor dashboard: 'Your brand appeared 47 times in last 3 tournaments, 23 of those in broadcast-grade moments.' Venues become the distribution layer for your classifier. They upsell sponsors on data; you get higher accuracy feedback and recurring venue licensing.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: platform_play play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.88,
-        "category": "platform_play"
-      },
-      "composite_score": 0.924,
-      "counterargument": {
-        "argument": "Venues care about sponsorship ROI, not brand appearance counts \u2014 they want attribution tied to viewer engagement or sales lift, which your classifier doesn't measure.",
-        "risk": "You're embedding a classifier into venue software that answers 'how many times did this brand appear?' but venues actually need 'did this appearance drive sponsor value?' Without converting raw detections into business metrics, adoption stalls and venues rip out the integration. If venues start making sponsorship renewal decisions based on your appearance counts alone, you're liable for inflated or deflated metrics that affect their revenue.",
-        "severity": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-4639",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938852+00:00",
-      "title": "Taxonomy Licensing to Competing Sports Data Vendors",
-      "confidence": 0.87,
-      "evidence_summary": "Tennis/padel/squash data companies are solving your old problem \u2014 they built generic classifiers. License them the pickleball taxonomy structure, the rule-writing methodology, and crucially: your decision-loop framework (classifier\u2192human\u2192update\u2192retrain). They pay per sport instance; each sport improves your core IP.",
+      "evidence_summary": "License our methodology (not just rules, but the *decision loop itself*) to tennis, padel, and squash data companies. They upload their corpus; we train a sport-specific classifier and charge them per classification + monthly seats. We become the infrastructure layer for sports brand intelligence.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: licensing play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.87,
+        "flywheel_score": 0.88,
         "category": "licensing"
       },
-      "composite_score": 0.921,
+      "composite_score": 0.924,
       "counterargument": {
-        "argument": "Competing sports data vendors already have domain expertise and customer relationships \u2014 licensing your taxonomy doesn't guarantee they'll use it correctly or maintain quality alignment.",
-        "risk": "If a tennis vendor licenses your rules but applies them loosely (different video quality, different rule interpretation), they'll produce bad classifications under your methodology name, damaging your brand. You also lose control over taxonomy evolution \u2014 they'll fork it, and now you have fragmented versions in the wild. Auditing their implementations will become expensive, and you have no leverage to force them to stay aligned.",
+        "argument": "Licensing the decision loop itself assumes your pickleball rules are generalizable to tennis/padel/squash, which have completely different equipment, court layouts, and sponsorship norms.",
+        "risk": "You'll export rules that don't transfer (e.g., 'paddle logo rules' don't apply to tennis rackets), creating broken classifiers in partner systems that reflect back on your credibility. Silent failures in downstream partner dashboards will be impossible to debug without access to their data.",
         "severity": "high"
       }
     },
     {
-      "finding_id": "wildcard-20260415-9395",
+      "finding_id": "wildcard-20260415-5675",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938862+00:00",
-      "title": "Open-Source Classifier + Managed Service Upsell",
+      "generated_at": "2026-04-15T14:52:59.163107+00:00",
+      "title": "Brand Licensing Network (Marketplace Play)",
+      "confidence": 0.87,
+      "evidence_summary": "Build a two-sided marketplace: brands can register themselves + their *approved appearance rules* (e.g., 'JOOLA logos only on paddles, not on apparel'). Venues/streamers query the API: 'Is this appearance compliant?' Revenue from brands (verification), venues (lookups), and licensees (premium terms). You become brand-athlete-venue arbiter.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.87,
+        "category": "platform_play"
+      },
+      "composite_score": 0.921,
+      "counterargument": {
+        "argument": "A brand-managed marketplace assumes brands will self-report accurate appearance rules, which creates garbage-in-garbage-out risk and shifts taxonomy maintenance burden to external actors.",
+        "risk": "Brands will either over-report (claiming restrictions that don't exist) or under-report (hiding restrictions) to game visibility. Your classifier will now be a patchwork of self-served rules you can't audit. Downstream consumers (venues, reports) will lose trust when rules contradict each other or change without notice.",
+        "severity": "medium"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-2238",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163119+00:00",
+      "title": "Brand Safety API for Sports Broadcasters",
       "confidence": 0.85,
-      "evidence_summary": "Release the 49-rule taxonomy and decision logic as Apache 2.0. Competing sports and venues adopt it freely. Monetize the managed tier: we host it, we retrain it monthly with your footage, we guarantee 95%+ accuracy. Free adoption \u2192 high switching costs \u2192 recurring SaaS revenue.",
+      "evidence_summary": "Sell real-time classification-as-a-service to ESPN, YouTube Gaming, and Twitch so they can auto-flag, blur, or report unlicensed brand appearances in live sports. We own the taxonomy + rules; they own the distribution. Revenue: per-match SaaS + data licensing.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.85,
+        "category": "platform_play"
+      },
+      "composite_score": 0.915,
+      "counterargument": {
+        "argument": "Real-time blur/flag API on live broadcasts creates legal liability if your classifier misidentifies a brand or flags a legitimate appearance, especially if broadcasters auto-act on your output without human review.",
+        "risk": "A single false positive that causes ESPN to blur a sponsor's logo during a live match is a lawsuit and reputation damage. You're shifting classification risk from internal rules to external action\u2014broadcasters will demand SLAs and indemnification you can't provide. Silent classifier drift will now have immediate on-air consequences.",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-4509",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163129+00:00",
+      "title": "Brand Intel Consortium (Cooperative Play)",
+      "confidence": 0.84,
+      "evidence_summary": "Partner with 5\u201310 sports data companies (tennis, padel, esports, etc.) to pool decision logs and taxonomies into a shared neutral registry. Sell *aggregate cross-sport brand trends* back to CPG companies and agencies ('Where is Nike gaining mindshare across racquet sports?'). You own the data backbone and licensing terms.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: partnership_flip play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.84,
+        "category": "partnership_flip"
+      },
+      "composite_score": 0.912,
+      "counterargument": {
+        "argument": "A neutral registry across 5\u201310 companies assumes you can align taxonomies and governance models\u2014both are expensive migrations that typically take 12+ months and fail.",
+        "risk": "Each partner has different classification needs and political incentives. Merging taxonomies will either water down precision (by averaging to lowest-common-denominator rules) or create silos (defeating the 'pooling' goal). You'll spend more time on governance than on the actual product signal.",
+        "severity": "medium"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-0587",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163138+00:00",
+      "title": "Competitor Intelligence Subscription (Dark Pattern Play)",
+      "confidence": 0.82,
+      "evidence_summary": "Run the classifier on all public/competitor footage (tournaments, YouTube, TikTok) and sell monthly reports: 'What brands are gaining shelf-space in pickleball? Where is your brand losing visibility?' Monetize FOMO and market share anxiety. Data moat: only we have the calibrated rules.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: media_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.82,
+        "category": "media_play"
+      },
+      "composite_score": 0.906,
+      "counterargument": {
+        "argument": "Monitoring competitor footage without explicit rights may expose you to copyright and right-of-publicity claims, especially if you're re-selling competitor intelligence.",
+        "risk": "This is a legal minefield disguised as a product finding. Even if footage is public, scraping and monetizing it without consent invites cease-and-desist letters from tournament operators and athletes. The 0.82 confidence is borrowed credibility\u2014this is a business/legal decision, not a classifier finding.",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-3665",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163148+00:00",
+      "title": "Automated Rights-Management Workflow Tool",
+      "confidence": 0.81,
+      "evidence_summary": "Sell to venues and tournament organizers: upload match footage, our classifier auto-flags every brand appearance, auto-generates licensing invoices, and auto-rejects illegal appearances in real-time broadcasts. Revenue: per-venue + per-match micro-transactions. Becomes essential ops infra.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: tool_spinoff play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.85,
-        "category": "tool_spinoff"
-      },
-      "composite_score": 0.915,
-      "counterargument": {
-        "argument": "Open-sourcing the taxonomy invites rule contributions from low-quality actors, fragmenting the standard and degrading the managed service's value prop.",
-        "risk": "If you release 49 rules under Apache 2.0, someone will fork it, add 100 bad rules, and call it 'Pickle Classifier Pro.' Your managed service now competes against a free variant that might actually be more feature-complete (even if lower quality). Venues and brands won't pay for 'guaranteed 95%+ accuracy' when a free fork claims 98%. You also lose audit control \u2014 you can't enforce that commercial forks maintain your accuracy standards, creating liability if a bad fork is used for compliance decisions.",
-        "severity": "medium"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-3747",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938871+00:00",
-      "title": "Crowdsourced Rule Expansion as a Moat",
-      "confidence": 0.84,
-      "evidence_summary": "Commission external sports leagues (badminton, pickleball in 15 countries, padel) to supply footage + human reviewers. They help you build region/sport variants of the 49-rule core. You own the aggregate decision data; they get localized classifier. Data moat deepens; you become the standard.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: crowdsource play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.84,
-        "category": "crowdsource"
-      },
-      "composite_score": 0.912,
-      "counterargument": {
-        "argument": "Crowdsourcing rule expansion introduces quality variance and dilutes ownership of the decision-making framework.",
-        "risk": "If badminton and padel leagues contribute rules but apply them inconsistently (different definition of 'visible brand' across sports), your aggregate training data becomes noisy. You claim ownership of the decision data, but if a padel league's rule causes false positives in pickleball videos, you're responsible for the fallout. Managing 15 regional variants also means you can't roll back a bad rule globally \u2014 you have to negotiate with each league. The 'moat' of aggregate decision data only works if all variants converge; if they diverge, you're managing a splintered taxonomy.",
-        "severity": "medium"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-4491",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938879+00:00",
-      "title": "Brand Verification Marketplace",
-      "confidence": 0.81,
-      "evidence_summary": "Brands claim 'we appeared in 500 hours of pro pickleball content.' You become the auditor. Offer a verification badge: 'Verified by Pickle DaaS Classifier.' Brands pay for audit; pay-per-verified-appearance. Your rule set is the trust anchor; competitors can't replicate the decision corpus.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: trust_play play",
-      "source_clips": [],
-      "raw_data": {
         "flywheel_score": 0.81,
-        "category": "trust_play"
+        "category": "tool_spinoff"
       },
       "composite_score": 0.903,
       "counterargument": {
-        "argument": "Brands are already claiming inflated sponsorship metrics; your classifier doesn't solve the fundamental misalignment between what brands claim and what they actually received.",
-        "risk": "If a brand pays for a 'verification badge' and your classifier certifies '500 hours of appearances,' but a competitor challenges the audit, you're now the arbiter of a revenue-affecting claim. False negatives (you miss real appearances) anger the brand; false positives (you count background blur as a brand) expose you to fraud allegations. You also create a perverse incentive for brands to push for overly permissive rules so their audit score is higher, further degrading classifier accuracy across all downstream users who trust the same rules.",
-        "severity": "high"
+        "argument": "Auto-invoicing based on classifier output creates financial liability\u2014venues will dispute invoices if your classifier misses a brand or false-positives a competitor's logo.",
+        "risk": "You're automating a legal/financial workflow on top of a system with 7.4% fallback rate and unknown precision on edge cases. Venues will demand audit trails and appeal mechanisms, turning your classifier into a payment processor with compliance overhead. One major invoice dispute will kill the product.",
+        "severity": "medium"
       }
     }
   ],
   "top_data": [
     {
-      "finding_id": "unknown_surfer-20260415-0118",
+      "finding_id": "unknown_surfer-20260415-3015",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:13.103569+00:00",
+      "generated_at": "2026-04-15T14:52:43.998596+00:00",
       "title": "Top 10 unknown brands account for 314 detections \u2014 high-leverage rule targets",
       "confidence": 0.85,
       "evidence_summary": "Most frequent unknowns: JOOLA(220): 'shirt chest'; 7(21): 'Signage on the fence in the background'; R&M(16): 'Top left corner of the video feed overla'; goomba(16): 'Top left corner of the video feed overla'; Unknown(9): 'worn by the primary player'; UG(9): 'Banner on the wall behind the court'. A rule for any of these immediately converts N detections from unknown to classified. Sort by frequency and research top 5.",
@@ -226,15 +226,15 @@
       },
       "composite_score": 0.875,
       "counterargument": {
-        "argument": "Top unknowns like JOOLA (220 detections) may be concentrated in a single tournament or camera angle \u2014 writing rules for dataset-specific noise won't generalize.",
-        "risk": "If you call Haiku research and learn 'JOOLA is a paddle brand that appears on 20% of player gear,' you'll want to add a rule. But 220 detections across how many videos? If they're all from one tournament with one camera position, the rule won't fire in future tournaments. You'll also create a precedent that every brand appearing 16+ times gets a rule, leading to rule bloat. Without stratifying detections by video source, date, and camera angle, you can't distinguish signal from noise.",
+        "argument": "JOOLA 'shirt chest' detections and fence signage are fundamentally different classification problems\u2014one is legitimate brand presence, the other is background clutter.",
+        "risk": "Treating all 314 detections as 'rule gaps' will cause you to add rules that capture noise (background signage, overlays) alongside genuine brand appearances, degrading precision. You'll need to manually audit each cluster first\u2014research calls alone won't tell you whether a pattern should become a rule or a filter.",
         "severity": "high"
       }
     },
     {
-      "finding_id": "rule_impact_hunter-20260415-7614",
+      "finding_id": "rule_impact_hunter-20260415-9099",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869673+00:00",
+      "generated_at": "2026-04-15T14:52:40.601674+00:00",
       "title": "7.4% of classifications are fallback (no rule match) \u2014 every % is a rule gap",
       "confidence": 0.85,
       "evidence_summary": "340 detections use fallback classification vs 4261 that match a rule (92.6% rule coverage). Fallback is the classifier guessing \u2014 each one is a rule we haven't written yet.",
@@ -254,15 +254,15 @@
       },
       "composite_score": 0.865,
       "counterargument": {
-        "argument": "A 7.4% fallback rate may be acceptable \u2014 not every detection deserves a rule, and creating rules for rare edge cases increases false positives and maintenance burden.",
-        "risk": "If you aggressively promote fallback detections into new rules without understanding *why* they fell back, you'll add rules that match too broadly or contradict existing rules. This introduces silent drift \u2014 your rule count grows from 49 to 70+, but you haven't tested rule interaction effects. You also risk overfitting to this specific dataset; rules optimized for these 340 fallbacks may perform poorly on future footage. Migrations to a larger taxonomy are operationally expensive and break downstream dashboards expecting the original 49 rules.",
+        "argument": "7.4% fallback rate is low enough that clustering and promoting top clusters may introduce false positives that break existing high-precision rules.",
+        "risk": "You'll be adding rules based on only 340 samples across potentially dozens of clusters\u2014each with <50 examples. New rules built on thin evidence will trigger false positives on edge cases, polluting downstream reports and forcing you to maintain exception lists. The classifier owner likely already knows these gaps exist and chose not to fill them for precision reasons.",
         "severity": "high"
       }
     },
     {
-      "finding_id": "rule_impact_hunter-20260415-1417",
+      "finding_id": "rule_impact_hunter-20260415-4927",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869646+00:00",
+      "generated_at": "2026-04-15T14:52:40.601644+00:00",
       "title": "1 rules look right but you override them often",
       "confidence": 0.8,
       "evidence_summary": "DUDE CLOTHING: 1/2 decisions overridden (4 corpus fires). Sample note: \"Probably something there. Keep looking out for underserved brands and try to build some confidence around it. It could be fun and rewarding.\" These rules pass the auto-verified bar but your manual review keeps correcting them \u2014 the classification they produce is technically legal but rarely what you actually want.",
@@ -297,10 +297,10 @@
       "composite_score": 0.86
     },
     {
-      "finding_id": "unknown_surfer-20260415-0216",
+      "finding_id": "unknown_surfer-20260415-0055",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:13.103512+00:00",
-      "title": "25 items in investigate queue read like real brands",
+      "generated_at": "2026-04-15T14:52:43.998537+00:00",
+      "title": "30 items in investigate queue read like real brands",
       "confidence": 0.8,
       "evidence_summary": "Likely real brands stuck waiting: PUSHIT; PKLR; PBS; PSA; PKLR; PBS. Their rationales mention product context (paddle, apparel, sponsor, etc.). If left unclassified, they inflate the unknown bucket and hide signal.",
       "business_value": "high",
@@ -334,15 +334,20 @@
           "READY TO PLAY",
           "COLUMBIA",
           "SQUASH CUP",
-          "IB"
+          "IB",
+          "DUDE",
+          "Court",
+          "CGG",
+          "Liberty",
+          "PUSHT"
         ]
       },
       "composite_score": 0.86
     },
     {
-      "finding_id": "decision_whisperer-20260415-0467",
+      "finding_id": "decision_whisperer-20260415-2649",
       "agent": "decision_whisperer",
-      "generated_at": "2026-04-15T08:16:13.032090+00:00",
+      "generated_at": "2026-04-15T14:52:43.922394+00:00",
       "title": "15 decisions override the classifier's proposed category \u2014 override-to-decision ratio = 20.3%",
       "confidence": 0.8,
       "evidence_summary": "Top override categories: {'broadcast_tech': 3, 'unknown': 2, 'court_surface': 2}. Top override values: {'medium': 9, 'high': 3, 'low': 2}. Every override is a signal the rule's default is slightly off. High override-to-decision ratio = classifier is running behind the taxonomy.",
@@ -367,12 +372,12 @@
       "composite_score": 0.84
     },
     {
-      "finding_id": "decision_whisperer-20260415-5628",
+      "finding_id": "decision_whisperer-20260415-2817",
       "agent": "decision_whisperer",
-      "generated_at": "2026-04-15T08:16:13.031956+00:00",
+      "generated_at": "2026-04-15T14:52:43.922206+00:00",
       "title": "Your 'investigate' decisions cluster into 5 reasons \u2014 the classifier could route future ones automatically",
       "confidence": 0.7,
-      "evidence_summary": "Clustering 30 investigate-notes via Haiku: Needs visual evidence to decide (e.g. BHP); Ambiguous category type (e.g. ODESSA); Needs classification refinement (e.g. PKLR); Future-value potential (e.g. R&M_foz_wifi_goomba); Emerging data source with untapped value (e.g. PSA). Each theme is a rule the classifier could apply itself: when a new brand matches theme X, auto-route to investigate with that rationale pre-filled.",
+      "evidence_summary": "Clustering 30 investigate-notes via Haiku: needs visual evidence to validate (e.g. BHP); ambiguous classification type (e.g. ODESSA); signage vs apparel distinction needed (e.g. PKLR); future value with better data infrastructure (e.g. R&M_foz_wifi_goomba); promising but requires deeper investigation (e.g. DUDE CLOTHING). Each theme is a rule the classifier could apply itself: when a new brand matches theme X, auto-route to investigate with that rationale pre-filled.",
       "business_value": "high",
       "category": "decision_prediction",
       "novelty": 0.85,
@@ -381,29 +386,29 @@
       "raw_data": {
         "themes": [
           {
-            "theme": "Needs visual evidence to decide",
+            "theme": "needs visual evidence to validate",
             "example_brand": "BHP",
-            "rationale": "PO requires seeing pictures or video clips to make classification decisions rather than relying on metadata alone."
+            "rationale": "PO cannot make a decision without seeing pictures or video clips of the brand appearance in context"
           },
           {
-            "theme": "Ambiguous category type",
+            "theme": "ambiguous classification type",
             "example_brand": "ODESSA",
-            "rationale": "Brand identity unclear because it could be multiple things (brand vs. place vs. other), requiring context to disambiguate."
+            "rationale": "Could be a brand, location, or other entity type - needs context to disambiguate what it actually is"
           },
           {
-            "theme": "Needs classification refinement",
+            "theme": "signage vs apparel distinction needed",
             "example_brand": "PKLR",
-            "rationale": "Entity is valid but requires distinguishing between different presentation formats (signage, banner, watermark, apparel) before proper categorization."
+            "rationale": "Need to clarify whether brand appears as worn apparel, signage, banners, or watermarks before classifying"
           },
           {
-            "theme": "Future-value potential",
+            "theme": "future value with better data infrastructure",
             "example_brand": "R&M_foz_wifi_goomba",
-            "rationale": "Not immediately necessary but could become valuable with enhanced data linkage or classification capabilities in the future."
+            "rationale": "Could become valuable if system is built to tie classifications to specific cameras or other contextual metadata"
           },
           {
-            "theme": "Emerging data source with untapped value",
-            "example_brand": "PSA",
-            "rationale": "New data type (uploaded videos with overlay data) has potential for more comprehensive classification if additional resources are extracted."
+            "theme": "promising but requires deeper investigation",
+            "example_brand": "DUDE CLOTHING",
+            "rationale": "Interesting prospect that warrants further analysis before final approval decision"
           }
         ],
         "investigate_count": 30
@@ -411,12 +416,12 @@
       "composite_score": 0.82
     },
     {
-      "finding_id": "taxonomy_tail_detector-20260415-9142",
+      "finding_id": "taxonomy_tail_detector-20260415-5162",
       "agent": "taxonomy_tail_detector",
-      "generated_at": "2026-04-15T08:16:08.935664+00:00",
+      "generated_at": "2026-04-15T14:52:40.666815+00:00",
       "title": "8 probable taxonomy merges would consolidate 911 items",
       "confidence": 0.75,
-      "evidence_summary": "Candidate merges: headwear(1) + hat(1) \u2192 headwear (2 items); shoes(409) + shoe_brand(1) \u2192 shoes (410 items); apparel_bottom(2) + apparel_graphic(1) + clothing_brand(9) + apparel_top(22) + apparel(40) \u2192 apparel (74 items); drink_bottle(3) + water_bottle(1) \u2192 water_bottle (4 items); camera(45) + camera_equipment(1) \u2192 camera (46 items); watermark(1) + broadcast_tech(14) \u2192 broadcast_tech (15 items). These categories likely refer to the same concept under different names. Keeping them split fragments category analytics and confuses downstream consumers.",
+      "evidence_summary": "Candidate merges: headwear(1) + hat(1) \u2192 headwear (2 items); shoe_brand(1) + shoes(409) \u2192 shoes (410 items); clothing_brand(9) + apparel(40) + apparel_top(22) + apparel_bottom(2) + apparel_graphic(1) \u2192 apparel (74 items); drink_bottle(3) + water_bottle(1) \u2192 water_bottle (4 items); camera_equipment(1) + camera(45) \u2192 camera (46 items); watermark(1) + broadcast_tech(14) \u2192 broadcast_tech (15 items). These categories likely refer to the same concept under different names. Keeping them split fragments category analytics and confuses downstream consumers.",
       "business_value": "high",
       "category": "taxonomy_consolidation",
       "novelty": 0.7,
@@ -442,12 +447,12 @@
             "canonical": "shoes",
             "candidates": [
               [
-                "shoes",
-                409
-              ],
-              [
                 "shoe_brand",
                 1
+              ],
+              [
+                "shoes",
+                409
               ]
             ],
             "total_items": 410
@@ -456,24 +461,24 @@
             "canonical": "apparel",
             "candidates": [
               [
-                "apparel_bottom",
-                2
-              ],
-              [
-                "apparel_graphic",
-                1
-              ],
-              [
                 "clothing_brand",
                 9
+              ],
+              [
+                "apparel",
+                40
               ],
               [
                 "apparel_top",
                 22
               ],
               [
-                "apparel",
-                40
+                "apparel_bottom",
+                2
+              ],
+              [
+                "apparel_graphic",
+                1
               ]
             ],
             "total_items": 74
@@ -496,12 +501,12 @@
             "canonical": "camera",
             "candidates": [
               [
-                "camera",
-                45
-              ],
-              [
                 "camera_equipment",
                 1
+              ],
+              [
+                "camera",
+                45
               ]
             ],
             "total_items": 46
@@ -607,9 +612,9 @@
       "composite_score": 0.815
     },
     {
-      "finding_id": "taxonomy_tail_detector-20260415-1486",
+      "finding_id": "taxonomy_tail_detector-20260415-8113",
       "agent": "taxonomy_tail_detector",
-      "generated_at": "2026-04-15T08:16:08.938712+00:00",
+      "generated_at": "2026-04-15T14:52:40.668639+00:00",
       "title": "5 brands are classified as multiple primary categories across clips",
       "confidence": 0.75,
       "evidence_summary": "Examples: PUSHIT: court_surface\u00d75 + sponsor_signage\u00d74 (of 10); DUNLOP: sponsor_signage\u00d78 + ball\u00d72 (of 10); Franklin: paddle\u00d77 + ball\u00d72 (of 9); PKLR: clothing_brand\u00d76 + apparel_top\u00d72 (of 9); Under Armour: apparel\u00d74 + shoes\u00d72 (of 6). When the same canonical_name gets different category_primary values on different clips, downstream aggregation double-counts or under-counts. The rule is either too loose or the brand legitimately sells in multiple categories.",
@@ -685,12 +690,12 @@
       "composite_score": 0.815
     },
     {
-      "finding_id": "unknown_surfer-20260415-5994",
+      "finding_id": "unknown_surfer-20260415-5261",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:19.172668+00:00",
+      "generated_at": "2026-04-15T14:52:48.693878+00:00",
       "title": "Haiku rescues 1 real brands from the top-15 unknown bucket",
       "confidence": 0.7,
-      "evidence_summary": "Claude Haiku verdicts: {'real_brand': 1, 'noise': 8, 'new_category': 3}. Proposed as real brands: JOOLA. Each gets a recommended category \u2014 review and convert to rules.",
+      "evidence_summary": "Claude Haiku verdicts: {'real_brand': 1, 'noise': 7, 'new_category': 4}. Proposed as real brands: JOOLA. Each gets a recommended category \u2014 review and convert to rules.",
       "business_value": "high",
       "category": "unknown_rescue",
       "novelty": 0.8,
@@ -701,88 +706,88 @@
           {
             "brand": "JOOLA",
             "verdict": "real_brand",
-            "reasoning": "JOOLA is a legitimate and prominent pickleball paddle/equipment manufacturer with significant market presence.",
+            "reasoning": "JOOLA is a legitimate and major pickleball paddle/equipment manufacturer with significant market presence.",
             "proposed_category": "paddle"
           },
           {
             "brand": "7",
             "verdict": "noise",
-            "reasoning": "A single digit on fence signage is likely a court number, facility marking, or OCR artifact rather than a brand.",
+            "reasoning": "A single digit on fence signage is likely a court number or marking, not a brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "R&M",
             "verdict": "new_category",
-            "reasoning": "Appears consistently in video overlay corner, likely a broadcast or streaming platform watermark rather than a consumer brand.",
+            "reasoning": "Appears consistently in video overlay corner, likely a broadcast/production identifier or watermark.",
             "proposed_category": "broadcast_tech"
           },
           {
             "brand": "goomba",
-            "verdict": "noise",
-            "reasoning": "Appears only in overlay corners paired with other metadata; likely a streaming software, Wi-Fi SSID, or system artifact.",
-            "proposed_category": "noise"
+            "verdict": "new_category",
+            "reasoning": "Consistently appears in overlay corner alongside other identifiers, likely a production/streaming platform or tool name.",
+            "proposed_category": "broadcast_tech"
           },
           {
             "brand": "Unknown",
             "verdict": "noise",
-            "reasoning": "Placeholder text indicating unidentifiable content; not a classifiable brand.",
+            "reasoning": "Placeholder text indicating failed brand recognition or OCR, not an actual brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "UG",
             "verdict": "new_category",
-            "reasoning": "Appears on court/facility signage; likely a facility or venue identifier rather than a consumer sports brand.",
-            "proposed_category": "venue"
+            "reasoning": "Appears on court signage/banners; likely a venue, organization, or court identifier rather than a consumer brand.",
+            "proposed_category": "venue_identifier"
           },
           {
             "brand": "R&M_fox_wifi_goomba",
             "verdict": "noise",
-            "reasoning": "Composite string mixing broadcast overlay elements (R&M), network info (wifi), and software (goomba); clear OCR or metadata artifact.",
+            "reasoning": "Concatenated string combining overlay elements and Wi-Fi SSID fragments, clear OCR/parsing artifact.",
             "proposed_category": "noise"
           },
           {
             "brand": "R8M",
             "verdict": "noise",
-            "reasoning": "Appears in overlay corner; likely a variant/corruption of R&M broadcast watermark or system metadata.",
+            "reasoning": "Appears in overlay corner as variant of R&M; likely OCR corruption or duplicate detection of broadcast element.",
             "proposed_category": "noise"
           },
           {
             "brand": "2026-01-05",
             "verdict": "noise",
-            "reasoning": "A date string in video overlay is metadata or timestamp, not a brand.",
+            "reasoning": "Date string in overlay is metadata/timestamp, not a brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "Foz_4_UG_Court",
-            "verdict": "new_category",
-            "reasoning": "Structured court/facility identifier combining location info and court number; venue or facility metadata.",
-            "proposed_category": "venue"
+            "verdict": "noise",
+            "reasoning": "Concatenated court identifier and signage elements, appears to be parsing artifact from multiple text sources.",
+            "proposed_category": "noise"
           },
           {
             "brand": "2026-03-09",
             "verdict": "noise",
-            "reasoning": "A date string in video overlay is timestamp metadata, not a brand.",
+            "reasoning": "Date string in overlay is metadata/timestamp, not a brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "GOOMBA",
-            "verdict": "noise",
-            "reasoning": "Capitalized variant of goomba appearing once in overlay; likely software or streaming platform artifact.",
-            "proposed_category": "noise"
+            "verdict": "new_category",
+            "reasoning": "Capitalized variant of goomba appearing in overlay corner; likely broadcast/production platform identifier.",
+            "proposed_category": "broadcast_tech"
           }
         ],
         "verdict_distribution": {
           "real_brand": 1,
-          "noise": 8,
-          "new_category": 3
+          "noise": 7,
+          "new_category": 4
         }
       },
       "composite_score": 0.81
     },
     {
-      "finding_id": "rule_impact_hunter-20260415-3819",
+      "finding_id": "rule_impact_hunter-20260415-1097",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869392+00:00",
+      "generated_at": "2026-04-15T14:52:40.601437+00:00",
       "title": "2 approved rules fire almost never \u2014 cleanup candidates",
       "confidence": 0.85,
       "evidence_summary": "Of 49 approved rules, 2 fire \u22641 time against the corpus. 2 of those are flagged as revenue-relevant (not 'none'). Examples: CRBN, SELKIRK. Either the brand is absent from the corpus or the rule's aliases miss the actual spellings.",
@@ -805,9 +810,9 @@
   ],
   "all_findings": [
     {
-      "finding_id": "rule_impact_hunter-20260415-3819",
+      "finding_id": "rule_impact_hunter-20260415-1097",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869392+00:00",
+      "generated_at": "2026-04-15T14:52:40.601437+00:00",
       "title": "2 approved rules fire almost never \u2014 cleanup candidates",
       "confidence": 0.85,
       "evidence_summary": "Of 49 approved rules, 2 fire \u22641 time against the corpus. 2 of those are flagged as revenue-relevant (not 'none'). Examples: CRBN, SELKIRK. Either the brand is absent from the corpus or the rule's aliases miss the actual spellings.",
@@ -828,9 +833,9 @@
       "composite_score": 0.735
     },
     {
-      "finding_id": "rule_impact_hunter-20260415-1417",
+      "finding_id": "rule_impact_hunter-20260415-4927",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869646+00:00",
+      "generated_at": "2026-04-15T14:52:40.601644+00:00",
       "title": "1 rules look right but you override them often",
       "confidence": 0.8,
       "evidence_summary": "DUDE CLOTHING: 1/2 decisions overridden (4 corpus fires). Sample note: \"Probably something there. Keep looking out for underserved brands and try to build some confidence around it. It could be fun and rewarding.\" These rules pass the auto-verified bar but your manual review keeps correcting them \u2014 the classification they produce is technically legal but rarely what you actually want.",
@@ -865,9 +870,9 @@
       "composite_score": 0.86
     },
     {
-      "finding_id": "rule_impact_hunter-20260415-8770",
+      "finding_id": "rule_impact_hunter-20260415-5431",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869665+00:00",
+      "generated_at": "2026-04-15T14:52:40.601665+00:00",
       "title": "Top 5 rules carry 3861 of 4261 classifier fires",
       "confidence": 0.9,
       "evidence_summary": "Stars: JOOLA (3295 fires), NIKE (319 fires), PICKLEBALL (116 fires), HEAD (74 fires), ADIDAS (57 fires). These rules fire often AND almost never get overridden \u2014 they're doing the heavy lifting. Corpus has 4601 total detections, 92.6% coverage.",
@@ -904,9 +909,9 @@
       "composite_score": 0.71
     },
     {
-      "finding_id": "rule_impact_hunter-20260415-7614",
+      "finding_id": "rule_impact_hunter-20260415-9099",
       "agent": "rule_impact_hunter",
-      "generated_at": "2026-04-15T08:16:08.869673+00:00",
+      "generated_at": "2026-04-15T14:52:40.601674+00:00",
       "title": "7.4% of classifications are fallback (no rule match) \u2014 every % is a rule gap",
       "confidence": 0.85,
       "evidence_summary": "340 detections use fallback classification vs 4261 that match a rule (92.6% rule coverage). Fallback is the classifier guessing \u2014 each one is a rule we haven't written yet.",
@@ -926,18 +931,18 @@
       },
       "composite_score": 0.865,
       "counterargument": {
-        "argument": "A 7.4% fallback rate may be acceptable \u2014 not every detection deserves a rule, and creating rules for rare edge cases increases false positives and maintenance burden.",
-        "risk": "If you aggressively promote fallback detections into new rules without understanding *why* they fell back, you'll add rules that match too broadly or contradict existing rules. This introduces silent drift \u2014 your rule count grows from 49 to 70+, but you haven't tested rule interaction effects. You also risk overfitting to this specific dataset; rules optimized for these 340 fallbacks may perform poorly on future footage. Migrations to a larger taxonomy are operationally expensive and break downstream dashboards expecting the original 49 rules.",
+        "argument": "7.4% fallback rate is low enough that clustering and promoting top clusters may introduce false positives that break existing high-precision rules.",
+        "risk": "You'll be adding rules based on only 340 samples across potentially dozens of clusters\u2014each with <50 examples. New rules built on thin evidence will trigger false positives on edge cases, polluting downstream reports and forcing you to maintain exception lists. The classifier owner likely already knows these gaps exist and chose not to fill them for precision reasons.",
         "severity": "high"
       }
     },
     {
-      "finding_id": "taxonomy_tail_detector-20260415-9142",
+      "finding_id": "taxonomy_tail_detector-20260415-5162",
       "agent": "taxonomy_tail_detector",
-      "generated_at": "2026-04-15T08:16:08.935664+00:00",
+      "generated_at": "2026-04-15T14:52:40.666815+00:00",
       "title": "8 probable taxonomy merges would consolidate 911 items",
       "confidence": 0.75,
-      "evidence_summary": "Candidate merges: headwear(1) + hat(1) \u2192 headwear (2 items); shoes(409) + shoe_brand(1) \u2192 shoes (410 items); apparel_bottom(2) + apparel_graphic(1) + clothing_brand(9) + apparel_top(22) + apparel(40) \u2192 apparel (74 items); drink_bottle(3) + water_bottle(1) \u2192 water_bottle (4 items); camera(45) + camera_equipment(1) \u2192 camera (46 items); watermark(1) + broadcast_tech(14) \u2192 broadcast_tech (15 items). These categories likely refer to the same concept under different names. Keeping them split fragments category analytics and confuses downstream consumers.",
+      "evidence_summary": "Candidate merges: headwear(1) + hat(1) \u2192 headwear (2 items); shoe_brand(1) + shoes(409) \u2192 shoes (410 items); clothing_brand(9) + apparel(40) + apparel_top(22) + apparel_bottom(2) + apparel_graphic(1) \u2192 apparel (74 items); drink_bottle(3) + water_bottle(1) \u2192 water_bottle (4 items); camera_equipment(1) + camera(45) \u2192 camera (46 items); watermark(1) + broadcast_tech(14) \u2192 broadcast_tech (15 items). These categories likely refer to the same concept under different names. Keeping them split fragments category analytics and confuses downstream consumers.",
       "business_value": "high",
       "category": "taxonomy_consolidation",
       "novelty": 0.7,
@@ -963,12 +968,12 @@
             "canonical": "shoes",
             "candidates": [
               [
-                "shoes",
-                409
-              ],
-              [
                 "shoe_brand",
                 1
+              ],
+              [
+                "shoes",
+                409
               ]
             ],
             "total_items": 410
@@ -977,24 +982,24 @@
             "canonical": "apparel",
             "candidates": [
               [
-                "apparel_bottom",
-                2
-              ],
-              [
-                "apparel_graphic",
-                1
-              ],
-              [
                 "clothing_brand",
                 9
+              ],
+              [
+                "apparel",
+                40
               ],
               [
                 "apparel_top",
                 22
               ],
               [
-                "apparel",
-                40
+                "apparel_bottom",
+                2
+              ],
+              [
+                "apparel_graphic",
+                1
               ]
             ],
             "total_items": 74
@@ -1017,12 +1022,12 @@
             "canonical": "camera",
             "candidates": [
               [
-                "camera",
-                45
-              ],
-              [
                 "camera_equipment",
                 1
+              ],
+              [
+                "camera",
+                45
               ]
             ],
             "total_items": 46
@@ -1128,9 +1133,9 @@
       "composite_score": 0.815
     },
     {
-      "finding_id": "taxonomy_tail_detector-20260415-9330",
+      "finding_id": "taxonomy_tail_detector-20260415-7007",
       "agent": "taxonomy_tail_detector",
-      "generated_at": "2026-04-15T08:16:08.935684+00:00",
+      "generated_at": "2026-04-15T14:52:40.666834+00:00",
       "title": "13 taxonomy categories have \u22643 members \u2014 noise or genuine rarity?",
       "confidence": 0.7,
       "evidence_summary": "Singleton-ish categories: hat(1), apparel_graphic(1), headwear(1), camera_equipment(1), watermark(1), water_bottle(1), shoe_brand(1), tech_accessory(1), other(2), apparel_bottom(2). A new category should only exist if it will sustain \u22655 detections. Below that, it's either a mistype (same concept as another category) or too rare to sell against.",
@@ -1220,9 +1225,9 @@
       "composite_score": 0.63
     },
     {
-      "finding_id": "taxonomy_tail_detector-20260415-1486",
+      "finding_id": "taxonomy_tail_detector-20260415-8113",
       "agent": "taxonomy_tail_detector",
-      "generated_at": "2026-04-15T08:16:08.938712+00:00",
+      "generated_at": "2026-04-15T14:52:40.668639+00:00",
       "title": "5 brands are classified as multiple primary categories across clips",
       "confidence": 0.75,
       "evidence_summary": "Examples: PUSHIT: court_surface\u00d75 + sponsor_signage\u00d74 (of 10); DUNLOP: sponsor_signage\u00d78 + ball\u00d72 (of 10); Franklin: paddle\u00d77 + ball\u00d72 (of 9); PKLR: clothing_brand\u00d76 + apparel_top\u00d72 (of 9); Under Armour: apparel\u00d74 + shoes\u00d72 (of 6). When the same canonical_name gets different category_primary values on different clips, downstream aggregation double-counts or under-counts. The rule is either too loose or the brand legitimately sells in multiple categories.",
@@ -1298,9 +1303,9 @@
       "composite_score": 0.815
     },
     {
-      "finding_id": "taxonomy_tail_detector-20260415-3183",
+      "finding_id": "taxonomy_tail_detector-20260415-4221",
       "agent": "taxonomy_tail_detector",
-      "generated_at": "2026-04-15T08:16:08.938737+00:00",
+      "generated_at": "2026-04-15T14:52:40.668652+00:00",
       "title": "Unknown bucket holds 319 items (6.9% of all classifications)",
       "confidence": 0.95,
       "evidence_summary": "The 'unknown' primary category has 319 items out of 4601 total \u2014 6.9%. Every unknown is either a brand we haven't written a rule for yet or noise (OCR artifacts, Wi-Fi SSIDs, single letters on fences). The Unknown Surfer researcher digs into WHICH.",
@@ -1317,9 +1322,9 @@
       "composite_score": 0.715
     },
     {
-      "finding_id": "decision_whisperer-20260415-6729",
+      "finding_id": "decision_whisperer-20260415-3465",
       "agent": "decision_whisperer",
-      "generated_at": "2026-04-15T08:16:08.946428+00:00",
+      "generated_at": "2026-04-15T14:52:40.675760+00:00",
       "title": "You write decisions at 3 speeds: 33 approve, 38 investigate, 3 reject",
       "confidence": 0.95,
       "evidence_summary": "Across 74 total decisions: {'approve': 33, 'investigate': 38, 'reject': 3}. Revenue tags: {'none': 21, 'medium': 21, 'high': 10, 'low': 22}. 48/74 decisions carry a free-text note (avg 192 chars). The notes are where the policy lives \u2014 any future predictor has to read them, not just the action.",
@@ -1346,12 +1351,12 @@
       "composite_score": 0.715
     },
     {
-      "finding_id": "decision_whisperer-20260415-5628",
+      "finding_id": "decision_whisperer-20260415-2817",
       "agent": "decision_whisperer",
-      "generated_at": "2026-04-15T08:16:13.031956+00:00",
+      "generated_at": "2026-04-15T14:52:43.922206+00:00",
       "title": "Your 'investigate' decisions cluster into 5 reasons \u2014 the classifier could route future ones automatically",
       "confidence": 0.7,
-      "evidence_summary": "Clustering 30 investigate-notes via Haiku: Needs visual evidence to decide (e.g. BHP); Ambiguous category type (e.g. ODESSA); Needs classification refinement (e.g. PKLR); Future-value potential (e.g. R&M_foz_wifi_goomba); Emerging data source with untapped value (e.g. PSA). Each theme is a rule the classifier could apply itself: when a new brand matches theme X, auto-route to investigate with that rationale pre-filled.",
+      "evidence_summary": "Clustering 30 investigate-notes via Haiku: needs visual evidence to validate (e.g. BHP); ambiguous classification type (e.g. ODESSA); signage vs apparel distinction needed (e.g. PKLR); future value with better data infrastructure (e.g. R&M_foz_wifi_goomba); promising but requires deeper investigation (e.g. DUDE CLOTHING). Each theme is a rule the classifier could apply itself: when a new brand matches theme X, auto-route to investigate with that rationale pre-filled.",
       "business_value": "high",
       "category": "decision_prediction",
       "novelty": 0.85,
@@ -1360,29 +1365,29 @@
       "raw_data": {
         "themes": [
           {
-            "theme": "Needs visual evidence to decide",
+            "theme": "needs visual evidence to validate",
             "example_brand": "BHP",
-            "rationale": "PO requires seeing pictures or video clips to make classification decisions rather than relying on metadata alone."
+            "rationale": "PO cannot make a decision without seeing pictures or video clips of the brand appearance in context"
           },
           {
-            "theme": "Ambiguous category type",
+            "theme": "ambiguous classification type",
             "example_brand": "ODESSA",
-            "rationale": "Brand identity unclear because it could be multiple things (brand vs. place vs. other), requiring context to disambiguate."
+            "rationale": "Could be a brand, location, or other entity type - needs context to disambiguate what it actually is"
           },
           {
-            "theme": "Needs classification refinement",
+            "theme": "signage vs apparel distinction needed",
             "example_brand": "PKLR",
-            "rationale": "Entity is valid but requires distinguishing between different presentation formats (signage, banner, watermark, apparel) before proper categorization."
+            "rationale": "Need to clarify whether brand appears as worn apparel, signage, banners, or watermarks before classifying"
           },
           {
-            "theme": "Future-value potential",
+            "theme": "future value with better data infrastructure",
             "example_brand": "R&M_foz_wifi_goomba",
-            "rationale": "Not immediately necessary but could become valuable with enhanced data linkage or classification capabilities in the future."
+            "rationale": "Could become valuable if system is built to tie classifications to specific cameras or other contextual metadata"
           },
           {
-            "theme": "Emerging data source with untapped value",
-            "example_brand": "PSA",
-            "rationale": "New data type (uploaded videos with overlay data) has potential for more comprehensive classification if additional resources are extracted."
+            "theme": "promising but requires deeper investigation",
+            "example_brand": "DUDE CLOTHING",
+            "rationale": "Interesting prospect that warrants further analysis before final approval decision"
           }
         ],
         "investigate_count": 30
@@ -1390,9 +1395,9 @@
       "composite_score": 0.82
     },
     {
-      "finding_id": "decision_whisperer-20260415-0467",
+      "finding_id": "decision_whisperer-20260415-2649",
       "agent": "decision_whisperer",
-      "generated_at": "2026-04-15T08:16:13.032090+00:00",
+      "generated_at": "2026-04-15T14:52:43.922394+00:00",
       "title": "15 decisions override the classifier's proposed category \u2014 override-to-decision ratio = 20.3%",
       "confidence": 0.8,
       "evidence_summary": "Top override categories: {'broadcast_tech': 3, 'unknown': 2, 'court_surface': 2}. Top override values: {'medium': 9, 'high': 3, 'low': 2}. Every override is a signal the rule's default is slightly off. High override-to-decision ratio = classifier is running behind the taxonomy.",
@@ -1417,9 +1422,9 @@
       "composite_score": 0.84
     },
     {
-      "finding_id": "decision_whisperer-20260415-0163",
+      "finding_id": "decision_whisperer-20260415-2938",
       "agent": "decision_whisperer",
-      "generated_at": "2026-04-15T08:16:13.032157+00:00",
+      "generated_at": "2026-04-15T14:52:43.922478+00:00",
       "title": "5 brands changed decision across review cycles \u2014 you're second-guessing yourself",
       "confidence": 0.7,
       "evidence_summary": "Examples: PUSHIT: investigate \u2192 approve; Foz Bullet UG 4K: investigate \u2192 approve; PBS: investigate \u2192 investigate \u2192 approve; BHP: investigate \u2192 approve; DUDE CLOTHING: investigate \u2192 approve. When the same brand flips approve/investigate/reject across reviews, the decision isn't stable \u2014 either the evidence changed, or the policy is still forming. These brands deserve a note on WHY the flip.",
@@ -1471,10 +1476,10 @@
       "composite_score": 0.68
     },
     {
-      "finding_id": "unknown_surfer-20260415-0216",
+      "finding_id": "unknown_surfer-20260415-0055",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:13.103512+00:00",
-      "title": "25 items in investigate queue read like real brands",
+      "generated_at": "2026-04-15T14:52:43.998537+00:00",
+      "title": "30 items in investigate queue read like real brands",
       "confidence": 0.8,
       "evidence_summary": "Likely real brands stuck waiting: PUSHIT; PKLR; PBS; PSA; PKLR; PBS. Their rationales mention product context (paddle, apparel, sponsor, etc.). If left unclassified, they inflate the unknown bucket and hide signal.",
       "business_value": "high",
@@ -1508,15 +1513,20 @@
           "READY TO PLAY",
           "COLUMBIA",
           "SQUASH CUP",
-          "IB"
+          "IB",
+          "DUDE",
+          "Court",
+          "CGG",
+          "Liberty",
+          "PUSHT"
         ]
       },
       "composite_score": 0.86
     },
     {
-      "finding_id": "unknown_surfer-20260415-0118",
+      "finding_id": "unknown_surfer-20260415-3015",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:13.103569+00:00",
+      "generated_at": "2026-04-15T14:52:43.998596+00:00",
       "title": "Top 10 unknown brands account for 314 detections \u2014 high-leverage rule targets",
       "confidence": 0.85,
       "evidence_summary": "Most frequent unknowns: JOOLA(220): 'shirt chest'; 7(21): 'Signage on the fence in the background'; R&M(16): 'Top left corner of the video feed overla'; goomba(16): 'Top left corner of the video feed overla'; Unknown(9): 'worn by the primary player'; UG(9): 'Banner on the wall behind the court'. A rule for any of these immediately converts N detections from unknown to classified. Sort by frequency and research top 5.",
@@ -1583,18 +1593,18 @@
       },
       "composite_score": 0.875,
       "counterargument": {
-        "argument": "Top unknowns like JOOLA (220 detections) may be concentrated in a single tournament or camera angle \u2014 writing rules for dataset-specific noise won't generalize.",
-        "risk": "If you call Haiku research and learn 'JOOLA is a paddle brand that appears on 20% of player gear,' you'll want to add a rule. But 220 detections across how many videos? If they're all from one tournament with one camera position, the rule won't fire in future tournaments. You'll also create a precedent that every brand appearing 16+ times gets a rule, leading to rule bloat. Without stratifying detections by video source, date, and camera angle, you can't distinguish signal from noise.",
+        "argument": "JOOLA 'shirt chest' detections and fence signage are fundamentally different classification problems\u2014one is legitimate brand presence, the other is background clutter.",
+        "risk": "Treating all 314 detections as 'rule gaps' will cause you to add rules that capture noise (background signage, overlays) alongside genuine brand appearances, degrading precision. You'll need to manually audit each cluster first\u2014research calls alone won't tell you whether a pattern should become a rule or a filter.",
         "severity": "high"
       }
     },
     {
-      "finding_id": "unknown_surfer-20260415-5994",
+      "finding_id": "unknown_surfer-20260415-5261",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:19.172668+00:00",
+      "generated_at": "2026-04-15T14:52:48.693878+00:00",
       "title": "Haiku rescues 1 real brands from the top-15 unknown bucket",
       "confidence": 0.7,
-      "evidence_summary": "Claude Haiku verdicts: {'real_brand': 1, 'noise': 8, 'new_category': 3}. Proposed as real brands: JOOLA. Each gets a recommended category \u2014 review and convert to rules.",
+      "evidence_summary": "Claude Haiku verdicts: {'real_brand': 1, 'noise': 7, 'new_category': 4}. Proposed as real brands: JOOLA. Each gets a recommended category \u2014 review and convert to rules.",
       "business_value": "high",
       "category": "unknown_rescue",
       "novelty": 0.8,
@@ -1605,91 +1615,91 @@
           {
             "brand": "JOOLA",
             "verdict": "real_brand",
-            "reasoning": "JOOLA is a legitimate and prominent pickleball paddle/equipment manufacturer with significant market presence.",
+            "reasoning": "JOOLA is a legitimate and major pickleball paddle/equipment manufacturer with significant market presence.",
             "proposed_category": "paddle"
           },
           {
             "brand": "7",
             "verdict": "noise",
-            "reasoning": "A single digit on fence signage is likely a court number, facility marking, or OCR artifact rather than a brand.",
+            "reasoning": "A single digit on fence signage is likely a court number or marking, not a brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "R&M",
             "verdict": "new_category",
-            "reasoning": "Appears consistently in video overlay corner, likely a broadcast or streaming platform watermark rather than a consumer brand.",
+            "reasoning": "Appears consistently in video overlay corner, likely a broadcast/production identifier or watermark.",
             "proposed_category": "broadcast_tech"
           },
           {
             "brand": "goomba",
-            "verdict": "noise",
-            "reasoning": "Appears only in overlay corners paired with other metadata; likely a streaming software, Wi-Fi SSID, or system artifact.",
-            "proposed_category": "noise"
+            "verdict": "new_category",
+            "reasoning": "Consistently appears in overlay corner alongside other identifiers, likely a production/streaming platform or tool name.",
+            "proposed_category": "broadcast_tech"
           },
           {
             "brand": "Unknown",
             "verdict": "noise",
-            "reasoning": "Placeholder text indicating unidentifiable content; not a classifiable brand.",
+            "reasoning": "Placeholder text indicating failed brand recognition or OCR, not an actual brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "UG",
             "verdict": "new_category",
-            "reasoning": "Appears on court/facility signage; likely a facility or venue identifier rather than a consumer sports brand.",
-            "proposed_category": "venue"
+            "reasoning": "Appears on court signage/banners; likely a venue, organization, or court identifier rather than a consumer brand.",
+            "proposed_category": "venue_identifier"
           },
           {
             "brand": "R&M_fox_wifi_goomba",
             "verdict": "noise",
-            "reasoning": "Composite string mixing broadcast overlay elements (R&M), network info (wifi), and software (goomba); clear OCR or metadata artifact.",
+            "reasoning": "Concatenated string combining overlay elements and Wi-Fi SSID fragments, clear OCR/parsing artifact.",
             "proposed_category": "noise"
           },
           {
             "brand": "R8M",
             "verdict": "noise",
-            "reasoning": "Appears in overlay corner; likely a variant/corruption of R&M broadcast watermark or system metadata.",
+            "reasoning": "Appears in overlay corner as variant of R&M; likely OCR corruption or duplicate detection of broadcast element.",
             "proposed_category": "noise"
           },
           {
             "brand": "2026-01-05",
             "verdict": "noise",
-            "reasoning": "A date string in video overlay is metadata or timestamp, not a brand.",
+            "reasoning": "Date string in overlay is metadata/timestamp, not a brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "Foz_4_UG_Court",
-            "verdict": "new_category",
-            "reasoning": "Structured court/facility identifier combining location info and court number; venue or facility metadata.",
-            "proposed_category": "venue"
+            "verdict": "noise",
+            "reasoning": "Concatenated court identifier and signage elements, appears to be parsing artifact from multiple text sources.",
+            "proposed_category": "noise"
           },
           {
             "brand": "2026-03-09",
             "verdict": "noise",
-            "reasoning": "A date string in video overlay is timestamp metadata, not a brand.",
+            "reasoning": "Date string in overlay is metadata/timestamp, not a brand.",
             "proposed_category": "noise"
           },
           {
             "brand": "GOOMBA",
-            "verdict": "noise",
-            "reasoning": "Capitalized variant of goomba appearing once in overlay; likely software or streaming platform artifact.",
-            "proposed_category": "noise"
+            "verdict": "new_category",
+            "reasoning": "Capitalized variant of goomba appearing in overlay corner; likely broadcast/production platform identifier.",
+            "proposed_category": "broadcast_tech"
           }
         ],
         "verdict_distribution": {
           "real_brand": 1,
-          "noise": 8,
-          "new_category": 3
+          "noise": 7,
+          "new_category": 4
         }
       },
       "composite_score": 0.81
     },
     {
-      "finding_id": "unknown_surfer-20260415-2990",
+      "finding_id": "unknown_surfer-20260415-5643",
       "agent": "unknown_surfer",
-      "generated_at": "2026-04-15T08:16:19.172687+00:00",
-      "title": "Haiku flags 3 items as needing NEW taxonomy categories",
+      "generated_at": "2026-04-15T14:52:48.693892+00:00",
+      "title": "Haiku flags 4 items as needing NEW taxonomy categories",
       "confidence": 0.65,
-      "evidence_summary": "Candidates for new categories: R&M, UG, Foz_4_UG_Court. These are real things (not noise) that don't fit existing buckets \u2014 common suspects: broadcast watermarks, player name graphics, camera models, Wi-Fi devices.",
+      "evidence_summary": "Candidates for new categories: R&M, goomba, UG, GOOMBA. These are real things (not noise) that don't fit existing buckets \u2014 common suspects: broadcast watermarks, player name graphics, camera models, Wi-Fi devices.",
       "business_value": "medium",
       "category": "taxonomy_growth",
       "novelty": 0.85,
@@ -1700,256 +1710,262 @@
           {
             "brand": "R&M",
             "verdict": "new_category",
-            "reasoning": "Appears consistently in video overlay corner, likely a broadcast or streaming platform watermark rather than a consumer brand.",
+            "reasoning": "Appears consistently in video overlay corner, likely a broadcast/production identifier or watermark.",
+            "proposed_category": "broadcast_tech"
+          },
+          {
+            "brand": "goomba",
+            "verdict": "new_category",
+            "reasoning": "Consistently appears in overlay corner alongside other identifiers, likely a production/streaming platform or tool name.",
             "proposed_category": "broadcast_tech"
           },
           {
             "brand": "UG",
             "verdict": "new_category",
-            "reasoning": "Appears on court/facility signage; likely a facility or venue identifier rather than a consumer sports brand.",
-            "proposed_category": "venue"
+            "reasoning": "Appears on court signage/banners; likely a venue, organization, or court identifier rather than a consumer brand.",
+            "proposed_category": "venue_identifier"
           },
           {
-            "brand": "Foz_4_UG_Court",
+            "brand": "GOOMBA",
             "verdict": "new_category",
-            "reasoning": "Structured court/facility identifier combining location info and court number; venue or facility metadata.",
-            "proposed_category": "venue"
+            "reasoning": "Capitalized variant of goomba appearing in overlay corner; likely broadcast/production platform identifier.",
+            "proposed_category": "broadcast_tech"
           }
         ]
       },
       "composite_score": 0.675
     },
     {
-      "finding_id": "wildcard-20260415-2375",
+      "finding_id": "wildcard-20260415-1166",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938812+00:00",
-      "title": "Brand Safety Engine for Sports Streaming",
-      "confidence": 0.92,
-      "evidence_summary": "Every sports streamer fears misattribution and brand safety disasters. Offer a white-label real-time classifier that flags brand appearances, validates them against streamer's approved list, and auto-blocks or flags unsafe associations. Your 49-rule corpus becomes the gold standard; you own the SLA for accuracy.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: platform_play play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.92,
-        "category": "platform_play"
-      },
-      "composite_score": 0.936,
-      "counterargument": {
-        "argument": "Streamers already have legal+compliance teams reviewing brand safety \u2014 this adds a dependency on your classifier's recall, not their existing workflows.",
-        "risk": "If your classifier misses a brand appearance (false negative), the streamer's compliance team still catches it, but now they distrust your system and stop using it. If you over-flag (false positive), you create alert fatigue and the streamer disables the feature. Either way, you've inserted yourself into a critical safety path without solving the core problem \u2014 human review is still required.",
-        "severity": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-7851",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938840+00:00",
-      "title": "Venue Operating System: Sponsor Dashboard",
+      "generated_at": "2026-04-15T14:52:59.163084+00:00",
+      "title": "Taxonomy Franchise: 'Brand Rules Engine for [Sport]'",
       "confidence": 0.88,
-      "evidence_summary": "Embed the classifier into venue software. Real-time sponsor dashboard: 'Your brand appeared 47 times in last 3 tournaments, 23 of those in broadcast-grade moments.' Venues become the distribution layer for your classifier. They upsell sponsors on data; you get higher accuracy feedback and recurring venue licensing.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: platform_play play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.88,
-        "category": "platform_play"
-      },
-      "composite_score": 0.924,
-      "counterargument": {
-        "argument": "Venues care about sponsorship ROI, not brand appearance counts \u2014 they want attribution tied to viewer engagement or sales lift, which your classifier doesn't measure.",
-        "risk": "You're embedding a classifier into venue software that answers 'how many times did this brand appear?' but venues actually need 'did this appearance drive sponsor value?' Without converting raw detections into business metrics, adoption stalls and venues rip out the integration. If venues start making sponsorship renewal decisions based on your appearance counts alone, you're liable for inflated or deflated metrics that affect their revenue.",
-        "severity": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-4639",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938852+00:00",
-      "title": "Taxonomy Licensing to Competing Sports Data Vendors",
-      "confidence": 0.87,
-      "evidence_summary": "Tennis/padel/squash data companies are solving your old problem \u2014 they built generic classifiers. License them the pickleball taxonomy structure, the rule-writing methodology, and crucially: your decision-loop framework (classifier\u2192human\u2192update\u2192retrain). They pay per sport instance; each sport improves your core IP.",
+      "evidence_summary": "License our methodology (not just rules, but the *decision loop itself*) to tennis, padel, and squash data companies. They upload their corpus; we train a sport-specific classifier and charge them per classification + monthly seats. We become the infrastructure layer for sports brand intelligence.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: licensing play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.87,
+        "flywheel_score": 0.88,
         "category": "licensing"
+      },
+      "composite_score": 0.924,
+      "counterargument": {
+        "argument": "Licensing the decision loop itself assumes your pickleball rules are generalizable to tennis/padel/squash, which have completely different equipment, court layouts, and sponsorship norms.",
+        "risk": "You'll export rules that don't transfer (e.g., 'paddle logo rules' don't apply to tennis rackets), creating broken classifiers in partner systems that reflect back on your credibility. Silent failures in downstream partner dashboards will be impossible to debug without access to their data.",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-5675",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163107+00:00",
+      "title": "Brand Licensing Network (Marketplace Play)",
+      "confidence": 0.87,
+      "evidence_summary": "Build a two-sided marketplace: brands can register themselves + their *approved appearance rules* (e.g., 'JOOLA logos only on paddles, not on apparel'). Venues/streamers query the API: 'Is this appearance compliant?' Revenue from brands (verification), venues (lookups), and licensees (premium terms). You become brand-athlete-venue arbiter.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.87,
+        "category": "platform_play"
       },
       "composite_score": 0.921,
       "counterargument": {
-        "argument": "Competing sports data vendors already have domain expertise and customer relationships \u2014 licensing your taxonomy doesn't guarantee they'll use it correctly or maintain quality alignment.",
-        "risk": "If a tennis vendor licenses your rules but applies them loosely (different video quality, different rule interpretation), they'll produce bad classifications under your methodology name, damaging your brand. You also lose control over taxonomy evolution \u2014 they'll fork it, and now you have fragmented versions in the wild. Auditing their implementations will become expensive, and you have no leverage to force them to stay aligned.",
-        "severity": "high"
+        "argument": "A brand-managed marketplace assumes brands will self-report accurate appearance rules, which creates garbage-in-garbage-out risk and shifts taxonomy maintenance burden to external actors.",
+        "risk": "Brands will either over-report (claiming restrictions that don't exist) or under-report (hiding restrictions) to game visibility. Your classifier will now be a patchwork of self-served rules you can't audit. Downstream consumers (venues, reports) will lose trust when rules contradict each other or change without notice.",
+        "severity": "medium"
       }
     },
     {
-      "finding_id": "wildcard-20260415-9395",
+      "finding_id": "wildcard-20260415-2238",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938862+00:00",
-      "title": "Open-Source Classifier + Managed Service Upsell",
+      "generated_at": "2026-04-15T14:52:59.163119+00:00",
+      "title": "Brand Safety API for Sports Broadcasters",
       "confidence": 0.85,
-      "evidence_summary": "Release the 49-rule taxonomy and decision logic as Apache 2.0. Competing sports and venues adopt it freely. Monetize the managed tier: we host it, we retrain it monthly with your footage, we guarantee 95%+ accuracy. Free adoption \u2192 high switching costs \u2192 recurring SaaS revenue.",
+      "evidence_summary": "Sell real-time classification-as-a-service to ESPN, YouTube Gaming, and Twitch so they can auto-flag, blur, or report unlicensed brand appearances in live sports. We own the taxonomy + rules; they own the distribution. Revenue: per-match SaaS + data licensing.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
-      "recommended_action": "Evaluate: tool_spinoff play",
+      "recommended_action": "Evaluate: platform_play play",
       "source_clips": [],
       "raw_data": {
         "flywheel_score": 0.85,
-        "category": "tool_spinoff"
+        "category": "platform_play"
       },
       "composite_score": 0.915,
       "counterargument": {
-        "argument": "Open-sourcing the taxonomy invites rule contributions from low-quality actors, fragmenting the standard and degrading the managed service's value prop.",
-        "risk": "If you release 49 rules under Apache 2.0, someone will fork it, add 100 bad rules, and call it 'Pickle Classifier Pro.' Your managed service now competes against a free variant that might actually be more feature-complete (even if lower quality). Venues and brands won't pay for 'guaranteed 95%+ accuracy' when a free fork claims 98%. You also lose audit control \u2014 you can't enforce that commercial forks maintain your accuracy standards, creating liability if a bad fork is used for compliance decisions.",
-        "severity": "medium"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-3747",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938871+00:00",
-      "title": "Crowdsourced Rule Expansion as a Moat",
-      "confidence": 0.84,
-      "evidence_summary": "Commission external sports leagues (badminton, pickleball in 15 countries, padel) to supply footage + human reviewers. They help you build region/sport variants of the 49-rule core. You own the aggregate decision data; they get localized classifier. Data moat deepens; you become the standard.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: crowdsource play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.84,
-        "category": "crowdsource"
-      },
-      "composite_score": 0.912,
-      "counterargument": {
-        "argument": "Crowdsourcing rule expansion introduces quality variance and dilutes ownership of the decision-making framework.",
-        "risk": "If badminton and padel leagues contribute rules but apply them inconsistently (different definition of 'visible brand' across sports), your aggregate training data becomes noisy. You claim ownership of the decision data, but if a padel league's rule causes false positives in pickleball videos, you're responsible for the fallout. Managing 15 regional variants also means you can't roll back a bad rule globally \u2014 you have to negotiate with each league. The 'moat' of aggregate decision data only works if all variants converge; if they diverge, you're managing a splintered taxonomy.",
-        "severity": "medium"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260415-4491",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938879+00:00",
-      "title": "Brand Verification Marketplace",
-      "confidence": 0.81,
-      "evidence_summary": "Brands claim 'we appeared in 500 hours of pro pickleball content.' You become the auditor. Offer a verification badge: 'Verified by Pickle DaaS Classifier.' Brands pay for audit; pay-per-verified-appearance. Your rule set is the trust anchor; competitors can't replicate the decision corpus.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: trust_play play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.81,
-        "category": "trust_play"
-      },
-      "composite_score": 0.903,
-      "counterargument": {
-        "argument": "Brands are already claiming inflated sponsorship metrics; your classifier doesn't solve the fundamental misalignment between what brands claim and what they actually received.",
-        "risk": "If a brand pays for a 'verification badge' and your classifier certifies '500 hours of appearances,' but a competitor challenges the audit, you're now the arbiter of a revenue-affecting claim. False negatives (you miss real appearances) anger the brand; false positives (you count background blur as a brand) expose you to fraud allegations. You also create a perverse incentive for brands to push for overly permissive rules so their audit score is higher, further degrading classifier accuracy across all downstream users who trust the same rules.",
+        "argument": "Real-time blur/flag API on live broadcasts creates legal liability if your classifier misidentifies a brand or flags a legitimate appearance, especially if broadcasters auto-act on your output without human review.",
+        "risk": "A single false positive that causes ESPN to blur a sponsor's logo during a live match is a lawsuit and reputation damage. You're shifting classification risk from internal rules to external action\u2014broadcasters will demand SLAs and indemnification you can't provide. Silent classifier drift will now have immediate on-air consequences.",
         "severity": "high"
       }
     },
     {
-      "finding_id": "wildcard-20260415-6337",
+      "finding_id": "wildcard-20260415-4509",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938888+00:00",
-      "title": "Brand Intelligence Futures Market",
-      "confidence": 0.79,
-      "evidence_summary": "Brands want to know: which venues, which players, which moments will give them the most visibility THIS QUARTER? Build a predictive layer on top of your classifier that forecasts brand-exposure value. Sell to brands and sponsors as a decision tool for where to spend partnership dollars. Your rules become pricing intel.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: media_play play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.79,
-        "category": "media_play"
-      },
-      "composite_score": 0.897
-    },
-    {
-      "finding_id": "wildcard-20260415-0658",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T08:16:30.938896+00:00",
-      "title": "Reverse Brand Intelligence: Competitive Espionage as a Service",
-      "confidence": 0.76,
-      "evidence_summary": "Run your classifier on competitor footage (public YouTube, Twitch, Instagram). Sell 'Brand Presence Reports' to sponsors: 'JOOLA appeared 3x in pro matches last month, but Selkirk 8x. Here's the breakdown by venue, player, broadcast value.' Your rule set lets you see what generalist competitors miss.",
+      "generated_at": "2026-04-15T14:52:59.163129+00:00",
+      "title": "Brand Intel Consortium (Cooperative Play)",
+      "confidence": 0.84,
+      "evidence_summary": "Partner with 5\u201310 sports data companies (tennis, padel, esports, etc.) to pool decision logs and taxonomies into a shared neutral registry. Sell *aggregate cross-sport brand trends* back to CPG companies and agencies ('Where is Nike gaining mindshare across racquet sports?'). You own the data backbone and licensing terms.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: partnership_flip play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.76,
+        "flywheel_score": 0.84,
         "category": "partnership_flip"
       },
-      "composite_score": 0.888
+      "composite_score": 0.912,
+      "counterargument": {
+        "argument": "A neutral registry across 5\u201310 companies assumes you can align taxonomies and governance models\u2014both are expensive migrations that typically take 12+ months and fail.",
+        "risk": "Each partner has different classification needs and political incentives. Merging taxonomies will either water down precision (by averaging to lowest-common-denominator rules) or create silos (defeating the 'pooling' goal). You'll spend more time on governance than on the actual product signal.",
+        "severity": "medium"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-0587",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163138+00:00",
+      "title": "Competitor Intelligence Subscription (Dark Pattern Play)",
+      "confidence": 0.82,
+      "evidence_summary": "Run the classifier on all public/competitor footage (tournaments, YouTube, TikTok) and sell monthly reports: 'What brands are gaining shelf-space in pickleball? Where is your brand losing visibility?' Monetize FOMO and market share anxiety. Data moat: only we have the calibrated rules.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: media_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.82,
+        "category": "media_play"
+      },
+      "composite_score": 0.906,
+      "counterargument": {
+        "argument": "Monitoring competitor footage without explicit rights may expose you to copyright and right-of-publicity claims, especially if you're re-selling competitor intelligence.",
+        "risk": "This is a legal minefield disguised as a product finding. Even if footage is public, scraping and monetizing it without consent invites cease-and-desist letters from tournament operators and athletes. The 0.82 confidence is borrowed credibility\u2014this is a business/legal decision, not a classifier finding.",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-3665",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163148+00:00",
+      "title": "Automated Rights-Management Workflow Tool",
+      "confidence": 0.81,
+      "evidence_summary": "Sell to venues and tournament organizers: upload match footage, our classifier auto-flags every brand appearance, auto-generates licensing invoices, and auto-rejects illegal appearances in real-time broadcasts. Revenue: per-venue + per-match micro-transactions. Becomes essential ops infra.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: tool_spinoff play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.81,
+        "category": "tool_spinoff"
+      },
+      "composite_score": 0.903,
+      "counterargument": {
+        "argument": "Auto-invoicing based on classifier output creates financial liability\u2014venues will dispute invoices if your classifier misses a brand or false-positives a competitor's logo.",
+        "risk": "You're automating a legal/financial workflow on top of a system with 7.4% fallback rate and unknown precision on edge cases. Venues will demand audit trails and appeal mechanisms, turning your classifier into a payment processor with compliance overhead. One major invoice dispute will kill the product.",
+        "severity": "medium"
+      }
+    },
+    {
+      "finding_id": "wildcard-20260415-5749",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163162+00:00",
+      "title": "Open-Source Classifier + Managed SaaS Upsell",
+      "confidence": 0.79,
+      "evidence_summary": "Release the 49 rules and taxonomy as open-source (build community goodwill, become the standard). Monetize via: (1) managed cloud API for scale users, (2) premium rule updates ($500/mo), (3) custom taxonomy training ($10k). GitOps + trust = defensible SaaS moat.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: tool_spinoff play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.79,
+        "category": "tool_spinoff"
+      },
+      "composite_score": 0.897
+    },
+    {
+      "finding_id": "wildcard-20260415-6016",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T14:52:59.163173+00:00",
+      "title": "Creator Monetization Layer (Trust Play)",
+      "confidence": 0.77,
+      "evidence_summary": "Allow pickleball content creators to run the classifier on their own footage and auto-generate brand-attribution reports for sponsorship negotiation: 'My last 10 videos featured your logo 47 times.' Creators pay per report; brands buy lead lists. You become the trusted intermediary proving creator value.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: trust_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.77,
+        "category": "trust_play"
+      },
+      "composite_score": 0.891
     }
   ],
   "counterarguments": [
     {
-      "title": "Streamers already have legal+compliance teams reviewing brand safety \u2014 this adds a dependency on your classifier's recall, not their existing workflows.",
-      "target_title": "Brand Safety Engine for Sports Streaming",
+      "title": "Licensing the decision loop itself assumes your pickleball rules are generalizable to tennis/padel/squash, which have completely different equipment, court layouts, and sponsorship norms.",
+      "target_title": "Taxonomy Franchise: 'Brand Rules Engine for [Sport]'",
       "target_agent": "wildcard",
       "severity": "high",
-      "risk": "If your classifier misses a brand appearance (false negative), the streamer's compliance team still catches it, but now they distrust your system and stop using it. If you over-flag (false positive), you create alert fatigue and the streamer disables the feature. Either way, you've inserted yourself into a critical safety path without solving the core problem \u2014 human review is still required."
+      "risk": "You'll export rules that don't transfer (e.g., 'paddle logo rules' don't apply to tennis rackets), creating broken classifiers in partner systems that reflect back on your credibility. Silent failures in downstream partner dashboards will be impossible to debug without access to their data."
     },
     {
-      "title": "Venues care about sponsorship ROI, not brand appearance counts \u2014 they want attribution tied to viewer engagement or sales lift, which your classifier doesn't measure.",
-      "target_title": "Venue Operating System: Sponsor Dashboard",
-      "target_agent": "wildcard",
-      "severity": "high",
-      "risk": "You're embedding a classifier into venue software that answers 'how many times did this brand appear?' but venues actually need 'did this appearance drive sponsor value?' Without converting raw detections into business metrics, adoption stalls and venues rip out the integration. If venues start making sponsorship renewal decisions based on your appearance counts alone, you're liable for inflated or deflated metrics that affect their revenue."
-    },
-    {
-      "title": "Competing sports data vendors already have domain expertise and customer relationships \u2014 licensing your taxonomy doesn't guarantee they'll use it correctly or maintain quality alignment.",
-      "target_title": "Taxonomy Licensing to Competing Sports Data Vendors",
-      "target_agent": "wildcard",
-      "severity": "high",
-      "risk": "If a tennis vendor licenses your rules but applies them loosely (different video quality, different rule interpretation), they'll produce bad classifications under your methodology name, damaging your brand. You also lose control over taxonomy evolution \u2014 they'll fork it, and now you have fragmented versions in the wild. Auditing their implementations will become expensive, and you have no leverage to force them to stay aligned."
-    },
-    {
-      "title": "A 7.4% fallback rate may be acceptable \u2014 not every detection deserves a rule, and creating rules for rare edge cases increases false positives and maintenance burden.",
+      "title": "7.4% fallback rate is low enough that clustering and promoting top clusters may introduce false positives that break existing high-precision rules.",
       "target_title": "7.4% of classifications are fallback (no rule match) \u2014 every % is a rule gap",
       "target_agent": "rule_impact_hunter",
       "severity": "high",
-      "risk": "If you aggressively promote fallback detections into new rules without understanding *why* they fell back, you'll add rules that match too broadly or contradict existing rules. This introduces silent drift \u2014 your rule count grows from 49 to 70+, but you haven't tested rule interaction effects. You also risk overfitting to this specific dataset; rules optimized for these 340 fallbacks may perform poorly on future footage. Migrations to a larger taxonomy are operationally expensive and break downstream dashboards expecting the original 49 rules."
+      "risk": "You'll be adding rules based on only 340 samples across potentially dozens of clusters\u2014each with <50 examples. New rules built on thin evidence will trigger false positives on edge cases, polluting downstream reports and forcing you to maintain exception lists. The classifier owner likely already knows these gaps exist and chose not to fill them for precision reasons."
     },
     {
-      "title": "Top unknowns like JOOLA (220 detections) may be concentrated in a single tournament or camera angle \u2014 writing rules for dataset-specific noise won't generalize.",
+      "title": "JOOLA 'shirt chest' detections and fence signage are fundamentally different classification problems\u2014one is legitimate brand presence, the other is background clutter.",
       "target_title": "Top 10 unknown brands account for 314 detections \u2014 high-leverage rule targets",
       "target_agent": "unknown_surfer",
       "severity": "high",
-      "risk": "If you call Haiku research and learn 'JOOLA is a paddle brand that appears on 20% of player gear,' you'll want to add a rule. But 220 detections across how many videos? If they're all from one tournament with one camera position, the rule won't fire in future tournaments. You'll also create a precedent that every brand appearing 16+ times gets a rule, leading to rule bloat. Without stratifying detections by video source, date, and camera angle, you can't distinguish signal from noise."
+      "risk": "Treating all 314 detections as 'rule gaps' will cause you to add rules that capture noise (background signage, overlays) alongside genuine brand appearances, degrading precision. You'll need to manually audit each cluster first\u2014research calls alone won't tell you whether a pattern should become a rule or a filter."
     },
     {
-      "title": "Open-sourcing the taxonomy invites rule contributions from low-quality actors, fragmenting the standard and degrading the managed service's value prop.",
-      "target_title": "Open-Source Classifier + Managed Service Upsell",
-      "target_agent": "wildcard",
-      "severity": "medium",
-      "risk": "If you release 49 rules under Apache 2.0, someone will fork it, add 100 bad rules, and call it 'Pickle Classifier Pro.' Your managed service now competes against a free variant that might actually be more feature-complete (even if lower quality). Venues and brands won't pay for 'guaranteed 95%+ accuracy' when a free fork claims 98%. You also lose audit control \u2014 you can't enforce that commercial forks maintain your accuracy standards, creating liability if a bad fork is used for compliance decisions."
-    },
-    {
-      "title": "Crowdsourcing rule expansion introduces quality variance and dilutes ownership of the decision-making framework.",
-      "target_title": "Crowdsourced Rule Expansion as a Moat",
-      "target_agent": "wildcard",
-      "severity": "medium",
-      "risk": "If badminton and padel leagues contribute rules but apply them inconsistently (different definition of 'visible brand' across sports), your aggregate training data becomes noisy. You claim ownership of the decision data, but if a padel league's rule causes false positives in pickleball videos, you're responsible for the fallout. Managing 15 regional variants also means you can't roll back a bad rule globally \u2014 you have to negotiate with each league. The 'moat' of aggregate decision data only works if all variants converge; if they diverge, you're managing a splintered taxonomy."
-    },
-    {
-      "title": "Brands are already claiming inflated sponsorship metrics; your classifier doesn't solve the fundamental misalignment between what brands claim and what they actually received.",
-      "target_title": "Brand Verification Marketplace",
+      "title": "Real-time blur/flag API on live broadcasts creates legal liability if your classifier misidentifies a brand or flags a legitimate appearance, especially if broadcasters auto-act on your output without human review.",
+      "target_title": "Brand Safety API for Sports Broadcasters",
       "target_agent": "wildcard",
       "severity": "high",
-      "risk": "If a brand pays for a 'verification badge' and your classifier certifies '500 hours of appearances,' but a competitor challenges the audit, you're now the arbiter of a revenue-affecting claim. False negatives (you miss real appearances) anger the brand; false positives (you count background blur as a brand) expose you to fraud allegations. You also create a perverse incentive for brands to push for overly permissive rules so their audit score is higher, further degrading classifier accuracy across all downstream users who trust the same rules."
+      "risk": "A single false positive that causes ESPN to blur a sponsor's logo during a live match is a lawsuit and reputation damage. You're shifting classification risk from internal rules to external action\u2014broadcasters will demand SLAs and indemnification you can't provide. Silent classifier drift will now have immediate on-air consequences."
+    },
+    {
+      "title": "Monitoring competitor footage without explicit rights may expose you to copyright and right-of-publicity claims, especially if you're re-selling competitor intelligence.",
+      "target_title": "Competitor Intelligence Subscription (Dark Pattern Play)",
+      "target_agent": "wildcard",
+      "severity": "high",
+      "risk": "This is a legal minefield disguised as a product finding. Even if footage is public, scraping and monetizing it without consent invites cease-and-desist letters from tournament operators and athletes. The 0.82 confidence is borrowed credibility\u2014this is a business/legal decision, not a classifier finding."
+    },
+    {
+      "title": "A brand-managed marketplace assumes brands will self-report accurate appearance rules, which creates garbage-in-garbage-out risk and shifts taxonomy maintenance burden to external actors.",
+      "target_title": "Brand Licensing Network (Marketplace Play)",
+      "target_agent": "wildcard",
+      "severity": "medium",
+      "risk": "Brands will either over-report (claiming restrictions that don't exist) or under-report (hiding restrictions) to game visibility. Your classifier will now be a patchwork of self-served rules you can't audit. Downstream consumers (venues, reports) will lose trust when rules contradict each other or change without notice."
+    },
+    {
+      "title": "A neutral registry across 5\u201310 companies assumes you can align taxonomies and governance models\u2014both are expensive migrations that typically take 12+ months and fail.",
+      "target_title": "Brand Intel Consortium (Cooperative Play)",
+      "target_agent": "wildcard",
+      "severity": "medium",
+      "risk": "Each partner has different classification needs and political incentives. Merging taxonomies will either water down precision (by averaging to lowest-common-denominator rules) or create silos (defeating the 'pooling' goal). You'll spend more time on governance than on the actual product signal."
+    },
+    {
+      "title": "Auto-invoicing based on classifier output creates financial liability\u2014venues will dispute invoices if your classifier misses a brand or false-positives a competitor's logo.",
+      "target_title": "Automated Rights-Management Workflow Tool",
+      "target_agent": "wildcard",
+      "severity": "medium",
+      "risk": "You're automating a legal/financial workflow on top of a system with 7.4% fallback rate and unknown precision on edge cases. Venues will demand audit trails and appeal mechanisms, turning your classifier into a payment processor with compliance overhead. One major invoice dispute will kill the product."
     }
   ]
 }
