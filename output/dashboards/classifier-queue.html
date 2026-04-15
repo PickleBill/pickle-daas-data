@@ -54,6 +54,7 @@
   .rule-card.approved { border-color: var(--accent); }
   .rule-card.rejected { border-color: var(--danger); opacity: 0.5; }
   .rule-card.investigate { border-color: var(--warn); }
+  .rule-card.cross-sport { border-left: 4px solid var(--danger); }
   .rule-head {
     display: flex; align-items: center; justify-content: space-between;
     gap: 12px; flex-wrap: wrap;
@@ -204,11 +205,13 @@
 
 <div class="toolbar">
   <span>Bulk:</span>
-  <button class="success" onclick="approveAllHighConfidence()">✅ Approve all ≥0.85</button>
+  <button class="primary" onclick="approveAndShip()">⚡ Approve ≥0.85 + Reject Cross-Sport + Download</button>
+  <button class="success" onclick="approveAllHighConfidence()">✅ Approve ≥0.85</button>
+  <button class="danger" onclick="rejectAllCrossSport()">❌ Reject Cross-Sport</button>
   <button onclick="approveAll()">Approve All</button>
   <button onclick="rejectAll()">Reject All</button>
-  <button onclick="clearDecisions()">Clear Decisions</button>
-  <span style="margin-left:auto">Click a rule to change decision.</span>
+  <button onclick="clearDecisions()">Clear</button>
+  <span style="margin-left:auto">⚡ = one-click batch ship</span>
 </div>
 
 <div id="proposals"></div>
@@ -362,8 +365,10 @@ python3 tools/push-to-ghpages.py</pre>
       const subtype = p.sponsor_subtype && p.sponsor_subtype !== 'null' ? p.sponsor_subtype : '';
       const website = p.website && p.website !== 'null' ? p.website : '';
       const brandDesc = p.brand_description && p.brand_description !== 'null' ? p.brand_description : '';
+      const crossSport = p.cross_sport_warning || '';
+      const relevance = p.pickleball_relevance || '';
       return `
-        <div class="rule-card ${stateClass}" data-key="${k}">
+        <div class="rule-card ${stateClass} ${crossSport ? 'cross-sport' : ''}" data-key="${k}">
           <div class="rule-head">
             <div>
               <span class="brand-name">${escapeHtml(p.brand || '?')}</span>
@@ -371,9 +376,14 @@ python3 tools/push-to-ghpages.py</pre>
               ${subtype ? `<span class="category-chip" style="color:var(--warn)">${escapeHtml(subtype)}</span>` : ''}
               ${website ? `<a href="${escapeAttr(website)}" target="_blank" rel="noopener" class="category-chip" style="color:var(--primary);text-decoration:none">🌐 website</a>` : ''}
               ${p.one_click_approve ? '<span class="category-chip" style="color:var(--accent)">⭐ high-confidence</span>' : ''}
-              ${p.needs_investigation ? '<span class="category-chip" style="color:var(--warn)">⚠ needs investigation</span>' : ''}
+              ${relevance === 'high' ? '<span class="category-chip" style="color:var(--accent)">🎯 high relevance</span>' : ''}
+              ${relevance === 'none' ? '<span class="category-chip" style="color:var(--danger)">🚫 no relevance</span>' : ''}
+              ${crossSport ? '<span class="category-chip" style="color:var(--danger);border-color:var(--danger)">⚠ cross-sport</span>' : ''}
+              ${p.needs_investigation && !crossSport ? '<span class="category-chip" style="color:var(--warn)">⚠ investigate</span>' : ''}
+              ${p.enriched_by_research ? '<span class="category-chip" style="color:var(--primary);font-size:10px">✨ researched</span>' : ''}
             </div>
           </div>
+          ${crossSport ? `<div class="rationale" style="border-left-color:var(--danger);background:rgba(248,113,113,0.08)"><b>⚠ Cross-sport pollution:</b> ${escapeHtml(crossSport)}</div>` : ''}
           ${brandDesc ? `<div style="color:var(--mute);font-size:12px;margin-top:4px;font-style:italic">${escapeHtml(brandDesc)}</div>` : ''}
           <div class="confidence-bar"><div class="confidence-fill ${confClass}" style="width:${Math.round(conf*100)}%"></div></div>
           <div class="meta-row">
@@ -426,10 +436,27 @@ python3 tools/push-to-ghpages.py</pre>
   }
 
   function approveAllHighConfidence() {
-    proposals.filter(p => (+p.confidence||0) >= 0.85 && !p.needs_investigation)
+    proposals.filter(p => (+p.confidence||0) >= 0.85
+                          && !p.needs_investigation
+                          && !p.cross_sport_warning)
              .forEach(p => decisions[keyFor(p)] = 'approve');
     saveDecisions(); renderProposals(); updateStats();
-    toast('Approved all ≥0.85');
+    toast('Approved all ≥0.85 (cross-sport excluded)');
+  }
+  function rejectAllCrossSport() {
+    let n = 0;
+    proposals.filter(p => p.cross_sport_warning)
+             .forEach(p => { decisions[keyFor(p)] = 'reject'; n++; });
+    saveDecisions(); renderProposals(); updateStats();
+    toast(`Rejected ${n} cross-sport pollution items`);
+  }
+  async function approveAndShip() {
+    /* One-click: approve ≥0.85, reject cross-sport, auto-download JSONL */
+    approveAllHighConfidence();
+    rejectAllCrossSport();
+    // Auto-download the batch
+    setTimeout(() => submitBatch(), 300);
+    toast('Batch ready — file downloading');
   }
   function approveAll() {
     proposals.forEach(p => decisions[keyFor(p)] = 'approve');

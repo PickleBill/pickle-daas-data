@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Intelligence V3 — Taxonomy-driven</title>
+<style>
+  :root {
+    --bg:#0b0f14; --panel:#141a22; --panel-hi:#1c2430; --border:#2a3341;
+    --text:#e7ecf3; --mute:#8a95a6; --accent:#4ade80; --warn:#fbbf24;
+    --danger:#f87171; --primary:#60a5fa;
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+  header{padding:24px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px}
+  h1{margin:0;font-size:22px} .sub{color:var(--mute);font-size:13px;margin-top:4px}
+  main{max-width:1200px;margin:0 auto;padding:24px 32px}
+  section{margin-bottom:36px}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:16px}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+  .stat{padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+  .stat-value{font-size:22px;font-weight:600}
+  .stat-label{font-size:11px;color:var(--mute);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px}
+  .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 14px;background:var(--panel);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;color:var(--text)}
+  .tab.active{background:var(--primary);color:#0b0f14;border-color:var(--primary);font-weight:600}
+  .panel{display:none} .panel.active{display:block}
+  .brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .brand-card{padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:8px;transition:border-color 0.15s}
+  .brand-card:hover{border-color:var(--primary)}
+  .brand-card.high-value{border-left:3px solid var(--accent)}
+  .brand-card.verified{background:linear-gradient(to right, rgba(74,222,128,0.05), transparent)}
+  .brand-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .brand-name{font-size:16px;font-weight:600}
+  .detection-count{font-size:12px;color:var(--mute)}
+  .chips{margin-top:8px;display:flex;gap:4px;flex-wrap:wrap}
+  .chip{font-size:10px;padding:2px 7px;background:var(--panel-hi);border-radius:10px;color:var(--mute);border:1px solid var(--border)}
+  .chip.high{background:var(--accent);color:#0b0f14}
+  .chip.medium{background:var(--primary);color:#0b0f14}
+  .chip.warn{background:var(--warn);color:#0b0f14}
+  .chip.danger{background:var(--danger);color:#0b0f14}
+  .brand-meta{margin-top:8px;font-size:12px;color:var(--mute);line-height:1.4}
+  .brand-link{display:block;margin-top:6px;font-size:11px;color:var(--primary);text-decoration:none}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+  th,td{padding:9px 12px;text-align:left;font-size:13px;border-bottom:1px solid var(--border)}
+  th{background:var(--panel-hi);color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+  tr:last-child td{border-bottom:none}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+  .subtype-header{display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px;padding:8px 12px;background:var(--panel-hi);border-radius:6px;font-size:13px}
+  .subtype-header .count{color:var(--mute)}
+  a{color:var(--primary)}
+  .empty{padding:32px;text-align:center;color:var(--mute);background:var(--panel);border:1px dashed var(--border);border-radius:8px}
+  .cta{display:inline-block;padding:8px 14px;background:var(--panel);color:var(--text);text-decoration:none;border:1px solid var(--border);border-radius:6px;font-size:13px;margin-right:4px}
+  .cta.primary{background:var(--primary);color:#0b0f14;border-color:var(--primary);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Brand Intelligence V3</h1>
+    <div class="sub" id="subtitle">Taxonomy-driven — loading…</div>
+  </div>
+  <div>
+    <a class="cta" href="classifier-queue.html">Queue</a>
+    <a class="cta" href="classifier-morning-report.html">Morning Report</a>
+    <a class="cta primary" href="brand-intelligence-v2.html">← V2 (legacy)</a>
+  </div>
+</header>
+<main>
+
+<section>
+  <h2>At a glance</h2>
+  <div class="stat-grid" id="stats"></div>
+</section>
+
+<section>
+  <div class="tabs">
+    <div class="tab active" data-tab="sponsors">💼 Sponsors</div>
+    <div class="tab" data-tab="player-gear">🏓 Player Equipment</div>
+    <div class="tab" data-tab="venue">🏟️ Venue & Broadcast</div>
+    <div class="tab" data-tab="unknowns">❓ Unknowns</div>
+    <div class="tab" data-tab="quarantine">🚨 Quarantined</div>
+  </div>
+
+  <div class="panel active" id="tab-sponsors">
+    <h2>Sponsors grouped by sub-type</h2>
+    <div id="sponsors-content"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="panel" id="tab-player-gear">
+    <h2>Player equipment market share</h2>
+    <div id="player-gear-content"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="panel" id="tab-venue">
+    <h2>Venue infrastructure & broadcast tech</h2>
+    <div id="venue-content"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="panel" id="tab-unknowns">
+    <h2>Unclassified / needs research</h2>
+    <div id="unknowns-content"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="panel" id="tab-quarantine">
+    <h2>Quarantined clips (non-pickleball pollution)</h2>
+    <div id="quarantine-content"><div class="empty">Loading…</div></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const DATA_SOURCES = {
+    corpus: '../corpus-export.json',
+    taxonomy: '../classifier/approved-rules.json',
+    stats: '../classification-stats.json',
+    quarantine: '../classifier/quarantined-clips.json',
+    research: '../classifier/brand-research.json',
+    proposed: '../classifier/proposed-rules.json',
+  };
+
+  let state = { corpus: [], taxonomy: {rules:[]}, stats: {}, quarantine: {clips:[]}, research: {research:[]}, proposed: {proposals:[]} };
+
+  async function fetchJson(url) {
+    try {
+      const r = await fetch(url, {cache:'no-store'});
+      if (r.ok) return await r.json();
+    } catch(e) { console.error(url, e); }
+    return null;
+  }
+
+  function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function buildStats() {
+    const t = state.taxonomy;
+    const s = state.stats;
+    const rules = t.rules || [];
+    const totalClips = state.corpus.length;
+    const totalDetections = s.total_brand_detections || 0;
+    const coverage = s.coverage_pct || 0;
+
+    // Count brands by top-level context
+    let playerRules = 0, venueRules = 0, sponsorRules = 0, broadcastRules = 0;
+    let highValue = 0;
+    const subtypes = {};
+    for (const r of rules) {
+      const def = (r.classifications || []).slice(-1)[0] || {};
+      const asL = def.as || '';
+      if (asL === 'player_equipment') playerRules++;
+      if (asL === 'venue_installed' || asL === 'venue_brand') venueRules++;
+      if (asL === 'sponsor_signage') sponsorRules++;
+      if (asL === 'broadcast_tech') broadcastRules++;
+      if (r.revenue_potential === 'high') highValue++;
+      if (r.sponsor_subtype) subtypes[r.sponsor_subtype] = (subtypes[r.sponsor_subtype]||0)+1;
+    }
+
+    document.getElementById('stats').innerHTML = `
+      <div class="stat"><div class="stat-value">${rules.length}</div><div class="stat-label">taxonomy rules</div></div>
+      <div class="stat"><div class="stat-value">${coverage}%</div><div class="stat-label">coverage</div></div>
+      <div class="stat"><div class="stat-value">${totalDetections.toLocaleString()}</div><div class="stat-label">brand detections</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--accent)">${highValue}</div><div class="stat-label">high-value brands</div></div>
+      <div class="stat"><div class="stat-value">${sponsorRules}</div><div class="stat-label">sponsor rules</div></div>
+      <div class="stat"><div class="stat-value">${playerRules}</div><div class="stat-label">player gear rules</div></div>
+      <div class="stat"><div class="stat-value">${venueRules}</div><div class="stat-label">venue rules</div></div>
+      <div class="stat"><div class="stat-value">${Object.keys(subtypes).length}</div><div class="stat-label">sponsor subtypes</div></div>
+    `;
+
+    document.getElementById('subtitle').textContent =
+      `Taxonomy v${t.version||0} · ${rules.length} rules · ${coverage}% coverage · corpus ${totalClips.toLocaleString()} clips`;
+  }
+
+  function brandCard(rule, detectionCount, detectionClips) {
+    const def = (rule.classifications||[]).slice(-1)[0] || {};
+    const rev = rule.revenue_potential || 'low';
+    const highVal = rev === 'high';
+    const verified = rule.human_verified;
+    const subtype = rule.sponsor_subtype;
+    return `<div class="brand-card ${highVal ? 'high-value' : ''} ${verified ? 'verified' : ''}">
+      <div class="brand-head">
+        <div class="brand-name">${esc(rule.brand)}</div>
+        <div class="detection-count">${(detectionCount||0).toLocaleString()} dets · ${(detectionClips||0)} clips</div>
+      </div>
+      <div class="chips">
+        <span class="chip ${rev==='high'?'high':rev==='medium'?'medium':''}">${esc(rev)}</span>
+        ${subtype ? `<span class="chip warn">${esc(subtype)}</span>` : ''}
+        ${verified ? '<span class="chip high">✓ verified</span>' : ''}
+        <span class="chip">${esc(def.category_primary||'?')}</span>
+      </div>
+      ${rule.brand_description ? `<div class="brand-meta">${esc(rule.brand_description)}</div>` : ''}
+      ${rule.human_note ? `<div class="brand-meta" style="font-style:italic;color:var(--text);border-left:2px solid var(--primary);padding-left:8px;margin-top:6px">💬 ${esc(rule.human_note)}</div>` : ''}
+      ${rule.website ? `<a class="brand-link" href="${esc(rule.website)}" target="_blank" rel="noopener">🌐 ${esc(rule.website.replace(/^https?:\/\//, ''))}</a>` : ''}
+    </div>`;
+  }
+
+  function computeBrandCounts() {
+    const counts = {};  // {brand_lower: {total, clips: Set}}
+    for (const clip of state.corpus) {
+      const uuid = clip.uuid;
+      for (const b of (clip.brands||[])) {
+        if (!b || typeof b !== 'object') continue;
+        const name = (b.name||'').toLowerCase().trim();
+        if (!name) continue;
+        counts[name] = counts[name] || {total:0, clips:new Set()};
+        counts[name].total++;
+        counts[name].clips.add(uuid);
+      }
+    }
+    return counts;
+  }
+
+  function renderSponsors(brandCounts) {
+    const rules = state.taxonomy.rules || [];
+    const sponsorRules = rules.filter(r => {
+      const def = (r.classifications||[]).slice(-1)[0] || {};
+      return def.as === 'sponsor_signage' || def.category_primary === 'sponsor_signage' || r.sponsor_subtype;
+    });
+
+    const bySubtype = {};
+    for (const r of sponsorRules) {
+      const st = r.sponsor_subtype || 'unclassified';
+      (bySubtype[st] = bySubtype[st] || []).push(r);
+    }
+
+    const orderedSubtypes = Object.keys(bySubtype).sort((a,b) => {
+      const order = ['national_corporate','financial','automotive','education','wellness_recovery','hvac_industrial','food_beverage_sponsor','technology','healthcare','media','regional_corporate','local_business','other_corporate','unclassified','unknown'];
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      return (ia<0?99:ia) - (ib<0?99:ib);
+    });
+
+    let html = '';
+    for (const st of orderedSubtypes) {
+      const rules = bySubtype[st].map(r => {
+        const key = (r.brand||'').toLowerCase().trim();
+        const c = brandCounts[key];
+        return [r, c?.total||0, c?.clips.size||0];
+      }).sort((a,b) => b[1]-a[1]);
+
+      html += `<div class="subtype-header">
+        <b>${esc(st.replace(/_/g,' '))}</b>
+        <span class="count">${rules.length} brand${rules.length!==1?'s':''}</span>
+      </div>
+      <div class="brand-grid">
+        ${rules.map(([r,t,c]) => brandCard(r, t, c)).join('')}
+      </div>`;
+    }
+    document.getElementById('sponsors-content').innerHTML = html || '<div class="empty">No sponsor rules yet.</div>';
+  }
+
+  function renderPlayerGear(brandCounts) {
+    const rules = (state.taxonomy.rules || []).filter(r => {
+      const def = (r.classifications||[]).slice(-1)[0] || {};
+      return def.as === 'player_equipment';
+    });
+    const byCat = {};
+    for (const r of rules) {
+      const def = (r.classifications||[]).slice(-1)[0] || {};
+      const cat = def.category_primary || 'unknown';
+      (byCat[cat] = byCat[cat] || []).push(r);
+    }
+    const order = ['paddle','shoes','apparel','bag','ball','accessory'];
+    const cats = Object.keys(byCat).sort((a,b) => (order.indexOf(a)<0?99:order.indexOf(a))-(order.indexOf(b)<0?99:order.indexOf(b)));
+    let html = '';
+    for (const cat of cats) {
+      const rules = byCat[cat].map(r => {
+        const k = (r.brand||'').toLowerCase().trim();
+        const c = brandCounts[k];
+        return [r, c?.total||0, c?.clips.size||0];
+      }).sort((a,b) => b[1]-a[1]);
+      const totalDetections = rules.reduce((s,[,t])=>s+t, 0);
+      html += `<div class="subtype-header">
+        <b>${esc(cat)}</b>
+        <span class="count">${rules.length} brand${rules.length!==1?'s':''} · ${totalDetections.toLocaleString()} detections</span>
+      </div>
+      <div class="brand-grid">${rules.map(([r,t,c]) => brandCard(r,t,c)).join('')}</div>`;
+    }
+    document.getElementById('player-gear-content').innerHTML = html || '<div class="empty">No player gear rules yet.</div>';
+  }
+
+  function renderVenue(brandCounts) {
+    const rules = (state.taxonomy.rules || []).filter(r => {
+      const def = (r.classifications||[]).slice(-1)[0] || {};
+      return ['venue_installed','venue_brand','broadcast_tech'].includes(def.as);
+    });
+    const enriched = rules.map(r => {
+      const k = (r.brand||'').toLowerCase().trim();
+      const c = brandCounts[k];
+      return [r, c?.total||0, c?.clips.size||0];
+    }).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('venue-content').innerHTML =
+      `<div class="brand-grid">${enriched.map(([r,t,c])=>brandCard(r,t,c)).join('')}</div>`
+      || '<div class="empty">No venue rules yet.</div>';
+  }
+
+  function renderUnknowns() {
+    const proposals = state.proposed.proposals || [];
+    const research = state.research.research || [];
+    if (!proposals.length && !research.length) {
+      document.getElementById('unknowns-content').innerHTML = '<div class="empty">No pending unknowns.</div>';
+      return;
+    }
+    const rows = proposals.slice(0, 40).map(p => {
+      const conf = +p.confidence || 0;
+      const cls = (p.classifications||[{}])[0] || {};
+      return `<tr>
+        <td><b>${esc(p.brand)}</b></td>
+        <td>${esc(cls.category_primary||'?')}</td>
+        <td>${esc(p.sponsor_subtype||'—')}</td>
+        <td class="num">${(conf*100).toFixed(0)}%</td>
+        <td>${p.cross_sport_warning ? '<span class="chip danger">cross-sport</span>' : (p.pickleball_relevance==='high' ? '<span class="chip high">high</span>' : esc(p.pickleball_relevance||'—'))}</td>
+        <td>${esc((p.brand_description||'').slice(0,80))}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('unknowns-content').innerHTML = `<table>
+      <thead><tr><th>Brand</th><th>Category</th><th>Subtype</th><th>Confidence</th><th>PB Relevance</th><th>Description</th></tr></thead>
+      <tbody>${rows}</tbody></table>
+      <p class="sub" style="margin-top:12px">Review and decide in the <a href="classifier-queue.html">queue</a>.</p>`;
+  }
+
+  function renderQuarantine() {
+    const clips = state.quarantine.clips || [];
+    if (!clips.length) {
+      document.getElementById('quarantine-content').innerHTML = '<div class="empty">No quarantined clips. Corpus is clean.</div>';
+      return;
+    }
+    const rows = clips.map(c => `<tr>
+      <td><code>${esc(c.uuid.slice(0,12))}</code></td>
+      <td><span class="chip danger">${esc(c.reason)}</span></td>
+      <td>${esc(c.evidence||'')}</td>
+      <td>${esc((c.summary||'').slice(0,100))}</td>
+      <td><a href="${esc(c.video_url)}" target="_blank">▶</a></td>
+    </tr>`).join('');
+    document.getElementById('quarantine-content').innerHTML = `<table>
+      <thead><tr><th>UUID</th><th>Reason</th><th>Evidence</th><th>Summary</th><th>Clip</th></tr></thead>
+      <tbody>${rows}</tbody></table>`;
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === `tab-${name}`));
+  }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+  async function boot() {
+    const [corpus, taxonomy, stats, quarantine, research, proposed] = await Promise.all([
+      fetchJson(DATA_SOURCES.corpus),
+      fetchJson(DATA_SOURCES.taxonomy),
+      fetchJson(DATA_SOURCES.stats),
+      fetchJson(DATA_SOURCES.quarantine),
+      fetchJson(DATA_SOURCES.research),
+      fetchJson(DATA_SOURCES.proposed),
+    ]);
+    state.corpus = corpus || [];
+    state.taxonomy = taxonomy || {rules:[]};
+    state.stats = stats || {};
+    state.quarantine = quarantine || {clips:[]};
+    state.research = research || {research:[]};
+    state.proposed = proposed || {proposals:[]};
+
+    buildStats();
+    const brandCounts = computeBrandCounts();
+    renderSponsors(brandCounts);
+    renderPlayerGear(brandCounts);
+    renderVenue(brandCounts);
+    renderUnknowns();
+    renderQuarantine();
+  }
+  boot();
+</script>
+</body>
+</html>
