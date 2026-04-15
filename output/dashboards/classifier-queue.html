@@ -83,6 +83,20 @@
   }
   .actions { display: flex; gap: 8px; margin-top: 10px; }
   .actions button { flex-grow: 0; }
+  .comment-row {
+    display: flex; gap: 8px; align-items: center; margin-top: 10px;
+  }
+  .comment-input {
+    flex: 1; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; font-size: 13px; font-family: inherit;
+  }
+  .comment-input:focus { outline: none; border-color: var(--primary); }
+  .comment-input::placeholder { color: var(--mute); font-style: italic; }
+  .comment-badge {
+    color: var(--accent); font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
   details summary { cursor: pointer; color: var(--mute); font-size: 12px; margin-top: 8px; }
   details pre {
     background: var(--bg); padding: 10px; border-radius: 6px; overflow-x: auto;
@@ -175,15 +189,28 @@ python3 tools/push-to-ghpages.py</pre>
 
   let proposals = [];
   let decisions = {};  // { brand_key: 'approve' | 'reject' | 'investigate' }
+  let comments = {};   // { brand_key: 'free-text note' }
+  const COMMENTS_KEY = 'classifier-comments-v1';
 
   function loadDecisions() {
     try {
       const d = localStorage.getItem(STORAGE_KEY);
       decisions = d ? JSON.parse(d) : {};
     } catch(e) { decisions = {}; }
+    try {
+      const c = localStorage.getItem(COMMENTS_KEY);
+      comments = c ? JSON.parse(c) : {};
+    } catch(e) { comments = {}; }
   }
   function saveDecisions() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(decisions));
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
+  }
+  function setComment(key, text) {
+    if (text && text.trim()) comments[key] = text.trim();
+    else delete comments[key];
+    saveDecisions();
+    updateStats();
   }
   function keyFor(p) { return (p.brand || '').toLowerCase().trim(); }
 
@@ -232,6 +259,12 @@ python3 tools/push-to-ghpages.py</pre>
             <button class="warn"    onclick="decide('${k}','investigate')">🔍 Investigate</button>
             <button                  onclick="decide('${k}',null)">Undo</button>
           </div>
+          <div class="comment-row">
+            <input type="text" class="comment-input" placeholder="Optional note — why, what to check, correct classification…"
+                   value="${escapeHtml(comments[k] || '')}"
+                   oninput="setComment('${k}', this.value)" />
+            ${comments[k] ? '<span class="comment-badge">💬 saved</span>' : ''}
+          </div>
           <details>
             <summary>See classification rules + raw proposal</summary>
             <pre>${escapeHtml(JSON.stringify(p, null, 2))}</pre>
@@ -270,18 +303,26 @@ python3 tools/push-to-ghpages.py</pre>
   }
 
   function submitBatch() {
+    // Include any proposal that has a decision OR a comment (so investigate+note still exports)
     const lines = proposals
-      .filter(p => decisions[keyFor(p)])
-      .map(p => JSON.stringify({
-        brand: p.brand,
-        aliases: p.aliases || [],
-        decision: decisions[keyFor(p)],
-        classifications: p.classifications || [],
-        revenue_potential: p.revenue_potential || 'low',
-        rationale: p.rationale || '',
-        decided_at: new Date().toISOString()
-      }));
-    if (!lines.length) { toast('No decisions yet'); return; }
+      .filter(p => {
+        const k = keyFor(p);
+        return decisions[k] || comments[k];
+      })
+      .map(p => {
+        const k = keyFor(p);
+        return JSON.stringify({
+          brand: p.brand,
+          aliases: p.aliases || [],
+          decision: decisions[k] || 'investigate',
+          note: comments[k] || '',
+          classifications: p.classifications || [],
+          revenue_potential: p.revenue_potential || 'low',
+          rationale: p.rationale || '',
+          decided_at: new Date().toISOString()
+        });
+      });
+    if (!lines.length) { toast('No decisions or notes yet'); return; }
     const blob = new Blob([lines.join('\n')], { type: 'application/x-ndjson' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
