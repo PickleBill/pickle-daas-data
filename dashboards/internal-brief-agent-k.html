@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent K / Idea Lab — Internal Engineering Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(12% .012 155); --sf: oklch(15% .01 155); --sf2: oklch(18% .009 155);
+  --sf3: oklch(22% .008 155); --bd: oklch(26% .012 155); --bds: oklch(20% .008 155);
+  --tx: oklch(92% .01 155); --tx2: oklch(72% .015 155); --mt: oklch(50% .02 155);
+  --ac: oklch(78% .19 155); --acd: oklch(78% .19 155/.1); --acg: oklch(78% .19 155/.25);
+  --pu: oklch(62% .22 300); --pud: oklch(62% .22 300/.08);
+  --cy: oklch(72% .18 195); --cyd: oklch(72% .18 195/.08);
+  --wn: oklch(78% .16 85); --wnd: oklch(78% .16 85/.08);
+  --er: oklch(65% .22 25); --erd: oklch(65% .22 25/.07);
+  --r: 10px; --rl: 14px; --ease: cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.65;font-size:15px}
+a{color:var(--ac);text-decoration:none;transition:.15s}a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+code{background:var(--sf);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:13px;color:var(--ac)}
+hr{border:none;border-top:1px solid var(--bd);margin:32px 0}
+
+.shell{max-width:920px;margin:0 auto;padding:40px 28px 100px}
+
+/* HEADER */
+.hdr{margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid var(--bd)}
+.tag{display:inline-block;font-family:'Red Hat Mono',monospace;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--pu);padding:4px 10px;border:1px solid oklch(62% .22 300/.25);border-radius:20px;margin-bottom:14px}
+.hdr h1{font-size:36px;font-weight:800;letter-spacing:-.8px;line-height:1.12;margin-bottom:10px}
+.hdr h1 .ac{color:var(--ac)}
+.hdr .sub{font-size:15px;color:var(--tx2);max-width:620px;margin-top:8px}
+.meta{display:flex;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:14px;letter-spacing:.5px}
+.meta .kv b{color:var(--tx);font-weight:500;letter-spacing:0}
+
+/* TOC */
+.toc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:18px 22px;margin-bottom:36px;font-size:13px}
+.toc-h{font-family:'Red Hat Mono',monospace;color:var(--mt);text-transform:uppercase;letter-spacing:1.2px;font-size:11px;margin-bottom:10px}
+.toc ul{list-style:none;columns:2;column-gap:24px}
+.toc li{padding:3px 0}
+.toc li a{color:var(--tx2)}
+.toc li a:hover{color:var(--ac)}
+
+/* SECTIONS */
+section{margin-bottom:44px;scroll-margin-top:20px}
+section h2{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bds);display:flex;align-items:baseline;gap:10px}
+section h2 .n{font-family:'Red Hat Mono',monospace;color:var(--mt);font-size:14px;font-weight:500}
+section h3{font-size:16px;font-weight:700;margin:22px 0 8px;letter-spacing:-.2px}
+section p{color:var(--tx2);margin-bottom:14px}
+section ul{color:var(--tx2);padding-left:22px;margin-bottom:14px}
+section li{margin-bottom:6px}
+
+.lead{font-size:16px;color:var(--tx);line-height:1.7}
+
+/* CALLOUT BOXES */
+.callout{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:18px 20px;margin:14px 0}
+.callout.ac{background:var(--acd);border-color:var(--acg)}
+.callout.pu{background:var(--pud);border-color:oklch(62% .22 300/.2)}
+.callout.wn{background:var(--wnd);border-color:oklch(78% .16 85/.2)}
+.callout.er{background:var(--erd);border-color:oklch(65% .22 25/.2)}
+.callout .co-h{font-family:'Red Hat Mono',monospace;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ac);margin-bottom:6px}
+.callout.pu .co-h{color:var(--pu)}
+.callout.wn .co-h{color:var(--wn)}
+.callout.er .co-h{color:var(--er)}
+.callout p{color:var(--tx);margin-bottom:0}
+.callout p + p{margin-top:8px}
+
+/* ARCHITECTURE DIAGRAM */
+.arch{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:22px;margin:16px 0;font-family:'Red Hat Mono',monospace;font-size:12px;line-height:1.65;color:var(--tx2);white-space:pre;overflow-x:auto}
+
+/* LINKS LIST */
+.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin:16px 0}
+.link-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;text-decoration:none;color:var(--tx);transition:.2s var(--ease)}
+.link-card:hover{border-color:var(--ac);transform:translateY(-2px);text-decoration:none}
+.link-card .lc-t{font-weight:700;font-size:14px;margin-bottom:4px;letter-spacing:-.1px}
+.link-card .lc-d{font-size:12px;color:var(--tx2);line-height:1.5}
+.link-card .lc-u{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:6px;letter-spacing:.4px}
+.link-card.ex{border-left:3px solid var(--ac)}
+.link-card.doc{border-left:3px solid var(--pu)}
+.link-card.tool{border-left:3px solid var(--cy)}
+
+/* TIMELINE */
+.timeline{border-left:2px solid var(--bd);padding-left:22px;margin:18px 0}
+.tl-entry{margin-bottom:20px;position:relative}
+.tl-entry::before{content:'';position:absolute;left:-30px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--ac)}
+.tl-entry .tl-tag{font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:3px}
+.tl-entry .tl-title{font-weight:700;font-size:15px;letter-spacing:-.2px;margin-bottom:4px}
+.tl-entry .tl-body{color:var(--tx2);font-size:13px;line-height:1.55}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+table th{text-align:left;padding:10px 12px;border-bottom:1px solid var(--bd);color:var(--mt);font-family:'Red Hat Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+table td{padding:10px 12px;border-bottom:1px solid var(--bds);color:var(--tx2);vertical-align:top}
+table td strong{color:var(--tx);font-weight:600}
+
+/* STATS BAND */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:16px 0}
+.stat{background:var(--sf);padding:14px 16px;text-align:center}
+.stat .n{font-size:22px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--ac)}
+.stat .l{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:3px;font-family:'Red Hat Mono',monospace}
+
+/* FOOTER */
+.footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--bd);color:var(--mt);font-size:12px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+.footer a{color:var(--tx2)}
+
+@media(max-width:700px){
+  .toc ul{columns:1}
+  .hdr h1{font-size:28px}
+  section h2{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="hdr">
+    <div class="tag">Internal · Engineering Brief</div>
+    <h1>Agent K / Idea Lab — <span class="ac">Learnings, Systems, Next Steps</span></h1>
+    <p class="sub">How we built a self-learning AI research system in one session, the patterns that worked, the scaling anti-patterns we hit, and the playbook for cloning this to every important domain.</p>
+    <div class="meta">
+      <span class="kv">Authored: <b>Apr 15, 2026</b></span>
+      <span class="kv">Primary Thread: <b>AGENT-K</b></span>
+      <span class="kv">Status: <b>Production · Scheduled Daily</b></span>
+      <span class="kv">Audience: <b>Courtana Engineering + Product</b></span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-h">Contents</div>
+    <ul>
+      <li><a href="#tldr">1. TL;DR — What We Shipped</a></li>
+      <li><a href="#context">2. Context — Why We Built This</a></li>
+      <li><a href="#architecture">3. System Architecture</a></li>
+      <li><a href="#researchers">4. The 9 Researchers</a></li>
+      <li><a href="#synthesizer">5. Synthesis Intelligence Layers</a></li>
+      <li><a href="#feedback">6. Feedback Loop + Autonomous Evolution</a></li>
+      <li><a href="#bridges">7. Product Bridges (Data Feed API + Lovable Pipeline)</a></li>
+      <li><a href="#learnings">8. Key Engineering Learnings</a></li>
+      <li><a href="#antipatterns">9. Anti-Patterns We Hit</a></li>
+      <li><a href="#resources">10. Resources &amp; Files</a></li>
+      <li><a href="#nextsteps">11. Next Steps</a></li>
+    </ul>
+  </div>
+
+  <!-- 1. TL;DR -->
+  <section id="tldr">
+    <h2><span class="n">01</span> TL;DR — What We Shipped</h2>
+    <p class="lead">We built the <strong>Pickle Idea Lab</strong> — a self-learning AI research system with 9 independent researchers, two-track scoring, devil's advocate, plausibility filter, multi-model checkpoint, and historical trend tracking. It runs daily at 7:18 AM on autopilot. All findings are deployed to gh-pages. Human approval in the explorer trains the next run.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">9</div><div class="l">Researchers</div></div>
+      <div class="stat"><div class="n">1,750+</div><div class="l">Clips Analyzed</div></div>
+      <div class="stat"><div class="n">38</div><div class="l">Findings / Run</div></div>
+      <div class="stat"><div class="n">6</div><div class="l">API Endpoints</div></div>
+      <div class="stat"><div class="n">10</div><div class="l">Deep Dives / Day</div></div>
+      <div class="stat"><div class="n">13s</div><div class="l">Full Pipeline</div></div>
+    </div>
+
+    <div class="callout ac">
+      <div class="co-h">The Headline Insight</div>
+      <p><strong>The Idea Lab is the product.</strong> Every run, the wildcard researcher independently surfaces "sell the Idea Lab as SaaS" as a top-ranked strategic idea. Cross-lab convergence confirms it: both the original Pickle Idea Lab and a cloned General-Purpose Lab surfaced the same insight without shared context. This is a defensible data product — not just a feature.</p>
+    </div>
+  </section>
+
+  <!-- 2. Context -->
+  <section id="context">
+    <h2><span class="n">02</span> Context — Why We Built This</h2>
+    <p>Pickle DaaS had a growing corpus (1,750+ clips with AI-extracted metadata), but findings were stuck in JSON files. There was no system that independently analyzed the corpus, surfaced non-obvious patterns, and asked Bill to confirm what was worth pursuing.</p>
+    <p>The premise: don't build one monolithic AI agent. Spawn multiple specialized researchers, each looking at the data from a different lens, and let them compete + collaborate + argue. Human approval becomes the training signal.</p>
+    <p>This is a departure from typical dashboards — it's an <em>active intelligence system</em> that takes initiative, produces ranked findings, and learns from human feedback without waiting for explicit queries.</p>
+  </section>
+
+  <!-- 3. Architecture -->
+  <section id="architecture">
+    <h2><span class="n">03</span> System Architecture</h2>
+
+    <div class="arch">┌─────────────────────────────────────────────────────────────┐
+│  CORPUS SAMPLER (10 strategies)                             │
+│  balanced-brands · diverse-100 · viral-top/bottom · etc.    │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+       ┌─────────────────┼─────────────────┐
+       ▼                 ▼                 ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Domain       │  │ Domain       │  │ Domain       │
+│ Researchers  │  │ Researchers  │  │ Researchers  │
+│ (7)          │  │ (statistical)│  │ (ground      │
+│              │  │              │  │  truth)      │
+└───────┬──────┘  └───────┬──────┘  └───────┬──────┘
+        └─────────────────┼─────────────────┘
+                          ▼
+         ┌─────────────────────────────────┐
+         │  Devil's Advocate (meta)         │
+         │  Argues against top findings     │
+         └────────────────┬─────────────────┘
+                          ▼
+         ┌─────────────────────────────────┐
+         │  SYNTHESIZER (v4)                │
+         │  • Dedup (SequenceMatcher)       │
+         │  • Two-track scoring             │
+         │  • Plausibility filter (Haiku)   │
+         │  • Cross-researcher debates      │
+         │  • Multi-model checkpoint        │
+         │  • Trend tracking + recurrence   │
+         │  • Autonomous evolution signals  │
+         └────────────────┬─────────────────┘
+                          ▼
+         ┌─────────────────────────────────┐
+         │  OUTPUTS                         │
+         │  • latest.json (state)           │
+         │  • explorer.html (3-col UI)      │
+         │  • deep-dives/ (10 pages)        │
+         │  • api/ (6 JSON endpoints)       │
+         └─────────────────────────────────┘
+                          ▼
+                  ┌───────────────┐
+                  │  HUMAN (Bill)  │
+                  │  approve/park/ │
+                  │  dismiss       │
+                  └───────┬───────┘
+                          ▼
+              feedback → next run's scoring</div>
+
+    <p>Every component is hardcoded and explicit. No plugin system, no abstract base classes beyond the researcher interface. This is intentional — it made the first build ship in ~3 hours.</p>
+  </section>
+
+  <!-- 4. Researchers -->
+  <section id="researchers">
+    <h2><span class="n">04</span> The 9 Researchers</h2>
+    <p>Each researcher runs independently on a specific sample set. They output findings in a standardized schema (<code>finding_id, title, confidence, evidence_summary, business_value, category, novelty, recommended_action, raw_data</code>).</p>
+
+    <table>
+      <thead><tr><th>Researcher</th><th>Lens</th><th>Sample</th><th>Track</th></tr></thead>
+      <tbody>
+        <tr><td><strong>brand_analyst</strong></td><td>Brand intelligence, JOOLA disambiguation, share-of-court, venue vs product-use detection</td><td>balanced-brands</td><td>Data</td></tr>
+        <tr><td><strong>player_profiler</strong></td><td>Player archetypes, skill clustering, brand-player affinity</td><td>by-player</td><td>Data</td></tr>
+        <tr><td><strong>shot_scientist</strong></td><td>Shot patterns, rally length analysis, coaching archetypes</td><td>diverse-100</td><td>Data</td></tr>
+        <tr><td><strong>viral_decoder</strong></td><td>Viral formula (top-100 vs bottom-100 comparison)</td><td>viral-top + bottom</td><td>Data</td></tr>
+        <tr><td><strong>production_auditor</strong></td><td>DaaS vs Courtana ground truth (badge F1 scores)</td><td>courtana-verified</td><td>Data</td></tr>
+        <tr><td><strong>prompt_engineer</strong></td><td>Auto-generates Gemini prompt fixes from error patterns</td><td>courtana-verified</td><td>Data</td></tr>
+        <tr><td><strong>opportunity_scout</strong></td><td>Revenue opportunities, sponsorship whitespace, extraction gaps</td><td>diverse-100</td><td>Strategic</td></tr>
+        <tr><td><strong>wildcard</strong></td><td>Business model brainstorm, orthogonal strategies (Haiku-powered)</td><td>business context</td><td>Strategic</td></tr>
+        <tr><td><strong>devils_advocate</strong> (meta)</td><td>Challenges top findings after the fact — forces intellectual honesty</td><td>top findings</td><td>Meta</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout pu">
+      <div class="co-h">Design Insight</div>
+      <p>The split between <strong>Data researchers</strong> (statistical, sample-based) and <strong>Strategic researchers</strong> (business-model-oriented) was critical. Early versions had wildcard dominating the top 5 because novelty was overweighted. Two-track scoring fixed this: each track gets its own top 5, scored with different weight formulas.</p>
+    </div>
+  </section>
+
+  <!-- 5. Synthesizer -->
+  <section id="synthesizer">
+    <h2><span class="n">05</span> Synthesis Intelligence Layers</h2>
+    <p>After researchers produce raw findings, the synthesizer applies five v4 intelligence layers before ranking:</p>
+
+    <h3>1. Deduplication</h3>
+    <p>Uses <code>SequenceMatcher</code> similarity ≥0.6 to collapse near-duplicate titles. Keeps the higher-confidence version.</p>
+
+    <h3>2. Plausibility Filter (Haiku-powered)</h3>
+    <p>Rates strategic ideas 0.0–1.0 on "could a 1-person technical founder prototype this in 30 days?" Penalizes speculative wildcards. This prevents the wildcard from dominating ranking with unbuildable moonshots.</p>
+
+    <h3>3. Cross-Researcher Debates (Haiku-powered)</h3>
+    <p>Takes top connections (e.g., wildcard idea + player_profiler data) and asks Haiku to describe a specific product that combines both findings. Name it, describe the first screen, estimate build days.</p>
+
+    <h3>4. Multi-Model Checkpoint (Haiku-powered)</h3>
+    <p>Independent validation pass on top 5 findings. Haiku acts as an auditor, asks "is evidence sufficient?", "what would change your mind?", "blind spot?". Scores adjust: yes = +10%, no = −30%.</p>
+
+    <h3>5. Autonomous Evolution Signals</h3>
+    <p>Three signals the system uses without human input:</p>
+    <ul>
+      <li><strong>DA-Resistance:</strong> findings whose devil's advocate only raised low/medium risk get +10% boost</li>
+      <li><strong>Multi-Researcher Convergence:</strong> findings matched across different researchers get +15%</li>
+      <li><strong>Category Momentum:</strong> categories growing across runs (from <code>trend.json</code>) get boost proportional to growth rate</li>
+    </ul>
+
+    <h3>6. Historical Trend Tracking</h3>
+    <p><code>trend.json</code> accumulates across runs. Recurring findings (similar titles appearing in 2+ runs) get a recurrence boost of +12% per repeat, capped at 1.5x. This lets strong signals compound over time.</p>
+
+    <h3>Scoring Formulas</h3>
+    <div class="arch">STRATEGIC = conf × biz × novelty^1.3 × plausibility × feedback × recurrence × auto_boost
+DATA      = conf^1.2 × biz × actionability × feedback × recurrence × auto_boost</div>
+  </section>
+
+  <!-- 6. Feedback -->
+  <section id="feedback">
+    <h2><span class="n">06</span> Feedback Loop + Autonomous Evolution</h2>
+    <p>Every finding in the explorer has three buttons: <strong>Approve</strong>, <strong>Park</strong>, <strong>Dismiss</strong>. Decisions persist to <code>localStorage</code> and export as JSON to feed into the next run.</p>
+
+    <p>The next run:</p>
+    <ul>
+      <li>Boosts categories with approved findings (up to 1.5x multiplier)</li>
+      <li>Penalizes categories with dismissed findings (down to 0.5x)</li>
+      <li>Suppresses parked findings from resurfacing unless new evidence appears</li>
+      <li>Generates "deeper questions" for each approved finding — seeds next-run investigation</li>
+    </ul>
+
+    <div class="callout wn">
+      <div class="co-h">Why This Matters</div>
+      <p>The system learns with or without human input. DA-resistance, convergence, and momentum are autonomous signals. Human feedback accelerates learning but isn't required. This is what "alive" means architecturally.</p>
+    </div>
+  </section>
+
+  <!-- 7. Bridges -->
+  <section id="bridges">
+    <h2><span class="n">07</span> Product Bridges</h2>
+    <p>Findings aren't just a static output. We built two bridges that let them flow into products:</p>
+
+    <h3>Data Feed API (6 JSON endpoints)</h3>
+    <p>Any Lovable app (VibeCo, Coach Pro, Peak Courtana) can <code>fetch()</code> from:</p>
+    <ul>
+      <li><code>api/feed.json</code> — corpus health + top-level stats</li>
+      <li><code>api/brands.json</code> — 40+ brands with share-of-court, skill correlations, viral scores</li>
+      <li><code>api/players.json</code> — player DNA profiles, archetypes, avatars</li>
+      <li><code>api/clips.json</code> — top 20 by quality + top 20 by viral, CDN video URLs</li>
+      <li><code>api/ideas.json</code> — Idea Lab findings (strategic + data tracks)</li>
+      <li><code>api/coaching.json</code> — shot-skill matrix, arc distribution, coaching tips</li>
+    </ul>
+    <p>Plus taxonomy-driven endpoints (<code>sponsors.json</code>, <code>player-equipment.json</code>, <code>venue-tech.json</code>) added via the Classifier project.</p>
+
+    <h3>Lovable Prompt Pipeline</h3>
+    <p>For each top Idea Lab finding, <code>tools/generate-lovable-prompts.py</code> auto-generates a paste-ready Lovable prompt. Includes: business context, recommended design system, API endpoints to fetch, specific build instructions. Found → approved → prompt in minutes.</p>
+  </section>
+
+  <!-- 8. Learnings -->
+  <section id="learnings">
+    <h2><span class="n">08</span> Key Engineering Learnings</h2>
+
+    <div class="callout ac">
+      <div class="co-h">Learning 1: Specialized &gt; Monolithic</div>
+      <p>9 small researchers outperformed one large analytical agent. Each has a narrow prompt, a specific sample, a clear output format. Composition of specialists is the pattern — this mirrors how human research teams operate.</p>
+    </div>
+
+    <div class="callout ac">
+      <div class="co-h">Learning 2: Meta-Agents Plug In Anywhere</div>
+      <p>Devil's advocate and wildcard are universal. They accept <code>business_context</code> as an input and work across any domain. Any future lab gets these for free. They represent ~30% of the value with ~5% of the code.</p>
+    </div>
+
+    <div class="callout ac">
+      <div class="co-h">Learning 3: Two-Track Scoring Prevents Sprawl</div>
+      <p>Early versions had wildcard ideas flooding the top 5. Separating strategic vs data with different scoring formulas (novelty-weighted vs confidence-weighted) surfaces both types of insight without either crowding the other out.</p>
+    </div>
+
+    <div class="callout ac">
+      <div class="co-h">Learning 4: Autonomous Signals Matter More Than Human Feedback</div>
+      <p>DA-resistance + multi-researcher convergence + category momentum produce meaningful scoring shifts even with zero human decisions. Human approval accelerates learning — it's not the only signal. This makes the system resilient when Bill doesn't engage every day.</p>
+    </div>
+
+    <div class="callout ac">
+      <div class="co-h">Learning 5: The System Surfaced Its Own Product-Market Fit</div>
+      <p>Across multiple runs, the top-ranked strategic idea kept being "sell the Idea Lab as SaaS to facilities / brands / leagues." Different researchers, different sample sets, same conclusion. When a ranking system converges on an idea against its own weight formulas (which favor novelty), it's signal, not noise.</p>
+    </div>
+  </section>
+
+  <!-- 9. Anti-Patterns -->
+  <section id="antipatterns">
+    <h2><span class="n">09</span> Anti-Patterns We Hit</h2>
+    <p>Later in the thread, I drifted into a 60-file framework build ("Lab Platform" with a Meta-Lab-of-Labs, pluggable corpus loaders, federated feedback, etc.). This produced code but not value. Lessons for the team:</p>
+
+    <div class="callout er">
+      <div class="co-h">Anti-Pattern 1: Framework Before Second Instance</div>
+      <p>Don't build abstractions until you have 2+ concrete instances. The Pickle Idea Lab worked beautifully. Instead of cloning it to a second domain directly (which would've taken ~1 hour), I built a framework to parameterize everything. The framework exists but the second concrete lab still doesn't. Build the copy first. Extract abstractions later, if ever.</p>
+    </div>
+
+    <div class="callout er">
+      <div class="co-h">Anti-Pattern 2: Autonomous Building Kills the Iteration Loop</div>
+      <p>The best parts of this project happened in 15–60 minute iterations: Bill proposes, Claude ships a clickable URL, Bill reacts, repeat. When Claude went into "build the whole thing" mode, that loop died. Bill couldn't see progress, couldn't redirect, couldn't demo. The throughput is NOT the engineer writing code — it's the feedback loop between human and system.</p>
+    </div>
+
+    <div class="callout er">
+      <div class="co-h">Anti-Pattern 3: Infrastructure Without Interaction</div>
+      <p>I built Control Centers, APIs, digest generators, multi-lab overviews. None of them are interactive in the way the original explorer is. The explorer lets Bill click approve/dismiss and persists state. Everything else was read-only decoration. <strong>Measure value in clicks, not files.</strong></p>
+    </div>
+
+    <div class="callout er">
+      <div class="co-h">Anti-Pattern 4: Claiming "Emergence" Without Demonstrable Evidence</div>
+      <p>I wrote "the Meta-Lab proposed 3 new labs autonomously!" But Bill couldn't see where. No URL, no screenshot, no approval workflow. If a "win" isn't a thing Bill can click and show to someone else, it's not a win. It's a log line.</p>
+    </div>
+
+    <p style="margin-top:16px">The playbook to avoid these is now captured in <a href="../../BILL-OS/AGENT-K-PLAYBOOK.md"><code>BILL-OS/AGENT-K-PLAYBOOK.md</code></a>. Read it before starting any new lab.</p>
+  </section>
+
+  <!-- 10. Resources -->
+  <section id="resources">
+    <h2><span class="n">10</span> Resources &amp; Files</h2>
+
+    <h3>Live URLs (click to demo)</h3>
+    <div class="link-grid">
+      <a class="link-card ex" href="idea-lab.html" target="_blank">
+        <div class="lc-t">Pickle Idea Lab Explorer</div>
+        <div class="lc-d">The flagship. 9 researchers, two-track UI, approve/park/dismiss, deep dives, devil's advocate inline.</div>
+        <div class="lc-u">dashboards/idea-lab.html</div>
+      </a>
+      <a class="link-card ex" href="brand-intelligence-v2.html" target="_blank">
+        <div class="lc-t">Brand Intelligence V2</div>
+        <div class="lc-d">Data product built on Idea Lab findings. Circle-packed brand landscape, co-occurrence, skill heatmap.</div>
+        <div class="lc-u">dashboards/brand-intelligence-v2.html</div>
+      </a>
+      <a class="link-card ex" href="investor-walkthrough.html" target="_blank">
+        <div class="lc-t">Investor Walkthrough</div>
+        <div class="lc-d">8-screen cinematic scroll. Live data from API. Tells the self-improving intelligence story.</div>
+        <div class="lc-u">dashboards/investor-walkthrough.html</div>
+      </a>
+      <a class="link-card ex" href="../idea-lab/deep-dives/index.html" target="_blank">
+        <div class="lc-t">Deep Dive Pages</div>
+        <div class="lc-d">10 per run. One standalone page per top finding with evidence, counterargument, next steps.</div>
+        <div class="lc-u">idea-lab/deep-dives/</div>
+      </a>
+      <a class="link-card ex" href="../api/feed.json" target="_blank">
+        <div class="lc-t">Data Feed API — feed.json</div>
+        <div class="lc-d">Master endpoint. Corpus health + Idea Lab stats. 6 endpoints total under /api/.</div>
+        <div class="lc-u">api/feed.json</div>
+      </a>
+      <a class="link-card ex" href="showcase-portal.html" target="_blank">
+        <div class="lc-t">Showcase Portal</div>
+        <div class="lc-d">The front door. All dashboards, live + cached + archive sections.</div>
+        <div class="lc-u">dashboards/showcase-portal.html</div>
+      </a>
+    </div>
+
+    <h3>Code (read these to understand the system)</h3>
+    <div class="link-grid">
+      <div class="link-card tool">
+        <div class="lc-t">researchers/base.py</div>
+        <div class="lc-d">Shared infrastructure — corpus loading, sample loading, finding factory, feedback, trend tracker, Haiku helpers.</div>
+        <div class="lc-u">PICKLE-DAAS/agents/analysts/researchers/</div>
+      </div>
+      <div class="link-card tool">
+        <div class="lc-t">synthesizer.py</div>
+        <div class="lc-d">v4 synthesis: dedup + plausibility + debates + multi-model + trend + autonomous signals.</div>
+        <div class="lc-u">PICKLE-DAAS/agents/analysts/</div>
+      </div>
+      <div class="link-card tool">
+        <div class="lc-t">idea_lab_runner.py</div>
+        <div class="lc-d">Orchestrator. Runs all researchers → synth → deep dives. This is the entry point.</div>
+        <div class="lc-u">PICKLE-DAAS/agents/analysts/</div>
+      </div>
+      <div class="link-card tool">
+        <div class="lc-t">devils_advocate.py · wildcard.py</div>
+        <div class="lc-d">Universal researchers. Plug into any lab. Accept business_context as input.</div>
+        <div class="lc-u">PICKLE-DAAS/agents/analysts/researchers/</div>
+      </div>
+      <div class="link-card tool">
+        <div class="lc-t">corpus-sampler.py</div>
+        <div class="lc-d">10 sample strategies. Fixes the JOOLA dominance problem. Deterministic seeding.</div>
+        <div class="lc-u">PICKLE-DAAS/tools/</div>
+      </div>
+      <div class="link-card tool">
+        <div class="lc-t">build-data-feed.py</div>
+        <div class="lc-d">Generates the 6 API endpoints. Plus classifier taxonomy endpoints (sponsors/equipment/venue-tech).</div>
+        <div class="lc-u">PICKLE-DAAS/tools/</div>
+      </div>
+    </div>
+
+    <h3>Documentation</h3>
+    <div class="link-grid">
+      <a class="link-card doc" href="../../BILL-OS/AGENT-K-PLAYBOOK.md" target="_blank">
+        <div class="lc-t">Agent K Playbook</div>
+        <div class="lc-d">The pattern that worked, the iterative rhythm, anti-patterns. Read before cloning.</div>
+        <div class="lc-u">BILL-OS/AGENT-K-PLAYBOOK.md</div>
+      </a>
+      <a class="link-card doc" href="../../BILL-OS/STARTER-classifier-idea-lab.md" target="_blank">
+        <div class="lc-t">Starter: Classifier Idea Lab</div>
+        <div class="lc-d">Ready-to-paste prompt for a new Claude Code session. Builds an Idea Lab for the classifier project.</div>
+        <div class="lc-u">BILL-OS/STARTER-classifier-idea-lab.md</div>
+      </a>
+      <a class="link-card doc" href="../../BILL-OS/STARTER-new-lab-template.md" target="_blank">
+        <div class="lc-t">Starter: New Lab Template</div>
+        <div class="lc-d">Generic template. Fill in domain / corpus / context. Paste into fresh session.</div>
+        <div class="lc-u">BILL-OS/STARTER-new-lab-template.md</div>
+      </a>
+      <a class="link-card doc" href="../../LAB-PLATFORM/CLAUDE.md" target="_blank">
+        <div class="lc-t">Lab Platform Context</div>
+        <div class="lc-d">Experimental framework for parameterizing labs. Leave alone unless cloning patterns warrants it.</div>
+        <div class="lc-u">LAB-PLATFORM/CLAUDE.md</div>
+      </a>
+    </div>
+
+    <h3>Schedule &amp; Infrastructure</h3>
+    <ul>
+      <li><strong>7:18 AM daily</strong> — <code>idea-lab-daily</code> runs the Pickle Idea Lab, pushes to gh-pages, sends Slack DM</li>
+      <li><strong>Hourly auto-ingest</strong> — fresh clips from Courtana cameras, corpus grows by 50–200 per day</li>
+      <li><strong>Storage</strong> — <code>output/idea-lab/latest.json</code> (state), <code>trend.json</code> (historical), <code>decisions.json</code> (feedback)</li>
+      <li><strong>Cost</strong> — ~$0.50–1.00 per run (Claude Haiku for debates, plausibility, multi-model)</li>
+    </ul>
+  </section>
+
+  <!-- 11. Next Steps -->
+  <section id="nextsteps">
+    <h2><span class="n">11</span> Next Steps</h2>
+
+    <div class="timeline">
+      <div class="tl-entry">
+        <div class="tl-tag">Immediate · This Week</div>
+        <div class="tl-title">Classifier Idea Lab (Starter Prompt Ready)</div>
+        <div class="tl-body">Paste <code>BILL-OS/STARTER-classifier-idea-lab.md</code> into a fresh Claude Code session. 3–4 domain researchers analyzing classifier rule effectiveness, taxonomy gaps, decision patterns. ~3 hour build. Ships as new explorer at <code>dashboards/classifier-idea-lab.html</code>.</div>
+      </div>
+      <div class="tl-entry">
+        <div class="tl-tag">Next · Sprint 2</div>
+        <div class="tl-title">Underground Facility Intelligence (Thread C)</div>
+        <div class="tl-body">A facility-branded dashboard showing what The Underground's AI research team found. The proof-of-concept for "Idea Lab as SaaS". Existing starter at <code>output/thread-prompts/thread-c-underground-intelligence.md</code>. The demo we show every other venue.</div>
+      </div>
+      <div class="tl-entry">
+        <div class="tl-tag">Next · Sprint 2</div>
+        <div class="tl-title">VibeCo Live Data Integration (Thread B)</div>
+        <div class="tl-body">VibeCo Labs pulls live data from the Data Feed API. Portfolio hub with live Idea Lab findings. Demo for brand partners + investors. Existing starter at <code>output/thread-prompts/thread-b-vibeco-showcase.md</code>.</div>
+      </div>
+      <div class="tl-entry">
+        <div class="tl-tag">Version 5 · Next Major Build</div>
+        <div class="tl-title">The Interactive Idea Lab</div>
+        <div class="tl-body">Three features on top of the existing explorer: (1) conversational findings — chat sidebar where Bill asks "why" and the lab explains from raw data; (2) on-demand investigations — click "dig deeper" spawns a focused researcher, back in 5 min; (3) multi-modal researchers — one that analyzes the actual video, not just metadata. Plan details in <code>BILL-OS/PLAN-idea-lab-v5.md</code>.</div>
+      </div>
+      <div class="tl-entry">
+        <div class="tl-tag">Open Questions for Engineering</div>
+        <div class="tl-title">Productization Path</div>
+        <div class="tl-body">If the Idea Lab IS the product (the recurring convergent finding), what's the path to productizing it? Multi-tenancy architecture, auth, per-customer corpus isolation, billing. The Lab Platform framework attempt (experimental) hints at the direction but wasn't the right abstraction. Fresh design needed from the team.</div>
+      </div>
+    </div>
+
+    <div class="callout pu">
+      <div class="co-h">For the Engineering Team</div>
+      <p>The architectural question isn't "should we build a framework?" It's "what makes the Idea Lab feel alive to Bill and future customers?" The answer from this session: <strong>visible interaction loops with low latency</strong>. Every new feature should be measurable in clicks or round-trips to findings, not in files shipped. Read the <a href="../../BILL-OS/AGENT-K-PLAYBOOK.md">Agent K Playbook</a> before making scope decisions.</p>
+    </div>
+  </section>
+
+  <div class="footer">
+    <div>
+      <p>Brief prepared by Claude Code (AI Chief of Staff) · Apr 15, 2026</p>
+      <p>For questions, corrections, or additions, open a Claude Code session in <code>Claude Projects/</code> and start with "I'm iterating on the Agent K internal brief."</p>
+    </div>
+    <div>
+      <a href="showcase-portal.html">← Back to Showcase Portal</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
