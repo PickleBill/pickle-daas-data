@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pickle DaaS — Evidence Wall</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:20px;line-height:1.5}
+.container{max-width:1200px;margin:0 auto}
+.header{padding:32px 0 24px;border-bottom:1px solid #1a1a2e;margin-bottom:24px}
+.header h1{font-size:32px;font-weight:800;margin-bottom:8px}
+.header .sub{color:#888;font-size:14px;max-width:600px}
+.header .stats{display:flex;gap:24px;margin-top:16px;flex-wrap:wrap}
+.stat{background:#1a1a2e;padding:8px 16px;border-radius:8px;font-size:12px}
+.stat .num{color:#00E676;font-weight:700;font-size:16px;margin-right:6px}
+.filters{background:#12122a;padding:16px;border-radius:12px;margin-bottom:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.filter-btn{background:#1a1a2e;border:1px solid #333;color:#aaa;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{border-color:#4FC3F7;color:#4FC3F7}
+.filter-btn.active{background:#4FC3F7;color:#0a0a1a;border-color:#4FC3F7;font-weight:600}
+.search{background:#1a1a2e;border:1px solid #333;color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;width:200px;margin-left:auto}
+.evidence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px}
+.clip-card{background:#1a1a2e;border-radius:12px;overflow:hidden;border:1px solid #222;transition:all 0.2s}
+.clip-card:hover{border-color:#4FC3F7;transform:translateY(-2px)}
+.clip-video{width:100%;aspect-ratio:16/9;background:#000;object-fit:cover}
+.clip-body{padding:16px}
+.clip-meta-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.clip-confidence{font-size:11px;color:#00E676;font-weight:700}
+.clip-confidence.med{color:#FFD54F}
+.clip-confidence.low{color:#FF7043}
+.clip-quality{background:#0a0a1a;padding:2px 8px;border-radius:8px;font-size:10px;color:#888}
+.clip-summary{font-size:13px;color:#ddd;margin-bottom:12px;line-height:1.4}
+.clip-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.tag.brand{background:#00E67622;color:#00E676}
+.tag.badge{background:#FFD54F22;color:#FFD54F}
+.tag.shot{background:#4FC3F722;color:#4FC3F7}
+.clip-footer{font-size:10px;color:#666;margin-top:8px;border-top:1px solid #222;padding-top:8px;display:flex;justify-content:space-between}
+.callout{background:#1a1a2e;border-left:3px solid #4FC3F7;padding:16px;border-radius:0 8px 8px 0;margin-bottom:24px;font-size:13px;color:#aaa}
+.callout strong{color:#4FC3F7}
+.loading{text-align:center;padding:60px;color:#666}
+@media(max-width:600px){.evidence-grid{grid-template-columns:1fr}.search{width:100%;margin-left:0}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+<h1>Evidence Wall</h1>
+<div class="sub">The receipts. Every clip below was AI-analyzed with high confidence. Watch the videos. See what the AI saw. Verify the brand detection, badge predictions, and skill assessments yourself.</div>
+<div class="stats" id="stats">
+  <div class="stat"><span class="num" id="stat-total">--</span>clips loaded</div>
+  <div class="stat"><span class="num" id="stat-high">--</span>high confidence</div>
+  <div class="stat"><span class="num" id="stat-badged">--</span>with verified badges</div>
+  <div class="stat"><span class="num" id="stat-brands">--</span>player brands</div>
+</div>
+</div>
+
+<div class="callout">
+<strong>How to read this page:</strong> Each card is a clip the AI analyzed with high confidence. Click play to watch. The tags show what was detected: brands (green), badges awarded by Courtana production system (yellow), dominant shot type (blue). When the AI's prediction matches Courtana's awarded badge, that's ground truth verification.
+</div>
+
+<div class="filters">
+<button class="filter-btn active" data-filter="all">All Clips</button>
+<button class="filter-btn" data-filter="badged">With Verified Badges</button>
+<button class="filter-btn" data-filter="brand-jola">JOOLA</button>
+<button class="filter-btn" data-filter="brand-nike">Nike</button>
+<button class="filter-btn" data-filter="brand-head">HEAD</button>
+<button class="filter-btn" data-filter="high-quality">Quality 8+</button>
+<button class="filter-btn" data-filter="viral">Viral 7+</button>
+<input class="search" id="search" placeholder="Search summary or brand..." />
+</div>
+
+<div class="evidence-grid" id="grid">
+<div class="loading">Loading clips...</div>
+</div>
+
+</div>
+<script>
+let allClips = [];
+let activeFilter = 'all';
+let searchTerm = '';
+
+async function load() {
+  try {
+    const r = await fetch('../corpus-export.json');
+    const corpus = await r.json();
+
+    // Sort by quality * (badge count + 1) — best clips first
+    allClips = corpus
+      .filter(c => c.video_url && c.summary)
+      .map(c => ({
+        ...c,
+        score: (c.quality || 0) * ((c.courtana_badges?.length || 0) + 1) + (c.viral || 0)
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 200); // Top 200 by score
+
+    // Stats
+    document.getElementById('stat-total').textContent = allClips.length;
+    document.getElementById('stat-high').textContent = allClips.filter(c => (c.quality || 0) >= 7).length;
+    document.getElementById('stat-badged').textContent = allClips.filter(c => (c.courtana_badges?.length || 0) > 0).length;
+
+    const allBrands = new Set();
+    allClips.forEach(c => (c.player_brands || []).forEach(b => {
+      const name = typeof b === 'string' ? b : b.name;
+      if (name) allBrands.add(name);
+    }));
+    document.getElementById('stat-brands').textContent = allBrands.size;
+
+    render();
+  } catch(e) {
+    document.getElementById('grid').innerHTML = '<div class="loading">Error loading clips: ' + e.message + '</div>';
+  }
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  let filtered = allClips;
+
+  if (activeFilter === 'badged') filtered = filtered.filter(c => (c.courtana_badges?.length || 0) > 0);
+  else if (activeFilter === 'brand-jola') filtered = filtered.filter(c => (c.player_brands || []).some(b => (typeof b === 'string' ? b : b.name || '').toUpperCase() === 'JOOLA'));
+  else if (activeFilter === 'brand-nike') filtered = filtered.filter(c => (c.player_brands || []).some(b => (typeof b === 'string' ? b : b.name || '').toLowerCase() === 'nike'));
+  else if (activeFilter === 'brand-head') filtered = filtered.filter(c => (c.player_brands || []).some(b => (typeof b === 'string' ? b : b.name || '').toUpperCase() === 'HEAD'));
+  else if (activeFilter === 'high-quality') filtered = filtered.filter(c => (c.quality || 0) >= 8);
+  else if (activeFilter === 'viral') filtered = filtered.filter(c => (c.viral || 0) >= 7);
+
+  if (searchTerm) {
+    const t = searchTerm.toLowerCase();
+    filtered = filtered.filter(c =>
+      (c.summary || '').toLowerCase().includes(t) ||
+      (c.player_brands || []).some(b => (typeof b === 'string' ? b : b.name || '').toLowerCase().includes(t))
+    );
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="loading">No clips match this filter</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.slice(0, 60).map(clip => {
+    const badges = (clip.courtana_badges || []).slice(0, 3).map(b =>
+      `<span class="tag badge">${b.badge_name || b.name || '?'}</span>`
+    ).join('');
+
+    const brands = (clip.player_brands || []).slice(0, 3).map(b => {
+      const name = typeof b === 'string' ? b : b.name;
+      return `<span class="tag brand">${name}</span>`;
+    }).join('');
+
+    const shot = clip.dominant_shot && clip.dominant_shot !== 'unknown'
+      ? `<span class="tag shot">${clip.dominant_shot}</span>` : '';
+
+    const confidence = clip.quality >= 8 ? 'high' : clip.quality >= 6 ? 'med' : 'low';
+    const confLabel = confidence === 'high' ? '✓ High Confidence' : confidence === 'med' ? '~ Medium' : 'Low';
+
+    return `
+      <div class="clip-card">
+        <video class="clip-video" src="${clip.video_url}" poster="${clip.thumbnail || ''}" controls preload="none"></video>
+        <div class="clip-body">
+          <div class="clip-meta-row">
+            <span class="clip-confidence ${confidence}">${confLabel}</span>
+            <span class="clip-quality">Q:${clip.quality || '?'} V:${clip.viral || '?'}</span>
+          </div>
+          <div class="clip-summary">${clip.summary || 'No summary'}</div>
+          <div class="clip-tags">${shot}${brands}${badges}</div>
+          <div class="clip-footer">
+            <span>${clip.arc || 'unknown arc'}</span>
+            <span>${clip.uuid?.substring(0,8) || ''}...</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  searchTerm = e.target.value;
+  render();
+});
+
+load();
+</script>
+</body>
+</html>
