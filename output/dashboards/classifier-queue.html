@@ -119,6 +119,36 @@
   .value-chip.medium { background: #60a5fa; color: #0b0f14; }
   .value-chip.low { background: var(--panel-hi); color: var(--mute); }
   .value-chip.none { background: var(--panel-hi); color: var(--mute); }
+  .preview-row {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px; margin-top: 12px;
+  }
+  .preview-cell {
+    position: relative; aspect-ratio: 16/9; border-radius: 6px;
+    overflow: hidden; background: var(--bg); border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .preview-cell img, .preview-cell video {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .preview-cell::after {
+    content: '▶'; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: rgba(255,255,255,0.85);
+    text-shadow: 0 0 8px rgba(0,0,0,0.6); pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .preview-cell.playing::after { opacity: 0; }
+  .preview-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    color: #fff; font-size: 10px; padding: 16px 6px 4px; line-height: 1.3;
+    pointer-events: none;
+  }
+  .preview-head {
+    color: var(--mute); font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 12px; margin-bottom: 2px;
+  }
   details summary { cursor: pointer; color: var(--mute); font-size: 12px; margin-top: 8px; }
   details pre {
     background: var(--bg); padding: 10px; border-radius: 6px; overflow-x: auto;
@@ -265,6 +295,49 @@ python3 tools/push-to-ghpages.py</pre>
   }
   function keyFor(p) { return (p.brand || '').toLowerCase().trim(); }
 
+  function renderPreviews(p) {
+    const previews = (p.evidence && p.evidence.example_clip_previews) || [];
+    if (!previews.length) {
+      const ids = (p.evidence && p.evidence.example_clips) || [];
+      if (!ids.length) return '';
+      return `<div class="preview-head">Example clips</div>
+        <div style="font-size:11px;color:var(--mute)">
+          ${ids.map(u => `<code style="margin-right:8px">${escapeHtml(u.slice(0,8))}</code>`).join('')}
+        </div>`;
+    }
+    return `<div class="preview-head">Evidence — click to play</div>
+      <div class="preview-row">
+        ${previews.map(pr => {
+          const thumb = pr.thumbnail || (pr.video_url||'').replace('.mp4','.jpeg');
+          const label = (pr.summary || '').replace(/"/g, '&quot;');
+          return `<div class="preview-cell" onclick="playClip(this, '${escapeAttr(pr.video_url||'')}')">
+            <img src="${escapeAttr(thumb)}" alt="clip preview" loading="lazy"
+                 onerror="this.style.opacity=0.3" />
+            ${label ? `<div class="preview-caption">${escapeHtml(label)}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function escapeAttr(s) {
+    return String(s || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  function playClip(cell, videoUrl) {
+    if (!videoUrl) return;
+    if (cell.querySelector('video')) return;  // already playing
+    const video = document.createElement('video');
+    video.src = videoUrl;
+    video.controls = true;
+    video.autoplay = true;
+    video.muted = true;
+    video.loop = true;
+    video.setAttribute('playsinline', '');
+    cell.innerHTML = '';
+    cell.classList.add('playing');
+    cell.appendChild(video);
+  }
+
   function toast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -304,6 +377,7 @@ python3 tools/push-to-ghpages.py</pre>
             <span>cats: ${escapeHtml(cats)}</span>
           </div>
           ${p.rationale ? `<div class="rationale">${escapeHtml(p.rationale)}</div>` : ''}
+          ${renderPreviews(p)}
           <div class="override-row">
             <span class="override-label">Category →</span>
             <select class="override-select ${overrides[k] && overrides[k].category && overrides[k].category !== (cls.category_primary||'unknown') ? 'changed' : ''}"
