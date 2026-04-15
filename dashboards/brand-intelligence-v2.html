@@ -3,2224 +3,672 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Intelligence V2 - Pickle DaaS</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Brand Intelligence · Pickle DaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ================================================================
-   BRAND INTELLIGENCE V2 — Pickle DaaS
-   Production-grade brand landscape dashboard
-   Fonts: Manrope (body) + Red Hat Mono (data)
-   ================================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+:root{
+  --bg:oklch(12% .012 155);--sf:oklch(15% .01 155);--sf2:oklch(18% .009 155);
+  --sf3:oklch(22% .008 155);--bd:oklch(26% .012 155);--bds:oklch(20% .008 155);
+  --tx:oklch(92% .01 155);--tx2:oklch(72% .015 155);--mt:oklch(50% .02 155);
+  --ac:oklch(78% .19 155);--acd:oklch(78% .19 155/.07);--acg:oklch(78% .19 155/.15);
+  --gd:oklch(82% .16 85);--fi:oklch(70% .2 30);--pu:oklch(62% .22 300);
+  --ch:oklch(72% .18 155);--cm:oklch(78% .16 85);--cl:oklch(65% .18 25);
+  --r:10px;--rl:14px;--ease:cubic-bezier(.22,1,.36,1);
+}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);
+  font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-:root {
-  --bg-deep: oklch(0.12 0.015 155);
-  --bg: oklch(0.14 0.012 155);
-  --surface: oklch(0.17 0.01 155);
-  --surface-2: oklch(0.20 0.009 155);
-  --surface-3: oklch(0.24 0.008 155);
-  --border: oklch(0.28 0.012 155);
-  --border-subtle: oklch(0.22 0.01 155);
-  --text: oklch(0.92 0.01 155);
-  --text-secondary: oklch(0.72 0.015 155);
-  --muted: oklch(0.55 0.02 155);
-  --accent: oklch(0.78 0.19 155);
-  --accent-dim: oklch(0.78 0.19 155 / 0.08);
-  --accent-glow: oklch(0.78 0.19 155 / 0.15);
-  --accent-strong: oklch(0.85 0.22 155);
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0}
+.amb::before{content:'';position:absolute;top:-10%;left:40%;width:600px;height:600px;
+  background:radial-gradient(circle,oklch(78% .19 155/.03),transparent 60%);animation:d 28s ease-in-out infinite}
+@keyframes d{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,30px)}}
 
-  --joola: #00E676; --nike: #4FC3F7; --selkirk: #FF7043;
-  --crbn: #AB47BC; --franklin: #FFD54F; --onix: #26C6DA;
-  --courtana: #7C4DFF; --recovery: #EF5350; --underground: #FF9800;
-  --lifetime: #66BB6A; --head: #42A5F5; --adidas: #78909C;
-  --asics: #EC407A;
+.page{position:relative;z-index:1}.shell{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
 
-  --conf-high: oklch(0.72 0.18 155);
-  --conf-med: oklch(0.78 0.16 85);
-  --conf-low: oklch(0.65 0.18 25);
+/* Header */
+header{padding:20px 0;border-bottom:1px solid var(--bds);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--ac),oklch(60% .15 155));
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:oklch(12% .01 155)}
+.logo-t{font-size:12.5px;font-weight:700}.logo-t em{font-style:normal;color:var(--ac)}
+.logo-s{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.6px}
+nav a{font-size:11px;color:var(--mt);text-decoration:none;font-family:'Red Hat Mono',monospace;
+  padding:5px 10px;border:1px solid var(--bd);border-radius:6px;margin-left:6px;transition:all .2s var(--ease)}
+nav a:hover{color:var(--ac);border-color:var(--ac)}
 
-  --radius: 10px;
-  --radius-lg: 16px;
-  --shadow: 0 4px 24px oklch(0 0 0 / 0.35);
-  --shadow-lg: 0 12px 48px oklch(0 0 0 / 0.45);
+/* Hero */
+.hero{padding:clamp(32px,5vw,52px) 0 16px}
+.hero h1{font-size:clamp(28px,4.5vw,48px);font-weight:800;letter-spacing:-1.5px;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--ac)}
+.hero-sub{font-size:14px;color:var(--tx2);margin-top:8px;max-width:560px}
 
-  /* Modular scale 1.333 */
-  --fs-xs: 0.563rem;
-  --fs-sm: 0.75rem;
-  --fs-base: 1rem;
-  --fs-md: 1.333rem;
-  --fs-lg: 1.777rem;
-  --fs-xl: 2.369rem;
-  --fs-2xl: 3.157rem;
-  --fs-3xl: 4.209rem;
-}
+/* Stats strip */
+.stats{display:flex;gap:0;border:1px solid var(--bds);border-radius:var(--rl);overflow:hidden;margin:24px 0 32px;background:var(--bds)}
+.st{flex:1;padding:18px 14px;text-align:center;background:var(--sf);transition:background .2s var(--ease)}
+.st:not(:last-child){border-right:1px solid var(--bds)}.st:hover{background:var(--sf2)}
+.st-v{font-size:clamp(22px,3vw,32px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1;font-family:'Red Hat Mono',monospace}
+.st-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:5px;font-family:'Red Hat Mono',monospace}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+/* Caveat banner */
+.caveat{background:oklch(82% .16 85/.08);border:1px solid oklch(82% .16 85/.2);border-radius:var(--r);
+  padding:10px 14px;margin-bottom:24px;font-size:12px;color:oklch(82% .16 85);display:flex;align-items:center;gap:8px}
+.caveat .icon{font-size:16px;flex-shrink:0}
 
-body {
-  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-  background: var(--bg-deep);
-  color: var(--text);
-  font-size: var(--fs-base);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
+/* Section */
+.sec{margin:32px 0 14px;display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:8px;border-bottom:1px solid var(--bds);flex-wrap:wrap;gap:6px}
+.sec h2{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.sec .m{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace}
 
-.mono { font-family: 'Red Hat Mono', monospace; }
+/* Panel */
+.panel{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
 
-/* ── Ambient background ── */
-.ambient {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 0; overflow: hidden;
-}
-.ambient::before {
-  content: '';
-  position: absolute;
-  top: -20%; left: -5%;
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, oklch(0.78 0.19 155 / 0.04) 0%, transparent 65%);
-  animation: drift-a 28s ease-in-out infinite;
-}
-.ambient::after {
-  content: '';
-  position: absolute;
-  bottom: -15%; right: -8%;
-  width: 550px; height: 550px;
-  background: radial-gradient(circle, oklch(0.6 0.15 280 / 0.03) 0%, transparent 65%);
-  animation: drift-b 35s ease-in-out infinite;
-}
-@keyframes drift-a { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(90px, 70px); } }
-@keyframes drift-b { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-70px,-50px); } }
+/* ═══ BUBBLE CHART ═══ */
+#bubble-chart{width:100%;height:420px;position:relative;cursor:default}
+.bubble{position:absolute;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+  border:2px solid oklch(0% 0 0/.2)}
+.bubble:hover{transform:scale(1.08)!important;z-index:10;box-shadow:0 0 30px oklch(0% 0 0/.4)}
+.bubble .b-name{font-weight:700;color:oklch(100% 0 0/.9);text-shadow:0 1px 4px oklch(0% 0 0/.6);line-height:1.15}
+.bubble .b-val{font-family:'Red Hat Mono',monospace;color:oklch(100% 0 0/.7);font-weight:500}
+.bubble .b-cat{font-size:8px;color:oklch(100% 0 0/.5);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
 
-.page { position: relative; z-index: 1; }
+/* Toggle */
+.toggle{display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.tog{padding:5px 12px;background:transparent;border:none;color:var(--tx2);font-family:inherit;font-size:11px;
+  cursor:pointer;transition:all .15s var(--ease)}
+.tog.on{background:var(--acd);color:var(--ac)}
+.tog:not(:last-child){border-right:1px solid var(--bd)}
 
-/* ── Layout ── */
-.shell { max-width: 1380px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px); }
-.shell-narrow { max-width: 1100px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px); }
-.section { padding: 4rem 0; }
-.section + .section { padding-top: 1rem; }
+/* Rankings */
+.tbl-w{overflow-x:auto}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.tbl th{text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--mt);font-family:'Red Hat Mono',monospace;font-weight:600;border-bottom:1px solid var(--bd);
+  background:var(--sf2);white-space:nowrap;position:sticky;top:0;z-index:2;cursor:pointer;transition:color .2s var(--ease)}
+.tbl th:hover{color:var(--ac)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--bds);vertical-align:middle;transition:background .15s var(--ease)}
+.tbl tr:hover td{background:var(--sf2)}
+.tbl tr{cursor:pointer}
+.brand-c{display:flex;align-items:center;gap:8px;white-space:nowrap;font-weight:600}
+.swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.bar-bg{width:80px;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden}
+.bar-f{height:100%;border-radius:3px;transition:width .6s var(--ease)}
+.conf-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
 
-/* ── Entrance animations ── */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.stagger { opacity: 0; animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.stagger:nth-child(1) { animation-delay: 0.05s; }
-.stagger:nth-child(2) { animation-delay: 0.12s; }
-.stagger:nth-child(3) { animation-delay: 0.19s; }
-.stagger:nth-child(4) { animation-delay: 0.26s; }
-.stagger:nth-child(5) { animation-delay: 0.33s; }
-.stagger:nth-child(6) { animation-delay: 0.40s; }
-.stagger:nth-child(7) { animation-delay: 0.47s; }
-.stagger:nth-child(8) { animation-delay: 0.54s; }
-.stagger:nth-child(9) { animation-delay: 0.61s; }
-.stagger:nth-child(10) { animation-delay: 0.68s; }
+/* Heatmap + Matrix */
+.heat-w{overflow-x:auto;padding:4px 0}
+.heat{border-collapse:separate;border-spacing:3px;font-size:11px}
+.heat th{padding:6px 8px;font-weight:500;color:var(--tx2);font-size:9px;letter-spacing:.3px;text-transform:uppercase;font-family:'Red Hat Mono',monospace}
+.heat th.rl{text-align:right;white-space:nowrap}
+.heat td{width:56px;height:34px;text-align:center;vertical-align:middle;border-radius:4px;font-weight:600;
+  font-size:12px;font-family:'Red Hat Mono',monospace;transition:all .2s var(--ease);cursor:pointer}
+.heat td:hover{transform:scale(1.1);z-index:5}
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.5); }
-}
+/* Whitespace */
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ws-item{background:var(--sf2);border-radius:var(--r);padding:12px;display:flex;justify-content:space-between;align-items:center;
+  border:1px solid var(--bds);transition:all .2s var(--ease)}
+.ws-item:hover{border-color:var(--gd);transform:translateY(-1px)}
+.ws-name{font-size:12px;font-weight:600;color:var(--tx)}.ws-count{font-size:16px;font-weight:800;
+  font-family:'Red Hat Mono',monospace;color:var(--gd)}
 
-@keyframes count-flash {
-  0% { color: var(--accent); }
-  100% { color: var(--text); }
-}
+/* Brand cards */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;
+  transition:all .25s var(--ease);cursor:pointer}
+.card:hover{border-color:oklch(92% .01 155/.15);transform:translateY(-3px);box-shadow:0 12px 40px oklch(0% 0 0/.4)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 18px 12px}
+.card-name{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.card-cat{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.card-num{font-size:26px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1}
+.card-num-l{font-size:8px;color:var(--mt);text-transform:uppercase;letter-spacing:.6px;text-align:right;margin-top:1px}
+.card-body{padding:0 18px 16px}
+.card-skills{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-bottom:12px}
+.csk{display:flex;align-items:center;gap:5px}
+.csk-l{width:44px;font-size:8px;color:var(--mt);text-transform:uppercase;font-family:'Red Hat Mono',monospace;text-align:right;flex-shrink:0}
+.csk-t{flex:1;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden}
+.csk-f{height:100%;border-radius:3px;transition:width .6s var(--ease)}
+.csk-v{width:18px;font-size:10px;font-weight:600;font-family:'Red Hat Mono',monospace;text-align:right}
+.card-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bds);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+.cm{background:var(--sf2);padding:8px;text-align:center}
+.cm-v{font-size:14px;font-weight:700;font-family:'Red Hat Mono',monospace}
+.cm-l{font-size:8px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.card-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.cpill{padding:2px 7px;border-radius:8px;font-size:9px;font-weight:500;background:var(--sf3);color:var(--tx2)}
+.card-clips{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.card-clips::-webkit-scrollbar{display:none}
+.cc{width:80px;height:45px;border-radius:4px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer}
+.cc video{width:100%;height:100%;object-fit:cover;background:#000}
+.cc::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:oklch(0% 0 0/.3);color:white;font-size:10px;transition:opacity .2s}
+.cc:hover::after{background:oklch(0% 0 0/.1)}.cc.playing::after{opacity:0}
 
-/* ================================================================
-   HEADER
-   ================================================================ */
-.site-header {
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--border-subtle);
-  background: oklch(0.12 0.015 155 / 0.85);
-  backdrop-filter: blur(16px);
-  position: relative; z-index: 100;
-}
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.logo-group {
-  display: flex; align-items: center; gap: 0.75rem;
-}
-.logo-mark {
-  width: 36px; height: 36px;
-  background: var(--accent);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 1.1rem; color: oklch(0.15 0.01 155);
-}
-.logo-text {
-  font-weight: 700; font-size: var(--fs-md); letter-spacing: -0.02em;
-}
-.logo-text span { color: var(--text-secondary); font-weight: 400; margin-left: 0.4em; font-size: var(--fs-base); }
-.header-meta {
-  display: flex; align-items: center; gap: 1.5rem; font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.live-dot {
-  display: inline-block; width: 8px; height: 8px;
-  background: var(--accent); border-radius: 50%;
-  margin-right: 6px;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
+/* ═══ FULL-SCREEN MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:oklch(0% 0 0/.75);z-index:100;display:none;
+  align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);
+  max-width:960px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
+  animation:mslide .3s var(--ease)}
+@keyframes mslide{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;
+  border-bottom:1px solid var(--bds);flex-shrink:0}
+.modal-title{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.modal-close{width:32px;height:32px;border-radius:8px;background:var(--sf2);border:1px solid var(--bd);
+  color:var(--mt);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:all .2s var(--ease)}
+.modal-close:hover{background:var(--sf3);color:var(--tx)}
 
-/* ================================================================
-   HERO
-   ================================================================ */
-.hero {
-  padding: 5rem 0 3rem;
-}
-.hero-inner {
-  max-width: 780px; /* asymmetric — left-aligned */
-}
-.hero h1 {
-  font-size: clamp(var(--fs-xl), 5vw, var(--fs-3xl));
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  color: var(--text);
-  margin-bottom: 1rem;
-}
-.hero .subtitle {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  max-width: 60ch;
-  line-height: 1.5;
-}
+/* Modal tabs */
+.modal-tabs{display:flex;border-bottom:1px solid var(--bds);flex-shrink:0;padding:0 20px}
+.mtab{padding:10px 16px;font-size:12px;font-weight:600;color:var(--mt);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all .2s var(--ease);font-family:'Manrope',sans-serif}
+.mtab:hover{color:var(--tx2)}.mtab.on{color:var(--ac);border-bottom-color:var(--ac)}
 
-/* ================================================================
-   COMMAND BAR (sticky)
-   ================================================================ */
-.command-bar {
-  position: sticky; top: 0; z-index: 90;
-  background: oklch(0.14 0.012 155 / 0.92);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 0.75rem 0;
-  transition: box-shadow 0.3s ease;
-}
-.command-bar.scrolled {
-  box-shadow: 0 4px 24px oklch(0 0 0 / 0.4);
-}
-.cmd-row {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
-}
-.cmd-group {
-  display: flex; align-items: center; gap: 0.35rem;
-  flex-wrap: wrap;
-}
-.cmd-group + .cmd-group { margin-left: 0.75rem; }
-.cmd-sep {
-  width: 1px; height: 24px; background: var(--border);
-  margin: 0 0.5rem; flex-shrink: 0;
-}
+.modal-content{flex:1;overflow-y:auto;padding:20px}
+.tab-pane{display:none}.tab-pane.on{display:block}
 
-.chip {
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-}
-.chip:hover { border-color: var(--accent); color: var(--text); }
-.chip.active {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.cmd-select, .cmd-input {
-  padding: 0.3rem 0.65rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-family: 'Red Hat Mono', monospace;
-  font-size: var(--fs-sm);
-  outline: none;
-}
-.cmd-select:focus, .cmd-input:focus { border-color: var(--accent); }
-.cmd-input { width: 150px; }
-.cmd-input::placeholder { color: var(--muted); }
-.cmd-number { width: 60px; text-align: center; }
+/* Modal overview */
+.mo-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.mo-stat{background:var(--sf2);border-radius:var(--r);padding:14px;text-align:center}
+.mo-v{font-size:22px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1}
+.mo-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;font-family:'Red Hat Mono',monospace}
+.mo-skills{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-bottom:16px}
+.mo-bar{display:flex;align-items:center;gap:6px}
+.mo-bar-l{width:52px;font-size:9px;color:var(--mt);text-transform:uppercase;font-family:'Red Hat Mono',monospace;text-align:right;flex-shrink:0}
+.mo-bar-t{flex:1;height:7px;background:var(--sf3);border-radius:4px;overflow:hidden}
+.mo-bar-f{height:100%;border-radius:4px;transition:width .5s var(--ease)}
+.mo-bar-v{width:22px;font-size:11px;font-weight:600;font-family:'Red Hat Mono',monospace;text-align:right}
 
-.preset-btn {
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  border: 1px solid var(--border-subtle);
-  background: var(--surface);
-  color: var(--muted);
-  font-family: inherit;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.preset-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
-}
+/* Modal evidence (clips grid) */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.ev-clip{border-radius:var(--r);overflow:hidden;background:var(--sf2);cursor:pointer;transition:all .2s var(--ease)}
+.ev-clip:hover{transform:translateY(-2px);box-shadow:0 8px 24px oklch(0% 0 0/.3)}
+.ev-vid{aspect-ratio:16/9;position:relative}
+.ev-vid video{width:100%;height:100%;object-fit:cover;background:#000}
+.ev-vid::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:oklch(0% 0 0/.35);color:white;font-size:16px;transition:all .2s var(--ease)}
+.ev-clip:hover .ev-vid::after{background:oklch(0% 0 0/.15)}
+.ev-clip.playing .ev-vid::after{opacity:0}
+.ev-info{padding:10px}
+.ev-summary{font-size:11px;color:var(--tx2);line-height:1.4;margin-bottom:6px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ev-tags{display:flex;gap:3px;flex-wrap:wrap}
+.ev-tag{padding:1px 6px;border-radius:6px;font-size:9px;font-weight:600;font-family:'Red Hat Mono',monospace}
+.ev-tag.high{background:oklch(72% .18 155/.15);color:var(--ch)}
+.ev-tag.medium{background:oklch(78% .16 85/.15);color:var(--cm)}
+.ev-tag.low{background:oklch(65% .18 25/.15);color:var(--cl)}
 
-/* ================================================================
-   STATS ROW
-   ================================================================ */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1px;
-  background: var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 2rem;
-}
-.stat-cell {
-  background: var(--surface);
-  padding: 1.5rem 1.25rem;
-  text-align: center;
-}
-.stat-cell:first-child { border-radius: var(--radius-lg) 0 0 var(--radius-lg); }
-.stat-cell:last-child { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
-.stat-value {
-  font-family: 'Red Hat Mono', monospace;
-  font-size: var(--fs-xl);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--text);
-}
-.stat-value.accent { color: var(--accent); }
-.stat-label {
-  font-size: var(--fs-sm);
-  color: var(--muted);
-  margin-top: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
+/* Modal players */
+.mp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.mp-card{background:var(--sf2);border-radius:var(--r);padding:12px;display:flex;align-items:center;gap:10px;
+  transition:all .2s var(--ease);cursor:pointer}
+.mp-card:hover{background:var(--sf3);transform:translateY(-1px)}
+.mp-card img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+.mp-card .mp-name{font-size:13px;font-weight:600}.mp-card .mp-sub{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace}
 
-@media (max-width: 900px) {
-  .stats-row { grid-template-columns: repeat(3, 1fr); }
-  .stat-cell:nth-child(3) { border-radius: 0; }
-  .stat-cell:nth-child(4) { border-radius: 0; }
-}
-@media (max-width: 550px) {
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-}
+/* Modal badges */
+.mb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.mb-card{background:var(--sf2);border-radius:var(--r);padding:10px;text-align:center;transition:all .2s var(--ease)}
+.mb-card:hover{transform:translateY(-1px)}
+.mb-card img{width:32px;height:32px;border-radius:6px;object-fit:cover;margin-bottom:4px}
+.mb-card .mb-name{font-size:11px;font-weight:600}.mb-card .mb-count{font-size:14px;font-weight:800;
+  font-family:'Red Hat Mono',monospace;color:var(--pu);margin-top:2px}
 
-/* ================================================================
-   INSIGHT CALLOUT
-   ================================================================ */
-.insight-callout {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem 2rem;
-  margin-bottom: 3rem;
-  position: relative;
-  overflow: hidden;
-}
-.insight-callout::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--accent);
-}
-.insight-label {
-  font-size: var(--fs-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-.insight-text {
-  font-size: var(--fs-md);
-  line-height: 1.5;
-  max-width: 72ch;
-  color: var(--text);
-}
+/* Confidence section */
+.conf-panel{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.conf-ring{width:100px;height:100px;position:relative;flex-shrink:0}
+.conf-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.conf-ring .rb{fill:none;stroke:var(--sf3);stroke-width:8}
+.conf-ring .rf{fill:none;stroke-width:8;stroke-linecap:round}
+.conf-ring .rv{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:22px;font-weight:800;font-family:'Red Hat Mono',monospace}
+.conf-detail{flex:1;min-width:200px;font-size:12px;color:var(--tx2);line-height:1.8}
 
-/* ================================================================
-   SECTION HEADINGS
-   ================================================================ */
-.section-head {
-  margin-bottom: 1.5rem;
-}
-.section-head h2 {
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.section-head p {
-  color: var(--text-secondary);
-  margin-top: 0.25rem;
-  max-width: 65ch;
-}
-.section-head .tag {
-  display: inline-block;
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-}
+/* Footer */
+footer{margin-top:48px;padding:20px 0;border-top:1px solid var(--bds);color:var(--mt);font-size:11px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:var(--ac);text-decoration:none}
 
-/* ================================================================
-   TREEMAP
-   ================================================================ */
-.treemap-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-}
-.treemap-toolbar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 1rem;
-}
-.toggle-group {
-  display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
-}
-.toggle-btn {
-  padding: 0.35rem 0.9rem;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.toggle-btn.active {
-  background: var(--accent-dim);
-  color: var(--accent);
-}
-.toggle-btn:not(:last-child) { border-right: 1px solid var(--border); }
+/* Loading */
+.ld{display:flex;flex-direction:column;align-items:center;padding:80px 20px;gap:12px}
+.sp{width:32px;height:32px;border:2.5px solid var(--bd);border-top-color:var(--ac);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-#treemap-canvas {
-  width: 100%;
-  min-height: 400px;
-  position: relative;
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.tm-cell {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border: 1px solid oklch(0 0 0 / 0.3);
-  cursor: pointer;
-  transition: filter 0.2s ease, transform 0.15s ease;
-  overflow: hidden;
-  padding: 4px;
-}
-.tm-cell:hover { filter: brightness(1.25); transform: scale(1.01); z-index: 5; }
-.tm-name {
-  font-weight: 700;
-  font-size: var(--fs-sm);
-  text-shadow: 0 1px 4px oklch(0 0 0 / 0.6);
-  color: #fff;
-  line-height: 1.2;
-}
-.tm-val {
-  font-family: 'Red Hat Mono', monospace;
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.75);
-  margin-top: 2px;
-}
+@media(max-width:768px){.stats{flex-wrap:wrap}.st{flex:1 1 45%}
+  .card-grid{grid-template-columns:1fr}.mo-row{grid-template-columns:1fr}
+  .ev-grid{grid-template-columns:1fr 1fr}nav{display:none}
+  .heat td{width:40px;height:28px;font-size:10px}}
 
-/* ================================================================
-   RANKINGS TABLE
-   ================================================================ */
-.table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 3rem;
-}
-.table-wrap table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-.table-wrap th {
-  background: var(--surface-2);
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: var(--fs-xs);
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--border);
-}
-.table-wrap th:hover { color: var(--accent); }
-.table-wrap th .sort-arrow { margin-left: 4px; opacity: 0.4; }
-.table-wrap th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
-.table-wrap td {
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid var(--border-subtle);
-  vertical-align: middle;
-}
-.table-wrap tr:nth-child(even) td { background: oklch(0.15 0.008 155); }
-.table-wrap tr { cursor: pointer; transition: background 0.1s; }
-.table-wrap tbody tr:hover td { background: var(--accent-dim); }
-
-.brand-badge {
-  display: inline-flex;
-  align-items: center; gap: 0.4rem;
-}
-.brand-dot {
-  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-}
-.conf-bar {
-  display: flex; height: 14px; border-radius: 4px; overflow: hidden; min-width: 80px;
-}
-.conf-seg { height: 100%; }
-
-/* ================================================================
-   BAR CHARTS (horizontal)
-   ================================================================ */
-.hbar-chart { margin-bottom: 3rem; }
-.hbar-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-.hbar-label {
-  width: 140px;
-  text-align: right;
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  flex-shrink: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.hbar-track {
-  flex: 1;
-  height: 28px;
-  background: var(--surface);
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
-}
-.hbar-fill {
-  height: 100%;
-  border-radius: 6px;
-  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  display: flex; align-items: center;
-  padding-left: 8px;
-}
-.hbar-val {
-  font-family: 'Red Hat Mono', monospace;
-  font-size: 0.7rem;
-  color: #fff;
-  text-shadow: 0 1px 3px oklch(0 0 0 / 0.5);
-  white-space: nowrap;
-}
-
-/* Confidence stacked bars */
-.conf-hbar-chart {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-}
-.conf-row {
-  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.65rem;
-}
-.conf-label {
-  width: 120px; text-align: right; font-size: var(--fs-sm);
-  font-weight: 500; flex-shrink: 0;
-}
-.conf-track {
-  flex: 1; height: 24px;
-  display: flex; border-radius: 5px; overflow: hidden;
-  position: relative;
-}
-.conf-seg-bar {
-  height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Red Hat Mono', monospace;
-  font-size: 0.65rem;
-  color: #fff;
-  text-shadow: 0 1px 2px oklch(0 0 0 / 0.4);
-  min-width: 0;
-  overflow: hidden;
-}
-
-/* ================================================================
-   WHITESPACE EXPLORER
-   ================================================================ */
-.whitespace-section {
-  background: oklch(0.15 0.02 155);
-  border: 1px solid oklch(0.78 0.19 155 / 0.15);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  margin-bottom: 3rem;
-  position: relative;
-}
-.whitespace-section::before {
-  content: 'DISCOVERY';
-  position: absolute;
-  top: -0.6rem; left: 2rem;
-  background: oklch(0.15 0.02 155);
-  padding: 0 0.75rem;
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-}
-.ws-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-  margin-top: 1rem;
-}
-.ws-table th {
-  text-align: left;
-  padding: 0.6rem 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: var(--fs-xs);
-  letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--border);
-}
-.ws-table td {
-  padding: 0.55rem 0.75rem;
-  border-bottom: 1px solid var(--border-subtle);
-}
-.ws-table tr:nth-child(even) td { background: oklch(0.13 0.015 155); }
-.opp-bar {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--accent);
-  transition: width 0.6s ease;
-}
-
-/* ================================================================
-   CO-OCCURRENCE MATRIX
-   ================================================================ */
-.matrix-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-  overflow-x: auto;
-}
-.matrix-grid {
-  display: inline-grid;
-  gap: 2px;
-}
-.matrix-cell {
-  width: 56px; height: 56px;
-  border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Red Hat Mono', monospace;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.7);
-  cursor: default;
-  position: relative;
-  transition: transform 0.1s;
-}
-.matrix-cell:hover { transform: scale(1.1); z-index: 5; }
-.matrix-label {
-  display: flex; align-items: center; justify-content: flex-end;
-  padding-right: 8px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-.matrix-col-label {
-  display: flex; align-items: flex-end; justify-content: center;
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  writing-mode: vertical-lr;
-  transform: rotate(180deg);
-  padding-bottom: 6px;
-  height: 80px;
-}
-
-/* ================================================================
-   HEATMAP (Skill x Brand)
-   ================================================================ */
-.heatmap-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-  overflow-x: auto;
-}
-.heatmap-grid {
-  display: inline-grid;
-  gap: 2px;
-}
-.heatmap-cell {
-  width: 64px; height: 40px;
-  border-radius: 3px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Red Hat Mono', monospace;
-  font-size: 0.7rem;
-  color: #fff;
-  position: relative;
-  cursor: default;
-}
-.heatmap-label-row {
-  display: flex; align-items: center; justify-content: flex-end;
-  padding-right: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-.heatmap-label-col {
-  display: flex; align-items: flex-end; justify-content: center;
-  font-size: 0.65rem; font-weight: 600;
-  color: var(--text-secondary);
-  writing-mode: vertical-lr;
-  transform: rotate(180deg);
-  height: 80px; padding-bottom: 6px;
-}
-
-/* ================================================================
-   BRAND DETAIL CARDS
-   ================================================================ */
-.brand-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-.brand-card {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.brand-card:hover { border-color: var(--border); transform: translateY(-2px); }
-.brand-card-accent { height: 4px; }
-.brand-card-body { padding: 1.25rem; }
-.brand-card-header {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 1rem;
-}
-.brand-card-name {
-  font-size: var(--fs-md);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-.brand-card-cat {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-}
-.brand-card-donut {
-  flex-shrink: 0;
-}
-.brand-card-stats {
-  display: flex; gap: 2rem; margin-bottom: 1rem;
-}
-.brand-card-stat-val {
-  font-family: 'Red Hat Mono', monospace;
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  line-height: 1.1;
-}
-.brand-card-stat-label {
-  font-size: var(--fs-xs);
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.skill-bars { margin-bottom: 1rem; }
-.skill-bar-row {
-  display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;
-}
-.skill-bar-name {
-  width: 90px; font-size: 0.7rem; color: var(--text-secondary);
-  text-align: right; flex-shrink: 0;
-}
-.skill-bar-track {
-  flex: 1; height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden;
-}
-.skill-bar-fill { height: 100%; border-radius: 4px; }
-.skill-bar-val {
-  font-family: 'Red Hat Mono', monospace; font-size: 0.65rem;
-  color: var(--text-secondary); width: 28px; flex-shrink: 0;
-}
-.co-pills {
-  display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 1rem;
-}
-.co-pill {
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  background: var(--surface-3);
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-}
-.evidence-btn {
-  display: inline-flex;
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
-  font-family: inherit;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.evidence-btn:hover { background: var(--accent-dim); }
-
-.card-clips {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
-  margin-top: 1rem;
-}
-.card-clip {
-  position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 16/9;
-  background: var(--surface-3); cursor: pointer;
-}
-.card-clip img, .card-clip video {
-  width: 100%; height: 100%; object-fit: cover;
-}
-.play-overlay {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: oklch(0 0 0 / 0.35);
-  opacity: 1; transition: opacity 0.2s;
-}
-.play-overlay svg { width: 28px; height: 28px; fill: #fff; filter: drop-shadow(0 1px 3px oklch(0 0 0 / 0.4)); }
-.card-clip:hover .play-overlay { opacity: 0; }
-.card-clip video:not([paused]) ~ .play-overlay { opacity: 0; }
-
-.courtana-badge {
-  display: inline-flex; align-items: center; gap: 0.3rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  background: oklch(0.6 0.15 280 / 0.15);
-  border: 1px solid oklch(0.6 0.15 280 / 0.3);
-  font-size: 0.6rem;
-  color: var(--courtana);
-  font-weight: 600;
-  margin-top: 0.5rem;
-}
-
-/* ================================================================
-   PROVENANCE DRAWER
-   ================================================================ */
-.drawer-overlay {
-  position: fixed; inset: 0;
-  background: oklch(0 0 0 / 0.55);
-  z-index: 500;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
-}
-.drawer-overlay.open { opacity: 1; pointer-events: all; }
-.drawer {
-  position: fixed; top: 0; right: 0; bottom: 0;
-  width: min(520px, 90vw);
-  background: var(--bg);
-  border-left: 1px solid var(--border);
-  z-index: 510;
-  transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  overflow-y: auto;
-  display: flex; flex-direction: column;
-}
-.drawer.open { transform: translateX(0); }
-.drawer-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border-subtle);
-  position: sticky; top: 0;
-  background: var(--bg);
-  z-index: 2;
-}
-.drawer-title { font-size: var(--fs-md); font-weight: 700; }
-.drawer-close {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
-}
-.drawer-close:hover { background: var(--surface); color: var(--text); }
-.drawer-meta {
-  padding: 0.75rem 1.5rem;
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-subtle);
-}
-.drawer-body { padding: 1rem 1.5rem; flex: 1; }
-.drawer-clip {
-  margin-bottom: 1.25rem;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.drawer-clip video {
-  width: 100%; display: block; aspect-ratio: 16/9;
-  background: #000;
-}
-.drawer-clip-info {
-  padding: 0.75rem;
-  font-size: var(--fs-sm);
-}
-.drawer-clip-info .tag-row {
-  display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.4rem;
-}
-.tag-pill {
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.65rem;
-  font-weight: 600;
-}
-.tag-high { background: oklch(0.72 0.18 155 / 0.2); color: var(--conf-high); }
-.tag-medium { background: oklch(0.78 0.16 85 / 0.2); color: var(--conf-med); }
-.tag-low { background: oklch(0.65 0.18 25 / 0.2); color: var(--conf-low); }
-
-/* ================================================================
-   DATA CONFIDENCE SECTION
-   ================================================================ */
-.confidence-section {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  margin-bottom: 3rem;
-}
-.conf-metrics {
-  display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;
-}
-.conf-ring-wrap { flex-shrink: 0; }
-.conf-ring-label {
-  text-align: center; margin-top: 0.5rem;
-  font-size: var(--fs-sm); color: var(--text-secondary);
-}
-.conf-detail { flex: 1; min-width: 200px; }
-.conf-detail p { color: var(--text-secondary); max-width: 55ch; margin-bottom: 0.5rem; font-size: var(--fs-sm); }
-
-/* ================================================================
-   FOOTER
-   ================================================================ */
-.site-footer {
-  padding: 2rem 0;
-  border-top: 1px solid var(--border-subtle);
-  text-align: center;
-  color: var(--muted);
-  font-size: var(--fs-sm);
-}
-.site-footer a { color: var(--accent); text-decoration: none; }
-.site-footer a:hover { text-decoration: underline; }
-
-/* ================================================================
-   TOOLTIP
-   ================================================================ */
-.tooltip {
-  position: fixed;
-  padding: 0.4rem 0.7rem;
-  background: oklch(0.2 0.01 155);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.7rem;
-  color: var(--text);
-  pointer-events: none;
-  z-index: 600;
-  opacity: 0;
-  transition: opacity 0.15s;
-  white-space: nowrap;
-  font-family: 'Red Hat Mono', monospace;
-}
-.tooltip.visible { opacity: 1; }
-
-/* ================================================================
-   RESPONSIVE
-   ================================================================ */
-@media (max-width: 768px) {
-  .hero h1 { font-size: var(--fs-xl); }
-  .cmd-row { gap: 0.35rem; }
-  .cmd-sep { display: none; }
-  .brand-cards-grid { grid-template-columns: 1fr; }
-  .matrix-cell { width: 40px; height: 40px; font-size: 0.55rem; }
-  .hbar-label { width: 90px; }
-  .conf-label { width: 80px; }
-  .header-meta { font-size: 0.65rem; }
-}
-@media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .stat-value { font-size: var(--fs-lg); }
-  .hero { padding: 3rem 0 2rem; }
-  .section { padding: 2rem 0; }
-  .card-clips { grid-template-columns: 1fr 1fr; }
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-deep); }
-::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border); }
+.fi{opacity:0;transform:translateY(8px);animation:fi .35s var(--ease) forwards}
+@keyframes fi{to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
+<div class="amb"></div>
+<div class="page"><div class="shell">
 
-<div class="ambient"></div>
-<div class="page">
-
-<!-- ════════════════════════════════════════════════════════════
-     HEADER
-     ════════════════════════════════════════════════════════════ -->
-<header class="site-header">
-  <div class="shell header-inner">
-    <div class="logo-group">
-      <div class="logo-mark">P</div>
-      <div class="logo-text">Pickle DaaS <span>Brand Intelligence</span></div>
-    </div>
-    <div class="header-meta">
-      <span><span class="live-dot"></span>Live Data</span>
-      <span id="last-updated" class="mono">--</span>
-    </div>
+<header>
+  <div class="logo"><div class="logo-i">P</div>
+    <div><div class="logo-t">Pickle <em>DaaS</em></div><div class="logo-s">Brand Intelligence</div></div>
   </div>
+  <nav>
+    <a href="player-intelligence.html">Players</a>
+    <a href="equipment-performance.html">Equipment</a>
+    <a href="investor-walkthrough.html">Investor</a>
+    <a href="showcase-portal.html">Portal</a>
+  </nav>
 </header>
 
-<!-- ════════════════════════════════════════════════════════════
-     HERO
-     ════════════════════════════════════════════════════════════ -->
-<section class="hero">
-  <div class="shell">
-    <div class="hero-inner">
-      <h1 class="stagger">The Pickleball Brand Landscape</h1>
-      <p class="subtitle stagger">AI-powered equipment intelligence across 842 video highlights. Every paddle, shoe, and sponsor detected, measured, and mapped to advertising value.</p>
-    </div>
-  </div>
+<section class="hero fi">
+  <h1>The Pickleball <em>Brand Landscape</em></h1>
+  <p class="hero-sub">AI-powered equipment intelligence from court-level video. Every brand, every appearance, every pattern.</p>
 </section>
 
-<!-- ════════════════════════════════════════════════════════════
-     COMMAND BAR
-     ════════════════════════════════════════════════════════════ -->
-<nav class="command-bar" id="command-bar">
-  <div class="shell">
-    <div class="cmd-row">
-      <div class="cmd-group" id="cat-filters">
-        <button class="chip active" data-cat="all">All</button>
-        <button class="chip" data-cat="paddle">Paddles</button>
-        <button class="chip" data-cat="apparel">Apparel</button>
-        <button class="chip" data-cat="shoes">Shoes</button>
-        <button class="chip" data-cat="venue">Venue</button>
-        <button class="chip" data-cat="technology">Technology</button>
-        <button class="chip" data-cat="other">Other</button>
-      </div>
-      <div class="cmd-sep"></div>
-      <div class="cmd-group">
-        <select class="cmd-select" id="conf-filter">
-          <option value="all">All Confidence</option>
-          <option value="high">High Only</option>
-          <option value="high+medium">High + Medium</option>
-        </select>
-        <input type="number" class="cmd-input cmd-number" id="min-appearances" value="1" min="1" placeholder="Min">
-      </div>
-      <div class="cmd-sep"></div>
-      <input type="text" class="cmd-input" id="brand-search" placeholder="Search brand...">
-      <div class="cmd-sep"></div>
-      <div class="cmd-group">
-        <button class="preset-btn" data-preset="paddles">Paddle brands</button>
-        <button class="preset-btn" data-preset="highconf">High confidence</button>
-        <button class="preset-btn" data-preset="screentime">Top screen time</button>
-        <button class="preset-btn" data-preset="gaps">Sponsorship gaps</button>
-      </div>
-    </div>
-  </div>
-</nav>
+<div class="stats fi" id="stats"></div>
 
-<!-- ════════════════════════════════════════════════════════════
-     STATS ROW
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="stats-row" id="stats-row">
-      <div class="stat-cell stagger"><div class="stat-value mono" data-count="0" id="stat-clips">0</div><div class="stat-label">Total Clips</div></div>
-      <div class="stat-cell stagger"><div class="stat-value mono" data-count="0" id="stat-brands">0</div><div class="stat-label">Brands Detected</div></div>
-      <div class="stat-cell stagger"><div class="stat-value mono" data-count="0" id="stat-appearances">0</div><div class="stat-label">Total Appearances</div></div>
-      <div class="stat-cell stagger"><div class="stat-value mono accent" id="stat-screentime">0:00</div><div class="stat-label">Screen Time</div></div>
-      <div class="stat-cell stagger"><div class="stat-value mono" data-count="0" id="stat-highconf">0%</div><div class="stat-label">High-Confidence</div></div>
-      <div class="stat-cell stagger"><div class="stat-value mono" data-count="0" id="stat-gaps">0</div><div class="stat-label">Sponsorship Gaps</div></div>
-    </div>
-
-    <!-- INSIGHT CALLOUT -->
-    <div class="insight-callout stagger">
-      <div class="insight-label">Key Insight</div>
-      <div class="insight-text" id="insight-text">Loading brand intelligence...</div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     TREEMAP
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Market Share</div>
-      <h2>Brand Treemap</h2>
-      <p>Brand footprint by appearances or screen time. Click any cell to see evidence.</p>
-    </div>
-    <div class="treemap-wrap">
-      <div class="treemap-toolbar">
-        <div class="toggle-group">
-          <button class="toggle-btn active" data-metric="appearances" id="tm-by-app">By Appearances</button>
-          <button class="toggle-btn" data-metric="screentime" id="tm-by-time">By Screen Time</button>
-        </div>
-      </div>
-      <div id="treemap-canvas"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     BRAND RANKINGS TABLE
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Rankings</div>
-      <h2>Brand Rankings</h2>
-      <p>Click any column to sort. Click a row to see source clips.</p>
-    </div>
-    <div class="table-wrap">
-      <table id="rankings-table">
-        <thead>
-          <tr>
-            <th data-col="rank"># <span class="sort-arrow"></span></th>
-            <th data-col="brand">Brand <span class="sort-arrow"></span></th>
-            <th data-col="category">Category <span class="sort-arrow"></span></th>
-            <th data-col="appearances">Appearances <span class="sort-arrow"></span></th>
-            <th data-col="screentime">Screen Time <span class="sort-arrow"></span></th>
-            <th data-col="share">Share % <span class="sort-arrow"></span></th>
-            <th data-col="quality">Avg Quality <span class="sort-arrow"></span></th>
-            <th data-col="confidence">Confidence <span class="sort-arrow"></span></th>
-          </tr>
-        </thead>
-        <tbody id="rankings-body"></tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     SCREEN TIME LEADERBOARD
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Advertising Value</div>
-      <h2>Screen Time Leaderboard</h2>
-      <p>Total seconds of brand visibility. This metric maps directly to advertising value.</p>
-    </div>
-    <div id="screentime-chart" class="hbar-chart"></div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     CONFIDENCE DISTRIBUTION
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Data Quality</div>
-      <h2>Confidence Distribution</h2>
-      <p>Detection confidence breakdown for the top 10 brands.</p>
-    </div>
-    <div class="conf-hbar-chart" id="conf-dist-chart"></div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     SPONSORSHIP WHITESPACE
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Opportunity</div>
-      <h2>Sponsorship Whitespace Explorer</h2>
-      <p>Where are the biggest brand gaps in pickleball? These brands are mentioned by players but rarely seen in footage.</p>
-    </div>
-    <div class="whitespace-section">
-      <table class="ws-table" id="whitespace-table">
-        <thead>
-          <tr>
-            <th>Brand</th>
-            <th>Mentions</th>
-            <th>% of Clips</th>
-            <th>Opportunity Score</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="whitespace-body"></tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     CO-OCCURRENCE MATRIX
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Relationships</div>
-      <h2>Co-Occurrence Matrix</h2>
-      <p>How often do these brands appear together in the same clip?</p>
-    </div>
-    <div class="matrix-wrap" id="cooccurrence-wrap"></div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     SKILL x BRAND HEATMAP
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Performance</div>
-      <h2>Skill x Brand Heatmap</h2>
-      <p>Average skill ratings for players using each brand.</p>
-    </div>
-    <div class="heatmap-wrap" id="heatmap-wrap"></div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     BRAND DETAIL CARDS
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Profiles</div>
-      <h2>Brand Profiles</h2>
-      <p>Detailed intelligence on the top 10 brands.</p>
-    </div>
-    <div class="brand-cards-grid" id="brand-cards"></div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════════
-     PROVENANCE DRAWER
-     ════════════════════════════════════════════════════════════ -->
-<div class="drawer-overlay" id="drawer-overlay"></div>
-<div class="drawer" id="drawer">
-  <div class="drawer-header">
-    <div class="drawer-title" id="drawer-title">Brand Evidence</div>
-    <button class="drawer-close" id="drawer-close">&times;</button>
-  </div>
-  <div class="drawer-meta" id="drawer-meta"></div>
-  <div class="drawer-body" id="drawer-body"></div>
+<div class="caveat fi">
+  <span class="icon">⚠</span>
+  <span><strong>Data note:</strong> JOOLA counts are inflated — the AI is currently detecting the JOOLA <em>net</em> (present in every clip at this venue) in addition to JOOLA paddles. A fix is in the next data push. Other brand counts are accurate.</span>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════
-     DATA CONFIDENCE
-     ════════════════════════════════════════════════════════════ -->
-<section class="section">
-  <div class="shell">
-    <div class="section-head">
-      <div class="tag">Methodology</div>
-      <h2>Data Confidence</h2>
-    </div>
-    <div class="confidence-section" id="data-confidence">
-      <div class="conf-metrics">
-        <div class="conf-ring-wrap">
-          <svg width="120" height="120" id="f1-ring"></svg>
-          <div class="conf-ring-label mono" id="f1-label">--</div>
-        </div>
-        <div class="conf-detail" id="conf-detail">
-          <p>Brand detection is powered by Gemini 2.5 Flash vision analysis on every clip. Each brand object includes confidence level, visibility, and spatial location.</p>
-          <p>High-confidence detections have clear brand visibility. Medium includes partial or blurry sightings. Low covers brief flashes or inferred brands.</p>
-        </div>
-      </div>
+<div class="ld" id="ld"><div class="sp"></div><div style="color:var(--mt);font-size:12px;font-family:'Red Hat Mono',monospace">Loading brand intelligence…</div></div>
+
+<div id="content" style="display:none">
+
+  <!-- Bubble Chart -->
+  <div class="sec fi"><h2>Market Share</h2>
+    <div class="toggle" id="metric-toggle">
+      <button class="tog on" data-m="appearances" onclick="setMetric('appearances',this)">Appearances</button>
+      <button class="tog" data-m="screentime" onclick="setMetric('screentime',this)">Screen Time</button>
     </div>
   </div>
-</section>
+  <div class="panel fi"><div id="bubble-chart"></div></div>
 
-<!-- ════════════════════════════════════════════════════════════
-     FOOTER
-     ════════════════════════════════════════════════════════════ -->
-<footer class="site-footer">
-  <div class="shell">
-    <p>Auto-updated from the Pickle DaaS corpus. <a href="showcase-portal.html">View Showcase Portal</a></p>
-    <p style="margin-top: 0.35rem;">Powered by <strong>Pickle DaaS</strong></p>
+  <!-- Rankings -->
+  <div class="sec fi"><h2>Rankings</h2><span class="m">click any row to explore</span></div>
+  <div class="panel fi"><div class="tbl-w"><table class="tbl"><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table></div></div>
+
+  <!-- Skill Heatmap -->
+  <div class="sec fi"><h2>Skill × Brand</h2><span class="m">click cell to explore</span></div>
+  <div class="panel fi"><div class="heat-w" id="heatmap"></div></div>
+
+  <!-- Sponsorship Whitespace -->
+  <div class="sec fi"><h2>Sponsorship Whitespace</h2><span class="m" id="ws-meta"></span></div>
+  <div class="panel fi"><div class="ws-grid" id="whitespace"></div></div>
+
+  <!-- Brand Cards -->
+  <div class="sec fi"><h2>Brand Profiles</h2><span class="m" id="card-meta"></span></div>
+  <div class="card-grid" id="cards"></div>
+
+  <!-- Confidence -->
+  <div class="sec fi"><h2>Data Confidence</h2></div>
+  <div class="panel fi" id="confidence"></div>
+
+  <footer>
+    <div>Updated via Pickle DaaS pipeline · <a href="showcase-portal.html">Showcase Portal</a></div>
+    <div>Powered by <strong>Pickle DaaS</strong> × <strong>Courtana</strong></div>
+  </footer>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="m-title">Brand</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tabs" id="m-tabs"></div>
+    <div class="modal-content" id="m-content"></div>
   </div>
-</footer>
+</div>
 
-</div><!-- .page -->
-
-<!-- Tooltip -->
-<div class="tooltip" id="tooltip"></div>
+</div></div>
 
 <script>
-/* ================================================================
-   BRAND INTELLIGENCE V2 — Runtime
-   ================================================================ */
+const BC={JOOLA:'oklch(76% .17 155)',Nike:'oklch(68% .15 240)',Selkirk:'oklch(70% .2 30)',
+  CRBN:'oklch(62% .22 300)',Franklin:'oklch(82% .16 85)',HEAD:'oklch(68% .15 240)',
+  Onix:'oklch(75% .12 200)',Courtana:'oklch(62% .22 300)','PICKLEBALL KINGDOM':'oklch(82% .16 85)',
+  'On':'oklch(73% .01 260)',adidas:'oklch(55% .01 260)',PBS:'oklch(70% .2 30)'};
+const CATS={JOOLA:'Paddles',Nike:'Shoes',HEAD:'Paddles',Selkirk:'Paddles',CRBN:'Paddles',
+  Franklin:'Paddles',Onix:'Paddles','PICKLEBALL KINGDOM':'Venue','On':'Shoes',
+  adidas:'Shoes',Courtana:'Technology',PBS:'Apparel'};
+const SK=['court_coverage','kitchen','power','touch','athleticism','court_iq','consistency','composure'];
+const SL={court_coverage:'Cover',kitchen:'Kitchen',power:'Power',touch:'Touch',
+  athleticism:'Athletic',court_iq:'Court IQ',consistency:'Consist',composure:'Compose'};
 
-// ── Brand config ──
-const BRAND_COLORS = {
-  'JOOLA': '#00E676', 'Nike': '#4FC3F7', 'Selkirk': '#FF7043',
-  'CRBN': '#AB47BC', 'Franklin': '#FFD54F', 'Onix': '#26C6DA',
-  'Courtana': '#7C4DFF', 'Recovery Cave': '#EF5350', 'The Underground': '#FF9800',
-  'LIFETIME': '#66BB6A', 'HEAD': '#42A5F5', 'ADIDAS': '#78909C',
-  'ASICS': '#EC407A', 'PICKLEBALL KINGDOM': '#8BC34A', 'On': '#E0E0E0',
-  'USA': '#B71C1C', 'PKLR': '#29B6F6', 'NC STATE': '#C62828',
-  'Under Armour': '#546E7A'
-};
+let allBrands=[];let corpus=[];let metric='appearances';
+function bc(n){return BC[n]||'oklch(55% .02 260)'}
+function cat(n){return CATS[n]||'Other'}
+function fmtSec(s){return s>=60?Math.round(s/60)+'m '+Math.round(s%60)+'s':Math.round(s)+'s'}
 
-const BRAND_CATEGORIES = {
-  'JOOLA': 'paddle', 'Selkirk': 'paddle', 'Franklin': 'paddle',
-  'CRBN': 'paddle', 'Onix': 'paddle', 'HEAD': 'paddle', 'PKLR': 'paddle',
-  'Nike': 'apparel', 'ADIDAS': 'apparel', 'Under Armour': 'apparel',
-  'ASICS': 'shoes', 'On': 'shoes',
-  'Courtana': 'technology',
-  'Recovery Cave': 'venue', 'The Underground': 'venue',
-  'LIFETIME': 'venue', 'PICKLEBALL KINGDOM': 'venue'
-};
-
-const CAT_COLORS = {
-  'paddle': '#00E676', 'apparel': '#4FC3F7', 'shoes': '#EC407A',
-  'venue': '#FF9800', 'technology': '#7C4DFF', 'other': '#78909C'
-};
-
-function normalizeBrand(name) {
-  if (!name) return null;
-  const n = name.trim().toUpperCase();
-  const aliases = {
-    'JOOLA BEN JOHNS': 'JOOLA', 'LIFE TIME PICKLEBALL': 'LIFETIME',
-    'THE GROUND': 'THE UNDERGROUND', 'LIFE TIME': 'LIFETIME',
-    'ADIDAS': 'ADIDAS'
-  };
-  const skip = ['PICKLEBALL', 'SKULL LOGO', 'APPLA', 'UNKNOWN'];
-  if (skip.includes(n)) return null;
-  const mapped = aliases[n];
-  if (mapped) return mapped;
-  // Return original casing from input
-  return name.trim();
+function norm(name){
+  if(!name)return'';const n=name.trim();
+  const m={'joola':'JOOLA','selkirk':'Selkirk','crbn':'CRBN','nike':'Nike',
+    'franklin':'Franklin','head':'HEAD','onix':'Onix','courtana':'Courtana'};
+  return m[n.toLowerCase()]||n;
 }
 
-function getBrandColor(name) {
-  return BRAND_COLORS[name] || BRAND_COLORS[name.toUpperCase()] || '#78909C';
+function setMetric(m,btn){metric=m;document.querySelectorAll('.tog').forEach(t=>t.classList.remove('on'));btn.classList.add('on');renderBubbles()}
+
+function toggleV(el){const v=el.querySelector('video');
+  if(el.classList.contains('playing')){v.pause();el.classList.remove('playing')}
+  else{document.querySelectorAll('.playing').forEach(c=>{const vid=c.querySelector('video');if(vid)vid.pause();c.classList.remove('playing')});v.play();el.classList.add('playing')}}
+
+/* ═══ MODAL ═══ */
+let modalBrand=null;let modalTab='overview';
+function openModal(brandName){
+  modalBrand=allBrands.find(b=>b.name===brandName);if(!modalBrand)return;
+  document.getElementById('m-title').innerHTML=`<span style="color:${bc(brandName)}">${brandName}</span> <span style="color:var(--mt);font-size:12px;font-weight:400">${cat(brandName)}</span>`;
+  const tabs=['Overview','Evidence','Players','Badges'];
+  document.getElementById('m-tabs').innerHTML=tabs.map((t,i)=>
+    `<div class="mtab${i===0?' on':''}" onclick="switchTab('${t.toLowerCase()}',this)">${t}${t==='Evidence'?' ('+modalBrand.clips.length+')':t==='Players'?' ('+modalBrand.players.length+')':t==='Badges'?' ('+modalBrand.badgeCount+')':''}</div>`
+  ).join('');
+  modalTab='overview';renderModalContent();
+  document.getElementById('modal-bg').classList.add('open');
 }
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');
+  document.querySelectorAll('.modal video,.ev-clip video').forEach(v=>{v.pause()});modalBrand=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
-function getBrandCategory(name) {
-  const upper = name.toUpperCase();
-  for (const [k, v] of Object.entries(BRAND_CATEGORIES)) {
-    if (k.toUpperCase() === upper) return v;
-  }
-  return 'other';
-}
+function switchTab(tab,el){modalTab=tab;
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderModalContent()}
 
-function formatSeconds(s) {
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = Math.floor(s % 60);
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m}m ${sec}s`;
-}
+function renderModalContent(){
+  const b=modalBrand;if(!b)return;
+  const el=document.getElementById('m-content');const color=bc(b.name);
 
-function formatScreenTime(s) {
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  return `${h}:${String(m).padStart(2, '0')}`;
-}
-
-// ── Global state ──
-let corpus = [];
-let signals = {};
-let brandData = {};  // processed brand list
-let filteredBrands = [];
-let currentSort = { col: 'appearances', asc: false };
-let treemapMetric = 'appearances';
-
-// ── Filters ──
-let filters = {
-  category: 'all',
-  confidence: 'all',
-  minAppearances: 1,
-  search: ''
-};
-
-// ── Tooltip ──
-const tooltip = document.getElementById('tooltip');
-function showTooltip(e, text) {
-  tooltip.textContent = text;
-  tooltip.classList.add('visible');
-  tooltip.style.left = (e.clientX + 12) + 'px';
-  tooltip.style.top = (e.clientY - 8) + 'px';
-}
-function hideTooltip() { tooltip.classList.remove('visible'); }
-
-// ── Drawer ──
-function openDrawer(brandName) {
-  const overlay = document.getElementById('drawer-overlay');
-  const drawer = document.getElementById('drawer');
-  const title = document.getElementById('drawer-title');
-  const meta = document.getElementById('drawer-meta');
-  const body = document.getElementById('drawer-body');
-
-  title.textContent = brandName + ' Evidence';
-
-  // Find clips for this brand
-  const clips = [];
-  corpus.forEach(clip => {
-    if (!clip.brands) return;
-    const brandObjs = clip.brands.filter(b => {
-      const bn = typeof b === 'string' ? b : (b.name || '');
-      const norm = normalizeBrand(bn);
-      return norm && norm.toUpperCase() === brandName.toUpperCase();
-    });
-    if (brandObjs.length > 0) {
-      clips.push({ clip, brandObjs });
-    }
-  });
-
-  // Sort by confidence: high first
-  const confOrder = { high: 0, medium: 1, low: 2, unknown: 3 };
-  clips.sort((a, b) => {
-    const ca = typeof a.brandObjs[0] === 'object' ? (confOrder[a.brandObjs[0].confidence] || 3) : 3;
-    const cb = typeof b.brandObjs[0] === 'object' ? (confOrder[b.brandObjs[0].confidence] || 3) : 3;
-    return ca - cb;
-  });
-
-  const totalTime = clips.reduce((sum, c) => {
-    return sum + c.brandObjs.reduce((s, bo) => s + (typeof bo === 'object' ? (bo.seconds || 0) : 0), 0);
-  }, 0);
-
-  meta.textContent = `${clips.length} clips found | ${formatSeconds(totalTime)} total screen time`;
-
-  body.innerHTML = clips.slice(0, 20).map(({ clip, brandObjs }) => {
-    const bo = brandObjs[0];
-    const conf = typeof bo === 'object' ? (bo.confidence || 'unknown') : 'unknown';
-    const vis = typeof bo === 'object' ? (bo.visibility || '--') : '--';
-    const side = typeof bo === 'object' ? (bo.player_side || '--') : '--';
-    const loc = typeof bo === 'object' ? (bo.location || '') : '';
-    return `
-      <div class="drawer-clip">
-        <video src="${clip.video_url}" poster="${clip.thumbnail}" controls preload="none"></video>
-        <div class="drawer-clip-info">
-          <div style="margin-bottom:0.3rem">${clip.summary || ''}</div>
-          <div class="tag-row">
-            <span class="tag-pill tag-${conf}">${conf}</span>
-            <span class="tag-pill" style="background:var(--surface-3);color:var(--text-secondary)">${vis}</span>
-            <span class="tag-pill" style="background:var(--surface-3);color:var(--text-secondary)">${side}</span>
-          </div>
-          ${loc ? `<div style="margin-top:0.3rem;font-size:0.7rem;color:var(--muted)">${loc}</div>` : ''}
-        </div>
+  if(modalTab==='overview'){
+    const skillKeys=SK;
+    let skillBars=skillKeys.map(sk=>{const v=b.avgSkills[sk]||0;
+      return`<div class="mo-bar"><div class="mo-bar-l">${SL[sk]}</div><div class="mo-bar-t"><div class="mo-bar-f" style="width:${v*10}%;background:${color}"></div></div><div class="mo-bar-v" style="color:${v>0?color:'var(--mt)'}">${v>0?v.toFixed(1):'—'}</div></div>`}).join('');
+    const topShot=Object.entries(b.shots).sort((a,c)=>c[1]-a[1])[0];
+    const topArc=Object.entries(b.arcs).sort((a,c)=>c[1]-a[1])[0];
+    el.innerHTML=`
+      <div class="mo-row">
+        <div class="mo-stat"><div class="mo-v" style="color:${color}">${b.count}</div><div class="mo-l">Appearances</div></div>
+        <div class="mo-stat"><div class="mo-v">${b.clips.length}</div><div class="mo-l">Unique Clips</div></div>
+        <div class="mo-stat"><div class="mo-v">${fmtSec(b.seconds)}</div><div class="mo-l">Screen Time</div></div>
+        <div class="mo-stat"><div class="mo-v" style="color:var(--ch)">${b.confHighPct}%</div><div class="mo-l">High Conf</div></div>
       </div>
+      <div style="font-size:11px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;font-family:'Red Hat Mono',monospace;margin-bottom:6px">Skill Profile</div>
+      <div class="mo-skills">${skillBars}</div>
+      <div class="mo-row">
+        <div class="mo-stat"><div class="mo-v">${topShot?topShot[0]:'—'}</div><div class="mo-l">Top Shot</div></div>
+        <div class="mo-stat"><div class="mo-v">${topArc?topArc[0].replace(/_/g,' '):'—'}</div><div class="mo-l">Story Arc</div></div>
+        <div class="mo-stat"><div class="mo-v">${b.players.length}</div><div class="mo-l">Real Players</div></div>
+        <div class="mo-stat"><div class="mo-v" style="color:var(--pu)">${b.badgeCount}</div><div class="mo-l">Badges Earned</div></div>
+      </div>
+      ${Object.keys(b.cobrands).length?`<div style="font-size:11px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;font-family:'Red Hat Mono',monospace;margin:12px 0 6px">Co-occurring Brands</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">${Object.entries(b.cobrands).sort((a,c)=>c[1]-a[1]).slice(0,8).map(([n,c])=>
+          `<span style="padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;background:${bc(n)}11;color:${bc(n)};border:1px solid ${bc(n)}33;cursor:pointer" onclick="closeModal();setTimeout(()=>openModal('${n}'),200)">${n} ×${c}</span>`
+        ).join('')}</div>`:''}
     `;
-  }).join('');
-
-  overlay.classList.add('open');
-  drawer.classList.add('open');
+  } else if(modalTab==='evidence'){
+    const clips=b.clips.sort((a,c)=>(c.quality||0)-(a.quality||0)).slice(0,20);
+    el.innerHTML=`<div class="ev-grid">${clips.map(c=>{
+      const brandObj=(c.brands||[]).find(x=>(typeof x==='object'?x.name:x)===b.name);
+      const conf=typeof brandObj==='object'?(brandObj.confidence||'unknown'):'unknown';
+      return`<div class="ev-clip" onclick="toggleV(this)">
+        <div class="ev-vid"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video></div>
+        <div class="ev-info"><div class="ev-summary">${c.summary||''}</div>
+          <div class="ev-tags"><span class="ev-tag ${conf}">${conf}</span>
+            <span class="ev-tag" style="background:var(--sf3);color:var(--tx2)">Q${c.quality||0}</span>
+            <span class="ev-tag" style="background:var(--sf3);color:var(--tx2)">V${c.viral||0}</span>
+            <span class="ev-tag" style="background:var(--sf3);color:var(--tx2)">${c.dominant_shot||'—'}</span>
+          </div></div></div>`}).join('')}</div>`;
+  } else if(modalTab==='players'){
+    el.innerHTML=b.playerList.length?`<div class="mp-grid">${b.playerList.map(p=>
+      `<a class="mp-card" href="player-intelligence.html" style="text-decoration:none;color:inherit">
+        ${p.avatar?`<img src="${p.avatar}" loading="lazy">`:`<div style="width:36px;height:36px;border-radius:8px;background:var(--sf3);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ac)">${p.name[0]}</div>`}
+        <div><div class="mp-name">${p.name}</div><div class="mp-sub">${p.count} clips</div></div>
+      </a>`).join('')}</div>`:'<div style="color:var(--mt);text-align:center;padding:20px">No player data available for this brand</div>';
+  } else if(modalTab==='badges'){
+    const bc2={};
+    b.clips.forEach(c=>{(c.courtana_badge_awards||[]).forEach(ba=>{
+      const n=ba.badge_name||'';if(!n)return;
+      if(!bc2[n])bc2[n]={count:0,img:ba.badge_thumbnail_small||ba.badge_file||'',tier:ba.badge_tier||''};bc2[n].count++})});
+    const sorted=Object.entries(bc2).sort((a,c)=>c[1].count-a[1].count);
+    el.innerHTML=sorted.length?`<div class="mb-grid">${sorted.map(([n,d])=>
+      `<div class="mb-card">${d.img?`<img src="${d.img}" loading="lazy">`:''}<div class="mb-name">${n}</div><div class="mb-count">${d.count}</div></div>`
+    ).join('')}</div>`:'<div style="color:var(--mt);text-align:center;padding:20px">No badge data available</div>';
+  }
 }
 
-function closeDrawer() {
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.getElementById('drawer').classList.remove('open');
-}
-document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
-document.getElementById('drawer-close').addEventListener('click', closeDrawer);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+/* ═══ BUBBLE CHART ═══ */
+function renderBubbles(){
+  const el=document.getElementById('bubble-chart');el.innerHTML='';
+  const W=el.clientWidth;const H=420;el.style.height=H+'px';
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE']);
+  const items=allBrands.filter(b=>!skip.has(b.name)&&b.count>=2).slice(0,20).map(b=>({
+    name:b.name,value:metric==='appearances'?b.count:b.seconds,color:bc(b.name),cat:cat(b.name)
+  }));
+  if(!items.length)return;
 
-// ── Count-up animation ──
-function animateCount(el, target, suffix = '', isTime = false) {
-  if (isTime) {
-    el.textContent = target;
-    return;
-  }
-  const duration = 1200;
-  const start = performance.now();
-  const from = 0;
-  function step(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(from + (target - from) * eased);
-    el.textContent = current.toLocaleString() + suffix;
-    if (progress < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
+  const maxVal=Math.max(...items.map(i=>i.value));
+  const minR=18;const maxR=Math.min(W/5,H/3);
 
-// ── Squarified treemap layout ──
-function squarify(items, x, y, w, h) {
-  if (!items.length) return [];
-  const total = items.reduce((s, i) => s + i.value, 0);
-  if (total === 0) return [];
-  const rects = [];
+  // Circle packing with simple force layout
+  const circles=items.map(it=>{
+    const r=minR+Math.sqrt(it.value/maxVal)*(maxR-minR);
+    return{...it,r,x:W/2+(Math.random()-.5)*W*.3,y:H/2+(Math.random()-.5)*H*.3};
+  });
 
-  function layoutRow(row, rowTotal, x, y, w, h, vertical) {
-    let offset = 0;
-    row.forEach(item => {
-      const frac = item.value / rowTotal;
-      if (vertical) {
-        const ih = h * frac;
-        rects.push({ ...item, x, y: y + offset, w: item._sliceW, h: ih });
-        offset += ih;
-      } else {
-        const iw = w * frac;
-        rects.push({ ...item, x: x + offset, y, w: iw, h: item._sliceH });
-        offset += iw;
-      }
-    });
-  }
-
-  function worst(row, rowTotal, sideLen) {
-    if (!row.length) return Infinity;
-    const s2 = sideLen * sideLen;
-    const rT2 = rowTotal * rowTotal;
-    let mx = -Infinity, mn = Infinity;
-    row.forEach(r => { mx = Math.max(mx, r.value); mn = Math.min(mn, r.value); });
-    return Math.max((s2 * mx) / rT2, rT2 / (s2 * mn));
-  }
-
-  function process(data, cx, cy, cw, ch) {
-    if (!data.length) return;
-    if (data.length === 1) {
-      rects.push({ ...data[0], x: cx, y: cy, w: cw, h: ch });
-      return;
-    }
-    const dataTotal = data.reduce((s, d) => s + d.value, 0);
-    const vertical = ch > cw;
-    const sideLen = vertical ? cw : ch;
-
-    let row = [];
-    let rowTotal = 0;
-    let remaining = [...data];
-
-    while (remaining.length) {
-      const item = remaining[0];
-      const scaledVal = (item.value / dataTotal) * cw * ch;
-      const testRow = [...row, { ...item, value: scaledVal }];
-      const testTotal = rowTotal + scaledVal;
-
-      if (row.length === 0 || worst(testRow, testTotal, sideLen) <= worst(row, rowTotal, sideLen)) {
-        row.push({ ...item, value: scaledVal });
-        rowTotal += scaledVal;
-        remaining.shift();
-      } else {
-        // Lay out current row
-        const sliceSize = rowTotal / sideLen;
-        row.forEach(r => {
-          if (vertical) r._sliceW = sliceSize;
-          else r._sliceH = sliceSize;
-        });
-        layoutRow(row, rowTotal, cx, cy, cw, ch, vertical);
-
-        if (vertical) {
-          cx += sliceSize;
-          cw -= sliceSize;
-        } else {
-          cy += sliceSize;
-          ch -= sliceSize;
+  // Simple iterative force-directed layout
+  for(let iter=0;iter<150;iter++){
+    // Gravity toward center
+    circles.forEach(c=>{c.x+=(W/2-c.x)*.02;c.y+=(H/2-c.y)*.02});
+    // Collision avoidance
+    for(let i=0;i<circles.length;i++){
+      for(let j=i+1;j<circles.length;j++){
+        const dx=circles[j].x-circles[i].x;const dy=circles[j].y-circles[i].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);const minDist=circles[i].r+circles[j].r+3;
+        if(dist<minDist&&dist>0){
+          const force=(minDist-dist)/dist*.5;
+          circles[i].x-=dx*force;circles[i].y-=dy*force;
+          circles[j].x+=dx*force;circles[j].y+=dy*force;
         }
-        row = [];
-        rowTotal = 0;
       }
     }
-
-    if (row.length) {
-      const sliceSize = rowTotal / sideLen;
-      row.forEach(r => {
-        if (vertical) r._sliceW = sliceSize;
-        else r._sliceH = sliceSize;
-      });
-      layoutRow(row, rowTotal, cx, cy, cw, ch, vertical);
-    }
+    // Bounds
+    circles.forEach(c=>{c.x=Math.max(c.r,Math.min(W-c.r,c.x));c.y=Math.max(c.r,Math.min(H-c.r,c.y))});
   }
 
-  const scaled = items.map(i => ({ ...i, value: (i.value / total) * w * h }));
-  process(scaled, x, y, w, h);
-  return rects;
+  circles.forEach(c=>{
+    const div=document.createElement('div');div.className='bubble';
+    div.style.cssText=`left:${c.x-c.r}px;top:${c.y-c.r}px;width:${c.r*2}px;height:${c.r*2}px;background:${c.color};`;
+    const fs=Math.max(8,Math.min(16,c.r/3.5));
+    div.innerHTML=c.r>25?`<div class="b-name" style="font-size:${fs}px">${c.name}</div>
+      ${c.r>40?`<div class="b-val" style="font-size:${Math.max(8,fs-3)}px">${metric==='appearances'?c.value:fmtSec(c.value)}</div>`:''}
+      ${c.r>55?`<div class="b-cat">${c.cat}</div>`:''}`:`<div class="b-name" style="font-size:${fs}px">${c.name.slice(0,4)}</div>`;
+    div.addEventListener('click',()=>openModal(c.name));
+    el.appendChild(div);
+  });
 }
 
-// ── Render treemap ──
-function renderTreemap() {
-  const container = document.getElementById('treemap-canvas');
-  container.innerHTML = '';
-  const rect = container.getBoundingClientRect();
-  const W = rect.width;
-  const H = Math.max(400, W * 0.45);
-  container.style.height = H + 'px';
+/* ═══ RANKINGS TABLE ═══ */
+function renderTable(){
+  const totalApp=allBrands.reduce((s,b)=>s+b.count,0);
+  document.getElementById('tbl-head').innerHTML=`<tr><th>#</th><th>Brand</th><th>Category</th><th>Appearances</th><th>Screen Time</th><th>Share</th><th>Quality</th><th>Confidence</th></tr>`;
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE']);
+  const sorted=allBrands.filter(b=>!skip.has(b.name));
+  const maxApp=sorted[0]?.count||1;
+  document.getElementById('tbl-body').innerHTML=sorted.slice(0,25).map((b,i)=>{
+    const share=totalApp?(b.count/totalApp*100).toFixed(1):'0';
+    const confColor=b.confHighPct>60?'var(--ch)':b.confHighPct>30?'var(--cm)':'var(--cl)';
+    return`<tr onclick="openModal('${b.name}')">
+      <td style="font-family:'Red Hat Mono',monospace;font-weight:700;color:${i<3?'var(--gd)':'var(--mt)'}">${i+1}</td>
+      <td><div class="brand-c"><span class="swatch" style="background:${bc(b.name)}"></span>${b.name}</div></td>
+      <td style="color:var(--tx2);font-size:12px">${cat(b.name)}</td>
+      <td style="font-family:'Red Hat Mono',monospace;font-weight:500">${b.count}</td>
+      <td style="font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--tx2)">${fmtSec(b.seconds)}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="bar-bg"><div class="bar-f" style="width:${b.count/maxApp*100}%;background:${bc(b.name)}"></div></div><span style="font-family:'Red Hat Mono',monospace;font-size:11px">${share}%</span></div></td>
+      <td style="font-family:'Red Hat Mono',monospace;font-weight:500">${b.avgQuality.toFixed(1)}</td>
+      <td><span class="conf-dot" style="background:${confColor}"></span><span style="font-family:'Red Hat Mono',monospace;font-size:11px">${b.confHighPct}%</span></td>
+    </tr>`}).join('');
+}
 
-  const items = filteredBrands
-    .filter(b => {
-      const val = treemapMetric === 'appearances' ? b.appearances : b.screenSeconds;
-      return val > 0;
-    })
-    .slice(0, 25)
-    .map(b => ({
-      label: b.name,
-      value: treemapMetric === 'appearances' ? b.appearances : b.screenSeconds,
-      color: getBrandColor(b.name),
-      category: b.category,
-      confHigh: b.confHigh || 0,
-      confTotal: b.confTotal || 1
-    }));
-
-  const rects = squarify(items, 0, 0, W, H);
-
-  rects.forEach(r => {
-    if (r.w < 2 || r.h < 2) return;
-    const cell = document.createElement('div');
-    cell.className = 'tm-cell';
-    const opacity = 0.4 + 0.6 * (r.confHigh / r.confTotal);
-    cell.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:${r.color};opacity:${opacity};`;
-
-    if (r.w > 50 && r.h > 30) {
-      cell.innerHTML = `<span class="tm-name">${r.label}</span>`;
-      if (r.w > 70 && r.h > 50) {
-        const val = treemapMetric === 'appearances' ? r.value.toLocaleString() : formatSeconds(r.value);
-        cell.innerHTML += `<span class="tm-val">${val}</span>`;
-      }
-    }
-
-    cell.addEventListener('click', () => openDrawer(r.label));
-    cell.addEventListener('mouseenter', e => {
-      const val = treemapMetric === 'appearances' ? r.value.toLocaleString() + ' appearances' : formatSeconds(r.value);
-      showTooltip(e, `${r.label}: ${val}`);
+/* ═══ HEATMAP ═══ */
+function renderHeatmap(){
+  const el=document.getElementById('heatmap');
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE']);
+  const top=allBrands.filter(b=>!skip.has(b.name)&&Object.keys(b.avgSkills).length>0).slice(0,8);
+  let h='<table class="heat"><thead><tr><th></th>';
+  SK.forEach(sk=>{h+=`<th>${SL[sk]}</th>`});
+  h+='</tr></thead><tbody>';
+  top.forEach(b=>{
+    h+=`<tr><th class="rl" style="color:${bc(b.name)}">${b.name}</th>`;
+    SK.forEach(sk=>{
+      const v=b.avgSkills[sk]||0;const i=v/10;const color=bc(b.name);
+      const bg=v>0?`${color}${Math.round(.08+i*.35)*100<16?'0':''}${Math.round((.08+i*.35)*255).toString(16)}`:'oklch(20% .01 155)';
+      h+=`<td style="background:${v>0?color+'22':'var(--sf3)'};color:${v>0?color:'var(--mt)'}" onclick="openModal('${b.name}')">${v>0?v.toFixed(1):'—'}</td>`;
     });
-    cell.addEventListener('mousemove', e => {
-      tooltip.style.left = (e.clientX + 12) + 'px';
-      tooltip.style.top = (e.clientY - 8) + 'px';
-    });
-    cell.addEventListener('mouseleave', hideTooltip);
-
-    container.appendChild(cell);
+    h+='</tr>';
   });
+  h+='</tbody></table>';
+  el.innerHTML=h;
 }
 
-// ── Render rankings table ──
-function renderRankings() {
-  const tbody = document.getElementById('rankings-body');
-  const totalApp = filteredBrands.reduce((s, b) => s + b.appearances, 0);
-
-  const sorted = [...filteredBrands].sort((a, b) => {
-    let va, vb;
-    switch (currentSort.col) {
-      case 'rank': case 'appearances': va = a.appearances; vb = b.appearances; break;
-      case 'brand': va = a.name.toLowerCase(); vb = b.name.toLowerCase();
-        return currentSort.asc ? va.localeCompare(vb) : vb.localeCompare(va);
-      case 'category': va = a.category; vb = b.category;
-        return currentSort.asc ? va.localeCompare(vb) : vb.localeCompare(va);
-      case 'screentime': va = a.screenSeconds; vb = b.screenSeconds; break;
-      case 'share': va = a.appearances; vb = b.appearances; break;
-      case 'quality': va = a.avgQuality; vb = b.avgQuality; break;
-      case 'confidence': va = a.confHighPct; vb = b.confHighPct; break;
-      default: va = a.appearances; vb = b.appearances;
-    }
-    return currentSort.asc ? va - vb : vb - va;
-  });
-
-  tbody.innerHTML = sorted.slice(0, 30).map((b, i) => {
-    const share = totalApp > 0 ? ((b.appearances / totalApp) * 100).toFixed(1) : '0.0';
-    const confH = b.confHighPct;
-    const confM = b.confMedPct;
-    const confL = 100 - confH - confM;
-    return `
-      <tr data-brand="${b.name}">
-        <td class="mono">${i + 1}</td>
-        <td><span class="brand-badge"><span class="brand-dot" style="background:${getBrandColor(b.name)}"></span>${b.name}</span></td>
-        <td>${b.category}</td>
-        <td class="mono">${b.appearances.toLocaleString()}</td>
-        <td class="mono">${formatSeconds(b.screenSeconds)}</td>
-        <td class="mono">${share}%</td>
-        <td class="mono">${b.avgQuality.toFixed(1)}</td>
-        <td>
-          <div class="conf-bar">
-            <div class="conf-seg" style="width:${confH}%;background:var(--conf-high)"></div>
-            <div class="conf-seg" style="width:${confM}%;background:var(--conf-med)"></div>
-            <div class="conf-seg" style="width:${confL}%;background:var(--conf-low)"></div>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-
-  // Row click handler
-  tbody.querySelectorAll('tr').forEach(tr => {
-    tr.addEventListener('click', () => openDrawer(tr.dataset.brand));
-  });
+/* ═══ WHITESPACE ═══ */
+function renderWhitespace(signals){
+  const ws=signals?.sponsorship_whitespace||{};
+  const sorted=Object.entries(ws).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ws-meta').textContent=sorted.length+' opportunity categories';
+  document.getElementById('whitespace').innerHTML=sorted.slice(0,18).map(([name,count])=>
+    `<div class="ws-item"><span class="ws-name">${name}</span><span class="ws-count">${count}</span></div>`
+  ).join('');
 }
 
-// ── Screen time leaderboard ──
-function renderScreenTimeChart() {
-  const container = document.getElementById('screentime-chart');
-  const top15 = [...filteredBrands].sort((a, b) => b.screenSeconds - a.screenSeconds).slice(0, 15);
-  const maxVal = top15.length ? top15[0].screenSeconds : 1;
+/* ═══ BRAND CARDS ═══ */
+function renderCards(){
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE']);
+  const top=allBrands.filter(b=>!skip.has(b.name)).slice(0,12);
+  document.getElementById('card-meta').textContent=top.length+' brands';
+  const el=document.getElementById('cards');el.innerHTML='';
+  top.forEach((b,i)=>{
+    const card=document.createElement('div');card.className='card fi';card.style.animationDelay=(i*.03)+'s';
+    card.onclick=()=>openModal(b.name);
+    const color=bc(b.name);
+    const skillKeys=SK.slice(0,6);
+    let skillBars=skillKeys.map(sk=>{const v=b.avgSkills[sk]||0;
+      return`<div class="csk"><div class="csk-l">${SL[sk]}</div><div class="csk-t"><div class="csk-f" style="width:${v*10}%;background:${color}"></div></div><div class="csk-v" style="color:${v>0?color:'var(--mt)'}">${v>0?v.toFixed(1):'—'}</div></div>`}).join('');
+    const topShot=Object.entries(b.shots).sort((a,c)=>c[1]-a[1])[0];
+    const coBrands=Object.entries(b.cobrands).sort((a,c)=>c[1]-a[1]).slice(0,4);
+    const clips=b.clips.sort((a,c)=>(c.quality||0)-(a.quality||0)).slice(0,5);
 
-  container.innerHTML = top15.map(b => {
-    const pct = (b.screenSeconds / maxVal * 100).toFixed(1);
-    return `
-      <div class="hbar-row">
-        <div class="hbar-label">${b.name}</div>
-        <div class="hbar-track">
-          <div class="hbar-fill" style="width:${pct}%;background:${getBrandColor(b.name)}">
-            <span class="hbar-val">${formatSeconds(b.screenSeconds)}</span>
-          </div>
+    card.innerHTML=`
+      <div class="card-top" style="border-bottom:1px solid var(--bds)">
+        <div><div class="card-name" style="color:${color}">${b.name}</div><div class="card-cat">${cat(b.name)}</div></div>
+        <div><div class="card-num" style="color:${color}">${b.count}</div><div class="card-num-l">appearances</div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-skills">${skillBars}</div>
+        <div class="card-meta">
+          <div class="cm"><div class="cm-v" style="color:${color}">${b.avgQuality.toFixed(1)}</div><div class="cm-l">Quality</div></div>
+          <div class="cm"><div class="cm-v">${fmtSec(b.seconds)}</div><div class="cm-l">Screen Time</div></div>
+          <div class="cm"><div class="cm-v">${topShot?topShot[0]:'—'}</div><div class="cm-l">Top Shot</div></div>
         </div>
+        ${coBrands.length?`<div class="card-pills">${coBrands.map(([n,c])=>
+          `<span class="cpill" style="color:${bc(n)}">${n} ×${c}</span>`).join('')}</div>`:''}
+        ${clips.length?`<div class="card-clips">${clips.map(c=>
+          `<div class="cc" onclick="event.stopPropagation();toggleV(this)"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video></div>`
+        ).join('')}</div>`:''}
       </div>
     `;
-  }).join('');
+    el.appendChild(card);
+  });
 }
 
-// ── Confidence distribution ──
-function renderConfidenceDist() {
-  const container = document.getElementById('conf-dist-chart');
-  const top10 = [...filteredBrands].sort((a, b) => b.appearances - a.appearances).slice(0, 10);
-
-  container.innerHTML = top10.map(b => {
-    const total = b.confTotal || 1;
-    const hPct = (b.confHigh / total * 100).toFixed(0);
-    const mPct = (b.confMed / total * 100).toFixed(0);
-    const lPct = Math.max(0, 100 - parseInt(hPct) - parseInt(mPct));
-    return `
-      <div class="conf-row">
-        <div class="conf-label">${b.name}</div>
-        <div class="conf-track">
-          ${parseInt(hPct) > 0 ? `<div class="conf-seg-bar" style="width:${hPct}%;background:var(--conf-high)">${hPct > 8 ? hPct + '%' : ''}</div>` : ''}
-          ${parseInt(mPct) > 0 ? `<div class="conf-seg-bar" style="width:${mPct}%;background:var(--conf-med)">${mPct > 8 ? mPct + '%' : ''}</div>` : ''}
-          ${lPct > 0 ? `<div class="conf-seg-bar" style="width:${lPct}%;background:var(--conf-low)">${lPct > 8 ? lPct + '%' : ''}</div>` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
+/* ═══ CONFIDENCE ═══ */
+function renderConfidence(trend){
+  const el=document.getElementById('confidence');
+  let f1=.03;if(trend&&trend.length){const l=trend[trend.length-1];f1=l.f1||f1}
+  const circ=2*Math.PI*42;const off=circ*(1-f1);
+  const color=f1>.5?'var(--ch)':f1>.2?'var(--cm)':'var(--cl)';
+  el.innerHTML=`<div class="conf-panel">
+    <div class="conf-ring"><svg viewBox="0 0 100 100"><circle class="rb" cx="50" cy="50" r="42"/><circle class="rf" cx="50" cy="50" r="42" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/></svg><div class="rv" style="color:${color}">${(f1*100).toFixed(0)}%</div></div>
+    <div class="conf-detail">
+      <strong>F1 Score: ${(f1*100).toFixed(1)}%</strong> — Brand detection uses Gemini 2.5 Flash vision analysis. F1 combines precision and recall, validated by human spot-checks and multi-agent consensus. Score will improve as more clips are manually reviewed and the JOOLA net-tracking issue is resolved.
+    </div>
+  </div>`;
 }
 
-// ── Whitespace table ──
-function renderWhitespace() {
-  const ws = signals.sponsorship_whitespace || {};
-  const entries = Object.entries(ws).sort((a, b) => b[1] - a[1]);
-  const maxMentions = entries.length ? entries[0][1] : 1;
-  const totalClips = signals.corpus_size || 842;
+/* ═══ INIT ═══ */
+(async function(){
+  let clips=[];
+  try{const r=await fetch('../merged-corpus.json');if(r.ok){const d=await r.json();clips=Array.isArray(d)?d:d.clips||[]}}catch(e){}
+  if(!clips.length){try{const r=await fetch('../corpus-export.json');if(r.ok)clips=await r.json()}catch(e){}}
+  corpus=clips;
 
-  const tbody = document.getElementById('whitespace-body');
-  tbody.innerHTML = entries.slice(0, 25).map(([brand, mentions]) => {
-    const pct = (mentions / totalClips * 100).toFixed(1);
-    const oppScore = Math.round((mentions / maxMentions) * 100);
-    return `
-      <tr>
-        <td style="font-weight:600">${brand}</td>
-        <td class="mono">${mentions}</td>
-        <td class="mono">${pct}%</td>
-        <td class="mono">${oppScore}</td>
-        <td><div class="opp-bar" style="width:${oppScore}%"></div></td>
-      </tr>
-    `;
-  }).join('');
-}
+  let signals=null;
+  try{const r=await fetch('../brand-signals.json');if(r.ok)signals=await r.json()}catch(e){}
+  let trend=[];
+  try{const r=await fetch('accuracy-trend.json');if(r.ok)trend=await r.json()}catch(e){}
 
-// ── Co-occurrence matrix ──
-function renderCoOccurrence() {
-  const wrap = document.getElementById('cooccurrence-wrap');
-  const top8 = [...filteredBrands].sort((a, b) => b.appearances - a.appearances).slice(0, 8);
-  const names = top8.map(b => b.name);
-
-  // Build matrix
-  const matrix = {};
-  let maxVal = 0;
-  names.forEach(a => {
-    matrix[a] = {};
-    names.forEach(b => {
-      const sig = signals.brands && signals.brands[a];
-      const cooc = sig && sig.co_occurring_brands ? (sig.co_occurring_brands[b] || 0) : 0;
-      matrix[a][b] = cooc;
-      if (a !== b && cooc > maxVal) maxVal = cooc;
+  // Build brand data
+  const bm={};
+  clips.forEach(c=>{
+    (c.brands||[]).forEach(b=>{
+      const n=typeof b==='string'?norm(b):(b.name||'');if(!n)return;
+      if(!bm[n])bm[n]={name:n,count:0,clips:[],clipSet:new Set(),skills:{},seconds:0,
+        conf:{high:0,medium:0,low:0,unknown:0},shots:{},arcs:{},players:new Set(),playerList:[],
+        cobrands:{},badgeCount:0,avgSkills:{},avgQuality:0,confHighPct:0};
+      const bd=bm[n];bd.count++;
+      if(!bd.clipSet.has(c.uuid)){bd.clipSet.add(c.uuid);bd.clips.push(c)}
+      if(typeof b==='object'){bd.seconds+=(b.seconds||0);bd.conf[b.confidence||'unknown']++}
+      else{bd.conf.unknown++}
+      SK.forEach(sk=>{const v=(c.skills||{})[sk];if(v&&v>0){if(!bd.skills[sk])bd.skills[sk]=[];bd.skills[sk].push(v)}});
+      if(c.dominant_shot)bd.shots[c.dominant_shot]=(bd.shots[c.dominant_shot]||0)+1;
+      if(c.arc)bd.arcs[c.arc]=(bd.arcs[c.arc]||0)+1;
+      (c.courtana_participants||[]).forEach(p=>{if(p.username&&p.username!=='Unknown')bd.players.add(p.username)});
+      bd.badgeCount+=(c.courtana_badge_awards||[]).length;
     });
+    // Co-occurrence
+    const names=[...new Set((c.brands||[]).map(b=>typeof b==='string'?norm(b):(b.name||'')).filter(Boolean))];
+    names.forEach(n1=>{names.forEach(n2=>{if(n1!==n2&&bm[n1])bm[n1].cobrands[n2]=(bm[n1].cobrands[n2]||0)+1})});
   });
 
-  const cols = names.length + 1;
-  let html = `<div class="matrix-grid" style="grid-template-columns:100px repeat(${names.length}, 56px)">`;
-
-  // Header row
-  html += `<div></div>`;
-  names.forEach(n => {
-    html += `<div class="matrix-col-label">${n}</div>`;
+  // Compute aggregates
+  Object.values(bm).forEach(b=>{
+    Object.entries(b.skills).forEach(([k,vals])=>{b.avgSkills[k]=vals.reduce((a,v)=>a+v,0)/vals.length});
+    b.avgQuality=b.clips.length?b.clips.reduce((s,c)=>s+(c.quality||0),0)/b.clips.length:0;
+    const total=b.conf.high+b.conf.medium+b.conf.low+b.conf.unknown;
+    b.confHighPct=total?Math.round(b.conf.high/total*100):0;
+    const pc={};b.clips.forEach(c=>{(c.courtana_participants||[]).forEach(p=>{
+      const u=p.username||'';if(!u||u==='Unknown')return;
+      if(!pc[u])pc[u]={name:u,count:0,avatar:p.avatar_file||''};pc[u].count++})});
+    b.playerList=Object.values(pc).sort((a,c)=>c.count-a.count);
   });
 
-  // Data rows
-  names.forEach(rowName => {
-    html += `<div class="matrix-label">${rowName}</div>`;
-    names.forEach(colName => {
-      const val = matrix[rowName][colName];
-      const intensity = maxVal > 0 ? val / maxVal : 0;
-      const bg = rowName === colName
-        ? 'oklch(0.3 0.01 155)'
-        : `oklch(0.78 ${(intensity * 0.19).toFixed(3)} 155 / ${(intensity * 0.7 + 0.05).toFixed(2)})`;
-      html += `<div class="matrix-cell" style="background:${bg}"
-        onmouseenter="showTooltip(event,'${rowName} + ${colName}: ${val}')"
-        onmousemove="showTooltip(event,'${rowName} + ${colName}: ${val}')"
-        onmouseleave="hideTooltip()">${val || ''}</div>`;
-    });
-  });
+  allBrands=Object.values(bm).sort((a,b)=>b.count-a.count);
 
-  html += `</div>`;
-  wrap.innerHTML = html;
-}
-
-// ── Skill x Brand heatmap ──
-function renderHeatmap() {
-  const wrap = document.getElementById('heatmap-wrap');
-  const skills = ['court_coverage', 'kitchen', 'power', 'touch', 'athleticism', 'creativity', 'court_iq', 'consistency', 'composure'];
-  const skillLabels = ['Coverage', 'Kitchen', 'Power', 'Touch', 'Athletic', 'Creative', 'Court IQ', 'Consist.', 'Composure'];
-  const top8 = [...filteredBrands].sort((a, b) => b.appearances - a.appearances).slice(0, 8);
-
-  let html = `<div class="heatmap-grid" style="grid-template-columns:100px repeat(${skills.length}, 64px)">`;
-
-  // Header
-  html += `<div></div>`;
-  skillLabels.forEach(s => {
-    html += `<div class="heatmap-label-col">${s}</div>`;
-  });
-
-  // Rows
-  top8.forEach(brand => {
-    html += `<div class="heatmap-label-row">${brand.name}</div>`;
-    skills.forEach(skill => {
-      const val = brand.skillRatings[skill] || 0;
-      const norm = Math.max(0, Math.min(1, (val - 2) / 8));
-      const lightness = 0.25 + norm * 0.45;
-      const chroma = norm * 0.18;
-      const bg = `oklch(${lightness.toFixed(2)} ${chroma.toFixed(3)} 155)`;
-      const textColor = norm > 0.4 ? '#fff' : 'rgba(255,255,255,0.5)';
-      html += `<div class="heatmap-cell" style="background:${bg};color:${textColor}"
-        onmouseenter="showTooltip(event,'${brand.name} / ${skill}: ${val.toFixed(1)} (n=${brand.uniqueClips})')"
-        onmousemove="showTooltip(event,'${brand.name} / ${skill}: ${val.toFixed(1)}')"
-        onmouseleave="hideTooltip()">${val.toFixed(1)}</div>`;
-    });
-  });
-
-  html += `</div>`;
-  wrap.innerHTML = html;
-}
-
-// ── Brand detail cards ──
-function renderBrandCards() {
-  const container = document.getElementById('brand-cards');
-  const top10 = [...filteredBrands].sort((a, b) => b.appearances - a.appearances).slice(0, 10);
-
-  container.innerHTML = top10.map(brand => {
-    const color = getBrandColor(brand.name);
-    const skills = brand.skillRatings;
-    const skillNames = ['kitchen', 'consistency', 'touch', 'court_iq', 'composure', 'court_coverage'];
-    const skillLabels = { kitchen: 'Kitchen', consistency: 'Consistency', touch: 'Touch', court_iq: 'Court IQ', composure: 'Composure', court_coverage: 'Coverage' };
-
-    // Confidence donut SVG
-    const total = brand.confTotal || 1;
-    const hPct = brand.confHigh / total;
-    const mPct = brand.confMed / total;
-    const lPct = 1 - hPct - mPct;
-    const r = 20, cx = 24, cy = 24;
-    const circ = 2 * Math.PI * r;
-    const hLen = circ * hPct, mLen = circ * mPct, lLen = circ * lPct;
-    const hOff = 0, mOff = hLen, lOff = hLen + mLen;
-
-    const donutSvg = `<svg width="48" height="48" viewBox="0 0 48 48">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--surface-3)" stroke-width="6"/>
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--conf-high)" stroke-width="6"
-        stroke-dasharray="${hLen} ${circ - hLen}" stroke-dashoffset="0" transform="rotate(-90 ${cx} ${cy})"/>
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--conf-med)" stroke-width="6"
-        stroke-dasharray="${mLen} ${circ - mLen}" stroke-dashoffset="${-hLen}" transform="rotate(-90 ${cx} ${cy})"/>
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--conf-low)" stroke-width="6"
-        stroke-dasharray="${lLen} ${circ - lLen}" stroke-dashoffset="${-(hLen + mLen)}" transform="rotate(-90 ${cx} ${cy})"/>
-    </svg>`;
-
-    // Co-occurring brands
-    const cooc = brand.coOccurring || {};
-    const coocPills = Object.entries(cooc).sort((a, b) => b[1] - a[1]).slice(0, 5)
-      .map(([n, c]) => `<span class="co-pill">${n} (${c})</span>`).join('');
-
-    // Skill bars
-    const skillBarsHtml = skillNames.map(sk => {
-      const val = skills[sk] || 0;
-      const pct = (val / 10 * 100).toFixed(0);
-      return `<div class="skill-bar-row">
-        <div class="skill-bar-name">${skillLabels[sk] || sk}</div>
-        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-        <div class="skill-bar-val">${val.toFixed(1)}</div>
-      </div>`;
-    }).join('');
-
-    // Clips
-    const topClips = brand.topClipObjects ? brand.topClipObjects.slice(0, 3) : [];
-    const clipsHtml = topClips.length ? `<div class="card-clips">${topClips.map(c => `
-      <div class="card-clip" onclick="this.querySelector('video').play()">
-        <video src="${c.video_url}" poster="${c.thumbnail}" preload="none" muted loop></video>
-        <div class="play-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-    `).join('')}</div>` : '';
-
-    // Courtana badges
-    const hasBadges = topClips.some(c => c.badges && c.badges.length);
-    const badgeHtml = hasBadges ? `<div class="courtana-badge">Verified by Courtana</div>` : '';
-
-    return `
-      <div class="brand-card stagger">
-        <div class="brand-card-accent" style="background:${color}"></div>
-        <div class="brand-card-body">
-          <div class="brand-card-header">
-            <div>
-              <div class="brand-card-name">${brand.name}</div>
-              <div class="brand-card-cat">${brand.category}</div>
-              ${badgeHtml}
-            </div>
-            <div class="brand-card-donut">${donutSvg}</div>
-          </div>
-          <div class="brand-card-stats">
-            <div>
-              <div class="brand-card-stat-val mono">${brand.appearances.toLocaleString()}</div>
-              <div class="brand-card-stat-label">Appearances</div>
-            </div>
-            <div>
-              <div class="brand-card-stat-val mono">${formatSeconds(brand.screenSeconds)}</div>
-              <div class="brand-card-stat-label">Screen Time</div>
-            </div>
-          </div>
-          <div class="skill-bars">${skillBarsHtml}</div>
-          <div class="co-pills">${coocPills}</div>
-          <button class="evidence-btn" onclick="openDrawer('${brand.name}')">View Evidence</button>
-          ${clipsHtml}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-// ── Data confidence ring ──
-function renderConfidenceRing() {
-  const svg = document.getElementById('f1-ring');
-  const label = document.getElementById('f1-label');
-
-  // Calculate overall high-confidence rate as proxy for F1
-  const totalApp = filteredBrands.reduce((s, b) => s + b.confTotal, 0);
-  const totalHigh = filteredBrands.reduce((s, b) => s + b.confHigh, 0);
-  const totalMed = filteredBrands.reduce((s, b) => s + b.confMed, 0);
-  const precision = totalApp > 0 ? (totalHigh + totalMed) / totalApp : 0;
-  const f1 = precision; // Using precision as proxy since we don't have ground truth
-
-  const r = 48, cx = 60, cy = 60, sw = 10;
-  const circ = 2 * Math.PI * r;
-  const filled = circ * f1;
-
-  svg.innerHTML = `
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--surface-3)" stroke-width="${sw}"/>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--accent)" stroke-width="${sw}"
-      stroke-dasharray="${filled} ${circ - filled}" stroke-dashoffset="${circ * 0.25}"
-      stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
-    <text x="${cx}" y="${cy}" text-anchor="middle" dy="0.35em"
-      fill="var(--text)" font-family="Red Hat Mono, monospace" font-size="20" font-weight="700">
-      ${(f1 * 100).toFixed(0)}%
-    </text>
+  // Stats
+  const totalApp=allBrands.reduce((s,b)=>s+b.count,0);
+  const totalSec=allBrands.reduce((s,b)=>s+b.seconds,0);
+  const uniquePlayers=new Set();allBrands.forEach(b=>b.players.forEach(p=>uniquePlayers.add(p)));
+  document.getElementById('stats').innerHTML=`
+    <div class="st"><div class="st-v" style="color:var(--ac)">${clips.length}</div><div class="st-l">Clips</div></div>
+    <div class="st"><div class="st-v">${allBrands.length}</div><div class="st-l">Brands</div></div>
+    <div class="st"><div class="st-v">${totalApp.toLocaleString()}</div><div class="st-l">Appearances</div></div>
+    <div class="st"><div class="st-v">${Math.round(totalSec/60)}m</div><div class="st-l">Screen Time</div></div>
+    <div class="st"><div class="st-v" style="color:var(--pu)">${uniquePlayers.size}</div><div class="st-l">Players</div></div>
   `;
-  label.textContent = `High + Med Confidence`;
-}
 
-// ── Process data ──
-function processData() {
-  brandData = {};
+  document.getElementById('ld').style.display='none';
+  document.getElementById('content').style.display='block';
 
-  // Build from signals (pre-aggregated)
-  if (signals.brands) {
-    for (const [name, data] of Object.entries(signals.brands)) {
-      const norm = normalizeBrand(name);
-      if (!norm) continue;
-
-      const conf = data.confidence_distribution || {};
-      const high = conf.high || 0;
-      const med = conf.medium || 0;
-      const low = (conf.low || 0) + (conf.unknown || 0);
-      const total = high + med + low;
-
-      brandData[norm] = {
-        name: norm,
-        category: getBrandCategory(norm),
-        appearances: data.total_appearances || 0,
-        uniqueClips: data.unique_clips || 0,
-        screenSeconds: data.total_screen_seconds || 0,
-        confHigh: high,
-        confMed: med,
-        confLow: low,
-        confTotal: total,
-        confHighPct: total > 0 ? (high / total * 100) : 0,
-        confMedPct: total > 0 ? (med / total * 100) : 0,
-        avgQuality: data.avg_quality || 0,
-        skillRatings: data.avg_skill_ratings || {},
-        coOccurring: data.co_occurring_brands || {},
-        topClipIds: data.top_clips || [],
-        topClipObjects: []
-      };
-    }
-  }
-
-  // Resolve top clip objects from corpus
-  const clipMap = {};
-  corpus.forEach(c => { clipMap[c.uuid] = c; });
-  for (const b of Object.values(brandData)) {
-    b.topClipObjects = b.topClipIds
-      .map(id => clipMap[id])
-      .filter(Boolean)
-      .filter((c, i, arr) => arr.findIndex(x => x.uuid === c.uuid) === i)
-      .slice(0, 3);
-  }
-
-  applyFilters();
-}
-
-// ── Filter logic ──
-function applyFilters() {
-  filteredBrands = Object.values(brandData).filter(b => {
-    // Category
-    if (filters.category !== 'all' && b.category !== filters.category) return false;
-    // Min appearances
-    if (b.appearances < filters.minAppearances) return false;
-    // Search
-    if (filters.search && !b.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
-    // Confidence
-    if (filters.confidence === 'high' && b.confHighPct < 50) return false;
-    if (filters.confidence === 'high+medium' && (b.confHighPct + b.confMedPct) < 50) return false;
-    return true;
-  });
-
-  renderAll();
-}
-
-function renderAll() {
-  renderStats();
-  renderInsight();
-  renderTreemap();
-  renderRankings();
-  renderScreenTimeChart();
-  renderConfidenceDist();
-  renderWhitespace();
-  renderCoOccurrence();
+  renderBubbles();
+  renderTable();
   renderHeatmap();
-  renderBrandCards();
-  renderConfidenceRing();
-}
+  renderWhitespace(signals);
+  renderCards();
+  renderConfidence(trend);
 
-// ── Stats ──
-function renderStats() {
-  const totalClips = signals.corpus_size || corpus.length || 0;
-  const brandCount = filteredBrands.length;
-  const totalApp = filteredBrands.reduce((s, b) => s + b.appearances, 0);
-  const totalSeconds = filteredBrands.reduce((s, b) => s + b.screenSeconds, 0);
-  const totalConf = filteredBrands.reduce((s, b) => s + b.confTotal, 0);
-  const totalHigh = filteredBrands.reduce((s, b) => s + b.confHigh, 0);
-  const highPct = totalConf > 0 ? Math.round(totalHigh / totalConf * 100) : 0;
-  const gaps = Object.keys(signals.sponsorship_whitespace || {}).length;
-
-  animateCount(document.getElementById('stat-clips'), totalClips);
-  animateCount(document.getElementById('stat-brands'), brandCount);
-  animateCount(document.getElementById('stat-appearances'), totalApp);
-  document.getElementById('stat-screentime').textContent = formatScreenTime(totalSeconds);
-  animateCount(document.getElementById('stat-highconf'), highPct, '%');
-  animateCount(document.getElementById('stat-gaps'), gaps);
-}
-
-// ── Insight ──
-function renderInsight() {
-  const sorted = [...filteredBrands].sort((a, b) => b.appearances - a.appearances);
-  if (sorted.length < 2) {
-    document.getElementById('insight-text').textContent = 'Not enough data for insights.';
-    return;
-  }
-  const top = sorted[0];
-  const totalApp = sorted.reduce((s, b) => s + b.appearances, 0);
-  const topShare = totalApp > 0 ? (top.appearances / totalApp * 100).toFixed(1) : 0;
-
-  const screenSorted = [...filteredBrands].sort((a, b) => b.screenSeconds - a.screenSeconds);
-  const screenLeader = screenSorted[0];
-
-  const ws = signals.sponsorship_whitespace || {};
-  const topGap = Object.entries(ws).sort((a, b) => b[1] - a[1])[0];
-
-  let text = `${top.name} dominates with ${topShare}% of all brand appearances.`;
-  if (screenLeader && screenLeader.name !== top.name) {
-    text += ` ${screenLeader.name} leads in screen time with ${formatSeconds(screenLeader.screenSeconds)}.`;
-  } else {
-    text += ` It also leads screen time at ${formatSeconds(top.screenSeconds)}.`;
-  }
-  if (topGap) {
-    text += ` Biggest sponsorship gap: ${topGap[0]} (mentioned in ${topGap[1]} clips but rarely visible).`;
-  }
-
-  document.getElementById('insight-text').textContent = text;
-}
-
-// ── Event bindings ──
-function setupEvents() {
-  // Category chips
-  document.querySelectorAll('#cat-filters .chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('#cat-filters .chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      filters.category = chip.dataset.cat;
-      applyFilters();
-    });
-  });
-
-  // Confidence filter
-  document.getElementById('conf-filter').addEventListener('change', e => {
-    filters.confidence = e.target.value;
-    applyFilters();
-  });
-
-  // Min appearances
-  document.getElementById('min-appearances').addEventListener('input', e => {
-    filters.minAppearances = parseInt(e.target.value) || 1;
-    applyFilters();
-  });
-
-  // Brand search
-  document.getElementById('brand-search').addEventListener('input', e => {
-    filters.search = e.target.value;
-    applyFilters();
-  });
-
-  // Presets
-  document.querySelectorAll('.preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const preset = btn.dataset.preset;
-      // Reset
-      document.querySelectorAll('#cat-filters .chip').forEach(c => c.classList.remove('active'));
-      document.getElementById('conf-filter').value = 'all';
-      document.getElementById('brand-search').value = '';
-      document.getElementById('min-appearances').value = '1';
-      filters = { category: 'all', confidence: 'all', minAppearances: 1, search: '' };
-
-      switch (preset) {
-        case 'paddles':
-          document.querySelector('#cat-filters .chip[data-cat="paddle"]').classList.add('active');
-          filters.category = 'paddle';
-          break;
-        case 'highconf':
-          document.getElementById('conf-filter').value = 'high';
-          filters.confidence = 'high';
-          document.querySelector('#cat-filters .chip[data-cat="all"]').classList.add('active');
-          break;
-        case 'screentime':
-          currentSort = { col: 'screentime', asc: false };
-          treemapMetric = 'screentime';
-          document.getElementById('tm-by-app').classList.remove('active');
-          document.getElementById('tm-by-time').classList.add('active');
-          document.querySelector('#cat-filters .chip[data-cat="all"]').classList.add('active');
-          break;
-        case 'gaps':
-          document.querySelector('#cat-filters .chip[data-cat="all"]').classList.add('active');
-          // Scroll to whitespace
-          setTimeout(() => {
-            document.querySelector('.whitespace-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 100);
-          break;
-      }
-      applyFilters();
-    });
-  });
-
-  // Treemap toggle
-  document.getElementById('tm-by-app').addEventListener('click', () => {
-    treemapMetric = 'appearances';
-    document.getElementById('tm-by-app').classList.add('active');
-    document.getElementById('tm-by-time').classList.remove('active');
-    renderTreemap();
-  });
-  document.getElementById('tm-by-time').addEventListener('click', () => {
-    treemapMetric = 'screentime';
-    document.getElementById('tm-by-time').classList.add('active');
-    document.getElementById('tm-by-app').classList.remove('active');
-    renderTreemap();
-  });
-
-  // Table sorting
-  document.querySelectorAll('#rankings-table th').forEach(th => {
-    th.addEventListener('click', () => {
-      const col = th.dataset.col;
-      if (currentSort.col === col) currentSort.asc = !currentSort.asc;
-      else { currentSort.col = col; currentSort.asc = false; }
-      document.querySelectorAll('#rankings-table th').forEach(t => t.classList.remove('sorted'));
-      th.classList.add('sorted');
-      renderRankings();
-    });
-  });
-
-  // Sticky command bar shadow
-  const cmdBar = document.getElementById('command-bar');
-  const observer = new IntersectionObserver(
-    ([entry]) => { cmdBar.classList.toggle('scrolled', !entry.isIntersecting); },
-    { threshold: 0, rootMargin: '-1px 0px 0px 0px' }
-  );
-  const heroEl = document.querySelector('.hero');
-  if (heroEl) observer.observe(heroEl);
-
-  // Resize: re-render treemap
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(renderTreemap, 250);
-  });
-}
-
-// ── Load data ──
-async function init() {
-  try {
-    const [corpusRes, signalsRes] = await Promise.all([
-      fetch('../corpus-export.json').then(r => r.json()),
-      fetch('../brand-signals.json').then(r => r.json())
-    ]);
-    corpus = corpusRes;
-    signals = signalsRes;
-
-    // Timestamp
-    const ts = signals.generated_at || new Date().toISOString();
-    document.getElementById('last-updated').textContent = new Date(ts).toLocaleString();
-
-    processData();
-    setupEvents();
-  } catch (err) {
-    console.error('Failed to load data:', err);
-    document.getElementById('insight-text').textContent = 'Error loading data. Check console for details.';
-  }
-}
-
-init();
+  window.addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderBubbles,200)});
+})();
 </script>
 </body>
 </html>
