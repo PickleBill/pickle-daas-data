@@ -1,10 +1,10 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-15T03:03:28.699952+00:00_
+_Generated: 2026-04-15T03:07:42.843208+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 869 clips
-- **Total analysis files on disk:** 1813 (1813 ≥500 bytes)
+- **Corpus on gh-pages:** 1068 clips
+- **Total analysis files on disk:** 1846 (1846 ≥500 bytes)
 - **Minutes since last analysis:** 0.2
 - **Human flags:** 7 total (0 real, rest seed)
 
@@ -38,8 +38,8 @@ Sampled 500 most-recent analyses.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
-| analysis_confidence ⚠️ | 225/500 | 45% |
-| brand_detection.brands | 429/500 | 86% |
+| analysis_confidence ⚠️ | 194/500 | 39% |
+| brand_detection.brands | 433/500 | 87% |
 | badge_intelligence.predicted_badges | 492/500 | 98% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
