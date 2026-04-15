@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Live Data Intelligence</title>
+<meta property="og:title" content="Pickle DaaS — AI Video Intelligence">
+<meta property="og:description" content="842+ clips analyzed. 50+ brands detected. $0.005/clip. The data is real.">
+<meta property="og:image" content="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/94287d0e-f3e4-415c-b98e-9f6eeb26667c.jpeg">
+<meta property="og:type" content="website">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;background:#06070f;color:#eef0f6;-webkit-font-smoothing:antialiased;overflow:hidden;height:100svh;display:flex;flex-direction:column}
+
+.wrap{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;max-width:480px;margin:0 auto;width:100%;text-align:center;gap:20px}
+
+/* Logo */
+.logo{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#616a8a;font-family:ui-monospace,monospace}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:lp 2s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{opacity:.8;box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+
+/* Hero number */
+.hero-num{font-size:clamp(5rem,20vw,10rem);font-weight:900;letter-spacing:-6px;line-height:.9;color:#22c55e;font-variant-numeric:tabular-nums;text-shadow:0 0 80px rgba(34,197,94,.15)}
+.hero-label{font-size:13px;color:#616a8a;letter-spacing:2px;text-transform:uppercase;font-family:ui-monospace,monospace;font-weight:600}
+
+/* Video */
+.vid-wrap{width:100%;border-radius:10px;overflow:hidden;border:1px solid #1c2035;position:relative;aspect-ratio:16/9}
+.vid-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.vid-badge{position:absolute;bottom:10px;left:10px;padding:6px 12px;border-radius:6px;font-size:11px;font-family:ui-monospace,monospace;backdrop-filter:blur(10px);background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.4);color:#fde68a;font-weight:600}
+
+/* Stats row */
+.stats{display:flex;gap:0;border:1px solid #1c2035;border-radius:8px;overflow:hidden;width:100%}
+.stat{flex:1;padding:14px 8px;background:#0b0d18;text-align:center;border-right:1px solid #1c2035}
+.stat:last-child{border-right:none}
+.stat-num{font-size:clamp(1.1rem,4vw,1.5rem);font-weight:800;color:#eef0f6;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.stat-num.green{color:#22c55e}
+.stat-lbl{font-size:8px;color:#616a8a;text-transform:uppercase;letter-spacing:1px;font-family:ui-monospace,monospace;margin-top:3px}
+
+/* CTA */
+.cta{font-size:12px;color:#616a8a;font-family:ui-monospace,monospace;letter-spacing:.5px}
+.cta a{color:#3b82f6;text-decoration:none}
+.cta a:hover{text-decoration:underline}
+.cta-name{font-size:14px;font-weight:600;color:#eef0f6;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><span class="logo-dot"></span><span>Pickle DaaS · Live</span></div>
+
+  <div>
+    <div class="hero-num" id="hero-n">842</div>
+    <div class="hero-label">clips analyzed &amp; counting</div>
+  </div>
+
+  <div class="vid-wrap">
+    <video autoplay muted loop playsinline poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/94287d0e-f3e4-415c-b98e-9f6eeb26667c.jpeg">
+      <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/94287d0e-f3e4-415c-b98e-9f6eeb26667c.mp4" type="video/mp4">
+    </video>
+    <div class="vid-badge">Nike + JOOLA detected · HIGH</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num green">50+</div><div class="stat-lbl">Brands</div></div>
+    <div class="stat"><div class="stat-num">$0.005</div><div class="stat-lbl">Per clip</div></div>
+    <div class="stat"><div class="stat-num green">49%</div><div class="stat-lbl">F1 · ↑</div></div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-name">bill@courtana.com</div>
+    <a href="investor-walkthrough.html">Full Walk-Through →</a>
+  </div>
+</div>
+
+<script>
+fetch('../dashboard-stats.json').then(r=>r.ok?r.json():null).then(s=>{
+  if(s&&s.total_clips)document.getElementById('hero-n').textContent=s.total_clips.toLocaleString();
+}).catch(()=>{});
+</script>
+</body>
+</html>
