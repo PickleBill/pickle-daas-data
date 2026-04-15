@@ -1,34 +1,34 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-15T06:32:35.421994+00:00_
+_Generated: 2026-04-15T06:49:16.307187+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 1994 clips
-- **Total analysis files on disk:** 3063 (3063 ≥500 bytes)
-- **Minutes since last analysis:** 0.0
+- **Corpus on gh-pages:** 2014 clips
+- **Total analysis files on disk:** 3082 (3082 ≥500 bytes)
+- **Minutes since last analysis:** 0.1
 - **Human flags:** 37 total (30 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 34.2%  (714 TP / 2088 predicted)
-- **Recall:**    59.8%  (714 TP / 1193 awarded)
-- **F1 Score:**  43.5%
-- **Predictions analyzed:** 4434 across 1390 unique clips
+- **Precision:** 27.3%  (780 TP / 2861 predicted)
+- **Recall:**    61.0%  (780 TP / 1279 awarded)
+- **F1 Score:**  37.7%
+- **Predictions analyzed:** 5623 across 1864 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Rally Master | 142 | 311 | 33 | 31% | 81% | 45% |
-| Steady Eddie | 133 | 251 | 49 | 35% | 73% | 47% |
-| Kitchen King | 43 | 285 | 0 | 13% | 100% | 23% |
+| Rally Master | 155 | 596 | 33 | 21% | 82% | 33% |
+| Steady Eddie | 139 | 482 | 49 | 22% | 74% | 34% |
+| Kitchen King | 48 | 452 | 0 | 10% | 100% | 18% |
 | Epic Rally | 59 | 83 | 2 | 42% | 97% | 58% |
-| Dink Machine | 0 | 141 | 0 | 0% | 0% | 0% |
+| Dink Machine | 0 | 142 | 0 | 0% | 0% | 0% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
-| New Look | 1 | 0 | 96 | 100% | 1% | 2% |
-| Net Magnet | 52 | 5 | 15 | 91% | 78% | 84% |
-| Two Up Pressure | 37 | 0 | 28 | 100% | 57% | 72% |
+| New Look | 1 | 0 | 97 | 100% | 1% | 2% |
+| Net Magnet | 53 | 8 | 15 | 87% | 78% | 82% |
+| Two Up Pressure | 45 | 0 | 29 | 100% | 61% | 76% |
 | Fresh Fit | 2 | 0 | 62 | 100% | 3% | 6% |
 
 ## Field Fill Rates (Schema Completeness)
@@ -39,8 +39,8 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands | 445/500 | 89% |
-| badge_intelligence.predicted_badges | 469/500 | 94% |
+| brand_detection.brands | 443/500 | 89% |
+| badge_intelligence.predicted_badges | 471/500 | 94% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
