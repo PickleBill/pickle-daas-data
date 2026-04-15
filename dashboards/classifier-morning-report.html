@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Classifier — Morning Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root { --bg:#0b0f14; --panel:#141a22; --panel-hi:#1c2430; --border:#2a3341;
+            --text:#e7ecf3; --mute:#8a95a6; --accent:#4ade80; --warn:#fbbf24;
+            --danger:#f87171; --primary:#60a5fa; }
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+  header{padding:24px 32px;border-bottom:1px solid var(--border)}
+  h1{margin:0;font-size:22px} .sub{color:var(--mute);font-size:13px;margin-top:4px}
+  main{max-width:1100px;margin:0 auto;padding:24px 32px}
+  section{margin-bottom:32px} h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);border-bottom:1px solid var(--border);padding-bottom:6px}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+  .stat{padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+  .stat-value{font-size:24px;font-weight:600} .stat-label{font-size:12px;color:var(--mute);margin-top:3px}
+  .stat-sub{font-size:11px;color:var(--mute);margin-top:2px;font-style:italic}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+  th,td{padding:8px 10px;text-align:left;font-size:13px;border-bottom:1px solid var(--border)}
+  th{background:var(--panel-hi);color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+  td.warn{color:var(--warn)} a{color:var(--primary)}
+  pre{background:var(--panel);padding:12px;border-radius:6px;border:1px solid var(--border);overflow-x:auto;font-size:11px;color:var(--mute);max-height:300px}
+  .chip{display:inline-block;padding:3px 9px;background:var(--panel);border:1px solid var(--border);border-radius:12px;font-size:11px;margin:2px;color:var(--text)}
+  .empty{padding:20px;text-align:center;color:var(--mute);background:var(--panel);border:1px dashed var(--border);border-radius:6px}
+  .mute{color:var(--mute);font-size:12px}
+  ul.pending{list-style:none;padding:0}
+  ul.pending li{padding:8px 12px;background:var(--panel);border:1px solid var(--border);border-radius:6px;margin-bottom:4px}
+  .roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+  .roadmap-card{padding:12px;background:var(--panel);border-left:3px solid var(--accent);border-radius:6px;font-size:13px}
+  .roadmap-card.next{border-left-color:var(--warn)}
+  .roadmap-card.future{border-left-color:var(--mute);opacity:0.7}
+  .cta{display:inline-block;padding:10px 18px;background:var(--primary);color:#0b0f14;text-decoration:none;border-radius:6px;font-weight:600;margin-right:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Classifier — Morning Report</h1>
+  <div class="sub">Generated 2026-04-15 03:41 · Taxonomy v5 · Coverage 92.6%</div>
+</header>
+<main>
+
+<a class="cta" href="classifier-queue.html">→ Open the Queue</a>
+<a class="cta" href="brand-intelligence-v2.html" style="background:var(--panel);color:var(--text);border:1px solid var(--border)">Brand Intel V2</a>
+
+<section>
+<h2>Status</h2>
+<div class="stat-grid">
+  <div class="stat">
+            <div class="stat-value" style="">49</div>
+            <div class="stat-label">Approved rules</div>
+            
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="">3</div>
+            <div class="stat-label">Pending in queue</div>
+            <div class="stat-sub">review now</div>
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="">92.6%</div>
+            <div class="stat-label">Coverage</div>
+            <div class="stat-sub">rule-classified</div>
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="color:var(--warn)">4</div>
+            <div class="stat-label">Quarantined clips</div>
+            <div class="stat-sub">non-PB pollution</div>
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="">38</div>
+            <div class="stat-label">Investigate queue</div>
+            <div class="stat-sub">needs deeper look</div>
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="color:var(--warn)">5</div>
+            <div class="stat-label">Cross-sport warnings</div>
+            <div class="stat-sub">from auto-research</div>
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="">4</div>
+            <div class="stat-label">High-relevance brands</div>
+            <div class="stat-sub">auto-discovered</div>
+        </div>
+  <div class="stat">
+            <div class="stat-value" style="">13</div>
+            <div class="stat-label">OCR artifacts</div>
+            <div class="stat-sub">filtered out</div>
+        </div>
+</div>
+</section>
+
+<section><h2>🚨 Cross-sport pollution found</h2><table><thead><tr><th>Brand</th><th>What it is</th><th>Action</th></tr></thead><tbody><tr><td><b>ELGOUNA</b></td><td>El Gouna is a squash resort and tournament venue; cross-sport contamination in dataset</td><td class="warn">El Gouna is a squash tournament and resort venue in Egypt; this is cross-sport data pollution and should be excluded from pickleball sponsor</td></tr><tr><td><b>COLUMBIA</b></td><td>Columbia Sportswear, national outdoor apparel company; detected in squash tournament context</td><td class="warn">Columbia Sportswear is a general sportswear brand appearing in squash tournament footage; cross-sport data pollution. While they could spons</td></tr><tr><td><b>MALAYSIA</b></td><td>Country name; likely OCR error or text fragment from larger sponsor name in squash tournament context</td><td class="warn">Country name detected in squash tournament footage; data quality issue.</td></tr><tr><td><b>SQUASH CUP</b></td><td>Tournament name or squash event sponsorship; not relevant to pickleball</td><td class="warn">Squash Cup is a squash tournament sponsorship; cross-sport contamination. This video should be excluded from pickleball dataset.</td></tr><tr><td><b>IB</b></td><td>Two-letter acronym from squash tournament context; likely financial services brand (e.g., Islamic Bank) but insufficient</td><td class="warn">Detected in squash tournament footage; cross-sport data contamination.</td></tr></tbody></table></section>
+
+<section><h2>⭐ High pickleball relevance (newly researched)</h2><table><thead><tr><th>Brand</th><th>What it is</th><th>Subtype</th><th>Website</th></tr></thead><tbody><tr><td><b>PUSHIT</b></td><td>Pickleball apparel and equipment brand</td><td>technology</td><td>—</td></tr><tr><td><b>PKLR</b></td><td>Pickleball-specific apparel brand</td><td>technology</td><td>—</td></tr><tr><td><b>PBS</b></td><td>Pickleball apparel brand (likely independent label, not PBS public broadcasting)</td><td>technology</td><td>—</td></tr><tr><td><b>PSA</b></td><td>Pickleball-related sponsorship or venue partner (acronym; full name unclear without visual confirmation)</td><td>other_corporate</td><td>—</td></tr></tbody></table></section>
+
+<section><h2>Sponsor sub-type distribution</h2><div><span class="mute">none yet</span></div></section>
+
+<section><h2>Pending in queue (top 8)</h2><ul class="pending"><li><b>Davenport &amp; Company</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.85</span></li><li><b>COMCAST BUSINESS</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.95</span></li><li><b>CGG</b> <span class="chip">sponsor_signage</span> <span class="mute">conf 0.50</span></li></ul></section>
+
+<section><h2>Roadmap status</h2>
+<div class="roadmap">
+  <div class="roadmap-card">✅ <b>Classification engine</b> — taxonomy v5, 49 rules, 92.6% coverage</div>
+  <div class="roadmap-card">✅ <b>Visual evidence on cards</b> — thumbnails + click-to-play</div>
+  <div class="roadmap-card">✅ <b>Sponsor sub-types</b> — 0 categories in active use</div>
+  <div class="roadmap-card">✅ <b>Auto-research</b> — Claude identifies unknown brands, flags cross-sport pollution</div>
+  <div class="roadmap-card">✅ <b>Capture source axis</b> — courtana_venue vs manual_upload tagged on every clip</div>
+  <div class="roadmap-card">✅ <b>Quarantine system</b> — non-PB clips flagged but kept in corpus</div>
+  <div class="roadmap-card">✅ <b>Override UI</b> — per-card category + value overrides</div>
+  <div class="roadmap-card">✅ <b>One-command pipeline</b> — commit-classifier-batch.py</div>
+  <div class="roadmap-card next">▶️ <b>Sponsor dashboard by subtype</b> — group by financial / automotive / etc</div>
+  <div class="roadmap-card next">▶️ <b>Re-surface investigate items</b> — auto-rotate back into proposals after enrichment</div>
+  <div class="roadmap-card future">⏳ <b>Characteristic extraction</b> — shirt type, style, color (deep work, separate brief)</div>
+  <div class="roadmap-card future">⏳ <b>Multi-source ingest</b> — currently 100% one user account, need diversity</div>
+  <div class="roadmap-card future">⏳ <b>TV/screen content extraction</b> — pull data shown on court displays</div>
+</div></section>
+
+<section><h2>Overnight log (last 4KB)</h2><pre>(no overnight runs yet)</pre></section>
+
+</main>
+</body>
+</html>
