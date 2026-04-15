@@ -44,3 +44,78 @@ wrote /Users/billbricker/PickleBill Dropbox/PickleBill Team Folder/Claude Projec
 [03:55:57] [apply-classification] coverage: 92.6%  |  rule=4261  fallback=340
   ✓ ok
 [push-ghpages]
+[gh-pages 68e6bea] Auto-update: corpus + dashboards (2026-04-15 03:55)
+ 14 files changed, 50456 insertions(+), 916 deletions(-)
+ create mode 100644 classifier/overnight-log.txt
+ create mode 100644 output/classifier/overnight-log.txt
+To https://github.com/PickleBill/pickle-daas-data.git
+   7c6a97b..68e6bea  gh-pages -> gh-pages
+============================================================
+Pickle DaaS — Push to gh-pages (2026-04-15 03:55)
+============================================================
+
+[1/4] Loading existing corpus from gh-pages...
+  Existing: 2456 clips
+[2/4] Scanning new analysis files...
+  Found: 2451 analyzed clips in auto-ingest dirs
+  Truly new (not in existing corpus): 125
+  Duplicates skipped: 341, errors: 0
+  Total corpus: 2581 unique clips
+[3/4] Building dashboard stats + brand signals...
+  corpus-export.json: 2581 clips
+  dashboard-stats.json: 2581 total, 314 brands
+  brand-signals.json: 78 brands, 1688 clips w/ brands
+  Local files synced
+[4/4] Committing to gh-pages branch via worktree...
+  OK: git worktree add gh-pages
+  OK: pushed gh-pages
+
+Done. Corpus: 2581 clips (+125 new). Live at: https://picklebill.github.io/pickle-daas-data/
+  ✓ ok
+===== CYCLE END   2026-04-15T07:56:04Z =====
+
+===== CYCLE START 2026-04-15T07:58:53Z =====
+[quarantine]
+scanning 1968 clips...
+quarantined 4 clips (0.2%)
+  non_pickleball_sport: 4
+wrote /Users/billbricker/PickleBill Dropbox/PickleBill Team Folder/Claude Projects/PICKLE-DAAS/output/classifier/quarantined-clips.json
+  ✓ ok
+[classifier-deep]
+[03:58:54] [classifier] mode=quick(top_50)
+[03:58:54] [classifier] loaded 1968 clips from merged-corpus.json
+[03:58:54] [classifier] 53 brand keys already covered by approved rules
+[03:58:54] [classifier] observed 50 uncovered brands (top 50)
+[03:58:54] [classifier] calling Claude Haiku with 50 brands in one batch...
+[03:59:40] [classifier] JSON parse failed: Expecting value: line 1 column 1 (char 0). First 400 chars: ```json
+[
+  {
+    "brand": "R&M_foz_wifi_goomba",
+    "aliases": [],
+    "classifications": [
+      {
+        "when_category": "venue_signage",
+        "as": "needs_investigation",
+        "category_primary": "unknown"
+      }
+    ],
+    "revenue_potential": "none",
+    "sponsor_subtype": null,
+    "website": null,
+    "brand_description": "Unknown — needs investigation. Appears to be Wi-Fi networ
+[03:59:40] [classifier] no hypotheses generated (API error or empty response) — writing empty proposals file
+  ✓ ok
+[brand-research]
+[03:59:40] [brand-researcher] loaded 38 items from investigate-queue.json
+[03:59:40] [brand-researcher] nothing new to research — all brands already in brand-research.json
+  ✓ ok
+[apply-classify]
+[03:59:40] [apply-classification] loaded 1968 clips from merged-corpus.json
+[03:59:40] [apply-classification] loaded 49 approved rules (taxonomy v5)
+[03:59:40] [apply-classification] loaded quarantine list: 4 clips flagged
+[03:59:40] [apply-classification] capture sources: {'courtana_venue': 1966, 'manual_upload': 2}
+[03:59:40] [apply-classification] wrote output/classified-corpus.json  (1653 clips, 4601 brand detections)
+[03:59:41] [apply-classification] wrote output/classification-stats.json
+[03:59:41] [apply-classification] coverage: 92.6%  |  rule=4261  fallback=340
+  ✓ ok
+[push-ghpages]
