@@ -3,411 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Idea Lab v2 · Pickle DaaS</title>
+<title>Idea Lab · Pickle DaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a1a; --surface: #111128; --surface-2: #1a1a2e; --surface-3: #222244;
-  --border: #2a2a4a; --border-focus: #4a4a7a;
-  --text: #e8eaed; --muted: #8590a3; --dim: #555;
-  --ok: #22c55e; --ok-dim: rgba(34,197,94,.12); --ok-border: rgba(34,197,94,.3);
-  --warn: #eab308; --warn-dim: rgba(234,179,8,.1);
-  --info: #3b82f6; --info-dim: rgba(59,130,246,.1);
-  --purple: #a855f7; --purple-dim: rgba(168,85,247,.1);
-  --red: #ef4444; --red-dim: rgba(239,68,68,.1);
-  --cyan: #06b6d4; --cyan-dim: rgba(6,182,212,.1);
-  --orange: #f97316; --orange-dim: rgba(249,115,22,.1);
-  --radius: 8px; --radius-sm: 5px;
+  --bg: oklch(12% .012 155); --sf: oklch(15% .01 155); --sf2: oklch(18% .009 155);
+  --sf3: oklch(22% .008 155); --bd: oklch(26% .012 155); --bds: oklch(20% .008 155);
+  --tx: oklch(92% .01 155); --tx2: oklch(72% .015 155); --mt: oklch(50% .02 155);
+  --ac: oklch(78% .19 155); --acd: oklch(78% .19 155/.07); --acg: oklch(78% .19 155/.15);
+  --gd: oklch(82% .16 85); --fi: oklch(70% .2 30); --pu: oklch(62% .22 300); --pud: oklch(62% .22 300/.08);
+  --cy: oklch(72% .18 195); --cyd: oklch(72% .18 195/.08);
+  --er: oklch(65% .22 25); --erd: oklch(65% .22 25/.07);
+  --wn: oklch(78% .16 85); --wnd: oklch(78% .16 85/.08);
+  --r: 10px; --rl: 14px; --ease: cubic-bezier(.22,1,.36,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow-x:hidden}
-a{color:var(--info);text-decoration:none}a:hover{text-decoration:underline}
-::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.55}
+a{color:var(--ac);text-decoration:none}a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
 
-.header{padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
-.header-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1440px;margin:0 auto}
-.header h1{font-size:24px;font-weight:700;letter-spacing:-.5px}
-.header h1 .accent{color:var(--ok)}.header h1 .lab{color:var(--purple)}
-.header-sub{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{padding:4px 10px;border-radius:12px;font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.3px;border:1px solid var(--border)}
-.chip.ok{background:var(--ok-dim);color:var(--ok);border-color:var(--ok-border)}
-.chip.info{background:var(--info-dim);color:var(--info);border-color:rgba(59,130,246,.3)}
-.chip.purple{background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,.3)}
-.chip.orange{background:var(--orange-dim);color:var(--orange);border-color:rgba(249,115,22,.3)}
-.timestamp{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace}
+/* HEADER */
+.hdr{padding:20px 24px;border-bottom:1px solid var(--bd);background:var(--sf)}
+.hdr-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1440px;margin:0 auto}
+.hdr h1{font-size:26px;font-weight:800;letter-spacing:-.6px}
+.hdr h1 .pu{color:var(--pu)}.hdr h1 .ac{color:var(--ac)}
+.hdr-v{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;vertical-align:super;margin-left:4px;letter-spacing:.5px}
+.ts{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:2px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:3px 10px;border-radius:14px;font-size:10px;font-family:'Red Hat Mono',monospace;letter-spacing:.4px;font-weight:500;border:1px solid}
+.chip.ac{background:var(--acd);color:var(--ac);border-color:var(--acg)}
+.chip.pu{background:var(--pud);color:var(--pu);border-color:oklch(62% .22 300/.2)}
+.chip.cy{background:var(--cyd);color:var(--cy);border-color:oklch(72% .18 195/.2)}
+.chip.er{background:var(--erd);color:var(--er);border-color:oklch(65% .22 25/.2)}
+.chip.gd{background:var(--wnd);color:var(--wn);border-color:oklch(78% .16 85/.2)}
 
-.layout{display:grid;grid-template-columns:1fr 1fr 300px;gap:0;max-width:1440px;margin:0 auto;min-height:calc(100vh - 100px)}
-.col{padding:20px;border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 100px)}
+/* LAYOUT */
+.lay{display:grid;grid-template-columns:1fr 1fr 280px;gap:0;max-width:1440px;margin:0 auto;min-height:calc(100vh - 90px)}
+.col{padding:20px;border-right:1px solid var(--bd);overflow-y:auto;max-height:calc(100vh - 90px)}
 .col:last-child{border-right:none}
-.col-head{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.col-head .count{font-size:11px;color:var(--dim);font-weight:400}
+.col-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mt);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;font-family:'Red Hat Mono',monospace}
+.col-h .cnt{font-weight:400;color:oklch(40% .02 155)}
 
-.track-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:8px 0 10px;margin:8px 0 12px;border-bottom:2px solid;display:flex;align-items:center;gap:8px}
-.track-label.strategic{color:var(--purple);border-color:rgba(168,85,247,.3)}
-.track-label.data{color:var(--cyan);border-color:rgba(6,182,212,.3)}
-.track-label .track-icon{font-size:14px}
+/* TRACK LABELS */
+.trk{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;padding:6px 0 8px;margin:6px 0 10px;border-bottom:2px solid;display:flex;align-items:center;gap:6px;font-family:'Red Hat Mono',monospace}
+.trk.s{color:var(--pu);border-color:oklch(62% .22 300/.25)}.trk.d{color:var(--cy);border-color:oklch(72% .18 195/.25)}
 
-.card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s ease}
-.card:hover{border-color:var(--border-focus);transform:translateY(-1px)}
-.card.expanded{background:var(--surface-3);border-color:var(--purple)}
-.card.approved{border-left:3px solid var(--ok)}
-.card.parked{border-left:3px solid var(--warn)}
-.card.dismissed{opacity:.4;border-left:3px solid var(--dim)}
-.card-rank{font-size:28px;font-weight:700;line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums}
-.card.strategic .card-rank{color:var(--purple)}
-.card.data-track .card-rank{color:var(--cyan)}
-.card-title{font-size:15px;font-weight:600;line-height:1.35;margin-bottom:8px}
-.card-evidence{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px}
-.card-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:11px}
-.big-card{padding:20px}.big-card .card-rank{font-size:32px;margin-bottom:4px}.big-card .card-title{font-size:16px}
+/* CARDS */
+.cd{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .25s var(--ease)}
+.cd:hover{border-color:oklch(92% .01 155/.12);transform:translateY(-2px);box-shadow:0 8px 24px oklch(0% 0 0/.3)}
+.cd.ex{background:var(--sf2);border-color:var(--pu)}
+.cd.approved{border-left:3px solid var(--ac)}.cd.parked{border-left:3px solid var(--wn)}.cd.dismissed{opacity:.35;border-left:3px solid var(--mt)}
+.cd.bg{padding:18px}
+.cd-rk{font-size:24px;font-weight:800;line-height:1;margin-bottom:6px;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums}
+.cd.s .cd-rk{color:var(--pu)}.cd.d .cd-rk{color:var(--cy)}
+.cd-ti{font-size:14px;font-weight:700;line-height:1.35;margin-bottom:6px;letter-spacing:-.2px}
+.cd-ev{font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px}
+.cd-mt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:10px}
 
-.meter{height:4px;border-radius:2px;background:var(--border);overflow:hidden;width:80px;display:inline-block;vertical-align:middle;margin-left:4px}
-.meter-fill{height:100%;border-radius:2px;transition:width .3s}
-.meter-fill.ok{background:var(--ok)}.meter-fill.warn{background:var(--warn)}.meter-fill.red{background:var(--red)}.meter-fill.info{background:var(--info)}
+.bg .cd-rk{font-size:30px}.bg .cd-ti{font-size:16px}
 
-.tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;font-family:ui-monospace,monospace}
-.tag.high{background:var(--ok-dim);color:var(--ok)}.tag.medium{background:var(--warn-dim);color:var(--warn)}.tag.low{background:var(--red-dim);color:var(--red)}
-.tag.agent{background:var(--purple-dim);color:var(--purple)}.tag.cat{background:var(--info-dim);color:var(--info)}
+/* TAGS */
+.tg{display:inline-block;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;font-family:'Red Hat Mono',monospace}
+.tg.h{background:var(--acd);color:var(--ac)}.tg.m{background:var(--wnd);color:var(--wn)}.tg.l{background:var(--erd);color:var(--er)}
+.tg.ag{background:var(--pud);color:var(--pu)}.tg.ct{background:var(--cyd);color:var(--cy)}
 
-.actions{display:flex;gap:6px;margin-top:12px}
-.btn{padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;text-transform:uppercase;letter-spacing:.5px}
-.btn:hover{background:var(--surface-3);color:var(--text)}
-.btn.approve{border-color:var(--ok);color:var(--ok)}.btn.approve:hover{background:var(--ok-dim)}
-.btn.park{border-color:var(--warn);color:var(--warn)}.btn.park:hover{background:var(--warn-dim)}
-.btn.dismiss{border-color:var(--dim);color:var(--dim)}.btn.dismiss:hover{background:rgba(100,100,100,.1)}
-.btn.export{border-color:var(--info);color:var(--info);font-size:10px;padding:4px 10px}.btn.export:hover{background:var(--info-dim)}
+/* METERS */
+.mr{height:3px;border-radius:2px;background:var(--bd);overflow:hidden;width:60px;display:inline-block;vertical-align:middle;margin-left:3px}
+.mr-f{height:100%;border-radius:2px;transition:width .4s var(--ease)}
+.mr-f.g{background:var(--ac)}.mr-f.y{background:var(--wn)}.mr-f.r{background:var(--er)}
 
-.expand-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
-.card.expanded .expand-body{display:block}
-.expand-section{margin-bottom:12px}
-.expand-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
-.expand-section p{font-size:13px;color:var(--text);line-height:1.6}
+/* BUTTONS */
+.acts{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.bt{padding:5px 12px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mt);font-size:10px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);font-family:'Manrope',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.bt:hover{color:var(--tx);background:var(--sf2)}
+.bt.ap{border-color:oklch(78% .19 155/.3);color:var(--ac)}.bt.ap:hover{background:var(--acd)}
+.bt.pk{border-color:oklch(78% .16 85/.3);color:var(--wn)}.bt.pk:hover{background:var(--wnd)}
+.bt.dm{border-color:oklch(40% .02 155/.5);color:var(--mt)}.bt.dm:hover{background:oklch(20% .01 155)}
+.bt.dd{border-color:oklch(62% .22 300/.3);color:var(--pu)}.bt.dd:hover{background:var(--pud)}
+.bt.ex{font-size:9px;padding:3px 8px}
 
-.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
-.clip-thumb{border-radius:var(--radius-sm);overflow:hidden;background:var(--surface);border:1px solid var(--border)}
-.clip-thumb video{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
-.clip-thumb .caption{padding:6px 8px;font-size:10px;color:var(--muted);line-height:1.3}
+/* EXPAND */
+.xb{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--bds)}
+.cd.ex .xb{display:block}
+.xs{margin-bottom:10px}
+.xs h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mt);margin-bottom:5px;font-family:'Red Hat Mono',monospace}
+.xs p{font-size:13px;color:var(--tx2);line-height:1.65}
 
-.counterarg{background:var(--red-dim);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-sm);padding:10px;margin-top:10px;font-size:12px;line-height:1.5}
-.counterarg .ca-head{color:var(--red);font-weight:600;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
-.counterarg .ca-body{color:var(--muted)}
+/* CLIPS */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:6px}
+.ct{border-radius:8px;overflow:hidden;background:var(--sf);border:1px solid var(--bd);transition:.2s var(--ease)}
+.ct:hover{border-color:var(--ac)}.ct video{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.ct .cp{padding:5px 7px;font-size:9px;color:var(--mt);line-height:1.3;font-family:'Red Hat Mono',monospace}
 
-.follow-up{background:var(--purple-dim);border:1px solid rgba(168,85,247,.2);border-radius:var(--radius-sm);padding:10px;margin-top:10px;font-size:12px;line-height:1.5}
-.follow-up .q{color:var(--purple);font-weight:600;margin-bottom:4px}
+/* COUNTERARG */
+.ca{background:var(--erd);border:1px solid oklch(65% .22 25/.15);border-radius:8px;padding:10px;margin-top:8px;font-size:12px}
+.ca-h{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--er);margin-bottom:3px;font-family:'Red Hat Mono',monospace}
+.ca-b{color:var(--tx2);line-height:1.5}
 
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-select{background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;font-size:12px;font-family:inherit;cursor:pointer}
-select:focus{outline:none;border-color:var(--purple)}
+/* FOLLOW UP */
+.fu{background:var(--pud);border:1px solid oklch(62% .22 300/.15);border-radius:8px;padding:10px;margin-top:8px;font-size:12px}
+.fu .fq{color:var(--pu);font-weight:600;margin-bottom:3px;font-size:11px}
+.fu p{color:var(--tx2);font-size:12px}
 
-.sidebar-block{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
-.sidebar-block h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:10px}
-.sidebar-block .item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(255,255,255,.03)}
-.sidebar-block .item:last-child{border-bottom:none}
-.sidebar-block .item .label{color:var(--muted)}
-.sidebar-block .item .value{font-family:ui-monospace,monospace;font-weight:500}
-.warning-box{border:1px solid;border-radius:var(--radius);padding:12px;margin-bottom:14px;font-size:12px;line-height:1.5}
-.warning-box strong{display:block;margin-bottom:4px}
-.warning-box.warn{background:var(--warn-dim);border-color:rgba(234,179,8,.25);color:var(--warn)}
-.warning-box.feedback{background:var(--ok-dim);border-color:rgba(34,197,94,.25);color:var(--ok)}
-.warning-box.product{background:var(--purple-dim);border-color:rgba(168,85,247,.25);color:var(--purple)}
+/* CONNECTION */
+.cn{background:oklch(78% .16 85/.06);border:1px solid oklch(78% .16 85/.12);border-radius:var(--r);padding:10px;margin-bottom:8px;font-size:12px}
+.cn-h{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--wn);margin-bottom:4px;font-family:'Red Hat Mono',monospace}
+.cn-b{color:var(--tx2);line-height:1.5}
+.cn-agents{font-size:10px;color:var(--mt);margin-top:3px;font-family:'Red Hat Mono',monospace}
 
-@media(max-width:1100px){.layout{grid-template-columns:1fr 1fr}.col:last-child{display:none}}
-@media(max-width:700px){
-  .layout{grid-template-columns:1fr;max-height:none}
-  .col{max-height:none;border-right:none;border-bottom:1px solid var(--border)}
-  .header h1{font-size:20px}
-}
-@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.card{animation:slideIn .3s ease both}
-.card:nth-child(2){animation-delay:.04s}.card:nth-child(3){animation-delay:.08s}.card:nth-child(4){animation-delay:.12s}.card:nth-child(5){animation-delay:.16s}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite;margin-right:4px}
+/* FILTERS */
+.flt{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+select{background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:4px 8px;font-size:11px;font-family:'Manrope',sans-serif;cursor:pointer;transition:.2s}
+select:focus{outline:none;border-color:var(--pu)}
+
+/* SIDEBAR */
+.sb{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:12px;margin-bottom:12px}
+.sb h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mt);margin-bottom:8px;font-family:'Red Hat Mono',monospace}
+.sb .it{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px;border-bottom:1px solid oklch(20% .008 155)}
+.sb .it:last-child{border-bottom:none}
+.sb .it .lb{color:var(--mt)}.sb .it .vl{font-family:'Red Hat Mono',monospace;font-weight:500}
+.wb{border:1px solid;border-radius:var(--rl);padding:10px;margin-bottom:12px;font-size:11px;line-height:1.5}
+.wb strong{display:block;margin-bottom:3px;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-family:'Red Hat Mono',monospace}
+.wb.wn{background:var(--wnd);border-color:oklch(78% .16 85/.15);color:var(--wn)}
+.wb.fb{background:var(--acd);border-color:oklch(78% .19 155/.15);color:var(--ac)}
+.wb.pv{background:var(--pud);border-color:oklch(62% .22 300/.15);color:var(--pu)}
+
+@media(max-width:1100px){.lay{grid-template-columns:1fr 1fr}.col:last-child{display:none}}
+@media(max-width:700px){.lay{grid-template-columns:1fr;max-height:none}.col{max-height:none;border-right:none;border-bottom:1px solid var(--bd)}.hdr h1{font-size:22px}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.cd{animation:fadeUp .3s var(--ease) both}
+.cd:nth-child(2){animation-delay:.03s}.cd:nth-child(3){animation-delay:.06s}.cd:nth-child(4){animation-delay:.09s}.cd:nth-child(5){animation-delay:.12s}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ac);animation:pulse 2s infinite;margin-right:3px}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
+<div class="hdr">
+  <div class="hdr-inner">
     <div>
-      <h1><span class="lab">Idea</span> <span class="accent">Lab</span> <span style="font-size:12px;color:var(--muted);font-weight:400;vertical-align:super">v2</span></h1>
-      <div class="timestamp" id="timestamp">Loading...</div>
+      <h1><span class="pu">Idea</span> <span class="ac">Lab</span><span class="hdr-v">V3</span></h1>
+      <div class="ts" id="ts">Loading...</div>
     </div>
-    <div class="header-sub">
-      <div class="chips" id="chips"></div>
-    </div>
+    <div class="chips" id="chips"></div>
   </div>
 </div>
 
-<div class="layout">
-  <!-- COL 1: TWO-TRACK TOP FINDINGS -->
-  <div class="col" id="col-tracks">
-    <div class="col-head">Priority Findings <span class="count" id="tracks-count"></span></div>
-    <div class="track-label strategic"><span class="track-icon">&#9889;</span> Strategic Ideas</div>
-    <div id="strategic-cards"></div>
-    <div class="track-label data"><span class="track-icon">&#128202;</span> Data Insights</div>
-    <div id="data-cards"></div>
+<div class="lay">
+  <div class="col">
+    <div class="col-h">Priority Findings <span class="cnt" id="tc"></span></div>
+    <div class="trk s">Strategic Ideas</div>
+    <div id="sc"></div>
+    <div class="trk d">Data Insights</div>
+    <div id="dc"></div>
   </div>
 
-  <!-- COL 2: ALL FINDINGS -->
-  <div class="col" id="col-full">
-    <div class="col-head">All Findings <span class="count" id="full-count"></span></div>
-    <div class="filters">
-      <select id="filter-track"><option value="">All Tracks</option><option value="strategic">Strategic</option><option value="data">Data</option></select>
-      <select id="filter-agent"><option value="">All Researchers</option></select>
-      <select id="filter-bv"><option value="">All Value</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
-      <select id="sort-by"><option value="score">Sort: Score</option><option value="confidence">Confidence</option><option value="novelty">Novelty</option><option value="agent">Researcher</option></select>
+  <div class="col">
+    <div class="col-h">All Findings <span class="cnt" id="fc"></span></div>
+    <div class="flt">
+      <select id="ft"><option value="">All Tracks</option><option value="strategic">Strategic</option><option value="data">Data</option></select>
+      <select id="fa"><option value="">All Researchers</option></select>
+      <select id="fb"><option value="">All Value</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+      <select id="fs"><option value="score">Score</option><option value="confidence">Confidence</option><option value="novelty">Novelty</option><option value="agent">Researcher</option></select>
     </div>
-    <div id="full-cards"></div>
+    <div id="fl"></div>
   </div>
 
-  <!-- COL 3: META -->
-  <div class="col" id="col-meta">
-    <div class="col-head">Meta</div>
-
-    <div class="warning-box feedback" id="feedback-box" style="display:none">
-      <strong>Feedback Loop Active</strong>
-      <span id="feedback-text"></span>
-    </div>
-
-    <div class="warning-box warn">
-      <strong>JOOLA Bias Warning</strong>
-      JOOLA represents ~43% of brand detections. Findings use balanced samples to mitigate this.
-    </div>
-
-    <div class="sidebar-block">
-      <h3>Researcher Status</h3>
-      <div id="researcher-status"></div>
-    </div>
-
-    <div class="sidebar-block">
-      <h3>Your Decisions</h3>
-      <div id="decisions-summary"></div>
-      <div style="margin-top:8px;display:flex;gap:6px">
-        <button class="btn export" onclick="exportDecisions()">Export for CLI</button>
-        <button class="btn export" onclick="clearDecisions()" style="border-color:var(--red);color:var(--red)">Reset</button>
+  <div class="col">
+    <div class="col-h">Meta</div>
+    <div class="wb fb" id="fbx" style="display:none"><strong>Feedback Loop</strong><span id="fbt"></span></div>
+    <div class="wb wn"><strong>JOOLA Bias</strong>~43% of brand detections. Findings use balanced samples. Net-tracking detections now flagged separately.</div>
+    <div class="sb"><h3>Researchers</h3><div id="rs"></div></div>
+    <div class="sb"><h3>Your Decisions</h3><div id="ds"></div>
+      <div style="margin-top:6px;display:flex;gap:4px">
+        <button class="bt ex" onclick="exportDec()">Export</button>
+        <button class="bt ex" onclick="clearDec()" style="border-color:oklch(65% .22 25/.3);color:var(--er)">Reset</button>
       </div>
     </div>
-
-    <div class="sidebar-block">
-      <h3>Category Breakdown</h3>
-      <div id="category-breakdown"></div>
-    </div>
-
-    <div class="sidebar-block">
-      <h3>Follow-Up Questions</h3>
-      <div id="follow-ups"></div>
-    </div>
-
-    <div class="warning-box product">
-      <strong>Product Vision</strong>
-      What if every Courtana facility got their own Idea Lab? 7 AI researchers analyzing THEIR clips overnight. The facility just clicks approve/dismiss. They're not buying data — they're buying decisions.
-    </div>
+    <div class="sb" id="cnx" style="display:none"><h3>Cross-Researcher Connections</h3><div id="cn"></div></div>
+    <div class="sb"><h3>Categories</h3><div id="cb"></div></div>
+    <div class="sb"><h3>Follow-Ups</h3><div id="fu"></div></div>
+    <div class="wb pv"><strong>Product Vision</strong>What if every Courtana facility got their own Idea Lab? 7 AI researchers analyze THEIR clips overnight. Facilities approve/dismiss. They buy decisions, not data.</div>
   </div>
 </div>
 
 <script>
-const DATA_URL = '../idea-lab/latest.json';
-let DATA = null;
-let decisions = JSON.parse(localStorage.getItem('idea-lab-decisions') || '{}');
+const U='../idea-lab/latest.json';let D=null,dec=JSON.parse(localStorage.getItem('idea-lab-decisions')||'{}');
 
-async function loadData() {
-  try {
-    const resp = await fetch(DATA_URL);
-    DATA = await resp.json();
-    render();
-  } catch (e) {
-    document.getElementById('strategic-cards').innerHTML =
-      '<div style="color:var(--red);padding:20px">Failed to load data. Run idea_lab_runner.py first.</div>';
-  }
-}
+async function init(){try{const r=await fetch(U);D=await r.json();render()}catch(e){document.getElementById('sc').innerHTML='<p style="color:var(--er);padding:16px;font-size:13px">Load failed. Run idea_lab_runner.py</p>'}}
 
-function saveDecision(findingId, action) {
-  // Also save category/agent for the feedback loop
-  const finding = DATA?.all_findings?.find(f => f.finding_id === findingId);
-  decisions[findingId] = {
-    action,
-    at: new Date().toISOString(),
-    category: finding?.category || '',
-    agent: finding?.agent || '',
-    title: finding?.title || '',
-  };
-  localStorage.setItem('idea-lab-decisions', JSON.stringify(decisions));
-  render();
-}
+function saveDec(id,a){const f=D?.all_findings?.find(x=>x.finding_id===id);dec[id]={action:a,at:new Date().toISOString(),category:f?.category||'',agent:f?.agent||'',title:f?.title||''};localStorage.setItem('idea-lab-decisions',JSON.stringify(dec));render()}
+function getDec(id){return dec[id]?.action||null}
+function exportDec(){const b=new Blob([JSON.stringify(dec,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='idea-lab-decisions.json';a.click()}
+function clearDec(){if(confirm('Reset all decisions?')){dec={};localStorage.removeItem('idea-lab-decisions');render()}}
 
-function getDecision(fid) { return decisions[fid]?.action || null; }
+function mr(v,mx=1){const p=Math.round(v/mx*100),c=p>=70?'g':p>=40?'y':'r';return `<span class="mr"><span class="mr-f ${c}" style="width:${p}%"></span></span>`}
 
-function exportDecisions() {
-  const blob = new Blob([JSON.stringify(decisions, null, 2)], {type: 'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'idea-lab-decisions.json';
-  a.click();
-}
+function clipsHTML(cl){if(!cl?.length)return'';return'<div class="cg">'+cl.map(c=>`<div class="ct"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" controls muted playsinline></video><div class="cp">${(c.summary||'').substring(0,80)}</div></div>`).join('')+'</div>'}
 
-function clearDecisions() {
-  if (confirm('Reset all decisions? This cannot be undone.')) {
-    decisions = {};
-    localStorage.removeItem('idea-lab-decisions');
-    render();
-  }
-}
+function caHTML(ca){if(!ca)return'';return `<div class="ca"><div class="ca-h">Devil's Advocate &middot; ${ca.risk_level||'medium'} risk</div><div class="ca-b">${ca.evidence||ca.argument||''}</div></div>`}
 
-function meterHTML(value, max = 1.0) {
-  const pct = Math.round((value / max) * 100);
-  const cls = pct >= 70 ? 'ok' : pct >= 40 ? 'warn' : 'red';
-  return `<span class="meter"><span class="meter-fill ${cls}" style="width:${pct}%"></span></span>`;
-}
+function card(f,rk,big=false){
+  const d=getDec(f.finding_id),dc=d?` ${d}`:'',trk=f.track==='strategic'?' s':' d',
+    cls=big?'cd bg':'cd',eid='x-'+f.finding_id,
+    ddUrl=f.deep_dive_url?`<a href="../${f.deep_dive_url}" class="bt dd" onclick="event.stopPropagation()">Go Deeper</a>`:'';
 
-function clipHTML(clips) {
-  if (!clips?.length) return '';
-  return '<div class="clip-grid">' + clips.map(c =>
-    `<div class="clip-thumb"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" controls muted playsinline></video><div class="caption">${c.summary || ''}</div></div>`
-  ).join('') + '</div>';
-}
+  let fuH='';if(f.follow_up)fuH=`<div class="fu"><div class="fq">${f.follow_up.follow_up_question}</div><p>Next: ${f.follow_up.proposed_action}</p></div>`;
 
-function counterargHTML(ca) {
-  if (!ca) return '';
-  return `<div class="counterarg"><div class="ca-head">Devil's Advocate (${ca.risk_level || 'medium'} risk)</div><div class="ca-body">${ca.evidence || ca.argument || ''}</div></div>`;
-}
-
-function cardHTML(f, rank, big = false) {
-  const dec = getDecision(f.finding_id);
-  const decClass = dec ? ` ${dec}` : '';
-  const trackClass = f.track === 'strategic' ? ' strategic' : ' data-track';
-  const cls = big ? 'card big-card' : 'card';
-  const eid = 'exp-' + f.finding_id;
-
-  let followUp = '';
-  if (f.follow_up) followUp = `<div class="follow-up"><div class="q">${f.follow_up.follow_up_question}</div>Next: ${f.follow_up.proposed_action}</div>`;
-
-  return `<div class="${cls}${trackClass}${decClass}" onclick="toggleExpand('${eid}',this)">
-    <div class="card-rank">#${rank}</div>
-    <div class="card-title">${f.title}</div>
-    <div class="card-evidence">${(f.evidence_summary || '').substring(0, 200)}</div>
-    <div class="card-meta">
-      <span class="tag agent">${f.agent}</span>
-      <span class="tag ${f.business_value}">${f.business_value}</span>
-      <span class="tag cat">${f.category}</span>
-      <span style="color:var(--muted);font-size:10px">conf ${(f.confidence*100).toFixed(0)}%${meterHTML(f.confidence)}</span>
-      ${f.composite_score ? `<span style="color:var(--dim);font-size:10px">${f.composite_score.toFixed(3)}</span>` : ''}
-      ${f.counterargument ? '<span style="color:var(--red);font-size:10px">DA</span>' : ''}
+  return `<div class="${cls}${trk}${dc}" onclick="tog('${eid}',this)">
+    <div class="cd-rk">#${rk}</div>
+    <div class="cd-ti">${f.title}</div>
+    <div class="cd-ev">${(f.evidence_summary||'').substring(0,180)}</div>
+    <div class="cd-mt">
+      <span class="tg ag">${f.agent}</span>
+      <span class="tg ${f.business_value==='high'?'h':f.business_value==='medium'?'m':'l'}">${f.business_value}</span>
+      <span class="tg ct">${f.category}</span>
+      <span style="color:var(--mt);font-size:9px;font-family:'Red Hat Mono',monospace">${(f.confidence*100).toFixed(0)}%${mr(f.confidence)}</span>
+      ${f.composite_score?`<span style="color:oklch(40% .02 155);font-size:9px;font-family:'Red Hat Mono',monospace">${f.composite_score.toFixed(3)}</span>`:''}
+      ${f.counterargument?'<span style="color:var(--er);font-size:9px;font-family:\'Red Hat Mono\',monospace">DA</span>':''}
     </div>
-    <div class="expand-body" id="${eid}">
-      <div class="expand-section"><h4>Evidence</h4><p>${f.evidence_summary}</p></div>
-      ${f.recommended_action ? `<div class="expand-section"><h4>Recommended Action</h4><p>${f.recommended_action}</p></div>` : ''}
-      ${counterargHTML(f.counterargument)}
-      ${followUp}
-      ${f.source_clips ? `<div class="expand-section"><h4>Source Clips</h4>${clipHTML(f.source_clips)}</div>` : ''}
-      <div class="actions">
-        <button class="btn approve" onclick="event.stopPropagation();saveDecision('${f.finding_id}','approved')">Approve</button>
-        <button class="btn park" onclick="event.stopPropagation();saveDecision('${f.finding_id}','parked')">Park</button>
-        <button class="btn dismiss" onclick="event.stopPropagation();saveDecision('${f.finding_id}','dismissed')">Dismiss</button>
+    <div class="xb" id="${eid}">
+      <div class="xs"><h4>Evidence</h4><p>${f.evidence_summary||''}</p></div>
+      ${f.recommended_action?`<div class="xs"><h4>Action</h4><p>${f.recommended_action}</p></div>`:''}
+      ${caHTML(f.counterargument)}${fuH}
+      ${f.source_clips?`<div class="xs"><h4>Source Clips</h4>${clipsHTML(f.source_clips)}</div>`:''}
+      <div class="acts">
+        <button class="bt ap" onclick="event.stopPropagation();saveDec('${f.finding_id}','approved')">Approve</button>
+        <button class="bt pk" onclick="event.stopPropagation();saveDec('${f.finding_id}','parked')">Park</button>
+        <button class="bt dm" onclick="event.stopPropagation();saveDec('${f.finding_id}','dismissed')">Dismiss</button>
+        ${ddUrl}
       </div>
     </div>
-  </div>`;
-}
+  </div>`}
 
-function toggleExpand(id, el) {
-  const isExp = el.classList.contains('expanded');
-  document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
-  if (!isExp) el.classList.add('expanded');
-}
+function tog(id,el){const x=el.classList.contains('ex');document.querySelectorAll('.cd.ex').forEach(c=>c.classList.remove('ex'));if(!x)el.classList.add('ex')}
 
-function render() {
-  if (!DATA) return;
-  const { top_strategic, top_data, all_findings, corpus_stats, researcher_stats, feedback_loop, counterarguments } = DATA;
-  const ts = top_strategic || DATA.top_5?.slice(0, 3) || [];
-  const td = top_data || DATA.top_5?.slice(3) || [];
+function render(){
+  if(!D)return;
+  const{top_strategic:ts,top_data:td,all_findings:af,corpus_stats:cs,researcher_stats:rs,feedback_loop:fl,counterarguments:cas,connections:cns}=D;
+  const s=ts||D.top_5?.slice(0,3)||[],d=td||D.top_5?.slice(3)||[];
 
-  // Header
-  document.getElementById('timestamp').textContent = `Last run: ${DATA.generated_at ? new Date(DATA.generated_at).toLocaleString() : 'unknown'}`;
-  const v = DATA.version || 1;
-  document.getElementById('chips').innerHTML = `
-    <span class="chip ok"><span class="live-dot"></span>${corpus_stats.researchers_run} researchers</span>
-    <span class="chip purple">${corpus_stats.unique_findings} findings</span>
-    ${corpus_stats.strategic_count ? `<span class="chip" style="background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,.3)">${corpus_stats.strategic_count} strategic</span>` : ''}
-    ${corpus_stats.data_count ? `<span class="chip" style="background:var(--cyan-dim);color:var(--cyan);border-color:rgba(6,182,212,.3)">${corpus_stats.data_count} data</span>` : ''}
-    ${feedback_loop?.active ? '<span class="chip ok">feedback active</span>' : ''}
-    ${counterarguments?.length ? `<span class="chip" style="background:var(--red-dim);color:var(--red);border-color:rgba(239,68,68,.3)">${counterarguments.length} DA</span>` : ''}
-  `;
+  document.getElementById('ts').textContent=`Last run: ${D.generated_at?new Date(D.generated_at).toLocaleString():'—'}`;
+  document.getElementById('chips').innerHTML=`
+    <span class="chip ac"><span class="dot"></span>${cs.researchers_run} researchers</span>
+    <span class="chip pu">${cs.strategic_count||0} strategic</span>
+    <span class="chip cy">${cs.data_count||0} data</span>
+    ${fl?.active?'<span class="chip gd">feedback active</span>':''}
+    ${cas?.length?`<span class="chip er">${cas.length} DA</span>`:''}
+    ${cns?.length?`<span class="chip gd">${cns.length} connections</span>`:''}`;
 
-  // Two-track top findings
-  document.getElementById('tracks-count').textContent = `${ts.length + td.length} priority`;
-  document.getElementById('strategic-cards').innerHTML = ts.length ?
-    ts.map((f, i) => cardHTML(f, i + 1, true)).join('') :
-    '<div style="color:var(--dim);font-size:12px;padding:8px">No strategic findings this run</div>';
-  document.getElementById('data-cards').innerHTML = td.length ?
-    td.map((f, i) => cardHTML(f, i + 1, true)).join('') :
-    '<div style="color:var(--dim);font-size:12px;padding:8px">No data findings this run</div>';
+  document.getElementById('tc').textContent=`${s.length+d.length} priority`;
+  document.getElementById('sc').innerHTML=s.length?s.map((f,i)=>card(f,i+1,true)).join(''):'<p style="color:var(--mt);font-size:12px;padding:8px">None this run</p>';
+  document.getElementById('dc').innerHTML=d.length?d.map((f,i)=>card(f,i+1,true)).join(''):'<p style="color:var(--mt);font-size:12px;padding:8px">None this run</p>';
 
-  // Filters
-  const agents = [...new Set(all_findings.map(f => f.agent))].sort();
-  document.getElementById('filter-agent').innerHTML = '<option value="">All Researchers</option>' + agents.map(a => `<option value="${a}">${a}</option>`).join('');
+  const agents=[...new Set(af.map(f=>f.agent))].sort();
+  document.getElementById('fa').innerHTML='<option value="">All Researchers</option>'+agents.map(a=>`<option value="${a}">${a}</option>`).join('');
 
-  renderFullList();
-  renderMeta();
-}
+  renderList();renderMeta(rs,fl,cas,cns)}
 
-function renderFullList() {
-  const trackF = document.getElementById('filter-track').value;
-  const agentF = document.getElementById('filter-agent').value;
-  const bvF = document.getElementById('filter-bv').value;
-  const sortBy = document.getElementById('sort-by').value;
+function renderList(){
+  const t=document.getElementById('ft').value,a=document.getElementById('fa').value,
+    b=document.getElementById('fb').value,so=document.getElementById('fs').value;
+  let it=[...(D.all_findings||[])];
+  if(t)it=it.filter(f=>f.track===t);if(a)it=it.filter(f=>f.agent===a);if(b)it=it.filter(f=>f.business_value===b);
+  if(so==='confidence')it.sort((a,b)=>b.confidence-a.confidence);
+  else if(so==='novelty')it.sort((a,b)=>(b.novelty||0)-(a.novelty||0));
+  else if(so==='agent')it.sort((a,b)=>a.agent.localeCompare(b.agent));
+  document.getElementById('fc').textContent=`${it.length} findings`;
+  document.getElementById('fl').innerHTML=it.map((f,i)=>card(f,i+1)).join('')}
 
-  let items = [...(DATA.all_findings || [])];
-  if (trackF) items = items.filter(f => f.track === trackF);
-  if (agentF) items = items.filter(f => f.agent === agentF);
-  if (bvF) items = items.filter(f => f.business_value === bvF);
+function renderMeta(rs,fl,cas,cns){
+  if(fl?.active){document.getElementById('fbx').style.display='block';
+    document.getElementById('fbt').textContent=fl.has_decisions?`${fl.decisions_loaded} decisions loaded. Approved categories boosted, dismissed penalized.`:'Active — make decisions below to influence next run.'}
 
-  if (sortBy === 'confidence') items.sort((a, b) => b.confidence - a.confidence);
-  else if (sortBy === 'novelty') items.sort((a, b) => (b.novelty||0) - (a.novelty||0));
-  else if (sortBy === 'agent') items.sort((a, b) => a.agent.localeCompare(b.agent));
+  document.getElementById('rs').innerHTML=(rs||[]).map(r=>`<div class="it"><span class="lb">${r.agent}</span><span class="vl">${r.findings_count}${r.duration_seconds?` · ${r.duration_seconds}s`:''}</span></div>`).join('');
 
-  document.getElementById('full-count').textContent = `${items.length} findings`;
-  document.getElementById('full-cards').innerHTML = items.map((f, i) => cardHTML(f, i + 1)).join('');
-}
+  const a=Object.values(dec).filter(d=>d.action==='approved').length,
+    p=Object.values(dec).filter(d=>d.action==='parked').length,
+    dm=Object.values(dec).filter(d=>d.action==='dismissed').length,
+    tot=D.all_findings?.length||0;
+  document.getElementById('ds').innerHTML=`
+    <div class="it"><span class="lb" style="color:var(--ac)">Approved</span><span class="vl">${a}</span></div>
+    <div class="it"><span class="lb" style="color:var(--wn)">Parked</span><span class="vl">${p}</span></div>
+    <div class="it"><span class="lb" style="color:var(--mt)">Dismissed</span><span class="vl">${dm}</span></div>
+    <div class="it"><span class="lb">Pending</span><span class="vl">${tot-a-p-dm}</span></div>`;
 
-function renderMeta() {
-  const fl = DATA.feedback_loop || {};
-  if (fl.active) {
-    document.getElementById('feedback-box').style.display = 'block';
-    document.getElementById('feedback-text').textContent =
-      `${fl.decisions_loaded} past decisions influence scoring. Categories with approved findings get boosted; dismissed ones penalized.`;
-  }
+  // Connections
+  if(cns?.length){document.getElementById('cnx').style.display='block';
+    document.getElementById('cn').innerHTML=cns.map(c=>`<div class="cn"><div class="cn-h">${c.type.replace(/_/g,' ')}</div><div class="cn-b">${c.combined_insight||c.connection}</div><div class="cn-agents">${(c.agents||[]).join(' + ')}</div></div>`).join('')}
 
-  const rs = DATA.researcher_stats || [];
-  document.getElementById('researcher-status').innerHTML = rs.map(r => `
-    <div class="item"><span class="label">${r.agent}</span>
-    <span class="value">${r.findings_count}${r.duration_seconds ? ` · ${r.duration_seconds}s` : ''}</span></div>`).join('');
+  const cd=D.category_distribution||{};
+  document.getElementById('cb').innerHTML=Object.entries(cd).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<div class="it"><span class="lb">${c}</span><span class="vl">${n}</span></div>`).join('');
 
-  const cd = DATA.category_distribution || {};
-  document.getElementById('category-breakdown').innerHTML = Object.entries(cd)
-    .sort((a,b) => b[1]-a[1]).map(([c,n]) => `<div class="item"><span class="label">${c}</span><span class="value">${n}</span></div>`).join('');
+  const allTop=[...(D.top_strategic||[]),...(D.top_data||[])];
+  const fups=allTop.filter(f=>f.follow_up).map(f=>`<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bds)"><div style="font-size:10px;color:var(--pu);font-weight:600;margin-bottom:2px;font-family:'Red Hat Mono',monospace">${f.agent}</div><div style="font-size:11px;color:var(--tx2);line-height:1.4">${f.follow_up.follow_up_question}</div></div>`).join('');
+  document.getElementById('fu').innerHTML=fups||'<p style="color:var(--mt);font-size:11px">None yet</p>'}
 
-  const a = Object.values(decisions).filter(d => d.action==='approved').length;
-  const p = Object.values(decisions).filter(d => d.action==='parked').length;
-  const d = Object.values(decisions).filter(d => d.action==='dismissed').length;
-  const total = DATA.all_findings?.length || 0;
-  document.getElementById('decisions-summary').innerHTML = `
-    <div class="item"><span class="label" style="color:var(--ok)">Approved</span><span class="value">${a}</span></div>
-    <div class="item"><span class="label" style="color:var(--warn)">Parked</span><span class="value">${p}</span></div>
-    <div class="item"><span class="label" style="color:var(--dim)">Dismissed</span><span class="value">${d}</span></div>
-    <div class="item"><span class="label">Pending</span><span class="value">${total - a - p - d}</span></div>`;
-
-  const allTop = [...(DATA.top_strategic||[]), ...(DATA.top_data||[])];
-  const fups = allTop.filter(f => f.follow_up).map(f => `
-    <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.03)">
-      <div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:3px">${f.agent}</div>
-      <div style="font-size:12px;color:var(--text);line-height:1.4">${f.follow_up.follow_up_question}</div>
-    </div>`).join('');
-  document.getElementById('follow-ups').innerHTML = fups || '<div style="color:var(--dim);font-size:12px">None yet</div>';
-}
-
-['filter-track','filter-agent','filter-bv','sort-by'].forEach(id =>
-  document.getElementById(id).addEventListener('change', renderFullList));
-
-loadData();
+['ft','fa','fb','fs'].forEach(id=>document.getElementById(id).addEventListener('change',renderList));
+init();
 </script>
 </body>
 </html>
