@@ -3,368 +3,394 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Intelligence V3 — Taxonomy-driven</title>
+<title>Brand Intelligence V3 — Classification Provenance · Pickle DaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0b0f14; --panel:#141a22; --panel-hi:#1c2430; --border:#2a3341;
-    --text:#e7ecf3; --mute:#8a95a6; --accent:#4ade80; --warn:#fbbf24;
-    --danger:#f87171; --primary:#60a5fa;
-  }
-  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-  header{padding:24px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px}
-  h1{margin:0;font-size:22px} .sub{color:var(--mute);font-size:13px;margin-top:4px}
-  main{max-width:1200px;margin:0 auto;padding:24px 32px}
-  section{margin-bottom:36px}
-  h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:16px}
-  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-  .stat{padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
-  .stat-value{font-size:22px;font-weight:600}
-  .stat-label{font-size:11px;color:var(--mute);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px}
-  .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-  .tab{padding:8px 14px;background:var(--panel);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px;color:var(--text)}
-  .tab.active{background:var(--primary);color:#0b0f14;border-color:var(--primary);font-weight:600}
-  .panel{display:none} .panel.active{display:block}
-  .brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-  .brand-card{padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:8px;transition:border-color 0.15s}
-  .brand-card:hover{border-color:var(--primary)}
-  .brand-card.high-value{border-left:3px solid var(--accent)}
-  .brand-card.verified{background:linear-gradient(to right, rgba(74,222,128,0.05), transparent)}
-  .brand-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-  .brand-name{font-size:16px;font-weight:600}
-  .detection-count{font-size:12px;color:var(--mute)}
-  .chips{margin-top:8px;display:flex;gap:4px;flex-wrap:wrap}
-  .chip{font-size:10px;padding:2px 7px;background:var(--panel-hi);border-radius:10px;color:var(--mute);border:1px solid var(--border)}
-  .chip.high{background:var(--accent);color:#0b0f14}
-  .chip.medium{background:var(--primary);color:#0b0f14}
-  .chip.warn{background:var(--warn);color:#0b0f14}
-  .chip.danger{background:var(--danger);color:#0b0f14}
-  .brand-meta{margin-top:8px;font-size:12px;color:var(--mute);line-height:1.4}
-  .brand-link{display:block;margin-top:6px;font-size:11px;color:var(--primary);text-decoration:none}
-  table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
-  th,td{padding:9px 12px;text-align:left;font-size:13px;border-bottom:1px solid var(--border)}
-  th{background:var(--panel-hi);color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
-  tr:last-child td{border-bottom:none}
-  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
-  .subtype-header{display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px;padding:8px 12px;background:var(--panel-hi);border-radius:6px;font-size:13px}
-  .subtype-header .count{color:var(--mute)}
-  a{color:var(--primary)}
-  .empty{padding:32px;text-align:center;color:var(--mute);background:var(--panel);border:1px dashed var(--border);border-radius:8px}
-  .cta{display:inline-block;padding:8px 14px;background:var(--panel);color:var(--text);text-decoration:none;border:1px solid var(--border);border-radius:6px;font-size:13px;margin-right:4px}
-  .cta.primary{background:var(--primary);color:#0b0f14;border-color:var(--primary);font-weight:600}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0f14;--sf:#141a22;--sf2:#1c2430;--sf3:#222d3d;
+  --bd:#2a3341;--bds:#1e2738;
+  --tx:#e7ecf3;--tx2:#8a95a6;--mt:#5a6578;
+  --ac:#4ade80;--acd:rgba(74,222,128,.08);--acg:rgba(74,222,128,.15);
+  --bl:#60a5fa;--bld:rgba(96,165,250,.1);
+  --am:#fbbf24;--amd:rgba(251,191,36,.1);
+  --rd:#f87171;--rdd:rgba(248,113,113,.1);
+  --pu:#c084fc;--pud:rgba(192,132,252,.1);
+  --r:8px;--rl:12px;
+}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.shell{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,32px) 60px}
+
+/* Header */
+header{padding:20px 0;border-bottom:1px solid var(--bds);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.logo{font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}
+.logo .badge{background:var(--acd);color:var(--ac);border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:2px 8px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.5px}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav a{padding:5px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--tx2);font-family:'Red Hat Mono',monospace;transition:all .15s}
+nav a:hover{border-color:var(--ac);color:var(--ac)}
+nav a.primary{background:var(--acd);border-color:rgba(74,222,128,.25);color:var(--ac);font-weight:600}
+
+/* Hero */
+.hero{margin:8px 0 28px}
+.hero h1{font-size:clamp(22px,3.5vw,34px);font-weight:800;letter-spacing:-1px;line-height:1.1}
+.hero h1 em{font-style:normal;color:var(--ac)}
+.hero-sub{color:var(--tx2);font-size:13px;margin-top:6px;max-width:600px}
+
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;background:var(--bds);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:24px}
+.stat{padding:16px 20px;background:var(--sf);border-right:1px solid var(--bds)}
+.stat:last-child{border-right:none}
+.stat .val{font-size:clamp(20px,2.5vw,28px);font-weight:700;font-variant-numeric:tabular-nums;font-family:'Red Hat Mono',monospace;line-height:1}
+.stat .val.green{color:var(--ac)} .stat .val.blue{color:var(--bl)} .stat .val.amber{color:var(--am)} .stat .val.purple{color:var(--pu)}
+.stat .lbl{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:5px;font-family:'Red Hat Mono',monospace}
+
+/* Provenance callout */
+.prov-callout{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bld);border:1px solid rgba(96,165,250,.2);border-radius:var(--r);margin-bottom:20px;font-size:12px;color:var(--bl)}
+.prov-callout strong{color:#93c5fd}
+.prov-pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:10px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;white-space:nowrap}
+.prov-pill.rule{background:rgba(74,222,128,.12);color:var(--ac);border:1px solid rgba(74,222,128,.2)}
+.prov-pill.fallback{background:var(--amd);color:var(--am);border:1px solid rgba(251,191,36,.2)}
+.prov-pill.verified{background:rgba(74,222,128,.08);color:var(--ac)}
+.prov-pill.unverified{background:rgba(90,101,120,.12);color:var(--mt)}
+
+/* Tabs */
+.tabs-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tab{padding:7px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;font-size:12px;font-weight:600;color:var(--tx2);cursor:pointer;transition:all .15s;font-family:'Manrope',sans-serif}
+.tab:hover{border-color:var(--ac);color:var(--ac)}
+.tab.active{background:var(--acd);border-color:rgba(74,222,128,.3);color:var(--ac)}
+.tab .cnt{font-family:'Red Hat Mono',monospace;font-size:10px;opacity:.7;margin-left:5px}
+
+/* Category subheader */
+.cat-head{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;margin:20px 0 12px;font-size:12px}
+.cat-head .cat-name{font-weight:700;text-transform:capitalize;letter-spacing:.3px}
+.cat-head .cat-count{color:var(--mt);font-family:'Red Hat Mono',monospace;font-size:11px}
+
+/* Brand grid */
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:8px}
+.bcard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;transition:border-color .15s}
+.bcard:hover{border-color:var(--ac)}
+.bcard.high-val{border-left:3px solid var(--ac)}
+.bcard.sponsor{border-left:3px solid var(--am)}
+.bcard.venue{border-left:3px solid var(--bl)}
+.bcard.broadcast{border-left:3px solid var(--pu)}
+.bcard.fallback{border-left:3px solid var(--mt)}
+
+.bcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px}
+.bname{font-size:15px;font-weight:700}
+.bcount{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-align:right}
+.bcount .clips{display:block;font-size:10px}
+
+.provenance-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:8px;padding:7px 10px;background:var(--sf2);border-radius:5px;border:1px solid var(--bds)}
+.prov-label{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;font-family:'Red Hat Mono',monospace;margin-right:3px}
+
+.chips-row{display:flex;gap:5px;flex-wrap:wrap}
+.chip{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;border:1px solid transparent}
+.chip.cat{background:rgba(96,165,250,.1);color:var(--bl);border-color:rgba(96,165,250,.2)}
+.chip.rev-high{background:var(--acd);color:var(--ac);border-color:rgba(74,222,128,.25)}
+.chip.rev-med{background:var(--bld);color:var(--bl);border-color:rgba(96,165,250,.25)}
+.chip.rev-low{background:rgba(90,101,120,.1);color:var(--mt)}
+.chip.none{background:rgba(90,101,120,.1);color:var(--mt)}
+
+.rationale{font-size:11px;color:var(--tx2);margin-top:8px;line-height:1.4;font-style:italic;padding-left:8px;border-left:2px solid var(--bd)}
+
+/* Panel visibility */
+.panel{display:none}.panel.active{display:block}
+
+/* Sort controls */
+.controls{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.controls label{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.controls select{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 10px;border-radius:6px;font-size:12px;font-family:'Manrope',sans-serif;cursor:pointer}
+.controls input{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 10px;border-radius:6px;font-size:12px;font-family:'Manrope',sans-serif;width:180px}
+.controls input::placeholder{color:var(--mt)}
+
+/* Table for unknowns */
+table{width:100%;border-collapse:collapse;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+thead tr{background:var(--sf2)}
+th,td{padding:8px 12px;text-align:left;font-size:12px;border-bottom:1px solid var(--bds)}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--mt);font-family:'Red Hat Mono',monospace}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--sf2)}
+td.mono{font-family:'Red Hat Mono',monospace;font-size:11px}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+.empty-state{padding:40px;text-align:center;color:var(--mt);background:var(--sf);border:1px dashed var(--bd);border-radius:var(--r);font-size:13px}
 </style>
 </head>
 <body>
+<div class="shell">
+
 <header>
-  <div>
-    <h1>Brand Intelligence V3</h1>
-    <div class="sub" id="subtitle">Taxonomy-driven — loading…</div>
+  <div class="logo">
+    Pickle DaaS
+    <span class="badge">Brand Intelligence V3</span>
   </div>
-  <div>
-    <a class="cta" href="classifier-queue.html">Queue</a>
-    <a class="cta" href="classifier-morning-report.html">Morning Report</a>
-    <a class="cta primary" href="brand-intelligence-v2.html">← V2 (legacy)</a>
-  </div>
+  <nav>
+    <a href="showcase-portal.html">Portal</a>
+    <a href="brand-intelligence-v2.html">V2 (stable)</a>
+    <a href="classifier-queue.html">Classifier Queue</a>
+    <a href="evidence-wall-v3.html" class="primary">Evidence Wall V3 →</a>
+  </nav>
 </header>
-<main>
 
-<section>
-  <h2>At a glance</h2>
-  <div class="stat-grid" id="stats"></div>
-</section>
+<div class="hero">
+  <h1>Brand Intelligence <em>V3</em></h1>
+  <div class="hero-sub" id="hero-sub">Classification provenance — how the AI tagged every brand, why, and with what confidence. Rule-derived vs fallback. Human-verified vs pending.</div>
+</div>
 
-<section>
-  <div class="tabs">
-    <div class="tab active" data-tab="sponsors">💼 Sponsors</div>
-    <div class="tab" data-tab="player-gear">🏓 Player Equipment</div>
-    <div class="tab" data-tab="venue">🏟️ Venue & Broadcast</div>
-    <div class="tab" data-tab="unknowns">❓ Unknowns</div>
-    <div class="tab" data-tab="quarantine">🚨 Quarantined</div>
+<div class="stats-bar" id="stats-bar">
+  <div class="stat"><div class="val green" id="s-brands">—</div><div class="lbl">Unique brands</div></div>
+  <div class="stat"><div class="val" id="s-detections">—</div><div class="lbl">Total detections</div></div>
+  <div class="stat"><div class="val green" id="s-coverage">—</div><div class="lbl">Rule coverage</div></div>
+  <div class="stat"><div class="val blue" id="s-player">—</div><div class="lbl">Player equipment</div></div>
+  <div class="stat"><div class="val amber" id="s-venue">—</div><div class="lbl">Venue / Broadcast</div></div>
+  <div class="stat"><div class="val purple" id="s-sponsor">—</div><div class="lbl">Sponsor signage</div></div>
+  <div class="stat"><div class="val green" id="s-verified">—</div><div class="lbl">Human verified</div></div>
+  <div class="stat"><div class="val" id="s-fallback">—</div><div class="lbl">Fallback classified</div></div>
+</div>
+
+<div class="prov-callout">
+  <div>
+    <strong>What is classification provenance?</strong>
+    Each brand seen in a clip is tagged by the classification engine with its type (player equipment, venue signage, sponsor, etc.),
+    the source of the rule that tagged it, the rule version, and whether a human has verified the classification.
+    <span class="prov-pill rule" style="margin-left:10px">rule v6</span>
+    <span class="prov-pill verified" style="margin-left:4px">✓ verified by Bill</span>
+    <span class="prov-pill fallback" style="margin-left:4px">fallback</span>
+    <span class="prov-pill unverified" style="margin-left:4px">unverified</span>
   </div>
+</div>
 
-  <div class="panel active" id="tab-sponsors">
-    <h2>Sponsors grouped by sub-type</h2>
-    <div id="sponsors-content"><div class="empty">Loading…</div></div>
-  </div>
+<div class="controls">
+  <label>Sort by</label>
+  <select id="sort-sel" onchange="render()">
+    <option value="detections">Detections</option>
+    <option value="clips">Unique clips</option>
+    <option value="name">Name (A→Z)</option>
+  </select>
+  <label style="margin-left:12px">Filter</label>
+  <input id="search-box" placeholder="Search brand name…" oninput="render()" />
+</div>
 
-  <div class="panel" id="tab-player-gear">
-    <h2>Player equipment market share</h2>
-    <div id="player-gear-content"><div class="empty">Loading…</div></div>
-  </div>
+<div class="tabs-row" id="tabs"></div>
 
-  <div class="panel" id="tab-venue">
-    <h2>Venue infrastructure & broadcast tech</h2>
-    <div id="venue-content"><div class="empty">Loading…</div></div>
-  </div>
+<div id="panels">
+  <div class="empty-state">Loading classification data…</div>
+</div>
 
-  <div class="panel" id="tab-unknowns">
-    <h2>Unclassified / needs research</h2>
-    <div id="unknowns-content"><div class="empty">Loading…</div></div>
-  </div>
-
-  <div class="panel" id="tab-quarantine">
-    <h2>Quarantined clips (non-pickleball pollution)</h2>
-    <div id="quarantine-content"><div class="empty">Loading…</div></div>
-  </div>
-</section>
-
-</main>
+</div>
 
 <script>
-  const DATA_SOURCES = {
-    corpus: '../corpus-export.json',
-    taxonomy: '../classifier/approved-rules.json',
-    stats: '../classification-stats.json',
-    quarantine: '../classifier/quarantined-clips.json',
-    research: '../classifier/brand-research.json',
-    proposed: '../classifier/proposed-rules.json',
+const PROV_URL = '../brand-provenance.json';
+const STATS_URL = '../classification-stats.json';
+
+let state = { brands: [], stats: {}, activeTab: 'player' };
+
+function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function fetchJson(url) {
+  try { const r = await fetch(url, {cache:'no-store'}); if(r.ok) return await r.json(); } catch(e) {}
+  return null;
+}
+
+function provenanceRow(brand) {
+  const isRule = brand.source === 'rule';
+  const rv = brand.rule_version || '?';
+  const verified = brand.human_verified;
+
+  let contextPill = '';
+  if (brand.player_equipment) contextPill = `<span class="prov-pill rule" style="background:rgba(96,165,250,.1);color:var(--bl);border-color:rgba(96,165,250,.2)">player_equipment</span>`;
+  else if (brand.venue_installed) contextPill = `<span class="prov-pill rule" style="background:var(--amd);color:var(--am);border-color:rgba(251,191,36,.2)">venue_installed</span>`;
+  else if (brand.sponsor_signage) contextPill = `<span class="prov-pill rule" style="background:var(--pud);color:var(--pu);border-color:rgba(192,132,252,.2)">sponsor_signage</span>`;
+  else if (brand.broadcast_tech) contextPill = `<span class="prov-pill rule" style="background:rgba(248,113,113,.1);color:var(--rd);border-color:rgba(248,113,113,.2)">broadcast_tech</span>`;
+  else contextPill = `<span class="prov-pill fallback" style="background:rgba(90,101,120,.1);color:var(--mt)">unclassified</span>`;
+
+  const sourcePill = isRule
+    ? `<span class="prov-pill rule">rule v${rv}</span>`
+    : `<span class="prov-pill fallback">fallback</span>`;
+
+  const verifiedPill = verified
+    ? `<span class="prov-pill verified">✓ verified by Bill</span>`
+    : `<span class="prov-pill unverified">unverified</span>`;
+
+  return `<div class="provenance-row">
+    <span class="prov-label">Tagged:</span>
+    ${contextPill}${sourcePill}${verifiedPill}
+  </div>`;
+}
+
+function revChip(rev) {
+  if (!rev || rev === 'none') return `<span class="chip rev-low">no rev</span>`;
+  if (rev === 'high') return `<span class="chip rev-high">high value</span>`;
+  if (rev === 'medium') return `<span class="chip rev-med">medium value</span>`;
+  return `<span class="chip rev-low">low value</span>`;
+}
+
+function brandCard(brand) {
+  let border = '';
+  if (brand.player_equipment) border = '';
+  else if (brand.venue_installed) border = ' venue';
+  else if (brand.sponsor_signage) border = ' sponsor';
+  else if (brand.broadcast_tech) border = ' broadcast';
+  else border = ' fallback';
+  if (brand.revenue_potential === 'high') border += ' high-val';
+
+  const cat = brand.category_primary || 'unknown';
+
+  return `<div class="bcard${border}">
+    <div class="bcard-top">
+      <div class="bname">${esc(brand.name)}</div>
+      <div class="bcount">
+        <span>${brand.detections.toLocaleString()} detections</span>
+        <span class="clips">${brand.clips} clips</span>
+      </div>
+    </div>
+    ${provenanceRow(brand)}
+    <div class="chips-row">
+      <span class="chip cat">${esc(cat)}</span>
+      ${revChip(brand.revenue_potential)}
+    </div>
+    ${brand.rationale ? `<div class="rationale">${esc(brand.rationale.slice(0,160))}${brand.rationale.length>160?'…':''}</div>` : ''}
+  </div>`;
+}
+
+function tabLabel(id) {
+  return {player:'🏓 Player Equipment', venue:'🏟️ Venue & Broadcast', sponsor:'💼 Sponsors', unknown:'❓ Unknown', all:'All Brands'}[id] || id;
+}
+
+function getBrands() {
+  const q = document.getElementById('search-box')?.value?.toLowerCase() || '';
+  const sort = document.getElementById('sort-sel')?.value || 'detections';
+  let brands = state.brands;
+  if (q) brands = brands.filter(b => b.name.toLowerCase().includes(q));
+  brands = [...brands].sort((a,b) => {
+    if (sort === 'name') return a.name.localeCompare(b.name);
+    if (sort === 'clips') return b.clips - a.clips;
+    return b.detections - a.detections;
+  });
+  return brands;
+}
+
+function render() {
+  const tab = state.activeTab;
+  const brands = getBrands();
+
+  let filtered;
+  if (tab === 'all') filtered = brands;
+  else if (tab === 'player') filtered = brands.filter(b => b.player_equipment);
+  else if (tab === 'venue') filtered = brands.filter(b => b.venue_installed || b.broadcast_tech);
+  else if (tab === 'sponsor') filtered = brands.filter(b => b.sponsor_signage);
+  else if (tab === 'unknown') filtered = brands.filter(b => !b.player_equipment && !b.venue_installed && !b.sponsor_signage && !b.broadcast_tech);
+
+  const panels = document.getElementById('panels');
+
+  if (tab === 'unknown') {
+    // Show as table for unknowns
+    if (!filtered.length) { panels.innerHTML = '<div class="empty-state">No unclassified brands.</div>'; return; }
+    const rows = filtered.map(b => `<tr>
+      <td><b>${esc(b.name)}</b></td>
+      <td class="mono">${esc(b.category_primary||'?')}</td>
+      <td class="mono">${esc(b.source)}</td>
+      <td class="num">${b.detections.toLocaleString()}</td>
+      <td class="num">${b.clips}</td>
+      <td>${b.human_verified ? '<span class="chip rev-high" style="font-size:9px">✓</span>' : '<span class="chip none" style="font-size:9px">–</span>'}</td>
+    </tr>`).join('');
+    panels.innerHTML = `<table>
+      <thead><tr><th>Brand</th><th>Category</th><th>Source</th><th>Detections</th><th>Clips</th><th>Verified</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+    return;
+  }
+
+  if (!filtered.length) { panels.innerHTML = '<div class="empty-state">No brands match.</div>'; return; }
+
+  // Group by category_primary
+  const byCat = {};
+  for (const b of filtered) {
+    const cat = b.category_primary || 'unknown';
+    (byCat[cat] = byCat[cat] || []).push(b);
+  }
+  const catOrder = ['paddle','shoes','apparel','bag','ball','accessory','net_system','court_surface','facility_chain','venue_equipment','camera','broadcast_tech','sponsor_signage','unknown','other'];
+  const cats = Object.keys(byCat).sort((a,b) => {
+    const ia = catOrder.indexOf(a), ib = catOrder.indexOf(b);
+    return (ia<0?99:ia)-(ib<0?99:ib);
+  });
+
+  let html = '';
+  for (const cat of cats) {
+    const items = byCat[cat];
+    const totalDets = items.reduce((s,b) => s+b.detections, 0);
+    html += `<div class="cat-head">
+      <span class="cat-name">${esc(cat.replace(/_/g,' '))}</span>
+      <span class="cat-count">${items.length} brand${items.length!==1?'s':''} · ${totalDets.toLocaleString()} detections</span>
+    </div>
+    <div class="brand-grid">${items.map(brandCard).join('')}</div>`;
+  }
+  panels.innerHTML = html;
+}
+
+function switchTab(id) {
+  state.activeTab = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  render();
+}
+
+function buildTabs() {
+  const brands = state.brands;
+  const counts = {
+    player: brands.filter(b=>b.player_equipment).length,
+    venue: brands.filter(b=>b.venue_installed||b.broadcast_tech).length,
+    sponsor: brands.filter(b=>b.sponsor_signage).length,
+    unknown: brands.filter(b=>!b.player_equipment&&!b.venue_installed&&!b.sponsor_signage&&!b.broadcast_tech).length,
+    all: brands.length,
   };
 
-  let state = { corpus: [], taxonomy: {rules:[]}, stats: {}, quarantine: {clips:[]}, research: {research:[]}, proposed: {proposals:[]} };
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = ['player','venue','sponsor','unknown','all'].map(id =>
+    `<div class="tab${id==='player'?' active':''}" data-tab="${id}" onclick="switchTab('${id}')">
+      ${tabLabel(id)} <span class="cnt">(${counts[id]})</span>
+    </div>`
+  ).join('');
+}
 
-  async function fetchJson(url) {
-    try {
-      const r = await fetch(url, {cache:'no-store'});
-      if (r.ok) return await r.json();
-    } catch(e) { console.error(url, e); }
-    return null;
+function buildStats() {
+  const brands = state.brands;
+  const stats = state.stats;
+  const total = brands.reduce((s,b)=>s+b.detections,0);
+  const playerDets = brands.filter(b=>b.player_equipment).reduce((s,b)=>s+b.detections,0);
+  const venueDets = brands.filter(b=>b.venue_installed||b.broadcast_tech).reduce((s,b)=>s+b.detections,0);
+  const sponsorDets = brands.filter(b=>b.sponsor_signage).reduce((s,b)=>s+b.detections,0);
+  const ruleDets = brands.filter(b=>b.source==='rule').reduce((s,b)=>s+b.detections,0);
+  const fallbackDets = brands.filter(b=>b.source!=='rule').reduce((s,b)=>s+b.detections,0);
+  const verifiedBrands = brands.filter(b=>b.human_verified).length;
+  const coverage = stats.coverage_pct || (total ? Math.round(ruleDets/total*100) : 0);
+
+  document.getElementById('s-brands').textContent = brands.length;
+  document.getElementById('s-detections').textContent = total.toLocaleString();
+  document.getElementById('s-coverage').textContent = coverage + '%';
+  document.getElementById('s-player').textContent = playerDets.toLocaleString();
+  document.getElementById('s-venue').textContent = (venueDets).toLocaleString();
+  document.getElementById('s-sponsor').textContent = sponsorDets.toLocaleString();
+  document.getElementById('s-verified').textContent = verifiedBrands;
+  document.getElementById('s-fallback').textContent = fallbackDets.toLocaleString();
+
+  document.getElementById('hero-sub').textContent =
+    `Taxonomy v${stats.taxonomy_version||6} · ${stats.rule_count||'54'} rules · ${coverage}% coverage · ${brands.length} unique brands · ${total.toLocaleString()} detections`;
+}
+
+async function boot() {
+  const [prov, stats] = await Promise.all([fetchJson(PROV_URL), fetchJson(STATS_URL)]);
+  if (!prov) {
+    document.getElementById('panels').innerHTML = '<div class="empty-state">Could not load brand-provenance.json. Run apply-classification.py first.</div>';
+    return;
   }
-
-  function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  function buildStats() {
-    const t = state.taxonomy;
-    const s = state.stats;
-    const rules = t.rules || [];
-    const totalClips = state.corpus.length;
-    const totalDetections = s.total_brand_detections || 0;
-    const coverage = s.coverage_pct || 0;
-
-    // Count brands by top-level context
-    let playerRules = 0, venueRules = 0, sponsorRules = 0, broadcastRules = 0;
-    let highValue = 0;
-    const subtypes = {};
-    for (const r of rules) {
-      const def = (r.classifications || []).slice(-1)[0] || {};
-      const asL = def.as || '';
-      if (asL === 'player_equipment') playerRules++;
-      if (asL === 'venue_installed' || asL === 'venue_brand') venueRules++;
-      if (asL === 'sponsor_signage') sponsorRules++;
-      if (asL === 'broadcast_tech') broadcastRules++;
-      if (r.revenue_potential === 'high') highValue++;
-      if (r.sponsor_subtype) subtypes[r.sponsor_subtype] = (subtypes[r.sponsor_subtype]||0)+1;
-    }
-
-    document.getElementById('stats').innerHTML = `
-      <div class="stat"><div class="stat-value">${rules.length}</div><div class="stat-label">taxonomy rules</div></div>
-      <div class="stat"><div class="stat-value">${coverage}%</div><div class="stat-label">coverage</div></div>
-      <div class="stat"><div class="stat-value">${totalDetections.toLocaleString()}</div><div class="stat-label">brand detections</div></div>
-      <div class="stat"><div class="stat-value" style="color:var(--accent)">${highValue}</div><div class="stat-label">high-value brands</div></div>
-      <div class="stat"><div class="stat-value">${sponsorRules}</div><div class="stat-label">sponsor rules</div></div>
-      <div class="stat"><div class="stat-value">${playerRules}</div><div class="stat-label">player gear rules</div></div>
-      <div class="stat"><div class="stat-value">${venueRules}</div><div class="stat-label">venue rules</div></div>
-      <div class="stat"><div class="stat-value">${Object.keys(subtypes).length}</div><div class="stat-label">sponsor subtypes</div></div>
-    `;
-
-    document.getElementById('subtitle').textContent =
-      `Taxonomy v${t.version||0} · ${rules.length} rules · ${coverage}% coverage · corpus ${totalClips.toLocaleString()} clips`;
-  }
-
-  function brandCard(rule, detectionCount, detectionClips) {
-    const def = (rule.classifications||[]).slice(-1)[0] || {};
-    const rev = rule.revenue_potential || 'low';
-    const highVal = rev === 'high';
-    const verified = rule.human_verified;
-    const subtype = rule.sponsor_subtype;
-    return `<div class="brand-card ${highVal ? 'high-value' : ''} ${verified ? 'verified' : ''}">
-      <div class="brand-head">
-        <div class="brand-name">${esc(rule.brand)}</div>
-        <div class="detection-count">${(detectionCount||0).toLocaleString()} dets · ${(detectionClips||0)} clips</div>
-      </div>
-      <div class="chips">
-        <span class="chip ${rev==='high'?'high':rev==='medium'?'medium':''}">${esc(rev)}</span>
-        ${subtype ? `<span class="chip warn">${esc(subtype)}</span>` : ''}
-        ${verified ? '<span class="chip high">✓ verified</span>' : ''}
-        <span class="chip">${esc(def.category_primary||'?')}</span>
-      </div>
-      ${rule.brand_description ? `<div class="brand-meta">${esc(rule.brand_description)}</div>` : ''}
-      ${rule.human_note ? `<div class="brand-meta" style="font-style:italic;color:var(--text);border-left:2px solid var(--primary);padding-left:8px;margin-top:6px">💬 ${esc(rule.human_note)}</div>` : ''}
-      ${rule.website ? `<a class="brand-link" href="${esc(rule.website)}" target="_blank" rel="noopener">🌐 ${esc(rule.website.replace(/^https?:\/\//, ''))}</a>` : ''}
-    </div>`;
-  }
-
-  function computeBrandCounts() {
-    const counts = {};  // {brand_lower: {total, clips: Set}}
-    for (const clip of state.corpus) {
-      const uuid = clip.uuid;
-      for (const b of (clip.brands||[])) {
-        if (!b || typeof b !== 'object') continue;
-        const name = (b.name||'').toLowerCase().trim();
-        if (!name) continue;
-        counts[name] = counts[name] || {total:0, clips:new Set()};
-        counts[name].total++;
-        counts[name].clips.add(uuid);
-      }
-    }
-    return counts;
-  }
-
-  function renderSponsors(brandCounts) {
-    const rules = state.taxonomy.rules || [];
-    const sponsorRules = rules.filter(r => {
-      const def = (r.classifications||[]).slice(-1)[0] || {};
-      return def.as === 'sponsor_signage' || def.category_primary === 'sponsor_signage' || r.sponsor_subtype;
-    });
-
-    const bySubtype = {};
-    for (const r of sponsorRules) {
-      const st = r.sponsor_subtype || 'unclassified';
-      (bySubtype[st] = bySubtype[st] || []).push(r);
-    }
-
-    const orderedSubtypes = Object.keys(bySubtype).sort((a,b) => {
-      const order = ['national_corporate','financial','automotive','education','wellness_recovery','hvac_industrial','food_beverage_sponsor','technology','healthcare','media','regional_corporate','local_business','other_corporate','unclassified','unknown'];
-      const ia = order.indexOf(a), ib = order.indexOf(b);
-      return (ia<0?99:ia) - (ib<0?99:ib);
-    });
-
-    let html = '';
-    for (const st of orderedSubtypes) {
-      const rules = bySubtype[st].map(r => {
-        const key = (r.brand||'').toLowerCase().trim();
-        const c = brandCounts[key];
-        return [r, c?.total||0, c?.clips.size||0];
-      }).sort((a,b) => b[1]-a[1]);
-
-      html += `<div class="subtype-header">
-        <b>${esc(st.replace(/_/g,' '))}</b>
-        <span class="count">${rules.length} brand${rules.length!==1?'s':''}</span>
-      </div>
-      <div class="brand-grid">
-        ${rules.map(([r,t,c]) => brandCard(r, t, c)).join('')}
-      </div>`;
-    }
-    document.getElementById('sponsors-content').innerHTML = html || '<div class="empty">No sponsor rules yet.</div>';
-  }
-
-  function renderPlayerGear(brandCounts) {
-    const rules = (state.taxonomy.rules || []).filter(r => {
-      const def = (r.classifications||[]).slice(-1)[0] || {};
-      return def.as === 'player_equipment';
-    });
-    const byCat = {};
-    for (const r of rules) {
-      const def = (r.classifications||[]).slice(-1)[0] || {};
-      const cat = def.category_primary || 'unknown';
-      (byCat[cat] = byCat[cat] || []).push(r);
-    }
-    const order = ['paddle','shoes','apparel','bag','ball','accessory'];
-    const cats = Object.keys(byCat).sort((a,b) => (order.indexOf(a)<0?99:order.indexOf(a))-(order.indexOf(b)<0?99:order.indexOf(b)));
-    let html = '';
-    for (const cat of cats) {
-      const rules = byCat[cat].map(r => {
-        const k = (r.brand||'').toLowerCase().trim();
-        const c = brandCounts[k];
-        return [r, c?.total||0, c?.clips.size||0];
-      }).sort((a,b) => b[1]-a[1]);
-      const totalDetections = rules.reduce((s,[,t])=>s+t, 0);
-      html += `<div class="subtype-header">
-        <b>${esc(cat)}</b>
-        <span class="count">${rules.length} brand${rules.length!==1?'s':''} · ${totalDetections.toLocaleString()} detections</span>
-      </div>
-      <div class="brand-grid">${rules.map(([r,t,c]) => brandCard(r,t,c)).join('')}</div>`;
-    }
-    document.getElementById('player-gear-content').innerHTML = html || '<div class="empty">No player gear rules yet.</div>';
-  }
-
-  function renderVenue(brandCounts) {
-    const rules = (state.taxonomy.rules || []).filter(r => {
-      const def = (r.classifications||[]).slice(-1)[0] || {};
-      return ['venue_installed','venue_brand','broadcast_tech'].includes(def.as);
-    });
-    const enriched = rules.map(r => {
-      const k = (r.brand||'').toLowerCase().trim();
-      const c = brandCounts[k];
-      return [r, c?.total||0, c?.clips.size||0];
-    }).sort((a,b)=>b[1]-a[1]);
-    document.getElementById('venue-content').innerHTML =
-      `<div class="brand-grid">${enriched.map(([r,t,c])=>brandCard(r,t,c)).join('')}</div>`
-      || '<div class="empty">No venue rules yet.</div>';
-  }
-
-  function renderUnknowns() {
-    const proposals = state.proposed.proposals || [];
-    const research = state.research.research || [];
-    if (!proposals.length && !research.length) {
-      document.getElementById('unknowns-content').innerHTML = '<div class="empty">No pending unknowns.</div>';
-      return;
-    }
-    const rows = proposals.slice(0, 40).map(p => {
-      const conf = +p.confidence || 0;
-      const cls = (p.classifications||[{}])[0] || {};
-      return `<tr>
-        <td><b>${esc(p.brand)}</b></td>
-        <td>${esc(cls.category_primary||'?')}</td>
-        <td>${esc(p.sponsor_subtype||'—')}</td>
-        <td class="num">${(conf*100).toFixed(0)}%</td>
-        <td>${p.cross_sport_warning ? '<span class="chip danger">cross-sport</span>' : (p.pickleball_relevance==='high' ? '<span class="chip high">high</span>' : esc(p.pickleball_relevance||'—'))}</td>
-        <td>${esc((p.brand_description||'').slice(0,80))}</td>
-      </tr>`;
-    }).join('');
-    document.getElementById('unknowns-content').innerHTML = `<table>
-      <thead><tr><th>Brand</th><th>Category</th><th>Subtype</th><th>Confidence</th><th>PB Relevance</th><th>Description</th></tr></thead>
-      <tbody>${rows}</tbody></table>
-      <p class="sub" style="margin-top:12px">Review and decide in the <a href="classifier-queue.html">queue</a>.</p>`;
-  }
-
-  function renderQuarantine() {
-    const clips = state.quarantine.clips || [];
-    if (!clips.length) {
-      document.getElementById('quarantine-content').innerHTML = '<div class="empty">No quarantined clips. Corpus is clean.</div>';
-      return;
-    }
-    const rows = clips.map(c => `<tr>
-      <td><code>${esc(c.uuid.slice(0,12))}</code></td>
-      <td><span class="chip danger">${esc(c.reason)}</span></td>
-      <td>${esc(c.evidence||'')}</td>
-      <td>${esc((c.summary||'').slice(0,100))}</td>
-      <td><a href="${esc(c.video_url)}" target="_blank">▶</a></td>
-    </tr>`).join('');
-    document.getElementById('quarantine-content').innerHTML = `<table>
-      <thead><tr><th>UUID</th><th>Reason</th><th>Evidence</th><th>Summary</th><th>Clip</th></tr></thead>
-      <tbody>${rows}</tbody></table>`;
-  }
-
-  function switchTab(name) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === `tab-${name}`));
-  }
-  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
-
-  async function boot() {
-    const [corpus, taxonomy, stats, quarantine, research, proposed] = await Promise.all([
-      fetchJson(DATA_SOURCES.corpus),
-      fetchJson(DATA_SOURCES.taxonomy),
-      fetchJson(DATA_SOURCES.stats),
-      fetchJson(DATA_SOURCES.quarantine),
-      fetchJson(DATA_SOURCES.research),
-      fetchJson(DATA_SOURCES.proposed),
-    ]);
-    state.corpus = corpus || [];
-    state.taxonomy = taxonomy || {rules:[]};
-    state.stats = stats || {};
-    state.quarantine = quarantine || {clips:[]};
-    state.research = research || {research:[]};
-    state.proposed = proposed || {proposals:[]};
-
-    buildStats();
-    const brandCounts = computeBrandCounts();
-    renderSponsors(brandCounts);
-    renderPlayerGear(brandCounts);
-    renderVenue(brandCounts);
-    renderUnknowns();
-    renderQuarantine();
-  }
-  boot();
+  state.brands = prov.brands || [];
+  state.stats = stats || {};
+  buildStats();
+  buildTabs();
+  render();
+}
+boot();
 </script>
 </body>
 </html>

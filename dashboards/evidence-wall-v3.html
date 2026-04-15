@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pickle DaaS — Evidence Wall V3 (Classified)</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080d12;--sf:#101720;--sf2:#18212e;--bd:#243040;--bds:#1a2535;
+  --tx:#e8edf3;--tx2:#8896a8;--mt:#4f6070;
+  --ac:#4ade80;--acd:rgba(74,222,128,.08);
+  --bl:#60a5fa;--bld:rgba(96,165,250,.1);
+  --am:#fbbf24;--amd:rgba(251,191,36,.1);
+  --pu:#c084fc;--pud:rgba(192,132,252,.1);
+  --rd:#f87171;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Manrope',system-ui,sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* TOP NAV */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(8,13,18,.92);border-bottom:1px solid var(--bds);backdrop-filter:blur(10px);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-logo{font-weight:700;font-size:13px}
+.tb-badge{background:var(--acd);color:var(--ac);border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:2px 8px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.5px}
+.tb-right{display:flex;gap:8px}
+.tb-right a{padding:4px 10px;background:var(--sf);border:1px solid var(--bd);border-radius:5px;font-size:11px;color:var(--tx2);font-family:'Red Hat Mono',monospace;transition:all .15s}
+.tb-right a:hover{border-color:var(--ac);color:var(--ac)}
+
+/* HEADER */
+.header{padding:32px 24px 0;max-width:1360px;margin:0 auto}
+.header h1{font-size:clamp(22px,3.5vw,32px);font-weight:800;letter-spacing:-.8px}
+.header h1 em{font-style:normal;color:var(--ac)}
+.header .sub{color:var(--tx2);font-size:13px;max-width:680px;margin-top:6px}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:0;margin:20px 24px;max-width:1360px;border:1px solid var(--bd);border-radius:8px;overflow:hidden;background:var(--bds)}
+.sstat{flex:1;padding:14px 20px;background:var(--sf);border-right:1px solid var(--bds);text-align:center}
+.sstat:last-child{border-right:none}
+.sstat .val{font-size:clamp(18px,2.5vw,26px);font-weight:700;font-variant-numeric:tabular-nums;font-family:'Red Hat Mono',monospace;line-height:1}
+.sstat .val.green{color:var(--ac)}.sstat .val.blue{color:var(--bl)}.sstat .val.amber{color:var(--am)}.sstat .val.purple{color:var(--pu)}
+.sstat .lbl{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;font-family:'Red Hat Mono',monospace}
+
+/* CALLOUT */
+.callout{margin:0 24px 16px;max-width:1360px;background:var(--bld);border:1px solid rgba(96,165,250,.2);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--bl);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.callout strong{color:#93c5fd}
+.callout .pill-demo{display:inline-flex;gap:5px;margin-left:6px;flex-wrap:wrap}
+
+/* FILTERS */
+.filters-wrap{position:sticky;top:57px;z-index:50;background:rgba(8,13,18,.95);border-bottom:1px solid var(--bds);padding:12px 24px;backdrop-filter:blur(8px)}
+.filters-inner{max-width:1360px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filter-btn{background:var(--sf);border:1px solid var(--bd);color:var(--tx2);padding:5px 13px;border-radius:18px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Manrope',sans-serif}
+.filter-btn:hover,.filter-btn.active{background:var(--acd);border-color:rgba(74,222,128,.3);color:var(--ac)}
+.filter-btn.player.active{background:var(--acd);border-color:rgba(74,222,128,.3);color:var(--ac)}
+.filter-btn.venue.active{background:var(--amd);border-color:rgba(251,191,36,.3);color:var(--am)}
+.filter-btn.sponsor.active{background:var(--pud);border-color:rgba(192,132,252,.3);color:var(--pu)}
+.filter-btn.broadcast.active{background:var(--bld);border-color:rgba(96,165,250,.3);color:var(--bl)}
+.filter-btn.unclassified.active{background:rgba(79,96,112,.1);border-color:var(--mt);color:var(--tx2)}
+.search-box{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 12px;border-radius:6px;font-size:12px;font-family:'Manrope',sans-serif;width:180px;margin-left:auto}
+.search-box::placeholder{color:var(--mt)}
+.result-count{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;white-space:nowrap}
+
+/* GRID */
+.shell{max-width:1360px;margin:0 auto;padding:20px 24px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
+
+/* CLIP CARD */
+.clip-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden;transition:all .2s}
+.clip-card:hover{border-color:rgba(74,222,128,.3);transform:translateY(-2px)}
+.clip-card.has-player{border-left:3px solid var(--ac)}
+.clip-card.has-venue{border-left:3px solid var(--am)}
+.clip-card.has-sponsor{border-left:3px solid var(--pu)}
+.clip-card.has-broadcast{border-left:3px solid var(--bl)}
+.clip-video{width:100%;aspect-ratio:16/9;background:#000;object-fit:cover;display:block}
+.clip-body{padding:14px}
+
+/* Meta row */
+.meta-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.quality-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'Red Hat Mono',monospace}
+.quality-badge.high{background:rgba(74,222,128,.1);color:var(--ac);border:1px solid rgba(74,222,128,.2)}
+.quality-badge.med{background:rgba(251,191,36,.1);color:var(--am);border:1px solid rgba(251,191,36,.2)}
+.quality-badge.low{background:rgba(248,113,113,.1);color:var(--rd);border:1px solid rgba(248,113,113,.2)}
+.scores{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace}
+
+/* Summary */
+.clip-summary{font-size:12px;color:var(--tx2);margin-bottom:10px;line-height:1.4}
+
+/* Brand rows with provenance */
+.brands-section{margin-bottom:10px}
+.brands-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-bottom:6px;font-weight:600}
+.brand-row{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--sf2);border-radius:5px;margin-bottom:4px;flex-wrap:wrap}
+.brand-name-tag{font-size:12px;font-weight:700;min-width:60px}
+.prov-chip{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:600;font-family:'Red Hat Mono',monospace;border:1px solid transparent;white-space:nowrap}
+.prov-chip.player{background:rgba(74,222,128,.1);color:var(--ac);border-color:rgba(74,222,128,.2)}
+.prov-chip.venue{background:rgba(251,191,36,.1);color:var(--am);border-color:rgba(251,191,36,.2)}
+.prov-chip.sponsor{background:rgba(192,132,252,.1);color:var(--pu);border-color:rgba(192,132,252,.2)}
+.prov-chip.broadcast{background:rgba(96,165,250,.1);color:var(--bl);border-color:rgba(96,165,250,.2)}
+.prov-chip.unknown{background:rgba(79,96,112,.1);color:var(--mt)}
+.prov-chip.rule{background:rgba(74,222,128,.06);color:rgba(74,222,128,.7)}
+.prov-chip.fallback{background:rgba(251,191,36,.06);color:rgba(251,191,36,.7)}
+.prov-chip.verified{color:rgba(74,222,128,.6);font-size:9px}
+
+/* Other tags */
+.tags-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.tag.badge{background:rgba(251,191,36,.1);color:var(--am)}
+.tag.shot{background:rgba(96,165,250,.1);color:var(--bl)}
+.tag.arc{background:rgba(90,101,120,.1);color:var(--tx2)}
+
+/* Footer */
+.clip-footer{font-size:10px;color:var(--mt);border-top:1px solid var(--bds);padding-top:8px;margin-top:4px;display:flex;justify-content:space-between;font-family:'Red Hat Mono',monospace}
+
+/* Loading / empty */
+.loading-state{padding:60px;text-align:center;color:var(--mt);font-size:13px}
+.empty-state{padding:40px;text-align:center;color:var(--mt);background:var(--sf);border:1px dashed var(--bd);border-radius:8px;font-size:13px}
+
+@media(max-width:600px){.stats-bar{flex-wrap:wrap}.sstat{min-width:45%}.grid{grid-template-columns:1fr}.search-box{width:100%;margin-left:0}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-left">
+    <span class="tb-logo">Pickle DaaS</span>
+    <span class="tb-badge">Evidence Wall V3</span>
+  </div>
+  <div class="tb-right">
+    <a href="evidence-wall.html">← V1 (original)</a>
+    <a href="brand-intelligence-v3.html">Brand Intel V3</a>
+    <a href="investor-walkthrough-v3.html">Investor V3</a>
+    <a href="showcase-portal.html">Portal</a>
+  </div>
+</div>
+
+<div class="header">
+  <h1>Evidence Wall <em>V3</em></h1>
+  <div class="sub">Every brand detection shown with its classification provenance — player equipment, venue signage, sponsor, or broadcast tech. Watch the clip. See exactly how the AI tagged it and why.</div>
+</div>
+
+<div class="stats-bar">
+  <div class="sstat"><div class="val green" id="s-total">—</div><div class="lbl">Clips loaded</div></div>
+  <div class="sstat"><div class="val green" id="s-player">—</div><div class="lbl">w/ player equip.</div></div>
+  <div class="sstat"><div class="val amber" id="s-venue">—</div><div class="lbl">w/ venue brands</div></div>
+  <div class="sstat"><div class="val purple" id="s-sponsor">—</div><div class="lbl">w/ sponsor sinage</div></div>
+  <div class="sstat"><div class="val" id="s-rule">—</div><div class="lbl">rule-classified</div></div>
+  <div class="sstat"><div class="val" id="s-verified">—</div><div class="lbl">verified brands</div></div>
+</div>
+
+<div class="callout">
+  <strong>Classification provenance on every brand:</strong>
+  <span class="pill-demo">
+    <span class="prov-chip player">player_equipment</span>
+    <span class="prov-chip rule">rule v6</span>
+    <span class="prov-chip verified">✓ verified</span>
+    <span style="color:var(--mt);font-size:11px">vs.</span>
+    <span class="prov-chip venue">venue_installed</span>
+    <span class="prov-chip fallback">fallback</span>
+    <span class="prov-chip sponsor">sponsor_signage</span>
+    <span class="prov-chip broadcast">broadcast_tech</span>
+  </span>
+</div>
+
+<div class="filters-wrap">
+  <div class="filters-inner">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn player" data-filter="player">🏓 Player Equipment</button>
+    <button class="filter-btn venue" data-filter="venue">🏟️ Venue Installed</button>
+    <button class="filter-btn sponsor" data-filter="sponsor">💼 Sponsor Signage</button>
+    <button class="filter-btn broadcast" data-filter="broadcast">📡 Broadcast Tech</button>
+    <button class="filter-btn" data-filter="high-quality">⭐ Quality 8+</button>
+    <button class="filter-btn" data-filter="badged">🏅 Verified Badges</button>
+    <button class="filter-btn unclassified" data-filter="unclassified">❓ Unclassified</button>
+    <input class="search-box" id="search-box" placeholder="Search brand or summary…" />
+    <span class="result-count" id="result-count"></span>
+  </div>
+</div>
+
+<div class="shell">
+  <div class="grid" id="grid">
+    <div class="loading-state">Loading clips + classification data…</div>
+  </div>
+</div>
+
+<script>
+let allClips = [];
+let provIndex = {};  // brand_name_lower → brand provenance object
+let activeFilter = 'all';
+let searchTerm = '';
+
+async function fetchJson(url) {
+  try { const r = await fetch(url, {cache:'no-store'}); if(r.ok) return await r.json(); } catch(e){}
+  return null;
+}
+
+function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function getProvenance(brandName) {
+  return provIndex[brandName?.toLowerCase?.()?.trim()] || null;
+}
+
+function classType(prov) {
+  if (!prov) return 'unknown';
+  if (prov.player_equipment) return 'player';
+  if (prov.venue_installed) return 'venue';
+  if (prov.sponsor_signage) return 'sponsor';
+  if (prov.broadcast_tech) return 'broadcast';
+  return 'unknown';
+}
+
+function clipHasType(clip, type) {
+  const brands = [...(clip.brands||[]), ...(clip.player_brands||[])];
+  const seen = new Set();
+  for (const b of brands) {
+    const name = typeof b === 'string' ? b : b?.name;
+    if (!name || seen.has(name)) continue;
+    seen.add(name);
+    const prov = getProvenance(name);
+    const ct = classType(prov);
+    if (ct === type) return true;
+  }
+  return false;
+}
+
+function brandRow(b, idx) {
+  const name = typeof b === 'string' ? b : b?.name;
+  if (!name) return '';
+  const prov = getProvenance(name);
+  const ct = classType(prov);
+  const isRule = prov?.source === 'rule';
+  const rv = prov?.rule_version || '?';
+  const verified = prov?.human_verified;
+
+  const typeChip = ct !== 'unknown'
+    ? `<span class="prov-chip ${ct}">${ct.replace('_','\u200b')}</span>`
+    : `<span class="prov-chip unknown">unclassified</span>`;
+
+  const sourceChip = prov
+    ? (isRule ? `<span class="prov-chip rule">rule v${rv}</span>` : `<span class="prov-chip fallback">fallback</span>`)
+    : '';
+
+  const verChip = verified ? `<span class="prov-chip verified">✓</span>` : '';
+
+  return `<div class="brand-row">
+    <span class="brand-name-tag">${esc(name)}</span>
+    ${typeChip}${sourceChip}${verChip}
+  </div>`;
+}
+
+function clipCard(clip) {
+  const allBrands = clip.brands || [];
+  const seen = new Set();
+  const uniqueBrands = allBrands.filter(b => {
+    const name = typeof b === 'string' ? b : b?.name;
+    if (!name || seen.has(name)) return false;
+    seen.add(name); return true;
+  }).slice(0,5);
+
+  // Determine dominant classification type for card border
+  const types = uniqueBrands.map(b => classType(getProvenance(typeof b==='string'?b:b?.name)));
+  const hasPlayer = types.includes('player');
+  const hasVenue = types.includes('venue');
+  const hasS = types.includes('sponsor');
+  const hasB = types.includes('broadcast');
+  const borderClass = hasPlayer ? 'has-player' : hasVenue ? 'has-venue' : hasS ? 'has-sponsor' : hasB ? 'has-broadcast' : '';
+
+  const q = clip.quality || 0;
+  const qClass = q >= 8 ? 'high' : q >= 6 ? 'med' : 'low';
+  const qLabel = q >= 8 ? '✓ High' : q >= 6 ? '~ Med' : 'Low';
+
+  const badges = (clip.courtana_badges || []).slice(0,3).map(b=>`<span class="tag badge">${esc(b.badge_name||b.name||'?')}</span>`).join('');
+  const shot = clip.dominant_shot && clip.dominant_shot!=='unknown' ? `<span class="tag shot">${esc(clip.dominant_shot)}</span>` : '';
+  const arc = clip.arc && clip.arc!=='unknown' ? `<span class="tag arc">${esc(clip.arc.replace(/_/g,' '))}</span>` : '';
+
+  const hasTags = badges || shot || arc;
+
+  return `<div class="clip-card ${borderClass}">
+    <video class="clip-video" src="${esc(clip.video_url)}" poster="${esc(clip.thumbnail||'')}" controls preload="none" loading="lazy"></video>
+    <div class="clip-body">
+      <div class="meta-row">
+        <span class="quality-badge ${qClass}">${qLabel} · Q:${q} V:${clip.viral||'?'}</span>
+        <span class="scores">${clip.uuid?.substring(0,8)||''}…</span>
+      </div>
+      <div class="clip-summary">${esc((clip.summary||'').slice(0,120))}${(clip.summary||'').length>120?'…':''}</div>
+      ${uniqueBrands.length ? `<div class="brands-section">
+        <div class="brands-label">Brand detections + classification</div>
+        ${uniqueBrands.map((b,i)=>brandRow(b,i)).join('')}
+      </div>` : ''}
+      ${hasTags ? `<div class="tags-row">${shot}${arc}${badges}</div>` : ''}
+      <div class="clip-footer">
+        <span>${clip.arc?.replace(/_/g,' ')||'—'}</span>
+        <span>${clip.model||'gemini'}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getFiltered() {
+  let clips = allClips;
+  const q = searchTerm.toLowerCase();
+  if (q) clips = clips.filter(c =>
+    (c.summary||'').toLowerCase().includes(q) ||
+    (c.brands||[]).some(b => (typeof b==='string'?b:b?.name||'').toLowerCase().includes(q))
+  );
+
+  if (activeFilter === 'player') clips = clips.filter(c => clipHasType(c,'player'));
+  else if (activeFilter === 'venue') clips = clips.filter(c => clipHasType(c,'venue'));
+  else if (activeFilter === 'sponsor') clips = clips.filter(c => clipHasType(c,'sponsor'));
+  else if (activeFilter === 'broadcast') clips = clips.filter(c => clipHasType(c,'broadcast'));
+  else if (activeFilter === 'high-quality') clips = clips.filter(c => (c.quality||0) >= 8);
+  else if (activeFilter === 'badged') clips = clips.filter(c => (c.courtana_badges?.length||0) > 0);
+  else if (activeFilter === 'unclassified') clips = clips.filter(c => {
+    const brands = c.brands||[];
+    return brands.some(b => {
+      const name = typeof b==='string'?b:b?.name;
+      return name && classType(getProvenance(name)) === 'unknown';
+    });
+  });
+  return clips;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const grid = document.getElementById('grid');
+  document.getElementById('result-count').textContent = `${filtered.length} clips`;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty-state">No clips match this filter.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.slice(0,80).map(clipCard).join('');
+}
+
+function buildStats() {
+  const clips = allClips;
+  document.getElementById('s-total').textContent = clips.length;
+  document.getElementById('s-player').textContent = clips.filter(c=>clipHasType(c,'player')).length;
+  document.getElementById('s-venue').textContent = clips.filter(c=>clipHasType(c,'venue')).length;
+  document.getElementById('s-sponsor').textContent = clips.filter(c=>clipHasType(c,'sponsor')).length;
+
+  const allBrandNames = new Set();
+  clips.forEach(c=>(c.brands||[]).forEach(b=>{const n=typeof b==='string'?b:b?.name; if(n) allBrandNames.add(n.toLowerCase())}));
+  const ruleCount = [...allBrandNames].filter(n=>provIndex[n]?.source==='rule').length;
+  const verifiedCount = [...allBrandNames].filter(n=>provIndex[n]?.human_verified).length;
+  document.getElementById('s-rule').textContent = ruleCount;
+  document.getElementById('s-verified').textContent = verifiedCount;
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('search-box').addEventListener('input', e => {
+  searchTerm = e.target.value;
+  render();
+});
+
+async function load() {
+  const [corpus, prov] = await Promise.all([
+    fetchJson('../corpus-export.json'),
+    fetchJson('../brand-provenance.json'),
+  ]);
+
+  if (!corpus) {
+    document.getElementById('grid').innerHTML = '<div class="loading-state">Error loading corpus-export.json</div>';
+    return;
+  }
+
+  // Build provenance index
+  if (prov?.brands) {
+    for (const b of prov.brands) {
+      provIndex[b.name.toLowerCase()] = b;
+    }
+  }
+
+  // Sort: score = quality × (badges+1) + viral
+  allClips = corpus
+    .filter(c => c.video_url && c.summary)
+    .map(c => ({...c, _score: (c.quality||0)*((c.courtana_badges?.length||0)+1)+(c.viral||0)}))
+    .sort((a,b) => b._score - a._score)
+    .slice(0, 300);
+
+  buildStats();
+  render();
+}
+load();
+</script>
+</body>
+</html>

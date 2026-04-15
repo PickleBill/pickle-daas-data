@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Investor Walk-Through V3 (Classified)</title>
+<meta name="description" content="AI turns pickleball video into structured, classified brand intelligence. 91.9% rule coverage. Human-verified taxonomy. Live system.">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:oklch(7% .02 260);--bg2:oklch(9% .02 260);--sf:oklch(12% .018 260);
+  --bd:oklch(17% .015 260);--tx:oklch(94% .01 260);--mt:oklch(52% .03 260);
+  --ac:oklch(72% .19 155);--acd:oklch(72% .19 155/.08);--acg:oklch(72% .19 155/.15);
+  --bl:oklch(62% .2 255);--bld:oklch(62% .2 255/.1);
+  --am:oklch(76% .16 75);--amd:oklch(76% .16 75/.1);
+  --pu:oklch(62% .22 300);--pud:oklch(62% .22 300/.1);
+  --rd:oklch(62% .22 25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+code,.mono{font-family:'Red Hat Mono',ui-monospace,monospace}
+
+/* NAV STRIP */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:100;padding:10px 24px;background:oklch(7% .02 260/.92);border-bottom:1px solid var(--bd);backdrop-filter:blur(12px);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.nav-logo{font-size:12px;font-weight:700;font-family:'Red Hat Mono',monospace;color:var(--ac);letter-spacing:.5px}
+.nav-links{display:flex;gap:8px}
+.nav-links a{font-size:11px;padding:4px 10px;border:1px solid var(--bd);border-radius:5px;color:var(--mt);transition:all .15s;font-family:'Red Hat Mono',monospace}
+.nav-links a:hover{border-color:var(--ac);color:var(--ac)}
+.nav-links a.primary{background:var(--acd);border-color:oklch(72% .19 155/.3);color:var(--ac)}
+
+/* SECTION FRAMEWORK */
+.section{min-height:100svh;padding:100px 7vw 72px;position:relative;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid oklch(17% .015 260/.5)}
+.section .shell{max-width:1100px;margin:0 auto;width:100%}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:4px;color:var(--ac);font-weight:700;font-family:'Red Hat Mono',monospace;margin-bottom:18px}
+.headline{font-size:clamp(2rem,5vw,4rem);font-weight:800;letter-spacing:-2px;line-height:1.02}
+.headline em{font-style:normal;color:var(--ac)}
+.sub{font-size:clamp(.95rem,1.8vw,1.15rem);color:var(--mt);line-height:1.7;max-width:600px;margin-top:20px;font-weight:400}
+
+/* ambient orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.04}
+
+/* S0 HERO */
+#s0{background:var(--bg)}
+#s0-tag{display:inline-flex;align-items:center;gap:9px;margin-top:32px;padding:10px 20px;border:1px solid oklch(72% .19 155/.2);border-radius:5px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--ac);background:oklch(72% .19 155/.05)}
+#s0-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);animation:lp 2s infinite}
+@keyframes lp{0%,100%{opacity:1;box-shadow:0 0 0 0 oklch(72% .19 155/.4)}50%{opacity:.8;box-shadow:0 0 0 8px oklch(72% .19 155/0)}}
+.hero-stats{display:flex;gap:0;margin-top:40px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--bd)}
+.hs{flex:1;padding:20px 24px;background:var(--sf);text-align:center}
+.hs:not(:last-child){border-right:1px solid var(--bd)}
+.hs .val{font-size:clamp(22px,3vw,36px);font-weight:800;font-variant-numeric:tabular-nums;font-family:'Red Hat Mono',monospace;color:var(--ac);line-height:1}
+.hs .lbl{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:6px;font-family:'Red Hat Mono',monospace}
+
+/* S1 CLASSIFICATION STORY */
+#s1{background:var(--bg2)}
+.class-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:36px}
+.cc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:20px;transition:border-color .2s}
+.cc:hover{border-color:oklch(72% .19 155/.4)}
+.cc.player{border-top:3px solid var(--ac)}
+.cc.venue{border-top:3px solid var(--am)}
+.cc.sponsor{border-top:3px solid var(--pu)}
+.cc.broadcast{border-top:3px solid var(--bl)}
+.cc-type{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-family:'Red Hat Mono',monospace;font-weight:600;margin-bottom:8px}
+.cc.player .cc-type{color:var(--ac)}.cc.venue .cc-type{color:var(--am)}.cc.sponsor .cc-type{color:var(--pu)}.cc.broadcast .cc-type{color:var(--bl)}
+.cc-val{font-size:clamp(26px,3vw,40px);font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1}
+.cc-desc{font-size:12px;color:var(--mt);margin-top:8px;line-height:1.5}
+.cc-examples{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px}
+.ex-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.cc.player .ex-tag{background:oklch(72% .19 155/.1);color:var(--ac)}
+.cc.venue .ex-tag{background:oklch(76% .16 75/.1);color:var(--am)}
+.cc.sponsor .ex-tag{background:oklch(62% .22 300/.1);color:var(--pu)}
+.cc.broadcast .ex-tag{background:oklch(62% .2 255/.1);color:var(--bl)}
+
+/* S2 PROVENANCE TABLE */
+#s2{background:var(--bg)}
+.prov-table{width:100%;border-collapse:collapse;margin-top:28px;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+thead tr{background:var(--sf)}
+th{padding:10px 16px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--mt);font-family:'Red Hat Mono',monospace;border-bottom:1px solid var(--bd)}
+td{padding:10px 16px;border-bottom:1px solid oklch(17% .015 260/.5);font-size:13px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:oklch(12% .018 260)}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;font-family:'Red Hat Mono',monospace}
+.pill.rule{background:oklch(72% .19 155/.1);color:var(--ac);border:1px solid oklch(72% .19 155/.25)}
+.pill.fallback{background:oklch(76% .16 75/.1);color:var(--am);border:1px solid oklch(76% .16 75/.25)}
+.pill.verified{background:oklch(72% .19 155/.08);color:var(--ac)}
+.pill.unverified{background:oklch(52% .03 260/.1);color:var(--mt)}
+.pill.pe{background:oklch(72% .19 155/.1);color:var(--ac)}
+.pill.vi{background:oklch(76% .16 75/.1);color:var(--am)}
+.pill.ss{background:oklch(62% .22 300/.1);color:var(--pu)}
+.pill.bt{background:oklch(62% .2 255/.1);color:var(--bl)}
+.brand-name{font-weight:700;font-size:14px}
+td.num{text-align:right;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;font-size:12px}
+
+/* S3 COVERAGE */
+#s3{background:var(--bg2)}
+.coverage-bar-wrap{margin:28px 0 8px}
+.cov-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cov-label{min-width:120px;font-size:12px;color:var(--mt);font-family:'Red Hat Mono',monospace}
+.cov-bar{height:20px;border-radius:4px;position:relative;min-width:4px;transition:width .6s ease}
+.cov-bar.rule{background:var(--ac)}
+.cov-bar.fallback{background:var(--am)}
+.cov-bar.unclassified{background:var(--bd)}
+.cov-count{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--mt);white-space:nowrap}
+.cov-max{width:600px;max-width:100%}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:32px}
+.metric{padding:18px 20px;background:var(--sf);border:1px solid var(--bd);border-radius:8px}
+.metric .m-val{font-size:28px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1}
+.metric .m-val.green{color:var(--ac)}.metric .m-val.amber{color:var(--am)}.metric .m-val.blue{color:var(--bl)}
+.metric .m-lbl{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.7px;margin-top:5px;font-family:'Red Hat Mono',monospace}
+
+/* S4 BRAND MARKET SHARE */
+#s4{background:var(--bg)}
+.market-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid oklch(17% .015 260/.5)}
+.market-row:last-child{border-bottom:none}
+.mrank{width:24px;font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-align:right;flex-shrink:0}
+.mname{font-weight:700;min-width:110px;flex-shrink:0}
+.mbar-wrap{flex:1;background:var(--bd);border-radius:3px;overflow:hidden;height:8px;min-width:60px}
+.mbar{height:100%;border-radius:3px;background:var(--ac)}
+.mcount{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--mt);min-width:80px;text-align:right}
+.mtype{min-width:90px}
+.market-wrap{max-width:700px}
+
+/* S5 CTA */
+#s5{background:oklch(72% .19 155/.04);border-bottom:none}
+.cta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:32px}
+.cta-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:20px;transition:all .2s}
+.cta-card:hover{border-color:oklch(72% .19 155/.4);transform:translateY(-2px)}
+.cta-icon{font-size:20px;margin-bottom:10px}
+.cta-title{font-weight:700;font-size:14px;margin-bottom:6px}
+.cta-desc{font-size:12px;color:var(--mt);line-height:1.5}
+.cta-link{display:inline-block;margin-top:12px;font-size:11px;color:var(--ac);font-family:'Red Hat Mono',monospace}
+
+/* SCROLL CUE */
+.scroll-cue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--mt);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'Red Hat Mono',monospace;animation:sc 2.5s ease-in-out infinite}
+.scroll-cue .sl{width:1px;height:36px;background:linear-gradient(to bottom,transparent,var(--mt))}
+@keyframes sc{0%,100%{opacity:.2}50%{opacity:.7}}
+
+@media(max-width:640px){.section{padding:80px 5vw 48px}.hero-stats{flex-wrap:wrap}.hs{min-width:45%}}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="nav-logo">Pickle DaaS · Investor Walk-Through V3</div>
+  <div class="nav-links">
+    <a href="investor-walkthrough.html">← V2 (stable)</a>
+    <a href="brand-intelligence-v3.html">Brand Intel V3</a>
+    <a href="showcase-portal.html" class="primary">Portal ↗</a>
+  </div>
+</div>
+
+<!-- S0: HERO -->
+<section class="section" id="s0">
+  <div class="orb" style="width:600px;height:600px;top:-100px;right:-100px;background:var(--ac)"></div>
+  <div class="shell">
+    <div class="eyebrow">Pickle DaaS · Classified Intelligence Edition</div>
+    <h1 class="headline">Every brand the AI sees —<br><em>tagged, typed, and verified.</em></h1>
+    <p class="sub">We don't just detect brands. We classify every detection: player equipment or venue signage? Sponsor or broadcast tech? Rule-derived or fallback? Human-verified or pending? This is how raw video becomes a defensible data asset.</p>
+    <div id="s0-tag">
+      <span class="dot"></span>
+      Live · <span id="live-summary">Loading classification data…</span>
+    </div>
+    <div class="hero-stats" id="hero-stats">
+      <div class="hs"><div class="val" id="h-brands">—</div><div class="lbl">Unique brands</div></div>
+      <div class="hs"><div class="val" id="h-dets">—</div><div class="lbl">Total detections</div></div>
+      <div class="hs"><div class="val" id="h-coverage">—</div><div class="lbl">Rule coverage</div></div>
+      <div class="hs"><div class="val" id="h-verified">—</div><div class="lbl">Human verified</div></div>
+      <div class="hs"><div class="val" id="h-clips">—</div><div class="lbl">Clips analyzed</div></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="sl"></div>scroll</div>
+</section>
+
+<!-- S1: CLASSIFICATION STORY -->
+<section class="section" id="s1">
+  <div class="orb" style="width:500px;height:500px;bottom:-80px;left:-60px;background:var(--am)"></div>
+  <div class="shell">
+    <div class="eyebrow">Classification taxonomy</div>
+    <h1 class="headline">Four buckets.<br><em>Every brand assigned.</em></h1>
+    <p class="sub">The taxonomy engine routes each brand detection into one of four contexts — each with distinct revenue implications for venues and brands.</p>
+    <div class="class-cards" id="class-cards">
+      <div class="cc player">
+        <div class="cc-type">Player Equipment</div>
+        <div class="cc-val" id="cc-player">—</div>
+        <div class="cc-desc">Gear worn or carried by players. Highest brand equity signal — real purchasing decisions, not venue contracts.</div>
+        <div class="cc-examples" id="cc-player-ex"></div>
+      </div>
+      <div class="cc venue">
+        <div class="cc-type">Venue Installed</div>
+        <div class="cc-val" id="cc-venue">—</div>
+        <div class="cc-desc">Infrastructure on-court: net systems, cameras, surfaces. Venue procurement, not player choice.</div>
+        <div class="cc-examples" id="cc-venue-ex"></div>
+      </div>
+      <div class="cc sponsor">
+        <div class="cc-type">Sponsor Signage</div>
+        <div class="cc-val" id="cc-sponsor">—</div>
+        <div class="cc-desc">Brands advertising at venues: banners, court branding, event logos. Direct monetization path.</div>
+        <div class="cc-examples" id="cc-sponsor-ex"></div>
+      </div>
+      <div class="cc broadcast">
+        <div class="cc-type">Broadcast Tech</div>
+        <div class="cc-val" id="cc-broadcast">—</div>
+        <div class="cc-desc">Cameras, streaming hardware, overlay watermarks. The tech that makes data collection possible.</div>
+        <div class="cc-examples" id="cc-broadcast-ex"></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="sl"></div>scroll</div>
+</section>
+
+<!-- S2: PROVENANCE TABLE -->
+<section class="section" id="s2">
+  <div class="shell">
+    <div class="eyebrow">Classification provenance</div>
+    <h1 class="headline">Top brands —<br><em>how we tagged them.</em></h1>
+    <p class="sub">Every classification carries its receipt: the rule version that fired, whether a human verified the call, and the revenue potential tier. This is the audit trail.</p>
+    <table class="prov-table" id="prov-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Brand</th>
+          <th>Classification Type</th>
+          <th>Source</th>
+          <th>Verification</th>
+          <th>Revenue Tier</th>
+          <th style="text-align:right">Detections</th>
+          <th style="text-align:right">Clips</th>
+        </tr>
+      </thead>
+      <tbody id="prov-tbody">
+        <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--mt)">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="scroll-cue"><div class="sl"></div>scroll</div>
+</section>
+
+<!-- S3: COVERAGE BREAKDOWN -->
+<section class="section" id="s3">
+  <div class="orb" style="width:400px;height:400px;top:-50px;right:5%;background:var(--bl)"></div>
+  <div class="shell">
+    <div class="eyebrow">Coverage analysis</div>
+    <h1 class="headline">91.9% of detections<br><em>classified by rule.</em></h1>
+    <p class="sub">The taxonomy engine has 54 approved rules covering every major brand in the corpus. The remaining 8.1% get a fallback classification — still usable, just lower confidence. Human verification closes the loop.</p>
+    <div class="coverage-bar-wrap" id="cov-bars"></div>
+    <div class="metric-grid" id="metrics"></div>
+  </div>
+  <div class="scroll-cue"><div class="sl"></div>scroll</div>
+</section>
+
+<!-- S4: PLAYER EQUIPMENT MARKET SHARE -->
+<section class="section" id="s4">
+  <div class="shell">
+    <div class="eyebrow">Player equipment market share</div>
+    <h1 class="headline">Who players actually use —<br><em>captured on camera.</em></h1>
+    <p class="sub">This isn't a survey. It's what we see. The camera captures every paddle, shoe, and bag — and the classification engine logs it. This is ground-truth market share data for the pickleball equipment market.</p>
+    <div class="market-wrap" id="market-table" style="margin-top:28px"></div>
+  </div>
+  <div class="scroll-cue"><div class="sl"></div>scroll</div>
+</section>
+
+<!-- S5: CTA -->
+<section class="section" id="s5">
+  <div class="shell">
+    <div class="eyebrow">Next steps</div>
+    <h1 class="headline">The moat is the<br><em>classification layer.</em></h1>
+    <p class="sub">Raw detection is a commodity. A structured, human-verified taxonomy of what every brand means in context — that's the asset. 3,131 clips, 7,239 detections, 91.9% rule coverage, 54 verified rules. Growing daily.</p>
+    <div class="cta-grid">
+      <a class="cta-card" href="brand-intelligence-v3.html">
+        <div class="cta-icon">🏷️</div>
+        <div class="cta-title">Brand Intel V3</div>
+        <div class="cta-desc">Full provenance browser. Every brand, classification source, verification status, revenue tier. Tabs by context type.</div>
+        <div class="cta-link">Open dashboard →</div>
+      </a>
+      <a class="cta-card" href="evidence-wall-v3.html">
+        <div class="cta-icon">🎬</div>
+        <div class="cta-title">Evidence Wall V3</div>
+        <div class="cta-desc">Watch the clips. See the classification tags. Filter by player_equipment, venue_installed, or sponsor_signage.</div>
+        <div class="cta-link">See the receipts →</div>
+      </a>
+      <a class="cta-card" href="brand-intelligence-v2.html">
+        <div class="cta-icon">📊</div>
+        <div class="cta-title">Brand Intel V2 (Stable)</div>
+        <div class="cta-desc">Treemap, bubble chart, co-occurrence matrix, brand profiles. The flagship analytics page.</div>
+        <div class="cta-link">Open V2 →</div>
+      </a>
+      <a class="cta-card" href="investor-walkthrough.html">
+        <div class="cta-icon">🎯</div>
+        <div class="cta-title">Investor Walk-Through V2</div>
+        <div class="cta-desc">Full cinematic pitch: AI debate, revenue simulator, flywheel, portfolio — the complete investor story.</div>
+        <div class="cta-link">View V2 pitch →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+async function load() {
+  const [prov, stats] = await Promise.all([
+    fetch('../brand-provenance.json', {cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch('../classification-stats.json', {cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
+  ]);
+
+  if (!prov) {
+    document.getElementById('live-summary').textContent = 'brand-provenance.json not found';
+    return;
+  }
+
+  const brands = prov.brands || [];
+  const s = stats || {};
+  const total = brands.reduce((a,b)=>a+b.detections,0);
+  const playerB = brands.filter(b=>b.player_equipment);
+  const venueB = brands.filter(b=>b.venue_installed);
+  const sponsorB = brands.filter(b=>b.sponsor_signage);
+  const broadcastB = brands.filter(b=>b.broadcast_tech);
+  const verifiedB = brands.filter(b=>b.human_verified);
+  const ruleB = brands.filter(b=>b.source==='rule');
+  const fallbackB = brands.filter(b=>b.source!=='rule');
+  const coverage = s.coverage_pct || (total ? Math.round(ruleB.reduce((a,b)=>a+b.detections,0)/total*100) : 0);
+
+  // Hero stats
+  document.getElementById('h-brands').textContent = brands.length;
+  document.getElementById('h-dets').textContent = total.toLocaleString();
+  document.getElementById('h-coverage').textContent = coverage + '%';
+  document.getElementById('h-verified').textContent = verifiedB.length;
+  document.getElementById('h-clips').textContent = (s.corpus_size || brands.reduce((a,b)=>Math.max(a,b.clips),0)).toLocaleString();
+  document.getElementById('live-summary').textContent = `${brands.length} brands · ${total.toLocaleString()} detections · taxonomy v${s.taxonomy_version||6}`;
+
+  // Classification cards
+  const playerDets = playerB.reduce((a,b)=>a+b.detections,0);
+  const venueDets = venueB.reduce((a,b)=>a+b.detections,0);
+  const sponsorDets = sponsorB.reduce((a,b)=>a+b.detections,0);
+  const broadcastDets = broadcastB.reduce((a,b)=>a+b.detections,0);
+
+  document.getElementById('cc-player').textContent = playerDets.toLocaleString();
+  document.getElementById('cc-venue').textContent = venueDets.toLocaleString();
+  document.getElementById('cc-sponsor').textContent = sponsorDets.toLocaleString();
+  document.getElementById('cc-broadcast').textContent = broadcastDets.toLocaleString();
+
+  // Top brand examples per category
+  function topEx(list, n=4) {
+    return [...list].sort((a,b)=>b.detections-a.detections).slice(0,n).map(b=>b.name);
+  }
+  function renderEx(id, names, cls) {
+    document.getElementById(id).innerHTML = names.map(n=>`<span class="ex-tag">${n}</span>`).join('');
+  }
+  renderEx('cc-player-ex', topEx(playerB), 'player');
+  renderEx('cc-venue-ex', topEx(venueB), 'venue');
+  renderEx('cc-sponsor-ex', topEx(sponsorB), 'sponsor');
+  renderEx('cc-broadcast-ex', topEx(broadcastB), 'broadcast');
+
+  // Provenance table (top 20 by detections)
+  const top20 = [...brands].sort((a,b)=>b.detections-a.detections).slice(0,20);
+  function typeLabel(b) {
+    if (b.player_equipment) return '<span class="pill pe">player_equipment</span>';
+    if (b.venue_installed) return '<span class="pill vi">venue_installed</span>';
+    if (b.sponsor_signage) return '<span class="pill ss">sponsor_signage</span>';
+    if (b.broadcast_tech) return '<span class="pill bt">broadcast_tech</span>';
+    return '<span class="pill" style="background:rgba(90,101,120,.1);color:var(--mt)">unclassified</span>';
+  }
+  function revLabel(rev) {
+    if (rev==='high') return '<span class="pill rule" style="font-size:9px">HIGH</span>';
+    if (rev==='medium') return '<span class="pill bt" style="font-size:9px">MED</span>';
+    return '<span class="pill unverified" style="font-size:9px">low</span>';
+  }
+  document.getElementById('prov-tbody').innerHTML = top20.map((b,i)=>`<tr>
+    <td class="num" style="color:var(--mt)">${i+1}</td>
+    <td><span class="brand-name">${b.name}</span></td>
+    <td>${typeLabel(b)}</td>
+    <td><span class="pill ${b.source==='rule'?'rule':'fallback'}">${b.source==='rule'?`rule v${b.rule_version||6}`:'fallback'}</span></td>
+    <td><span class="pill ${b.human_verified?'verified':'unverified'}">${b.human_verified?'✓ Bill':'pending'}</span></td>
+    <td>${revLabel(b.revenue_potential)}</td>
+    <td class="num">${b.detections.toLocaleString()}</td>
+    <td class="num">${b.clips}</td>
+  </tr>`).join('');
+
+  // Coverage bars
+  const ruleDets = ruleB.reduce((a,b)=>a+b.detections,0);
+  const fallbackDets = fallbackB.reduce((a,b)=>a+b.detections,0);
+  const unclassifiedDets = brands.filter(b=>!b.player_equipment&&!b.venue_installed&&!b.sponsor_signage&&!b.broadcast_tech).reduce((a,b)=>a+b.detections,0);
+  const max = Math.max(playerDets, venueDets, sponsorDets, broadcastDets, ruleDets);
+
+  function covRow(label, count, total, colorClass) {
+    const pct = total ? Math.round(count/total*100) : 0;
+    const w = total ? Math.min(100, Math.round(count/max*100)) : 0;
+    return `<div class="cov-row">
+      <span class="cov-label">${label}</span>
+      <div class="cov-max" style="flex:1;max-width:600px">
+        <div class="cov-bar ${colorClass}" style="width:${w}%"></div>
+      </div>
+      <span class="cov-count">${count.toLocaleString()} (${pct}%)</span>
+    </div>`;
+  }
+  document.getElementById('cov-bars').innerHTML =
+    covRow('Rule-derived', ruleDets, total, 'rule') +
+    covRow('Fallback', fallbackDets, total, 'fallback') +
+    covRow('Player equip.', playerDets, total, 'rule') +
+    covRow('Venue installed', venueDets, total, 'fallback') +
+    covRow('Sponsor signage', sponsorDets, total, 'rule') +
+    covRow('Broadcast tech', broadcastDets, total, 'fallback');
+
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric"><div class="m-val green">${coverage}%</div><div class="m-lbl">Rule coverage</div></div>
+    <div class="metric"><div class="m-val amber">${(100-coverage).toFixed(1)}%</div><div class="m-lbl">Fallback classified</div></div>
+    <div class="metric"><div class="m-val green">${verifiedB.length}</div><div class="m-lbl">Human-verified brands</div></div>
+    <div class="metric"><div class="m-val blue">${s.rule_count||54}</div><div class="m-lbl">Approved rules</div></div>
+    <div class="metric"><div class="m-val">${s.taxonomy_version||6}</div><div class="m-lbl">Taxonomy version</div></div>
+    <div class="metric"><div class="m-val green">${brands.length}</div><div class="m-lbl">Unique brands tracked</div></div>
+  `;
+
+  // Market share — player equipment top 15
+  const playerTop = [...playerB].sort((a,b)=>b.detections-a.detections).slice(0,15);
+  const maxDets = playerTop[0]?.detections || 1;
+  document.getElementById('market-table').innerHTML = playerTop.map((b,i)=>`<div class="market-row">
+    <span class="mrank">${i+1}</span>
+    <span class="mname">${b.name}</span>
+    <div class="mbar-wrap"><div class="mbar" style="width:${Math.round(b.detections/maxDets*100)}%"></div></div>
+    <span class="mcount">${b.detections.toLocaleString()} dets</span>
+    <span class="mtype"><span class="pill ${b.source==='rule'?'rule':'fallback'}" style="font-size:9px">${b.source==='rule'?'rule':'fallback'}</span></span>
+  </div>`).join('');
+}
+load();
+</script>
+</body>
+</html>
