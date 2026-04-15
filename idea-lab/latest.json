@@ -1,26 +1,28 @@
 {
-  "generated_at": "2026-04-15T02:24:54.071410+00:00",
+  "generated_at": "2026-04-15T03:18:56.453474+00:00",
   "run_date": "2026-04-14",
-  "version": 2,
+  "version": 3,
   "corpus_stats": {
     "researchers_run": 9,
-    "raw_findings": 44,
-    "unique_findings": 34,
-    "strategic_count": 12,
-    "data_count": 22
+    "raw_findings": 47,
+    "unique_findings": 38,
+    "strategic_count": 15,
+    "data_count": 23
   },
   "feedback_loop": {
-    "active": false,
+    "active": true,
+    "has_decisions": false,
     "decisions_loaded": 0,
     "category_signals": {},
-    "agent_signals": {}
+    "agent_signals": {},
+    "deeper_investigations": []
   },
   "researcher_stats": [
     {
       "agent": "brand_analyst",
       "sample_used": "balanced-brands",
       "sample_size": 133,
-      "findings_count": 2
+      "findings_count": 3
     },
     {
       "agent": "player_profiler",
@@ -50,7 +52,7 @@
       "agent": "opportunity_scout",
       "sample_used": "diverse-100",
       "sample_size": 100,
-      "findings_count": 5
+      "findings_count": 7
     },
     {
       "agent": "prompt_engineer",
@@ -61,7 +63,7 @@
     {
       "agent": "wildcard",
       "sample_used": "none (business model analysis)",
-      "sample_size": 843,
+      "sample_size": 1100,
       "findings_count": 8
     },
     {
@@ -72,64 +74,36 @@
     }
   ],
   "category_distribution": {
-    "wildcard_idea": 7,
+    "wildcard_idea": 8,
     "shot_pattern": 4,
     "viral_pattern": 4,
     "model_accuracy": 4,
+    "revenue_opportunity": 4,
     "prompt_fix": 4,
+    "brand_insight": 3,
     "player_insight": 3,
-    "revenue_opportunity": 3,
-    "brand_insight": 2,
     "product_opportunity": 2,
-    "coaching_opportunity": 1
+    "coaching_opportunity": 1,
+    "extraction_gap": 1
   },
   "agent_distribution": {
-    "wildcard": 7,
+    "wildcard": 8,
+    "opportunity_scout": 7,
     "shot_scientist": 5,
-    "opportunity_scout": 5,
     "viral_decoder": 4,
     "production_auditor": 4,
     "prompt_engineer": 4,
-    "player_profiler": 3,
-    "brand_analyst": 2
+    "brand_analyst": 3,
+    "player_profiler": 3
   },
   "top_strategic": [
     {
-      "finding_id": "wildcard-20260414-2814",
+      "finding_id": "wildcard-20260414-2801",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495787+00:00",
-      "title": "Inverse Coaching: Players Train the AI",
-      "confidence": 0.92,
-      "evidence_summary": "Release a free mobile app where pickleball players film their own shots and label them (serve, forehand, dink, etc.). The app learns THEIR playing style. In exchange, we get structured labeled training data 1000x better than our current corpus. Use this data to build hyper-personalized coaching models. Players get free coaching; we get the data moat that makes our coaching products unbeatable. Each player improves our model, which improves everyone else's coaching.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: crowdsource play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.92,
-        "category": "crowdsource"
-      },
-      "composite_score": 0.8022,
-      "track": "strategic",
-      "follow_up": {
-        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: crowdsource play",
-        "assigned_researcher": "wildcard"
-      },
-      "counterargument": {
-        "argument": "Players won't voluntarily label their own shots at scale\u2014this relies on sustained user motivation that rarely persists past initial novelty.",
-        "evidence": "Crowdsourcing labeled data works only when users have intrinsic motivation (ego, competition, prizes). Pickleball players filming and tagging their own shots will drop off after the first week. You'll end up with 50K clips from 200 power-users, creating massive selection bias (only dedicated/ego-driven players label). This biased training set will then fail on casual players\u2014your actual market.",
-        "risk_level": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260414-5658",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495814+00:00",
-      "title": "Facility-Owned Idea Labs as White-Label SaaS",
+      "generated_at": "2026-04-15T03:18:39.200997+00:00",
+      "title": "The Brand's Own Idea Lab (White Label)",
       "confidence": 0.88,
-      "evidence_summary": "Package the Idea Lab research system as a standalone product. Every Courtana facility gets their own instance analyzing THEIR courts' clips. Facility owners (non-technical) get weekly auto-generated insights: 'Your top 3 rising players,' 'Most-played shots,' 'Equipment trends.' Facilities sell these insights to local leagues, sponsors, and players. We take 20% rev share. Facilities become embedded data distributors. Each facility's decisions improve the model for all others.",
+      "evidence_summary": "Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike uploads competitor videos, our system finds gaps: 'Your shoes underrepresented in backcourt angles' or 'Opponent's racket featured 3x more in viral moments.' Nike pays $200K/year, gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -147,18 +121,19 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Facility owners have no revenue incentive to use this\u2014it creates liability and operational burden without generating income for them.",
-        "evidence": "White-label SaaS to facilities assumes facility owners care about 'auto-generated insights.' They don't. They care about foot traffic and court bookings. A weekly AI report about 'interesting plays' doesn't drive revenue or retention. Meanwhile, if the system misidentifies a player or falsely awards a badge, the facility is liable. You're asking them to host infrastructure, manage user consent, and take reputational risk for your data play. Adoption will be <5% without revenue-share that's unsustainable for you.",
+        "argument": "Nike already has armies of sports marketing analysts and competitor tracking tools; they won't pay Pickle DaaS $50K+/year to repackage their own video library back to them.",
+        "evidence": "This assumes brands have a blind spot for their own product visibility\u2014they don't. Nike's marketing team watches their own clips constantly and likely already uses Vision AI, Hookit, or internal tools for competitor benchmarking. More critically, you'd be asking them to hand over proprietary competitor videos to an unproven startup, creating compliance and legal risk on their end. The willingness-to-pay is near zero because the problem isn't unsolved; it's already solved by bigger, trusted vendors.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2801.html"
     },
     {
-      "finding_id": "wildcard-20260414-0280",
+      "finding_id": "wildcard-20260414-8521",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495819+00:00",
-      "title": "Brand Sponsorship Verification Protocol",
+      "generated_at": "2026-04-15T03:18:39.201021+00:00",
+      "title": "Brand Bidding Arena",
       "confidence": 0.85,
-      "evidence_summary": "Instead of detecting brands, we become the SOURCE OF TRUTH for brand appearances in pickleball. Brands pay us to certify and timestamp their product usage in official clips. We issue NFT-style verification badges that brands embed in their own marketing. This flips the data flow\u2014brands voluntarily tag their own gear, we validate it, they use our certification as proof-of-authentic-usage for sponsorship contracts and influencer deals.",
+      "evidence_summary": "Flip the model: brands pay to COMPETE for shelf space in our clips. Instead of us detecting Nike in the background, Nike, JOOLA, and On bid in real-time for product placement in future Courtana videos. Facility owners get a cut. The highest bidder's gear gets featured in the next match at that court.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -176,70 +151,108 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Brands won't pay for 'verification' of organic product use\u2014they already have athlete sponsorship deals that contractually require logo visibility.",
-        "evidence": "Nike, JOOLA, and other brands already embed product placement through sponsored players and contractual obligations. They don't need you to 'verify' what they paid for. The only real revenue would come from unsponsored brands paying to detect *uncontracted* competitor gear\u2014but that's market surveillance, ethically fraught, and easily blocked by players opting out of facial/gear recognition. You'll also be competing with existing brand-safety vendors (Nielsen, Genius Sports). This is a solution looking for a problem that doesn't have budget.",
-        "risk_level": "medium"
-      }
+        "argument": "Real-time bidding for product placement in live or near-live clips requires supply (Courtana's video volume) to be predictable and brands to commit ad spend on speculative exposure.",
+        "evidence": "Courtana's clip volume is inconsistent (depends on tournament schedule). Brands won't bid on uncertain inventory. More critically, this model requires Courtana to *actively control* which products appear in clips\u2014either by directing camera angles (unethical, undermines content credibility) or by post-processing (illegal product insertion). The model collapses if you can't guarantee placement. You'd also face immediate pushback from venue partners and athletes who won't tolerate their content being auctioned to the highest bidder.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-8521.html"
     },
     {
-      "finding_id": "wildcard-20260414-7407",
+      "finding_id": "wildcard-20260414-2257",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495823+00:00",
-      "title": "The Creator Royalty Pool",
-      "confidence": 0.83,
-      "evidence_summary": "Every clip in our corpus is a potential broadcast asset. License clips to TikTok, YouTube, ESPN+, etc. Pool all revenue. Distribute to: the facility (50%), the identified players (30%), the brand (if detected, 10%), and Courtana (10%). Players start chasing epic shots knowing they get royalties. Facilities optimize for viral-worthy plays. Brands compete to sponsor 'royalty-earning moments.' More stakeholders = more incentive to feed the system with better clips.",
+      "generated_at": "2026-04-15T03:18:39.201031+00:00",
+      "title": "The Idea Lab as SaaS for Any Sports Facility Network",
+      "confidence": 0.84,
+      "evidence_summary": "Package the Idea Lab as a $5K/month white-label product for regional sports facility chains (not just pickleball). A chain with 20 multi-sport courts gets an Idea Lab analyzing all their footage autonomously. We become the hidden OS for facility intelligence. Each facility pays us; we own the data; we expand to basketball, tennis, etc.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
-      "recommended_action": "Evaluate: creator_economy play",
+      "recommended_action": "Evaluate: platform_play play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.83,
-        "category": "creator_economy"
+        "flywheel_score": 0.84,
+        "category": "platform_play"
       },
-      "composite_score": 0.7238,
+      "composite_score": 0.7325,
       "track": "strategic",
       "follow_up": {
         "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: creator_economy play",
+        "proposed_action": "Evaluate: platform_play play",
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Licensing clips requires clearances from 3+ parties simultaneously\u2014facility, players, brands\u2014and you have zero legal standing to broker any of it.",
-        "evidence": "You don't own the clips. The facility owns them (by right of recording on their property). The players own their image rights. Brands own their trademarks. For ESPN to license even one clip, you need written consent from all three parties. You have no mechanism to prove consent or arbitrate disputes. One player objects, the clip dies, your royalty pool breaks. Facilities will demand you hold liability insurance (expensive). You'll spend 6 months negotiating legal terms and collect <$500/month in actual licensing revenue. This is a venture graveyard: high friction, low velocity, hostile legal environment.",
+        "argument": "Regional sports facility chains won't pay $5K/month for an AI that tells them what equipment brands appear in their footage\u2014they care about facility operations, member retention, and court booking, not brand analytics.",
+        "evidence": "You're selling a feature (brand detection) as a product to a customer (facility chains) who don't have a budget line item for brand intelligence. The buyer at a 20-court facility is the operations manager, not a marketing executive. Even if they see value, you have no distribution into this market, no existing relationships, and would need a 12-18 month sales cycle per facility. Meanwhile, you're stretched thin building this while supporting Courtana.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2257.html"
     },
     {
-      "finding_id": "wildcard-20260414-4722",
+      "finding_id": "wildcard-20260414-9551",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495826+00:00",
-      "title": "The Pickleball Gear Arms Race",
-      "confidence": 0.81,
-      "evidence_summary": "Publish weekly leaderboards of 'which gear wins most.' Correlate equipment (JOOLA paddles, Nike shoes, etc.) with win rates in your clips. Sell brands PREDICTIVE reports: 'If you improve X, your gear appears in 40% more winning shots.' Brands then sponsor players using that gear. Those newly-sponsored players generate more clips. More clips = better models. Brands pay to enter the arms race; the ecosystem grows automatically.",
+      "generated_at": "2026-04-15T03:18:39.201042+00:00",
+      "title": "Facility as Media Studio (Revenue Share)",
+      "confidence": 0.83,
+      "evidence_summary": "Stop selling clips. Partner with facilities to become mini ESPN studios. We handle all editing/commentary/distribution; they keep 70% of ad revenue + sponsorship deals we broker. A facility with Courtana becomes a media asset. We scale to 100 facilities = 100 revenue streams. Each facility is incentivized to host bigger tournaments.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: partnership_flip play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.81,
+        "flywheel_score": 0.83,
         "category": "partnership_flip"
       },
-      "composite_score": 0.7063,
+      "composite_score": 0.7238,
       "track": "strategic",
       "follow_up": {
         "follow_up_question": "What's the smallest experiment to test this in 30 days?",
         "proposed_action": "Evaluate: partnership_flip play",
         "assigned_researcher": "wildcard"
-      }
+      },
+      "counterargument": {
+        "argument": "Facilities won't accept a 30% revenue cut and the operational overhead of becoming a 'media studio' for an unproven ad revenue share model.",
+        "evidence": "Facilities' core business is court rentals and memberships\u2014predictable, recurring revenue. Asking them to bet on ad revenue from edited clips means cannibalizing their existing sponsorship deals (local, direct) and trusting Pickle DaaS to actually broker deals and deliver payments. You'd be taking operational risk (editing, distribution, rights management) that facilities can't control. Also: if a clip goes viral and creates liability (injury, discrimination, etc.), who owns the legal risk? This partnership structure is unresolved and will kill deals in legal review.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-9551.html"
+    },
+    {
+      "finding_id": "wildcard-20260414-6202",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201049+00:00",
+      "title": "Coaching Certification Authority",
+      "confidence": 0.81,
+      "evidence_summary": "Use our AI to certify pickleball coaches. Coaches submit videos of their instruction; we analyze shot breakdown, communication clarity, drill design. Certified coaches get a badge, can charge 3x more, and must use Courtana courts to maintain certification. We become the permissioning layer for professional coaching.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.81,
+        "category": "platform_play"
+      },
+      "composite_score": 0.7063,
+      "track": "strategic",
+      "follow_up": {
+        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
+        "proposed_action": "Evaluate: platform_play play",
+        "assigned_researcher": "wildcard"
+      },
+      "counterargument": {
+        "argument": "Coaching certification requires legal liability framework, accreditation body status, and recurring instructor education\u2014none of which Pickle DaaS is equipped to provide or defend in court.",
+        "evidence": "You cannot simply issue badges that claim to 'certify' coaches. Coaches will charge 3x more based on your certification, and if an injury occurs during a lesson from a 'certified' coach, you're exposed to negligence liability. You'd need insurance, a legal framework, appeals process, and continuing education requirements. This isn't a software feature\u2014it's a regulated credential business. The PPA or IPTPA already own this space. You'd face immediate cease-and-desist letters, and no insurance company will cover a startup playing credential issuer.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-6202.html"
     }
   ],
   "top_data": [
     {
-      "finding_id": "production_auditor-20260414-5609",
+      "finding_id": "production_auditor-20260414-5182",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006814+00:00",
+      "generated_at": "2026-04-15T03:18:27.114035+00:00",
       "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
       "confidence": 0.9,
       "evidence_summary": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
@@ -261,22 +274,23 @@
         "assigned_researcher": "production_auditor"
       },
       "counterargument": {
-        "argument": "F1=0.97 on 287 clips is statistically meaningless\u2014this is likely overfitting to lighting, court angle, and player demographics in those specific videos.",
-        "evidence": "287 verified clips is a vanishingly small test set. Production use will see clips from 50+ different facilities, lighting conditions, camera angles, and player skill levels. The 41 missed badges likely cluster heavily in underrepresented conditions (night courts, wide angles, beginner players). Real-world F1 will collapse to 0.75\u20130.80 once you deploy. You're measuring performance on your own curated dataset, not on the long tail of variation.",
+        "argument": "An F1=0.97 on 287 clips doesn't prove the model works on unseen badge types or real-world production footage with different lighting, angles, or video quality.",
+        "evidence": "The 287 verified clips likely come from controlled production environments where Courtana already knows what badges exist. When the model encounters a new badge type, variation in video quality, or edge cases from user-generated content, performance will crater. The 16 false positives and 41 missed badges (out of ~1,300 total predictions) suggest systematic blindspots that prompt engineering alone won't fix\u2014you're likely overfitting to known badge patterns.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-5182.html"
     },
     {
-      "finding_id": "prompt_engineer-20260414-0722",
+      "finding_id": "prompt_engineer-20260414-7372",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048528+00:00",
+      "generated_at": "2026-04-15T03:18:27.162297+00:00",
       "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
       "confidence": 0.85,
-      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'paddle tap celebration' (3 missed), 'fresh fit' (3 missed). These are real badges that our prompt doesn't detect.",
+      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'fresh fit' (3 missed), 'paddle tap celebration' (3 missed). These are real badges that our prompt doesn't detect.",
       "business_value": "high",
       "category": "prompt_fix",
       "novelty": 0.65,
-      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
       "source_clips": [],
       "raw_data": {
         "top_fn_badges": [
@@ -293,11 +307,11 @@
             4
           ],
           [
-            "paddle tap celebration",
+            "fresh fit",
             3
           ],
           [
-            "fresh fit",
+            "paddle tap celebration",
             3
           ]
         ],
@@ -320,19 +334,94 @@
       "track": "data",
       "follow_up": {
         "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
         "assigned_researcher": "prompt_engineer"
       },
-      "counterargument": {
-        "argument": "Prompt engineering to fix 21 missed badges is a band-aid that will fail on the next 50 badges the model hasn't seen yet.",
-        "evidence": "You're treating this as a prompt problem when it's a model problem. Gemini (or whatever LLM you're using) doesn't have visual grounding for 'rally master' or 'fresh fit'\u2014these are contextual, learned categories that exist only in Courtana's data. Adding English descriptions of visual patterns to a prompt won't fix hallucination or misclassification. You'll patch 5 badges, miss 5 others, then repeat. This is whack-a-mole. Real fix requires fine-tuning on labeled examples, which requires... the very crowdsourced data pipeline Finding #1 assumes will work.",
-        "risk_level": "high"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260414-7372.html"
     },
     {
-      "finding_id": "viral_decoder-20260414-1809",
+      "finding_id": "brand_analyst-20260414-8284",
+      "agent": "brand_analyst",
+      "generated_at": "2026-04-15T03:18:26.982186+00:00",
+      "title": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "confidence": 0.8,
+      "evidence_summary": "Brands with significant venue-only detections (not product use): JOOLA (195/1931 are venue). Raw counts overstate market share. Product-use only: JOOLA=1736, Nike=198, PICKLEBALL=77, HEAD=45, PICKLEBALL KINGDOM=24.",
+      "business_value": "high",
+      "category": "brand_insight",
+      "novelty": 0.85,
+      "recommended_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+      "source_clips": [],
+      "raw_data": {
+        "raw_top5": [
+          [
+            "JOOLA",
+            1931
+          ],
+          [
+            "Nike",
+            198
+          ],
+          [
+            "PICKLEBALL",
+            77
+          ],
+          [
+            "HEAD",
+            45
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ]
+        ],
+        "product_top5": [
+          [
+            "JOOLA",
+            1736
+          ],
+          [
+            "Nike",
+            198
+          ],
+          [
+            "PICKLEBALL",
+            77
+          ],
+          [
+            "HEAD",
+            45
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ]
+        ],
+        "venue_inflated": [
+          [
+            "JOOLA",
+            195,
+            1931
+          ]
+        ]
+      },
+      "composite_score": 0.6121,
+      "track": "data",
+      "follow_up": {
+        "follow_up_question": "Is the 'Net/venue branding inflates 1 brands \u2014 true share-' signal statistically significant with larger corpus?",
+        "proposed_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+        "assigned_researcher": "brand_analyst"
+      },
+      "counterargument": {
+        "argument": "Correcting for venue-only detections assumes brands care about 'true share-of-court'\u2014but they actually care about total visibility, which includes venue branding.",
+        "evidence": "Your brand partners (Nike, JOOLA) are paying for *impressions*, not just product-in-hand moments. A jersey or court net with a brand logo is still brand exposure worth money. By filtering out venue detections, you're actually reducing the value metric you're selling to them. If you report only 'product-use' metrics, you'll undercount Nike's true exposure (venue + gear) relative to competitors, and they'll ask why they're paying for an incomplete picture. You can't have it both ways: either total visibility matters (and venue counts) or you need to price models differently for each metric.",
+        "risk_level": "medium"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260414-8284.html"
+    },
+    {
+      "finding_id": "viral_decoder-20260414-7612",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989293+00:00",
+      "generated_at": "2026-04-15T03:18:27.092099+00:00",
       "title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
       "confidence": 0.8,
       "evidence_summary": "Top 100 viral clips: quality=7.59, watchability=6.45. Bottom 100: quality=5.42, watchability=3.14. Both metrics track strongly with viral potential.",
@@ -354,16 +443,12 @@
         "proposed_action": "Use (quality + watchability) / 2 as quick viral prediction score",
         "assigned_researcher": "viral_decoder"
       },
-      "counterargument": {
-        "argument": "Viral metrics from 200 clips have zero predictive power\u2014virality is driven by timing, algorithm seeding, and community context, not clip properties.",
-        "evidence": "You're measuring correlation on a tiny, post-hoc sample (top 100 vs bottom 100 viral clips). But virality is not deterministic; it's driven by algorithmic promotion, account following, and luck. A mediocre clip posted by a 500K-follower creator goes viral. An excellent clip from an unknown goes nowhere. Your 'quality + watchability' score will predict past virality (overfitting) but fail prospectively. You'll recommend clips that *look* viral but never reach audience. This metric is useless for product: what would you actually *do* with it? Rank clips for facilities? They don't control distribution. Sell predictions to creators? They'll quickly learn the algorithm != your score.",
-        "risk_level": "medium"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260414-7612.html"
     },
     {
-      "finding_id": "production_auditor-20260414-1540",
+      "finding_id": "production_auditor-20260414-7184",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006836+00:00",
+      "generated_at": "2026-04-15T03:18:27.114060+00:00",
       "title": "Worst predicted badges: serve returner (F1=0.875), hustler (F1=0.769)",
       "confidence": 0.8,
       "evidence_summary": "Lowest F1 badges: serve returner (F1=0.875), hustler (F1=0.769). These need prompt improvement.",
@@ -398,70 +483,18 @@
         "follow_up_question": "What's the ROI of fixing this? How many clips affected?",
         "proposed_action": "Add specific examples for these badge types in Gemini prompt",
         "assigned_researcher": "production_auditor"
-      }
-    },
-    {
-      "finding_id": "prompt_engineer-20260414-2604",
-      "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048700+00:00",
-      "title": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
-      "confidence": 0.75,
-      "evidence_summary": "JOOLA dominates 75% of clips. Prompt should distinguish: paddle logo (real JOOLA use), net logo (JOOLA sponsors nets), and venue branding (JOOLA sponsors the facility).",
-      "business_value": "high",
-      "category": "prompt_fix",
-      "novelty": 0.7,
-      "recommended_action": "Add to brand detection prompt:\n'For JOOLA specifically, classify detection source:\n  - paddle: JOOLA logo on paddle face = confirmed product use\n  - net: JOOLA logo on net = venue sponsorship, NOT product use\n  - venue: JOOLA on walls/banners = facility sponsorship\nOnly count paddle detections as brand_category: paddle'",
-      "source_clips": [],
-      "raw_data": {
-        "joola_clips": 215,
-        "total_verified": 287
       },
-      "composite_score": 0.5665,
-      "track": "data",
-      "follow_up": {
-        "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add to brand detection prompt:\n'For JOOLA specifically, classify detection source:\n  - paddle: JOOLA logo on paddle face = confirmed product use\n  - net: JOOLA logo on net = venue sponsorship, NOT product use\n  - venue: JOOLA on walls/banners = facility sponsorship\nOnly count paddle detections as brand_category: paddle'",
-        "assigned_researcher": "prompt_engineer"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-7184.html"
     }
   ],
   "top_5": [
     {
-      "finding_id": "wildcard-20260414-2814",
+      "finding_id": "wildcard-20260414-2801",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495787+00:00",
-      "title": "Inverse Coaching: Players Train the AI",
-      "confidence": 0.92,
-      "evidence_summary": "Release a free mobile app where pickleball players film their own shots and label them (serve, forehand, dink, etc.). The app learns THEIR playing style. In exchange, we get structured labeled training data 1000x better than our current corpus. Use this data to build hyper-personalized coaching models. Players get free coaching; we get the data moat that makes our coaching products unbeatable. Each player improves our model, which improves everyone else's coaching.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: crowdsource play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.92,
-        "category": "crowdsource"
-      },
-      "composite_score": 0.8022,
-      "track": "strategic",
-      "follow_up": {
-        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: crowdsource play",
-        "assigned_researcher": "wildcard"
-      },
-      "counterargument": {
-        "argument": "Players won't voluntarily label their own shots at scale\u2014this relies on sustained user motivation that rarely persists past initial novelty.",
-        "evidence": "Crowdsourcing labeled data works only when users have intrinsic motivation (ego, competition, prizes). Pickleball players filming and tagging their own shots will drop off after the first week. You'll end up with 50K clips from 200 power-users, creating massive selection bias (only dedicated/ego-driven players label). This biased training set will then fail on casual players\u2014your actual market.",
-        "risk_level": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260414-5658",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495814+00:00",
-      "title": "Facility-Owned Idea Labs as White-Label SaaS",
+      "generated_at": "2026-04-15T03:18:39.200997+00:00",
+      "title": "The Brand's Own Idea Lab (White Label)",
       "confidence": 0.88,
-      "evidence_summary": "Package the Idea Lab research system as a standalone product. Every Courtana facility gets their own instance analyzing THEIR courts' clips. Facility owners (non-technical) get weekly auto-generated insights: 'Your top 3 rising players,' 'Most-played shots,' 'Equipment trends.' Facilities sell these insights to local leagues, sponsors, and players. We take 20% rev share. Facilities become embedded data distributors. Each facility's decisions improve the model for all others.",
+      "evidence_summary": "Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike uploads competitor videos, our system finds gaps: 'Your shoes underrepresented in backcourt angles' or 'Opponent's racket featured 3x more in viral moments.' Nike pays $200K/year, gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -479,18 +512,19 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Facility owners have no revenue incentive to use this\u2014it creates liability and operational burden without generating income for them.",
-        "evidence": "White-label SaaS to facilities assumes facility owners care about 'auto-generated insights.' They don't. They care about foot traffic and court bookings. A weekly AI report about 'interesting plays' doesn't drive revenue or retention. Meanwhile, if the system misidentifies a player or falsely awards a badge, the facility is liable. You're asking them to host infrastructure, manage user consent, and take reputational risk for your data play. Adoption will be <5% without revenue-share that's unsustainable for you.",
+        "argument": "Nike already has armies of sports marketing analysts and competitor tracking tools; they won't pay Pickle DaaS $50K+/year to repackage their own video library back to them.",
+        "evidence": "This assumes brands have a blind spot for their own product visibility\u2014they don't. Nike's marketing team watches their own clips constantly and likely already uses Vision AI, Hookit, or internal tools for competitor benchmarking. More critically, you'd be asking them to hand over proprietary competitor videos to an unproven startup, creating compliance and legal risk on their end. The willingness-to-pay is near zero because the problem isn't unsolved; it's already solved by bigger, trusted vendors.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2801.html"
     },
     {
-      "finding_id": "wildcard-20260414-0280",
+      "finding_id": "wildcard-20260414-8521",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495819+00:00",
-      "title": "Brand Sponsorship Verification Protocol",
+      "generated_at": "2026-04-15T03:18:39.201021+00:00",
+      "title": "Brand Bidding Arena",
       "confidence": 0.85,
-      "evidence_summary": "Instead of detecting brands, we become the SOURCE OF TRUTH for brand appearances in pickleball. Brands pay us to certify and timestamp their product usage in official clips. We issue NFT-style verification badges that brands embed in their own marketing. This flips the data flow\u2014brands voluntarily tag their own gear, we validate it, they use our certification as proof-of-authentic-usage for sponsorship contracts and influencer deals.",
+      "evidence_summary": "Flip the model: brands pay to COMPETE for shelf space in our clips. Instead of us detecting Nike in the background, Nike, JOOLA, and On bid in real-time for product placement in future Courtana videos. Facility owners get a cut. The highest bidder's gear gets featured in the next match at that court.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -508,15 +542,46 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Brands won't pay for 'verification' of organic product use\u2014they already have athlete sponsorship deals that contractually require logo visibility.",
-        "evidence": "Nike, JOOLA, and other brands already embed product placement through sponsored players and contractual obligations. They don't need you to 'verify' what they paid for. The only real revenue would come from unsponsored brands paying to detect *uncontracted* competitor gear\u2014but that's market surveillance, ethically fraught, and easily blocked by players opting out of facial/gear recognition. You'll also be competing with existing brand-safety vendors (Nielsen, Genius Sports). This is a solution looking for a problem that doesn't have budget.",
-        "risk_level": "medium"
-      }
+        "argument": "Real-time bidding for product placement in live or near-live clips requires supply (Courtana's video volume) to be predictable and brands to commit ad spend on speculative exposure.",
+        "evidence": "Courtana's clip volume is inconsistent (depends on tournament schedule). Brands won't bid on uncertain inventory. More critically, this model requires Courtana to *actively control* which products appear in clips\u2014either by directing camera angles (unethical, undermines content credibility) or by post-processing (illegal product insertion). The model collapses if you can't guarantee placement. You'd also face immediate pushback from venue partners and athletes who won't tolerate their content being auctioned to the highest bidder.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-8521.html"
     },
     {
-      "finding_id": "production_auditor-20260414-5609",
+      "finding_id": "wildcard-20260414-2257",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201031+00:00",
+      "title": "The Idea Lab as SaaS for Any Sports Facility Network",
+      "confidence": 0.84,
+      "evidence_summary": "Package the Idea Lab as a $5K/month white-label product for regional sports facility chains (not just pickleball). A chain with 20 multi-sport courts gets an Idea Lab analyzing all their footage autonomously. We become the hidden OS for facility intelligence. Each facility pays us; we own the data; we expand to basketball, tennis, etc.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.84,
+        "category": "platform_play"
+      },
+      "composite_score": 0.7325,
+      "track": "strategic",
+      "follow_up": {
+        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
+        "proposed_action": "Evaluate: platform_play play",
+        "assigned_researcher": "wildcard"
+      },
+      "counterargument": {
+        "argument": "Regional sports facility chains won't pay $5K/month for an AI that tells them what equipment brands appear in their footage\u2014they care about facility operations, member retention, and court booking, not brand analytics.",
+        "evidence": "You're selling a feature (brand detection) as a product to a customer (facility chains) who don't have a budget line item for brand intelligence. The buyer at a 20-court facility is the operations manager, not a marketing executive. Even if they see value, you have no distribution into this market, no existing relationships, and would need a 12-18 month sales cycle per facility. Meanwhile, you're stretched thin building this while supporting Courtana.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2257.html"
+    },
+    {
+      "finding_id": "production_auditor-20260414-5182",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006814+00:00",
+      "generated_at": "2026-04-15T03:18:27.114035+00:00",
       "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
       "confidence": 0.9,
       "evidence_summary": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
@@ -538,22 +603,23 @@
         "assigned_researcher": "production_auditor"
       },
       "counterargument": {
-        "argument": "F1=0.97 on 287 clips is statistically meaningless\u2014this is likely overfitting to lighting, court angle, and player demographics in those specific videos.",
-        "evidence": "287 verified clips is a vanishingly small test set. Production use will see clips from 50+ different facilities, lighting conditions, camera angles, and player skill levels. The 41 missed badges likely cluster heavily in underrepresented conditions (night courts, wide angles, beginner players). Real-world F1 will collapse to 0.75\u20130.80 once you deploy. You're measuring performance on your own curated dataset, not on the long tail of variation.",
+        "argument": "An F1=0.97 on 287 clips doesn't prove the model works on unseen badge types or real-world production footage with different lighting, angles, or video quality.",
+        "evidence": "The 287 verified clips likely come from controlled production environments where Courtana already knows what badges exist. When the model encounters a new badge type, variation in video quality, or edge cases from user-generated content, performance will crater. The 16 false positives and 41 missed badges (out of ~1,300 total predictions) suggest systematic blindspots that prompt engineering alone won't fix\u2014you're likely overfitting to known badge patterns.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-5182.html"
     },
     {
-      "finding_id": "prompt_engineer-20260414-0722",
+      "finding_id": "prompt_engineer-20260414-7372",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048528+00:00",
+      "generated_at": "2026-04-15T03:18:27.162297+00:00",
       "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
       "confidence": 0.85,
-      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'paddle tap celebration' (3 missed), 'fresh fit' (3 missed). These are real badges that our prompt doesn't detect.",
+      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'fresh fit' (3 missed), 'paddle tap celebration' (3 missed). These are real badges that our prompt doesn't detect.",
       "business_value": "high",
       "category": "prompt_fix",
       "novelty": 0.65,
-      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
       "source_clips": [],
       "raw_data": {
         "top_fn_badges": [
@@ -570,11 +636,11 @@
             4
           ],
           [
-            "paddle tap celebration",
+            "fresh fit",
             3
           ],
           [
-            "fresh fit",
+            "paddle tap celebration",
             3
           ]
         ],
@@ -597,53 +663,20 @@
       "track": "data",
       "follow_up": {
         "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
         "assigned_researcher": "prompt_engineer"
       },
-      "counterargument": {
-        "argument": "Prompt engineering to fix 21 missed badges is a band-aid that will fail on the next 50 badges the model hasn't seen yet.",
-        "evidence": "You're treating this as a prompt problem when it's a model problem. Gemini (or whatever LLM you're using) doesn't have visual grounding for 'rally master' or 'fresh fit'\u2014these are contextual, learned categories that exist only in Courtana's data. Adding English descriptions of visual patterns to a prompt won't fix hallucination or misclassification. You'll patch 5 badges, miss 5 others, then repeat. This is whack-a-mole. Real fix requires fine-tuning on labeled examples, which requires... the very crowdsourced data pipeline Finding #1 assumes will work.",
-        "risk_level": "high"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260414-7372.html"
     }
   ],
   "top_20": [
     {
-      "finding_id": "wildcard-20260414-2814",
+      "finding_id": "wildcard-20260414-2801",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495787+00:00",
-      "title": "Inverse Coaching: Players Train the AI",
-      "confidence": 0.92,
-      "evidence_summary": "Release a free mobile app where pickleball players film their own shots and label them (serve, forehand, dink, etc.). The app learns THEIR playing style. In exchange, we get structured labeled training data 1000x better than our current corpus. Use this data to build hyper-personalized coaching models. Players get free coaching; we get the data moat that makes our coaching products unbeatable. Each player improves our model, which improves everyone else's coaching.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: crowdsource play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.92,
-        "category": "crowdsource"
-      },
-      "composite_score": 0.8022,
-      "track": "strategic",
-      "follow_up": {
-        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: crowdsource play",
-        "assigned_researcher": "wildcard"
-      },
-      "counterargument": {
-        "argument": "Players won't voluntarily label their own shots at scale\u2014this relies on sustained user motivation that rarely persists past initial novelty.",
-        "evidence": "Crowdsourcing labeled data works only when users have intrinsic motivation (ego, competition, prizes). Pickleball players filming and tagging their own shots will drop off after the first week. You'll end up with 50K clips from 200 power-users, creating massive selection bias (only dedicated/ego-driven players label). This biased training set will then fail on casual players\u2014your actual market.",
-        "risk_level": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260414-5658",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495814+00:00",
-      "title": "Facility-Owned Idea Labs as White-Label SaaS",
+      "generated_at": "2026-04-15T03:18:39.200997+00:00",
+      "title": "The Brand's Own Idea Lab (White Label)",
       "confidence": 0.88,
-      "evidence_summary": "Package the Idea Lab research system as a standalone product. Every Courtana facility gets their own instance analyzing THEIR courts' clips. Facility owners (non-technical) get weekly auto-generated insights: 'Your top 3 rising players,' 'Most-played shots,' 'Equipment trends.' Facilities sell these insights to local leagues, sponsors, and players. We take 20% rev share. Facilities become embedded data distributors. Each facility's decisions improve the model for all others.",
+      "evidence_summary": "Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike uploads competitor videos, our system finds gaps: 'Your shoes underrepresented in backcourt angles' or 'Opponent's racket featured 3x more in viral moments.' Nike pays $200K/year, gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -661,18 +694,19 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Facility owners have no revenue incentive to use this\u2014it creates liability and operational burden without generating income for them.",
-        "evidence": "White-label SaaS to facilities assumes facility owners care about 'auto-generated insights.' They don't. They care about foot traffic and court bookings. A weekly AI report about 'interesting plays' doesn't drive revenue or retention. Meanwhile, if the system misidentifies a player or falsely awards a badge, the facility is liable. You're asking them to host infrastructure, manage user consent, and take reputational risk for your data play. Adoption will be <5% without revenue-share that's unsustainable for you.",
+        "argument": "Nike already has armies of sports marketing analysts and competitor tracking tools; they won't pay Pickle DaaS $50K+/year to repackage their own video library back to them.",
+        "evidence": "This assumes brands have a blind spot for their own product visibility\u2014they don't. Nike's marketing team watches their own clips constantly and likely already uses Vision AI, Hookit, or internal tools for competitor benchmarking. More critically, you'd be asking them to hand over proprietary competitor videos to an unproven startup, creating compliance and legal risk on their end. The willingness-to-pay is near zero because the problem isn't unsolved; it's already solved by bigger, trusted vendors.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2801.html"
     },
     {
-      "finding_id": "wildcard-20260414-0280",
+      "finding_id": "wildcard-20260414-8521",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495819+00:00",
-      "title": "Brand Sponsorship Verification Protocol",
+      "generated_at": "2026-04-15T03:18:39.201021+00:00",
+      "title": "Brand Bidding Arena",
       "confidence": 0.85,
-      "evidence_summary": "Instead of detecting brands, we become the SOURCE OF TRUTH for brand appearances in pickleball. Brands pay us to certify and timestamp their product usage in official clips. We issue NFT-style verification badges that brands embed in their own marketing. This flips the data flow\u2014brands voluntarily tag their own gear, we validate it, they use our certification as proof-of-authentic-usage for sponsorship contracts and influencer deals.",
+      "evidence_summary": "Flip the model: brands pay to COMPETE for shelf space in our clips. Instead of us detecting Nike in the background, Nike, JOOLA, and On bid in real-time for product placement in future Courtana videos. Facility owners get a cut. The highest bidder's gear gets featured in the next match at that court.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -690,68 +724,106 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Brands won't pay for 'verification' of organic product use\u2014they already have athlete sponsorship deals that contractually require logo visibility.",
-        "evidence": "Nike, JOOLA, and other brands already embed product placement through sponsored players and contractual obligations. They don't need you to 'verify' what they paid for. The only real revenue would come from unsponsored brands paying to detect *uncontracted* competitor gear\u2014but that's market surveillance, ethically fraught, and easily blocked by players opting out of facial/gear recognition. You'll also be competing with existing brand-safety vendors (Nielsen, Genius Sports). This is a solution looking for a problem that doesn't have budget.",
-        "risk_level": "medium"
-      }
+        "argument": "Real-time bidding for product placement in live or near-live clips requires supply (Courtana's video volume) to be predictable and brands to commit ad spend on speculative exposure.",
+        "evidence": "Courtana's clip volume is inconsistent (depends on tournament schedule). Brands won't bid on uncertain inventory. More critically, this model requires Courtana to *actively control* which products appear in clips\u2014either by directing camera angles (unethical, undermines content credibility) or by post-processing (illegal product insertion). The model collapses if you can't guarantee placement. You'd also face immediate pushback from venue partners and athletes who won't tolerate their content being auctioned to the highest bidder.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-8521.html"
     },
     {
-      "finding_id": "wildcard-20260414-7407",
+      "finding_id": "wildcard-20260414-2257",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495823+00:00",
-      "title": "The Creator Royalty Pool",
-      "confidence": 0.83,
-      "evidence_summary": "Every clip in our corpus is a potential broadcast asset. License clips to TikTok, YouTube, ESPN+, etc. Pool all revenue. Distribute to: the facility (50%), the identified players (30%), the brand (if detected, 10%), and Courtana (10%). Players start chasing epic shots knowing they get royalties. Facilities optimize for viral-worthy plays. Brands compete to sponsor 'royalty-earning moments.' More stakeholders = more incentive to feed the system with better clips.",
+      "generated_at": "2026-04-15T03:18:39.201031+00:00",
+      "title": "The Idea Lab as SaaS for Any Sports Facility Network",
+      "confidence": 0.84,
+      "evidence_summary": "Package the Idea Lab as a $5K/month white-label product for regional sports facility chains (not just pickleball). A chain with 20 multi-sport courts gets an Idea Lab analyzing all their footage autonomously. We become the hidden OS for facility intelligence. Each facility pays us; we own the data; we expand to basketball, tennis, etc.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
-      "recommended_action": "Evaluate: creator_economy play",
+      "recommended_action": "Evaluate: platform_play play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.83,
-        "category": "creator_economy"
+        "flywheel_score": 0.84,
+        "category": "platform_play"
       },
-      "composite_score": 0.7238,
+      "composite_score": 0.7325,
       "track": "strategic",
       "follow_up": {
         "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: creator_economy play",
+        "proposed_action": "Evaluate: platform_play play",
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Licensing clips requires clearances from 3+ parties simultaneously\u2014facility, players, brands\u2014and you have zero legal standing to broker any of it.",
-        "evidence": "You don't own the clips. The facility owns them (by right of recording on their property). The players own their image rights. Brands own their trademarks. For ESPN to license even one clip, you need written consent from all three parties. You have no mechanism to prove consent or arbitrate disputes. One player objects, the clip dies, your royalty pool breaks. Facilities will demand you hold liability insurance (expensive). You'll spend 6 months negotiating legal terms and collect <$500/month in actual licensing revenue. This is a venture graveyard: high friction, low velocity, hostile legal environment.",
+        "argument": "Regional sports facility chains won't pay $5K/month for an AI that tells them what equipment brands appear in their footage\u2014they care about facility operations, member retention, and court booking, not brand analytics.",
+        "evidence": "You're selling a feature (brand detection) as a product to a customer (facility chains) who don't have a budget line item for brand intelligence. The buyer at a 20-court facility is the operations manager, not a marketing executive. Even if they see value, you have no distribution into this market, no existing relationships, and would need a 12-18 month sales cycle per facility. Meanwhile, you're stretched thin building this while supporting Courtana.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2257.html"
     },
     {
-      "finding_id": "wildcard-20260414-4722",
+      "finding_id": "wildcard-20260414-9551",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495826+00:00",
-      "title": "The Pickleball Gear Arms Race",
-      "confidence": 0.81,
-      "evidence_summary": "Publish weekly leaderboards of 'which gear wins most.' Correlate equipment (JOOLA paddles, Nike shoes, etc.) with win rates in your clips. Sell brands PREDICTIVE reports: 'If you improve X, your gear appears in 40% more winning shots.' Brands then sponsor players using that gear. Those newly-sponsored players generate more clips. More clips = better models. Brands pay to enter the arms race; the ecosystem grows automatically.",
+      "generated_at": "2026-04-15T03:18:39.201042+00:00",
+      "title": "Facility as Media Studio (Revenue Share)",
+      "confidence": 0.83,
+      "evidence_summary": "Stop selling clips. Partner with facilities to become mini ESPN studios. We handle all editing/commentary/distribution; they keep 70% of ad revenue + sponsorship deals we broker. A facility with Courtana becomes a media asset. We scale to 100 facilities = 100 revenue streams. Each facility is incentivized to host bigger tournaments.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: partnership_flip play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.81,
+        "flywheel_score": 0.83,
         "category": "partnership_flip"
       },
-      "composite_score": 0.7063,
+      "composite_score": 0.7238,
       "track": "strategic",
       "follow_up": {
         "follow_up_question": "What's the smallest experiment to test this in 30 days?",
         "proposed_action": "Evaluate: partnership_flip play",
         "assigned_researcher": "wildcard"
-      }
+      },
+      "counterargument": {
+        "argument": "Facilities won't accept a 30% revenue cut and the operational overhead of becoming a 'media studio' for an unproven ad revenue share model.",
+        "evidence": "Facilities' core business is court rentals and memberships\u2014predictable, recurring revenue. Asking them to bet on ad revenue from edited clips means cannibalizing their existing sponsorship deals (local, direct) and trusting Pickle DaaS to actually broker deals and deliver payments. You'd be taking operational risk (editing, distribution, rights management) that facilities can't control. Also: if a clip goes viral and creates liability (injury, discrimination, etc.), who owns the legal risk? This partnership structure is unresolved and will kill deals in legal review.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-9551.html"
     },
     {
-      "finding_id": "production_auditor-20260414-5609",
+      "finding_id": "wildcard-20260414-6202",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201049+00:00",
+      "title": "Coaching Certification Authority",
+      "confidence": 0.81,
+      "evidence_summary": "Use our AI to certify pickleball coaches. Coaches submit videos of their instruction; we analyze shot breakdown, communication clarity, drill design. Certified coaches get a badge, can charge 3x more, and must use Courtana courts to maintain certification. We become the permissioning layer for professional coaching.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.81,
+        "category": "platform_play"
+      },
+      "composite_score": 0.7063,
+      "track": "strategic",
+      "follow_up": {
+        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
+        "proposed_action": "Evaluate: platform_play play",
+        "assigned_researcher": "wildcard"
+      },
+      "counterargument": {
+        "argument": "Coaching certification requires legal liability framework, accreditation body status, and recurring instructor education\u2014none of which Pickle DaaS is equipped to provide or defend in court.",
+        "evidence": "You cannot simply issue badges that claim to 'certify' coaches. Coaches will charge 3x more based on your certification, and if an injury occurs during a lesson from a 'certified' coach, you're exposed to negligence liability. You'd need insurance, a legal framework, appeals process, and continuing education requirements. This isn't a software feature\u2014it's a regulated credential business. The PPA or IPTPA already own this space. You'd face immediate cease-and-desist letters, and no insurance company will cover a startup playing credential issuer.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-6202.html"
+    },
+    {
+      "finding_id": "production_auditor-20260414-5182",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006814+00:00",
+      "generated_at": "2026-04-15T03:18:27.114035+00:00",
       "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
       "confidence": 0.9,
       "evidence_summary": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
@@ -773,41 +845,42 @@
         "assigned_researcher": "production_auditor"
       },
       "counterargument": {
-        "argument": "F1=0.97 on 287 clips is statistically meaningless\u2014this is likely overfitting to lighting, court angle, and player demographics in those specific videos.",
-        "evidence": "287 verified clips is a vanishingly small test set. Production use will see clips from 50+ different facilities, lighting conditions, camera angles, and player skill levels. The 41 missed badges likely cluster heavily in underrepresented conditions (night courts, wide angles, beginner players). Real-world F1 will collapse to 0.75\u20130.80 once you deploy. You're measuring performance on your own curated dataset, not on the long tail of variation.",
+        "argument": "An F1=0.97 on 287 clips doesn't prove the model works on unseen badge types or real-world production footage with different lighting, angles, or video quality.",
+        "evidence": "The 287 verified clips likely come from controlled production environments where Courtana already knows what badges exist. When the model encounters a new badge type, variation in video quality, or edge cases from user-generated content, performance will crater. The 16 false positives and 41 missed badges (out of ~1,300 total predictions) suggest systematic blindspots that prompt engineering alone won't fix\u2014you're likely overfitting to known badge patterns.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-5182.html"
     },
     {
-      "finding_id": "wildcard-20260414-7558",
+      "finding_id": "wildcard-20260414-9541",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495830+00:00",
-      "title": "Sport-Agnostic Playbook: Rent the Analysis Engine",
+      "generated_at": "2026-04-15T03:18:39.201056+00:00",
+      "title": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
       "confidence": 0.79,
-      "evidence_summary": "The Idea Lab + shot analysis pipeline is sport-agnostic. License it to tennis courts, badminton clubs, padel facilities, even CrossFit gyms. Each sport's community funds their own Idea Lab analysis. We become the horizontal infrastructure layer that every racquet sport (and beyond) relies on. Each new sport adds data that improves the core model. Network effects across sports, not just pickleball. One system, infinite verticals.",
+      "evidence_summary": "When a player's clip hits a viral threshold, we auto-match them with 3-5 coaches in their region. Coaches bid to coach that player. The player chooses; we take 20%. Players get better \u2192 play more matches \u2192 more clips \u2192 more coaching gigs. Each coach becomes a node in a viral loop.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
-      "recommended_action": "Evaluate: platform_play play",
+      "recommended_action": "Evaluate: crowdsource play",
       "source_clips": [],
       "raw_data": {
         "flywheel_score": 0.79,
-        "category": "platform_play"
+        "category": "crowdsource"
       },
       "composite_score": 0.6889,
       "track": "strategic"
     },
     {
-      "finding_id": "prompt_engineer-20260414-0722",
+      "finding_id": "prompt_engineer-20260414-7372",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048528+00:00",
+      "generated_at": "2026-04-15T03:18:27.162297+00:00",
       "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
       "confidence": 0.85,
-      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'paddle tap celebration' (3 missed), 'fresh fit' (3 missed). These are real badges that our prompt doesn't detect.",
+      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'fresh fit' (3 missed), 'paddle tap celebration' (3 missed). These are real badges that our prompt doesn't detect.",
       "business_value": "high",
       "category": "prompt_fix",
       "novelty": 0.65,
-      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
       "source_clips": [],
       "raw_data": {
         "top_fn_badges": [
@@ -824,11 +897,11 @@
             4
           ],
           [
-            "paddle tap celebration",
+            "fresh fit",
             3
           ],
           [
-            "fresh fit",
+            "paddle tap celebration",
             3
           ]
         ],
@@ -851,38 +924,185 @@
       "track": "data",
       "follow_up": {
         "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
         "assigned_researcher": "prompt_engineer"
       },
-      "counterargument": {
-        "argument": "Prompt engineering to fix 21 missed badges is a band-aid that will fail on the next 50 badges the model hasn't seen yet.",
-        "evidence": "You're treating this as a prompt problem when it's a model problem. Gemini (or whatever LLM you're using) doesn't have visual grounding for 'rally master' or 'fresh fit'\u2014these are contextual, learned categories that exist only in Courtana's data. Adding English descriptions of visual patterns to a prompt won't fix hallucination or misclassification. You'll patch 5 badges, miss 5 others, then repeat. This is whack-a-mole. Real fix requires fine-tuning on labeled examples, which requires... the very crowdsourced data pipeline Finding #1 assumes will work.",
-        "risk_level": "high"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260414-7372.html"
     },
     {
-      "finding_id": "wildcard-20260414-1105",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495837+00:00",
-      "title": "Pickleball Insurance Underwriting",
-      "confidence": 0.75,
-      "evidence_summary": "Partner with sports insurance companies. We rate player injury risk and facility safety using shot biomechanics, court congestion patterns, and player skill mismatches. Insurance companies pay us for risk scores. Players with low-risk profiles get lower premiums. Facilities with high-safety scores market that. Creates incentive for MORE Courtana adoption (to get better insurance rates) and MORE clip submission (to build better risk profiles). Pure vertical integration play.",
+      "finding_id": "opportunity_scout-20260414-1685",
+      "agent": "opportunity_scout",
+      "generated_at": "2026-04-15T03:18:27.146028+00:00",
+      "title": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "confidence": 0.8,
+      "evidence_summary": "The camera sees these items but we detect no brands. ZERO detections: accessories, apparel, footwear, sunglasses, wristband. Near-zero: hat(5). Each gap = a brand that could be paying for visibility data.",
       "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: partnership_flip play",
+      "category": "revenue_opportunity",
+      "novelty": 0.85,
+      "recommended_action": "Add shoe/apparel/sunglasses brand detection examples to Gemini prompt \u2014 immediate revenue unlock",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.75,
-        "category": "partnership_flip"
+        "missing": [
+          "accessories",
+          "apparel",
+          "footwear",
+          "sunglasses",
+          "wristband"
+        ],
+        "low": [
+          [
+            "hat",
+            5
+          ]
+        ],
+        "seen": [
+          [
+            "paddle",
+            1542
+          ],
+          [
+            "shoes",
+            263
+          ],
+          [
+            "venue_signage",
+            193
+          ],
+          [
+            "net",
+            129
+          ],
+          [
+            "apparel_top",
+            125
+          ],
+          [
+            "sponsor_banner",
+            67
+          ],
+          [
+            "bag",
+            54
+          ],
+          [
+            "court_surface",
+            42
+          ],
+          [
+            "clothing_brand",
+            24
+          ],
+          [
+            "ball",
+            14
+          ]
+        ]
       },
-      "composite_score": 0.654,
+      "composite_score": 0.6476,
       "track": "strategic"
     },
     {
-      "finding_id": "viral_decoder-20260414-1809",
+      "finding_id": "wildcard-20260414-5346",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201063+00:00",
+      "title": "Player-Owned Highlight NFTs",
+      "confidence": 0.72,
+      "evidence_summary": "Each clip becomes a fractional NFT that players, brands, and facilities can own pieces of. When a clip goes viral or gets licensed, royalties auto-distribute to all holders. Players are incentivized to play at Courtana courts (to build their highlight portfolio), facilities get ongoing micro-revenue, and brands sponsor specific players' highlight collections.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: network_effect play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.72,
+        "category": "network_effect"
+      },
+      "composite_score": 0.6278,
+      "track": "strategic"
+    },
+    {
+      "finding_id": "brand_analyst-20260414-8284",
+      "agent": "brand_analyst",
+      "generated_at": "2026-04-15T03:18:26.982186+00:00",
+      "title": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "confidence": 0.8,
+      "evidence_summary": "Brands with significant venue-only detections (not product use): JOOLA (195/1931 are venue). Raw counts overstate market share. Product-use only: JOOLA=1736, Nike=198, PICKLEBALL=77, HEAD=45, PICKLEBALL KINGDOM=24.",
+      "business_value": "high",
+      "category": "brand_insight",
+      "novelty": 0.85,
+      "recommended_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+      "source_clips": [],
+      "raw_data": {
+        "raw_top5": [
+          [
+            "JOOLA",
+            1931
+          ],
+          [
+            "Nike",
+            198
+          ],
+          [
+            "PICKLEBALL",
+            77
+          ],
+          [
+            "HEAD",
+            45
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ]
+        ],
+        "product_top5": [
+          [
+            "JOOLA",
+            1736
+          ],
+          [
+            "Nike",
+            198
+          ],
+          [
+            "PICKLEBALL",
+            77
+          ],
+          [
+            "HEAD",
+            45
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ]
+        ],
+        "venue_inflated": [
+          [
+            "JOOLA",
+            195,
+            1931
+          ]
+        ]
+      },
+      "composite_score": 0.6121,
+      "track": "data",
+      "follow_up": {
+        "follow_up_question": "Is the 'Net/venue branding inflates 1 brands \u2014 true share-' signal statistically significant with larger corpus?",
+        "proposed_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+        "assigned_researcher": "brand_analyst"
+      },
+      "counterargument": {
+        "argument": "Correcting for venue-only detections assumes brands care about 'true share-of-court'\u2014but they actually care about total visibility, which includes venue branding.",
+        "evidence": "Your brand partners (Nike, JOOLA) are paying for *impressions*, not just product-in-hand moments. A jersey or court net with a brand logo is still brand exposure worth money. By filtering out venue detections, you're actually reducing the value metric you're selling to them. If you report only 'product-use' metrics, you'll undercount Nike's true exposure (venue + gear) relative to competitors, and they'll ask why they're paying for an incomplete picture. You can't have it both ways: either total visibility matters (and venue counts) or you need to price models differently for each metric.",
+        "risk_level": "medium"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260414-8284.html"
+    },
+    {
+      "finding_id": "viral_decoder-20260414-7612",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989293+00:00",
+      "generated_at": "2026-04-15T03:18:27.092099+00:00",
       "title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
       "confidence": 0.8,
       "evidence_summary": "Top 100 viral clips: quality=7.59, watchability=6.45. Bottom 100: quality=5.42, watchability=3.14. Both metrics track strongly with viral potential.",
@@ -904,16 +1124,12 @@
         "proposed_action": "Use (quality + watchability) / 2 as quick viral prediction score",
         "assigned_researcher": "viral_decoder"
       },
-      "counterargument": {
-        "argument": "Viral metrics from 200 clips have zero predictive power\u2014virality is driven by timing, algorithm seeding, and community context, not clip properties.",
-        "evidence": "You're measuring correlation on a tiny, post-hoc sample (top 100 vs bottom 100 viral clips). But virality is not deterministic; it's driven by algorithmic promotion, account following, and luck. A mediocre clip posted by a 500K-follower creator goes viral. An excellent clip from an unknown goes nowhere. Your 'quality + watchability' score will predict past virality (overfitting) but fail prospectively. You'll recommend clips that *look* viral but never reach audience. This metric is useless for product: what would you actually *do* with it? Rank clips for facilities? They don't control distribution. Sell predictions to creators? They'll quickly learn the algorithm != your score.",
-        "risk_level": "medium"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260414-7612.html"
     },
     {
-      "finding_id": "production_auditor-20260414-1540",
+      "finding_id": "production_auditor-20260414-7184",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006836+00:00",
+      "generated_at": "2026-04-15T03:18:27.114060+00:00",
       "title": "Worst predicted badges: serve returner (F1=0.875), hustler (F1=0.769)",
       "confidence": 0.8,
       "evidence_summary": "Lowest F1 badges: serve returner (F1=0.875), hustler (F1=0.769). These need prompt improvement.",
@@ -948,12 +1164,13 @@
         "follow_up_question": "What's the ROI of fixing this? How many clips affected?",
         "proposed_action": "Add specific examples for these badge types in Gemini prompt",
         "assigned_researcher": "production_auditor"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-7184.html"
     },
     {
-      "finding_id": "prompt_engineer-20260414-2604",
+      "finding_id": "prompt_engineer-20260414-6997",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048700+00:00",
+      "generated_at": "2026-04-15T03:18:27.162560+00:00",
       "title": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
       "confidence": 0.75,
       "evidence_summary": "JOOLA dominates 75% of clips. Prompt should distinguish: paddle logo (real JOOLA use), net logo (JOOLA sponsors nets), and venue branding (JOOLA sponsors the facility).",
@@ -967,20 +1184,15 @@
         "total_verified": 287
       },
       "composite_score": 0.5665,
-      "track": "data",
-      "follow_up": {
-        "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add to brand detection prompt:\n'For JOOLA specifically, classify detection source:\n  - paddle: JOOLA logo on paddle face = confirmed product use\n  - net: JOOLA logo on net = venue sponsorship, NOT product use\n  - venue: JOOLA on walls/banners = facility sponsorship\nOnly count paddle detections as brand_category: paddle'",
-        "assigned_researcher": "prompt_engineer"
-      }
+      "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-9438",
+      "finding_id": "opportunity_scout-20260414-2238",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.031029+00:00",
-      "title": "Sponsorship whitespace detected in 716 clips (84.9%) \u2014 sell to brands",
+      "generated_at": "2026-04-15T03:18:27.144662+00:00",
+      "title": "Sponsorship whitespace detected in 973 clips (88.5%) \u2014 sell to brands",
       "confidence": 0.7,
-      "evidence_summary": "We detect unbranded equipment/space in 716 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
+      "evidence_summary": "We detect unbranded equipment/space in 973 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
       "business_value": "high",
       "category": "revenue_opportunity",
       "novelty": 0.8,
@@ -1012,19 +1224,19 @@
         }
       ],
       "raw_data": {
-        "whitespace_clips": 716,
-        "fill_rate": 84.9
+        "whitespace_clips": 973,
+        "fill_rate": 88.5
       },
       "composite_score": 0.5237,
       "track": "strategic"
     },
     {
-      "finding_id": "shot_scientist-20260414-8247",
+      "finding_id": "shot_scientist-20260414-9275",
       "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.958915+00:00",
-      "title": "Viral shot: 'volley' clips average 4.46 viral vs 'serve' at 1.25",
+      "generated_at": "2026-04-15T03:18:27.056534+00:00",
+      "title": "Viral shot: 'overhead' clips average 5.8 viral vs 'serve' at 1.25",
       "confidence": 0.7,
-      "evidence_summary": "Shot viral averages: volley=4.46, dink=3.37, drive=3.31, serve=1.25",
+      "evidence_summary": "Shot viral averages: overhead=5.8, volley=4.19, dink=3.22, drive=3.09, serve=1.25",
       "business_value": "high",
       "category": "shot_pattern",
       "novelty": 0.65,
@@ -1032,19 +1244,20 @@
       "source_clips": [],
       "raw_data": {
         "shot_viral_avgs": {
-          "drive": 3.31,
-          "dink": 3.37,
-          "volley": 4.46,
-          "serve": 1.25
+          "drive": 3.09,
+          "dink": 3.22,
+          "volley": 4.19,
+          "serve": 1.25,
+          "overhead": 5.8
         }
       },
       "composite_score": 0.5214,
       "track": "data"
     },
     {
-      "finding_id": "viral_decoder-20260414-8863",
+      "finding_id": "viral_decoder-20260414-3927",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989390+00:00",
+      "generated_at": "2026-04-15T03:18:27.092190+00:00",
       "title": "Viral arc: 'top_play' is 130.0x more likely in top clips (13.0% vs 0.0%)",
       "confidence": 0.7,
       "evidence_summary": "Story arc 'top_play' appears in 13.0% of top-viral clips but only 0.0% of bottom-viral clips.",
@@ -1055,29 +1268,49 @@
       "source_clips": [],
       "raw_data": {
         "viral_arcs": {
+          "social_play": {
+            "top_pct": 0.0,
+            "bottom_pct": 1.0,
+            "ratio": 0.0
+          },
           "athletic_highlight": {
             "top_pct": 4.0,
             "bottom_pct": 0.0,
             "ratio": 40.0
           },
-          "funny": {
-            "top_pct": 0.0,
-            "bottom_pct": 2.0,
-            "ratio": 0.0
+          "competitive_intensity": {
+            "top_pct": 27.0,
+            "bottom_pct": 5.0,
+            "ratio": 5.4
           },
           "comedy": {
             "top_pct": 1.0,
             "bottom_pct": 1.0,
             "ratio": 1.0
           },
+          "top_play": {
+            "top_pct": 13.0,
+            "bottom_pct": 0.0,
+            "ratio": 130.0
+          },
+          "grind_rally": {
+            "top_pct": 8.0,
+            "bottom_pct": 3.0,
+            "ratio": 2.67
+          },
+          "clutch_moment": {
+            "top_pct": 1.0,
+            "bottom_pct": 0.0,
+            "ratio": 10.0
+          },
           "strategic": {
             "top_pct": 32.0,
             "bottom_pct": 59.0,
             "ratio": 0.54
           },
-          "social_play": {
+          "funny": {
             "top_pct": 0.0,
-            "bottom_pct": 1.0,
+            "bottom_pct": 2.0,
             "ratio": 0.0
           },
           "athletic": {
@@ -1085,30 +1318,15 @@
             "bottom_pct": 0.0,
             "ratio": 80.0
           },
-          "clutch_moment": {
-            "top_pct": 1.0,
-            "bottom_pct": 0.0,
-            "ratio": 10.0
-          },
-          "competitive_intensity": {
-            "top_pct": 27.0,
-            "bottom_pct": 5.0,
-            "ratio": 5.4
-          },
           "pure_fun": {
             "top_pct": 0.0,
             "bottom_pct": 3.0,
             "ratio": 0.0
           },
-          "top_play": {
-            "top_pct": 13.0,
-            "bottom_pct": 0.0,
-            "ratio": 130.0
-          },
-          "teaching_moment": {
-            "top_pct": 1.0,
-            "bottom_pct": 18.0,
-            "ratio": 0.06
+          "quick_point": {
+            "top_pct": 0.0,
+            "bottom_pct": 2.0,
+            "ratio": 0.0
           },
           "error_highlight": {
             "top_pct": 2.0,
@@ -1120,15 +1338,10 @@
             "bottom_pct": 0.0,
             "ratio": 30.0
           },
-          "grind_rally": {
-            "top_pct": 8.0,
-            "bottom_pct": 3.0,
-            "ratio": 2.67
-          },
-          "quick_point": {
-            "top_pct": 0.0,
-            "bottom_pct": 2.0,
-            "ratio": 0.0
+          "teaching_moment": {
+            "top_pct": 1.0,
+            "bottom_pct": 18.0,
+            "ratio": 0.06
           }
         }
       },
@@ -1136,12 +1349,12 @@
       "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-0440",
+      "finding_id": "opportunity_scout-20260414-9251",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.031836+00:00",
-      "title": "Endorsement intelligence: 75 player-brand pairs with 3+ co-occurrences",
+      "generated_at": "2026-04-15T03:18:27.145439+00:00",
+      "title": "Endorsement intelligence: 61 player-brand pairs with 3+ co-occurrences",
       "confidence": 0.7,
-      "evidence_summary": "Top pairs: PickleBill-JOOLA(284x), Chintan-JOOLA(257x), Ironvarr-JOOLA(175x), Tmf-JOOLA(143x), Santinofuntila-JOOLA(136x)",
+      "evidence_summary": "Top pairs: PickleBill-JOOLA(223x), Tmf-JOOLA(145x), Ironvarr-JOOLA(133x), Santinofuntila-JOOLA(130x), David_220cfb17-JOOLA(103x)",
       "business_value": "high",
       "category": "revenue_opportunity",
       "novelty": 0.75,
@@ -1154,21 +1367,21 @@
               "Ironvarr",
               "JOOLA"
             ],
-            175
+            133
           ],
           [
             [
               "Santinofuntila",
               "JOOLA"
             ],
-            136
+            130
           ],
           [
             [
               "Ironvarr",
               "Nike"
             ],
-            22
+            14
           ],
           [
             [
@@ -1189,7 +1402,7 @@
               "PickleBill",
               "JOOLA"
             ],
-            284
+            223
           ],
           [
             [
@@ -1225,12 +1438,12 @@
       "track": "strategic"
     },
     {
-      "finding_id": "brand_analyst-20260414-7541",
+      "finding_id": "brand_analyst-20260414-8037",
       "agent": "brand_analyst",
-      "generated_at": "2026-04-15T02:24:17.894222+00:00",
-      "title": "Brand-skill split: PICKLEBALL KINGDOM users excel at kitchen (7.5), HEAD users at power (4.88)",
+      "generated_at": "2026-04-15T03:18:26.982992+00:00",
+      "title": "Brand-skill split: PICKLEBALL KINGDOM users excel at kitchen (7.5), R&M_foz_wifi_goomba users at power (5.1)",
       "confidence": 0.65,
-      "evidence_summary": "Among brands with 10+ clips: PICKLEBALL KINGDOM has highest avg kitchen mastery (7.5), while HEAD has highest power rating (4.88).",
+      "evidence_summary": "Among brands with 10+ clips: PICKLEBALL KINGDOM has highest avg kitchen mastery (7.5), while R&M_foz_wifi_goomba has highest power rating (5.1).",
       "business_value": "high",
       "category": "brand_insight",
       "novelty": 0.75,
@@ -1239,29 +1452,39 @@
       "raw_data": {
         "skill_rankings": {
           "JOOLA": {
-            "kitchen": 7.13,
-            "power": 4.16,
-            "count": 1623
+            "kitchen": 7.1,
+            "power": 4.26,
+            "count": 1931
           },
           "Nike": {
-            "kitchen": 6.7,
+            "kitchen": 6.69,
             "power": 4.6,
-            "count": 183
+            "count": 198
           },
           "On": {
-            "kitchen": 7.08,
-            "power": 4.62,
-            "count": 13
+            "kitchen": 7.06,
+            "power": 4.71,
+            "count": 17
           },
           "HEAD": {
-            "kitchen": 6,
-            "power": 4.88,
-            "count": 34
+            "kitchen": 6.29,
+            "power": 4.84,
+            "count": 45
           },
           "PICKLEBALL KINGDOM": {
             "kitchen": 7.5,
             "power": 3.83,
             "count": 24
+          },
+          "PICKLEBALL": {
+            "kitchen": 6.71,
+            "power": 4.71,
+            "count": 77
+          },
+          "R&M_foz_wifi_goomba": {
+            "kitchen": 7.19,
+            "power": 5.1,
+            "count": 21
           }
         }
       },
@@ -1269,118 +1492,32 @@
       "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-5774",
+      "finding_id": "opportunity_scout-20260414-4088",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.032004+00:00",
-      "title": "Longitudinal tracking possible: 34 players with 5+ clips",
+      "generated_at": "2026-04-15T03:18:27.146518+00:00",
+      "title": "Longitudinal tracking possible: 26 players with 5+ clips",
       "confidence": 0.75,
-      "evidence_summary": "34 players have enough data for improvement tracking. Top: PickleBill(161), Chintan(155), Ironvarr(81), Santinofuntila(67), Tmf(59)",
+      "evidence_summary": "26 players have enough data for improvement tracking. Top: PickleBill(111), Santinofuntila(63), Ironvarr(62), Tmf(59), David_220cfb17(34)",
       "business_value": "high",
       "category": "product_opportunity",
       "novelty": 0.7,
       "recommended_action": "Build player improvement trajectory product \u2014 track skill changes over time",
       "source_clips": [],
       "raw_data": {
-        "multi_session_players": 34
+        "multi_session_players": 26
       },
       "composite_score": 0.4717,
-      "track": "strategic"
-    },
-    {
-      "finding_id": "shot_scientist-20260414-6153",
-      "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.959600+00:00",
-      "title": "Signature moves = viral gold: 813 clips with signatures avg 3.4 viral vs 3.9",
-      "confidence": 0.6,
-      "evidence_summary": "813 clips have identified signature moves, averaging 3.4 viral vs 3.9 for clips without.",
-      "business_value": "high",
-      "category": "shot_pattern",
-      "novelty": 0.7,
-      "recommended_action": "Auto-tag signature move clips as premium content",
-      "source_clips": [
-        {
-          "uuid": "046edc1a-596f-4e88-9005-3e79606a11bc",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.jpeg",
-          "summary": "A 17-shot driving rally ends with an unforced error into the net.",
-          "quality": 7,
-          "viral": 5
-        },
-        {
-          "uuid": "064ec69b-1d74-4790-89e8-85db34be7976",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.jpeg",
-          "summary": "Players engage in a prolonged kitchen dink rally, demonstrating patience and control.",
-          "quality": 4,
-          "viral": 2
-        },
-        {
-          "uuid": "0741e202-2d48-41d7-a366-a377b2e4f1c4",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.jpeg",
-          "summary": "Players engage in a consistent rally of dinks at the kitchen line.",
-          "quality": 5,
-          "viral": 2
-        }
-      ],
-      "raw_data": {},
-      "composite_score": 0.4334,
-      "track": "data"
-    },
-    {
-      "finding_id": "opportunity_scout-20260414-5165",
-      "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.031844+00:00",
-      "title": "Social caption generation at 99.8% \u2014 ready to productize",
-      "confidence": 0.8,
-      "evidence_summary": "Social media captions are generated for 841/843 clips. This is already a viable content-as-a-service product.",
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "novelty": 0.6,
-      "recommended_action": "Create API endpoint for social caption generation \u2014 charge per clip",
-      "source_clips": [],
-      "raw_data": {},
-      "composite_score": 0.4118,
       "track": "strategic"
     }
   ],
   "all_findings": [
     {
-      "finding_id": "wildcard-20260414-2814",
+      "finding_id": "wildcard-20260414-2801",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495787+00:00",
-      "title": "Inverse Coaching: Players Train the AI",
-      "confidence": 0.92,
-      "evidence_summary": "Release a free mobile app where pickleball players film their own shots and label them (serve, forehand, dink, etc.). The app learns THEIR playing style. In exchange, we get structured labeled training data 1000x better than our current corpus. Use this data to build hyper-personalized coaching models. Players get free coaching; we get the data moat that makes our coaching products unbeatable. Each player improves our model, which improves everyone else's coaching.",
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: crowdsource play",
-      "source_clips": [],
-      "raw_data": {
-        "flywheel_score": 0.92,
-        "category": "crowdsource"
-      },
-      "composite_score": 0.8022,
-      "track": "strategic",
-      "follow_up": {
-        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: crowdsource play",
-        "assigned_researcher": "wildcard"
-      },
-      "counterargument": {
-        "argument": "Players won't voluntarily label their own shots at scale\u2014this relies on sustained user motivation that rarely persists past initial novelty.",
-        "evidence": "Crowdsourcing labeled data works only when users have intrinsic motivation (ego, competition, prizes). Pickleball players filming and tagging their own shots will drop off after the first week. You'll end up with 50K clips from 200 power-users, creating massive selection bias (only dedicated/ego-driven players label). This biased training set will then fail on casual players\u2014your actual market.",
-        "risk_level": "high"
-      }
-    },
-    {
-      "finding_id": "wildcard-20260414-5658",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495814+00:00",
-      "title": "Facility-Owned Idea Labs as White-Label SaaS",
+      "generated_at": "2026-04-15T03:18:39.200997+00:00",
+      "title": "The Brand's Own Idea Lab (White Label)",
       "confidence": 0.88,
-      "evidence_summary": "Package the Idea Lab research system as a standalone product. Every Courtana facility gets their own instance analyzing THEIR courts' clips. Facility owners (non-technical) get weekly auto-generated insights: 'Your top 3 rising players,' 'Most-played shots,' 'Equipment trends.' Facilities sell these insights to local leagues, sponsors, and players. We take 20% rev share. Facilities become embedded data distributors. Each facility's decisions improve the model for all others.",
+      "evidence_summary": "Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike uploads competitor videos, our system finds gaps: 'Your shoes underrepresented in backcourt angles' or 'Opponent's racket featured 3x more in viral moments.' Nike pays $200K/year, gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -1398,18 +1535,19 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Facility owners have no revenue incentive to use this\u2014it creates liability and operational burden without generating income for them.",
-        "evidence": "White-label SaaS to facilities assumes facility owners care about 'auto-generated insights.' They don't. They care about foot traffic and court bookings. A weekly AI report about 'interesting plays' doesn't drive revenue or retention. Meanwhile, if the system misidentifies a player or falsely awards a badge, the facility is liable. You're asking them to host infrastructure, manage user consent, and take reputational risk for your data play. Adoption will be <5% without revenue-share that's unsustainable for you.",
+        "argument": "Nike already has armies of sports marketing analysts and competitor tracking tools; they won't pay Pickle DaaS $50K+/year to repackage their own video library back to them.",
+        "evidence": "This assumes brands have a blind spot for their own product visibility\u2014they don't. Nike's marketing team watches their own clips constantly and likely already uses Vision AI, Hookit, or internal tools for competitor benchmarking. More critically, you'd be asking them to hand over proprietary competitor videos to an unproven startup, creating compliance and legal risk on their end. The willingness-to-pay is near zero because the problem isn't unsolved; it's already solved by bigger, trusted vendors.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2801.html"
     },
     {
-      "finding_id": "wildcard-20260414-0280",
+      "finding_id": "wildcard-20260414-8521",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495819+00:00",
-      "title": "Brand Sponsorship Verification Protocol",
+      "generated_at": "2026-04-15T03:18:39.201021+00:00",
+      "title": "Brand Bidding Arena",
       "confidence": 0.85,
-      "evidence_summary": "Instead of detecting brands, we become the SOURCE OF TRUTH for brand appearances in pickleball. Brands pay us to certify and timestamp their product usage in official clips. We issue NFT-style verification badges that brands embed in their own marketing. This flips the data flow\u2014brands voluntarily tag their own gear, we validate it, they use our certification as proof-of-authentic-usage for sponsorship contracts and influencer deals.",
+      "evidence_summary": "Flip the model: brands pay to COMPETE for shelf space in our clips. Instead of us detecting Nike in the background, Nike, JOOLA, and On bid in real-time for product placement in future Courtana videos. Facility owners get a cut. The highest bidder's gear gets featured in the next match at that court.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
@@ -1427,68 +1565,106 @@
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Brands won't pay for 'verification' of organic product use\u2014they already have athlete sponsorship deals that contractually require logo visibility.",
-        "evidence": "Nike, JOOLA, and other brands already embed product placement through sponsored players and contractual obligations. They don't need you to 'verify' what they paid for. The only real revenue would come from unsponsored brands paying to detect *uncontracted* competitor gear\u2014but that's market surveillance, ethically fraught, and easily blocked by players opting out of facial/gear recognition. You'll also be competing with existing brand-safety vendors (Nielsen, Genius Sports). This is a solution looking for a problem that doesn't have budget.",
-        "risk_level": "medium"
-      }
+        "argument": "Real-time bidding for product placement in live or near-live clips requires supply (Courtana's video volume) to be predictable and brands to commit ad spend on speculative exposure.",
+        "evidence": "Courtana's clip volume is inconsistent (depends on tournament schedule). Brands won't bid on uncertain inventory. More critically, this model requires Courtana to *actively control* which products appear in clips\u2014either by directing camera angles (unethical, undermines content credibility) or by post-processing (illegal product insertion). The model collapses if you can't guarantee placement. You'd also face immediate pushback from venue partners and athletes who won't tolerate their content being auctioned to the highest bidder.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-8521.html"
     },
     {
-      "finding_id": "wildcard-20260414-7407",
+      "finding_id": "wildcard-20260414-2257",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495823+00:00",
-      "title": "The Creator Royalty Pool",
-      "confidence": 0.83,
-      "evidence_summary": "Every clip in our corpus is a potential broadcast asset. License clips to TikTok, YouTube, ESPN+, etc. Pool all revenue. Distribute to: the facility (50%), the identified players (30%), the brand (if detected, 10%), and Courtana (10%). Players start chasing epic shots knowing they get royalties. Facilities optimize for viral-worthy plays. Brands compete to sponsor 'royalty-earning moments.' More stakeholders = more incentive to feed the system with better clips.",
+      "generated_at": "2026-04-15T03:18:39.201031+00:00",
+      "title": "The Idea Lab as SaaS for Any Sports Facility Network",
+      "confidence": 0.84,
+      "evidence_summary": "Package the Idea Lab as a $5K/month white-label product for regional sports facility chains (not just pickleball). A chain with 20 multi-sport courts gets an Idea Lab analyzing all their footage autonomously. We become the hidden OS for facility intelligence. Each facility pays us; we own the data; we expand to basketball, tennis, etc.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
-      "recommended_action": "Evaluate: creator_economy play",
+      "recommended_action": "Evaluate: platform_play play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.83,
-        "category": "creator_economy"
+        "flywheel_score": 0.84,
+        "category": "platform_play"
       },
-      "composite_score": 0.7238,
+      "composite_score": 0.7325,
       "track": "strategic",
       "follow_up": {
         "follow_up_question": "What's the smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: creator_economy play",
+        "proposed_action": "Evaluate: platform_play play",
         "assigned_researcher": "wildcard"
       },
       "counterargument": {
-        "argument": "Licensing clips requires clearances from 3+ parties simultaneously\u2014facility, players, brands\u2014and you have zero legal standing to broker any of it.",
-        "evidence": "You don't own the clips. The facility owns them (by right of recording on their property). The players own their image rights. Brands own their trademarks. For ESPN to license even one clip, you need written consent from all three parties. You have no mechanism to prove consent or arbitrate disputes. One player objects, the clip dies, your royalty pool breaks. Facilities will demand you hold liability insurance (expensive). You'll spend 6 months negotiating legal terms and collect <$500/month in actual licensing revenue. This is a venture graveyard: high friction, low velocity, hostile legal environment.",
+        "argument": "Regional sports facility chains won't pay $5K/month for an AI that tells them what equipment brands appear in their footage\u2014they care about facility operations, member retention, and court booking, not brand analytics.",
+        "evidence": "You're selling a feature (brand detection) as a product to a customer (facility chains) who don't have a budget line item for brand intelligence. The buyer at a 20-court facility is the operations manager, not a marketing executive. Even if they see value, you have no distribution into this market, no existing relationships, and would need a 12-18 month sales cycle per facility. Meanwhile, you're stretched thin building this while supporting Courtana.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2257.html"
     },
     {
-      "finding_id": "wildcard-20260414-4722",
+      "finding_id": "wildcard-20260414-9551",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495826+00:00",
-      "title": "The Pickleball Gear Arms Race",
-      "confidence": 0.81,
-      "evidence_summary": "Publish weekly leaderboards of 'which gear wins most.' Correlate equipment (JOOLA paddles, Nike shoes, etc.) with win rates in your clips. Sell brands PREDICTIVE reports: 'If you improve X, your gear appears in 40% more winning shots.' Brands then sponsor players using that gear. Those newly-sponsored players generate more clips. More clips = better models. Brands pay to enter the arms race; the ecosystem grows automatically.",
+      "generated_at": "2026-04-15T03:18:39.201042+00:00",
+      "title": "Facility as Media Studio (Revenue Share)",
+      "confidence": 0.83,
+      "evidence_summary": "Stop selling clips. Partner with facilities to become mini ESPN studios. We handle all editing/commentary/distribution; they keep 70% of ad revenue + sponsorship deals we broker. A facility with Courtana becomes a media asset. We scale to 100 facilities = 100 revenue streams. Each facility is incentivized to host bigger tournaments.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
       "recommended_action": "Evaluate: partnership_flip play",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.81,
+        "flywheel_score": 0.83,
         "category": "partnership_flip"
       },
-      "composite_score": 0.7063,
+      "composite_score": 0.7238,
       "track": "strategic",
       "follow_up": {
         "follow_up_question": "What's the smallest experiment to test this in 30 days?",
         "proposed_action": "Evaluate: partnership_flip play",
         "assigned_researcher": "wildcard"
-      }
+      },
+      "counterargument": {
+        "argument": "Facilities won't accept a 30% revenue cut and the operational overhead of becoming a 'media studio' for an unproven ad revenue share model.",
+        "evidence": "Facilities' core business is court rentals and memberships\u2014predictable, recurring revenue. Asking them to bet on ad revenue from edited clips means cannibalizing their existing sponsorship deals (local, direct) and trusting Pickle DaaS to actually broker deals and deliver payments. You'd be taking operational risk (editing, distribution, rights management) that facilities can't control. Also: if a clip goes viral and creates liability (injury, discrimination, etc.), who owns the legal risk? This partnership structure is unresolved and will kill deals in legal review.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-9551.html"
     },
     {
-      "finding_id": "production_auditor-20260414-5609",
+      "finding_id": "wildcard-20260414-6202",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201049+00:00",
+      "title": "Coaching Certification Authority",
+      "confidence": 0.81,
+      "evidence_summary": "Use our AI to certify pickleball coaches. Coaches submit videos of their instruction; we analyze shot breakdown, communication clarity, drill design. Certified coaches get a badge, can charge 3x more, and must use Courtana courts to maintain certification. We become the permissioning layer for professional coaching.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: platform_play play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.81,
+        "category": "platform_play"
+      },
+      "composite_score": 0.7063,
+      "track": "strategic",
+      "follow_up": {
+        "follow_up_question": "What's the smallest experiment to test this in 30 days?",
+        "proposed_action": "Evaluate: platform_play play",
+        "assigned_researcher": "wildcard"
+      },
+      "counterargument": {
+        "argument": "Coaching certification requires legal liability framework, accreditation body status, and recurring instructor education\u2014none of which Pickle DaaS is equipped to provide or defend in court.",
+        "evidence": "You cannot simply issue badges that claim to 'certify' coaches. Coaches will charge 3x more based on your certification, and if an injury occurs during a lesson from a 'certified' coach, you're exposed to negligence liability. You'd need insurance, a legal framework, appeals process, and continuing education requirements. This isn't a software feature\u2014it's a regulated credential business. The PPA or IPTPA already own this space. You'd face immediate cease-and-desist letters, and no insurance company will cover a startup playing credential issuer.",
+        "risk_level": "high"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-6202.html"
+    },
+    {
+      "finding_id": "production_auditor-20260414-5182",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006814+00:00",
+      "generated_at": "2026-04-15T03:18:27.114035+00:00",
       "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
       "confidence": 0.9,
       "evidence_summary": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
@@ -1510,41 +1686,42 @@
         "assigned_researcher": "production_auditor"
       },
       "counterargument": {
-        "argument": "F1=0.97 on 287 clips is statistically meaningless\u2014this is likely overfitting to lighting, court angle, and player demographics in those specific videos.",
-        "evidence": "287 verified clips is a vanishingly small test set. Production use will see clips from 50+ different facilities, lighting conditions, camera angles, and player skill levels. The 41 missed badges likely cluster heavily in underrepresented conditions (night courts, wide angles, beginner players). Real-world F1 will collapse to 0.75\u20130.80 once you deploy. You're measuring performance on your own curated dataset, not on the long tail of variation.",
+        "argument": "An F1=0.97 on 287 clips doesn't prove the model works on unseen badge types or real-world production footage with different lighting, angles, or video quality.",
+        "evidence": "The 287 verified clips likely come from controlled production environments where Courtana already knows what badges exist. When the model encounters a new badge type, variation in video quality, or edge cases from user-generated content, performance will crater. The 16 false positives and 41 missed badges (out of ~1,300 total predictions) suggest systematic blindspots that prompt engineering alone won't fix\u2014you're likely overfitting to known badge patterns.",
         "risk_level": "high"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-5182.html"
     },
     {
-      "finding_id": "wildcard-20260414-7558",
+      "finding_id": "wildcard-20260414-9541",
       "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495830+00:00",
-      "title": "Sport-Agnostic Playbook: Rent the Analysis Engine",
+      "generated_at": "2026-04-15T03:18:39.201056+00:00",
+      "title": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
       "confidence": 0.79,
-      "evidence_summary": "The Idea Lab + shot analysis pipeline is sport-agnostic. License it to tennis courts, badminton clubs, padel facilities, even CrossFit gyms. Each sport's community funds their own Idea Lab analysis. We become the horizontal infrastructure layer that every racquet sport (and beyond) relies on. Each new sport adds data that improves the core model. Network effects across sports, not just pickleball. One system, infinite verticals.",
+      "evidence_summary": "When a player's clip hits a viral threshold, we auto-match them with 3-5 coaches in their region. Coaches bid to coach that player. The player chooses; we take 20%. Players get better \u2192 play more matches \u2192 more clips \u2192 more coaching gigs. Each coach becomes a node in a viral loop.",
       "business_value": "high",
       "category": "wildcard_idea",
       "novelty": 0.9,
-      "recommended_action": "Evaluate: platform_play play",
+      "recommended_action": "Evaluate: crowdsource play",
       "source_clips": [],
       "raw_data": {
         "flywheel_score": 0.79,
-        "category": "platform_play"
+        "category": "crowdsource"
       },
       "composite_score": 0.6889,
       "track": "strategic"
     },
     {
-      "finding_id": "prompt_engineer-20260414-0722",
+      "finding_id": "prompt_engineer-20260414-7372",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048528+00:00",
+      "generated_at": "2026-04-15T03:18:27.162297+00:00",
       "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
       "confidence": 0.85,
-      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'paddle tap celebration' (3 missed), 'fresh fit' (3 missed). These are real badges that our prompt doesn't detect.",
+      "evidence_summary": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'fresh fit' (3 missed), 'paddle tap celebration' (3 missed). These are real badges that our prompt doesn't detect.",
       "business_value": "high",
       "category": "prompt_fix",
       "novelty": 0.65,
-      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+      "recommended_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
       "source_clips": [],
       "raw_data": {
         "top_fn_badges": [
@@ -1561,11 +1738,11 @@
             4
           ],
           [
-            "paddle tap celebration",
+            "fresh fit",
             3
           ],
           [
-            "fresh fit",
+            "paddle tap celebration",
             3
           ]
         ],
@@ -1588,38 +1765,185 @@
       "track": "data",
       "follow_up": {
         "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+        "proposed_action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
         "assigned_researcher": "prompt_engineer"
       },
-      "counterargument": {
-        "argument": "Prompt engineering to fix 21 missed badges is a band-aid that will fail on the next 50 badges the model hasn't seen yet.",
-        "evidence": "You're treating this as a prompt problem when it's a model problem. Gemini (or whatever LLM you're using) doesn't have visual grounding for 'rally master' or 'fresh fit'\u2014these are contextual, learned categories that exist only in Courtana's data. Adding English descriptions of visual patterns to a prompt won't fix hallucination or misclassification. You'll patch 5 badges, miss 5 others, then repeat. This is whack-a-mole. Real fix requires fine-tuning on labeled examples, which requires... the very crowdsourced data pipeline Finding #1 assumes will work.",
-        "risk_level": "high"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260414-7372.html"
     },
     {
-      "finding_id": "wildcard-20260414-1105",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T02:24:36.495837+00:00",
-      "title": "Pickleball Insurance Underwriting",
-      "confidence": 0.75,
-      "evidence_summary": "Partner with sports insurance companies. We rate player injury risk and facility safety using shot biomechanics, court congestion patterns, and player skill mismatches. Insurance companies pay us for risk scores. Players with low-risk profiles get lower premiums. Facilities with high-safety scores market that. Creates incentive for MORE Courtana adoption (to get better insurance rates) and MORE clip submission (to build better risk profiles). Pure vertical integration play.",
+      "finding_id": "opportunity_scout-20260414-1685",
+      "agent": "opportunity_scout",
+      "generated_at": "2026-04-15T03:18:27.146028+00:00",
+      "title": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "confidence": 0.8,
+      "evidence_summary": "The camera sees these items but we detect no brands. ZERO detections: accessories, apparel, footwear, sunglasses, wristband. Near-zero: hat(5). Each gap = a brand that could be paying for visibility data.",
       "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: partnership_flip play",
+      "category": "revenue_opportunity",
+      "novelty": 0.85,
+      "recommended_action": "Add shoe/apparel/sunglasses brand detection examples to Gemini prompt \u2014 immediate revenue unlock",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.75,
-        "category": "partnership_flip"
+        "missing": [
+          "accessories",
+          "apparel",
+          "footwear",
+          "sunglasses",
+          "wristband"
+        ],
+        "low": [
+          [
+            "hat",
+            5
+          ]
+        ],
+        "seen": [
+          [
+            "paddle",
+            1542
+          ],
+          [
+            "shoes",
+            263
+          ],
+          [
+            "venue_signage",
+            193
+          ],
+          [
+            "net",
+            129
+          ],
+          [
+            "apparel_top",
+            125
+          ],
+          [
+            "sponsor_banner",
+            67
+          ],
+          [
+            "bag",
+            54
+          ],
+          [
+            "court_surface",
+            42
+          ],
+          [
+            "clothing_brand",
+            24
+          ],
+          [
+            "ball",
+            14
+          ]
+        ]
       },
-      "composite_score": 0.654,
+      "composite_score": 0.6476,
       "track": "strategic"
     },
     {
-      "finding_id": "viral_decoder-20260414-1809",
+      "finding_id": "wildcard-20260414-5346",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201063+00:00",
+      "title": "Player-Owned Highlight NFTs",
+      "confidence": 0.72,
+      "evidence_summary": "Each clip becomes a fractional NFT that players, brands, and facilities can own pieces of. When a clip goes viral or gets licensed, royalties auto-distribute to all holders. Players are incentivized to play at Courtana courts (to build their highlight portfolio), facilities get ongoing micro-revenue, and brands sponsor specific players' highlight collections.",
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: network_effect play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.72,
+        "category": "network_effect"
+      },
+      "composite_score": 0.6278,
+      "track": "strategic"
+    },
+    {
+      "finding_id": "brand_analyst-20260414-8284",
+      "agent": "brand_analyst",
+      "generated_at": "2026-04-15T03:18:26.982186+00:00",
+      "title": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "confidence": 0.8,
+      "evidence_summary": "Brands with significant venue-only detections (not product use): JOOLA (195/1931 are venue). Raw counts overstate market share. Product-use only: JOOLA=1736, Nike=198, PICKLEBALL=77, HEAD=45, PICKLEBALL KINGDOM=24.",
+      "business_value": "high",
+      "category": "brand_insight",
+      "novelty": 0.85,
+      "recommended_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+      "source_clips": [],
+      "raw_data": {
+        "raw_top5": [
+          [
+            "JOOLA",
+            1931
+          ],
+          [
+            "Nike",
+            198
+          ],
+          [
+            "PICKLEBALL",
+            77
+          ],
+          [
+            "HEAD",
+            45
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ]
+        ],
+        "product_top5": [
+          [
+            "JOOLA",
+            1736
+          ],
+          [
+            "Nike",
+            198
+          ],
+          [
+            "PICKLEBALL",
+            77
+          ],
+          [
+            "HEAD",
+            45
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ]
+        ],
+        "venue_inflated": [
+          [
+            "JOOLA",
+            195,
+            1931
+          ]
+        ]
+      },
+      "composite_score": 0.6121,
+      "track": "data",
+      "follow_up": {
+        "follow_up_question": "Is the 'Net/venue branding inflates 1 brands \u2014 true share-' signal statistically significant with larger corpus?",
+        "proposed_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+        "assigned_researcher": "brand_analyst"
+      },
+      "counterargument": {
+        "argument": "Correcting for venue-only detections assumes brands care about 'true share-of-court'\u2014but they actually care about total visibility, which includes venue branding.",
+        "evidence": "Your brand partners (Nike, JOOLA) are paying for *impressions*, not just product-in-hand moments. A jersey or court net with a brand logo is still brand exposure worth money. By filtering out venue detections, you're actually reducing the value metric you're selling to them. If you report only 'product-use' metrics, you'll undercount Nike's true exposure (venue + gear) relative to competitors, and they'll ask why they're paying for an incomplete picture. You can't have it both ways: either total visibility matters (and venue counts) or you need to price models differently for each metric.",
+        "risk_level": "medium"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260414-8284.html"
+    },
+    {
+      "finding_id": "viral_decoder-20260414-7612",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989293+00:00",
+      "generated_at": "2026-04-15T03:18:27.092099+00:00",
       "title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
       "confidence": 0.8,
       "evidence_summary": "Top 100 viral clips: quality=7.59, watchability=6.45. Bottom 100: quality=5.42, watchability=3.14. Both metrics track strongly with viral potential.",
@@ -1641,16 +1965,12 @@
         "proposed_action": "Use (quality + watchability) / 2 as quick viral prediction score",
         "assigned_researcher": "viral_decoder"
       },
-      "counterargument": {
-        "argument": "Viral metrics from 200 clips have zero predictive power\u2014virality is driven by timing, algorithm seeding, and community context, not clip properties.",
-        "evidence": "You're measuring correlation on a tiny, post-hoc sample (top 100 vs bottom 100 viral clips). But virality is not deterministic; it's driven by algorithmic promotion, account following, and luck. A mediocre clip posted by a 500K-follower creator goes viral. An excellent clip from an unknown goes nowhere. Your 'quality + watchability' score will predict past virality (overfitting) but fail prospectively. You'll recommend clips that *look* viral but never reach audience. This metric is useless for product: what would you actually *do* with it? Rank clips for facilities? They don't control distribution. Sell predictions to creators? They'll quickly learn the algorithm != your score.",
-        "risk_level": "medium"
-      }
+      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260414-7612.html"
     },
     {
-      "finding_id": "production_auditor-20260414-1540",
+      "finding_id": "production_auditor-20260414-7184",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006836+00:00",
+      "generated_at": "2026-04-15T03:18:27.114060+00:00",
       "title": "Worst predicted badges: serve returner (F1=0.875), hustler (F1=0.769)",
       "confidence": 0.8,
       "evidence_summary": "Lowest F1 badges: serve returner (F1=0.875), hustler (F1=0.769). These need prompt improvement.",
@@ -1685,12 +2005,13 @@
         "follow_up_question": "What's the ROI of fixing this? How many clips affected?",
         "proposed_action": "Add specific examples for these badge types in Gemini prompt",
         "assigned_researcher": "production_auditor"
-      }
+      },
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-7184.html"
     },
     {
-      "finding_id": "prompt_engineer-20260414-2604",
+      "finding_id": "prompt_engineer-20260414-6997",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048700+00:00",
+      "generated_at": "2026-04-15T03:18:27.162560+00:00",
       "title": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
       "confidence": 0.75,
       "evidence_summary": "JOOLA dominates 75% of clips. Prompt should distinguish: paddle logo (real JOOLA use), net logo (JOOLA sponsors nets), and venue branding (JOOLA sponsors the facility).",
@@ -1704,20 +2025,15 @@
         "total_verified": 287
       },
       "composite_score": 0.5665,
-      "track": "data",
-      "follow_up": {
-        "follow_up_question": "Can we A/B test this prompt change on 50 clips?",
-        "proposed_action": "Add to brand detection prompt:\n'For JOOLA specifically, classify detection source:\n  - paddle: JOOLA logo on paddle face = confirmed product use\n  - net: JOOLA logo on net = venue sponsorship, NOT product use\n  - venue: JOOLA on walls/banners = facility sponsorship\nOnly count paddle detections as brand_category: paddle'",
-        "assigned_researcher": "prompt_engineer"
-      }
+      "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-9438",
+      "finding_id": "opportunity_scout-20260414-2238",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.031029+00:00",
-      "title": "Sponsorship whitespace detected in 716 clips (84.9%) \u2014 sell to brands",
+      "generated_at": "2026-04-15T03:18:27.144662+00:00",
+      "title": "Sponsorship whitespace detected in 973 clips (88.5%) \u2014 sell to brands",
       "confidence": 0.7,
-      "evidence_summary": "We detect unbranded equipment/space in 716 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
+      "evidence_summary": "We detect unbranded equipment/space in 973 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
       "business_value": "high",
       "category": "revenue_opportunity",
       "novelty": 0.8,
@@ -1749,19 +2065,19 @@
         }
       ],
       "raw_data": {
-        "whitespace_clips": 716,
-        "fill_rate": 84.9
+        "whitespace_clips": 973,
+        "fill_rate": 88.5
       },
       "composite_score": 0.5237,
       "track": "strategic"
     },
     {
-      "finding_id": "shot_scientist-20260414-8247",
+      "finding_id": "shot_scientist-20260414-9275",
       "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.958915+00:00",
-      "title": "Viral shot: 'volley' clips average 4.46 viral vs 'serve' at 1.25",
+      "generated_at": "2026-04-15T03:18:27.056534+00:00",
+      "title": "Viral shot: 'overhead' clips average 5.8 viral vs 'serve' at 1.25",
       "confidence": 0.7,
-      "evidence_summary": "Shot viral averages: volley=4.46, dink=3.37, drive=3.31, serve=1.25",
+      "evidence_summary": "Shot viral averages: overhead=5.8, volley=4.19, dink=3.22, drive=3.09, serve=1.25",
       "business_value": "high",
       "category": "shot_pattern",
       "novelty": 0.65,
@@ -1769,19 +2085,20 @@
       "source_clips": [],
       "raw_data": {
         "shot_viral_avgs": {
-          "drive": 3.31,
-          "dink": 3.37,
-          "volley": 4.46,
-          "serve": 1.25
+          "drive": 3.09,
+          "dink": 3.22,
+          "volley": 4.19,
+          "serve": 1.25,
+          "overhead": 5.8
         }
       },
       "composite_score": 0.5214,
       "track": "data"
     },
     {
-      "finding_id": "viral_decoder-20260414-8863",
+      "finding_id": "viral_decoder-20260414-3927",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989390+00:00",
+      "generated_at": "2026-04-15T03:18:27.092190+00:00",
       "title": "Viral arc: 'top_play' is 130.0x more likely in top clips (13.0% vs 0.0%)",
       "confidence": 0.7,
       "evidence_summary": "Story arc 'top_play' appears in 13.0% of top-viral clips but only 0.0% of bottom-viral clips.",
@@ -1792,29 +2109,49 @@
       "source_clips": [],
       "raw_data": {
         "viral_arcs": {
+          "social_play": {
+            "top_pct": 0.0,
+            "bottom_pct": 1.0,
+            "ratio": 0.0
+          },
           "athletic_highlight": {
             "top_pct": 4.0,
             "bottom_pct": 0.0,
             "ratio": 40.0
           },
-          "funny": {
-            "top_pct": 0.0,
-            "bottom_pct": 2.0,
-            "ratio": 0.0
+          "competitive_intensity": {
+            "top_pct": 27.0,
+            "bottom_pct": 5.0,
+            "ratio": 5.4
           },
           "comedy": {
             "top_pct": 1.0,
             "bottom_pct": 1.0,
             "ratio": 1.0
           },
+          "top_play": {
+            "top_pct": 13.0,
+            "bottom_pct": 0.0,
+            "ratio": 130.0
+          },
+          "grind_rally": {
+            "top_pct": 8.0,
+            "bottom_pct": 3.0,
+            "ratio": 2.67
+          },
+          "clutch_moment": {
+            "top_pct": 1.0,
+            "bottom_pct": 0.0,
+            "ratio": 10.0
+          },
           "strategic": {
             "top_pct": 32.0,
             "bottom_pct": 59.0,
             "ratio": 0.54
           },
-          "social_play": {
+          "funny": {
             "top_pct": 0.0,
-            "bottom_pct": 1.0,
+            "bottom_pct": 2.0,
             "ratio": 0.0
           },
           "athletic": {
@@ -1822,30 +2159,15 @@
             "bottom_pct": 0.0,
             "ratio": 80.0
           },
-          "clutch_moment": {
-            "top_pct": 1.0,
-            "bottom_pct": 0.0,
-            "ratio": 10.0
-          },
-          "competitive_intensity": {
-            "top_pct": 27.0,
-            "bottom_pct": 5.0,
-            "ratio": 5.4
-          },
           "pure_fun": {
             "top_pct": 0.0,
             "bottom_pct": 3.0,
             "ratio": 0.0
           },
-          "top_play": {
-            "top_pct": 13.0,
-            "bottom_pct": 0.0,
-            "ratio": 130.0
-          },
-          "teaching_moment": {
-            "top_pct": 1.0,
-            "bottom_pct": 18.0,
-            "ratio": 0.06
+          "quick_point": {
+            "top_pct": 0.0,
+            "bottom_pct": 2.0,
+            "ratio": 0.0
           },
           "error_highlight": {
             "top_pct": 2.0,
@@ -1857,15 +2179,10 @@
             "bottom_pct": 0.0,
             "ratio": 30.0
           },
-          "grind_rally": {
-            "top_pct": 8.0,
-            "bottom_pct": 3.0,
-            "ratio": 2.67
-          },
-          "quick_point": {
-            "top_pct": 0.0,
-            "bottom_pct": 2.0,
-            "ratio": 0.0
+          "teaching_moment": {
+            "top_pct": 1.0,
+            "bottom_pct": 18.0,
+            "ratio": 0.06
           }
         }
       },
@@ -1873,12 +2190,12 @@
       "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-0440",
+      "finding_id": "opportunity_scout-20260414-9251",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.031836+00:00",
-      "title": "Endorsement intelligence: 75 player-brand pairs with 3+ co-occurrences",
+      "generated_at": "2026-04-15T03:18:27.145439+00:00",
+      "title": "Endorsement intelligence: 61 player-brand pairs with 3+ co-occurrences",
       "confidence": 0.7,
-      "evidence_summary": "Top pairs: PickleBill-JOOLA(284x), Chintan-JOOLA(257x), Ironvarr-JOOLA(175x), Tmf-JOOLA(143x), Santinofuntila-JOOLA(136x)",
+      "evidence_summary": "Top pairs: PickleBill-JOOLA(223x), Tmf-JOOLA(145x), Ironvarr-JOOLA(133x), Santinofuntila-JOOLA(130x), David_220cfb17-JOOLA(103x)",
       "business_value": "high",
       "category": "revenue_opportunity",
       "novelty": 0.75,
@@ -1891,21 +2208,21 @@
               "Ironvarr",
               "JOOLA"
             ],
-            175
+            133
           ],
           [
             [
               "Santinofuntila",
               "JOOLA"
             ],
-            136
+            130
           ],
           [
             [
               "Ironvarr",
               "Nike"
             ],
-            22
+            14
           ],
           [
             [
@@ -1926,7 +2243,7 @@
               "PickleBill",
               "JOOLA"
             ],
-            284
+            223
           ],
           [
             [
@@ -1962,12 +2279,12 @@
       "track": "strategic"
     },
     {
-      "finding_id": "brand_analyst-20260414-7541",
+      "finding_id": "brand_analyst-20260414-8037",
       "agent": "brand_analyst",
-      "generated_at": "2026-04-15T02:24:17.894222+00:00",
-      "title": "Brand-skill split: PICKLEBALL KINGDOM users excel at kitchen (7.5), HEAD users at power (4.88)",
+      "generated_at": "2026-04-15T03:18:26.982992+00:00",
+      "title": "Brand-skill split: PICKLEBALL KINGDOM users excel at kitchen (7.5), R&M_foz_wifi_goomba users at power (5.1)",
       "confidence": 0.65,
-      "evidence_summary": "Among brands with 10+ clips: PICKLEBALL KINGDOM has highest avg kitchen mastery (7.5), while HEAD has highest power rating (4.88).",
+      "evidence_summary": "Among brands with 10+ clips: PICKLEBALL KINGDOM has highest avg kitchen mastery (7.5), while R&M_foz_wifi_goomba has highest power rating (5.1).",
       "business_value": "high",
       "category": "brand_insight",
       "novelty": 0.75,
@@ -1976,29 +2293,39 @@
       "raw_data": {
         "skill_rankings": {
           "JOOLA": {
-            "kitchen": 7.13,
-            "power": 4.16,
-            "count": 1623
+            "kitchen": 7.1,
+            "power": 4.26,
+            "count": 1931
           },
           "Nike": {
-            "kitchen": 6.7,
+            "kitchen": 6.69,
             "power": 4.6,
-            "count": 183
+            "count": 198
           },
           "On": {
-            "kitchen": 7.08,
-            "power": 4.62,
-            "count": 13
+            "kitchen": 7.06,
+            "power": 4.71,
+            "count": 17
           },
           "HEAD": {
-            "kitchen": 6,
-            "power": 4.88,
-            "count": 34
+            "kitchen": 6.29,
+            "power": 4.84,
+            "count": 45
           },
           "PICKLEBALL KINGDOM": {
             "kitchen": 7.5,
             "power": 3.83,
             "count": 24
+          },
+          "PICKLEBALL": {
+            "kitchen": 6.71,
+            "power": 4.71,
+            "count": 77
+          },
+          "R&M_foz_wifi_goomba": {
+            "kitchen": 7.19,
+            "power": 5.1,
+            "count": 21
           }
         }
       },
@@ -2006,30 +2333,30 @@
       "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-5774",
+      "finding_id": "opportunity_scout-20260414-4088",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.032004+00:00",
-      "title": "Longitudinal tracking possible: 34 players with 5+ clips",
+      "generated_at": "2026-04-15T03:18:27.146518+00:00",
+      "title": "Longitudinal tracking possible: 26 players with 5+ clips",
       "confidence": 0.75,
-      "evidence_summary": "34 players have enough data for improvement tracking. Top: PickleBill(161), Chintan(155), Ironvarr(81), Santinofuntila(67), Tmf(59)",
+      "evidence_summary": "26 players have enough data for improvement tracking. Top: PickleBill(111), Santinofuntila(63), Ironvarr(62), Tmf(59), David_220cfb17(34)",
       "business_value": "high",
       "category": "product_opportunity",
       "novelty": 0.7,
       "recommended_action": "Build player improvement trajectory product \u2014 track skill changes over time",
       "source_clips": [],
       "raw_data": {
-        "multi_session_players": 34
+        "multi_session_players": 26
       },
       "composite_score": 0.4717,
       "track": "strategic"
     },
     {
-      "finding_id": "shot_scientist-20260414-6153",
+      "finding_id": "shot_scientist-20260414-4941",
       "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.959600+00:00",
-      "title": "Signature moves = viral gold: 813 clips with signatures avg 3.4 viral vs 3.9",
+      "generated_at": "2026-04-15T03:18:27.057706+00:00",
+      "title": "Signature moves = viral gold: 1070 clips with signatures avg 3.2 viral vs 3.9",
       "confidence": 0.6,
-      "evidence_summary": "813 clips have identified signature moves, averaging 3.4 viral vs 3.9 for clips without.",
+      "evidence_summary": "1070 clips have identified signature moves, averaging 3.2 viral vs 3.9 for clips without.",
       "business_value": "high",
       "category": "shot_pattern",
       "novelty": 0.7,
@@ -2065,12 +2392,12 @@
       "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-5165",
+      "finding_id": "opportunity_scout-20260414-5579",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.031844+00:00",
+      "generated_at": "2026-04-15T03:18:27.146380+00:00",
       "title": "Social caption generation at 99.8% \u2014 ready to productize",
       "confidence": 0.8,
-      "evidence_summary": "Social media captions are generated for 841/843 clips. This is already a viable content-as-a-service product.",
+      "evidence_summary": "Social media captions are generated for 1098/1100 clips. This is already a viable content-as-a-service product.",
       "business_value": "high",
       "category": "revenue_opportunity",
       "novelty": 0.6,
@@ -2081,12 +2408,12 @@
       "track": "strategic"
     },
     {
-      "finding_id": "player_profiler-20260414-9597",
+      "finding_id": "player_profiler-20260414-9868",
       "agent": "player_profiler",
-      "generated_at": "2026-04-15T02:24:17.930559+00:00",
-      "title": "Top content creators: PickleBill leads with 161 clips",
+      "generated_at": "2026-04-15T03:18:27.021057+00:00",
+      "title": "Top content creators: PickleBill leads with 111 clips",
       "confidence": 0.85,
-      "evidence_summary": "PickleBill: 161 clips, viral=3.4, Steady Eddie\nChintan: 155 clips, viral=3.4, Dink Specialist\nIronvarr: 81 clips, viral=3.4, Kitchen Master\nSantinofuntila: 67 clips, viral=4.0, Dink Specialist\nTmf: 59 clips, viral=3.6, Kitchen Master",
+      "evidence_summary": "PickleBill: 111 clips, viral=3.3, Kitchen Master\nSantinofuntila: 63 clips, viral=4.1, Dink Specialist\nIronvarr: 62 clips, viral=3.4, Kitchen Master\nTmf: 59 clips, viral=3.5, Kitchen Master\nDavid_220cfb17: 34 clips, viral=3.8, Kitchen Master",
       "business_value": "medium",
       "category": "player_insight",
       "novelty": 0.5,
@@ -2122,12 +2449,12 @@
       "track": "data"
     },
     {
-      "finding_id": "production_auditor-20260414-5043",
+      "finding_id": "production_auditor-20260414-1784",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006829+00:00",
-      "title": "Best predicted badges: one of a kind (F1=1.0), wall of hands (F1=1.0), paddle flip (F1=1.0)",
+      "generated_at": "2026-04-15T03:18:27.114052+00:00",
+      "title": "Best predicted badges: exclusive club (F1=1.0), highlight reel (F1=1.0), tag team takedown (F1=1.0)",
       "confidence": 0.8,
-      "evidence_summary": "Top performing badges by F1 score: one of a kind (F1=1.0), wall of hands (F1=1.0), paddle flip (F1=1.0)",
+      "evidence_summary": "Top performing badges by F1 score: exclusive club (F1=1.0), highlight reel (F1=1.0), tag team takedown (F1=1.0)",
       "business_value": "medium",
       "category": "model_accuracy",
       "novelty": 0.4,
@@ -2135,7 +2462,7 @@
       "source_clips": [],
       "raw_data": {
         "best_badges": {
-          "one of a kind": {
+          "exclusive club": {
             "f1": 1.0,
             "precision": 1.0,
             "recall": 1.0,
@@ -2143,19 +2470,19 @@
             "fp": 0,
             "fn": 0
           },
-          "wall of hands": {
-            "f1": 1.0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "tp": 3,
-            "fp": 0,
-            "fn": 0
-          },
-          "paddle flip": {
+          "highlight reel": {
             "f1": 1.0,
             "precision": 1.0,
             "recall": 1.0,
             "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "tag team takedown": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "tp": 5,
             "fp": 0,
             "fn": 0
           }
@@ -2165,12 +2492,31 @@
       "track": "data"
     },
     {
-      "finding_id": "shot_scientist-20260414-6419",
+      "finding_id": "wildcard-20260414-9475",
+      "agent": "wildcard",
+      "generated_at": "2026-04-15T03:18:39.201069+00:00",
+      "title": "Gear Insurance & Performance Guarantees",
+      "confidence": 0.68,
+      "evidence_summary": "Partner with brands: 'Play with JOOLA rackets at Courtana courts and we guarantee your win rate improves by 12% in 8 weeks or money back.' We analyze your gameplay before/after. Insurance company backs the guarantee. Brands get conversion proof, players get skin in the game, we get the data AND a cut of insurance premiums.",
+      "business_value": "medium",
+      "category": "wildcard_idea",
+      "novelty": 0.9,
+      "recommended_action": "Evaluate: partnership_flip play",
+      "source_clips": [],
+      "raw_data": {
+        "flywheel_score": 0.68,
+        "category": "partnership_flip"
+      },
+      "composite_score": 0.3558,
+      "track": "strategic"
+    },
+    {
+      "finding_id": "shot_scientist-20260414-8242",
       "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.959206+00:00",
-      "title": "'strategic' is 77.0% dink \u2014 coaching archetype",
+      "generated_at": "2026-04-15T03:18:27.057107+00:00",
+      "title": "'strategic' is 73.1% dink \u2014 coaching archetype",
       "confidence": 0.75,
-      "evidence_summary": "The 'strategic' arc (583 clips) is dominated by dink shots (77.0%). This is a clear coaching pattern.",
+      "evidence_summary": "The 'strategic' arc (810 clips) is dominated by dink shots (73.1%). This is a clear coaching pattern.",
       "business_value": "medium",
       "category": "coaching_opportunity",
       "novelty": 0.5,
@@ -2179,19 +2525,19 @@
       "raw_data": {
         "arc": "strategic",
         "dominant_shot": "dink",
-        "pct": 77.0,
-        "total": 583
+        "pct": 73.1,
+        "total": 810
       },
       "composite_score": 0.3399,
       "track": "data"
     },
     {
-      "finding_id": "player_profiler-20260414-3734",
+      "finding_id": "player_profiler-20260414-4528",
       "agent": "player_profiler",
-      "generated_at": "2026-04-15T02:24:17.930480+00:00",
-      "title": "Player archetype distribution: Kitchen Master dominates (20/38 players)",
+      "generated_at": "2026-04-15T03:18:27.020988+00:00",
+      "title": "Player archetype distribution: Kitchen Master dominates (21/29 players)",
       "confidence": 0.7,
-      "evidence_summary": "Among 38 identified players: Kitchen Master: 20, Steady Eddie: 9, All-Rounder: 5, Dink Specialist: 4",
+      "evidence_summary": "Among 29 identified players: Kitchen Master: 21, Steady Eddie: 6, All-Rounder: 1, Dink Specialist: 1",
       "business_value": "medium",
       "category": "player_insight",
       "novelty": 0.6,
@@ -2199,19 +2545,19 @@
       "source_clips": [],
       "raw_data": {
         "archetypes": {
-          "Kitchen Master": 20,
-          "All-Rounder": 5,
-          "Steady Eddie": 9,
-          "Dink Specialist": 4
+          "Kitchen Master": 21,
+          "All-Rounder": 1,
+          "Dink Specialist": 1,
+          "Steady Eddie": 6
         }
       },
       "composite_score": 0.3129,
       "track": "data"
     },
     {
-      "finding_id": "player_profiler-20260414-0011",
+      "finding_id": "player_profiler-20260414-1050",
       "agent": "player_profiler",
-      "generated_at": "2026-04-15T02:24:17.931573+00:00",
+      "generated_at": "2026-04-15T03:18:27.022415+00:00",
       "title": "Skill standout: Ajr averages 8.5 in consistency across 6 clips",
       "confidence": 0.7,
       "evidence_summary": "Ajr skill profile: consistency=8.5, kitchen=8.2, touch=8.0, composure=7.5, court_iq=7.0, court_coverage=6.2, athleticism=5.2, power=3.0, creativity=3.0",
@@ -2250,9 +2596,9 @@
       "track": "data"
     },
     {
-      "finding_id": "production_auditor-20260414-3800",
+      "finding_id": "production_auditor-20260414-4125",
       "agent": "production_auditor",
-      "generated_at": "2026-04-15T02:24:18.006850+00:00",
+      "generated_at": "2026-04-15T03:18:27.114075+00:00",
       "title": "Tier accuracy gap: 'wood' at 100% vs 'bronze' at 94%",
       "confidence": 0.7,
       "evidence_summary": "Badge tier prediction accuracy: wood=100%, brick=97%, silver=97%, gold=94%, bronze=94%",
@@ -2274,9 +2620,9 @@
       "track": "data"
     },
     {
-      "finding_id": "prompt_engineer-20260414-3024",
+      "finding_id": "prompt_engineer-20260414-3534",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048549+00:00",
+      "generated_at": "2026-04-15T03:18:27.162318+00:00",
       "title": "Arc-specific prompt issue: 'strategic' clips cause 94% of false positives",
       "confidence": 0.7,
       "evidence_summary": "The 'strategic' arc type produces disproportionate badge false positives (15/16 = 94%). The prompt may be misinterpreting this arc type's visual patterns.",
@@ -2301,29 +2647,29 @@
       "track": "data"
     },
     {
-      "finding_id": "shot_scientist-20260414-6411",
+      "finding_id": "shot_scientist-20260414-6891",
       "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.959184+00:00",
-      "title": "Rally length matters: long rallies are more viral (long=3.6 vs short=2.3)",
+      "generated_at": "2026-04-15T03:18:27.057082+00:00",
+      "title": "Rally length matters: long rallies are more viral (long=3.3 vs short=2.4)",
       "confidence": 0.65,
-      "evidence_summary": "Avg rally: 16.9 shots. Long rallies (15+): 485 clips, avg viral 3.6. Short (4-): 21 clips, avg viral 2.3.",
+      "evidence_summary": "Avg rally: 16.6 shots. Long rallies (15+): 638 clips, avg viral 3.3. Short (4-): 25 clips, avg viral 2.4.",
       "business_value": "medium",
       "category": "shot_pattern",
       "novelty": 0.6,
       "recommended_action": "Use rally length as a quality signal in highlight curation",
       "source_clips": [],
       "raw_data": {
-        "avg_rally": 16.9,
-        "long_viral": 3.55,
-        "short_viral": 2.32
+        "avg_rally": 16.6,
+        "long_viral": 3.33,
+        "short_viral": 2.39
       },
       "composite_score": 0.2862,
       "track": "data"
     },
     {
-      "finding_id": "prompt_engineer-20260414-2862",
+      "finding_id": "prompt_engineer-20260414-6917",
       "agent": "prompt_engineer",
-      "generated_at": "2026-04-15T02:24:18.048833+00:00",
+      "generated_at": "2026-04-15T03:18:27.162710+00:00",
       "title": "Prompt fix: Quality scores too clustered (avg=6.4, std=0.8) \u2014 increase spread",
       "confidence": 0.65,
       "evidence_summary": "Quality scores cluster around 6.4 with std=0.8. Scores should use the full 1-10 range. Prompt may need calibration examples.",
@@ -2337,12 +2683,12 @@
       "track": "data"
     },
     {
-      "finding_id": "opportunity_scout-20260414-5975",
+      "finding_id": "opportunity_scout-20260414-6902",
       "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T02:24:18.032009+00:00",
+      "generated_at": "2026-04-15T03:18:27.146524+00:00",
       "title": "Coaching feedback covers 99.8% of clips \u2014 drill library is buildable now",
       "confidence": 0.7,
-      "evidence_summary": "Coaching analysis available for 841/843 clips.",
+      "evidence_summary": "Coaching analysis available for 1098/1100 clips.",
       "business_value": "high",
       "category": "product_opportunity",
       "novelty": 0.5,
@@ -2353,12 +2699,12 @@
       "track": "strategic"
     },
     {
-      "finding_id": "shot_scientist-20260414-7981",
+      "finding_id": "shot_scientist-20260414-8079",
       "agent": "shot_scientist",
-      "generated_at": "2026-04-15T02:24:17.959347+00:00",
-      "title": "'dink' players skew kitchen: power=3.0 vs kitchen=7.6",
+      "generated_at": "2026-04-15T03:18:27.057296+00:00",
+      "title": "'dink' players skew kitchen: power=3.2 vs kitchen=7.5",
       "confidence": 0.6,
-      "evidence_summary": "Players using dink as dominant shot (585 clips) average power=3.0 and kitchen=7.6.",
+      "evidence_summary": "Players using dink as dominant shot (748 clips) average power=3.2 and kitchen=7.5.",
       "business_value": "medium",
       "category": "shot_pattern",
       "novelty": 0.55,
@@ -2366,16 +2712,16 @@
       "source_clips": [],
       "raw_data": {
         "shot": "dink",
-        "power": 3.0,
-        "kitchen": 7.59
+        "power": 3.19,
+        "kitchen": 7.49
       },
       "composite_score": 0.26,
       "track": "data"
     },
     {
-      "finding_id": "viral_decoder-20260414-0755",
+      "finding_id": "viral_decoder-20260414-7794",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989481+00:00",
+      "generated_at": "2026-04-15T03:18:27.092296+00:00",
       "title": "Viral rally length: top clips avg 17 shots vs bottom 13",
       "confidence": 0.6,
       "evidence_summary": "Top-viral clips average 17.1 shots per rally, bottom-viral average 13.1.",
@@ -2392,9 +2738,9 @@
       "track": "data"
     },
     {
-      "finding_id": "viral_decoder-20260414-4952",
+      "finding_id": "viral_decoder-20260414-1161",
       "agent": "viral_decoder",
-      "generated_at": "2026-04-15T02:24:17.989622+00:00",
+      "generated_at": "2026-04-15T03:18:27.092456+00:00",
       "title": "Viral skill bias: kitchen = 7.5 in viral vs 5.6 in non-viral clips",
       "confidence": 0.6,
       "evidence_summary": "Viral clips show kitchen average of 7.5 vs 5.6 in low-viral clips.",
@@ -2408,12 +2754,12 @@
       "track": "data"
     },
     {
-      "finding_id": "brand_analyst-20260414-5328",
+      "finding_id": "brand_analyst-20260414-6445",
       "agent": "brand_analyst",
-      "generated_at": "2026-04-15T02:24:17.894415+00:00",
-      "title": "Emerging brands detected: 13 brands with 2-8 appearances",
+      "generated_at": "2026-04-15T03:18:26.983013+00:00",
+      "title": "Emerging brands detected: 35 brands with 2-8 appearances",
       "confidence": 0.55,
-      "evidence_summary": "Rare but real brand detections: PBS (5), adidas (4), Foscam (4), PKLR (3), H2 (3), USA (3), Nicol (3), Life Time (2). These represent market entrants or niche brands.",
+      "evidence_summary": "Rare but real brand detections: goomba (8), R&M (7), Pickleball (7), Onix (6), Reolink (6), Foz Bullet UG 4K (6), PBS (5), adidas (4). These represent market entrants or niche brands.",
       "business_value": "medium",
       "category": "brand_insight",
       "novelty": 0.6,
@@ -2422,12 +2768,16 @@
       "raw_data": {
         "rare_brands": [
           [
-            "Life Time",
+            "Franklin",
             2
           ],
           [
+            "Life Time",
+            3
+          ],
+          [
             "Onix",
-            2
+            6
           ],
           [
             "PKLR",
@@ -2456,150 +2806,253 @@
           [
             "PBS",
             5
-          ],
-          [
-            "New Balance",
-            2
           ]
         ]
       },
       "composite_score": 0.2342,
       "track": "data"
+    },
+    {
+      "finding_id": "opportunity_scout-20260414-4655",
+      "agent": "opportunity_scout",
+      "generated_at": "2026-04-15T03:18:27.146375+00:00",
+      "title": "Extraction gap: 'player_identity' only fills 28.3% of clips \u2014 low-hanging improvement",
+      "confidence": 0.6,
+      "evidence_summary": "Current fill rates: player_identity=28.3%, brands=80.5%, sponsorship_whitespace=88.5%, espn_commentary=91.5%, hype_commentary=91.5%, signature_move=97.3%, play_style=99.6%, coaching=99.8%, social_caption=99.8%",
+      "business_value": "medium",
+      "category": "extraction_gap",
+      "novelty": 0.5,
+      "recommended_action": "Improve Gemini prompt for 'player_identity' extraction with more examples",
+      "source_clips": [],
+      "raw_data": {
+        "fill_rates": {
+          "brands": 80.5,
+          "coaching": 99.8,
+          "social_caption": 99.8,
+          "espn_commentary": 91.5,
+          "hype_commentary": 91.5,
+          "signature_move": 97.3,
+          "player_identity": 28.3,
+          "play_style": 99.6,
+          "sponsorship_whitespace": 88.5
+        }
+      },
+      "composite_score": 0.1462,
+      "track": "strategic"
     }
   ],
   "counterarguments": [
     {
-      "finding_id": "devils_advocate-20260414-8657",
+      "finding_id": "devils_advocate-20260414-3654",
       "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022269+00:00",
-      "title": "Players won't voluntarily label their own shots at scale\u2014this relies on sustained user motivation that rarely persists past initial novelty.",
+      "generated_at": "2026-04-15T03:18:56.389107+00:00",
+      "title": "An F1=0.97 on 287 clips doesn't prove the model works on unseen badge types or real-world production footage with different lighting, angles, or video quality.",
       "confidence": 0.8,
-      "evidence_summary": "Crowdsourcing labeled data works only when users have intrinsic motivation (ego, competition, prizes). Pickleball players filming and tagging their own shots will drop off after the first week. You'll end up with 50K clips from 200 power-users, creating massive selection bias (only dedicated/ego-driven players label). This biased training set will then fail on casual players\u2014your actual market.",
-      "business_value": "high",
-      "category": "counterargument",
-      "novelty": 0.3,
-      "recommended_action": "Address this risk before investing in: Inverse Coaching: Players Train the AI",
-      "source_clips": [],
-      "raw_data": {
-        "target_finding_id": "wildcard-20260414-2814",
-        "target_title": "Inverse Coaching: Players Train the AI",
-        "target_agent": "wildcard",
-        "severity": "high"
-      }
-    },
-    {
-      "finding_id": "devils_advocate-20260414-3625",
-      "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022288+00:00",
-      "title": "F1=0.97 on 287 clips is statistically meaningless\u2014this is likely overfitting to lighting, court angle, and player demographics in those specific videos.",
-      "confidence": 0.8,
-      "evidence_summary": "287 verified clips is a vanishingly small test set. Production use will see clips from 50+ different facilities, lighting conditions, camera angles, and player skill levels. The 41 missed badges likely cluster heavily in underrepresented conditions (night courts, wide angles, beginner players). Real-world F1 will collapse to 0.75\u20130.80 once you deploy. You're measuring performance on your own curated dataset, not on the long tail of variation.",
+      "evidence_summary": "The 287 verified clips likely come from controlled production environments where Courtana already knows what badges exist. When the model encounters a new badge type, variation in video quality, or edge cases from user-generated content, performance will crater. The 16 false positives and 41 missed badges (out of ~1,300 total predictions) suggest systematic blindspots that prompt engineering alone won't fix\u2014you're likely overfitting to known badge patterns.",
       "business_value": "high",
       "category": "counterargument",
       "novelty": 0.3,
       "recommended_action": "Address this risk before investing in: DaaS badge prediction: F1=0.97 (precision=0.98, re",
       "source_clips": [],
       "raw_data": {
-        "target_finding_id": "production_auditor-20260414-5609",
+        "target_finding_id": "production_auditor-20260414-5182",
         "target_title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
         "target_agent": "production_auditor",
         "severity": "high"
       }
     },
     {
-      "finding_id": "devils_advocate-20260414-5779",
+      "finding_id": "devils_advocate-20260414-6854",
       "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022300+00:00",
-      "title": "Facility owners have no revenue incentive to use this\u2014it creates liability and operational burden without generating income for them.",
+      "generated_at": "2026-04-15T03:18:56.389129+00:00",
+      "title": "Nike already has armies of sports marketing analysts and competitor tracking tools; they won't pay Pickle DaaS $50K+/year to repackage their own video library back to them.",
       "confidence": 0.8,
-      "evidence_summary": "White-label SaaS to facilities assumes facility owners care about 'auto-generated insights.' They don't. They care about foot traffic and court bookings. A weekly AI report about 'interesting plays' doesn't drive revenue or retention. Meanwhile, if the system misidentifies a player or falsely awards a badge, the facility is liable. You're asking them to host infrastructure, manage user consent, and take reputational risk for your data play. Adoption will be <5% without revenue-share that's unsustainable for you.",
+      "evidence_summary": "This assumes brands have a blind spot for their own product visibility\u2014they don't. Nike's marketing team watches their own clips constantly and likely already uses Vision AI, Hookit, or internal tools for competitor benchmarking. More critically, you'd be asking them to hand over proprietary competitor videos to an unproven startup, creating compliance and legal risk on their end. The willingness-to-pay is near zero because the problem isn't unsolved; it's already solved by bigger, trusted vendors.",
       "business_value": "high",
       "category": "counterargument",
       "novelty": 0.3,
-      "recommended_action": "Address this risk before investing in: Facility-Owned Idea Labs as White-Label SaaS",
+      "recommended_action": "Address this risk before investing in: The Brand's Own Idea Lab (White Label)",
       "source_clips": [],
       "raw_data": {
-        "target_finding_id": "wildcard-20260414-5658",
-        "target_title": "Facility-Owned Idea Labs as White-Label SaaS",
+        "target_finding_id": "wildcard-20260414-2801",
+        "target_title": "The Brand's Own Idea Lab (White Label)",
         "target_agent": "wildcard",
         "severity": "high"
       }
     },
     {
-      "finding_id": "devils_advocate-20260414-4863",
+      "finding_id": "devils_advocate-20260414-6955",
       "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022307+00:00",
-      "title": "Prompt engineering to fix 21 missed badges is a band-aid that will fail on the next 50 badges the model hasn't seen yet.",
+      "generated_at": "2026-04-15T03:18:56.389140+00:00",
+      "title": "Real-time bidding for product placement in live or near-live clips requires supply (Courtana's video volume) to be predictable and brands to commit ad spend on speculative exposure.",
       "confidence": 0.8,
-      "evidence_summary": "You're treating this as a prompt problem when it's a model problem. Gemini (or whatever LLM you're using) doesn't have visual grounding for 'rally master' or 'fresh fit'\u2014these are contextual, learned categories that exist only in Courtana's data. Adding English descriptions of visual patterns to a prompt won't fix hallucination or misclassification. You'll patch 5 badges, miss 5 others, then repeat. This is whack-a-mole. Real fix requires fine-tuning on labeled examples, which requires... the very crowdsourced data pipeline Finding #1 assumes will work.",
+      "evidence_summary": "Courtana's clip volume is inconsistent (depends on tournament schedule). Brands won't bid on uncertain inventory. More critically, this model requires Courtana to *actively control* which products appear in clips\u2014either by directing camera angles (unethical, undermines content credibility) or by post-processing (illegal product insertion). The model collapses if you can't guarantee placement. You'd also face immediate pushback from venue partners and athletes who won't tolerate their content being auctioned to the highest bidder.",
       "business_value": "high",
       "category": "counterargument",
       "novelty": 0.3,
-      "recommended_action": "Address this risk before investing in: Prompt fix: 5 badges consistently missed \u2014 add pos",
+      "recommended_action": "Address this risk before investing in: Brand Bidding Arena",
       "source_clips": [],
       "raw_data": {
-        "target_finding_id": "prompt_engineer-20260414-0722",
-        "target_title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
-        "target_agent": "prompt_engineer",
+        "target_finding_id": "wildcard-20260414-8521",
+        "target_title": "Brand Bidding Arena",
+        "target_agent": "wildcard",
         "severity": "high"
       }
     },
     {
-      "finding_id": "devils_advocate-20260414-2534",
+      "finding_id": "devils_advocate-20260414-9392",
       "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022312+00:00",
-      "title": "Brands won't pay for 'verification' of organic product use\u2014they already have athlete sponsorship deals that contractually require logo visibility.",
+      "generated_at": "2026-04-15T03:18:56.389147+00:00",
+      "title": "Regional sports facility chains won't pay $5K/month for an AI that tells them what equipment brands appear in their footage\u2014they care about facility operations, member retention, and court booking, not brand analytics.",
+      "confidence": 0.8,
+      "evidence_summary": "You're selling a feature (brand detection) as a product to a customer (facility chains) who don't have a budget line item for brand intelligence. The buyer at a 20-court facility is the operations manager, not a marketing executive. Even if they see value, you have no distribution into this market, no existing relationships, and would need a 12-18 month sales cycle per facility. Meanwhile, you're stretched thin building this while supporting Courtana.",
+      "business_value": "high",
+      "category": "counterargument",
+      "novelty": 0.3,
+      "recommended_action": "Address this risk before investing in: The Idea Lab as SaaS for Any Sports Facility Netwo",
+      "source_clips": [],
+      "raw_data": {
+        "target_finding_id": "wildcard-20260414-2257",
+        "target_title": "The Idea Lab as SaaS for Any Sports Facility Network",
+        "target_agent": "wildcard",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "devils_advocate-20260414-9751",
+      "agent": "devils_advocate",
+      "generated_at": "2026-04-15T03:18:56.389153+00:00",
+      "title": "Facilities won't accept a 30% revenue cut and the operational overhead of becoming a 'media studio' for an unproven ad revenue share model.",
+      "confidence": 0.8,
+      "evidence_summary": "Facilities' core business is court rentals and memberships\u2014predictable, recurring revenue. Asking them to bet on ad revenue from edited clips means cannibalizing their existing sponsorship deals (local, direct) and trusting Pickle DaaS to actually broker deals and deliver payments. You'd be taking operational risk (editing, distribution, rights management) that facilities can't control. Also: if a clip goes viral and creates liability (injury, discrimination, etc.), who owns the legal risk? This partnership structure is unresolved and will kill deals in legal review.",
+      "business_value": "high",
+      "category": "counterargument",
+      "novelty": 0.3,
+      "recommended_action": "Address this risk before investing in: Facility as Media Studio (Revenue Share)",
+      "source_clips": [],
+      "raw_data": {
+        "target_finding_id": "wildcard-20260414-9551",
+        "target_title": "Facility as Media Studio (Revenue Share)",
+        "target_agent": "wildcard",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "devils_advocate-20260414-9823",
+      "agent": "devils_advocate",
+      "generated_at": "2026-04-15T03:18:56.389158+00:00",
+      "title": "Coaching certification requires legal liability framework, accreditation body status, and recurring instructor education\u2014none of which Pickle DaaS is equipped to provide or defend in court.",
+      "confidence": 0.8,
+      "evidence_summary": "You cannot simply issue badges that claim to 'certify' coaches. Coaches will charge 3x more based on your certification, and if an injury occurs during a lesson from a 'certified' coach, you're exposed to negligence liability. You'd need insurance, a legal framework, appeals process, and continuing education requirements. This isn't a software feature\u2014it's a regulated credential business. The PPA or IPTPA already own this space. You'd face immediate cease-and-desist letters, and no insurance company will cover a startup playing credential issuer.",
+      "business_value": "high",
+      "category": "counterargument",
+      "novelty": 0.3,
+      "recommended_action": "Address this risk before investing in: Coaching Certification Authority",
+      "source_clips": [],
+      "raw_data": {
+        "target_finding_id": "wildcard-20260414-6202",
+        "target_title": "Coaching Certification Authority",
+        "target_agent": "wildcard",
+        "severity": "high"
+      }
+    },
+    {
+      "finding_id": "devils_advocate-20260414-7846",
+      "agent": "devils_advocate",
+      "generated_at": "2026-04-15T03:18:56.389164+00:00",
+      "title": "Correcting for venue-only detections assumes brands care about 'true share-of-court'\u2014but they actually care about total visibility, which includes venue branding.",
       "confidence": 0.6,
-      "evidence_summary": "Nike, JOOLA, and other brands already embed product placement through sponsored players and contractual obligations. They don't need you to 'verify' what they paid for. The only real revenue would come from unsponsored brands paying to detect *uncontracted* competitor gear\u2014but that's market surveillance, ethically fraught, and easily blocked by players opting out of facial/gear recognition. You'll also be competing with existing brand-safety vendors (Nielsen, Genius Sports). This is a solution looking for a problem that doesn't have budget.",
+      "evidence_summary": "Your brand partners (Nike, JOOLA) are paying for *impressions*, not just product-in-hand moments. A jersey or court net with a brand logo is still brand exposure worth money. By filtering out venue detections, you're actually reducing the value metric you're selling to them. If you report only 'product-use' metrics, you'll undercount Nike's true exposure (venue + gear) relative to competitors, and they'll ask why they're paying for an incomplete picture. You can't have it both ways: either total visibility matters (and venue counts) or you need to price models differently for each metric.",
       "business_value": "medium",
       "category": "counterargument",
       "novelty": 0.3,
-      "recommended_action": "Address this risk before investing in: Brand Sponsorship Verification Protocol",
+      "recommended_action": "Address this risk before investing in: Net/venue branding inflates 1 brands \u2014 true share-",
       "source_clips": [],
       "raw_data": {
-        "target_finding_id": "wildcard-20260414-0280",
-        "target_title": "Brand Sponsorship Verification Protocol",
-        "target_agent": "wildcard",
+        "target_finding_id": "brand_analyst-20260414-8284",
+        "target_title": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+        "target_agent": "brand_analyst",
         "severity": "medium"
       }
+    }
+  ],
+  "connections": [
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "The Brand's Own Idea Lab (White Label)",
+      "data_finding": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "connection": "Brand strategy idea can be backed by actual brand detection data.",
+      "combined_insight": "The brand data (Net/venue branding inflates 1 brands \u2014 t) provides proof points for the strategy: The Brand's Own Idea Lab (White Label).",
+      "agents": [
+        "wildcard",
+        "brand_analyst"
+      ]
     },
     {
-      "finding_id": "devils_advocate-20260414-1845",
-      "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022319+00:00",
-      "title": "Licensing clips requires clearances from 3+ parties simultaneously\u2014facility, players, brands\u2014and you have zero legal standing to broker any of it.",
-      "confidence": 0.8,
-      "evidence_summary": "You don't own the clips. The facility owns them (by right of recording on their property). The players own their image rights. Brands own their trademarks. For ESPN to license even one clip, you need written consent from all three parties. You have no mechanism to prove consent or arbitrate disputes. One player objects, the clip dies, your royalty pool breaks. Facilities will demand you hold liability insurance (expensive). You'll spend 6 months negotiating legal terms and collect <$500/month in actual licensing revenue. This is a venture graveyard: high friction, low velocity, hostile legal environment.",
-      "business_value": "high",
-      "category": "counterargument",
-      "novelty": 0.3,
-      "recommended_action": "Address this risk before investing in: The Creator Royalty Pool",
-      "source_clips": [],
-      "raw_data": {
-        "target_finding_id": "wildcard-20260414-7407",
-        "target_title": "The Creator Royalty Pool",
-        "target_agent": "wildcard",
-        "severity": "high"
-      }
+      "type": "strategy_meets_data",
+      "strategic_finding": "Brand Bidding Arena",
+      "data_finding": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "connection": "Brand strategy idea can be backed by actual brand detection data.",
+      "combined_insight": "The brand data (Net/venue branding inflates 1 brands \u2014 t) provides proof points for the strategy: Brand Bidding Arena.",
+      "agents": [
+        "wildcard",
+        "brand_analyst"
+      ]
     },
     {
-      "finding_id": "devils_advocate-20260414-4519",
-      "agent": "devils_advocate",
-      "generated_at": "2026-04-15T02:24:54.022324+00:00",
-      "title": "Viral metrics from 200 clips have zero predictive power\u2014virality is driven by timing, algorithm seeding, and community context, not clip properties.",
-      "confidence": 0.6,
-      "evidence_summary": "You're measuring correlation on a tiny, post-hoc sample (top 100 vs bottom 100 viral clips). But virality is not deterministic; it's driven by algorithmic promotion, account following, and luck. A mediocre clip posted by a 500K-follower creator goes viral. An excellent clip from an unknown goes nowhere. Your 'quality + watchability' score will predict past virality (overfitting) but fail prospectively. You'll recommend clips that *look* viral but never reach audience. This metric is useless for product: what would you actually *do* with it? Rank clips for facilities? They don't control distribution. Sell predictions to creators? They'll quickly learn the algorithm != your score.",
-      "business_value": "medium",
-      "category": "counterargument",
-      "novelty": 0.3,
-      "recommended_action": "Address this risk before investing in: Viral formula: quality (7.59 vs 5.42) + watchabili",
-      "source_clips": [],
-      "raw_data": {
-        "target_finding_id": "viral_decoder-20260414-1809",
-        "target_title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
-        "target_agent": "viral_decoder",
-        "severity": "medium"
-      }
+      "type": "strategy_meets_data",
+      "strategic_finding": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
+      "data_finding": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
+      "connection": "Content strategy validated by viral pattern analysis.",
+      "combined_insight": "Viral data supports the content strategy idea.",
+      "agents": [
+        "wildcard",
+        "viral_decoder"
+      ]
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
+      "data_finding": "Viral arc: 'top_play' is 130.0x more likely in top clips (13.0% vs 0.0%)",
+      "connection": "Content strategy validated by viral pattern analysis.",
+      "combined_insight": "Viral data supports the content strategy idea.",
+      "agents": [
+        "wildcard",
+        "viral_decoder"
+      ]
+    },
+    {
+      "type": "fix_enables_strategy",
+      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "data_finding": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
+      "connection": "Fixing prompt accuracy enables the strategic play.",
+      "combined_insight": "Implement 'Prompt fix: 5 badges consistently missed' to unlock 'Sponsorship whitespace: 5 equipment cate'.",
+      "agents": [
+        "opportunity_scout",
+        "prompt_engineer"
+      ]
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "data_finding": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "connection": "Brand strategy idea can be backed by actual brand detection data.",
+      "combined_insight": "The brand data (Net/venue branding inflates 1 brands \u2014 t) provides proof points for the strategy: Sponsorship whitespace: 5 equipment cate.",
+      "agents": [
+        "opportunity_scout",
+        "brand_analyst"
+      ]
+    },
+    {
+      "type": "fix_enables_strategy",
+      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "data_finding": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
+      "connection": "Fixing prompt accuracy enables the strategic play.",
+      "combined_insight": "Implement 'Prompt fix: JOOLA appears in 215/287 ver' to unlock 'Sponsorship whitespace: 5 equipment cate'.",
+      "agents": [
+        "opportunity_scout",
+        "prompt_engineer"
+      ]
     }
   ]
 }
