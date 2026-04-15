@@ -1,286 +1,128 @@
 {
-  "generated_at": "2026-04-15T03:56:41.894019Z",
-  "version": 3,
+  "generated_at": "2026-04-15T04:54:57.395724Z",
+  "version": 4,
   "top_strategic": [
     {
-      "id": "wildcard-20260414-2801",
-      "title": "The Brand's Own Idea Lab (White Label)",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.88,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike uploads competitor videos, our system finds gaps: 'Your shoes underrepresented in backcourt angles' or 'Opponent's racket featured 3x more in viral moments.' Nike pays $200K/year, gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.",
-      "action": "Evaluate: platform_play play",
-      "score": 0.7674,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2801.html"
-    },
-    {
-      "id": "wildcard-20260414-8521",
-      "title": "Brand Bidding Arena",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.85,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Flip the model: brands pay to COMPETE for shelf space in our clips. Instead of us detecting Nike in the background, Nike, JOOLA, and On bid in real-time for product placement in future Courtana videos. Facility owners get a cut. The highest bidder's gear gets featured in the next match at that court.",
-      "action": "Evaluate: monetization_novel play",
-      "score": 0.7412,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-8521.html"
-    },
-    {
-      "id": "wildcard-20260414-2257",
-      "title": "The Idea Lab as SaaS for Any Sports Facility Network",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.84,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Package the Idea Lab as a $5K/month white-label product for regional sports facility chains (not just pickleball). A chain with 20 multi-sport courts gets an Idea Lab analyzing all their footage autonomously. We become the hidden OS for facility intelligence. Each facility pays us; we own the data; we expand to basketball, tennis, etc.",
-      "action": "Evaluate: platform_play play",
-      "score": 0.7325,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2257.html"
-    },
-    {
-      "id": "wildcard-20260414-9551",
-      "title": "Facility as Media Studio (Revenue Share)",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.83,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Stop selling clips. Partner with facilities to become mini ESPN studios. We handle all editing/commentary/distribution; they keep 70% of ad revenue + sponsorship deals we broker. A facility with Courtana becomes a media asset. We scale to 100 facilities = 100 revenue streams. Each facility is incentivized to host bigger tournaments.",
-      "action": "Evaluate: partnership_flip play",
-      "score": 0.7238,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-9551.html"
-    },
-    {
-      "id": "wildcard-20260414-6202",
-      "title": "Coaching Certification Authority",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.81,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Use our AI to certify pickleball coaches. Coaches submit videos of their instruction; we analyze shot breakdown, communication clarity, drill design. Certified coaches get a badge, can charge 3x more, and must use Courtana courts to maintain certification. We become the permissioning layer for professional coaching.",
-      "action": "Evaluate: platform_play play",
-      "score": 0.7063,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-6202.html"
-    }
-  ],
-  "top_data": [
-    {
-      "id": "production_auditor-20260414-5182",
-      "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
-      "agent": "production_auditor",
-      "track": "data",
-      "confidence": 0.9,
-      "business_value": "high",
-      "category": "model_accuracy",
-      "evidence": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
-      "action": "Target recall improvement: add more badge examples to Gemini prompt",
-      "score": 0.705,
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-5182.html"
-    },
-    {
-      "id": "prompt_engineer-20260414-7372",
-      "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
-      "agent": "prompt_engineer",
-      "track": "data",
-      "confidence": 0.85,
-      "business_value": "high",
-      "category": "prompt_fix",
-      "evidence": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'fresh fit' (3 missed), 'paddle tap celebration' (3 missed). These are real badges that our prompt doesn't detect.",
-      "action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
-      "score": 0.6583,
-      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260414-7372.html"
-    },
-    {
-      "id": "brand_analyst-20260414-8284",
-      "title": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
-      "agent": "brand_analyst",
-      "track": "data",
-      "confidence": 0.8,
-      "business_value": "high",
-      "category": "brand_insight",
-      "evidence": "Brands with significant venue-only detections (not product use): JOOLA (195/1931 are venue). Raw counts overstate market share. Product-use only: JOOLA=1736, Nike=198, PICKLEBALL=77, HEAD=45, PICKLEBALL KINGDOM=24.",
-      "action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
-      "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260414-8284.html"
-    },
-    {
-      "id": "viral_decoder-20260414-7612",
-      "title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
-      "agent": "viral_decoder",
-      "track": "data",
-      "confidence": 0.8,
-      "business_value": "high",
-      "category": "viral_pattern",
-      "evidence": "Top 100 viral clips: quality=7.59, watchability=6.45. Bottom 100: quality=5.42, watchability=3.14. Both metrics track strongly with viral potential.",
-      "action": "Use (quality + watchability) / 2 as quick viral prediction score",
-      "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260414-7612.html"
-    },
-    {
-      "id": "production_auditor-20260414-7184",
-      "title": "Worst predicted badges: serve returner (F1=0.875), hustler (F1=0.769)",
-      "agent": "production_auditor",
-      "track": "data",
-      "confidence": 0.8,
-      "business_value": "high",
-      "category": "model_accuracy",
-      "evidence": "Lowest F1 badges: serve returner (F1=0.875), hustler (F1=0.769). These need prompt improvement.",
-      "action": "Add specific examples for these badge types in Gemini prompt",
-      "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-7184.html"
-    }
-  ],
-  "all_findings": [
-    {
-      "id": "wildcard-20260414-2801",
-      "title": "The Brand's Own Idea Lab (White Label)",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.88,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike uploads competitor videos, our system finds gaps: 'Your shoes underrepresented in backcourt angles' or 'Opponent's racket featured 3x more in viral moments.' Nike pays $200K/year, gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.",
-      "action": "Evaluate: platform_play play",
-      "score": 0.7674,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2801.html"
-    },
-    {
-      "id": "wildcard-20260414-8521",
-      "title": "Brand Bidding Arena",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.85,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Flip the model: brands pay to COMPETE for shelf space in our clips. Instead of us detecting Nike in the background, Nike, JOOLA, and On bid in real-time for product placement in future Courtana videos. Facility owners get a cut. The highest bidder's gear gets featured in the next match at that court.",
-      "action": "Evaluate: monetization_novel play",
-      "score": 0.7412,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-8521.html"
-    },
-    {
-      "id": "wildcard-20260414-2257",
-      "title": "The Idea Lab as SaaS for Any Sports Facility Network",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.84,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Package the Idea Lab as a $5K/month white-label product for regional sports facility chains (not just pickleball). A chain with 20 multi-sport courts gets an Idea Lab analyzing all their footage autonomously. We become the hidden OS for facility intelligence. Each facility pays us; we own the data; we expand to basketball, tennis, etc.",
-      "action": "Evaluate: platform_play play",
-      "score": 0.7325,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-2257.html"
-    },
-    {
-      "id": "wildcard-20260414-9551",
-      "title": "Facility as Media Studio (Revenue Share)",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.83,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Stop selling clips. Partner with facilities to become mini ESPN studios. We handle all editing/commentary/distribution; they keep 70% of ad revenue + sponsorship deals we broker. A facility with Courtana becomes a media asset. We scale to 100 facilities = 100 revenue streams. Each facility is incentivized to host bigger tournaments.",
-      "action": "Evaluate: partnership_flip play",
-      "score": 0.7238,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-9551.html"
-    },
-    {
-      "id": "wildcard-20260414-6202",
-      "title": "Coaching Certification Authority",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.81,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Use our AI to certify pickleball coaches. Coaches submit videos of their instruction; we analyze shot breakdown, communication clarity, drill design. Certified coaches get a badge, can charge 3x more, and must use Courtana courts to maintain certification. We become the permissioning layer for professional coaching.",
-      "action": "Evaluate: platform_play play",
-      "score": 0.7063,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260414-6202.html"
-    },
-    {
-      "id": "production_auditor-20260414-5182",
-      "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
-      "agent": "production_auditor",
-      "track": "data",
-      "confidence": 0.9,
-      "business_value": "high",
-      "category": "model_accuracy",
-      "evidence": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
-      "action": "Target recall improvement: add more badge examples to Gemini prompt",
-      "score": 0.705,
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-5182.html"
-    },
-    {
-      "id": "wildcard-20260414-9541",
-      "title": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
-      "agent": "wildcard",
-      "track": "strategic",
-      "confidence": 0.79,
-      "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "When a player's clip hits a viral threshold, we auto-match them with 3-5 coaches in their region. Coaches bid to coach that player. The player chooses; we take 20%. Players get better \u2192 play more matches \u2192 more clips \u2192 more coaching gigs. Each coach becomes a node in a viral loop.",
-      "action": "Evaluate: crowdsource play",
-      "score": 0.6889,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "prompt_engineer-20260414-7372",
-      "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
-      "agent": "prompt_engineer",
-      "track": "data",
-      "confidence": 0.85,
-      "business_value": "high",
-      "category": "prompt_fix",
-      "evidence": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'fresh fit' (3 missed), 'paddle tap celebration' (3 missed). These are real badges that our prompt doesn't detect.",
-      "action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n",
-      "score": 0.6583,
-      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260414-7372.html"
-    },
-    {
-      "id": "opportunity_scout-20260414-1685",
+      "id": "opportunity_scout-20260415-7917",
       "title": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
       "agent": "opportunity_scout",
       "track": "strategic",
       "confidence": 0.8,
       "business_value": "high",
       "category": "revenue_opportunity",
-      "evidence": "The camera sees these items but we detect no brands. ZERO detections: accessories, apparel, footwear, sunglasses, wristband. Near-zero: hat(5). Each gap = a brand that could be paying for visibility data.",
+      "evidence": "The camera sees these items but we detect no brands. ZERO detections: accessories, apparel, footwear, sunglasses, wristband. Near-zero: hat(7). Each gap = a brand that could be paying for visibility data.",
       "action": "Add shoe/apparel/sunglasses brand detection examples to Gemini prompt \u2014 immediate revenue unlock",
-      "score": 0.6476,
-      "deep_dive_url": ""
+      "score": 0.6107,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-7917.html"
     },
     {
-      "id": "wildcard-20260414-5346",
-      "title": "Player-Owned Highlight NFTs",
+      "id": "opportunity_scout-20260415-3877",
+      "title": "Endorsement intelligence: 162 player-brand pairs with 3+ co-occurrences",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.7,
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "evidence": "Top pairs: PickleBill-JOOLA(703x), Chintan-JOOLA(436x), Daniella-JOOLA(322x), Coach_Block-JOOLA(200x), Tkjacobs-JOOLA(193x)",
+      "action": "Build 'brand ambassador identification' product for equipment companies",
+      "score": 0.6446,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-3877.html"
+    },
+    {
+      "id": "opportunity_scout-20260415-2412",
+      "title": "Longitudinal tracking possible: 54 players with 5+ clips",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.75,
+      "business_value": "high",
+      "category": "product_opportunity",
+      "evidence": "54 players have enough data for improvement tracking. Top: PickleBill(411), Chintan(262), Daniella(110), Coach_Block(106), Ironvarr(88)",
+      "action": "Build player improvement trajectory product \u2014 track skill changes over time",
+      "score": 0.5147,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-2412.html"
+    },
+    {
+      "id": "opportunity_scout-20260415-1506",
+      "title": "Sponsorship whitespace detected in 1461 clips (92.0%) \u2014 sell to brands",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.7,
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "evidence": "We detect unbranded equipment/space in 1461 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
+      "action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
+      "score": 0.3116,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-1506.html"
+    },
+    {
+      "id": "wildcard-20260415-1645",
+      "title": "Reverse Sponsorship Auction",
       "agent": "wildcard",
       "track": "strategic",
-      "confidence": 0.72,
+      "confidence": 0.75,
       "business_value": "high",
       "category": "wildcard_idea",
-      "evidence": "Each clip becomes a fractional NFT that players, brands, and facilities can own pieces of. When a clip goes viral or gets licensed, royalties auto-distribute to all holders. Players are incentivized to play at Courtana courts (to build their highlight portfolio), facilities get ongoing micro-revenue, and brands sponsor specific players' highlight collections.",
+      "evidence": "Instead of brands chasing players, players auction their court-time to brands. A rising amateur player in NYC gets 5 minutes of video with JOOLA equipment, Courtana captures it, brands bid on the resulting clips. Players earn micropayments ($5-50 per clip), brands get authentic grassroots content, we handle curation and quality control. Viral loop: good players get more bids, motivates improvement, feeds our analytics.",
       "action": "Evaluate: network_effect play",
-      "score": 0.6278,
-      "deep_dive_url": ""
+      "score": 0.2976,
+      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260415-1645.html"
+    }
+  ],
+  "top_data": [
+    {
+      "id": "shot_scientist-20260415-0979",
+      "title": "Viral shot: 'overhead' clips average 5.67 viral vs 'none' at 1",
+      "agent": "shot_scientist",
+      "track": "data",
+      "confidence": 0.7,
+      "business_value": "high",
+      "category": "shot_pattern",
+      "evidence": "Shot viral averages: overhead=5.67, reset=4, volley=3.84, dink=3.13, drive=2.99, serve=1.44, none=1",
+      "action": "Prioritize highlight reels featuring high-viral shot types",
+      "score": 0.912,
+      "deep_dive_url": "idea-lab/deep-dives/shot_scientist-20260415-0979.html"
     },
     {
-      "id": "brand_analyst-20260414-8284",
-      "title": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
+      "id": "prompt_engineer-20260415-7925",
+      "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
+      "agent": "prompt_engineer",
+      "track": "data",
+      "confidence": 0.85,
+      "business_value": "high",
+      "category": "prompt_fix",
+      "evidence": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'paddle tap celebration' (3 missed), 'fresh fit' (3 missed). These are real badges that our prompt doesn't detect.",
+      "action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+      "score": 0.757,
+      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260415-7925.html"
+    },
+    {
+      "id": "production_auditor-20260415-9060",
+      "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
+      "agent": "production_auditor",
+      "track": "data",
+      "confidence": 0.9,
+      "business_value": "high",
+      "category": "model_accuracy",
+      "evidence": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
+      "action": "Target recall improvement: add more badge examples to Gemini prompt",
+      "score": 0.705,
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-9060.html"
+    },
+    {
+      "id": "brand_analyst-20260415-7053",
+      "title": "Net/venue branding inflates 3 brands \u2014 true share-of-court differs from raw counts",
       "agent": "brand_analyst",
       "track": "data",
       "confidence": 0.8,
       "business_value": "high",
       "category": "brand_insight",
-      "evidence": "Brands with significant venue-only detections (not product use): JOOLA (195/1931 are venue). Raw counts overstate market share. Product-use only: JOOLA=1736, Nike=198, PICKLEBALL=77, HEAD=45, PICKLEBALL KINGDOM=24.",
+      "evidence": "Brands with significant venue-only detections (not product use): JOOLA (257/2761 are venue), PUSHIT (3/6 are venue), Nicol (3/8 are venue). Raw counts overstate market share. Product-use only: JOOLA=2504, Nike=267, PICKLEBALL=92, HEAD=64, On=31.",
       "action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
       "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260414-8284.html"
+      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260415-7053.html"
     },
     {
-      "id": "viral_decoder-20260414-7612",
+      "id": "viral_decoder-20260415-2551",
       "title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
       "agent": "viral_decoder",
       "track": "data",
@@ -290,10 +132,90 @@
       "evidence": "Top 100 viral clips: quality=7.59, watchability=6.45. Bottom 100: quality=5.42, watchability=3.14. Both metrics track strongly with viral potential.",
       "action": "Use (quality + watchability) / 2 as quick viral prediction score",
       "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260414-7612.html"
+      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260415-2551.html"
+    }
+  ],
+  "all_findings": [
+    {
+      "id": "shot_scientist-20260415-0979",
+      "title": "Viral shot: 'overhead' clips average 5.67 viral vs 'none' at 1",
+      "agent": "shot_scientist",
+      "track": "data",
+      "confidence": 0.7,
+      "business_value": "high",
+      "category": "shot_pattern",
+      "evidence": "Shot viral averages: overhead=5.67, reset=4, volley=3.84, dink=3.13, drive=2.99, serve=1.44, none=1",
+      "action": "Prioritize highlight reels featuring high-viral shot types",
+      "score": 0.912,
+      "deep_dive_url": "idea-lab/deep-dives/shot_scientist-20260415-0979.html"
     },
     {
-      "id": "production_auditor-20260414-7184",
+      "id": "prompt_engineer-20260415-7925",
+      "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
+      "agent": "prompt_engineer",
+      "track": "data",
+      "confidence": 0.85,
+      "business_value": "high",
+      "category": "prompt_fix",
+      "evidence": "Production awards these but DaaS misses them: 'rally master' (6 missed), 'new look' (5 missed), 'steady eddie' (4 missed), 'paddle tap celebration' (3 missed), 'fresh fit' (3 missed). These are real badges that our prompt doesn't detect.",
+      "action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
+      "score": 0.757,
+      "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260415-7925.html"
+    },
+    {
+      "id": "production_auditor-20260415-9060",
+      "title": "DaaS badge prediction: F1=0.97 (precision=0.98, recall=0.96)",
+      "agent": "production_auditor",
+      "track": "data",
+      "confidence": 0.9,
+      "business_value": "high",
+      "category": "model_accuracy",
+      "evidence": "Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.972.",
+      "action": "Target recall improvement: add more badge examples to Gemini prompt",
+      "score": 0.705,
+      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-9060.html"
+    },
+    {
+      "id": "opportunity_scout-20260415-3877",
+      "title": "Endorsement intelligence: 162 player-brand pairs with 3+ co-occurrences",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.7,
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "evidence": "Top pairs: PickleBill-JOOLA(703x), Chintan-JOOLA(436x), Daniella-JOOLA(322x), Coach_Block-JOOLA(200x), Tkjacobs-JOOLA(193x)",
+      "action": "Build 'brand ambassador identification' product for equipment companies",
+      "score": 0.6446,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-3877.html"
+    },
+    {
+      "id": "brand_analyst-20260415-7053",
+      "title": "Net/venue branding inflates 3 brands \u2014 true share-of-court differs from raw counts",
+      "agent": "brand_analyst",
+      "track": "data",
+      "confidence": 0.8,
+      "business_value": "high",
+      "category": "brand_insight",
+      "evidence": "Brands with significant venue-only detections (not product use): JOOLA (257/2761 are venue), PUSHIT (3/6 are venue), Nicol (3/8 are venue). Raw counts overstate market share. Product-use only: JOOLA=2504, Nike=267, PICKLEBALL=92, HEAD=64, On=31.",
+      "action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
+      "score": 0.6121,
+      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260415-7053.html"
+    },
+    {
+      "id": "viral_decoder-20260415-2551",
+      "title": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
+      "agent": "viral_decoder",
+      "track": "data",
+      "confidence": 0.8,
+      "business_value": "high",
+      "category": "viral_pattern",
+      "evidence": "Top 100 viral clips: quality=7.59, watchability=6.45. Bottom 100: quality=5.42, watchability=3.14. Both metrics track strongly with viral potential.",
+      "action": "Use (quality + watchability) / 2 as quick viral prediction score",
+      "score": 0.6121,
+      "deep_dive_url": "idea-lab/deep-dives/viral_decoder-20260415-2551.html"
+    },
+    {
+      "id": "production_auditor-20260415-0606",
       "title": "Worst predicted badges: serve returner (F1=0.875), hustler (F1=0.769)",
       "agent": "production_auditor",
       "track": "data",
@@ -303,10 +225,23 @@
       "evidence": "Lowest F1 badges: serve returner (F1=0.875), hustler (F1=0.769). These need prompt improvement.",
       "action": "Add specific examples for these badge types in Gemini prompt",
       "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260414-7184.html"
+      "deep_dive_url": ""
     },
     {
-      "id": "prompt_engineer-20260414-6997",
+      "id": "opportunity_scout-20260415-7917",
+      "title": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.8,
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "evidence": "The camera sees these items but we detect no brands. ZERO detections: accessories, apparel, footwear, sunglasses, wristband. Near-zero: hat(7). Each gap = a brand that could be paying for visibility data.",
+      "action": "Add shoe/apparel/sunglasses brand detection examples to Gemini prompt \u2014 immediate revenue unlock",
+      "score": 0.6107,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-7917.html"
+    },
+    {
+      "id": "prompt_engineer-20260415-7496",
       "title": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
       "agent": "prompt_engineer",
       "track": "data",
@@ -319,33 +254,7 @@
       "deep_dive_url": ""
     },
     {
-      "id": "opportunity_scout-20260414-2238",
-      "title": "Sponsorship whitespace detected in 973 clips (88.5%) \u2014 sell to brands",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.7,
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "evidence": "We detect unbranded equipment/space in 973 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
-      "action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-      "score": 0.5237,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "shot_scientist-20260414-9275",
-      "title": "Viral shot: 'overhead' clips average 5.8 viral vs 'serve' at 1.25",
-      "agent": "shot_scientist",
-      "track": "data",
-      "confidence": 0.7,
-      "business_value": "high",
-      "category": "shot_pattern",
-      "evidence": "Shot viral averages: overhead=5.8, volley=4.19, dink=3.22, drive=3.09, serve=1.25",
-      "action": "Prioritize highlight reels featuring high-viral shot types",
-      "score": 0.5214,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "viral_decoder-20260414-3927",
+      "id": "viral_decoder-20260415-6933",
       "title": "Viral arc: 'top_play' is 130.0x more likely in top clips (13.0% vs 0.0%)",
       "agent": "viral_decoder",
       "track": "data",
@@ -358,96 +267,190 @@
       "deep_dive_url": ""
     },
     {
-      "id": "opportunity_scout-20260414-9251",
-      "title": "Endorsement intelligence: 61 player-brand pairs with 3+ co-occurrences",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.7,
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "evidence": "Top pairs: PickleBill-JOOLA(223x), Tmf-JOOLA(145x), Ironvarr-JOOLA(133x), Santinofuntila-JOOLA(130x), David_220cfb17-JOOLA(103x)",
-      "action": "Build 'brand ambassador identification' product for equipment companies",
-      "score": 0.4816,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "brand_analyst-20260414-8037",
-      "title": "Brand-skill split: PICKLEBALL KINGDOM users excel at kitchen (7.5), R&M_foz_wifi_goomba users at power (5.1)",
-      "agent": "brand_analyst",
-      "track": "data",
-      "confidence": 0.65,
-      "business_value": "high",
-      "category": "brand_insight",
-      "evidence": "Among brands with 10+ clips: PICKLEBALL KINGDOM has highest avg kitchen mastery (7.5), while R&M_foz_wifi_goomba has highest power rating (5.1).",
-      "action": "Build brand-skill correlation report for brand partnerships",
-      "score": 0.4771,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "opportunity_scout-20260414-4088",
-      "title": "Longitudinal tracking possible: 26 players with 5+ clips",
+      "id": "opportunity_scout-20260415-2412",
+      "title": "Longitudinal tracking possible: 54 players with 5+ clips",
       "agent": "opportunity_scout",
       "track": "strategic",
       "confidence": 0.75,
       "business_value": "high",
       "category": "product_opportunity",
-      "evidence": "26 players have enough data for improvement tracking. Top: PickleBill(111), Santinofuntila(63), Ironvarr(62), Tmf(59), David_220cfb17(34)",
+      "evidence": "54 players have enough data for improvement tracking. Top: PickleBill(411), Chintan(262), Daniella(110), Coach_Block(106), Ironvarr(88)",
       "action": "Build player improvement trajectory product \u2014 track skill changes over time",
-      "score": 0.4717,
+      "score": 0.5147,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-2412.html"
+    },
+    {
+      "id": "shot_scientist-20260415-1856",
+      "title": "Signature moves = viral gold: 1558 clips with signatures avg 3.1 viral vs 3.9",
+      "agent": "shot_scientist",
+      "track": "data",
+      "confidence": 0.6,
+      "business_value": "high",
+      "category": "shot_pattern",
+      "evidence": "1558 clips have identified signature moves, averaging 3.1 viral vs 3.9 for clips without.",
+      "action": "Auto-tag signature move clips as premium content",
+      "score": 0.4984,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "brand_analyst-20260415-5435",
+      "title": "Brand-skill split: goomba users excel at kitchen (7.7), R&M_foz_wifi_goomba users at power (5.1)",
+      "agent": "brand_analyst",
+      "track": "data",
+      "confidence": 0.65,
+      "business_value": "high",
+      "category": "brand_insight",
+      "evidence": "Among brands with 10+ clips: goomba has highest avg kitchen mastery (7.7), while R&M_foz_wifi_goomba has highest power rating (5.1).",
+      "action": "Build brand-skill correlation report for brand partnerships",
+      "score": 0.4771,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "player_profiler-20260415-4579",
+      "title": "Top content creators: PickleBill leads with 411 clips",
+      "agent": "player_profiler",
+      "track": "data",
+      "confidence": 0.85,
+      "business_value": "medium",
+      "category": "player_insight",
+      "evidence": "PickleBill: 411 clips, viral=3.1, All-Rounder\nChintan: 262 clips, viral=3.2, Dink Specialist\nDaniella: 110 clips, viral=3.6, Kitchen Master\nCoach_Block: 106 clips, viral=2.9, Kitchen Master\nIronvarr: 88 clips, viral=3.4, Kitchen Master",
+      "action": "Create player spotlight feature for top contributors",
+      "score": 0.4542,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "player_profiler-20260415-6786",
+      "title": "Skill standout: Ajr averages 8.5 in consistency across 6 clips",
+      "agent": "player_profiler",
+      "track": "data",
+      "confidence": 0.7,
+      "business_value": "medium",
+      "category": "player_insight",
+      "evidence": "Ajr skill profile: consistency=8.5, kitchen=8.2, touch=8.0, composure=7.5, court_iq=7.0, court_coverage=6.2, athleticism=5.2, power=3.0, creativity=3.0",
+      "action": "Feature Ajr in coaching product showcase",
+      "score": 0.4138,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "wildcard-20260415-8719",
+      "title": "Coach Certification Marketplace",
+      "agent": "wildcard",
+      "track": "strategic",
+      "confidence": 0.81,
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "evidence": "Use Idea Lab to automatically certify coaches: flag which coaches' pupils improve fastest, which techniques generate the best outcomes, which feedback gets adopted. Sell 'Certified by Courtana' badge. Coaches list themselves on our marketplace. We take 15% commission on coaching bookings + training sales. Creates economic incentive for coaches to use our system, which feeds better data, which certifies better coaches.",
+      "action": "Evaluate: monetization_novel play",
+      "score": 0.4061,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "viral_decoder-20260415-0112",
+      "title": "Viral rally length: top clips avg 17 shots vs bottom 13",
+      "agent": "viral_decoder",
+      "track": "data",
+      "confidence": 0.6,
+      "business_value": "medium",
+      "category": "viral_pattern",
+      "evidence": "Top-viral clips average 17.1 shots per rally, bottom-viral average 13.1.",
+      "action": "Investigate optimal rally length range for highlight reels",
+      "score": 0.3955,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "opportunity_scout-20260415-8031",
+      "title": "Social caption generation at 99.9% \u2014 ready to productize",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.8,
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "evidence": "Social media captions are generated for 1586/1588 clips. This is already a viable content-as-a-service product.",
+      "action": "Create API endpoint for social caption generation \u2014 charge per clip",
+      "score": 0.3706,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "production_auditor-20260415-2812",
+      "title": "Best predicted badges: victory spin (F1=1.0), wall of hands (F1=1.0), dink master (F1=1.0)",
+      "agent": "production_auditor",
+      "track": "data",
+      "confidence": 0.8,
+      "business_value": "medium",
+      "category": "model_accuracy",
+      "evidence": "Top performing badges by F1 score: victory spin (F1=1.0), wall of hands (F1=1.0), dink master (F1=1.0)",
+      "action": "Use these badges as confidence anchors for the prediction system",
+      "score": 0.3672,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "wildcard-20260415-9309",
+      "title": "Sport-Agnostic AI as a Service (Pickleball \u2192 Tennis \u2192 Badminton \u2192 Pickleball Data Licensing)",
+      "agent": "wildcard",
+      "track": "strategic",
+      "confidence": 0.76,
+      "business_value": "high",
+      "category": "wildcard_idea",
+      "evidence": "Our shot analysis and skill rating engine is sport-agnostic. License it to tennis facilities, badminton clubs, etc. Collect massive cross-sport movement + equipment data. Then sell BACK to pickleball: 'Here's how tennis forehands compare to pickleball drives.' Create a unified athlete data standard. Pickleball becomes the hub of a multi-sport analytics ecosystem. Brands see cross-sport equipment trends first.",
+      "action": "Evaluate: network_effect play",
+      "score": 0.3645,
       "deep_dive_url": ""
     }
   ],
   "connections": [
     {
       "type": "strategy_meets_data",
-      "strategic_finding": "The Brand's Own Idea Lab (White Label)",
-      "data_finding": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
-      "connection": "Brand strategy idea can be backed by actual brand detection data.",
-      "combined_insight": "The brand data (Net/venue branding inflates 1 brands \u2014 t) provides proof points for the strategy: The Brand's Own Idea Lab (White Label).",
-      "agents": [
-        "wildcard",
-        "brand_analyst"
-      ]
-    },
-    {
-      "type": "strategy_meets_data",
-      "strategic_finding": "Brand Bidding Arena",
-      "data_finding": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
-      "connection": "Brand strategy idea can be backed by actual brand detection data.",
-      "combined_insight": "The brand data (Net/venue branding inflates 1 brands \u2014 t) provides proof points for the strategy: Brand Bidding Arena.",
-      "agents": [
-        "wildcard",
-        "brand_analyst"
-      ]
-    },
-    {
-      "type": "strategy_meets_data",
-      "strategic_finding": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
-      "data_finding": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
-      "connection": "Content strategy validated by viral pattern analysis.",
-      "combined_insight": "Viral data supports the content strategy idea.",
-      "agents": [
-        "wildcard",
-        "viral_decoder"
-      ]
-    },
-    {
-      "type": "strategy_meets_data",
-      "strategic_finding": "Crowdsourced Coaching Marketplace (Viral Clips \u2192 Coaching Gigs)",
-      "data_finding": "Viral arc: 'top_play' is 130.0x more likely in top clips (13.0% vs 0.0%)",
-      "connection": "Content strategy validated by viral pattern analysis.",
-      "combined_insight": "Viral data supports the content strategy idea.",
-      "agents": [
-        "wildcard",
-        "viral_decoder"
-      ]
-    },
-    {
-      "type": "fix_enables_strategy",
       "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
       "data_finding": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
-      "connection": "Fixing prompt accuracy enables the strategic play.",
-      "combined_insight": "Implement 'Prompt fix: 5 badges consistently missed' to unlock 'Sponsorship whitespace: 5 equipment cate'.",
+      "combined_insight": "Combine 'Sponsorship whitespace: 5 equipment cate' with 'Prompt fix: 5 badges consistently missed' for a targeted product.",
+      "agents": [
+        "opportunity_scout",
+        "prompt_engineer"
+      ],
+      "product_concept": {
+        "name": "BadgeBoost: Equipment Sponsorship Gap Filler",
+        "first_screen": "Dashboard showing 5 unbranded equipment categories (shoes, paddles, balls, nets, bags) with side-by-side comparison: current AI detection accuracy (showing missed badges) vs. improved model with positive examples. Red/green indicators for each category.",
+        "build_days": 12,
+        "why_powerful": "Turns detection gaps into immediate sponsorship opportunities by showing brands exactly which equipment categories their competitors aren't capturing in sports footage."
+      }
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "data_finding": "Net/venue branding inflates 3 brands \u2014 true share-of-court differs from raw counts",
+      "combined_insight": "Combine 'Sponsorship whitespace: 5 equipment cate' with 'Net/venue branding inflates 3 brands \u2014 t' for a targeted product.",
+      "agents": [
+        "opportunity_scout",
+        "brand_analyst"
+      ],
+      "product_concept": {
+        "name": "CourtShare: True Sponsorship Value Calculator",
+        "first_screen": "Input screen showing venue/event name, followed by real-time breakdown: raw brand mention counts vs. adjusted 'court-presence score' that filters out net/venue inflation, displaying 3 major brands' true market share with percentage differences highlighted.",
+        "build_days": 14,
+        "why_powerful": "Eliminates sponsor overpayment by revealing which brands are inflated by venue branding rather than actual equipment presence, letting sponsors negotiate based on true exposure."
+      }
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "data_finding": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
+      "combined_insight": "Combine 'Sponsorship whitespace: 5 equipment cate' with 'Prompt fix: JOOLA appears in 215/287 ver' for a targeted product.",
+      "agents": [
+        "opportunity_scout",
+        "prompt_engineer"
+      ],
+      "product_concept": {
+        "name": "JOOLAfix: Intelligent Brand Disambiguation Engine",
+        "first_screen": "Clip review interface showing JOOLA detection confidence score (215/287 verified clips displayed as success rate), with toggle to view disambiguation rules (paddle logo vs. ball branding vs. apparel logos) and ability to flag false positives from the unverified 72 clips.",
+        "build_days": 9,
+        "why_powerful": "Surfaces the most critical brand in the whitespace categories while solving its specific detection problem, making JOOLA and competitors' true court presence measurable and monetizable."
+      }
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Endorsement intelligence: 162 player-brand pairs with 3+ co-occurrences",
+      "data_finding": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
+      "combined_insight": "Combine 'Endorsement intelligence: 162 player-bra' with 'Prompt fix: 5 badges consistently missed' for a targeted product.",
       "agents": [
         "opportunity_scout",
         "prompt_engineer"
@@ -455,24 +458,42 @@
     },
     {
       "type": "strategy_meets_data",
-      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
-      "data_finding": "Net/venue branding inflates 1 brands \u2014 true share-of-court differs from raw counts",
-      "connection": "Brand strategy idea can be backed by actual brand detection data.",
-      "combined_insight": "The brand data (Net/venue branding inflates 1 brands \u2014 t) provides proof points for the strategy: Sponsorship whitespace: 5 equipment cate.",
+      "strategic_finding": "Endorsement intelligence: 162 player-brand pairs with 3+ co-occurrences",
+      "data_finding": "Net/venue branding inflates 3 brands \u2014 true share-of-court differs from raw counts",
+      "combined_insight": "Combine 'Endorsement intelligence: 162 player-bra' with 'Net/venue branding inflates 3 brands \u2014 t' for a targeted product.",
       "agents": [
         "opportunity_scout",
         "brand_analyst"
       ]
     },
     {
-      "type": "fix_enables_strategy",
-      "strategic_finding": "Sponsorship whitespace: 5 equipment categories with ZERO brand detection",
+      "type": "strategy_meets_data",
+      "strategic_finding": "Endorsement intelligence: 162 player-brand pairs with 3+ co-occurrences",
       "data_finding": "Prompt fix: JOOLA appears in 215/287 verified clips \u2014 add disambiguation",
-      "connection": "Fixing prompt accuracy enables the strategic play.",
-      "combined_insight": "Implement 'Prompt fix: JOOLA appears in 215/287 ver' to unlock 'Sponsorship whitespace: 5 equipment cate'.",
+      "combined_insight": "Combine 'Endorsement intelligence: 162 player-bra' with 'Prompt fix: JOOLA appears in 215/287 ver' for a targeted product.",
       "agents": [
         "opportunity_scout",
         "prompt_engineer"
+      ]
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Longitudinal tracking possible: 54 players with 5+ clips",
+      "data_finding": "Viral formula: quality (7.59 vs 5.42) + watchability (6.45 vs 3.14)",
+      "combined_insight": "Combine 'Longitudinal tracking possible: 54 playe' with 'Viral formula: quality (7.59 vs 5.42) + ' for a targeted product.",
+      "agents": [
+        "opportunity_scout",
+        "viral_decoder"
+      ]
+    },
+    {
+      "type": "strategy_meets_data",
+      "strategic_finding": "Longitudinal tracking possible: 54 players with 5+ clips",
+      "data_finding": "Viral arc: 'top_play' is 130.0x more likely in top clips (13.0% vs 0.0%)",
+      "combined_insight": "Combine 'Longitudinal tracking possible: 54 playe' with 'Viral arc: 'top_play' is 130.0x more lik' for a targeted product.",
+      "agents": [
+        "opportunity_scout",
+        "viral_decoder"
       ]
     }
   ]

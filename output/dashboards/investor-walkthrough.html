@@ -146,12 +146,54 @@ code,.mono{font-family:'Fira Code',ui-monospace,monospace}
 .fma{text-align:center;color:var(--muted);font-size:16px;margin:0 0 8px;opacity:.35}
 
 /* ═══════════════════════════════════
-   S6 — AI DEBATE
+   S6 — IDEA LAB (Self-Improving Intelligence)
 ═══════════════════════════════════ */
-#s6{background:var(--bg2)}
+#s6{background:var(--bg);background-image:radial-gradient(ellipse 60% 50% at 30% 40%,oklch(62% .2 300/.05),transparent 60%)}
 #s6-inner{width:100%;max-width:960px;margin:0 auto;position:relative}
-#s6-hl{font-size:clamp(1.7rem,3.5vw,3rem);font-weight:800;letter-spacing:-1.8px;margin-bottom:8px}
-#s6-sub{font-size:1rem;color:var(--muted);margin-bottom:32px;max-width:560px;line-height:1.7}
+#s6-hl{font-size:clamp(1.7rem,3.5vw,3rem);font-weight:800;letter-spacing:-1.8px;margin-bottom:6px}
+#s6-sub{font-size:1rem;color:var(--muted);margin-bottom:32px;max-width:580px;line-height:1.7}
+/* Idea Lab stats bar */
+#il-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:36px}
+.il-stat{flex:1;padding:18px 14px;background:var(--bg2);text-align:center;border-right:1px solid var(--border)}
+.il-stat:last-child{border-right:none}
+.il-stat .is-num{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;color:var(--purple);font-variant-numeric:tabular-nums;font-family:'Manrope',sans-serif}
+.il-stat .is-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-family:'Fira Code',monospace;margin-top:4px}
+/* How it works steps */
+#il-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
+.il-step{padding:20px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surf);position:relative}
+.il-step-num{font-size:28px;font-weight:800;color:oklch(62% .2 300/.25);font-family:'Manrope',sans-serif;line-height:1;margin-bottom:8px}
+.il-step-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.il-step-desc{font-size:11px;color:var(--muted);line-height:1.55}
+/* Finding cards */
+.il-finding{padding:20px 22px;border:1px solid;border-radius:10px;margin-bottom:14px;opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}
+.il-finding.show{opacity:1;transform:none}
+.il-finding.strategic{border-color:oklch(62% .2 300/.3);background:oklch(62% .2 300/.04)}
+.il-finding.data-f{border-color:oklch(62% .2 255/.3);background:oklch(62% .2 255/.04)}
+.il-finding .if-track{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-family:'Fira Code',monospace;font-weight:600;margin-bottom:8px}
+.il-finding.strategic .if-track{color:var(--purple)}
+.il-finding.data-f .if-track{color:var(--blue)}
+.il-finding .if-title{font-size:16px;font-weight:700;margin-bottom:6px;line-height:1.3}
+.il-finding .if-evidence{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.il-finding .if-meta{display:flex;gap:12px;font-size:11px;font-family:'Fira Code',monospace;color:var(--muted)}
+.il-finding .if-meta .score{color:var(--green);font-weight:600}
+/* Devil's advocate */
+.il-da{margin-top:12px;padding:14px 16px;border-radius:8px;border:1px solid oklch(62% .22 25/.2);background:oklch(62% .22 25/.04)}
+.il-da .da-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-family:'Fira Code',monospace;color:var(--red);font-weight:700;margin-bottom:6px}
+.il-da .da-text{font-size:12px;color:oklch(75% .05 25);line-height:1.6;font-style:italic}
+.il-da .da-tension{font-size:12px;color:var(--green);font-weight:600;margin-top:8px;font-style:normal}
+/* Takeaway */
+#il-takeaway{font-size:.95rem;color:var(--muted);line-height:1.7;border-left:2px solid var(--purple);padding-left:16px;margin-top:24px;max-width:600px}
+#il-takeaway strong{color:var(--text)}
+#il-link{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:10px 20px;border:1px solid oklch(62% .2 300/.3);border-radius:6px;font-size:12px;font-family:'Fira Code',monospace;color:var(--purple);background:oklch(62% .2 300/.05);letter-spacing:.5px;transition:all .2s}
+#il-link:hover{border-color:var(--purple);background:oklch(62% .2 300/.1)}
+
+/* ═══════════════════════════════════
+   S7 — AI DEBATE
+═══════════════════════════════════ */
+#s7{background:var(--bg2);background-image:radial-gradient(ellipse 60% 50% at 50% 30%,oklch(62% .22 25/.04),transparent 60%)}
+#s7-inner{width:100%;max-width:960px;margin:0 auto;position:relative}
+#s7-hl{font-size:clamp(1.7rem,3.5vw,3rem);font-weight:800;letter-spacing:-1.8px;margin-bottom:8px}
+#s7-sub{font-size:1rem;color:var(--muted);margin-bottom:32px;max-width:560px;line-height:1.7}
 #debate-arena{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px}
 .agent-col{display:flex;flex-direction:column;gap:12px}
 .agent-header{display:flex;align-items:center;gap:9px;padding:12px 16px;border-radius:10px 10px 4px 4px;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;font-family:'Fira Code',monospace}
@@ -174,7 +216,7 @@ code,.mono{font-family:'Fira Code',ui-monospace,monospace}
 #verdict-box.show{opacity:1;transform:none}
 #verdict-box .v-text{font-size:14px;line-height:1.6}
 #verdict-box .v-text strong{color:var(--green)}
-#s6-coda{font-size:.95rem;color:var(--muted);line-height:1.65;font-style:italic;border-left:2px solid var(--green);padding-left:16px;max-width:580px}
+#s7-coda{font-size:.95rem;color:var(--muted);line-height:1.65;font-style:italic;border-left:2px solid var(--green);padding-left:16px;max-width:580px}
 
 /* ═══════════════════════════════════
    S7 — PORTFOLIO
@@ -383,13 +425,62 @@ code,.mono{font-family:'Fira Code',ui-monospace,monospace}
   </div>
 </section>
 
-<!-- ═══ S6: AI DEBATE ═══ -->
+<!-- ═══ S6: THE IDEA LAB ═══ -->
 <section id="s6" class="screen">
-  <div class="orb orb-p" style="width:400px;height:400px;right:-80px;top:20%"></div>
+  <div class="orb orb-p" style="width:450px;height:450px;left:-120px;top:20%"></div>
+  <div class="orb orb-b" style="width:300px;height:300px;right:5%;bottom:10%"></div>
   <div id="s6-inner">
-    <div class="eyebrow">05 — The Self-Improving Engine</div>
-    <h2 id="s6-hl">Watch two AI models<br><span style="color:var(--red)">disagree</span> on the same clip.</h2>
-    <p id="s6-sub">Our multi-model system runs Flash and Pro on every clip. When they disagree, we learn. When they agree, we're confident. This is how accuracy improves automatically.</p>
+    <div class="eyebrow">05 — The Self-Improving Intelligence Layer</div>
+    <h2 id="s6-hl">Not just a data pipe.<br>A system that gets <span style="color:var(--purple)">smarter every day.</span></h2>
+    <p id="s6-sub">9 AI researchers analyze the corpus independently every night. A synthesizer ranks their findings. A devil's advocate argues against them. Bill reviews the best ones. The system learns from his decisions.</p>
+
+    <div id="il-stats">
+      <div class="il-stat"><div class="is-num" id="il-researchers">9</div><div class="is-lbl">AI Researchers</div></div>
+      <div class="il-stat"><div class="is-num" id="il-findings">38</div><div class="is-lbl">Findings / Run</div></div>
+      <div class="il-stat"><div class="is-num">2</div><div class="is-lbl">Tracks</div></div>
+      <div class="il-stat"><div class="is-num">Daily</div><div class="is-lbl">Autopilot</div></div>
+    </div>
+
+    <div id="il-steps">
+      <div class="il-step"><div class="il-step-num">1</div><div class="il-step-title">9 Researchers</div><div class="il-step-desc">Brand analyst, player profiler, shot scientist, viral decoder, production auditor, opportunity scout, prompt engineer, wildcard, devil's advocate</div></div>
+      <div class="il-step"><div class="il-step-num">2</div><div class="il-step-title">Synthesize</div><div class="il-step-desc">Deduplicates, ranks, and splits into two tracks: Strategic Ideas + Data Insights</div></div>
+      <div class="il-step"><div class="il-step-num">3</div><div class="il-step-title">Review</div><div class="il-step-desc">Bill approves or dismisses. Approved categories get boosted next run. Dismissed get deprioritized.</div></div>
+      <div class="il-step"><div class="il-step-num">4</div><div class="il-step-title">Learn</div><div class="il-step-desc">Next run is smarter. The flywheel spins. The moat deepens automatically.</div></div>
+    </div>
+
+    <!-- Strategic finding -->
+    <div class="il-finding strategic" id="ilf1">
+      <div class="if-track">Strategic Idea · Wildcard Researcher</div>
+      <div class="if-title" id="ilf1-title">The Brand's Own Idea Lab (White Label)</div>
+      <div class="if-evidence" id="ilf1-evidence">Sell Nike their own instance of our Idea Lab analyzing ONLY clips where their products appear. Nike gets insights they can't get anywhere else, and becomes dependent on our data infrastructure.</div>
+      <div class="if-meta"><span>Confidence: <span class="score" id="ilf1-conf">88%</span></span><span>Flywheel: <span class="score">STRONG</span></span><span>Business Value: HIGH</span></div>
+      <div class="il-da">
+        <div class="da-label">Devil's Advocate</div>
+        <div class="da-text" id="ilf1-da">Nike already has armies of sports marketing analysts. They won't pay $50K+/year to repackage their own video library back to them.</div>
+        <div class="da-tension">The tension IS the insight. The system generates ideas AND stress-tests them automatically.</div>
+      </div>
+    </div>
+
+    <!-- Data finding -->
+    <div class="il-finding data-f" id="ilf2">
+      <div class="if-track">Data Insight · Production Auditor</div>
+      <div class="if-title" id="ilf2-title">Badge prediction F1 = 0.97</div>
+      <div class="if-evidence" id="ilf2-evidence">Across 287 verified clips: 999 correct predictions, 16 false positives, 41 missed badges. The AI model matches production ground truth 97% of the time on verified data.</div>
+      <div class="if-meta"><span>Confidence: <span class="score" id="ilf2-conf">90%</span></span><span>Category: Model Accuracy</span><span>Business Value: HIGH</span></div>
+    </div>
+
+    <p id="il-takeaway"><strong>The investor takeaway:</strong> Every day the corpus grows, the analysis gets more accurate, and the research team finds new opportunities. Competitors can copy the pipeline. They can't copy <span id="il-corpus-count">1,660</span> clips of validated data with a self-improving feedback loop on top.</p>
+    <a id="il-link" href="idea-lab.html" target="_blank">Explore the Idea Lab →</a>
+  </div>
+</section>
+
+<!-- ═══ S7: AI DEBATE ═══ -->
+<section id="s7" class="screen">
+  <div class="orb orb-p" style="width:400px;height:400px;right:-80px;top:20%"></div>
+  <div id="s7-inner">
+    <div class="eyebrow">06 — The Self-Improving Engine</div>
+    <h2 id="s7-hl">Watch two AI models<br><span style="color:var(--red)">disagree</span> on the same clip.</h2>
+    <p id="s7-sub">Our multi-model system runs Flash and Pro on every clip. When they disagree, we learn. When they agree, we're confident. This is how accuracy improves automatically.</p>
     <div id="debate-arena">
       <div class="agent-col agent-a">
         <div class="agent-header"><div class="agent-dot"></div>Agent A · Gemini Flash</div>
@@ -411,14 +502,14 @@ code,.mono{font-family:'Fira Code',ui-monospace,monospace}
     <div id="verdict-box">
       <div class="v-text"><strong>⚖️ Consensus:</strong> Flagged for human review. Models disagree on 11 of 12 fields. Agreement rate: 8.3%. This disagreement becomes training data — the system gets smarter with every debate.</div>
     </div>
-    <p id="s6-coda">This is how the system improves. No competitor has this — because no competitor has the data loop.</p>
+    <p id="s7-coda">This is how the system improves. No competitor has this — because no competitor has the data loop.</p>
   </div>
 </section>
 
-<!-- ═══ S7: PORTFOLIO ═══ -->
-<section id="s7" class="screen">
-  <div><div class="eyebrow">06 — The Product</div><h2 class="headline" style="letter-spacing:-2.5px">Live dashboards. Real data.</h2><p class="subhead">Not mockups. Every link below runs on real corpus data — click through.</p></div>
-  <div id="s7-grid">
+<!-- ═══ S8: PORTFOLIO ═══ -->
+<section id="s8" class="screen">
+  <div><div class="eyebrow">07 — The Product</div><h2 class="headline" style="letter-spacing:-2.5px">Live dashboards. Real data.</h2><p class="subhead">Not mockups. Every link below runs on real corpus data — click through.</p></div>
+  <div id="s8-grid">
     <a class="pc feat" href="brand-intelligence-v2.html" target="_blank"><div class="pc-thumb" style="background:linear-gradient(135deg,oklch(76% .16 90/.2),oklch(76% .16 90/.03))">🏷️</div><div class="pc-body"><span class="pc-tag">Flagship</span><div class="pc-title">Brand Intelligence V2</div><div class="pc-desc">Circle-packed brand landscape, tabbed modals, co-occurrence matrix, 165 brands, sponsorship whitespace. The data product.</div><div class="pc-lnk">View Live →</div></div></a>
     <a class="pc feat" href="player-intelligence.html" target="_blank"><div class="pc-thumb" style="background:linear-gradient(135deg,oklch(62% .2 300/.2),oklch(62% .2 300/.03))">👤</div><div class="pc-body"><span class="pc-tag">Flagship</span><div class="pc-title">Player Intelligence</div><div class="pc-desc">57 real players, SVG skill radars, badge gallery with CDN images, brand affinity mapping. Real people, real data.</div><div class="pc-lnk">View Live →</div></div></a>
     <a class="pc feat" href="equipment-performance.html" target="_blank"><div class="pc-thumb" style="background:linear-gradient(135deg,oklch(62% .22 25/.15),oklch(62% .22 25/.03))">⚔️</div><div class="pc-body"><span class="pc-tag">Flagship</span><div class="pc-title">Equipment Lab</div><div class="pc-desc">Head-to-head brand comparison with evidence clips, skill breakdowns, player rosters, and screen time data.</div><div class="pc-lnk">View Live →</div></div></a>
@@ -428,14 +519,14 @@ code,.mono{font-family:'Fira Code',ui-monospace,monospace}
   </div>
 </section>
 
-<!-- ═══ S8: THE ASK + REVENUE SIMULATOR ═══ -->
-<section id="s8" class="screen">
+<!-- ═══ S9: THE ASK + REVENUE SIMULATOR ═══ -->
+<section id="s9" class="screen">
   <div class="orb orb-g" style="width:500px;height:500px;left:50%;bottom:-30%;transform:translateX(-50%)"></div>
-  <div id="s8-inner">
-    <div id="s8-pre">07 — The Opportunity</div>
-    <h2 id="s8-hl">Live. Self-improving.<br><span style="color:var(--green)">Ready for pilot customers.</span></h2>
-    <p id="s8-pitch">Pickle DaaS is not a pitch deck. It's a working system that ingests pickleball video, extracts structured intelligence, and improves automatically. Built by 2 people with $20 in API costs.</p>
-    <div id="s8-stats">
+  <div id="s9-inner">
+    <div id="s9-pre">08 — The Opportunity</div>
+    <h2 id="s9-hl">Live. Self-improving.<br><span style="color:var(--green)">Ready for pilot customers.</span></h2>
+    <p id="s9-pitch">Pickle DaaS is not a pitch deck. It's a working system that ingests pickleball video, extracts structured intelligence, and improves automatically. Built by 2 people with $20 in API costs.</p>
+    <div id="s9-stats">
       <div class="s8s"><div class="sn" id="ask-clips">1,660</div><div class="sl">Clips analyzed</div></div>
       <div class="s8s"><div class="sn" id="ask-f1">49.3%</div><div class="sl">F1 accuracy · ↑</div></div>
       <div class="s8s"><div class="sn">$0.005</div><div class="sl">Cost per clip</div></div>
@@ -459,12 +550,12 @@ code,.mono{font-family:'Fira Code',ui-monospace,monospace}
       </div>
       <div id="brand-cpm"></div>
     </div>
-    <div id="s8-cta">
+    <div id="s9-cta">
       <div class="cname">Bill Bricker — Founder &amp; CEO, Courtana</div>
       <a href="mailto:bill@courtana.com" class="cemail">bill@courtana.com</a>
       <div class="crole">courtana.com · Raising $1.3M seed · Three venue deals active</div>
     </div>
-    <p id="s8-disc">Data from corpus-export.json (1,660+ clips, April 2026). Accuracy from ground-truth badge validation. picklebill.github.io/pickle-daas-data/</p>
+    <p id="s9-disc">Data from corpus-export.json (1,660+ clips, April 2026). Accuracy from ground-truth badge validation. picklebill.github.io/pickle-daas-data/</p>
   </div>
 </section>
 

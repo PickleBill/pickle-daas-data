@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive: Sponsorship whitespace detected in 1461 clips (92.0%) — sell · Idea Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(12% .012 155); --sf: oklch(15% .01 155); --sf2: oklch(18% .009 155);
+  --sf3: oklch(22% .008 155); --bd: oklch(26% .012 155); --bds: oklch(20% .008 155);
+  --tx: oklch(92% .01 155); --tx2: oklch(72% .015 155); --mt: oklch(50% .02 155);
+  --ac: #a855f7; --acd: #a855f712; --acg: #a855f725;
+  --gd: oklch(82% .16 85); --r: 10px; --rl: 14px;
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;font-size:15px}
+.shell{max-width:900px;margin:0 auto;padding:32px 24px 80px}
+a{color:var(--ac);text-decoration:none}a:hover{text-decoration:underline}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--mt);font-size:13px;font-family:'Red Hat Mono',monospace;margin-bottom:24px;transition:.2s}
+.back-link:hover{color:var(--ac)}
+
+.hero{margin-bottom:40px}
+.hero-track{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:var(--acd);color:var(--ac);border:1px solid var(--acg);font-family:'Red Hat Mono',monospace;margin-bottom:12px}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.2;margin-bottom:16px}
+.hero-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--tx2)}
+.hero-meta .val{font-weight:600;color:var(--tx)}
+
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:32px}
+.stat{background:var(--sf);padding:16px 20px;text-align:center}
+.stat .num{font-size:24px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--ac)}
+.stat .label{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'Red Hat Mono',monospace}
+
+.section{margin-bottom:32px}
+.section h2{font-size:16px;font-weight:700;letter-spacing:-.3px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.section p{color:var(--tx2);line-height:1.7}
+
+.evidence-box{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:20px;font-size:14px;color:var(--tx);line-height:1.7}
+
+.steps{list-style:none;counter-reset:step}
+.steps li{counter-increment:step;padding:12px 0 12px 48px;border-bottom:1px solid var(--bds);position:relative;color:var(--tx2)}
+.steps li::before{content:counter(step);position:absolute;left:0;top:12px;width:32px;height:32px;border-radius:50%;background:var(--acd);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:'Red Hat Mono',monospace}
+.steps li:last-child{border-bottom:none}
+
+.clips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.clip{border-radius:var(--r);overflow:hidden;background:var(--sf);border:1px solid var(--bd);transition:.2s var(--ease)}
+.clip:hover{border-color:var(--ac);transform:translateY(-2px)}
+.clip video{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.clip-caption{padding:8px 10px;font-size:11px;color:var(--mt);line-height:1.4}
+
+.counterarg-section h2{color:#ef4444}
+.counterarg-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:var(--r);padding:16px}
+.ca-severity{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#ef4444;margin-bottom:6px;font-family:'Red Hat Mono',monospace}
+.counterarg-box p{color:oklch(72% .015 155)}
+
+.raw-grid{display:grid;gap:4px}
+.raw-item{display:flex;justify-content:space-between;padding:6px 10px;background:var(--sf);border-radius:4px;font-size:12px;font-family:'Red Hat Mono',monospace}
+.raw-key{color:var(--mt)}.raw-val{color:var(--tx2);max-width:60%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.follow-up-box{background:var(--acd);border:1px solid var(--acg);border-radius:var(--rl);padding:16px}
+.follow-up-box .fq{font-weight:600;color:var(--ac);margin-bottom:6px;font-size:14px}
+.follow-up-box p{color:var(--tx2);font-size:13px}
+
+@media(max-width:600px){.stats-bar{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="shell">
+    <a class="back-link" href="../dashboards/idea-lab.html">&larr; Back to Idea Lab</a>
+
+    <div class="hero">
+        <div class="hero-track">Strategic Idea</div>
+        <h1>Sponsorship whitespace detected in 1461 clips (92.0%) — sell to brands</h1>
+        <div class="hero-meta">
+            <span>Researcher: <span class="val">opportunity_scout</span></span>
+            <span>Category: <span class="val">revenue_opportunity</span></span>
+            <span>Generated: <span class="val">2026-04-15</span></span>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat"><div class="num">70%</div><div class="label">Confidence</div></div>
+        <div class="stat"><div class="num">HIGH</div><div class="label">Business Value</div></div>
+        <div class="stat"><div class="num">0.312</div><div class="label">Score</div></div>
+        <div class="stat"><div class="num">80%</div><div class="label">Novelty</div></div>
+    </div>
+
+    <div class="section">
+        <h2>Evidence</h2>
+        <div class="evidence-box">We detect unbranded equipment/space in 1461 clips. This is the gap between what&#x27;s visible and what&#x27;s branded — sellable data.</div>
+    </div>
+
+    
+
+    <div class="section">
+        <h2>Recommended Action</h2>
+        <p>Package sponsorship whitespace data as &#x27;brand opportunity report&#x27; for equipment companies</p>
+    </div>
+
+    <div class='section'><h2>Source Clips</h2><div class="clips-grid"><div class="clip"><video src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.mp4" poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.jpeg" controls muted playsinline preload="none"></video><p class="clip-caption">A 17-shot driving rally ends with an unforced error into the net.</p></div><div class="clip"><video src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.mp4" poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.jpeg" controls muted playsinline preload="none"></video><p class="clip-caption">Players engage in a prolonged kitchen dink rally, demonstrating patience and control.</p></div><div class="clip"><video src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.mp4" poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.jpeg" controls muted playsinline preload="none"></video><p class="clip-caption">Players engage in a consistent rally of dinks at the kitchen line.</p></div></div></div>
+
+    <div class="section">
+        <h2>Next Steps</h2>
+        <ol class="steps">
+            <li>Package sponsorship whitespace data as &#x27;brand opportunity report&#x27; for equipment companies</li>
+            <li>Validate with a 200-clip focused sample. Test whether the signal holds at scale.</li>
+            <li>If validated, build a one-page proof-of-concept and share with the first potential buyer.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Follow-Up Investigation</h2>
+        <div class="follow-up-box">
+            <div class="fq">Who is the first buyer? POC in 1 week?</div>
+            <p>Assigned to: opportunity_scout</p>
+        </div>
+    </div>
+
+    <div class="section"><h2>Raw Data</h2><div class="raw-grid"><div class="raw-item"><span class="raw-key">whitespace_clips</span><span class="raw-val">1461</span></div><div class="raw-item"><span class="raw-key">fill_rate</span><span class="raw-val">92.0</span></div></div></div>
+</div>
+</body>
+</html>
