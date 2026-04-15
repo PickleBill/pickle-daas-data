@@ -1,12 +1,12 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-15T06:12:09.190173+00:00_
+_Generated: 2026-04-15T06:32:35.421994+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 1928 clips
-- **Total analysis files on disk:** 3028 (3028 ≥500 bytes)
-- **Minutes since last analysis:** 0.1
-- **Human flags:** 27 total (20 real, rest seed)
+- **Corpus on gh-pages:** 1994 clips
+- **Total analysis files on disk:** 3063 (3063 ≥500 bytes)
+- **Minutes since last analysis:** 0.0
+- **Human flags:** 37 total (30 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
@@ -39,7 +39,7 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands | 446/500 | 89% |
+| brand_detection.brands | 445/500 | 89% |
 | badge_intelligence.predicted_badges | 469/500 | 94% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
@@ -52,24 +52,24 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 27
-- **Real (non-seed) flags:** 20
+- **Total flags captured:** 37
+- **Real (non-seed) flags:** 30
 
 Flags by field:
-- `badge_predictions` — 20 flag(s)
+- `badge_predictions` — 29 flag(s)
+- `overall_accuracy` — 2 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
 - `shot_analysis` — 1 flag(s)
-- `overall_accuracy` — 1 flag(s)
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `00e08290-213...` · `badge_predictions` rating 1 · Example clips where 'Dink Machine' was wrongly predicted: 00e08290-213, 01fc4a04
-- `0065b84d-baf...` · `badge_predictions` rating 1 · Example clips where 'Kitchen King' was wrongly predicted: 0065b84d-baf, 01fc4a04
-- `00e08290-213...` · `badge_predictions` rating 1 · Example clips where 'Consistency King' was wrongly predicted: 00e08290-213, 058c
-- `04214439-631...` · `badge_predictions` rating 1 · Example clips where 'Epic Rally' was wrongly predicted: 04214439-631, 06d5a65e-5
-- `0026ad09-194...` · `badge_predictions` rating 1 · Example clips where 'Power Player' was wrongly predicted: 0026ad09-194, 04214439
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 13% precision — 285 false positives out of 32
+- `_systemic_Di...` · `badge_predictions` rating 1 · HALLUCINATED BADGE: 'Dink Machine' was predicted 141 times but Courtana never aw
+- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 97 times but the model only c
+- `_systemic_Fr...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Fresh Fit' was awarded by Courtana 64 times but the model only 
+- `_systemic_Le...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Legendary Look' was awarded by Courtana 20 times but the model 
 
 ---
 
