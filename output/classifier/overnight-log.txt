@@ -1,0 +1,46 @@
+
+===== CYCLE START 2026-04-15T07:55:04Z =====
+[quarantine]
+scanning 1968 clips...
+quarantined 4 clips (0.2%)
+  non_pickleball_sport: 4
+wrote /Users/billbricker/PickleBill Dropbox/PickleBill Team Folder/Claude Projects/PICKLE-DAAS/output/classifier/quarantined-clips.json
+  ✓ ok
+[classifier-deep]
+[03:55:04] [classifier] mode=quick(top_50)
+[03:55:04] [classifier] loaded 1968 clips from merged-corpus.json
+[03:55:04] [classifier] 53 brand keys already covered by approved rules
+[03:55:04] [classifier] observed 50 uncovered brands (top 50)
+[03:55:04] [classifier] calling Claude Haiku with 50 brands in one batch...
+[03:55:57] [classifier] JSON parse failed: Expecting value: line 1 column 1 (char 0). First 400 chars: ```json
+[
+  {
+    "brand": "R&M_foz_wifi_goomba",
+    "aliases": [],
+    "classifications": [
+      {
+        "as": "needs_investigation",
+        "category_primary": "unknown"
+      }
+    ],
+    "revenue_potential": "none",
+    "sponsor_subtype": null,
+    "website": null,
+    "brand_description": "Unknown — appears to be a Wi-Fi network SSID or system overlay artifact, not a brand.",
+    "ration
+[03:55:57] [classifier] no hypotheses generated (API error or empty response) — writing empty proposals file
+  ✓ ok
+[brand-research]
+[03:55:57] [brand-researcher] loaded 38 items from investigate-queue.json
+[03:55:57] [brand-researcher] nothing new to research — all brands already in brand-research.json
+  ✓ ok
+[apply-classify]
+[03:55:57] [apply-classification] loaded 1968 clips from merged-corpus.json
+[03:55:57] [apply-classification] loaded 49 approved rules (taxonomy v5)
+[03:55:57] [apply-classification] loaded quarantine list: 4 clips flagged
+[03:55:57] [apply-classification] capture sources: {'courtana_venue': 1966, 'manual_upload': 2}
+[03:55:57] [apply-classification] wrote output/classified-corpus.json  (1653 clips, 4601 brand detections)
+[03:55:57] [apply-classification] wrote output/classification-stats.json
+[03:55:57] [apply-classification] coverage: 92.6%  |  rule=4261  fallback=340
+  ✓ ok
+[push-ghpages]
