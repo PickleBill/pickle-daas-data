@@ -1,0 +1,1183 @@
+{
+  "generated_at": "2026-04-15T06:58:44.451112+00:00",
+  "run_date": "2026-04-15",
+  "lab_id": "meta-lab",
+  "lab_name": "Meta-Lab (Lab of Labs)",
+  "version": 4,
+  "corpus_stats": {
+    "researchers_run": 4,
+    "raw_findings": 9,
+    "unique_findings": 7,
+    "strategic_count": 4,
+    "data_count": 3
+  },
+  "feedback_loop": {
+    "active": true,
+    "has_decisions": false,
+    "decisions_loaded": 0,
+    "category_signals": {},
+    "agent_signals": {}
+  },
+  "autonomous_evolution": {
+    "trend_runs": 4,
+    "recurring_findings": 4,
+    "auto_boosted": 3,
+    "plausibility_filtered": 4,
+    "multi_model_validated": 5,
+    "category_momentum": {
+      "lab_proposal": 1.0,
+      "cross_lab_pattern": 0.0,
+      "system": -0.5,
+      "cross_lab_theme": 1.0,
+      "persona_proposal": 0.0
+    }
+  },
+  "researcher_stats": [
+    {
+      "agent": "cross_lab_observer",
+      "sample_used": "2 lab outputs",
+      "sample_size": 20,
+      "findings_count": 3
+    },
+    {
+      "agent": "lab_proposer",
+      "sample_used": "cross-lab findings",
+      "sample_size": 16,
+      "findings_count": 4
+    },
+    {
+      "agent": "persona_proposer",
+      "sample_used": "2 labs",
+      "sample_size": 2,
+      "findings_count": 1
+    },
+    {
+      "agent": "signal_router",
+      "sample_used": "lab configs",
+      "sample_size": 0,
+      "findings_count": 1
+    }
+  ],
+  "category_distribution": {
+    "lab_proposal": 3,
+    "cross_lab_theme": 1,
+    "cross_lab_pattern": 1,
+    "persona_proposal": 1,
+    "system": 1
+  },
+  "agent_distribution": {
+    "lab_proposer": 3,
+    "cross_lab_observer": 2,
+    "persona_proposer": 1,
+    "signal_router": 1
+  },
+  "top_strategic": [
+    {
+      "finding_id": "lab_proposer-20260415-1791",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370448+00:00",
+      "title": "Propose new lab: sponsorship-inventory-intelligence",
+      "confidence": 0.7,
+      "evidence_summary": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.\n\nEvidence: pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "sponsorship-inventory-intelligence",
+        "proposal": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "rationale": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "evidence": "pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ],
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity."
+        },
+        "draft_config": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "display_name": "Sponsorship Inventory Intelligence",
+          "description": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity.",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ]
+        }
+      },
+      "plausibility": 0.65,
+      "plausibility_note": "Lab inventory data exists via APIs (Shopify, WooCommerce), sponsorship data requires scraping/partnerships; moderate complexity, clear market demand.",
+      "track": "strategic",
+      "composite_score": 0.3968,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Evidence is correlational (multiple labs detected gaps) but lacks causal mechanism. Would need: (a) pilot data showing sponsorship insertion actually closes whitespace with positive ROI, (b) competitive analysis\u2014are these gaps genuine market opportunities or rational non-sponsorships?, (c) creator/platform willingness data. Low score (0.397) appropriately reflects this gap.",
+        "blind_spot": "Attribution problem: Are whitespace gaps opportunities or constraints? No evidence that the 92% lack of brand detection reflects unmet demand vs. intentional editorial choice. Missing stakeholder validation (creators, platforms, sponsors). No analysis of cannibalization risk (does new sponsorship displace existing revenue?)."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: sponsorship-inventory-intelligenc'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1791.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-1636",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370477+00:00",
+      "title": "Propose new lab: production-quality-standardization",
+      "confidence": 0.7,
+      "evidence_summary": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.\n\nEvidence: general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "production-quality-standardization",
+        "proposal": {
+          "lab_id": "production-quality-standardization",
+          "rationale": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "evidence": "general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ],
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications."
+        },
+        "draft_config": {
+          "lab_id": "production-quality-standardization",
+          "display_name": "Production Quality Standardization",
+          "description": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications.",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ]
+        }
+      },
+      "plausibility": 0.55,
+      "plausibility_note": "Quality standardization needs domain-specific ML or manual labeling datasets; data acquisition bottleneck and regulatory uncertainty (ISO/compliance) limits 30-day scope.",
+      "track": "strategic",
+      "composite_score": 0.3357,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "F1=0.97 on quality prediction is strong but inverted logic: high predictability of low-quality footage suggests the problem is *detectable*, not necessarily *valuable to solve*. Would need: (a) downstream impact data\u2014does standardization improve engagement, retention, or sponsor satisfaction?, (b) cost-benefit analysis (standardization cost vs. revenue uplift), (c) evidence this is blocking adoption vs. a minor friction point.",
+        "blind_spot": "Assumes solvability = priority. No user impact validation. Missing: What % of creators/viewers actually experience quality as a friction point? Is low quality sometimes authentic/preferred in certain genres? No comparison to other quality-improvement initiatives already underway."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: production-quality-standardizatio'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1636.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-0707",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370464+00:00",
+      "title": "Propose new lab: creator-moat-mechanics",
+      "confidence": 0.7,
+      "evidence_summary": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.\n\nEvidence: wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "creator-moat-mechanics",
+        "proposal": {
+          "lab_id": "creator-moat-mechanics",
+          "rationale": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "evidence": "wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ],
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time."
+        },
+        "draft_config": {
+          "lab_id": "creator-moat-mechanics",
+          "display_name": "Creator Moat Mechanics",
+          "description": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time.",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ]
+        }
+      },
+      "plausibility": 0.45,
+      "plausibility_note": "Creator data fragmented across platforms (YouTube, TikTok, Instagram APIs have rate limits), moat-mechanics require proprietary algorithmic modeling; high ambiguity.",
+      "track": "strategic",
+      "composite_score": 0.2747,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Three signals of moat mechanics is promising triangulation, but level of abstraction is vague. 'Defensible positioning' is the *category*, not evidence of a distinct lab need. Would need: (a) concrete mechanisms (e.g., data showing coaching marketplace repeat rates are 3x higher than alternatives), (b) evidence these three moats are *complementary* (require unified lab) vs. independent, (c) clear scope\u2014what would this lab *build* vs. what would it *study*?",
+        "blind_spot": "Conflates pattern-spotting with actionability. No evidence that these moats are *under-exploited* or that a dedicated lab would materially improve outcomes. Missing: competitive moat analysis\u2014are these defensibilities already priced in by market leaders? Risk of building a research lab around patterns that don't require intervention."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: creator-moat-mechanics'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-0707.html"
+    },
+    {
+      "finding_id": "persona_proposer-20260415-4917",
+      "agent": "persona_proposer",
+      "generated_at": "2026-04-15T06:58:26.372865+00:00",
+      "title": "Lab 'general-purpose' is 40% 'wildcard_idea' \u2014 blind to execution risk assessment",
+      "confidence": 0.65,
+      "evidence_summary": "'general-purpose' findings are 40% in category 'wildcard_idea' (8/20). This lab may be missing perspectives on: execution risk assessment, market sizing. A new researcher persona could fill this gap.",
+      "business_value": "medium",
+      "category": "persona_proposal",
+      "novelty": 0.75,
+      "recommended_action": "Add a researcher that focuses on execution risk assessment to 'general-purpose'",
+      "source_records": [],
+      "raw_data": {
+        "lab": "general-purpose",
+        "dominant_category": "wildcard_idea",
+        "concentration": 0.4,
+        "suggested_categories": [
+          "execution risk assessment",
+          "market sizing"
+        ]
+      },
+      "plausibility": 0.25,
+      "plausibility_note": "Wildcard-heavy 40% weighting means execution risk is structurally unvalidated; prototype would likely be proof-of-concept only, not market-ready.",
+      "track": "strategic",
+      "composite_score": 0.1019,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "This is a well-formed audit finding (meta-level). 40% wildcard classification in 'general-purpose' is a concrete bias signal. No counter-evidence needed\u2014the blind spot claim is justified. Would only strengthen if you showed: (a) downstream impact (do wildcard-heavy labs have lower implementation rates?), (b) severity (is execution risk assessment actually critical for these ideas?).",
+        "blind_spot": "The finding itself may be too narrow: Is the problem wildcard *prevalence* or wildcard *quality*? Some wildcard ideas are genuinely high-impact. Missing analysis: Do other labs have similar wildcard %, but different *composition* (e.g., strategic-wildcard vs. noise-wildcard)? Execution risk may be a feature, not a bug, if the lab's job is exploration."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Lab 'general-purpose' is 40% 'wildcard_idea' \u2014 bli'?",
+        "proposed_action": "Add a researcher that focuses on execution risk assessment to 'general-purpose'",
+        "assigned_researcher": "persona_proposer"
+      },
+      "deep_dive_url": "deep-dives/persona_proposer-20260415-4917.html"
+    }
+  ],
+  "top_data": [
+    {
+      "finding_id": "cross_lab_observer-20260415-1555",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700618+00:00",
+      "title": "Convergent signal across general-purpose+pickle-idea-lab: 'Brand Insertion: The Invisible Sponsor Layer'",
+      "confidence": 0.85,
+      "evidence_summary": "Lab 'general-purpose' (wildcard) found 'Brand Insertion: The Invisible Sponsor Layer'. Lab 'pickle-idea-lab' (wildcard) independently found 'Reverse Sponsorship Auction'. Similarity: 0.423. When multiple labs converge on a theme, it's a much stronger signal.",
+      "business_value": "high",
+      "category": "cross_lab_theme",
+      "novelty": 0.8,
+      "recommended_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+      "source_records": [],
+      "raw_data": {
+        "labs": [
+          "general-purpose",
+          "pickle-idea-lab"
+        ],
+        "finding_a": "Brand Insertion: The Invisible Sponsor Layer",
+        "finding_b": "Reverse Sponsorship Auction",
+        "agents": [
+          "wildcard",
+          "wildcard"
+        ],
+        "similarity": 0.423
+      },
+      "track": "data",
+      "composite_score": 0.7241,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "Convergent signal across independent labs (general-purpose + pickle-idea-lab both surfacing brand insertion) is the strongest evidence in this batch. High score (0.658) justified. Would further strengthen if you showed: (a) signal independently replicated in *third* lab, (b) temporal sequence (which lab found it first? or truly simultaneous?), (c) detail match (are findings identical or just thematically similar?).",
+        "blind_spot": "Convergence \u2260 opportunity validation. Both labs may be biased by the same corpus, training data, or zeitgeist. Missing: (a) adversarial test\u2014did labs actively search for *disconfirming* evidence on brand insertion?, (b) external validation (do creators/sponsors cite this as a real problem?), (c) specificity\u2014'Invisible Sponsor Layer' is evocative but unclear. What is the proposed intervention?"
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Convergent signal across general-purpose+pickle-id'?",
+        "proposed_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-1555.html"
+    },
+    {
+      "finding_id": "cross_lab_observer-20260415-8695",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700683+00:00",
+      "title": "Category 'wildcard_idea' active in 2 labs",
+      "confidence": 0.7,
+      "evidence_summary": "The finding category 'wildcard_idea' is being produced by multiple labs: {'general-purpose': 8, 'pickle-idea-lab': 8}. This suggests a cross-cutting pattern type.",
+      "business_value": "medium",
+      "category": "cross_lab_pattern",
+      "novelty": 0.65,
+      "recommended_action": "Review findings in this category across labs for deeper synthesis.",
+      "source_records": [],
+      "raw_data": {
+        "category": "wildcard_idea",
+        "labs": {
+          "general-purpose": 8,
+          "pickle-idea-lab": 8
+        }
+      },
+      "track": "data",
+      "composite_score": 0.4461,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Category 'wildcard_idea' active in 2 labs'?",
+        "proposed_action": "Review findings in this category across labs for deeper synthesis.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-8695.html"
+    },
+    {
+      "finding_id": "signal_router-20260415-5115",
+      "agent": "signal_router",
+      "generated_at": "2026-04-15T06:58:26.375052+00:00",
+      "title": "No lab subscriptions configured",
+      "confidence": 0.9,
+      "evidence_summary": "No labs have declared subscriptions yet. Add `subscriptions: [\"lab-id:researcher\"]` to a lab's config to enable cross-lab signal routing.",
+      "business_value": "low",
+      "category": "system",
+      "novelty": 0.3,
+      "recommended_action": "Edit lab_config.json files to declare subscriptions between labs.",
+      "source_records": [],
+      "raw_data": {},
+      "track": "data",
+      "composite_score": 0.2538,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'No lab subscriptions configured'?",
+        "proposed_action": "Edit lab_config.json files to declare subscriptions between labs.",
+        "assigned_researcher": "signal_router"
+      },
+      "deep_dive_url": "deep-dives/signal_router-20260415-5115.html"
+    }
+  ],
+  "top_5": [
+    {
+      "finding_id": "lab_proposer-20260415-1791",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370448+00:00",
+      "title": "Propose new lab: sponsorship-inventory-intelligence",
+      "confidence": 0.7,
+      "evidence_summary": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.\n\nEvidence: pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "sponsorship-inventory-intelligence",
+        "proposal": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "rationale": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "evidence": "pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ],
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity."
+        },
+        "draft_config": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "display_name": "Sponsorship Inventory Intelligence",
+          "description": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity.",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ]
+        }
+      },
+      "plausibility": 0.65,
+      "plausibility_note": "Lab inventory data exists via APIs (Shopify, WooCommerce), sponsorship data requires scraping/partnerships; moderate complexity, clear market demand.",
+      "track": "strategic",
+      "composite_score": 0.3968,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Evidence is correlational (multiple labs detected gaps) but lacks causal mechanism. Would need: (a) pilot data showing sponsorship insertion actually closes whitespace with positive ROI, (b) competitive analysis\u2014are these gaps genuine market opportunities or rational non-sponsorships?, (c) creator/platform willingness data. Low score (0.397) appropriately reflects this gap.",
+        "blind_spot": "Attribution problem: Are whitespace gaps opportunities or constraints? No evidence that the 92% lack of brand detection reflects unmet demand vs. intentional editorial choice. Missing stakeholder validation (creators, platforms, sponsors). No analysis of cannibalization risk (does new sponsorship displace existing revenue?)."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: sponsorship-inventory-intelligenc'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1791.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-1636",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370477+00:00",
+      "title": "Propose new lab: production-quality-standardization",
+      "confidence": 0.7,
+      "evidence_summary": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.\n\nEvidence: general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "production-quality-standardization",
+        "proposal": {
+          "lab_id": "production-quality-standardization",
+          "rationale": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "evidence": "general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ],
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications."
+        },
+        "draft_config": {
+          "lab_id": "production-quality-standardization",
+          "display_name": "Production Quality Standardization",
+          "description": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications.",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ]
+        }
+      },
+      "plausibility": 0.55,
+      "plausibility_note": "Quality standardization needs domain-specific ML or manual labeling datasets; data acquisition bottleneck and regulatory uncertainty (ISO/compliance) limits 30-day scope.",
+      "track": "strategic",
+      "composite_score": 0.3357,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "F1=0.97 on quality prediction is strong but inverted logic: high predictability of low-quality footage suggests the problem is *detectable*, not necessarily *valuable to solve*. Would need: (a) downstream impact data\u2014does standardization improve engagement, retention, or sponsor satisfaction?, (b) cost-benefit analysis (standardization cost vs. revenue uplift), (c) evidence this is blocking adoption vs. a minor friction point.",
+        "blind_spot": "Assumes solvability = priority. No user impact validation. Missing: What % of creators/viewers actually experience quality as a friction point? Is low quality sometimes authentic/preferred in certain genres? No comparison to other quality-improvement initiatives already underway."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: production-quality-standardizatio'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1636.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-0707",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370464+00:00",
+      "title": "Propose new lab: creator-moat-mechanics",
+      "confidence": 0.7,
+      "evidence_summary": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.\n\nEvidence: wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "creator-moat-mechanics",
+        "proposal": {
+          "lab_id": "creator-moat-mechanics",
+          "rationale": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "evidence": "wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ],
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time."
+        },
+        "draft_config": {
+          "lab_id": "creator-moat-mechanics",
+          "display_name": "Creator Moat Mechanics",
+          "description": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time.",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ]
+        }
+      },
+      "plausibility": 0.45,
+      "plausibility_note": "Creator data fragmented across platforms (YouTube, TikTok, Instagram APIs have rate limits), moat-mechanics require proprietary algorithmic modeling; high ambiguity.",
+      "track": "strategic",
+      "composite_score": 0.2747,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Three signals of moat mechanics is promising triangulation, but level of abstraction is vague. 'Defensible positioning' is the *category*, not evidence of a distinct lab need. Would need: (a) concrete mechanisms (e.g., data showing coaching marketplace repeat rates are 3x higher than alternatives), (b) evidence these three moats are *complementary* (require unified lab) vs. independent, (c) clear scope\u2014what would this lab *build* vs. what would it *study*?",
+        "blind_spot": "Conflates pattern-spotting with actionability. No evidence that these moats are *under-exploited* or that a dedicated lab would materially improve outcomes. Missing: competitive moat analysis\u2014are these defensibilities already priced in by market leaders? Risk of building a research lab around patterns that don't require intervention."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: creator-moat-mechanics'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-0707.html"
+    },
+    {
+      "finding_id": "cross_lab_observer-20260415-1555",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700618+00:00",
+      "title": "Convergent signal across general-purpose+pickle-idea-lab: 'Brand Insertion: The Invisible Sponsor Layer'",
+      "confidence": 0.85,
+      "evidence_summary": "Lab 'general-purpose' (wildcard) found 'Brand Insertion: The Invisible Sponsor Layer'. Lab 'pickle-idea-lab' (wildcard) independently found 'Reverse Sponsorship Auction'. Similarity: 0.423. When multiple labs converge on a theme, it's a much stronger signal.",
+      "business_value": "high",
+      "category": "cross_lab_theme",
+      "novelty": 0.8,
+      "recommended_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+      "source_records": [],
+      "raw_data": {
+        "labs": [
+          "general-purpose",
+          "pickle-idea-lab"
+        ],
+        "finding_a": "Brand Insertion: The Invisible Sponsor Layer",
+        "finding_b": "Reverse Sponsorship Auction",
+        "agents": [
+          "wildcard",
+          "wildcard"
+        ],
+        "similarity": 0.423
+      },
+      "track": "data",
+      "composite_score": 0.7241,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "Convergent signal across independent labs (general-purpose + pickle-idea-lab both surfacing brand insertion) is the strongest evidence in this batch. High score (0.658) justified. Would further strengthen if you showed: (a) signal independently replicated in *third* lab, (b) temporal sequence (which lab found it first? or truly simultaneous?), (c) detail match (are findings identical or just thematically similar?).",
+        "blind_spot": "Convergence \u2260 opportunity validation. Both labs may be biased by the same corpus, training data, or zeitgeist. Missing: (a) adversarial test\u2014did labs actively search for *disconfirming* evidence on brand insertion?, (b) external validation (do creators/sponsors cite this as a real problem?), (c) specificity\u2014'Invisible Sponsor Layer' is evocative but unclear. What is the proposed intervention?"
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Convergent signal across general-purpose+pickle-id'?",
+        "proposed_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-1555.html"
+    },
+    {
+      "finding_id": "cross_lab_observer-20260415-8695",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700683+00:00",
+      "title": "Category 'wildcard_idea' active in 2 labs",
+      "confidence": 0.7,
+      "evidence_summary": "The finding category 'wildcard_idea' is being produced by multiple labs: {'general-purpose': 8, 'pickle-idea-lab': 8}. This suggests a cross-cutting pattern type.",
+      "business_value": "medium",
+      "category": "cross_lab_pattern",
+      "novelty": 0.65,
+      "recommended_action": "Review findings in this category across labs for deeper synthesis.",
+      "source_records": [],
+      "raw_data": {
+        "category": "wildcard_idea",
+        "labs": {
+          "general-purpose": 8,
+          "pickle-idea-lab": 8
+        }
+      },
+      "track": "data",
+      "composite_score": 0.4461,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Category 'wildcard_idea' active in 2 labs'?",
+        "proposed_action": "Review findings in this category across labs for deeper synthesis.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-8695.html"
+    }
+  ],
+  "top_20": [
+    {
+      "finding_id": "cross_lab_observer-20260415-1555",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700618+00:00",
+      "title": "Convergent signal across general-purpose+pickle-idea-lab: 'Brand Insertion: The Invisible Sponsor Layer'",
+      "confidence": 0.85,
+      "evidence_summary": "Lab 'general-purpose' (wildcard) found 'Brand Insertion: The Invisible Sponsor Layer'. Lab 'pickle-idea-lab' (wildcard) independently found 'Reverse Sponsorship Auction'. Similarity: 0.423. When multiple labs converge on a theme, it's a much stronger signal.",
+      "business_value": "high",
+      "category": "cross_lab_theme",
+      "novelty": 0.8,
+      "recommended_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+      "source_records": [],
+      "raw_data": {
+        "labs": [
+          "general-purpose",
+          "pickle-idea-lab"
+        ],
+        "finding_a": "Brand Insertion: The Invisible Sponsor Layer",
+        "finding_b": "Reverse Sponsorship Auction",
+        "agents": [
+          "wildcard",
+          "wildcard"
+        ],
+        "similarity": 0.423
+      },
+      "track": "data",
+      "composite_score": 0.7241,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "Convergent signal across independent labs (general-purpose + pickle-idea-lab both surfacing brand insertion) is the strongest evidence in this batch. High score (0.658) justified. Would further strengthen if you showed: (a) signal independently replicated in *third* lab, (b) temporal sequence (which lab found it first? or truly simultaneous?), (c) detail match (are findings identical or just thematically similar?).",
+        "blind_spot": "Convergence \u2260 opportunity validation. Both labs may be biased by the same corpus, training data, or zeitgeist. Missing: (a) adversarial test\u2014did labs actively search for *disconfirming* evidence on brand insertion?, (b) external validation (do creators/sponsors cite this as a real problem?), (c) specificity\u2014'Invisible Sponsor Layer' is evocative but unclear. What is the proposed intervention?"
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Convergent signal across general-purpose+pickle-id'?",
+        "proposed_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-1555.html"
+    },
+    {
+      "finding_id": "cross_lab_observer-20260415-8695",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700683+00:00",
+      "title": "Category 'wildcard_idea' active in 2 labs",
+      "confidence": 0.7,
+      "evidence_summary": "The finding category 'wildcard_idea' is being produced by multiple labs: {'general-purpose': 8, 'pickle-idea-lab': 8}. This suggests a cross-cutting pattern type.",
+      "business_value": "medium",
+      "category": "cross_lab_pattern",
+      "novelty": 0.65,
+      "recommended_action": "Review findings in this category across labs for deeper synthesis.",
+      "source_records": [],
+      "raw_data": {
+        "category": "wildcard_idea",
+        "labs": {
+          "general-purpose": 8,
+          "pickle-idea-lab": 8
+        }
+      },
+      "track": "data",
+      "composite_score": 0.4461,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Category 'wildcard_idea' active in 2 labs'?",
+        "proposed_action": "Review findings in this category across labs for deeper synthesis.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-8695.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-1791",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370448+00:00",
+      "title": "Propose new lab: sponsorship-inventory-intelligence",
+      "confidence": 0.7,
+      "evidence_summary": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.\n\nEvidence: pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "sponsorship-inventory-intelligence",
+        "proposal": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "rationale": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "evidence": "pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ],
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity."
+        },
+        "draft_config": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "display_name": "Sponsorship Inventory Intelligence",
+          "description": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity.",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ]
+        }
+      },
+      "plausibility": 0.65,
+      "plausibility_note": "Lab inventory data exists via APIs (Shopify, WooCommerce), sponsorship data requires scraping/partnerships; moderate complexity, clear market demand.",
+      "track": "strategic",
+      "composite_score": 0.3968,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Evidence is correlational (multiple labs detected gaps) but lacks causal mechanism. Would need: (a) pilot data showing sponsorship insertion actually closes whitespace with positive ROI, (b) competitive analysis\u2014are these gaps genuine market opportunities or rational non-sponsorships?, (c) creator/platform willingness data. Low score (0.397) appropriately reflects this gap.",
+        "blind_spot": "Attribution problem: Are whitespace gaps opportunities or constraints? No evidence that the 92% lack of brand detection reflects unmet demand vs. intentional editorial choice. Missing stakeholder validation (creators, platforms, sponsors). No analysis of cannibalization risk (does new sponsorship displace existing revenue?)."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: sponsorship-inventory-intelligenc'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1791.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-1636",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370477+00:00",
+      "title": "Propose new lab: production-quality-standardization",
+      "confidence": 0.7,
+      "evidence_summary": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.\n\nEvidence: general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "production-quality-standardization",
+        "proposal": {
+          "lab_id": "production-quality-standardization",
+          "rationale": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "evidence": "general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ],
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications."
+        },
+        "draft_config": {
+          "lab_id": "production-quality-standardization",
+          "display_name": "Production Quality Standardization",
+          "description": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications.",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ]
+        }
+      },
+      "plausibility": 0.55,
+      "plausibility_note": "Quality standardization needs domain-specific ML or manual labeling datasets; data acquisition bottleneck and regulatory uncertainty (ISO/compliance) limits 30-day scope.",
+      "track": "strategic",
+      "composite_score": 0.3357,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "F1=0.97 on quality prediction is strong but inverted logic: high predictability of low-quality footage suggests the problem is *detectable*, not necessarily *valuable to solve*. Would need: (a) downstream impact data\u2014does standardization improve engagement, retention, or sponsor satisfaction?, (b) cost-benefit analysis (standardization cost vs. revenue uplift), (c) evidence this is blocking adoption vs. a minor friction point.",
+        "blind_spot": "Assumes solvability = priority. No user impact validation. Missing: What % of creators/viewers actually experience quality as a friction point? Is low quality sometimes authentic/preferred in certain genres? No comparison to other quality-improvement initiatives already underway."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: production-quality-standardizatio'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1636.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-0707",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370464+00:00",
+      "title": "Propose new lab: creator-moat-mechanics",
+      "confidence": 0.7,
+      "evidence_summary": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.\n\nEvidence: wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "creator-moat-mechanics",
+        "proposal": {
+          "lab_id": "creator-moat-mechanics",
+          "rationale": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "evidence": "wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ],
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time."
+        },
+        "draft_config": {
+          "lab_id": "creator-moat-mechanics",
+          "display_name": "Creator Moat Mechanics",
+          "description": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time.",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ]
+        }
+      },
+      "plausibility": 0.45,
+      "plausibility_note": "Creator data fragmented across platforms (YouTube, TikTok, Instagram APIs have rate limits), moat-mechanics require proprietary algorithmic modeling; high ambiguity.",
+      "track": "strategic",
+      "composite_score": 0.2747,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Three signals of moat mechanics is promising triangulation, but level of abstraction is vague. 'Defensible positioning' is the *category*, not evidence of a distinct lab need. Would need: (a) concrete mechanisms (e.g., data showing coaching marketplace repeat rates are 3x higher than alternatives), (b) evidence these three moats are *complementary* (require unified lab) vs. independent, (c) clear scope\u2014what would this lab *build* vs. what would it *study*?",
+        "blind_spot": "Conflates pattern-spotting with actionability. No evidence that these moats are *under-exploited* or that a dedicated lab would materially improve outcomes. Missing: competitive moat analysis\u2014are these defensibilities already priced in by market leaders? Risk of building a research lab around patterns that don't require intervention."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: creator-moat-mechanics'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-0707.html"
+    },
+    {
+      "finding_id": "signal_router-20260415-5115",
+      "agent": "signal_router",
+      "generated_at": "2026-04-15T06:58:26.375052+00:00",
+      "title": "No lab subscriptions configured",
+      "confidence": 0.9,
+      "evidence_summary": "No labs have declared subscriptions yet. Add `subscriptions: [\"lab-id:researcher\"]` to a lab's config to enable cross-lab signal routing.",
+      "business_value": "low",
+      "category": "system",
+      "novelty": 0.3,
+      "recommended_action": "Edit lab_config.json files to declare subscriptions between labs.",
+      "source_records": [],
+      "raw_data": {},
+      "track": "data",
+      "composite_score": 0.2538,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'No lab subscriptions configured'?",
+        "proposed_action": "Edit lab_config.json files to declare subscriptions between labs.",
+        "assigned_researcher": "signal_router"
+      },
+      "deep_dive_url": "deep-dives/signal_router-20260415-5115.html"
+    },
+    {
+      "finding_id": "persona_proposer-20260415-4917",
+      "agent": "persona_proposer",
+      "generated_at": "2026-04-15T06:58:26.372865+00:00",
+      "title": "Lab 'general-purpose' is 40% 'wildcard_idea' \u2014 blind to execution risk assessment",
+      "confidence": 0.65,
+      "evidence_summary": "'general-purpose' findings are 40% in category 'wildcard_idea' (8/20). This lab may be missing perspectives on: execution risk assessment, market sizing. A new researcher persona could fill this gap.",
+      "business_value": "medium",
+      "category": "persona_proposal",
+      "novelty": 0.75,
+      "recommended_action": "Add a researcher that focuses on execution risk assessment to 'general-purpose'",
+      "source_records": [],
+      "raw_data": {
+        "lab": "general-purpose",
+        "dominant_category": "wildcard_idea",
+        "concentration": 0.4,
+        "suggested_categories": [
+          "execution risk assessment",
+          "market sizing"
+        ]
+      },
+      "plausibility": 0.25,
+      "plausibility_note": "Wildcard-heavy 40% weighting means execution risk is structurally unvalidated; prototype would likely be proof-of-concept only, not market-ready.",
+      "track": "strategic",
+      "composite_score": 0.1019,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "This is a well-formed audit finding (meta-level). 40% wildcard classification in 'general-purpose' is a concrete bias signal. No counter-evidence needed\u2014the blind spot claim is justified. Would only strengthen if you showed: (a) downstream impact (do wildcard-heavy labs have lower implementation rates?), (b) severity (is execution risk assessment actually critical for these ideas?).",
+        "blind_spot": "The finding itself may be too narrow: Is the problem wildcard *prevalence* or wildcard *quality*? Some wildcard ideas are genuinely high-impact. Missing analysis: Do other labs have similar wildcard %, but different *composition* (e.g., strategic-wildcard vs. noise-wildcard)? Execution risk may be a feature, not a bug, if the lab's job is exploration."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Lab 'general-purpose' is 40% 'wildcard_idea' \u2014 bli'?",
+        "proposed_action": "Add a researcher that focuses on execution risk assessment to 'general-purpose'",
+        "assigned_researcher": "persona_proposer"
+      },
+      "deep_dive_url": "deep-dives/persona_proposer-20260415-4917.html"
+    }
+  ],
+  "all_findings": [
+    {
+      "finding_id": "cross_lab_observer-20260415-1555",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700618+00:00",
+      "title": "Convergent signal across general-purpose+pickle-idea-lab: 'Brand Insertion: The Invisible Sponsor Layer'",
+      "confidence": 0.85,
+      "evidence_summary": "Lab 'general-purpose' (wildcard) found 'Brand Insertion: The Invisible Sponsor Layer'. Lab 'pickle-idea-lab' (wildcard) independently found 'Reverse Sponsorship Auction'. Similarity: 0.423. When multiple labs converge on a theme, it's a much stronger signal.",
+      "business_value": "high",
+      "category": "cross_lab_theme",
+      "novelty": 0.8,
+      "recommended_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+      "source_records": [],
+      "raw_data": {
+        "labs": [
+          "general-purpose",
+          "pickle-idea-lab"
+        ],
+        "finding_a": "Brand Insertion: The Invisible Sponsor Layer",
+        "finding_b": "Reverse Sponsorship Auction",
+        "agents": [
+          "wildcard",
+          "wildcard"
+        ],
+        "similarity": 0.423
+      },
+      "track": "data",
+      "composite_score": 0.7241,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "Convergent signal across independent labs (general-purpose + pickle-idea-lab both surfacing brand insertion) is the strongest evidence in this batch. High score (0.658) justified. Would further strengthen if you showed: (a) signal independently replicated in *third* lab, (b) temporal sequence (which lab found it first? or truly simultaneous?), (c) detail match (are findings identical or just thematically similar?).",
+        "blind_spot": "Convergence \u2260 opportunity validation. Both labs may be biased by the same corpus, training data, or zeitgeist. Missing: (a) adversarial test\u2014did labs actively search for *disconfirming* evidence on brand insertion?, (b) external validation (do creators/sponsors cite this as a real problem?), (c) specificity\u2014'Invisible Sponsor Layer' is evocative but unclear. What is the proposed intervention?"
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Convergent signal across general-purpose+pickle-id'?",
+        "proposed_action": "This theme deserves dedicated investigation. Consider a focused lab or a cross-lab follow-up.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-1555.html"
+    },
+    {
+      "finding_id": "cross_lab_observer-20260415-8695",
+      "agent": "cross_lab_observer",
+      "generated_at": "2026-04-15T06:58:14.700683+00:00",
+      "title": "Category 'wildcard_idea' active in 2 labs",
+      "confidence": 0.7,
+      "evidence_summary": "The finding category 'wildcard_idea' is being produced by multiple labs: {'general-purpose': 8, 'pickle-idea-lab': 8}. This suggests a cross-cutting pattern type.",
+      "business_value": "medium",
+      "category": "cross_lab_pattern",
+      "novelty": 0.65,
+      "recommended_action": "Review findings in this category across labs for deeper synthesis.",
+      "source_records": [],
+      "raw_data": {
+        "category": "wildcard_idea",
+        "labs": {
+          "general-purpose": 8,
+          "pickle-idea-lab": 8
+        }
+      },
+      "track": "data",
+      "composite_score": 0.4461,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Category 'wildcard_idea' active in 2 labs'?",
+        "proposed_action": "Review findings in this category across labs for deeper synthesis.",
+        "assigned_researcher": "cross_lab_observer"
+      },
+      "deep_dive_url": "deep-dives/cross_lab_observer-20260415-8695.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-1791",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370448+00:00",
+      "title": "Propose new lab: sponsorship-inventory-intelligence",
+      "confidence": 0.7,
+      "evidence_summary": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.\n\nEvidence: pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "sponsorship-inventory-intelligence",
+        "proposal": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "rationale": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "evidence": "pickle-idea-lab/opportunity_scout (sponsorship whitespace 1461 clips, 5 equipment categories ZERO detection, 162 endorsement pairs), wildcard (Brand Insertion: Invisible Sponsor Layer), general-purpose/wildcard (Open-Source Coaching Marketplace suggests creator monetization)",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ],
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity."
+        },
+        "draft_config": {
+          "lab_id": "sponsorship-inventory-intelligence",
+          "display_name": "Sponsorship Inventory Intelligence",
+          "description": "Multiple labs detected the same whitespace opportunity (92% of clips lack brand detection, 5 equipment categories unsponsored, 162 player-brand pairs ready for activation). This deserves dedicated research into sponsor-asset matching, saturation mapping, and activation timing rather than scattered opportunity detection.",
+          "business_context": "Build a proprietary sponsorship inventory system that maps player-moment-brand fit in real-time, enabling brands to bid on activation whitespace before competitors identify the same gaps. The 92% unbranded clip corpus is a $multi-million arbitrage opportunity.",
+          "suggested_researchers": [
+            "sponsorship_strategist",
+            "sports_economist",
+            "brand_operations_analyst"
+          ]
+        }
+      },
+      "plausibility": 0.65,
+      "plausibility_note": "Lab inventory data exists via APIs (Shopify, WooCommerce), sponsorship data requires scraping/partnerships; moderate complexity, clear market demand.",
+      "track": "strategic",
+      "composite_score": 0.3968,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Evidence is correlational (multiple labs detected gaps) but lacks causal mechanism. Would need: (a) pilot data showing sponsorship insertion actually closes whitespace with positive ROI, (b) competitive analysis\u2014are these gaps genuine market opportunities or rational non-sponsorships?, (c) creator/platform willingness data. Low score (0.397) appropriately reflects this gap.",
+        "blind_spot": "Attribution problem: Are whitespace gaps opportunities or constraints? No evidence that the 92% lack of brand detection reflects unmet demand vs. intentional editorial choice. Missing stakeholder validation (creators, platforms, sponsors). No analysis of cannibalization risk (does new sponsorship displace existing revenue?)."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: sponsorship-inventory-intelligenc'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py sponsorship-inventory-intelligence \u2014 then customize config. Suggested researchers: sponsorship_strategist, sports_economist, brand_operations_analyst",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1791.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-1636",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370477+00:00",
+      "title": "Propose new lab: production-quality-standardization",
+      "confidence": 0.7,
+      "evidence_summary": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.\n\nEvidence: general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "production-quality-standardization",
+        "proposal": {
+          "lab_id": "production-quality-standardization",
+          "rationale": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "evidence": "general-purpose/entity_profiler (Low Quality Footage archetype: 482 records, 24% of corpus), pickle-idea-lab/production_auditor (DaaS badge prediction F1=0.97, precision=0.98, recall=0.96), pickle-idea-lab/prompt_engineer (5 badges consistently missed\u2014systematic labeling gaps)",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ],
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications."
+        },
+        "draft_config": {
+          "lab_id": "production-quality-standardization",
+          "display_name": "Production Quality Standardization",
+          "description": "Low-quality footage is 24% of corpus (482 records), yet DaaS badge prediction achieves F1=0.97, suggesting quality standardization is solvable and high-ROI. Dedicated research into production benchmarks, quality gatekeeping, and automated remediation could unlock the entire low-quality segment.",
+          "business_context": "One-quarter of the pickleball clip corpus is low-quality\u2014either unsaleable to sponsors or misclassified by ML. High-precision quality detection + automated upscaling or filtering could instantly improve monetization potential and model reliability across all downstream applications.",
+          "suggested_researchers": [
+            "production_standards_engineer",
+            "quality_assurance_lead",
+            "video_remediation_specialist"
+          ]
+        }
+      },
+      "plausibility": 0.55,
+      "plausibility_note": "Quality standardization needs domain-specific ML or manual labeling datasets; data acquisition bottleneck and regulatory uncertainty (ISO/compliance) limits 30-day scope.",
+      "track": "strategic",
+      "composite_score": 0.3357,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "F1=0.97 on quality prediction is strong but inverted logic: high predictability of low-quality footage suggests the problem is *detectable*, not necessarily *valuable to solve*. Would need: (a) downstream impact data\u2014does standardization improve engagement, retention, or sponsor satisfaction?, (b) cost-benefit analysis (standardization cost vs. revenue uplift), (c) evidence this is blocking adoption vs. a minor friction point.",
+        "blind_spot": "Assumes solvability = priority. No user impact validation. Missing: What % of creators/viewers actually experience quality as a friction point? Is low quality sometimes authentic/preferred in certain genres? No comparison to other quality-improvement initiatives already underway."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: production-quality-standardizatio'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py production-quality-standardization \u2014 then customize config. Suggested researchers: production_standards_engineer, quality_assurance_lead, video_remediation_specialist",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-1636.html"
+    },
+    {
+      "finding_id": "lab_proposer-20260415-0707",
+      "agent": "lab_proposer",
+      "generated_at": "2026-04-15T06:58:26.370464+00:00",
+      "title": "Propose new lab: creator-moat-mechanics",
+      "confidence": 0.7,
+      "evidence_summary": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.\n\nEvidence: wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+      "business_value": "high",
+      "category": "lab_proposal",
+      "novelty": 0.9,
+      "recommended_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+      "source_records": [],
+      "raw_data": {
+        "lab_id": "creator-moat-mechanics",
+        "proposal": {
+          "lab_id": "creator-moat-mechanics",
+          "rationale": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "evidence": "wildcard (Open-Source Coaching Marketplace\u2014Thesis: Coaches Build Their Own Moat), wildcard (The Corpus as Closed-Loop Talent Pipeline), pickle-idea-lab/opportunity_scout (Longitudinal tracking: 54 players with 5+ clips), wildcard (Pickleball Trading Cards 2.0: On-Chain Clip Ownership)",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ],
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time."
+        },
+        "draft_config": {
+          "lab_id": "creator-moat-mechanics",
+          "display_name": "Creator Moat Mechanics",
+          "description": "Three separate findings point to how creators build defensible positioning: coaching marketplace (coaches build moats), player pipeline corpus lock-in, and longitudinal clip ownership (54 players with 5+ tracked clips). These deserve unified analysis of creator retention, differentiation, and network effects rather than isolated product ideas.",
+          "business_context": "Creators and coaches who accumulate verifiable history (clips, performance data, trading card equity) build sustainable moats. Research how to architect platforms that make creator switching costs prohibitive\u2014corpus lock-in, on-chain ownership, and performance portfolios compound over time.",
+          "suggested_researchers": [
+            "creator_economist",
+            "network_effects_analyst",
+            "on_chain_operations_designer"
+          ]
+        }
+      },
+      "plausibility": 0.45,
+      "plausibility_note": "Creator data fragmented across platforms (YouTube, TikTok, Instagram APIs have rate limits), moat-mechanics require proprietary algorithmic modeling; high ambiguity.",
+      "track": "strategic",
+      "composite_score": 0.2747,
+      "multi_model_check": {
+        "validation": "partial",
+        "change_mind": "Three signals of moat mechanics is promising triangulation, but level of abstraction is vague. 'Defensible positioning' is the *category*, not evidence of a distinct lab need. Would need: (a) concrete mechanisms (e.g., data showing coaching marketplace repeat rates are 3x higher than alternatives), (b) evidence these three moats are *complementary* (require unified lab) vs. independent, (c) clear scope\u2014what would this lab *build* vs. what would it *study*?",
+        "blind_spot": "Conflates pattern-spotting with actionability. No evidence that these moats are *under-exploited* or that a dedicated lab would materially improve outcomes. Missing: competitive moat analysis\u2014are these defensibilities already priced in by market leaders? Risk of building a research lab around patterns that don't require intervention."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Propose new lab: creator-moat-mechanics'?",
+        "proposed_action": "Run: python3 tools/create-new-lab.py creator-moat-mechanics \u2014 then customize config. Suggested researchers: creator_economist, network_effects_analyst, on_chain_operations_designer",
+        "assigned_researcher": "lab_proposer"
+      },
+      "deep_dive_url": "deep-dives/lab_proposer-20260415-0707.html"
+    },
+    {
+      "finding_id": "signal_router-20260415-5115",
+      "agent": "signal_router",
+      "generated_at": "2026-04-15T06:58:26.375052+00:00",
+      "title": "No lab subscriptions configured",
+      "confidence": 0.9,
+      "evidence_summary": "No labs have declared subscriptions yet. Add `subscriptions: [\"lab-id:researcher\"]` to a lab's config to enable cross-lab signal routing.",
+      "business_value": "low",
+      "category": "system",
+      "novelty": 0.3,
+      "recommended_action": "Edit lab_config.json files to declare subscriptions between labs.",
+      "source_records": [],
+      "raw_data": {},
+      "track": "data",
+      "composite_score": 0.2538,
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'No lab subscriptions configured'?",
+        "proposed_action": "Edit lab_config.json files to declare subscriptions between labs.",
+        "assigned_researcher": "signal_router"
+      },
+      "deep_dive_url": "deep-dives/signal_router-20260415-5115.html"
+    },
+    {
+      "finding_id": "persona_proposer-20260415-4917",
+      "agent": "persona_proposer",
+      "generated_at": "2026-04-15T06:58:26.372865+00:00",
+      "title": "Lab 'general-purpose' is 40% 'wildcard_idea' \u2014 blind to execution risk assessment",
+      "confidence": 0.65,
+      "evidence_summary": "'general-purpose' findings are 40% in category 'wildcard_idea' (8/20). This lab may be missing perspectives on: execution risk assessment, market sizing. A new researcher persona could fill this gap.",
+      "business_value": "medium",
+      "category": "persona_proposal",
+      "novelty": 0.75,
+      "recommended_action": "Add a researcher that focuses on execution risk assessment to 'general-purpose'",
+      "source_records": [],
+      "raw_data": {
+        "lab": "general-purpose",
+        "dominant_category": "wildcard_idea",
+        "concentration": 0.4,
+        "suggested_categories": [
+          "execution risk assessment",
+          "market sizing"
+        ]
+      },
+      "plausibility": 0.25,
+      "plausibility_note": "Wildcard-heavy 40% weighting means execution risk is structurally unvalidated; prototype would likely be proof-of-concept only, not market-ready.",
+      "track": "strategic",
+      "composite_score": 0.1019,
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "This is a well-formed audit finding (meta-level). 40% wildcard classification in 'general-purpose' is a concrete bias signal. No counter-evidence needed\u2014the blind spot claim is justified. Would only strengthen if you showed: (a) downstream impact (do wildcard-heavy labs have lower implementation rates?), (b) severity (is execution risk assessment actually critical for these ideas?).",
+        "blind_spot": "The finding itself may be too narrow: Is the problem wildcard *prevalence* or wildcard *quality*? Some wildcard ideas are genuinely high-impact. Missing analysis: Do other labs have similar wildcard %, but different *composition* (e.g., strategic-wildcard vs. noise-wildcard)? Execution risk may be a feature, not a bug, if the lab's job is exploration."
+      },
+      "follow_up": {
+        "follow_up_question": "Next step to validate 'Lab 'general-purpose' is 40% 'wildcard_idea' \u2014 bli'?",
+        "proposed_action": "Add a researcher that focuses on execution risk assessment to 'general-purpose'",
+        "assigned_researcher": "persona_proposer"
+      },
+      "deep_dive_url": "deep-dives/persona_proposer-20260415-4917.html"
+    }
+  ],
+  "counterarguments": [],
+  "connections": [],
+  "trend_summary": {
+    "total_runs": 4,
+    "recurring_titles": {
+      "Category 'wildcard_idea' active in 2 labs": 4,
+      "Lab 'general-purpose' is 53% 'wildcard_idea' \u2014 blind to execution risk assessmen": 2,
+      "No lab subscriptions configured": 2,
+      "Propose new lab: sponsorship-inventory-intelligence": 2
+    },
+    "momentum": {
+      "lab_proposal": 1.0,
+      "cross_lab_pattern": 0.0,
+      "system": -0.5,
+      "cross_lab_theme": 1.0,
+      "persona_proposal": 0.0
+    }
+  }
+}

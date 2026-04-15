@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive: Pickleball Moneyball: Player Draft Exchange · General-Purpose Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(12% .012 240); --sf: oklch(15% .01 240); --sf2: oklch(18% .009 240);
+  --bd: oklch(26% .012 240); --bds: oklch(20% .008 240);
+  --tx: oklch(92% .01 240); --tx2: oklch(72% .015 240); --mt: oklch(50% .02 240);
+  --ac: #a855f7; --acd: #a855f71a; --acg: #a855f733;
+  --r: 10px; --rl: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;font-size:15px}
+.shell{max-width:900px;margin:0 auto;padding:32px 24px 80px}
+a{color:var(--ac);text-decoration:none}a:hover{text-decoration:underline}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--mt);font-size:13px;font-family:'Red Hat Mono',monospace;margin-bottom:24px}
+.back:hover{color:var(--ac)}
+.hero{margin-bottom:40px}
+.trk{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;background:var(--acd);color:var(--ac);border:1px solid var(--acg);font-family:'Red Hat Mono',monospace;margin-bottom:12px}
+.hero h1{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.2;margin-bottom:16px}
+.meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--tx2)}
+.meta .val{font-weight:600;color:var(--tx)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:32px}
+.stat{background:var(--sf);padding:16px 20px;text-align:center}
+.num{font-size:24px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--ac)}
+.lbl{font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'Red Hat Mono',monospace}
+
+.section{margin-bottom:32px}
+.section h2{font-size:16px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.section p{color:var(--tx2);line-height:1.7}
+.evidence{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:20px;color:var(--tx);line-height:1.7}
+.warn-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:var(--r);padding:16px}
+.warn-box p{color:oklch(72% .015 240)}
+.info-box{background:var(--acd);border:1px solid var(--acg);border-radius:var(--r);padding:16px}
+.info-box p{color:var(--tx2);margin-top:6px;font-size:14px}
+.info-box .fq{font-weight:600;color:var(--ac);font-size:14px}
+
+.raw-grid{display:grid;gap:4px}
+.raw-item{display:flex;justify-content:space-between;padding:6px 10px;background:var(--sf);border-radius:4px;font-size:12px;font-family:'Red Hat Mono',monospace}
+.raw-k{color:var(--mt)}.raw-v{color:var(--tx2);max-width:60%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <a class="back" href="../dashboards/explorer.html">← Back to General-Purpose Lab</a>
+
+  <div class="hero">
+    <div class="trk">Strategic Idea</div>
+    <h1>Pickleball Moneyball: Player Draft Exchange</h1>
+    <div class="meta">
+      <span>Researcher: <span class="val">wildcard</span></span>
+      <span>Category: <span class="val">wildcard_idea</span></span>
+      <span>Generated: <span class="val">2026-04-15</span></span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num">92%</div><div class="lbl">Confidence</div></div>
+    <div class="stat"><div class="num">HIGH</div><div class="lbl">Business Value</div></div>
+    <div class="stat"><div class="num">0.562</div><div class="lbl">Score</div></div>
+    <div class="stat"><div class="num">90%</div><div class="lbl">Novelty</div></div>
+  </div>
+
+  <div class="section"><h2>Evidence</h2><div class="evidence">Turn the corpus into a real-time player valuation engine. Amateur league organizers pay to auto-draft balanced teams using AI skill scores. Each drafted player generates new video uploads (trying to improve their rating), creating a flywheel: more videos → better models → more accurate valuations → more leagues → more videos.</div></div>
+
+  <div class="section"><h2 style="color:#ef4444">Devil's Advocate</h2>
+        <div class="warn-box"><div class="lbl">high risk</div>
+        <p>Market execution risk: league organizers adopt the system, teams drafted as &#x27;balanced&#x27; via AI are actually mismatched. Word spreads that auto-drafts produce worse play experience. Churn and refund liability. The corpus is a convenience sample, not a population census.</p></div></div>
+  <div class="section"><h2>Independent Validation</h2>
+        <div class="info-box"><div class="lbl">partial</div>
+        <p><strong>Would change mind:</strong> Stronger evidence than #1 but still thin. Would shift confidence with: (a) pilot with 2-3 amateur leagues showing 30%+ adoption for draft tool, (b) willingness-to-pay study showing organizers pay $100-500/season, (c) comparison to existing fantasy sports pricing models. Assumes amateur league organizers have budget and care about balance; needs validation.</p>
+        <p><strong>Blind spot:</strong> Ignores that pickleball leagues may already solve balance manually or via cheap/free alternatives (handicap systems, snake drafts). Also: skill scoring accuracy is critical but untested—wrong valuations destroy trust. Assumes skill metadata is granular enough to predict team chemistry, which video clip data alone may not capture.</p></div></div>
+
+  <div class="section"><h2>Recommended Action</h2><p>Evaluate as Sports Infrastructure play</p></div>
+
+  <div class="section"><h2>Next Steps</h2>
+    <ol style="padding-left:40px;color:var(--tx2)">
+      <li>Evaluate as Sports Infrastructure play</li>
+      <li>Validate with a focused sample. Test whether the signal holds at scale.</li>
+      <li>If validated, build a proof-of-concept and share with the first potential user.</li>
+    </ol>
+  </div>
+
+  <div class="section"><h2>Follow-Up Investigation</h2>
+        <div class="info-box"><div class="fq">Next step to validate &#x27;Pickleball Moneyball: Player Draft Exchange&#x27;?</div>
+        <p>Assigned to: wildcard</p></div></div>
+  <div class="section"><h2>Raw Data</h2><div class="raw-grid"><div class="raw-item"><span class="raw-k">flywheel_score</span><span class="raw-v">0.92</span></div><div class="raw-item"><span class="raw-k">category</span><span class="raw-v">Sports Infrastructure</span></div></div></div>
+</div>
+</body>
+</html>
