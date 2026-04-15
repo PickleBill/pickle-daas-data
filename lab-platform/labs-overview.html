@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Platform · Multi-Lab Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: oklch(12% .012 240); --sf: oklch(15% .01 240); --sf2: oklch(18% .009 240);
+  --bd: oklch(26% .012 240); --bds: oklch(20% .008 240);
+  --tx: oklch(92% .01 240); --tx2: oklch(72% .015 240); --mt: oklch(50% .02 240);
+  --ac: oklch(78% .19 155); --acd: oklch(78% .19 155/.1);
+  --pu: oklch(62% .22 300); --cy: oklch(72% .18 195);
+  --r: 10px; --rl: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Manrope', system-ui, sans-serif; background: var(--bg); color: var(--tx); line-height: 1.55; }
+a { color: var(--ac); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.shell { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+.hero { margin-bottom: 40px; }
+.hero h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 12px; }
+.hero h1 .ac { color: var(--ac); }
+.hero .tag { color: var(--mt); font-family: 'Red Hat Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+.hero p { color: var(--tx2); font-size: 16px; margin-top: 16px; max-width: 640px; }
+
+.pulse { background: var(--sf); border: 1px solid var(--bd); border-radius: var(--rl); padding: 20px; margin-bottom: 32px; }
+.pulse-h { font-size: 11px; color: var(--mt); font-family: 'Red Hat Mono', monospace; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+.pulse-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+.stat { text-align: center; }
+.stat .n { font-size: 28px; font-weight: 800; font-family: 'Red Hat Mono', monospace; color: var(--ac); }
+.stat .l { font-size: 11px; color: var(--mt); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; font-family: 'Red Hat Mono', monospace; }
+
+.section-h { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--mt); margin: 32px 0 16px; font-family: 'Red Hat Mono', monospace; }
+
+.labs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+.lab-card { background: var(--sf); border: 1px solid var(--bd); border-radius: var(--rl); padding: 20px; transition: .25s cubic-bezier(.22,1,.36,1); cursor: pointer; display: block; color: var(--tx); text-decoration: none; }
+.lab-card:hover { border-color: var(--ac); transform: translateY(-3px); text-decoration: none; }
+.lab-card-top { display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; }
+.lab-card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.lab-card .id { font-size: 10px; color: var(--mt); font-family: 'Red Hat Mono', monospace; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.lab-card p { color: var(--tx2); font-size: 13px; line-height: 1.55; margin-bottom: 14px; }
+.lab-card-stats { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; font-family: 'Red Hat Mono', monospace; color: var(--mt); padding-top: 12px; border-top: 1px solid var(--bds); }
+.lab-card-stats .v { color: var(--tx); font-weight: 500; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-family: 'Red Hat Mono', monospace; text-transform: uppercase; letter-spacing: 1px; color: var(--ac); }
+.status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ac); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+.footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--bd); color: var(--mt); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="hero">
+    <div class="tag">LAB PLATFORM · v1</div>
+    <h1><span class="ac">Multi-Lab</span> Overview</h1>
+    <p>Independent AI research teams analyzing different corpora. Each Lab runs 9 specialized researchers, a self-evolving synthesizer, devil's advocate, and wildcard brainstorming — all on autopilot.</p>
+  </div>
+
+  <div class="pulse">
+    <div class="pulse-h">Ecosystem Pulse</div>
+    <div class="pulse-grid" id="pulse-grid">
+      <div class="stat"><div class="n" id="n-labs">—</div><div class="l">Active Labs</div></div>
+      <div class="stat"><div class="n" id="n-researchers">—</div><div class="l">Total Researchers</div></div>
+      <div class="stat"><div class="n" id="n-findings">—</div><div class="l">Findings This Week</div></div>
+      <div class="stat"><div class="n" id="n-decisions">—</div><div class="l">Decisions Captured</div></div>
+    </div>
+  </div>
+
+  <div class="section-h">Labs</div>
+  <div class="labs-grid" id="labs-grid">
+    <div style="color:var(--mt);padding:20px">Loading labs...</div>
+  </div>
+
+  <div class="footer">
+    <p>Lab Platform — framework for spinning up AI research teams on any corpus. See <code>LAB-PLATFORM/CLAUDE.md</code> for architecture.</p>
+  </div>
+</div>
+
+<script>
+// Labs are discovered by listing known paths — relative to the deploy location
+const LABS = ["general-purpose", "meta-lab"];
+
+async function loadLab(id) {
+  try {
+    const resp = await fetch(`${id}/latest.json`);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) { return null; }
+}
+
+async function render() {
+  const labs = [];
+  for (const id of LABS) {
+    const data = await loadLab(id);
+    if (data) labs.push({id, data});
+  }
+
+  // Pulse
+  const totalResearchers = labs.reduce((s, l) => s + (l.data.corpus_stats?.researchers_run || 0), 0);
+  const totalFindings = labs.reduce((s, l) => s + (l.data.corpus_stats?.unique_findings || 0), 0);
+  const totalDecisions = labs.reduce((s, l) => s + (l.data.feedback_loop?.decisions_loaded || 0), 0);
+
+  document.getElementById('n-labs').textContent = labs.length;
+  document.getElementById('n-researchers').textContent = totalResearchers;
+  document.getElementById('n-findings').textContent = totalFindings;
+  document.getElementById('n-decisions').textContent = totalDecisions;
+
+  // Lab cards
+  const grid = document.getElementById('labs-grid');
+  if (labs.length === 0) {
+    grid.innerHTML = '<div style="color:var(--mt);padding:20px">No labs deployed yet. Run a lab and push to gh-pages.</div>';
+    return;
+  }
+
+  grid.innerHTML = labs.map(({id, data}) => {
+    const cs = data.corpus_stats || {};
+    const auto = data.autonomous_evolution || {};
+    const lastRun = data.generated_at ? new Date(data.generated_at).toLocaleString() : 'unknown';
+    return `<a class="lab-card" href="${id}/dashboards/explorer.html">
+      <div class="lab-card-top">
+        <div>
+          <h3>${data.lab_name || id}</h3>
+          <div class="id">${id}</div>
+        </div>
+        <div class="status">Live</div>
+      </div>
+      <p>Last run: ${lastRun}</p>
+      <div class="lab-card-stats">
+        <span>Researchers <span class="v">${cs.researchers_run || 0}</span></span>
+        <span>Findings <span class="v">${cs.unique_findings || 0}</span></span>
+        <span>Strategic <span class="v">${cs.strategic_count || 0}</span></span>
+        <span>Data <span class="v">${cs.data_count || 0}</span></span>
+        <span>Trend runs <span class="v">${auto.trend_runs || 0}</span></span>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+render();
+</script>
+</body>
+</html>
