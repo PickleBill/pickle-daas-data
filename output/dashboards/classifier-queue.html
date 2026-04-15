@@ -359,16 +359,22 @@ python3 tools/push-to-ghpages.py</pre>
       const stateClass = dec === 'approve' ? 'approved' : dec === 'reject' ? 'rejected' : dec === 'investigate' ? 'investigate' : '';
       const ev = p.evidence || {};
       const cats = Object.entries(ev.categories || {}).map(([k,v]) => `${k}:${v}`).join(' · ') || '—';
+      const subtype = p.sponsor_subtype && p.sponsor_subtype !== 'null' ? p.sponsor_subtype : '';
+      const website = p.website && p.website !== 'null' ? p.website : '';
+      const brandDesc = p.brand_description && p.brand_description !== 'null' ? p.brand_description : '';
       return `
         <div class="rule-card ${stateClass}" data-key="${k}">
           <div class="rule-head">
             <div>
               <span class="brand-name">${escapeHtml(p.brand || '?')}</span>
               <span class="category-chip">${escapeHtml(cls.category_primary || cls.as || '?')}</span>
+              ${subtype ? `<span class="category-chip" style="color:var(--warn)">${escapeHtml(subtype)}</span>` : ''}
+              ${website ? `<a href="${escapeAttr(website)}" target="_blank" rel="noopener" class="category-chip" style="color:var(--primary);text-decoration:none">🌐 website</a>` : ''}
               ${p.one_click_approve ? '<span class="category-chip" style="color:var(--accent)">⭐ high-confidence</span>' : ''}
               ${p.needs_investigation ? '<span class="category-chip" style="color:var(--warn)">⚠ needs investigation</span>' : ''}
             </div>
           </div>
+          ${brandDesc ? `<div style="color:var(--mute);font-size:12px;margin-top:4px;font-style:italic">${escapeHtml(brandDesc)}</div>` : ''}
           <div class="confidence-bar"><div class="confidence-fill ${confClass}" style="width:${Math.round(conf*100)}%"></div></div>
           <div class="meta-row">
             <span><b>${ev.total_detections || 0}</b> detections</span>
@@ -459,6 +465,9 @@ python3 tools/push-to-ghpages.py</pre>
           override_value: o.value || '',
           classifications: p.classifications || [],
           revenue_potential: p.revenue_potential || 'low',
+          sponsor_subtype: p.sponsor_subtype || '',
+          website: p.website || '',
+          brand_description: p.brand_description || '',
           rationale: p.rationale || '',
           decided_at: new Date().toISOString()
         });
