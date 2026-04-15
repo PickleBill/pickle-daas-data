@@ -3,620 +3,506 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Equipment Performance Matrix · Pickle DaaS</title>
+<title>Equipment Lab · Pickle DaaS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=General+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
 
-:root {
-  --bg-deep: #06070b;
-  --bg: #0a0c14;
-  --surface: #11141e;
-  --surface-2: #171c2a;
-  --surface-3: #1e2438;
-  --border: #242c42;
-  --border-subtle: #1a2035;
-  --text: #e8ecf4;
-  --text-secondary: #a0aac0;
-  --muted: #6b7a94;
-  --accent: #7C4DFF;
-  --accent-dim: rgba(124, 77, 255, 0.08);
-  --accent-glow: rgba(124, 77, 255, 0.2);
-  --green: #00E676;
-  --green-dim: rgba(0, 230, 118, 0.08);
-  --gold: #fbbf24;
-  --warn: #f59e0b;
-  --danger: #ef4444;
-  --radius: 10px;
-  --radius-lg: 14px;
-  --shadow: 0 4px 16px rgba(0,0,0,0.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
-  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  background: var(--bg-deep);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+:root{
+  --bg:oklch(8.5% .01 270);--sf:oklch(13% .013 270);--sf2:oklch(16.5% .015 270);
+  --sf3:oklch(20% .017 270);--bd:oklch(24% .015 270);--bds:oklch(18% .01 270);
+  --tx:oklch(93% .007 270);--tx2:oklch(73% .014 270);--mt:oklch(50% .018 270);
+  --ac:oklch(68% .18 270);--acd:oklch(68% .18 270/.07);--acg:oklch(68% .18 270/.15);
+  --gn:oklch(76% .17 155);--gnd:oklch(76% .17 155/.07);
+  --gd:oklch(82% .16 85);--gdd:oklch(82% .16 85/.08);
+  --fi:oklch(70% .2 30);--fid:oklch(70% .2 30/.07);
+  --r:10px;--rl:14px;--ease:cubic-bezier(.22,1,.36,1);
 }
+body{font-family:'General Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);
+  font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-.ambient {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none; z-index: 0;
-}
-.ambient::before {
-  content: '';
-  position: absolute; top: -20%; left: -10%;
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(124,77,255,0.04) 0%, transparent 70%);
-  animation: drift 22s ease-in-out infinite;
-}
-@keyframes drift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
+/* Ambient */
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0}
+.amb::before{content:'';position:absolute;top:-15%;left:50%;width:600px;height:600px;
+  background:radial-gradient(circle,oklch(68% .18 270/.035),transparent 60%);animation:o1 26s ease-in-out infinite}
+@keyframes o1{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,40px)}}
 
-.page { position: relative; z-index: 1; }
-.shell { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.page{position:relative;z-index:1}.shell{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
 
 /* Header */
-.site-header {
-  padding: 24px 0;
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 12px;
-}
-.logo-group { display: flex; align-items: center; gap: 12px; }
-.logo-mark {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), rgba(124,77,255,0.4));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 14px; color: var(--bg-deep);
-  box-shadow: 0 0 16px var(--accent-glow);
-}
-.logo-text { font-size: 13px; font-weight: 600; }
-.logo-text span { color: var(--accent); }
-.logo-sub { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
-.back-link { font-size: 12px; color: var(--muted); text-decoration: none; font-family: 'JetBrains Mono', monospace; }
-.back-link:hover { color: var(--accent); }
+header{padding:20px 0;border-bottom:1px solid var(--bds);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--ac),oklch(55% .15 270));
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--bg)}
+.logo-t{font-size:12.5px;font-weight:700}.logo-t em{font-style:normal;color:var(--ac)}
+.logo-s{font-size:10px;color:var(--mt);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.6px}
+nav a{font-size:11px;color:var(--mt);text-decoration:none;font-family:'Fira Code',monospace;
+  padding:5px 10px;border:1px solid var(--bd);border-radius:6px;transition:all .2s var(--ease);margin-left:6px}
+nav a:hover{color:var(--ac);border-color:var(--ac)}
 
 /* Hero */
-.hero { padding: 48px 0 16px; text-align: center; }
-.hero h1 {
-  font-size: clamp(28px, 5vw, 44px);
-  font-weight: 900; letter-spacing: -1.5px; line-height: 1.1;
-}
-.hero h1 em {
-  font-style: normal;
-  background: linear-gradient(135deg, var(--accent), #B388FF);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero .subtitle {
-  font-size: 15px; color: var(--text-secondary);
-  margin-top: 10px; max-width: 600px;
-  margin-left: auto; margin-right: auto;
-}
+.hero{padding:clamp(32px,5vw,52px) 0 20px}
+.hero h1{font-size:clamp(28px,4.5vw,48px);font-weight:800;letter-spacing:-1.5px;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--ac)}
+.hero-sub{font-size:14px;color:var(--tx2);margin-top:8px;max-width:560px}
 
-/* Matchup Selector */
-.matchup-controls {
-  display: flex; justify-content: center; align-items: center;
-  gap: 16px; padding: 32px 0 24px; flex-wrap: wrap;
-}
-.brand-select {
-  appearance: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  padding: 10px 36px 10px 14px;
-  font-size: 15px;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  transition: all var(--transition);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7a94'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  min-width: 160px;
-}
-.brand-select:hover { border-color: var(--accent); }
-.brand-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-dim); }
-.vs-label {
-  font-size: 20px; font-weight: 800;
-  color: var(--muted);
-  font-family: 'JetBrains Mono', monospace;
-}
+/* Brand selector chips */
+.brand-selector{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0;align-items:center}
+.brand-selector .label{font-size:11px;color:var(--mt);font-family:'Fira Code',monospace;
+  text-transform:uppercase;letter-spacing:.8px;margin-right:4px}
+.b-chip{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--bd);background:var(--sf);color:var(--tx2);
+  transition:all .25s var(--ease);position:relative}
+.b-chip:hover{border-color:var(--ac);color:var(--tx);transform:translateY(-1px)}
+.b-chip.selected{border-color:currentColor;background:currentColor;color:var(--bg);font-weight:700}
+.b-chip .chip-x{display:none;margin-left:4px;font-size:10px;cursor:pointer}
+.b-chip.selected .chip-x{display:inline}
+.b-chip .chip-count{font-size:10px;opacity:.6;margin-left:4px;font-family:'Fira Code',monospace}
 
-/* Panel */
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  margin-bottom: 20px;
-  position: relative; overflow: hidden;
-}
-.panel::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-}
+/* Section */
+.sec{margin:36px 0 16px;display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:8px;border-bottom:1px solid var(--bds);flex-wrap:wrap;gap:6px}
+.sec h2{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.sec .m{font-size:11px;color:var(--mt);font-family:'Fira Code',monospace}
 
-.section-header {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin: 36px 0 16px; padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-subtle);
-  flex-wrap: wrap; gap: 8px;
-}
-.section-header h2 {
-  font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
-  display: flex; align-items: center; gap: 8px;
-}
-.section-header h2 .icon { font-size: 16px; opacity: 0.6; }
-.section-header .meta { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+/* Comparison arena */
+.arena{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:28px;margin-bottom:20px;position:relative;overflow:hidden}
+.arena::after{content:'';position:absolute;inset:0;border-radius:var(--rl);
+  background:linear-gradient(180deg,oklch(100% 0 0/.015),transparent 30%);pointer-events:none}
 
-/* Comparison Layout */
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  gap: 0;
-  align-items: start;
-}
-.brand-column { }
-.divider-col {
-  display: flex; flex-direction: column; align-items: center;
-  padding-top: 20px; gap: 8px;
-}
-.divider-line {
-  width: 1px; flex: 1; min-height: 20px;
-  background: var(--border-subtle);
-}
+/* Grouped bar chart for skills */
+.skill-group{margin-bottom:16px;position:relative;z-index:1;cursor:pointer;
+  padding:10px 12px;border-radius:var(--r);transition:background .2s var(--ease)}
+.skill-group:hover{background:var(--sf2)}
+.skill-group.expanded{background:var(--sf2);border:1px solid var(--bds);margin-bottom:20px}
+.sg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sg-name{font-size:11px;color:var(--tx2);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+.sg-expand{font-size:9px;color:var(--mt);font-family:'Fira Code',monospace;opacity:0;transition:opacity .2s}
+.skill-group:hover .sg-expand{opacity:1}
+.skill-group.expanded .sg-expand{opacity:1;color:var(--ac)}
+.sg-bars{display:flex;flex-direction:column;gap:5px}
+.sg-bar{display:flex;align-items:center;gap:8px}
+.sg-label{width:60px;font-size:11px;font-weight:600;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg-track{flex:1;height:14px;background:var(--sf3);border-radius:7px;overflow:hidden;position:relative}
+.sg-fill{height:100%;border-radius:7px;transition:width .7s var(--ease);position:relative;min-width:2px}
+.sg-val{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:600;
+  font-family:'Fira Code',monospace;color:oklch(100% 0 0/.85);text-shadow:0 1px 3px oklch(0% 0 0/.5)}
+.sg-winner{position:absolute;right:-24px;top:50%;transform:translateY(-50%);font-size:10px}
+.sg-n{font-size:9px;color:var(--mt);font-family:'Fira Code',monospace;margin-left:4px}
 
-.brand-header {
-  text-align: center;
-  padding: 20px;
-  border-radius: var(--radius);
-  background: var(--surface-2);
-  margin-bottom: 16px;
-}
-.brand-header .bh-name {
-  font-size: 24px; font-weight: 800;
-  letter-spacing: -0.5px;
-}
-.brand-header .bh-cat {
-  font-size: 11px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 1px;
-  font-family: 'JetBrains Mono', monospace;
-  margin-top: 4px;
-}
-.brand-header .bh-count {
-  font-size: 14px; font-weight: 600;
-  margin-top: 8px;
-  font-family: 'JetBrains Mono', monospace;
-}
+/* Evidence drawer (expands inline under skill group) */
+.evidence{display:none;padding:12px;background:var(--sf);border-top:1px solid var(--bds);border-radius:0 0 var(--r) var(--r)}
+.skill-group.expanded .evidence{display:block}
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.ev-card{border-radius:8px;overflow:hidden;cursor:pointer;position:relative;aspect-ratio:16/9}
+.ev-card video{width:100%;height:100%;object-fit:cover;background:#000}
+.ev-card::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:oklch(0% 0 0/.35);color:white;font-size:14px;transition:all .2s var(--ease)}
+.ev-card:hover::after{background:oklch(0% 0 0/.15)}
+.ev-card.playing::after{opacity:0}
+.ev-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--mt);
+  font-family:'Fira Code',monospace;padding:4px 0}
 
-/* Skill Comparison Bars */
-.skill-compare { margin-bottom: 12px; }
-.skill-compare-label {
-  font-size: 10px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.8px;
-  font-family: 'JetBrains Mono', monospace;
-  margin-bottom: 6px;
-  text-align: center;
-}
-.skill-compare-row {
-  display: grid;
-  grid-template-columns: 1fr 80px 1fr;
-  gap: 0;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.skill-bar-left {
-  display: flex; justify-content: flex-end; align-items: center; gap: 8px;
-}
-.skill-bar-right {
-  display: flex; justify-content: flex-start; align-items: center; gap: 8px;
-}
-.skill-name-center {
-  text-align: center;
-  font-size: 10px; color: var(--text-secondary);
-  font-family: 'JetBrains Mono', monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.bar-track {
-  height: 10px;
-  background: var(--surface-3);
-  border-radius: 5px;
-  overflow: hidden;
-  flex: 1;
-}
-.bar-track-left { direction: rtl; }
-.bar-fill {
-  height: 100%;
-  border-radius: 5px;
-  transition: width 0.6s ease;
-}
-.bar-val {
-  font-size: 13px; font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-  min-width: 28px;
-}
-.bar-val.winning { color: var(--green); }
-.bar-val.losing { color: var(--muted); }
-.bar-val.tie { color: var(--gold); }
+/* Summary cards */
+.summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.sum-card{background:var(--sf2);border-radius:var(--r);padding:16px;text-align:center}
+.sum-val{font-size:28px;font-weight:800;font-family:'Fira Code',monospace;line-height:1}
+.sum-lbl{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;font-family:'Fira Code',monospace}
 
-/* Win Summary */
-.win-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border-subtle);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-top: 20px;
-}
-.win-cell {
-  background: var(--surface);
-  padding: 16px;
-  text-align: center;
-}
-.win-cell .win-val {
-  font-size: 28px; font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
-}
-.win-cell .win-lbl {
-  font-size: 10px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 1px;
-  margin-top: 4px; font-family: 'JetBrains Mono', monospace;
-}
+/* Player roster for each brand */
+.roster{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.roster-chip{display:flex;align-items:center;gap:4px;padding:3px 8px 3px 3px;
+  background:var(--sf3);border-radius:12px;font-size:10px;font-weight:500;color:var(--tx2)}
+.roster-chip img{width:18px;height:18px;border-radius:50%;object-fit:cover}
 
-/* Clips side-by-side */
-.clips-compare {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
-}
-.clips-col-header {
-  font-size: 11px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.8px;
-  font-family: 'JetBrains Mono', monospace;
-  margin-bottom: 8px;
-}
-.mini-clip {
-  position: relative;
-  border-radius: 8px; overflow: hidden;
-  aspect-ratio: 16/9;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-.mini-clip video {
-  width: 100%; height: 100%; object-fit: cover;
-  background: #000;
-}
-.mini-clip .play-sm {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-  display: flex; align-items: center; justify-content: center;
-  transition: all var(--transition); pointer-events: none;
-}
-.mini-clip .play-sm::after { content: '▶'; font-size: 12px; color: white; margin-left: 2px; }
-.mini-clip:hover .play-sm { background: var(--accent); }
-.mini-clip.playing .play-sm { opacity: 0; }
+/* Head-to-head verdict */
+.verdict{background:linear-gradient(135deg,var(--acd),oklch(76% .17 155/.04));
+  border:1px solid oklch(68% .18 270/.15);border-radius:var(--rl);padding:20px 24px;margin-top:20px;
+  font-size:14px;color:var(--tx2);line-height:1.7}
+.verdict strong{color:var(--ac)}
+.verdict em{font-style:normal;color:var(--gn)}
+.verdict .note{font-size:11px;color:var(--mt);margin-top:8px;display:block}
 
-/* Insight */
-.insight-box {
-  background: linear-gradient(135deg, var(--accent-dim), rgba(0,230,118,0.04));
-  border: 1px solid rgba(124,77,255,0.15);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  margin-top: 24px;
-  font-size: 14px; color: var(--text-secondary);
-  line-height: 1.7;
-}
-.insight-box strong { color: var(--accent); }
+/* Screen time bar chart */
+.st-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.st-label{width:60px;font-size:11px;font-weight:600;text-align:right;flex-shrink:0}
+.st-track{flex:1;height:20px;background:var(--sf3);border-radius:10px;overflow:hidden;position:relative}
+.st-fill{height:100%;border-radius:10px;transition:width .7s var(--ease);display:flex;align-items:center;justify-content:flex-end;padding-right:8px}
+.st-val{font-size:10px;font-weight:600;font-family:'Fira Code',monospace;color:oklch(100% 0 0/.85)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:oklch(0% 0 0/.7);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(4px);animation:mfade .25s var(--ease)}
+.modal-overlay.open{display:flex}
+@keyframes mfade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);
+  max-width:900px;width:100%;max-height:90vh;overflow-y:auto;position:relative;
+  animation:mslide .3s var(--ease)}
+@keyframes mslide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:8px;
+  background:var(--sf2);border:1px solid var(--bd);color:var(--mt);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;z-index:2;transition:all .2s var(--ease)}
+.modal-close:hover{background:var(--sf3);color:var(--tx)}
+.modal-video{width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--rl) var(--rl) 0 0}
+.modal-video video{width:100%;height:100%;object-fit:contain;border-radius:var(--rl) var(--rl) 0 0}
+.modal-body{padding:20px}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:12px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-field{font-size:12px}.modal-field .mf-label{color:var(--mt);font-size:10px;
+  font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.modal-field .mf-val{font-weight:600}
+.modal-brands{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.modal-brands .mb{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}
+
+/* Loading */
+.ld{display:flex;flex-direction:column;align-items:center;padding:80px 20px;gap:12px}
+.sp{width:32px;height:32px;border:2.5px solid var(--bd);border-top-color:var(--ac);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* Footer */
-.site-footer {
-  margin-top: 48px; padding: 24px 0;
-  border-top: 1px solid var(--border-subtle);
-  color: var(--muted); font-size: 12px;
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-}
-.site-footer a { color: var(--accent); text-decoration: none; }
+footer{margin-top:48px;padding:20px 0;border-top:1px solid var(--bds);color:var(--mt);font-size:11px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:var(--ac);text-decoration:none}
 
-.loading-state {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 80px 20px; gap: 16px;
-}
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid var(--border); border-top-color: var(--accent);
-  border-radius: 50%; animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+/* Responsive */
+@media(max-width:768px){
+  .sg-bars{gap:4px}.modal-grid{grid-template-columns:1fr}
+  .summary-row{grid-template-columns:1fr 1fr}nav{display:none}
+  .ev-grid{grid-template-columns:1fr 1fr}}
 
-.fade-in { opacity: 0; transform: translateY(10px); animation: fadeIn 0.4s ease forwards; }
-@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-
-@media (max-width: 700px) {
-  .comparison-grid { grid-template-columns: 1fr; }
-  .divider-col { display: none; }
-  .skill-compare-row { grid-template-columns: 1fr; gap: 4px; }
-  .skill-bar-left { justify-content: flex-start; }
-  .bar-track-left { direction: ltr; }
-  .clips-compare { grid-template-columns: 1fr; }
-  .win-summary { grid-template-columns: 1fr; }
-}
+.fi{opacity:0;transform:translateY(8px);animation:fi .35s var(--ease) forwards}
+@keyframes fi{to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-<div class="ambient"></div>
-<div class="page">
-<div class="shell">
+<div class="amb"></div>
+<div class="page"><div class="shell">
 
-<header class="site-header">
-  <div class="logo-group">
-    <div class="logo-mark">P</div>
-    <div>
-      <div class="logo-text">Pickle <span>DaaS</span></div>
-      <div class="logo-sub">Equipment Lab</div>
-    </div>
+<header>
+  <div class="logo"><div class="logo-i">P</div>
+    <div><div class="logo-t">Pickle <em>DaaS</em></div><div class="logo-s">Equipment Lab</div></div>
   </div>
-  <a href="showcase-portal.html" class="back-link">← Showcase Portal</a>
+  <nav>
+    <a href="player-intelligence.html">Players</a>
+    <a href="brand-intelligence-v2.html">Brands</a>
+    <a href="investor-walkthrough.html">Investor</a>
+    <a href="showcase-portal.html">Portal</a>
+  </nav>
 </header>
 
-<section class="hero fade-in">
-  <h1>Equipment <em>Performance Matrix</em></h1>
-  <p class="subtitle">Head-to-head brand comparison powered by AI skill analysis. Not marketing — data from the court.</p>
+<section class="hero fi">
+  <h1>Equipment <em>Lab</em></h1>
+  <p class="hero-sub">Select brands. Compare skills. Click any bar to see the evidence. Data from the court, not marketing.</p>
 </section>
 
-<div class="matchup-controls fade-in">
-  <select class="brand-select" id="brand-a"></select>
-  <span class="vs-label">VS</span>
-  <select class="brand-select" id="brand-b"></select>
+<div class="brand-selector fi" id="brand-sel">
+  <span class="label">Compare →</span>
 </div>
 
-<div id="loading" class="loading-state">
-  <div class="spinner"></div>
-  <div style="color:var(--muted); font-size:13px; font-family:'JetBrains Mono',monospace;">Loading equipment data…</div>
+<div class="ld" id="ld"><div class="sp"></div><div style="color:var(--mt);font-size:12px;font-family:'Fira Code',monospace">Loading equipment data…</div></div>
+
+<div id="content" style="display:none">
+  <!-- Summary -->
+  <div class="summary-row" id="summary"></div>
+
+  <!-- Skill comparison -->
+  <div class="sec fi"><h2>Skill Comparison</h2><span class="m">click any bar to see evidence</span></div>
+  <div class="arena fi" id="arena"></div>
+
+  <!-- Screen Time -->
+  <div class="sec fi"><h2>Screen Time</h2><span class="m">total visible seconds</span></div>
+  <div class="arena fi" id="screen-time"></div>
+
+  <!-- Players who use these brands -->
+  <div class="sec fi"><h2>Player Roster</h2><span class="m">who uses what</span></div>
+  <div id="rosters" class="fi"></div>
+
+  <!-- Verdict -->
+  <div id="verdict"></div>
+
+  <footer>
+    <div>Data from <span id="tc">—</span> clips · <a href="showcase-portal.html">Showcase Portal</a></div>
+    <div>Powered by <strong>Pickle DaaS</strong> × <strong>Courtana</strong></div>
+  </footer>
 </div>
 
-<div id="content" style="display: none;">
-  <div id="matchup-content"></div>
+<!-- Clip Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-video" id="modal-video"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
 </div>
-
-<footer class="site-footer" id="footer" style="display:none;">
-  <div>Data from <span id="total-clips">—</span> analyzed clips · <a href="brand-intelligence-v2.html">Brand Intelligence</a> · <a href="showcase-portal.html">Portal</a></div>
-  <div>Powered by <strong>Pickle DaaS</strong></div>
-</footer>
 
 </div></div>
 
 <script>
-const BRAND_COLORS = {
-  'JOOLA':'#00E676','NIKE':'#4FC3F7','SELKIRK':'#FF7043',
-  'CRBN':'#AB47BC','FRANKLIN':'#FFD54F','ONIX':'#26C6DA',
-  'COURTANA':'#7C4DFF','RECOVERY CAVE':'#EF5350',
-  'THE UNDERGROUND':'#FF9800','LIFETIME':'#66BB6A',
-  'HEAD':'#42A5F5','ADIDAS':'#78909C','ASICS':'#EC407A'
-};
-const BRAND_CATEGORIES = {
-  'JOOLA':'Paddles','SELKIRK':'Paddles','FRANKLIN':'Paddles',
-  'CRBN':'Paddles','ONIX':'Paddles','HEAD':'Paddles',
-  'NIKE':'Apparel & Shoes','ADIDAS':'Apparel & Shoes','ASICS':'Shoes',
-  'COURTANA':'Technology','RECOVERY CAVE':'Venue/Sponsor',
-  'THE UNDERGROUND':'Venue/Sponsor','LIFETIME':'Venue/Sponsor'
-};
-const SKILL_LABELS = {
-  court_coverage:'Coverage', kitchen:'Kitchen', power:'Power',
-  touch:'Touch', athleticism:'Athletic', court_iq:'Court IQ',
-  consistency:'Consistency', composure:'Composure'
-};
+const BC={JOOLA:'oklch(76% .17 155)',Nike:'oklch(68% .15 240)',Selkirk:'oklch(70% .2 30)',
+  CRBN:'oklch(62% .22 300)',Franklin:'oklch(82% .16 85)',HEAD:'oklch(68% .15 240)',
+  Onix:'oklch(75% .12 200)',Courtana:'oklch(62% .22 300)','PICKLEBALL KINGDOM':'oklch(82% .16 85)',
+  'On':'oklch(73% .01 260)',adidas:'oklch(55% .01 260)',PBS:'oklch(70% .2 30)'};
+const CATS={JOOLA:'Paddles',Nike:'Shoes',HEAD:'Paddles',Selkirk:'Paddles',CRBN:'Paddles',
+  Franklin:'Paddles',Onix:'Paddles','PICKLEBALL KINGDOM':'Venue','On':'Shoes',
+  adidas:'Shoes',Courtana:'Technology',PBS:'Apparel'};
+const SK=['court_coverage','kitchen','power','touch','athleticism','court_iq','consistency','composure'];
+const SL={court_coverage:'Coverage',kitchen:'Kitchen',power:'Power',touch:'Touch',
+  athleticism:'Athletic',court_iq:'Court IQ',consistency:'Consistency',composure:'Composure'};
 
-function normalizeBrand(name) {
-  const n = name.trim().toUpperCase();
-  const aliases = {'JOOLA BEN JOHNS':'JOOLA','LIFE TIME PICKLEBALL':'LIFETIME','THE GROUND':'THE UNDERGROUND'};
-  const skip = ['PICKLEBALL','SKULL LOGO','APPLA'];
-  if (skip.includes(n)) return null;
-  return aliases[n] || n;
+let brandsData={};let selected=[];let allClips=[];
+
+function brandColor(n){return BC[n]||'oklch(55% .02 260)'}
+
+function toggleBrand(name){
+  const idx=selected.indexOf(name);
+  if(idx>=0)selected.splice(idx,1);else if(selected.length<5)selected.push(name);
+  updateChips();render();
 }
 
-function toggleMiniClip(el) {
-  const v = el.querySelector('video');
-  if (el.classList.contains('playing')) { v.pause(); el.classList.remove('playing'); }
-  else {
-    document.querySelectorAll('.mini-clip.playing').forEach(c => { c.querySelector('video').pause(); c.classList.remove('playing'); });
-    v.play(); el.classList.add('playing');
-  }
-}
-
-let brandsData = {};
-let totalClips = 0;
-
-function processCorpus(corpus) {
-  const brands = {};
-  corpus.forEach(clip => {
-    const raw = clip.brands || [];
-    if (!raw.length) return;
-    const names = [...new Set(raw.map(b => typeof b === 'string' ? b : (b.name||b.brand_name||'')).map(normalizeBrand).filter(Boolean))];
-    names.forEach(name => {
-      if (!brands[name]) brands[name] = { count: 0, clips: [], skills: {} };
-      const bd = brands[name];
-      bd.count++;
-      bd.clips.push(clip);
-      const sk = clip.skills || {};
-      Object.entries(sk).forEach(([k,v]) => { if (v > 0) { if (!bd.skills[k]) bd.skills[k] = []; bd.skills[k].push(v); } });
-    });
+function updateChips(){
+  document.querySelectorAll('.b-chip').forEach(c=>{
+    c.classList.toggle('selected',selected.includes(c.dataset.brand));
+    if(selected.includes(c.dataset.brand))c.style.color=brandColor(c.dataset.brand);
+    else c.style.color='';
   });
-  return Object.fromEntries(
-    Object.entries(brands)
-      .filter(([,d]) => d.count >= 2)
-      .sort((a,b) => b[1].count - a[1].count)
-      .map(([name, data]) => [name, {
-        ...data,
-        avgSkills: Object.fromEntries(Object.entries(data.skills).map(([k,vals]) => [k, vals.reduce((a,b)=>a+b,0)/vals.length])),
-        avgQuality: data.clips.reduce((s,c) => s + (c.quality||0), 0) / data.clips.length
-      }])
-  );
 }
 
-function renderMatchup(a, b) {
-  const da = brandsData[a], db = brandsData[b];
-  if (!da || !db) return;
-  const container = document.getElementById('matchup-content');
-  const colorA = BRAND_COLORS[a] || '#64748b';
-  const colorB = BRAND_COLORS[b] || '#64748b';
-  const catA = BRAND_CATEGORIES[a] || 'Other';
-  const catB = BRAND_CATEGORIES[b] || 'Other';
+function toggleV(el){const v=el.querySelector('video');
+  if(el.classList.contains('playing')){v.pause();el.classList.remove('playing')}
+  else{document.querySelectorAll('.ev-card.playing,.modal-video video').forEach(c=>{
+    const vid=c.tagName==='VIDEO'?c:c.querySelector('video');if(vid)vid.pause();
+    if(c.classList)c.classList.remove('playing')});v.play();el.classList.add('playing')}}
 
-  const skillKeys = ['court_coverage','kitchen','power','touch','athleticism','court_iq','consistency','composure'];
-  let winsA = 0, winsB = 0, ties = 0;
+function openModal(clip){
+  const m=document.getElementById('modal');
+  document.getElementById('modal-video').innerHTML=`<video src="${clip.video_url}" poster="${clip.thumbnail}" controls autoplay loop muted playsinline></video>`;
+  const brands=(clip.brands||[]).map(b=>{
+    const n=typeof b==='string'?b:(b.name||'');
+    const conf=typeof b==='object'?b.confidence||'':'';
+    return n?`<span class="mb" style="background:${brandColor(n)}22;color:${brandColor(n)};border:1px solid ${brandColor(n)}44">${n}${conf?' · '+conf:''}</span>`:''
+  }).join('');
+  const players=(clip.courtana_participants||[]).filter(p=>p.username&&p.username!=='Unknown')
+    .map(p=>`<span class="mb" style="background:var(--gnd);color:var(--gn)">${p.username}</span>`).join('');
+  const badges=(clip.courtana_badge_awards||[]).slice(0,4)
+    .map(b=>`<span class="mb" style="background:var(--acd);color:var(--ac)">${b.badge_name||''}</span>`).join('');
 
-  let skillRowsHtml = '';
-  skillKeys.forEach(sk => {
-    const va = da.avgSkills[sk] || 0;
-    const vb = db.avgSkills[sk] || 0;
-    const winner = va > vb ? 'a' : vb > va ? 'b' : 'tie';
-    if (winner === 'a') winsA++; else if (winner === 'b') winsB++; else ties++;
-
-    const classA = va > 0 ? (winner === 'a' ? 'winning' : winner === 'tie' ? 'tie' : 'losing') : 'losing';
-    const classB = vb > 0 ? (winner === 'b' ? 'winning' : winner === 'tie' ? 'tie' : 'losing') : 'losing';
-
-    skillRowsHtml += `
-      <div class="skill-compare-row">
-        <div class="skill-bar-left">
-          <span class="bar-val ${classA}">${va > 0 ? va.toFixed(1) : '—'}</span>
-          <div class="bar-track bar-track-left"><div class="bar-fill" style="width:${va*10}%; background:${colorA};"></div></div>
-        </div>
-        <div class="skill-name-center">${SKILL_LABELS[sk] || sk}</div>
-        <div class="skill-bar-right">
-          <div class="bar-track"><div class="bar-fill" style="width:${vb*10}%; background:${colorB};"></div></div>
-          <span class="bar-val ${classB}">${vb > 0 ? vb.toFixed(1) : '—'}</span>
-        </div>
-      </div>`;
-  });
-
-  // Best clips
-  const clipsA = da.clips.sort((x,y) => (y.quality||0) - (x.quality||0)).slice(0,2);
-  const clipsB = db.clips.sort((x,y) => (y.quality||0) - (x.quality||0)).slice(0,2);
-
-  const clipHtml = (clips) => clips.map(c => `
-    <div class="mini-clip" onclick="toggleMiniClip(this)">
-      <video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video>
-      <div class="play-sm"></div>
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-title">${clip.summary||'Clip Details'}</div>
+    <div class="modal-grid">
+      <div class="modal-field"><div class="mf-label">Quality</div><div class="mf-val">${clip.quality||'—'}/10</div></div>
+      <div class="modal-field"><div class="mf-label">Viral</div><div class="mf-val">${clip.viral||'—'}/10</div></div>
+      <div class="modal-field"><div class="mf-label">Dominant Shot</div><div class="mf-val">${clip.dominant_shot||'—'}</div></div>
+      <div class="modal-field"><div class="mf-label">Story Arc</div><div class="mf-val">${clip.arc||'—'}</div></div>
+      <div class="modal-field"><div class="mf-label">Total Shots</div><div class="mf-val">${clip.total_shots||'—'}</div></div>
+      <div class="modal-field"><div class="mf-label">Play Style</div><div class="mf-val">${clip.play_style||'—'}</div></div>
     </div>
-  `).join('');
-
-  const overallWinner = winsA > winsB ? a : winsB > winsA ? b : 'Tie';
-  const winnerColor = winsA > winsB ? colorA : winsB > winsA ? colorB : 'var(--gold)';
-
-  container.innerHTML = `
-    <div class="section-header">
-      <h2><span class="icon">⚔</span> Skill Comparison</h2>
-      <span class="meta">${skillKeys.length} dimensions</span>
-    </div>
-    <div class="panel fade-in">
-      <div class="comparison-grid">
-        <div class="brand-column">
-          <div class="brand-header" style="border-top: 3px solid ${colorA}">
-            <div class="bh-name" style="color:${colorA}">${a}</div>
-            <div class="bh-cat">${catA}</div>
-            <div class="bh-count" style="color:${colorA}">${da.count} appearances · Q ${da.avgQuality.toFixed(1)}</div>
-          </div>
-        </div>
-        <div class="divider-col">
-          <div class="vs-label" style="font-size:14px;">VS</div>
-          <div class="divider-line"></div>
-        </div>
-        <div class="brand-column">
-          <div class="brand-header" style="border-top: 3px solid ${colorB}">
-            <div class="bh-name" style="color:${colorB}">${b}</div>
-            <div class="bh-cat">${catB}</div>
-            <div class="bh-count" style="color:${colorB}">${db.count} appearances · Q ${db.avgQuality.toFixed(1)}</div>
-          </div>
-        </div>
-      </div>
-      ${skillRowsHtml}
-      <div class="win-summary">
-        <div class="win-cell">
-          <div class="win-val" style="color:${colorA}">${winsA}</div>
-          <div class="win-lbl">${a} wins</div>
-        </div>
-        <div class="win-cell">
-          <div class="win-val" style="color:${colorB}">${winsB}</div>
-          <div class="win-lbl">${b} wins</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-header">
-      <h2><span class="icon">▶</span> Best Clips</h2>
-      <span class="meta">top by quality score</span>
-    </div>
-    <div class="panel fade-in">
-      <div class="clips-compare">
-        <div>
-          <div class="clips-col-header" style="color:${colorA}">${a}</div>
-          ${clipHtml(clipsA)}
-        </div>
-        <div>
-          <div class="clips-col-header" style="color:${colorB}">${b}</div>
-          ${clipHtml(clipsB)}
-        </div>
-      </div>
-    </div>
-
-    <div class="insight-box fade-in">
-      <strong>Matchup Result:</strong> ${overallWinner === 'Tie'
-        ? `It's a dead heat — ${a} and ${b} tie across ${ties} skill dimensions.`
-        : `<span style="color:${winnerColor}">${overallWinner}</span> leads ${winsA > winsB ? winsA : winsB}-${winsA > winsB ? winsB : winsA} across ${skillKeys.length} skill dimensions.`
-      }
-      ${ties > 0 && overallWinner !== 'Tie' ? ` ${ties} dimension${ties > 1 ? 's' : ''} tied.` : ''}
-      Based on ${da.count + db.count} total brand appearances across ${da.clips.length + db.clips.length} unique clips.
-      <em style="color: var(--muted); display: block; margin-top: 8px; font-size: 12px;">
-        Note: These ratings reflect AI analysis of video clips — they measure the skill level of players using each brand, not the equipment itself. Higher ratings may indicate brand adoption among more skilled players.
-      </em>
-    </div>
+    ${brands?`<div style="margin-top:12px"><div class="mf-label" style="color:var(--mt);font-size:10px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Brands Detected</div><div class="modal-brands">${brands}</div></div>`:''}
+    ${players?`<div style="margin-top:8px"><div class="mf-label" style="color:var(--mt);font-size:10px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Players</div><div class="modal-brands">${players}</div></div>`:''}
+    ${badges?`<div style="margin-top:8px"><div class="mf-label" style="color:var(--mt);font-size:10px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Badges Earned</div><div class="modal-brands">${badges}</div></div>`:''}
+    ${clip.coaching?`<div style="margin-top:12px;font-size:12px;color:var(--tx2);line-height:1.6"><div class="mf-label" style="color:var(--mt);font-size:10px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">AI Coaching</div>${clip.coaching}</div>`:''}
   `;
+  m.classList.add('open');
 }
+function closeModal(){document.getElementById('modal').classList.remove('open');
+  document.querySelectorAll('.modal-video video').forEach(v=>v.pause())}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
-(async function() {
-  const corpus = await fetch('../corpus-export.json').then(r => r.json()).catch(() => []);
-  totalClips = corpus.length;
-  brandsData = processCorpus(corpus);
-  const names = Object.keys(brandsData);
-
-  if (names.length < 2) {
-    document.getElementById('loading').innerHTML = '<div style="color:var(--muted)">Not enough brand data for comparison.</div>';
+function render(){
+  if(selected.length<2){
+    document.getElementById('arena').innerHTML='<div style="text-align:center;padding:40px;color:var(--mt);font-family:\'Fira Code\',monospace;font-size:13px">Select 2–5 brands above to compare</div>';
+    document.getElementById('summary').innerHTML='';
+    document.getElementById('screen-time').innerHTML='';
+    document.getElementById('rosters').innerHTML='';
+    document.getElementById('verdict').innerHTML='';
     return;
   }
 
-  // Populate selects
-  const selA = document.getElementById('brand-a');
-  const selB = document.getElementById('brand-b');
-  names.forEach((n,i) => {
-    selA.add(new Option(n, n));
-    selB.add(new Option(n, n));
+  const sel=selected.map(n=>brandsData[n]).filter(Boolean);
+
+  // Summary cards
+  document.getElementById('summary').innerHTML=sel.map(b=>`
+    <div class="sum-card fi" style="border-top:3px solid ${brandColor(b.name)}">
+      <div class="sum-val" style="color:${brandColor(b.name)}">${b.count}</div>
+      <div class="sum-lbl">${b.name}</div>
+      <div style="font-size:10px;color:var(--mt);margin-top:6px">${b.players.length} players · ${Math.round(b.seconds/60)}m screen</div>
+    </div>
+  `).join('');
+
+  // Skill comparison
+  const arena=document.getElementById('arena');
+  arena.innerHTML='';
+  const wins={};sel.forEach(b=>{wins[b.name]=0});
+
+  SK.forEach(sk=>{
+    const vals=sel.map(b=>({name:b.name,val:b.avgSkills[sk]||0,n:b.skillCounts[sk]||0,color:brandColor(b.name)}));
+    const maxVal=Math.max(...vals.map(v=>v.val),1);
+    const winner=vals.reduce((a,b)=>b.val>a.val?b:a);
+    if(winner.val>0)wins[winner.name]=(wins[winner.name]||0)+1;
+
+    const group=document.createElement('div');
+    group.className='skill-group';
+    group.innerHTML=`
+      <div class="sg-header">
+        <span class="sg-name">${SL[sk]||sk}</span>
+        <span class="sg-expand">click to see evidence ▾</span>
+      </div>
+      <div class="sg-bars">${vals.map(v=>`
+        <div class="sg-bar">
+          <div class="sg-label" style="color:${v.color}">${v.name}</div>
+          <div class="sg-track">
+            <div class="sg-fill" style="width:${v.val?v.val/10*100:0}%;background:${v.color}">
+              ${v.val?`<span class="sg-val">${v.val.toFixed(1)}</span>`:''}
+            </div>
+          </div>
+          <span class="sg-n">n=${v.n}</span>
+          ${v.name===winner.name&&winner.val>0?'<span class="sg-winner">👑</span>':''}
+        </div>
+      `).join('')}</div>
+      <div class="evidence" id="ev-${sk}"></div>
+    `;
+    group.addEventListener('click',()=>{
+      const wasExpanded=group.classList.contains('expanded');
+      document.querySelectorAll('.skill-group.expanded').forEach(g=>g.classList.remove('expanded'));
+      if(!wasExpanded){
+        group.classList.add('expanded');
+        renderEvidence(sk,sel);
+      }
+    });
+    arena.appendChild(group);
   });
-  selA.value = names[0];
-  selB.value = names.length > 1 ? names[1] : names[0];
 
-  function update() {
-    renderMatchup(selA.value, selB.value);
+  // Screen time
+  const stEl=document.getElementById('screen-time');
+  const maxSec=Math.max(...sel.map(b=>b.seconds),1);
+  stEl.innerHTML=sel.map(b=>`
+    <div class="st-bar-row">
+      <div class="st-label" style="color:${brandColor(b.name)}">${b.name}</div>
+      <div class="st-track"><div class="st-fill" style="width:${b.seconds/maxSec*100}%;background:${brandColor(b.name)}">
+        <span class="st-val">${Math.round(b.seconds/60)}m ${Math.round(b.seconds%60)}s</span>
+      </div></div>
+    </div>
+  `).join('');
+
+  // Player rosters
+  const rEl=document.getElementById('rosters');
+  rEl.innerHTML=sel.map(b=>`
+    <div style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:${brandColor(b.name)};margin-bottom:6px">${b.name} <span style="font-size:10px;color:var(--mt);font-weight:400">${b.players.length} players</span></div>
+      <div class="roster">${b.playerList.slice(0,10).map(p=>`
+        <div class="roster-chip">${p.avatar?`<img src="${p.avatar}" loading="lazy">`:''}<span>${p.name}</span><span style="font-size:9px;color:var(--mt);margin-left:3px;font-family:'Fira Code',monospace">${p.count}</span></div>
+      `).join('')}</div>
+    </div>
+  `).join('');
+
+  // Verdict
+  const sorted=Object.entries(wins).sort((a,b)=>b[1]-a[1]);
+  const top=sorted[0];const second=sorted[1];
+  const isTie=top[1]===second[1];
+  document.getElementById('verdict').innerHTML=`<div class="verdict fi">
+    <strong>${isTie?'Dead Heat':'Winner: '+top[0]}</strong> — ${isTie
+      ?`${top[0]} and ${second[0]} tie at ${top[1]} skill dimensions each.`
+      :`leads ${top[1]}–${second[1]} across ${SK.length} skill dimensions.`}
+    Based on ${sel.reduce((s,b)=>s+b.count,0)} total brand appearances across ${sel.reduce((s,b)=>s+b.clipCount,0)} unique clips, with ${sel.reduce((s,b)=>s+b.players.length,0)} real players identified.
+    <span class="note">Skill ratings reflect AI analysis of players using each brand — not the equipment itself. Higher ratings suggest adoption among more skilled players.</span>
+  </div>`;
+}
+
+function renderEvidence(skill,brands){
+  const el=document.getElementById('ev-'+skill);
+  let html='';
+  brands.forEach(b=>{
+    const clips=b.clips.filter(c=>(c.skills||{})[skill]>0)
+      .sort((a,b)=>(b.skills[skill]||0)-(a.skills[skill]||0)).slice(0,4);
+    if(!clips.length)return;
+    html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:${brandColor(b.name)};margin-bottom:6px">${b.name} — ${SL[skill]} evidence</div>
+      <div class="ev-grid">${clips.map(c=>`
+        <div>
+          <div class="ev-card" onclick="event.stopPropagation();openModal(allClips.find(x=>x.uuid==='${c.uuid}'))">
+            <video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video>
+          </div>
+          <div class="ev-meta"><span>Q${c.quality||0} V${c.viral||0}</span><span style="color:${brandColor(b.name)}">${SL[skill]} ${(c.skills[skill]||0).toFixed(1)}</span></div>
+        </div>
+      `).join('')}</div></div>`;
+  });
+  el.innerHTML=html||'<div style="color:var(--mt);font-size:12px;padding:8px">No clips with this skill data</div>';
+}
+
+(async function(){
+  let clips=[];
+  try{const r=await fetch('../merged-corpus.json');if(r.ok){const d=await r.json();clips=Array.isArray(d)?d:d.clips||[];}}catch(e){}
+  if(!clips.length){try{const r=await fetch('../corpus-export.json');if(r.ok)clips=await r.json();}catch(e){}}
+  allClips=clips;
+
+  // Build brand data
+  const bm={};
+  clips.forEach(c=>{
+    const blist=c.brands||[];
+    const names=new Set();
+    blist.forEach(b=>{
+      const n=typeof b==='string'?b:(b.name||'');if(!n)return;names.add(n);
+      if(!bm[n])bm[n]={name:n,count:0,clipCount:0,clips:[],clipSet:new Set(),skills:{},skillCounts:{},
+        players:new Set(),playerList:[],seconds:0,badges:0,confidence:{},cobrands:{}};
+      const bd=bm[n];bd.count++;
+      if(!bd.clipSet.has(c.uuid)){bd.clipSet.add(c.uuid);bd.clipCount++;bd.clips.push(c);}
+      if(typeof b==='object'){bd.seconds+=(b.seconds||0);bd.confidence[b.confidence||'unknown']=(bd.confidence[b.confidence||'unknown']||0)+1;}
+      SK.forEach(sk=>{const v=(c.skills||{})[sk];if(v&&v>0){if(!bd.skills[sk])bd.skills[sk]=[];bd.skills[sk].push(v);bd.skillCounts[sk]=(bd.skillCounts[sk]||0)+1;}});
+      (c.courtana_participants||[]).forEach(p=>{if(p.username&&p.username!=='Unknown')bd.players.add(p.username)});
+      bd.badges+=(c.courtana_badge_awards||[]).length;
+    });
+  });
+
+  // Compute averages and player lists
+  Object.values(bm).forEach(b=>{
+    b.avgSkills={};
+    Object.entries(b.skills).forEach(([k,vals])=>{b.avgSkills[k]=vals.reduce((a,v)=>a+v,0)/vals.length});
+    // Player list with counts
+    const pc={};
+    b.clips.forEach(c=>{(c.courtana_participants||[]).forEach(p=>{
+      const u=p.username||'';if(!u||u==='Unknown')return;
+      if(!pc[u])pc[u]={name:u,count:0,avatar:p.avatar_file||''};pc[u].count++;
+    })});
+    b.playerList=Object.values(pc).sort((a,b)=>b.count-a.count);
+  });
+
+  brandsData=bm;
+
+  // Build brand selector chips (top brands with >=3 appearances, exclude garbage)
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE']);
+  const sorted=Object.values(bm).filter(b=>b.count>=3&&!skip.has(b.name)).sort((a,b)=>b.count-a.count);
+  const selEl=document.getElementById('brand-sel');
+  sorted.slice(0,12).forEach(b=>{
+    const chip=document.createElement('button');
+    chip.className='b-chip';chip.dataset.brand=b.name;
+    chip.innerHTML=`${b.name}<span class="chip-count">${b.count}</span><span class="chip-x">✕</span>`;
+    chip.style.setProperty('--bc',brandColor(b.name));
+    chip.addEventListener('click',()=>toggleBrand(b.name));
+    selEl.appendChild(chip);
+  });
+
+  // Default: top 2 paddle brands
+  const paddles=sorted.filter(b=>['Paddles','Paddle'].includes(CATS[b.name]));
+  if(paddles.length>=2){selected=[paddles[0].name,paddles[1].name]}
+  else if(sorted.length>=2){selected=[sorted[0].name,sorted[1].name]}
+  updateChips();
+
+  document.getElementById('ld').style.display='none';
+  document.getElementById('content').style.display='block';
+  document.getElementById('tc').textContent=clips.length;
+  render();
+
+  // Hash state
+  if(location.hash){
+    const h=decodeURIComponent(location.hash.slice(1)).split(',').filter(Boolean);
+    if(h.length>=2){selected=h.filter(n=>bm[n]);updateChips();render();}
   }
-  selA.addEventListener('change', update);
-  selB.addEventListener('change', update);
-
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('content').style.display = 'block';
-  document.getElementById('footer').style.display = 'flex';
-  document.getElementById('total-clips').textContent = totalClips;
-  update();
+  window.addEventListener('hashchange',()=>{
+    const h=decodeURIComponent(location.hash.slice(1)).split(',').filter(Boolean);
+    if(h.length>=2){selected=h.filter(n=>bm[n]);updateChips();render();}
+  });
 })();
 </script>
 </body>
