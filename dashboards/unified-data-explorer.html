@@ -142,6 +142,7 @@
   .badge-tier.gold { background: rgba(234,179,8,0.15); color: var(--gold); border: 1px solid rgba(234,179,8,0.3); }
   .badge-tier.silver { background: rgba(148,163,184,0.15); color: var(--silver); border: 1px solid rgba(148,163,184,0.3); }
   .badge-tier.bronze { background: rgba(161,98,7,0.15); color: #d97706; border: 1px solid rgba(161,98,7,0.3); }
+  .badge-tier.brick { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
   .badge-tier.default { background: var(--surface-3); color: var(--muted); border: 1px solid var(--border); }
   .badge-name { font-size: 11px; color: var(--text); line-height: 1.3; }
   .badge-who { font-size: 10px; color: var(--muted); }
@@ -444,13 +445,18 @@ function participantHTML(p) {
 
 function badgeHTML(b) {
   const tier = (b.badge_tier || '').toLowerCase();
-  const tierClass = ['gold','silver','bronze'].includes(tier) ? tier : 'default';
+  const tierDisplay = b.badge_tier_display || tier || '★';
+  const tierClass = ['gold','silver','bronze','brick'].includes(tier) ? tier : 'default';
+  const rarity = b.rarity ? `${Math.round(b.rarity)}%` : null;
   return `<div class="badge-item">
-    <span class="badge-tier ${tierClass}">${tier || '★'}</span>
+    ${b.badge_thumbnail_small ? `<img src="${b.badge_thumbnail_small}" alt="${b.badge_name}" style="width:28px;height:28px;object-fit:contain;flex-shrink:0;border-radius:4px;background:var(--surface-3);padding:2px" loading="lazy">` : `<span class="badge-tier ${tierClass}">${tierDisplay}</span>`}
     <div>
-      <div class="badge-name">${b.badge_name || 'Badge'}</div>
+      <div class="badge-name" style="display:flex;align-items:center;gap:5px">
+        ${b.badge_name || 'Badge'}
+        ${rarity ? `<span style="font-size:9px;color:var(--dim);font-family:ui-monospace,monospace">${rarity} rate</span>` : ''}
+      </div>
       ${b.profile_username ? `<div class="badge-who">→ @${b.profile_username}</div>` : ''}
-      ${b.gemini_reason ? `<div class="badge-reason">"${b.gemini_reason.slice(0,80)}${b.gemini_reason.length>80?'…':''}"</div>` : ''}
+      ${b.gemini_reason ? `<div class="badge-reason">"${b.gemini_reason.slice(0,90)}${b.gemini_reason.length>90?'…':''}"</div>` : ''}
     </div>
   </div>`;
 }
