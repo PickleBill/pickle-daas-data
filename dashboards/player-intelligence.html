@@ -5,277 +5,269 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player Intelligence · Pickle DaaS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 
 :root{
-  --bg:#080a10;--surface:oklch(16% .01 260);--surface-2:oklch(19% .012 260);
-  --surface-3:oklch(22% .014 260);--border:oklch(26% .015 260);
-  --border-subtle:oklch(20% .01 260);--text:oklch(92% .01 260);
-  --text-2:oklch(75% .015 260);--muted:oklch(55% .02 260);
-  --accent:oklch(78% .18 155);--accent-dim:oklch(78% .18 155 / .08);
-  --accent-glow:oklch(78% .18 155 / .15);
-  --gold:oklch(82% .16 85);--gold-dim:oklch(82% .16 85 / .1);
-  --purple:oklch(65% .2 300);--purple-dim:oklch(65% .2 300 / .08);
-  --fire:oklch(72% .19 30);--fire-dim:oklch(72% .19 30 / .08);
-  --blue:oklch(72% .14 240);--blue-dim:oklch(72% .14 240 / .08);
-  --danger:oklch(65% .22 25);
-  --radius:10px;--radius-lg:14px;
-  --shadow:0 4px 20px oklch(0% 0 0 / .4);
-  --shadow-lg:0 12px 40px oklch(0% 0 0 / .5);
-  --ease:cubic-bezier(.4,0,.2,1);
+  --bg:oklch(8% .012 260);--surface:oklch(13% .014 260);--surface-2:oklch(16.5% .016 260);
+  --surface-3:oklch(20% .018 260);--border:oklch(24% .016 260);
+  --border-s:oklch(18% .012 260);--text:oklch(93% .008 260);
+  --text-2:oklch(74% .015 260);--muted:oklch(52% .02 260);
+  --green:oklch(76% .17 155);--green-d:oklch(76% .17 155/.07);
+  --gold:oklch(82% .16 85);--gold-d:oklch(82% .16 85/.08);
+  --purple:oklch(62% .22 300);--purple-d:oklch(62% .22 300/.07);
+  --fire:oklch(70% .2 30);--fire-d:oklch(70% .2 30/.07);
+  --blue:oklch(68% .15 240);--blue-d:oklch(68% .15 240/.07);
+  --cyan:oklch(75% .12 200);
+  --r:10px;--rl:14px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-out:cubic-bezier(0,.55,.45,1);
 }
+body{font-family:'Satoshi',system-ui,sans-serif;background:var(--bg);color:var(--text);
+  font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-body{
-  font-family:'Manrope',system-ui,sans-serif;
-  background:var(--bg);color:var(--text);
-  font-size:14px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
-
-/* Ambient orbs */
-.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.ambient::before{content:'';position:absolute;top:-15%;left:60%;width:500px;height:500px;
-  background:radial-gradient(circle,oklch(78% .18 155 / .03),transparent 70%);
-  animation:orb1 28s ease-in-out infinite}
-.ambient::after{content:'';position:absolute;bottom:-10%;left:-5%;width:400px;height:400px;
-  background:radial-gradient(circle,oklch(65% .2 300 / .025),transparent 70%);
-  animation:orb2 32s ease-in-out infinite}
-@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(-80px,50px)}}
-@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,-30px)}}
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0}
+.ambient::before{content:'';position:absolute;top:-10%;right:10%;width:600px;height:600px;
+  background:radial-gradient(circle,oklch(62% .22 300/.03),transparent 65%);animation:d1 30s ease-in-out infinite}
+.ambient::after{content:'';position:absolute;bottom:0;left:-5%;width:500px;height:500px;
+  background:radial-gradient(circle,oklch(76% .17 155/.025),transparent 65%);animation:d2 25s ease-in-out infinite}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,50px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,-40px)}}
 
 .page{position:relative;z-index:1}
-.shell{max-width:1320px;margin:0 auto;padding:0 24px}
+.shell{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
 
 /* Header */
-.site-header{padding:24px 0;border-bottom:1px solid var(--border-subtle);
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.logo-g{display:flex;align-items:center;gap:12px}
-.logo-m{width:32px;height:32px;border-radius:8px;
-  background:linear-gradient(135deg,var(--accent),oklch(60% .15 155));
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:14px;color:var(--bg);box-shadow:0 0 16px var(--accent-glow)}
-.logo-t{font-size:13px;font-weight:600}.logo-t span{color:var(--accent)}
-.logo-s{font-size:11px;color:var(--muted);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.5px}
-.nav-links{display:flex;gap:12px}
-.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;font-family:'Fira Code',monospace;
-  padding:4px 10px;border:1px solid var(--border);border-radius:6px;transition:all .2s var(--ease)}
-.nav-links a:hover{border-color:var(--accent);color:var(--accent)}
+header{padding:20px 0;border-bottom:1px solid var(--border-s);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--green),oklch(55% .14 155));
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:var(--bg)}
+.logo-label{font-size:12.5px;font-weight:700}.logo-label em{font-style:normal;color:var(--green)}
+.logo-sub{font-size:10px;color:var(--muted);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.6px}
+nav{display:flex;gap:8px}
+nav a{font-size:11px;color:var(--muted);text-decoration:none;font-family:'Fira Code',monospace;
+  padding:5px 10px;border:1px solid var(--border);border-radius:6px;transition:all .2s var(--ease)}
+nav a:hover{color:var(--green);border-color:var(--green)}
 
 /* Hero */
-.hero{padding:48px 0 12px}
-.hero h1{font-size:clamp(30px,4.5vw,48px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;color:var(--text)}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero .sub{font-size:15px;color:var(--text-2);margin-top:10px;max-width:620px}
+.hero{padding:clamp(32px,5vw,56px) 0 clamp(16px,2vw,24px)}
+.hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.hero h1{font-size:clamp(28px,4.5vw,50px);font-weight:900;letter-spacing:-1.8px;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero-sub{font-size:clamp(13px,1.5vw,15px);color:var(--text-2);margin-top:8px;max-width:540px}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap}
+.hs{text-align:right}
+.hs-val{font-size:clamp(24px,3vw,36px);font-weight:900;font-variant-numeric:tabular-nums;line-height:1;
+  font-family:'Fira Code',monospace}
+.hs-val.g{color:var(--green)}.hs-val.p{color:var(--purple)}.hs-val.o{color:var(--gold)}.hs-val.f{color:var(--fire)}
+.hs-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px;font-family:'Fira Code',monospace}
 
-/* Stat strip */
-.stat-strip{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--radius-lg);
-  overflow:hidden;margin:28px 0 40px;background:var(--border-subtle)}
-.ss-cell{flex:1;padding:20px 16px;text-align:center;background:var(--surface);
-  transition:background .2s var(--ease)}
-.ss-cell:not(:last-child){border-right:1px solid var(--border-subtle)}
-.ss-cell:hover{background:var(--surface-2)}
-.ss-val{font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.ss-val.green{color:var(--accent)}.ss-val.gold{color:var(--gold)}
-.ss-val.purple{color:var(--purple)}.ss-val.fire{color:var(--fire)}
-.ss-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;
-  margin-top:6px;font-family:'Fira Code',monospace;font-weight:500}
+/* Search + filters */
+.controls{display:flex;gap:8px;margin:20px 0 28px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:180px;padding:9px 14px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);color:var(--text);font-family:'Satoshi',sans-serif;font-size:13.5px;outline:none;
+  transition:border-color .2s var(--ease)}
+.search:focus{border-color:var(--green)}
+.search::placeholder{color:var(--muted)}
+.chip{padding:5px 12px;background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  font-size:11.5px;font-weight:500;color:var(--text-2);cursor:pointer;transition:all .2s var(--ease);
+  font-family:'Satoshi',sans-serif;white-space:nowrap}
+.chip:hover{border-color:var(--green);color:var(--green)}
+.chip.on{background:var(--green-d);border-color:var(--green);color:var(--green)}
+.sort-sel{padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--text);font-family:'Satoshi',sans-serif;font-size:12px;outline:none;cursor:pointer;
+  appearance:none;padding-right:24px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236b7a94'%3E%3Cpath d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center}
 
 /* Section */
-.section-head{display:flex;justify-content:space-between;align-items:baseline;
-  margin:40px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border-subtle);
-  flex-wrap:wrap;gap:8px}
-.section-head h2{font-size:18px;font-weight:700;letter-spacing:-.3px}
-.section-head .meta{font-size:12px;color:var(--muted);font-family:'Fira Code',monospace}
+.sec{margin:36px 0 16px;display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:8px;border-bottom:1px solid var(--border-s);flex-wrap:wrap;gap:6px}
+.sec h2{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.sec .m{font-size:11px;color:var(--muted);font-family:'Fira Code',monospace}
 
-/* Search bar */
-.search-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
-.search-input{flex:1;min-width:200px;padding:10px 16px;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--radius);color:var(--text);
-  font-family:'Manrope',sans-serif;font-size:14px;outline:none;transition:all .2s var(--ease)}
-.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-dim)}
-.search-input::placeholder{color:var(--muted)}
-.filter-chip{padding:6px 14px;background:var(--surface);border:1px solid var(--border);
-  border-radius:20px;font-size:12px;font-weight:500;color:var(--text-2);cursor:pointer;
-  transition:all .2s var(--ease);font-family:'Manrope',sans-serif}
-.filter-chip:hover{border-color:var(--accent);color:var(--accent)}
-.filter-chip.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+/* ═══ PLAYER CARDS ═══ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
 
-/* Player Cards */
-.player-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);
+  overflow:hidden;transition:all .3s var(--ease);position:relative}
+.card:hover{border-color:oklch(93% .008 260/.15);transform:translateY(-4px);
+  box-shadow:0 16px 48px oklch(0% 0 0/.4)}
+.card::after{content:'';position:absolute;inset:0;border-radius:var(--rl);
+  background:linear-gradient(180deg,oklch(100% 0 0/.02),transparent 40%);pointer-events:none}
 
-.player-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  overflow:hidden;transition:all .25s var(--ease);cursor:default}
-.player-card:hover{border-color:oklch(92% .01 260 / .12);transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+/* Card top: avatar + identity */
+.c-top{display:flex;gap:14px;padding:18px 18px 14px;align-items:flex-start;position:relative;z-index:1}
+.c-avatar{width:52px;height:52px;border-radius:10px;object-fit:cover;background:var(--surface-3);flex-shrink:0}
+.c-avatar-ph{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,var(--surface-3),var(--surface-2));
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:var(--green);flex-shrink:0}
+.c-info{flex:1;min-width:0}
+.c-name{font-size:17px;font-weight:700;letter-spacing:-.2px;line-height:1.2;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.c-tag{font-size:9.5px;padding:2px 7px;border-radius:8px;font-family:'Fira Code',monospace;font-weight:500;letter-spacing:.2px}
+.c-tag.clips-tag{background:var(--green-d);color:var(--green)}
+.c-tag.badge-tag{background:var(--purple-d);color:var(--purple)}
+.c-tag.verified{background:var(--gold-d);color:var(--gold)}
+.c-num{font-size:28px;font-weight:900;color:var(--green);line-height:1;font-family:'Fira Code',monospace;text-align:right}
+.c-num-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;text-align:right;margin-top:2px}
 
-.pc-top{display:flex;gap:16px;padding:20px 20px 16px;align-items:flex-start}
-.pc-avatar{width:56px;height:56px;border-radius:12px;object-fit:cover;
-  background:var(--surface-3);flex-shrink:0}
-.pc-avatar-placeholder{width:56px;height:56px;border-radius:12px;background:var(--surface-3);
-  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;
-  color:var(--accent);flex-shrink:0;text-transform:uppercase}
-.pc-info{flex:1;min-width:0}
-.pc-name{font-size:18px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
-.pc-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
-.pc-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-family:'Fira Code',monospace;
-  font-weight:500;letter-spacing:.3px}
-.pc-tag.clips{background:var(--accent-dim);color:var(--accent)}
-.pc-tag.rank{background:var(--gold-dim);color:var(--gold)}
-.pc-tag.verified{background:var(--purple-dim);color:var(--purple)}
-.pc-stat-num{font-size:28px;font-weight:800;color:var(--accent);line-height:1;
-  font-family:'Fira Code',monospace;text-align:right}
-.pc-stat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
-  text-align:right;margin-top:2px}
+/* ═══ SVG SKILL RADAR — /overdrive ═══ */
+.c-radar{padding:4px 18px 8px;display:flex;justify-content:center;position:relative;z-index:1}
+.radar-svg{width:180px;height:180px}
+.radar-ring{fill:none;stroke:var(--border-s);stroke-width:.5}
+.radar-axis{stroke:var(--border-s);stroke-width:.3}
+.radar-area{fill:var(--green-d);stroke:var(--green);stroke-width:1.5;
+  transition:d .6s var(--ease-out);stroke-linejoin:round}
+.radar-dot{fill:var(--green);r:3;transition:all .4s var(--ease-out)}
+.radar-label{font-size:8px;fill:var(--muted);font-family:'Fira Code',monospace;text-anchor:middle;
+  dominant-baseline:middle}
 
-/* Skill bars (compact) */
-.pc-skills{padding:0 20px 12px;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
-.sk-row{display:flex;align-items:center;gap:6px}
-.sk-label{width:52px;font-size:9px;color:var(--muted);text-transform:uppercase;
-  letter-spacing:.3px;font-family:'Fira Code',monospace;text-align:right;flex-shrink:0}
-.sk-track{flex:1;height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
-.sk-fill{height:100%;border-radius:3px;transition:width .6s var(--ease)}
-.sk-val{width:20px;font-size:11px;font-weight:600;font-family:'Fira Code',monospace;text-align:right}
+/* Skill mini-bars fallback for small cards */
+.c-skills{padding:0 18px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;position:relative;z-index:1}
+.sk{display:flex;align-items:center;gap:5px}
+.sk-l{width:42px;font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.2px;
+  font-family:'Fira Code',monospace;text-align:right;flex-shrink:0}
+.sk-t{flex:1;height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.sk-f{height:100%;border-radius:3px;transition:width .6s var(--ease-out)}
+.sk-v{width:18px;font-size:10px;font-weight:600;font-family:'Fira Code',monospace;text-align:right}
 
-/* Badges row */
-.pc-badges{padding:0 20px 16px;display:flex;gap:6px;flex-wrap:wrap}
-.badge-chip{display:flex;align-items:center;gap:4px;padding:3px 8px 3px 3px;
-  background:var(--surface-3);border-radius:14px;font-size:10px;font-weight:500;color:var(--text-2)}
-.badge-chip img{width:18px;height:18px;border-radius:50%;object-fit:cover}
-.badge-chip .badge-count{font-family:'Fira Code',monospace;color:var(--muted);font-size:9px}
+/* Badges */
+.c-badges{padding:2px 18px 10px;display:flex;gap:5px;flex-wrap:wrap;position:relative;z-index:1}
+.bdg{display:inline-flex;align-items:center;gap:3px;padding:2px 7px 2px 2px;
+  background:var(--surface-3);border-radius:12px;font-size:9.5px;font-weight:500;color:var(--text-2)}
+.bdg img{width:16px;height:16px;border-radius:50%;object-fit:cover}
+.bdg .bdg-n{font-family:'Fira Code',monospace;color:var(--muted);font-size:8.5px}
 
-/* Equipment row */
-.pc-equipment{padding:0 20px 16px;display:flex;gap:6px;flex-wrap:wrap}
-.equip-pill{padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;
-  border:1px solid oklch(55% .02 260 / .3);transition:all .15s var(--ease)}
-.equip-pill:hover{transform:scale(1.05)}
+/* Equipment */
+.c-equip{padding:2px 18px 10px;display:flex;gap:4px;flex-wrap:wrap;position:relative;z-index:1}
+.eq{padding:2px 8px;border-radius:8px;font-size:9.5px;font-weight:600;
+  border:1px solid oklch(52% .02 260/.3);transition:all .15s var(--ease)}
 
-/* Clips strip */
-.pc-clips{padding:0 20px 16px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
-.pc-clips::-webkit-scrollbar{height:4px}
-.pc-clips::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.mini-vid{width:100px;height:56px;border-radius:6px;overflow:hidden;flex-shrink:0;
-  position:relative;cursor:pointer}
-.mini-vid video{width:100%;height:100%;object-fit:cover;background:#000}
-.mini-vid .play-ico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  background:oklch(0% 0 0 / .35);opacity:1;transition:opacity .2s var(--ease)}
-.mini-vid .play-ico::after{content:'▶';font-size:12px;color:white}
-.mini-vid:hover .play-ico{background:oklch(0% 0 0 / .15)}
-.mini-vid.playing .play-ico{opacity:0}
+/* Clip strip */
+.c-clips{padding:4px 18px 14px;display:flex;gap:5px;overflow-x:auto;position:relative;z-index:1;
+  scrollbar-width:none}
+.c-clips::-webkit-scrollbar{display:none}
+.mv{width:88px;height:50px;border-radius:5px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer}
+.mv video{width:100%;height:100%;object-fit:cover;background:#000}
+.mv::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:oklch(0% 0 0/.3);color:white;font-size:11px;opacity:1;transition:opacity .2s var(--ease)}
+.mv:hover::after{background:oklch(0% 0 0/.15)}
+.mv.playing::after{opacity:0}
 
-/* Badge Gallery */
-.badge-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.bg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  padding:16px;text-align:center;transition:all .2s var(--ease)}
-.bg-card:hover{border-color:oklch(92% .01 260 / .1);transform:translateY(-2px)}
-.bg-card img{width:48px;height:48px;border-radius:8px;object-fit:cover;margin-bottom:8px}
-.bg-card .bg-name{font-size:13px;font-weight:600;line-height:1.2}
-.bg-card .bg-desc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
-.bg-card .bg-count{font-size:18px;font-weight:700;font-family:'Fira Code',monospace;
-  color:var(--accent);margin-top:8px}
-.bg-card .bg-tier{font-size:10px;text-transform:uppercase;letter-spacing:.5px;
-  font-family:'Fira Code',monospace;margin-top:2px}
-.bg-card .bg-tier.gold{color:var(--gold)}.bg-card .bg-tier.silver{color:oklch(75% .01 260)}
-.bg-card .bg-tier.bronze{color:oklch(65% .08 50)}.bg-card .bg-tier.brick{color:var(--fire)}
+/* ═══ BADGE GALLERY ═══ */
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.bg-c{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 10px;text-align:center;transition:all .2s var(--ease)}
+.bg-c:hover{border-color:oklch(93% .008 260/.1);transform:translateY(-2px)}
+.bg-c img{width:40px;height:40px;border-radius:7px;object-fit:cover;margin-bottom:6px}
+.bg-c .bg-name{font-size:12px;font-weight:600;line-height:1.2}
+.bg-c .bg-desc{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bg-c .bg-count{font-size:17px;font-weight:900;font-family:'Fira Code',monospace;color:var(--purple);margin-top:6px}
+.bg-c .bg-tier{font-size:9px;text-transform:uppercase;letter-spacing:.5px;font-family:'Fira Code',monospace;margin-top:1px}
+.bg-c .bg-tier.gold{color:var(--gold)}.bg-c .bg-tier.silver{color:oklch(73% .01 260)}
+.bg-c .bg-tier.bronze{color:oklch(65% .08 50)}.bg-c .bg-tier.brick{color:var(--fire)}
 
-/* Leaderboard table */
-.lb-wrap{overflow-x:auto}
-.lb-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
-.lb-table th{text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;
-  letter-spacing:.8px;color:var(--muted);font-family:'Fira Code',monospace;font-weight:600;
-  border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap;
-  position:sticky;top:0;z-index:2;cursor:pointer;transition:color .2s var(--ease)}
-.lb-table th:hover{color:var(--accent)}
-.lb-table td{padding:10px 12px;border-bottom:1px solid var(--border-subtle);vertical-align:middle;
-  transition:background .15s var(--ease)}
-.lb-table tr:hover td{background:var(--surface-2)}
-.lb-table .player-cell{display:flex;align-items:center;gap:10px;white-space:nowrap}
-.lb-table .player-cell img{width:28px;height:28px;border-radius:6px;object-fit:cover}
-.lb-table .player-cell .name{font-weight:600}
-
-/* Footer */
-.site-footer{margin-top:56px;padding:24px 0;border-top:1px solid var(--border-subtle);
-  color:var(--muted);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.site-footer a{color:var(--accent);text-decoration:none}
-.site-footer a:hover{text-decoration:underline}
+/* Brand Affinity section */
+.brand-aff{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.ba-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px;transition:all .2s var(--ease)}
+.ba-card:hover{border-color:oklch(93% .008 260/.1)}
+.ba-name{font-size:15px;font-weight:700;margin-bottom:8px}
+.ba-players{display:flex;flex-direction:column;gap:4px}
+.ba-row{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.ba-row img{width:20px;height:20px;border-radius:5px;object-fit:cover;margin-right:6px}
+.ba-row .ba-pname{display:flex;align-items:center;gap:6px}
+.ba-row .ba-count{font-family:'Fira Code',monospace;font-weight:500;font-size:11px}
 
 /* Panel */
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:16px}
+
+/* Footer */
+footer{margin-top:48px;padding:20px 0;border-top:1px solid var(--border-s);
+  color:var(--muted);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:var(--green);text-decoration:none}footer a:hover{text-decoration:underline}
 
 /* Loading */
-.loading{display:flex;flex-direction:column;align-items:center;padding:80px 20px;gap:14px}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);
-  border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.loading{display:flex;flex-direction:column;align-items:center;padding:80px 20px;gap:12px}
+.spin{width:32px;height:32px;border:2.5px solid var(--border);border-top-color:var(--green);
+  border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-/* Responsive */
 @media(max-width:768px){
-  .stat-strip{flex-wrap:wrap}.ss-cell{flex:1 1 45%;min-width:0}
-  .player-grid{grid-template-columns:1fr}
-  .pc-skills{grid-template-columns:1fr}
-  .badge-gallery{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
-  .nav-links{display:none}
+  .grid{grid-template-columns:1fr}
+  .hero-stats{flex-direction:row;gap:16px}.hs{text-align:center}
+  nav{display:none}
+  .badge-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .brand-aff{grid-template-columns:1fr 1fr}
+  .radar-svg{width:150px;height:150px}
 }
 
-/* Fade */
-.fi{opacity:0;transform:translateY(10px);animation:fi .4s var(--ease) forwards}
+/* Entrance animation */
+.fi{opacity:0;transform:translateY(8px);animation:fi .35s var(--ease) forwards}
 @keyframes fi{to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 <div class="ambient"></div>
-<div class="page">
-<div class="shell">
+<div class="page"><div class="shell">
 
-<header class="site-header">
-  <div class="logo-g">
-    <div class="logo-m">P</div>
-    <div><div class="logo-t">Pickle <span>DaaS</span></div>
-    <div class="logo-s">Player Intelligence</div></div>
+<header>
+  <div class="logo">
+    <div class="logo-icon">P</div>
+    <div><div class="logo-label">Pickle <em>DaaS</em></div><div class="logo-sub">Player Intelligence</div></div>
   </div>
-  <div class="nav-links">
+  <nav>
     <a href="brand-intelligence-v2.html">Brands</a>
     <a href="equipment-performance.html">Equipment</a>
+    <a href="investor-walkthrough.html">Investor</a>
     <a href="showcase-portal.html">Portal</a>
-  </div>
+  </nav>
 </header>
 
 <section class="hero fi">
-  <h1>Player <em>Intelligence</em></h1>
-  <p class="sub">57 real players. 1,320 verified badges. AI skill profiles cross-referenced with Courtana ground truth. The players behind the highlights.</p>
+  <div class="hero-row">
+    <div>
+      <h1>Player <em>Intelligence</em></h1>
+      <p class="hero-sub">Real players. Verified badges. AI skill profiles cross-referenced with Courtana ground truth.</p>
+    </div>
+    <div class="hero-stats" id="hero-stats"></div>
+  </div>
 </section>
 
-<div class="stat-strip fi" id="stat-strip"></div>
-
-<div class="search-bar fi">
-  <input class="search-input" id="search" placeholder="Search players…" autocomplete="off">
-  <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">All</button>
-  <button class="filter-chip" data-filter="top" onclick="setFilter('top',this)">Top 10</button>
-  <button class="filter-chip" data-filter="badged" onclick="setFilter('badged',this)">Has Badges</button>
+<div class="controls fi">
+  <input class="search" id="q" placeholder="Search players…" autocomplete="off">
+  <button class="chip on" data-f="all" onclick="filt('all',this)">All</button>
+  <button class="chip" data-f="top" onclick="filt('top',this)">Top 10</button>
+  <button class="chip" data-f="badged" onclick="filt('badged',this)">Has Badges</button>
+  <select class="sort-sel" id="sort-sel" onchange="renderAll()">
+    <option value="clips">Sort: Clips</option>
+    <option value="badges">Sort: Badges</option>
+    <option value="skill">Sort: Avg Skill</option>
+  </select>
 </div>
 
-<div class="loading" id="loading">
-  <div class="spinner"></div>
-  <div style="color:var(--muted);font-size:13px;font-family:'Fira Code',monospace">Loading player data…</div>
-</div>
+<div class="loading" id="ld"><div class="spin"></div><div style="color:var(--muted);font-size:12px;font-family:'Fira Code',monospace">Loading player data…</div></div>
 
 <div id="content" style="display:none">
-  <!-- Leaderboard -->
-  <div class="section-head fi"><h2>Leaderboard</h2><span class="meta" id="lb-count"></span></div>
-  <div class="panel fi"><div class="lb-wrap"><table class="lb-table" id="leaderboard"></table></div></div>
+  <!-- Brand × Player Affinity -->
+  <div class="sec fi"><h2>Brand Affinity</h2><span class="m">which players use which brands</span></div>
+  <div class="brand-aff" id="brand-aff"></div>
 
   <!-- Player Cards -->
-  <div class="section-head fi"><h2>Player Profiles</h2><span class="meta" id="card-count"></span></div>
-  <div class="player-grid" id="player-cards"></div>
+  <div class="sec fi"><h2>Player Profiles</h2><span class="m" id="pcount"></span></div>
+  <div class="grid" id="cards"></div>
 
   <!-- Badge Gallery -->
-  <div class="section-head fi"><h2>Badge Gallery</h2><span class="meta" id="badge-meta"></span></div>
-  <div class="badge-gallery" id="badge-gallery"></div>
+  <div class="sec fi"><h2>Badge Gallery</h2><span class="m" id="bmeta"></span></div>
+  <div class="badge-grid" id="badges"></div>
 
-  <footer class="site-footer">
-    <div>Data from <span id="total-clips">—</span> clips · <a href="showcase-portal.html">Showcase Portal</a></div>
+  <footer>
+    <div>Data from <span id="tc">—</span> clips · <a href="showcase-portal.html">Showcase Portal</a></div>
     <div>Powered by <strong>Pickle DaaS</strong> × <strong>Courtana</strong></div>
   </footer>
 </div>
@@ -283,237 +275,223 @@ body{
 </div></div>
 
 <script>
-const BRAND_COLORS={JOOLA:'oklch(78% .18 155)',Nike:'oklch(72% .14 240)',Selkirk:'oklch(72% .19 30)',
-  CRBN:'oklch(65% .2 300)',Franklin:'oklch(82% .16 85)',HEAD:'oklch(72% .14 240)',
-  Onix:'oklch(72% .16 190)',Courtana:'oklch(65% .2 300)'};
-const SKILL_LABELS={court_coverage:'Cover',kitchen:'Kitchen',power:'Power',
-  touch:'Touch',athleticism:'Athlet',creativity:'Create',
-  court_iq:'IQ',consistency:'Consist',composure:'Compose'};
+const BC={JOOLA:'oklch(76% .17 155)',Nike:'oklch(68% .15 240)',Selkirk:'oklch(70% .2 30)',
+  CRBN:'oklch(62% .22 300)',Franklin:'oklch(82% .16 85)',HEAD:'oklch(68% .15 240)',
+  Onix:'oklch(75% .12 200)',Courtana:'oklch(62% .22 300)'};
+const SL={court_coverage:'Cover',kitchen:'Kitchen',power:'Power',touch:'Touch',
+  athleticism:'Athlet',creativity:'Create',court_iq:'IQ',consistency:'Consist',composure:'Compose'};
+const SK_KEYS=['court_coverage','kitchen','power','touch','athleticism','court_iq','consistency','composure'];
 
-function toggleVid(el){
-  const v=el.querySelector('video');
+function toggleV(el){const v=el.querySelector('video');
   if(el.classList.contains('playing')){v.pause();el.classList.remove('playing')}
-  else{document.querySelectorAll('.mini-vid.playing').forEach(c=>{c.querySelector('video').pause();c.classList.remove('playing')});v.play();el.classList.add('playing')}
-}
+  else{document.querySelectorAll('.mv.playing').forEach(c=>{c.querySelector('video').pause();c.classList.remove('playing')});v.play();el.classList.add('playing')}}
 
-let allPlayers=[];
-let currentFilter='all';
+let ALL=[];let CF='all';
+function filt(f,btn){CF=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');renderAll()}
 
-function setFilter(f,btn){
-  currentFilter=f;
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  renderAll();
-}
-
-function getFiltered(){
-  let p=[...allPlayers];
-  const q=document.getElementById('search').value.toLowerCase();
+function getF(){
+  let p=[...ALL];
+  const q=document.getElementById('q').value.toLowerCase();
   if(q)p=p.filter(x=>x.name.toLowerCase().includes(q));
-  if(currentFilter==='top')p=p.slice(0,10);
-  if(currentFilter==='badged')p=p.filter(x=>x.badges.length>0);
+  if(CF==='top')p=p.slice(0,10);
+  if(CF==='badged')p=p.filter(x=>x.badgeCount>0);
+  const sort=document.getElementById('sort-sel').value;
+  if(sort==='badges')p.sort((a,b)=>b.badgeCount-a.badgeCount);
+  else if(sort==='skill')p.sort((a,b)=>b.avgSkillTotal-a.avgSkillTotal);
+  else p.sort((a,b)=>b.clipCount-a.clipCount);
   return p;
 }
 
 function renderAll(){
-  const players=getFiltered();
-  renderLeaderboard(players);
+  const players=getF();
+  document.getElementById('pcount').textContent=players.length+' players';
   renderCards(players);
-  document.getElementById('card-count').textContent=players.length+' players';
-  document.getElementById('lb-count').textContent=players.length+' ranked';
 }
 
-function renderLeaderboard(players){
-  const t=document.getElementById('leaderboard');
-  let h='<thead><tr><th>#</th><th>Player</th><th>Clips</th><th>Badges</th><th>Top Brand</th><th>Best Skill</th></tr></thead><tbody>';
-  players.forEach((p,i)=>{
-    const topBrand=p.topBrand||'—';
-    const bestSkill=p.bestSkill||{name:'—',val:0};
-    const avatarHtml=p.avatar?`<img src="${p.avatar}" alt="">`:`<div style="width:28px;height:28px;border-radius:6px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent)">${p.name[0]}</div>`;
-    h+=`<tr>
-      <td style="font-family:'Fira Code',monospace;font-weight:700;color:${i<3?'var(--gold)':'var(--muted)'}">${i+1}</td>
-      <td><div class="player-cell">${avatarHtml}<span class="name">${p.name}</span></div></td>
-      <td style="font-family:'Fira Code',monospace;font-weight:500">${p.clipCount}</td>
-      <td style="font-family:'Fira Code',monospace;font-weight:500;color:${p.badges.length?'var(--purple)':'var(--muted)'}">${p.badges.length||'—'}</td>
-      <td><span style="color:${BRAND_COLORS[topBrand]||'var(--text-2)'};font-weight:500">${topBrand}</span></td>
-      <td style="font-family:'Fira Code',monospace;font-size:12px">${bestSkill.name} <span style="color:var(--accent)">${bestSkill.val>0?bestSkill.val.toFixed(1):'—'}</span></td>
-    </tr>`;
+/* ═══ SVG RADAR GENERATOR ═══ */
+function radarSVG(skills,color){
+  const keys=SK_KEYS;const n=keys.length;
+  const cx=90,cy=90,R=72;
+  const angleStep=2*Math.PI/n;
+  const startAngle=-Math.PI/2;
+
+  // Rings
+  let rings='';
+  [.25,.5,.75,1].forEach(s=>{
+    const pts=[];
+    for(let i=0;i<n;i++){const a=startAngle+i*angleStep;pts.push(`${cx+R*s*Math.cos(a)},${cy+R*s*Math.sin(a)}`);}
+    rings+=`<polygon points="${pts.join(' ')}" class="radar-ring"/>`;
   });
-  h+='</tbody>';
-  t.innerHTML=h;
+
+  // Axes
+  let axes='';
+  for(let i=0;i<n;i++){const a=startAngle+i*angleStep;
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}" class="radar-axis"/>`;}
+
+  // Data polygon
+  const pts=[];const dots=[];
+  for(let i=0;i<n;i++){
+    const v=(skills[keys[i]]||0)/10;
+    const a=startAngle+i*angleStep;
+    const px=cx+R*v*Math.cos(a),py=cy+R*v*Math.sin(a);
+    pts.push(`${px},${py}`);
+    dots.push(`<circle cx="${px}" cy="${py}" class="radar-dot" style="fill:${color}"/>`);
+  }
+
+  // Labels
+  let labels='';
+  for(let i=0;i<n;i++){
+    const a=startAngle+i*angleStep;
+    const lx=cx+(R+14)*Math.cos(a),ly=cy+(R+14)*Math.sin(a);
+    labels+=`<text x="${lx}" y="${ly}" class="radar-label">${SL[keys[i]]||keys[i]}</text>`;
+  }
+
+  return `<svg class="radar-svg" viewBox="0 0 180 180">${rings}${axes}
+    <polygon points="${pts.join(' ')}" class="radar-area" style="fill:${color}11;stroke:${color}"/>
+    ${dots}${labels}</svg>`;
 }
 
 function renderCards(players){
-  const container=document.getElementById('player-cards');
-  container.innerHTML='';
-  players.slice(0,30).forEach((p,i)=>{
+  const el=document.getElementById('cards');
+  el.innerHTML='';
+  players.slice(0,40).forEach((p,i)=>{
     const card=document.createElement('div');
-    card.className='player-card fi';
-    card.style.animationDelay=(i*.04)+'s';
+    card.className='card fi';card.style.animationDelay=(i*.03)+'s';
 
-    const avatarHtml=p.avatar
-      ?`<img class="pc-avatar" src="${p.avatar}" alt="${p.name}">`
-      :`<div class="pc-avatar-placeholder">${p.name[0]}</div>`;
+    const avHtml=p.avatar?`<img class="c-avatar" src="${p.avatar}" alt="${p.name}" loading="lazy">`
+      :`<div class="c-avatar-ph">${p.name[0]}</div>`;
 
-    // Skills
-    const skillKeys=['court_coverage','kitchen','power','touch','athleticism','court_iq','consistency','composure'];
-    let skillHtml='';
-    skillKeys.forEach(sk=>{
-      const v=p.avgSkills[sk]||0;
-      const color=v>7?'var(--accent)':v>4?'var(--gold)':'var(--muted)';
-      skillHtml+=`<div class="sk-row"><div class="sk-label">${SKILL_LABELS[sk]||sk}</div>
-        <div class="sk-track"><div class="sk-fill" style="width:${v*10}%;background:${color}"></div></div>
-        <div class="sk-val" style="color:${v>0?color:'var(--muted)'}">${v>0?v.toFixed(1):'—'}</div></div>`;
-    });
+    const color=BC[p.topBrand]||'var(--green)';
 
-    // Badges (top 6)
-    let badgeHtml='';
-    const badgeCounts={};
-    p.badges.forEach(b=>{badgeCounts[b.name]=(badgeCounts[b.name]||{count:0,img:b.img});badgeCounts[b.name].count++});
-    const topBadges=Object.entries(badgeCounts).sort((a,b)=>b[1].count-a[1].count).slice(0,6);
-    topBadges.forEach(([name,data])=>{
-      badgeHtml+=`<div class="badge-chip">${data.img?`<img src="${data.img}" alt="">`:''}<span>${name}</span><span class="badge-count">×${data.count}</span></div>`;
-    });
+    // Radar
+    const radarHtml=radarSVG(p.avgSkills,color);
 
-    // Equipment pills
-    let equipHtml='';
-    const topBrands=Object.entries(p.brands).sort((a,b)=>b[1]-a[1]).slice(0,4);
-    topBrands.forEach(([name,count])=>{
-      const color=BRAND_COLORS[name]||'var(--text-2)';
-      equipHtml+=`<div class="equip-pill" style="color:${color};border-color:${color}">${name} <span style="opacity:.5">×${count}</span></div>`;
-    });
+    // Badges (top 5)
+    const bc={};p.badges.forEach(b=>{if(!bc[b.name])bc[b.name]={count:0,img:b.img};bc[b.name].count++});
+    const topB=Object.entries(bc).sort((a,b)=>b[1].count-a[1].count).slice(0,5);
+    let bdgHtml=topB.map(([n,d])=>`<div class="bdg">${d.img?`<img src="${d.img}" loading="lazy">`:''}<span>${n}</span><span class="bdg-n">×${d.count}</span></div>`).join('');
+
+    // Equipment
+    const topE=Object.entries(p.brands).sort((a,b)=>b[1]-a[1]).slice(0,4);
+    let eqHtml=topE.map(([n,c])=>{const cl=BC[n]||'var(--text-2)';return`<div class="eq" style="color:${cl};border-color:${cl}">${n} ×${c}</div>`}).join('');
 
     // Clips
-    let clipHtml='';
-    p.clips.slice(0,6).forEach(c=>{
-      clipHtml+=`<div class="mini-vid" onclick="toggleVid(this)">
-        <video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video>
-        <div class="play-ico"></div></div>`;
-    });
+    let clHtml=p.clips.slice(0,8).map(c=>`<div class="mv" onclick="toggleV(this)"><video src="${c.url}" poster="${c.thumb}" preload="none" loop muted playsinline></video></div>`).join('');
 
     card.innerHTML=`
-      <div class="pc-top">
-        ${avatarHtml}
-        <div class="pc-info">
-          <div class="pc-name">${p.name}</div>
-          <div class="pc-meta">
-            <span class="pc-tag clips">${p.clipCount} clips</span>
-            ${p.badges.length?`<span class="pc-tag verified">${p.badges.length} badges</span>`:''}
+      <div class="c-top">${avHtml}
+        <div class="c-info"><div class="c-name">${p.name}</div>
+          <div class="c-tags">
+            <span class="c-tag clips-tag">${p.clipCount} clips</span>
+            ${p.badgeCount?`<span class="c-tag badge-tag">${p.badgeCount} badges</span>`:''}
+            ${p.courtanaLinked?'<span class="c-tag verified">✓ Verified</span>':''}
           </div>
         </div>
-        <div><div class="pc-stat-num">${p.clipCount}</div><div class="pc-stat-lbl">highlights</div></div>
+        <div><div class="c-num">${p.clipCount}</div><div class="c-num-lbl">highlights</div></div>
       </div>
-      <div class="pc-skills">${skillHtml}</div>
-      ${badgeHtml?`<div class="pc-badges">${badgeHtml}</div>`:''}
-      ${equipHtml?`<div class="pc-equipment">${equipHtml}</div>`:''}
-      ${clipHtml?`<div class="pc-clips">${clipHtml}</div>`:''}
+      <div class="c-radar">${radarHtml}</div>
+      ${bdgHtml?`<div class="c-badges">${bdgHtml}</div>`:''}
+      ${eqHtml?`<div class="c-equip">${eqHtml}</div>`:''}
+      ${clHtml?`<div class="c-clips">${clHtml}</div>`:''}
     `;
-    container.appendChild(card);
+    el.appendChild(card);
+  });
+}
+
+function renderBrandAffinity(players){
+  const el=document.getElementById('brand-aff');
+  const brandPlayers={};
+  players.forEach(p=>{
+    Object.entries(p.brands).forEach(([b,c])=>{
+      if(!brandPlayers[b])brandPlayers[b]=[];
+      brandPlayers[b].push({name:p.name,count:c,avatar:p.avatar});
+    });
+  });
+  const sorted=Object.entries(brandPlayers).sort((a,b)=>b[1].reduce((s,x)=>s+x.count,0)-a[1].reduce((s,x)=>s+x.count,0));
+  sorted.slice(0,6).forEach(([brand,plist])=>{
+    const color=BC[brand]||'var(--text-2)';
+    const top5=plist.sort((a,b)=>b.count-a.count).slice(0,5);
+    const card=document.createElement('div');card.className='ba-card fi';
+    card.innerHTML=`<div class="ba-name" style="color:${color}">${brand}</div>
+      <div class="ba-players">${top5.map(p=>{
+        const avHtml=p.avatar?`<img src="${p.avatar}" loading="lazy">`:`<div style="width:20px;height:20px;border-radius:5px;background:var(--surface-3);display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green)">${p.name[0]}</div>`;
+        return`<div class="ba-row"><span class="ba-pname">${avHtml}${p.name}</span><span class="ba-count" style="color:${color}">${p.count}</span></div>`
+      }).join('')}</div>`;
+    el.appendChild(card);
   });
 }
 
 function renderBadgeGallery(badges){
-  const container=document.getElementById('badge-gallery');
-  document.getElementById('badge-meta').textContent=badges.length+' unique badges · '+badges.reduce((s,b)=>s+b.count,0)+' awards';
+  const el=document.getElementById('badges');
+  document.getElementById('bmeta').textContent=badges.length+' types · '+badges.reduce((s,b)=>s+b.count,0)+' awards';
   badges.forEach(b=>{
-    const card=document.createElement('div');
-    card.className='bg-card fi';
-    const tierClass=b.tier==='gold'?'gold':b.tier==='silver'?'silver':b.tier==='bronze'?'bronze':'brick';
-    card.innerHTML=`
-      ${b.img?`<img src="${b.img}" alt="${b.name}">`:'<div style="width:48px;height:48px;border-radius:8px;background:var(--surface-3);margin:0 auto 8px"></div>'}
-      <div class="bg-name">${b.name}</div>
-      <div class="bg-desc">${b.description||''}</div>
-      <div class="bg-count">${b.count}</div>
-      <div class="bg-tier ${tierClass}">${b.tier||'—'}</div>
-    `;
-    container.appendChild(card);
+    const card=document.createElement('div');card.className='bg-c fi';
+    const tc=b.tier==='gold'?'gold':b.tier==='silver'?'silver':b.tier==='bronze'?'bronze':'brick';
+    card.innerHTML=`${b.img?`<img src="${b.img}" loading="lazy">`:''}<div class="bg-name">${b.name}</div>
+      <div class="bg-desc">${b.description}</div><div class="bg-count">${b.count}</div>
+      <div class="bg-tier ${tc}">${b.tier||'—'}</div>`;
+    el.appendChild(card);
   });
 }
 
 (async function(){
-  // Try merged corpus first, fall back to regular
   let clips=[];
-  try{
-    const res=await fetch('../merged-corpus.json');
-    if(res.ok){const d=await res.json();clips=Array.isArray(d)?d:d.clips||[];}
-  }catch(e){}
-  if(!clips.length){
-    try{const res=await fetch('../corpus-export.json');if(res.ok)clips=await res.json();}catch(e){}
-  }
+  try{const r=await fetch('../merged-corpus.json');if(r.ok){const d=await r.json();clips=Array.isArray(d)?d:d.clips||[];}}catch(e){}
+  if(!clips.length){try{const r=await fetch('../corpus-export.json');if(r.ok)clips=await r.json();}catch(e){}}
 
-  // Build player data
-  const playerMap={};
-  const badgeMap={};
+  const pm={};const bm={};
 
   clips.forEach(clip=>{
-    const participants=clip.courtana_participants||clip.participants||[];
-    const badges=clip.courtana_badge_awards||clip.courtana_badges||[];
+    const parts=clip.courtana_participants||clip.participants||[];
+    const bas=clip.courtana_badge_awards||clip.courtana_badges||[];
     const brands=clip.brands||[];
 
-    participants.forEach(p=>{
-      const u=p.username||'';
-      if(!u||u==='Unknown')return;
-      if(!playerMap[u])playerMap[u]={name:u,clipCount:0,clips:[],avatar:p.avatar_file||'',
-        level:0,rank:'',brands:{},badges:[],skills:{}};
-      const pl=playerMap[u];
-      pl.clipCount++;
-      pl.clips.push(clip);
+    parts.forEach(p=>{
+      const u=p.username||'';if(!u||u==='Unknown')return;
+      if(!pm[u])pm[u]={name:u,clipCount:0,clips:[],avatar:p.avatar_file||'',
+        brands:{},badges:[],skills:{},badgeCount:0,courtanaLinked:!!clip.courtana_linked,avgSkills:{},avgSkillTotal:0,topBrand:'—'};
+      const pl=pm[u];pl.clipCount++;
+      pl.clips.push({uuid:clip.uuid||'',q:clip.quality||0,v:clip.viral||0,url:clip.video_url||'',thumb:clip.thumbnail||''});
       if(!pl.avatar&&p.avatar_file)pl.avatar=p.avatar_file;
-      const lvl=p.level||0;
-      if(lvl>pl.level){pl.level=lvl;pl.rank=p.rank_name||'';}
-      brands.forEach(b=>{
-        const n=typeof b==='string'?b:(b.name||'');
-        if(n)pl.brands[n]=(pl.brands[n]||0)+1;
-      });
-      const sk=clip.skills||{};
-      Object.entries(sk).forEach(([k,v])=>{
-        if(v&&v>0){if(!pl.skills[k])pl.skills[k]=[];pl.skills[k].push(v);}
-      });
+      if(clip.courtana_linked)pl.courtanaLinked=true;
+      brands.forEach(b=>{const n=typeof b==='string'?b:(b.name||'');if(n)pl.brands[n]=(pl.brands[n]||0)+1;});
+      Object.entries(clip.skills||{}).forEach(([k,v])=>{if(v&&v>0){if(!pl.skills[k])pl.skills[k]=[];pl.skills[k].push(v);}});
     });
 
-    badges.forEach(ba=>{
-      const name=ba.badge_name||'';
-      if(!name)return;
-      if(!badgeMap[name])badgeMap[name]={name,count:0,img:ba.badge_thumbnail_small||ba.badge_file||'',
+    bas.forEach(ba=>{
+      const name=ba.badge_name||'';if(!name)return;
+      if(!bm[name])bm[name]={name,count:0,img:ba.badge_thumbnail_small||ba.badge_file||'',
         description:ba.badge_description||'',tier:ba.badge_tier||'',criteria:ba.badge_criteria||''};
-      badgeMap[name].count++;
-
-      // Assign to players in this clip
-      participants.forEach(p=>{
-        const u=p.username||'';
-        if(u&&playerMap[u])playerMap[u].badges.push({name,img:ba.badge_thumbnail_small||ba.badge_file||''});
-      });
+      bm[name].count++;
+      parts.forEach(p=>{const u=p.username||'';if(u&&pm[u]){pm[u].badges.push({name,img:ba.badge_thumbnail_small||ba.badge_file||''});pm[u].badgeCount++;}});
     });
   });
 
-  // Compute averages
-  allPlayers=Object.values(playerMap).map(p=>{
-    p.avgSkills={};
-    Object.entries(p.skills).forEach(([k,vals])=>{p.avgSkills[k]=vals.reduce((a,b)=>a+b,0)/vals.length;});
+  ALL=Object.values(pm).map(p=>{
+    p.avgSkills={};let total=0;let count=0;
+    Object.entries(p.skills).forEach(([k,vals])=>{const avg=vals.reduce((a,b)=>a+b,0)/vals.length;p.avgSkills[k]=avg;total+=avg;count++;});
+    p.avgSkillTotal=count?total/count:0;
     p.topBrand=Object.entries(p.brands).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-    const skillEntries=Object.entries(p.avgSkills).filter(([,v])=>v>0);
-    p.bestSkill=skillEntries.length?{name:SKILL_LABELS[skillEntries.sort((a,b)=>b[1]-a[1])[0][0]]||skillEntries[0][0],val:skillEntries.sort((a,b)=>b[1]-a[1])[0][1]}:{name:'—',val:0};
+    p.clips.sort((a,b)=>(b.q*Math.max(b.v,1))-(a.q*Math.max(a.v,1)));
     return p;
   }).sort((a,b)=>b.clipCount-a.clipCount);
 
-  const allBadges=Object.values(badgeMap).sort((a,b)=>b.count-a.count);
-
-  // Stats
+  const allBadges=Object.values(bm).sort((a,b)=>b.count-a.count);
   const totalBadges=allBadges.reduce((s,b)=>s+b.count,0);
-  document.getElementById('stat-strip').innerHTML=`
-    <div class="ss-cell"><div class="ss-val green">${allPlayers.length}</div><div class="ss-lbl">Players</div></div>
-    <div class="ss-cell"><div class="ss-val purple">${totalBadges.toLocaleString()}</div><div class="ss-lbl">Badges Earned</div></div>
-    <div class="ss-cell"><div class="ss-val gold">${allBadges.length}</div><div class="ss-lbl">Badge Types</div></div>
-    <div class="ss-cell"><div class="ss-val fire">${clips.length}</div><div class="ss-lbl">Clips Analyzed</div></div>
-  `;
 
-  document.getElementById('loading').style.display='none';
+  // Hero stats
+  document.getElementById('hero-stats').innerHTML=`
+    <div class="hs"><div class="hs-val g">${ALL.length}</div><div class="hs-lbl">Players</div></div>
+    <div class="hs"><div class="hs-val p">${totalBadges.toLocaleString()}</div><div class="hs-lbl">Badges</div></div>
+    <div class="hs"><div class="hs-val o">${allBadges.length}</div><div class="hs-lbl">Types</div></div>
+    <div class="hs"><div class="hs-val f">${clips.length}</div><div class="hs-lbl">Clips</div></div>`;
+
+  document.getElementById('ld').style.display='none';
   document.getElementById('content').style.display='block';
-  document.getElementById('total-clips').textContent=clips.length;
+  document.getElementById('tc').textContent=clips.length;
+  document.getElementById('q').addEventListener('input',()=>renderAll());
 
-  // Search handler
-  document.getElementById('search').addEventListener('input',()=>renderAll());
-
+  renderBrandAffinity(ALL);
   renderAll();
   renderBadgeGallery(allBadges);
 })();
