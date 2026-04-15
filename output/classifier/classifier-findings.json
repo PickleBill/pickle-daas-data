@@ -1,0 +1,644 @@
+{
+  "generated_at": "2026-04-15T08:28:28.482446+00:00",
+  "taxonomy_version": 5,
+  "researcher_count": 3,
+  "findings": [
+    {
+      "title": "Extreme Rule Imbalance - JOOLA Dominates Classification",
+      "category": "rule_effectiveness",
+      "severity": "high",
+      "evidence": "JOOLA rule fires 3,295 times while the second-highest (Nike) fires only 319 times, representing 87% of all rule firings across 49 rules.",
+      "recommendation": "Investigate JOOLA rule for overfitting or false positives; consider splitting into more granular sub-rules or reviewing its matching pattern for unintended scope.",
+      "confidence": 0.95,
+      "researcher": "rule_effectiveness",
+      "raw_data": {
+        "total_rules": 49,
+        "never_fired_count": 0,
+        "never_fired_rules": [],
+        "top_10_by_fire_count": [
+          [
+            "JOOLA",
+            3295
+          ],
+          [
+            "Nike",
+            319
+          ],
+          [
+            "PICKLEBALL",
+            116
+          ],
+          [
+            "HEAD",
+            74
+          ],
+          [
+            "adidas",
+            57
+          ],
+          [
+            "Reolink",
+            35
+          ],
+          [
+            "On",
+            35
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ],
+          [
+            "7 OAKS",
+            22
+          ],
+          [
+            "7",
+            21
+          ]
+        ],
+        "bottom_10_low_fire": [
+          [
+            "Selkirk",
+            1
+          ],
+          [
+            "CRBN",
+            1
+          ],
+          [
+            "H2",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "title": "Severely Underutilized Rules",
+      "category": "rule_effectiveness",
+      "severity": "high",
+      "evidence": "Three rules (Selkirk, CRBN, H2) fire only 1-3 times total across the entire dataset.",
+      "recommendation": "Review these rules' matching criteria to determine if they are too restrictive, obsolete, or targeting edge cases; consider consolidating or removing if no longer needed.",
+      "confidence": 0.92,
+      "researcher": "rule_effectiveness",
+      "raw_data": {
+        "total_rules": 49,
+        "never_fired_count": 0,
+        "never_fired_rules": [],
+        "top_10_by_fire_count": [
+          [
+            "JOOLA",
+            3295
+          ],
+          [
+            "Nike",
+            319
+          ],
+          [
+            "PICKLEBALL",
+            116
+          ],
+          [
+            "HEAD",
+            74
+          ],
+          [
+            "adidas",
+            57
+          ],
+          [
+            "Reolink",
+            35
+          ],
+          [
+            "On",
+            35
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ],
+          [
+            "7 OAKS",
+            22
+          ],
+          [
+            "7",
+            21
+          ]
+        ],
+        "bottom_10_low_fire": [
+          [
+            "Selkirk",
+            1
+          ],
+          [
+            "CRBN",
+            1
+          ],
+          [
+            "H2",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "title": "Wide Distribution Gap Across Mid-Tier Rules",
+      "category": "rule_effectiveness",
+      "severity": "medium",
+      "evidence": "Rules 3-10 show declining fire counts from 116 down to 21, with no clear clustering pattern.",
+      "recommendation": "Analyze whether rules 3-10 are addressing distinct categories or if some overlap exists; consolidate overlapping rules to reduce rule count and improve maintainability.",
+      "confidence": 0.78,
+      "researcher": "rule_effectiveness",
+      "raw_data": {
+        "total_rules": 49,
+        "never_fired_count": 0,
+        "never_fired_rules": [],
+        "top_10_by_fire_count": [
+          [
+            "JOOLA",
+            3295
+          ],
+          [
+            "Nike",
+            319
+          ],
+          [
+            "PICKLEBALL",
+            116
+          ],
+          [
+            "HEAD",
+            74
+          ],
+          [
+            "adidas",
+            57
+          ],
+          [
+            "Reolink",
+            35
+          ],
+          [
+            "On",
+            35
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ],
+          [
+            "7 OAKS",
+            22
+          ],
+          [
+            "7",
+            21
+          ]
+        ],
+        "bottom_10_low_fire": [
+          [
+            "Selkirk",
+            1
+          ],
+          [
+            "CRBN",
+            1
+          ],
+          [
+            "H2",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "title": "No Dead Rules Detected",
+      "category": "rule_effectiveness",
+      "severity": "low",
+      "evidence": "All 49 rules have fired at least once (never_fired_count = 0), indicating no completely unused rules.",
+      "recommendation": "Continue monitoring low-firing rules quarterly; establish a minimum firing threshold (e.g., 5+ fires) to identify candidates for deprecation.",
+      "confidence": 0.88,
+      "researcher": "rule_effectiveness",
+      "raw_data": {
+        "total_rules": 49,
+        "never_fired_count": 0,
+        "never_fired_rules": [],
+        "top_10_by_fire_count": [
+          [
+            "JOOLA",
+            3295
+          ],
+          [
+            "Nike",
+            319
+          ],
+          [
+            "PICKLEBALL",
+            116
+          ],
+          [
+            "HEAD",
+            74
+          ],
+          [
+            "adidas",
+            57
+          ],
+          [
+            "Reolink",
+            35
+          ],
+          [
+            "On",
+            35
+          ],
+          [
+            "PICKLEBALL KINGDOM",
+            24
+          ],
+          [
+            "7 OAKS",
+            22
+          ],
+          [
+            "7",
+            21
+          ]
+        ],
+        "bottom_10_low_fire": [
+          [
+            "Selkirk",
+            1
+          ],
+          [
+            "CRBN",
+            1
+          ],
+          [
+            "H2",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "title": "Venue Equipment Dominates Fallback (80.6%)",
+      "category": "taxonomy_gap",
+      "severity": "high",
+      "evidence": "274 of 340 fallback items (80.6%) are categorized as venue_equipment, suggesting the category is either too broad or lacks sufficient sub-categories.",
+      "recommendation": "Decompose venue_equipment into sport-specific or function-specific subcategories (e.g., gym_equipment, field_equipment, seating, infrastructure).",
+      "confidence": 0.95,
+      "researcher": "taxonomy_gap",
+      "raw_data": {
+        "coverage_pct": 92.6,
+        "fallback_total": 340,
+        "top_fallback_categories": {
+          "venue_equipment": 274,
+          "apparel_top": 22,
+          "clothing_brand": 9,
+          "shoes": 6,
+          "vehicle": 5,
+          "court_equipment": 4,
+          "drink_bottle": 3,
+          "other": 2
+        },
+        "top_fallback_brand_names": {
+          "R&M_foz_wifi_goomba": 30,
+          "PSA": 17,
+          "Nicol": 14,
+          "W": 10,
+          "PKLR": 9,
+          "ODESSA": 5,
+          "VAERSA": 4,
+          "ACE": 4,
+          "WD": 4,
+          "FANADIR": 4,
+          "ELGOUNA": 4,
+          "Davenport & Company": 4,
+          "COMCAST BUSINESS": 4,
+          "USA": 3,
+          "READY TO PLAY": 3
+        },
+        "investigate_queue_size": 50,
+        "research_found_real_brands": 10,
+        "research_found_cross_sport": 5
+      }
+    },
+    {
+      "title": "Unrecognized Brand Names Suggest Missing Entity Rules",
+      "category": "taxonomy_gap",
+      "severity": "high",
+      "evidence": "Top fallback brand 'R&M_foz_wifi_goomba' (30 hits) appears nonsensical; research identified 10 real brands in the queue, indicating the classifier lacks patterns for emerging or variant brand name formats.",
+      "recommendation": "Implement fuzzy matching or alternate name rules for known brands, and establish a weekly brand discovery workflow for the 50-item investigate queue.",
+      "confidence": 0.92,
+      "researcher": "taxonomy_gap",
+      "raw_data": {
+        "coverage_pct": 92.6,
+        "fallback_total": 340,
+        "top_fallback_categories": {
+          "venue_equipment": 274,
+          "apparel_top": 22,
+          "clothing_brand": 9,
+          "shoes": 6,
+          "vehicle": 5,
+          "court_equipment": 4,
+          "drink_bottle": 3,
+          "other": 2
+        },
+        "top_fallback_brand_names": {
+          "R&M_foz_wifi_goomba": 30,
+          "PSA": 17,
+          "Nicol": 14,
+          "W": 10,
+          "PKLR": 9,
+          "ODESSA": 5,
+          "VAERSA": 4,
+          "ACE": 4,
+          "WD": 4,
+          "FANADIR": 4,
+          "ELGOUNA": 4,
+          "Davenport & Company": 4,
+          "COMCAST BUSINESS": 4,
+          "USA": 3,
+          "READY TO PLAY": 3
+        },
+        "investigate_queue_size": 50,
+        "research_found_real_brands": 10,
+        "research_found_cross_sport": 5
+      }
+    },
+    {
+      "title": "Cross-Sport Misclassification Risk",
+      "category": "taxonomy_gap",
+      "severity": "medium",
+      "evidence": "Research found 5 cross-sport items in the queue, indicating the classifier may not handle multi-sport or sport-agnostic equipment correctly.",
+      "recommendation": "Add a 'multi_sport' or 'cross_sport' category, or create sport-independent parent categories for shared equipment (e.g., bags, protective gear).",
+      "confidence": 0.78,
+      "researcher": "taxonomy_gap",
+      "raw_data": {
+        "coverage_pct": 92.6,
+        "fallback_total": 340,
+        "top_fallback_categories": {
+          "venue_equipment": 274,
+          "apparel_top": 22,
+          "clothing_brand": 9,
+          "shoes": 6,
+          "vehicle": 5,
+          "court_equipment": 4,
+          "drink_bottle": 3,
+          "other": 2
+        },
+        "top_fallback_brand_names": {
+          "R&M_foz_wifi_goomba": 30,
+          "PSA": 17,
+          "Nicol": 14,
+          "W": 10,
+          "PKLR": 9,
+          "ODESSA": 5,
+          "VAERSA": 4,
+          "ACE": 4,
+          "WD": 4,
+          "FANADIR": 4,
+          "ELGOUNA": 4,
+          "Davenport & Company": 4,
+          "COMCAST BUSINESS": 4,
+          "USA": 3,
+          "READY TO PLAY": 3
+        },
+        "investigate_queue_size": 50,
+        "research_found_real_brands": 10,
+        "research_found_cross_sport": 5
+      }
+    },
+    {
+      "title": "Ambiguous Single-Letter Brand Codes",
+      "category": "taxonomy_gap",
+      "severity": "medium",
+      "evidence": "Fallback names 'W', 'ACE', 'WD' (single letters or abbreviations with 4\u201310 hits each) lack sufficient context to distinguish brands from typos or abbreviations.",
+      "recommendation": "Create validation rules to flag single-letter or 2-letter brand tokens and require manual review or context-dependent disambiguation.",
+      "confidence": 0.8,
+      "researcher": "taxonomy_gap",
+      "raw_data": {
+        "coverage_pct": 92.6,
+        "fallback_total": 340,
+        "top_fallback_categories": {
+          "venue_equipment": 274,
+          "apparel_top": 22,
+          "clothing_brand": 9,
+          "shoes": 6,
+          "vehicle": 5,
+          "court_equipment": 4,
+          "drink_bottle": 3,
+          "other": 2
+        },
+        "top_fallback_brand_names": {
+          "R&M_foz_wifi_goomba": 30,
+          "PSA": 17,
+          "Nicol": 14,
+          "W": 10,
+          "PKLR": 9,
+          "ODESSA": 5,
+          "VAERSA": 4,
+          "ACE": 4,
+          "WD": 4,
+          "FANADIR": 4,
+          "ELGOUNA": 4,
+          "Davenport & Company": 4,
+          "COMCAST BUSINESS": 4,
+          "USA": 3,
+          "READY TO PLAY": 3
+        },
+        "investigate_queue_size": 50,
+        "research_found_real_brands": 10,
+        "research_found_cross_sport": 5
+      }
+    },
+    {
+      "title": "Strong bias toward niche/characteristic-driven approvals",
+      "category": "decision_pattern",
+      "severity": "high",
+      "evidence": "49 approvals with zero sponsor subtypes indicates Bill filters by product characteristics (paddle, apparel, shoes) rather than brand partnerships or commercial relationships.",
+      "recommendation": "Classifier should weight product-level attributes (material, function, specificity) over sponsor tier or brand recognition; flag generic/broad sponsor categories for additional scrutiny.",
+      "confidence": 0.92,
+      "researcher": "decision_pattern",
+      "raw_data": {
+        "approved_count": 49,
+        "rejected_count": 2,
+        "investigate_pending": 50,
+        "overrides_used": 3,
+        "approved_by_revenue_potential": {
+          "high": 18,
+          "medium": 14,
+          "low": 5,
+          "none": 12
+        },
+        "approved_by_sponsor_subtype": {
+          "none": 49
+        },
+        "approved_by_primary_category": {
+          "sponsor_signage": 10,
+          "unknown": 10,
+          "paddle": 6,
+          "apparel": 6,
+          "facility_chain": 5,
+          "shoes": 4,
+          "camera": 3,
+          "broadcast_tech": 2,
+          "court_surface": 1,
+          "accessory": 1,
+          "venue_brand": 1
+        }
+      }
+    },
+    {
+      "title": "Pending investigations suggest verification-seeking behavior",
+      "category": "decision_pattern",
+      "severity": "high",
+      "evidence": "50 items pending investigation vs. 49 approved indicates Bill uses 'pending' as a holding state to gather consensus and harden ideas before committing.",
+      "recommendation": "Surface multi-perspective data during investigation phase: alternative category tags, similar historical decisions, and secondary expert opinions to enable faster consensus-building.",
+      "confidence": 0.88,
+      "researcher": "decision_pattern",
+      "raw_data": {
+        "approved_count": 49,
+        "rejected_count": 2,
+        "investigate_pending": 50,
+        "overrides_used": 3,
+        "approved_by_revenue_potential": {
+          "high": 18,
+          "medium": 14,
+          "low": 5,
+          "none": 12
+        },
+        "approved_by_sponsor_subtype": {
+          "none": 49
+        },
+        "approved_by_primary_category": {
+          "sponsor_signage": 10,
+          "unknown": 10,
+          "paddle": 6,
+          "apparel": 6,
+          "facility_chain": 5,
+          "shoes": 4,
+          "camera": 3,
+          "broadcast_tech": 2,
+          "court_surface": 1,
+          "accessory": 1,
+          "venue_brand": 1
+        }
+      }
+    },
+    {
+      "title": "Extremely low rejection rate signals high approval threshold clarity",
+      "category": "decision_pattern",
+      "severity": "medium",
+      "evidence": "Only 2 rejections across 101 classified items (1.98%) with 3 overrides suggests Bill has strong, consistent criteria but may use overrides to re-examine borderline cases.",
+      "recommendation": "Extract decision rules from the 2 rejected items and 3 override cases; create explicit rubric for 'characteristics-based approval' to reduce pending queue and catch edge cases earlier.",
+      "confidence": 0.85,
+      "researcher": "decision_pattern",
+      "raw_data": {
+        "approved_count": 49,
+        "rejected_count": 2,
+        "investigate_pending": 50,
+        "overrides_used": 3,
+        "approved_by_revenue_potential": {
+          "high": 18,
+          "medium": 14,
+          "low": 5,
+          "none": 12
+        },
+        "approved_by_sponsor_subtype": {
+          "none": 49
+        },
+        "approved_by_primary_category": {
+          "sponsor_signage": 10,
+          "unknown": 10,
+          "paddle": 6,
+          "apparel": 6,
+          "facility_chain": 5,
+          "shoes": 4,
+          "camera": 3,
+          "broadcast_tech": 2,
+          "court_surface": 1,
+          "accessory": 1,
+          "venue_brand": 1
+        }
+      }
+    },
+    {
+      "title": "Revenue potential decoupled from approval likelihood",
+      "category": "decision_pattern",
+      "severity": "medium",
+      "evidence": "High-revenue items approved (18) but also 12 'none' revenue items approved; no correlation visible between revenue tier and approval, confirming characteristics-over-commercial preference.",
+      "recommendation": "Remove revenue potential from primary classifier features; instead use product category specificity, uniqueness, and functional differentiation as primary signals.",
+      "confidence": 0.8,
+      "researcher": "decision_pattern",
+      "raw_data": {
+        "approved_count": 49,
+        "rejected_count": 2,
+        "investigate_pending": 50,
+        "overrides_used": 3,
+        "approved_by_revenue_potential": {
+          "high": 18,
+          "medium": 14,
+          "low": 5,
+          "none": 12
+        },
+        "approved_by_sponsor_subtype": {
+          "none": 49
+        },
+        "approved_by_primary_category": {
+          "sponsor_signage": 10,
+          "unknown": 10,
+          "paddle": 6,
+          "apparel": 6,
+          "facility_chain": 5,
+          "shoes": 4,
+          "camera": 3,
+          "broadcast_tech": 2,
+          "court_surface": 1,
+          "accessory": 1,
+          "venue_brand": 1
+        }
+      }
+    },
+    {
+      "title": "Facility/venue categories underweighted relative to gear categories",
+      "category": "decision_pattern",
+      "severity": "low",
+      "evidence": "Facility-related approvals (facility_chain: 5, venue_brand: 1, court_surface: 1) represent 7 of 49 approvals vs. 24 for gear (paddle, apparel, shoes, accessory combined).",
+      "recommendation": "Test hypothesis that Bill favors tangible, player-facing characteristics over venue/infrastructure; clarify approval criteria for facility and sponsor_signage categories with explicit examples.",
+      "confidence": 0.76,
+      "researcher": "decision_pattern",
+      "raw_data": {
+        "approved_count": 49,
+        "rejected_count": 2,
+        "investigate_pending": 50,
+        "overrides_used": 3,
+        "approved_by_revenue_potential": {
+          "high": 18,
+          "medium": 14,
+          "low": 5,
+          "none": 12
+        },
+        "approved_by_sponsor_subtype": {
+          "none": 49
+        },
+        "approved_by_primary_category": {
+          "sponsor_signage": 10,
+          "unknown": 10,
+          "paddle": 6,
+          "apparel": 6,
+          "facility_chain": 5,
+          "shoes": 4,
+          "camera": 3,
+          "broadcast_tech": 2,
+          "court_surface": 1,
+          "accessory": 1,
+          "venue_brand": 1
+        }
+      }
+    }
+  ]
+}
