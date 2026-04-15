@@ -1,12 +1,12 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-15T14:30:59.154583+00:00_
+_Generated: 2026-04-15T16:19:25.062517+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 2764 clips
-- **Total analysis files on disk:** 4586 (4586 ≥500 bytes)
-- **Minutes since last analysis:** 200.6
-- **Human flags:** 37 total (30 real, rest seed)
+- **Corpus on gh-pages:** 3081 clips
+- **Total analysis files on disk:** 4614 (4614 ≥500 bytes)
+- **Minutes since last analysis:** 3.0
+- **Human flags:** 51 total (44 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
@@ -39,7 +39,7 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands | 402/500 | 80% |
+| brand_detection.brands | 403/500 | 81% |
 | badge_intelligence.predicted_badges | 491/500 | 98% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
@@ -52,12 +52,12 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 37
-- **Real (non-seed) flags:** 30
+- **Total flags captured:** 51
+- **Real (non-seed) flags:** 44
 
 Flags by field:
-- `badge_predictions` — 29 flag(s)
-- `overall_accuracy` — 2 flag(s)
+- `badge_predictions` — 42 flag(s)
+- `overall_accuracy` — 3 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
@@ -65,11 +65,11 @@ Flags by field:
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 13% precision — 285 false positives out of 32
-- `_systemic_Di...` · `badge_predictions` rating 1 · HALLUCINATED BADGE: 'Dink Machine' was predicted 141 times but Courtana never aw
-- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 97 times but the model only c
-- `_systemic_Fr...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Fresh Fit' was awarded by Courtana 64 times but the model only 
-- `_systemic_Le...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Legendary Look' was awarded by Courtana 20 times but the model 
+- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 18% precision — 1076 false positives out of 1
+- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 23% precision — 836 false positives out of 10
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 8% precision — 729 false positives out of 788
+- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 142 times but the model only 
+- `_systemic_Di...` · `badge_predictions` rating 1 · HALLUCINATED BADGE: 'Dink Machine' was predicted 143 times but Courtana never aw
 
 ---
 
