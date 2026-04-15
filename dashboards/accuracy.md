@@ -1,12 +1,12 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-15T22:46:28.229904+00:00_
+_Generated: 2026-04-15T22:48:33.376797+00:00_
 
 ## Summary
 
 - **Corpus on gh-pages:** 3135 clips
 - **Total analysis files on disk:** 4640 (4640 ≥500 bytes)
-- **Minutes since last analysis:** 46.2
-- **Human flags:** 51 total (44 real, rest seed)
+- **Minutes since last analysis:** 48.3
+- **Human flags:** 62 total (55 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
@@ -52,12 +52,12 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 51
-- **Real (non-seed) flags:** 44
+- **Total flags captured:** 62
+- **Real (non-seed) flags:** 55
 
 Flags by field:
-- `badge_predictions` — 42 flag(s)
-- `overall_accuracy` — 3 flag(s)
+- `badge_predictions` — 52 flag(s)
+- `overall_accuracy` — 4 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
@@ -65,11 +65,11 @@ Flags by field:
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 18% precision — 1076 false positives out of 1
-- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 23% precision — 836 false positives out of 10
-- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 8% precision — 729 false positives out of 788
-- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 142 times but the model only 
-- `_systemic_Di...` · `badge_predictions` rating 1 · HALLUCINATED BADGE: 'Dink Machine' was predicted 143 times but Courtana never aw
+- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 19% precision — 1115 false positives out of 1
+- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 26% precision — 863 false positives out of 11
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 8% precision — 749 false positives out of 811
+- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 161 times but the model only 
+- `_systemic_Fr...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Fresh Fit' was awarded by Courtana 115 times but the model only
 
 ---
 
