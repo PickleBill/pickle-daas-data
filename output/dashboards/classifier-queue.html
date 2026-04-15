@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classification Queue — Pickle DaaS</title>
+<style>
+  :root {
+    --bg: #0b0f14;
+    --panel: #141a22;
+    --panel-hi: #1c2430;
+    --border: #2a3341;
+    --text: #e7ecf3;
+    --mute: #8a95a6;
+    --accent: #4ade80;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --primary: #60a5fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+  header {
+    padding: 24px 32px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  h1 { margin: 0; font-size: 20px; }
+  .sub { color: var(--mute); font-size: 13px; margin-top: 4px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 32px; }
+  .toolbar {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    margin-bottom: 20px; padding: 14px 16px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .toolbar span { color: var(--mute); font-size: 13px; margin-right: 8px; }
+  button {
+    background: var(--panel-hi); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 14px; font-size: 13px; cursor: pointer;
+    font-family: inherit;
+  }
+  button:hover { background: #243040; }
+  button.primary { background: var(--primary); color: #0b0f14; border-color: var(--primary); font-weight: 600; }
+  button.success { background: var(--accent); color: #0b0f14; border-color: var(--accent); font-weight: 600; }
+  button.warn { background: var(--warn); color: #0b0f14; border-color: var(--warn); font-weight: 600; }
+  button.danger { background: var(--danger); color: #0b0f14; border-color: var(--danger); font-weight: 600; }
+  .rule-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .rule-card.approved { border-color: var(--accent); }
+  .rule-card.rejected { border-color: var(--danger); opacity: 0.5; }
+  .rule-card.investigate { border-color: var(--warn); }
+  .rule-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .brand-name { font-size: 17px; font-weight: 600; }
+  .category-chip {
+    display: inline-block; padding: 3px 9px; border-radius: 12px;
+    background: var(--panel-hi); color: var(--primary); font-size: 12px;
+    border: 1px solid var(--border); margin-left: 8px;
+  }
+  .confidence-bar {
+    height: 5px; background: var(--panel-hi); border-radius: 3px;
+    margin: 10px 0 6px; overflow: hidden; max-width: 260px;
+  }
+  .confidence-fill { height: 100%; background: var(--accent); }
+  .confidence-fill.low { background: var(--warn); }
+  .confidence-fill.verylow { background: var(--danger); }
+  .meta-row {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    color: var(--mute); font-size: 12px; margin-top: 6px;
+  }
+  .meta-row b { color: var(--text); }
+  .rationale {
+    color: var(--mute); font-size: 13px; margin: 10px 0;
+    padding: 10px 12px; background: var(--panel-hi); border-radius: 6px;
+    border-left: 3px solid var(--primary);
+  }
+  .actions { display: flex; gap: 8px; margin-top: 10px; }
+  .actions button { flex-grow: 0; }
+  details summary { cursor: pointer; color: var(--mute); font-size: 12px; margin-top: 8px; }
+  details pre {
+    background: var(--bg); padding: 10px; border-radius: 6px; overflow-x: auto;
+    font-size: 11px; color: var(--mute); margin-top: 8px;
+  }
+  .empty {
+    text-align: center; padding: 60px 20px; color: var(--mute);
+    background: var(--panel); border: 1px dashed var(--border); border-radius: 10px;
+  }
+  .toast {
+    position: fixed; bottom: 20px; right: 20px; padding: 12px 18px;
+    background: var(--accent); color: #0b0f14; border-radius: 8px; font-weight: 600;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  .section-head {
+    font-size: 14px; color: var(--mute); text-transform: uppercase;
+    letter-spacing: 1px; margin: 30px 0 12px;
+  }
+  .taxo-rule {
+    padding: 10px 14px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between;
+    align-items: center; font-size: 13px;
+  }
+  .taxo-rule .brand { font-weight: 600; }
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px; margin-bottom: 18px;
+  }
+  .stat {
+    padding: 14px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .stat-value { font-size: 22px; font-weight: 600; }
+  .stat-label { font-size: 12px; color: var(--mute); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Classification Queue</h1>
+    <div class="sub" id="subtitle">Loading…</div>
+  </div>
+  <div>
+    <button class="primary" onclick="submitBatch()">Submit Batch</button>
+  </div>
+</header>
+
+<main>
+
+<div class="stat-grid" id="stats"></div>
+
+<div class="toolbar">
+  <span>Bulk:</span>
+  <button class="success" onclick="approveAllHighConfidence()">✅ Approve all ≥0.85</button>
+  <button onclick="approveAll()">Approve All</button>
+  <button onclick="rejectAll()">Reject All</button>
+  <button onclick="clearDecisions()">Clear Decisions</button>
+  <span style="margin-left:auto">Click a rule to change decision.</span>
+</div>
+
+<div id="proposals"></div>
+
+<div class="section-head">Approved Taxonomy</div>
+<div id="taxonomy"></div>
+
+<div class="section-head">Submit Instructions</div>
+<div class="rationale" style="border-left-color:var(--warn)">
+  When you click <b>Submit Batch</b>, your decisions are downloaded as
+  <code>classifier-decisions.jsonl</code>. Drop that file in
+  <code>PICKLE-DAAS/output/classifier/</code> and run:
+  <pre style="background:var(--bg); padding:8px; margin-top:6px; border-radius:4px">python3 tools/apply-decisions.py
+python3 tools/apply-classification.py
+python3 tools/push-to-ghpages.py</pre>
+  Or: decisions are also saved to <code>localStorage</code> — you can reload this
+  page and they'll still be there.
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Data sources — relative to this HTML when deployed on gh-pages
+  const PROPOSALS_URL = '../classifier/proposed-rules.json';
+  const TAXONOMY_URL = '../classifier/approved-rules.json';
+  const STATS_URL = '../classification-stats.json';
+  const STORAGE_KEY = 'classifier-decisions-v1';
+
+  let proposals = [];
+  let decisions = {};  // { brand_key: 'approve' | 'reject' | 'investigate' }
+
+  function loadDecisions() {
+    try {
+      const d = localStorage.getItem(STORAGE_KEY);
+      decisions = d ? JSON.parse(d) : {};
+    } catch(e) { decisions = {}; }
+  }
+  function saveDecisions() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(decisions));
+  }
+  function keyFor(p) { return (p.brand || '').toLowerCase().trim(); }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1400);
+  }
+
+  function renderProposals() {
+    const container = document.getElementById('proposals');
+    if (!proposals.length) {
+      container.innerHTML = '<div class="empty">No pending proposals. Run <code>python3 agents/analysts/classifier.py --quick</code> to generate some.</div>';
+      return;
+    }
+    container.innerHTML = proposals.map(p => {
+      const k = keyFor(p);
+      const dec = decisions[k];
+      const conf = +p.confidence || 0;
+      const confClass = conf >= 0.85 ? '' : (conf >= 0.6 ? 'low' : 'verylow');
+      const cls = (p.classifications && p.classifications[0]) || {};
+      const stateClass = dec === 'approve' ? 'approved' : dec === 'reject' ? 'rejected' : dec === 'investigate' ? 'investigate' : '';
+      const ev = p.evidence || {};
+      const cats = Object.entries(ev.categories || {}).map(([k,v]) => `${k}:${v}`).join(' · ') || '—';
+      return `
+        <div class="rule-card ${stateClass}" data-key="${k}">
+          <div class="rule-head">
+            <div>
+              <span class="brand-name">${escapeHtml(p.brand || '?')}</span>
+              <span class="category-chip">${escapeHtml(cls.category_primary || cls.as || '?')}</span>
+              ${p.one_click_approve ? '<span class="category-chip" style="color:var(--accent)">⭐ high-confidence</span>' : ''}
+              ${p.needs_investigation ? '<span class="category-chip" style="color:var(--warn)">⚠ needs investigation</span>' : ''}
+            </div>
+          </div>
+          <div class="confidence-bar"><div class="confidence-fill ${confClass}" style="width:${Math.round(conf*100)}%"></div></div>
+          <div class="meta-row">
+            <span><b>${ev.total_detections || 0}</b> detections</span>
+            <span><b>${ev.unique_clips || 0}</b> clips</span>
+            <span>revenue: <b>${escapeHtml(p.revenue_potential || '?')}</b></span>
+            <span>cats: ${escapeHtml(cats)}</span>
+          </div>
+          ${p.rationale ? `<div class="rationale">${escapeHtml(p.rationale)}</div>` : ''}
+          <div class="actions">
+            <button class="success" onclick="decide('${k}','approve')">✅ Approve</button>
+            <button class="danger"  onclick="decide('${k}','reject')">❌ Reject</button>
+            <button class="warn"    onclick="decide('${k}','investigate')">🔍 Investigate</button>
+            <button                  onclick="decide('${k}',null)">Undo</button>
+          </div>
+          <details>
+            <summary>See classification rules + raw proposal</summary>
+            <pre>${escapeHtml(JSON.stringify(p, null, 2))}</pre>
+          </details>
+        </div>`;
+    }).join('');
+  }
+
+  function decide(key, action) {
+    if (action === null || action === undefined) delete decisions[key];
+    else decisions[key] = action;
+    saveDecisions();
+    renderProposals();
+    updateStats();
+  }
+
+  function approveAllHighConfidence() {
+    proposals.filter(p => (+p.confidence||0) >= 0.85 && !p.needs_investigation)
+             .forEach(p => decisions[keyFor(p)] = 'approve');
+    saveDecisions(); renderProposals(); updateStats();
+    toast('Approved all ≥0.85');
+  }
+  function approveAll() {
+    proposals.forEach(p => decisions[keyFor(p)] = 'approve');
+    saveDecisions(); renderProposals(); updateStats();
+    toast('Approved all');
+  }
+  function rejectAll() {
+    proposals.forEach(p => decisions[keyFor(p)] = 'reject');
+    saveDecisions(); renderProposals(); updateStats();
+    toast('Rejected all');
+  }
+  function clearDecisions() {
+    decisions = {}; saveDecisions(); renderProposals(); updateStats();
+    toast('Cleared');
+  }
+
+  function submitBatch() {
+    const lines = proposals
+      .filter(p => decisions[keyFor(p)])
+      .map(p => JSON.stringify({
+        brand: p.brand,
+        aliases: p.aliases || [],
+        decision: decisions[keyFor(p)],
+        classifications: p.classifications || [],
+        revenue_potential: p.revenue_potential || 'low',
+        rationale: p.rationale || '',
+        decided_at: new Date().toISOString()
+      }));
+    if (!lines.length) { toast('No decisions yet'); return; }
+    const blob = new Blob([lines.join('\n')], { type: 'application/x-ndjson' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'classifier-decisions.jsonl';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast(`Downloaded ${lines.length} decisions`);
+  }
+
+  function updateStats() {
+    const total = proposals.length;
+    const approved = Object.values(decisions).filter(d => d === 'approve').length;
+    const rejected = Object.values(decisions).filter(d => d === 'reject').length;
+    const pending = total - approved - rejected - Object.values(decisions).filter(d => d === 'investigate').length;
+    document.getElementById('stats').innerHTML = `
+      <div class="stat"><div class="stat-value">${total}</div><div class="stat-label">proposed rules</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--accent)">${approved}</div><div class="stat-label">approved</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--danger)">${rejected}</div><div class="stat-label">rejected</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--mute)">${pending}</div><div class="stat-label">pending</div></div>`;
+    const sub = document.getElementById('subtitle');
+    sub.textContent = `${total} proposals · ${approved} approved · ${rejected} rejected`;
+  }
+
+  function renderTaxonomy(tax) {
+    const rules = tax.rules || [];
+    document.getElementById('taxonomy').innerHTML = rules.length
+      ? rules.map(r => {
+          const cat = (r.classifications && r.classifications[0] || {}).category_primary
+                   || (r.classifications && r.classifications[0] || {}).as || '?';
+          return `<div class="taxo-rule">
+            <div><span class="brand">${escapeHtml(r.brand)}</span>
+              <span class="category-chip">${escapeHtml(cat)}</span>
+              ${r.human_verified ? '<span class="category-chip" style="color:var(--accent)">✓ verified</span>' : ''}
+            </div>
+            <div style="color:var(--mute); font-size:12px">${escapeHtml(r.rationale || '')}</div>
+          </div>`;
+        }).join('')
+      : '<div class="empty">No approved rules yet.</div>';
+  }
+
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function boot() {
+    loadDecisions();
+    try {
+      const r = await fetch(PROPOSALS_URL, { cache: 'no-store' });
+      if (r.ok) {
+        const data = await r.json();
+        proposals = data.proposals || data || [];
+      }
+    } catch(e) { console.error('proposals fetch', e); }
+    try {
+      const r = await fetch(TAXONOMY_URL, { cache: 'no-store' });
+      if (r.ok) {
+        const tax = await r.json();
+        renderTaxonomy(tax);
+      }
+    } catch(e) { renderTaxonomy({rules: []}); }
+    renderProposals();
+    updateStats();
+  }
+  boot();
+</script>
+</body>
+</html>
