@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Idea Lab · Pickle DaaS</title>
+<title>Idea Lab v2 · Pickle DaaS</title>
 <style>
 :root {
   --bg: #0a0a1a; --surface: #111128; --surface-2: #1a1a2e; --surface-3: #222244;
@@ -15,6 +15,7 @@
   --purple: #a855f7; --purple-dim: rgba(168,85,247,.1);
   --red: #ef4444; --red-dim: rgba(239,68,68,.1);
   --cyan: #06b6d4; --cyan-dim: rgba(6,182,212,.1);
+  --orange: #f97316; --orange-dim: rgba(249,115,22,.1);
   --radius: 8px; --radius-sm: 5px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -22,106 +23,103 @@ body{font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;background:var
 a{color:var(--info);text-decoration:none}a:hover{text-decoration:underline}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-/* HEADER */
 .header{padding:20px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
-.header-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1400px;margin:0 auto}
+.header-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;max-width:1440px;margin:0 auto}
 .header h1{font-size:24px;font-weight:700;letter-spacing:-.5px}
-.header h1 .accent{color:var(--ok)}
-.header h1 .lab{color:var(--purple)}
+.header h1 .accent{color:var(--ok)}.header h1 .lab{color:var(--purple)}
+.header-sub{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{padding:4px 10px;border-radius:12px;font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.3px;border:1px solid var(--border)}
 .chip.ok{background:var(--ok-dim);color:var(--ok);border-color:var(--ok-border)}
 .chip.info{background:var(--info-dim);color:var(--info);border-color:rgba(59,130,246,.3)}
 .chip.purple{background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,.3)}
+.chip.orange{background:var(--orange-dim);color:var(--orange);border-color:rgba(249,115,22,.3)}
 .timestamp{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace}
 
-/* LAYOUT */
-.layout{display:grid;grid-template-columns:1fr 1fr 320px;gap:0;max-width:1400px;margin:0 auto;min-height:calc(100vh - 100px)}
+.layout{display:grid;grid-template-columns:1fr 1fr 300px;gap:0;max-width:1440px;margin:0 auto;min-height:calc(100vh - 100px)}
 .col{padding:20px;border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 100px)}
 .col:last-child{border-right:none}
 .col-head{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
 .col-head .count{font-size:11px;color:var(--dim);font-weight:400}
 
-/* CARDS */
+.track-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:8px 0 10px;margin:8px 0 12px;border-bottom:2px solid;display:flex;align-items:center;gap:8px}
+.track-label.strategic{color:var(--purple);border-color:rgba(168,85,247,.3)}
+.track-label.data{color:var(--cyan);border-color:rgba(6,182,212,.3)}
+.track-label .track-icon{font-size:14px}
+
 .card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s ease}
 .card:hover{border-color:var(--border-focus);transform:translateY(-1px)}
 .card.expanded{background:var(--surface-3);border-color:var(--purple)}
 .card.approved{border-left:3px solid var(--ok)}
 .card.parked{border-left:3px solid var(--warn)}
 .card.dismissed{opacity:.4;border-left:3px solid var(--dim)}
-.card-rank{font-size:28px;font-weight:700;color:var(--purple);line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.card-rank{font-size:28px;font-weight:700;line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.card.strategic .card-rank{color:var(--purple)}
+.card.data-track .card-rank{color:var(--cyan)}
 .card-title{font-size:15px;font-weight:600;line-height:1.35;margin-bottom:8px}
 .card-evidence{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px}
 .card-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:11px}
+.big-card{padding:20px}.big-card .card-rank{font-size:32px;margin-bottom:4px}.big-card .card-title{font-size:16px}
 
-/* BIG CARD (top 5) */
-.big-card{padding:20px}
-.big-card .card-rank{font-size:36px;margin-bottom:4px}
-.big-card .card-title{font-size:17px}
-
-/* METERS */
 .meter{height:4px;border-radius:2px;background:var(--border);overflow:hidden;width:80px;display:inline-block;vertical-align:middle;margin-left:4px}
 .meter-fill{height:100%;border-radius:2px;transition:width .3s}
 .meter-fill.ok{background:var(--ok)}.meter-fill.warn{background:var(--warn)}.meter-fill.red{background:var(--red)}.meter-fill.info{background:var(--info)}
 
-/* TAGS */
 .tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;font-family:ui-monospace,monospace}
 .tag.high{background:var(--ok-dim);color:var(--ok)}.tag.medium{background:var(--warn-dim);color:var(--warn)}.tag.low{background:var(--red-dim);color:var(--red)}
 .tag.agent{background:var(--purple-dim);color:var(--purple)}.tag.cat{background:var(--info-dim);color:var(--info)}
-.tag.cyan{background:var(--cyan-dim);color:var(--cyan)}
 
-/* ACTIONS */
 .actions{display:flex;gap:6px;margin-top:12px}
 .btn{padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;text-transform:uppercase;letter-spacing:.5px}
 .btn:hover{background:var(--surface-3);color:var(--text)}
 .btn.approve{border-color:var(--ok);color:var(--ok)}.btn.approve:hover{background:var(--ok-dim)}
 .btn.park{border-color:var(--warn);color:var(--warn)}.btn.park:hover{background:var(--warn-dim)}
 .btn.dismiss{border-color:var(--dim);color:var(--dim)}.btn.dismiss:hover{background:rgba(100,100,100,.1)}
+.btn.export{border-color:var(--info);color:var(--info);font-size:10px;padding:4px 10px}.btn.export:hover{background:var(--info-dim)}
 
-/* EXPANDED */
 .expand-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 .card.expanded .expand-body{display:block}
 .expand-section{margin-bottom:12px}
 .expand-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
 .expand-section p{font-size:13px;color:var(--text);line-height:1.6}
 
-/* VIDEO EMBED */
-.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:8px}
-.clip-thumb{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface);border:1px solid var(--border);cursor:pointer}
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
+.clip-thumb{border-radius:var(--radius-sm);overflow:hidden;background:var(--surface);border:1px solid var(--border)}
 .clip-thumb video{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
 .clip-thumb .caption{padding:6px 8px;font-size:10px;color:var(--muted);line-height:1.3}
 
-/* FILTERS */
+.counterarg{background:var(--red-dim);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-sm);padding:10px;margin-top:10px;font-size:12px;line-height:1.5}
+.counterarg .ca-head{color:var(--red);font-weight:600;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.counterarg .ca-body{color:var(--muted)}
+
+.follow-up{background:var(--purple-dim);border:1px solid rgba(168,85,247,.2);border-radius:var(--radius-sm);padding:10px;margin-top:10px;font-size:12px;line-height:1.5}
+.follow-up .q{color:var(--purple);font-weight:600;margin-bottom:4px}
+
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 select{background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;font-size:12px;font-family:inherit;cursor:pointer}
 select:focus{outline:none;border-color:var(--purple)}
 
-/* SIDEBAR */
 .sidebar-block{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
 .sidebar-block h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:10px}
 .sidebar-block .item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(255,255,255,.03)}
 .sidebar-block .item:last-child{border-bottom:none}
 .sidebar-block .item .label{color:var(--muted)}
 .sidebar-block .item .value{font-family:ui-monospace,monospace;font-weight:500}
-.warning-box{background:var(--warn-dim);border:1px solid rgba(234,179,8,.25);border-radius:var(--radius);padding:12px;margin-bottom:14px;font-size:12px;color:var(--warn);line-height:1.5}
+.warning-box{border:1px solid;border-radius:var(--radius);padding:12px;margin-bottom:14px;font-size:12px;line-height:1.5}
 .warning-box strong{display:block;margin-bottom:4px}
+.warning-box.warn{background:var(--warn-dim);border-color:rgba(234,179,8,.25);color:var(--warn)}
+.warning-box.feedback{background:var(--ok-dim);border-color:rgba(34,197,94,.25);color:var(--ok)}
+.warning-box.product{background:var(--purple-dim);border-color:rgba(168,85,247,.25);color:var(--purple)}
 
-/* FOLLOW UP */
-.follow-up{background:var(--purple-dim);border:1px solid rgba(168,85,247,.2);border-radius:var(--radius-sm);padding:10px;margin-top:10px;font-size:12px;line-height:1.5}
-.follow-up .q{color:var(--purple);font-weight:600;margin-bottom:4px}
-
-/* RESPONSIVE */
 @media(max-width:1100px){.layout{grid-template-columns:1fr 1fr}.col:last-child{display:none}}
 @media(max-width:700px){
   .layout{grid-template-columns:1fr;max-height:none}
   .col{max-height:none;border-right:none;border-bottom:1px solid var(--border)}
   .header h1{font-size:20px}
 }
-
-/* ANIMATIONS */
 @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .card{animation:slideIn .3s ease both}
-.card:nth-child(2){animation-delay:.05s}.card:nth-child(3){animation-delay:.1s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.2s}
+.card:nth-child(2){animation-delay:.04s}.card:nth-child(3){animation-delay:.08s}.card:nth-child(4){animation-delay:.12s}.card:nth-child(5){animation-delay:.16s}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite;margin-right:4px}
 </style>
@@ -131,31 +129,30 @@ select:focus{outline:none;border-color:var(--purple)}
 <div class="header">
   <div class="header-top">
     <div>
-      <h1><span class="lab">Idea</span> <span class="accent">Lab</span></h1>
+      <h1><span class="lab">Idea</span> <span class="accent">Lab</span> <span style="font-size:12px;color:var(--muted);font-weight:400;vertical-align:super">v2</span></h1>
       <div class="timestamp" id="timestamp">Loading...</div>
     </div>
-    <div class="chips" id="chips"></div>
+    <div class="header-sub">
+      <div class="chips" id="chips"></div>
+    </div>
   </div>
 </div>
 
 <div class="layout">
-  <!-- COLUMN 1: TOP 5 -->
-  <div class="col" id="col-top5">
-    <div class="col-head">
-      Priority Investigations
-      <span class="count" id="top5-count"></span>
-    </div>
-    <div id="top5-cards"></div>
+  <!-- COL 1: TWO-TRACK TOP FINDINGS -->
+  <div class="col" id="col-tracks">
+    <div class="col-head">Priority Findings <span class="count" id="tracks-count"></span></div>
+    <div class="track-label strategic"><span class="track-icon">&#9889;</span> Strategic Ideas</div>
+    <div id="strategic-cards"></div>
+    <div class="track-label data"><span class="track-icon">&#128202;</span> Data Insights</div>
+    <div id="data-cards"></div>
   </div>
 
-  <!-- COLUMN 2: FULL 20 -->
+  <!-- COL 2: ALL FINDINGS -->
   <div class="col" id="col-full">
-    <div class="col-head">
-      All Findings
-      <span class="count" id="full-count"></span>
-    </div>
+    <div class="col-head">All Findings <span class="count" id="full-count"></span></div>
     <div class="filters">
-      <select id="filter-category"><option value="">All Categories</option></select>
+      <select id="filter-track"><option value="">All Tracks</option><option value="strategic">Strategic</option><option value="data">Data</option></select>
       <select id="filter-agent"><option value="">All Researchers</option></select>
       <select id="filter-bv"><option value="">All Value</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
       <select id="sort-by"><option value="score">Sort: Score</option><option value="confidence">Confidence</option><option value="novelty">Novelty</option><option value="agent">Researcher</option></select>
@@ -163,13 +160,18 @@ select:focus{outline:none;border-color:var(--purple)}
     <div id="full-cards"></div>
   </div>
 
-  <!-- COLUMN 3: META SIDEBAR -->
+  <!-- COL 3: META -->
   <div class="col" id="col-meta">
     <div class="col-head">Meta</div>
 
-    <div class="warning-box" id="joola-warning" style="display:none">
+    <div class="warning-box feedback" id="feedback-box" style="display:none">
+      <strong>Feedback Loop Active</strong>
+      <span id="feedback-text"></span>
+    </div>
+
+    <div class="warning-box warn">
       <strong>JOOLA Bias Warning</strong>
-      JOOLA represents ~43% of brand detections. Findings are based on balanced samples to mitigate this bias. Ambiguous detections are flagged.
+      JOOLA represents ~43% of brand detections. Findings use balanced samples to mitigate this.
     </div>
 
     <div class="sidebar-block">
@@ -178,8 +180,12 @@ select:focus{outline:none;border-color:var(--purple)}
     </div>
 
     <div class="sidebar-block">
-      <h3>Sampling Strategy</h3>
-      <div id="sampling-info"></div>
+      <h3>Your Decisions</h3>
+      <div id="decisions-summary"></div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button class="btn export" onclick="exportDecisions()">Export for CLI</button>
+        <button class="btn export" onclick="clearDecisions()" style="border-color:var(--red);color:var(--red)">Reset</button>
+      </div>
     </div>
 
     <div class="sidebar-block">
@@ -187,14 +193,14 @@ select:focus{outline:none;border-color:var(--purple)}
       <div id="category-breakdown"></div>
     </div>
 
-    <div class="sidebar-block" id="decisions-block">
-      <h3>Your Decisions</h3>
-      <div id="decisions-summary"></div>
-    </div>
-
     <div class="sidebar-block">
       <h3>Follow-Up Questions</h3>
       <div id="follow-ups"></div>
+    </div>
+
+    <div class="warning-box product">
+      <strong>Product Vision</strong>
+      What if every Courtana facility got their own Idea Lab? 7 AI researchers analyzing THEIR clips overnight. The facility just clicks approve/dismiss. They're not buying data — they're buying decisions.
     </div>
   </div>
 </div>
@@ -210,19 +216,41 @@ async function loadData() {
     DATA = await resp.json();
     render();
   } catch (e) {
-    document.getElementById('top5-cards').innerHTML =
+    document.getElementById('strategic-cards').innerHTML =
       '<div style="color:var(--red);padding:20px">Failed to load data. Run idea_lab_runner.py first.</div>';
   }
 }
 
 function saveDecision(findingId, action) {
-  decisions[findingId] = { action, at: new Date().toISOString() };
+  // Also save category/agent for the feedback loop
+  const finding = DATA?.all_findings?.find(f => f.finding_id === findingId);
+  decisions[findingId] = {
+    action,
+    at: new Date().toISOString(),
+    category: finding?.category || '',
+    agent: finding?.agent || '',
+    title: finding?.title || '',
+  };
   localStorage.setItem('idea-lab-decisions', JSON.stringify(decisions));
   render();
 }
 
-function getDecision(findingId) {
-  return decisions[findingId]?.action || null;
+function getDecision(fid) { return decisions[fid]?.action || null; }
+
+function exportDecisions() {
+  const blob = new Blob([JSON.stringify(decisions, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'idea-lab-decisions.json';
+  a.click();
+}
+
+function clearDecisions() {
+  if (confirm('Reset all decisions? This cannot be undone.')) {
+    decisions = {};
+    localStorage.removeItem('idea-lab-decisions');
+    render();
+  }
 }
 
 function meterHTML(value, max = 1.0) {
@@ -232,43 +260,43 @@ function meterHTML(value, max = 1.0) {
 }
 
 function clipHTML(clips) {
-  if (!clips || !clips.length) return '';
+  if (!clips?.length) return '';
   return '<div class="clip-grid">' + clips.map(c =>
-    `<div class="clip-thumb">
-      <video src="${c.video_url}" poster="${c.thumbnail}" preload="none" controls muted playsinline></video>
-      <div class="caption">${c.summary || ''}</div>
-    </div>`
+    `<div class="clip-thumb"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" controls muted playsinline></video><div class="caption">${c.summary || ''}</div></div>`
   ).join('') + '</div>';
+}
+
+function counterargHTML(ca) {
+  if (!ca) return '';
+  return `<div class="counterarg"><div class="ca-head">Devil's Advocate (${ca.risk_level || 'medium'} risk)</div><div class="ca-body">${ca.evidence || ca.argument || ''}</div></div>`;
 }
 
 function cardHTML(f, rank, big = false) {
   const dec = getDecision(f.finding_id);
   const decClass = dec ? ` ${dec}` : '';
+  const trackClass = f.track === 'strategic' ? ' strategic' : ' data-track';
   const cls = big ? 'card big-card' : 'card';
-  const expandId = 'exp-' + f.finding_id;
+  const eid = 'exp-' + f.finding_id;
 
   let followUp = '';
-  if (f.follow_up) {
-    followUp = `<div class="follow-up"><div class="q">${f.follow_up.follow_up_question}</div>Next: ${f.follow_up.proposed_action}</div>`;
-  }
+  if (f.follow_up) followUp = `<div class="follow-up"><div class="q">${f.follow_up.follow_up_question}</div>Next: ${f.follow_up.proposed_action}</div>`;
 
-  return `<div class="${cls}${decClass}" onclick="toggleExpand('${expandId}', this)">
+  return `<div class="${cls}${trackClass}${decClass}" onclick="toggleExpand('${eid}',this)">
     <div class="card-rank">#${rank}</div>
     <div class="card-title">${f.title}</div>
-    <div class="card-evidence">${f.evidence_summary}</div>
+    <div class="card-evidence">${(f.evidence_summary || '').substring(0, 200)}</div>
     <div class="card-meta">
       <span class="tag agent">${f.agent}</span>
       <span class="tag ${f.business_value}">${f.business_value}</span>
       <span class="tag cat">${f.category}</span>
-      <span style="color:var(--muted);font-size:10px">conf ${(f.confidence * 100).toFixed(0)}%${meterHTML(f.confidence)}</span>
-      ${f.composite_score ? `<span style="color:var(--dim);font-size:10px">score ${f.composite_score.toFixed(3)}</span>` : ''}
+      <span style="color:var(--muted);font-size:10px">conf ${(f.confidence*100).toFixed(0)}%${meterHTML(f.confidence)}</span>
+      ${f.composite_score ? `<span style="color:var(--dim);font-size:10px">${f.composite_score.toFixed(3)}</span>` : ''}
+      ${f.counterargument ? '<span style="color:var(--red);font-size:10px">DA</span>' : ''}
     </div>
-    <div class="expand-body" id="${expandId}">
-      <div class="expand-section">
-        <h4>Evidence</h4>
-        <p>${f.evidence_summary}</p>
-      </div>
+    <div class="expand-body" id="${eid}">
+      <div class="expand-section"><h4>Evidence</h4><p>${f.evidence_summary}</p></div>
       ${f.recommended_action ? `<div class="expand-section"><h4>Recommended Action</h4><p>${f.recommended_action}</p></div>` : ''}
+      ${counterargHTML(f.counterargument)}
       ${followUp}
       ${f.source_clips ? `<div class="expand-section"><h4>Source Clips</h4>${clipHTML(f.source_clips)}</div>` : ''}
       <div class="actions">
@@ -281,116 +309,94 @@ function cardHTML(f, rank, big = false) {
 }
 
 function toggleExpand(id, el) {
-  const body = document.getElementById(id);
-  if (!body) return;
-  const isExpanded = el.classList.contains('expanded');
-  // Close all
+  const isExp = el.classList.contains('expanded');
   document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
-  if (!isExpanded) el.classList.add('expanded');
+  if (!isExp) el.classList.add('expanded');
 }
 
 function render() {
   if (!DATA) return;
-  const { top_5, top_20, all_findings, corpus_stats, researcher_stats, category_distribution, agent_distribution } = DATA;
+  const { top_strategic, top_data, all_findings, corpus_stats, researcher_stats, feedback_loop, counterarguments } = DATA;
+  const ts = top_strategic || DATA.top_5?.slice(0, 3) || [];
+  const td = top_data || DATA.top_5?.slice(3) || [];
 
   // Header
-  document.getElementById('timestamp').textContent =
-    `Last run: ${DATA.generated_at ? new Date(DATA.generated_at).toLocaleString() : 'unknown'}`;
+  document.getElementById('timestamp').textContent = `Last run: ${DATA.generated_at ? new Date(DATA.generated_at).toLocaleString() : 'unknown'}`;
+  const v = DATA.version || 1;
   document.getElementById('chips').innerHTML = `
     <span class="chip ok"><span class="live-dot"></span>${corpus_stats.researchers_run} researchers</span>
-    <span class="chip info">${corpus_stats.raw_findings} raw findings</span>
-    <span class="chip purple">${corpus_stats.unique_findings} unique</span>
+    <span class="chip purple">${corpus_stats.unique_findings} findings</span>
+    ${corpus_stats.strategic_count ? `<span class="chip" style="background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,.3)">${corpus_stats.strategic_count} strategic</span>` : ''}
+    ${corpus_stats.data_count ? `<span class="chip" style="background:var(--cyan-dim);color:var(--cyan);border-color:rgba(6,182,212,.3)">${corpus_stats.data_count} data</span>` : ''}
+    ${feedback_loop?.active ? '<span class="chip ok">feedback active</span>' : ''}
+    ${counterarguments?.length ? `<span class="chip" style="background:var(--red-dim);color:var(--red);border-color:rgba(239,68,68,.3)">${counterarguments.length} DA</span>` : ''}
   `;
 
-  // Top 5
-  document.getElementById('top5-count').textContent = `${top_5.length} priority`;
-  document.getElementById('top5-cards').innerHTML = top_5.map((f, i) => cardHTML(f, i + 1, true)).join('');
+  // Two-track top findings
+  document.getElementById('tracks-count').textContent = `${ts.length + td.length} priority`;
+  document.getElementById('strategic-cards').innerHTML = ts.length ?
+    ts.map((f, i) => cardHTML(f, i + 1, true)).join('') :
+    '<div style="color:var(--dim);font-size:12px;padding:8px">No strategic findings this run</div>';
+  document.getElementById('data-cards').innerHTML = td.length ?
+    td.map((f, i) => cardHTML(f, i + 1, true)).join('') :
+    '<div style="color:var(--dim);font-size:12px;padding:8px">No data findings this run</div>';
 
-  // Populate filter dropdowns
-  const cats = [...new Set(all_findings.map(f => f.category))].sort();
+  // Filters
   const agents = [...new Set(all_findings.map(f => f.agent))].sort();
-  const catSel = document.getElementById('filter-category');
-  const agentSel = document.getElementById('filter-agent');
-  catSel.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
-  agentSel.innerHTML = '<option value="">All Researchers</option>' + agents.map(a => `<option value="${a}">${a}</option>`).join('');
+  document.getElementById('filter-agent').innerHTML = '<option value="">All Researchers</option>' + agents.map(a => `<option value="${a}">${a}</option>`).join('');
 
   renderFullList();
   renderMeta();
 }
 
 function renderFullList() {
-  const catFilter = document.getElementById('filter-category').value;
-  const agentFilter = document.getElementById('filter-agent').value;
-  const bvFilter = document.getElementById('filter-bv').value;
+  const trackF = document.getElementById('filter-track').value;
+  const agentF = document.getElementById('filter-agent').value;
+  const bvF = document.getElementById('filter-bv').value;
   const sortBy = document.getElementById('sort-by').value;
 
   let items = [...(DATA.all_findings || [])];
-  if (catFilter) items = items.filter(f => f.category === catFilter);
-  if (agentFilter) items = items.filter(f => f.agent === agentFilter);
-  if (bvFilter) items = items.filter(f => f.business_value === bvFilter);
+  if (trackF) items = items.filter(f => f.track === trackF);
+  if (agentF) items = items.filter(f => f.agent === agentF);
+  if (bvF) items = items.filter(f => f.business_value === bvF);
 
   if (sortBy === 'confidence') items.sort((a, b) => b.confidence - a.confidence);
-  else if (sortBy === 'novelty') items.sort((a, b) => (b.novelty || 0) - (a.novelty || 0));
+  else if (sortBy === 'novelty') items.sort((a, b) => (b.novelty||0) - (a.novelty||0));
   else if (sortBy === 'agent') items.sort((a, b) => a.agent.localeCompare(b.agent));
-  // default = score (already sorted)
 
   document.getElementById('full-count').textContent = `${items.length} findings`;
   document.getElementById('full-cards').innerHTML = items.map((f, i) => cardHTML(f, i + 1)).join('');
 }
 
 function renderMeta() {
-  // JOOLA warning
-  const brandFindings = DATA.all_findings.filter(f => f.agent === 'brand_analyst');
-  const hasJoolaWarning = brandFindings.some(f => f.title.toLowerCase().includes('joola'));
-  document.getElementById('joola-warning').style.display = hasJoolaWarning ? 'block' : 'block'; // Always show
+  const fl = DATA.feedback_loop || {};
+  if (fl.active) {
+    document.getElementById('feedback-box').style.display = 'block';
+    document.getElementById('feedback-text').textContent =
+      `${fl.decisions_loaded} past decisions influence scoring. Categories with approved findings get boosted; dismissed ones penalized.`;
+  }
 
-  // Researcher status
   const rs = DATA.researcher_stats || [];
   document.getElementById('researcher-status').innerHTML = rs.map(r => `
-    <div class="item">
-      <span class="label">${r.agent}</span>
-      <span class="value">${r.findings_count} findings${r.duration_seconds ? ` · ${r.duration_seconds}s` : ''}</span>
-    </div>`).join('');
+    <div class="item"><span class="label">${r.agent}</span>
+    <span class="value">${r.findings_count}${r.duration_seconds ? ` · ${r.duration_seconds}s` : ''}</span></div>`).join('');
 
-  // Sampling info
-  const sampleMap = {
-    brand_analyst: 'balanced-brands (equal per brand)',
-    player_profiler: 'by-player (stratified)',
-    shot_scientist: 'diverse-100 (anti-JOOLA)',
-    viral_decoder: 'top-100 vs bottom-100',
-    production_auditor: 'courtana-verified',
-    opportunity_scout: 'diverse-100',
-    wildcard: 'business model (no clips)',
-  };
-  document.getElementById('sampling-info').innerHTML = rs.map(r => `
-    <div class="item">
-      <span class="label">${r.agent}</span>
-      <span class="value" style="font-size:10px;text-align:right;max-width:140px">${sampleMap[r.agent] || r.sample_used}</span>
-    </div>`).join('');
-
-  // Category breakdown
   const cd = DATA.category_distribution || {};
   document.getElementById('category-breakdown').innerHTML = Object.entries(cd)
-    .sort((a, b) => b[1] - a[1])
-    .map(([cat, count]) => `
-      <div class="item">
-        <span class="label">${cat}</span>
-        <span class="value">${count}</span>
-      </div>`).join('');
+    .sort((a,b) => b[1]-a[1]).map(([c,n]) => `<div class="item"><span class="label">${c}</span><span class="value">${n}</span></div>`).join('');
 
-  // Decisions summary
-  const approved = Object.values(decisions).filter(d => d.action === 'approved').length;
-  const parked = Object.values(decisions).filter(d => d.action === 'parked').length;
-  const dismissed = Object.values(decisions).filter(d => d.action === 'dismissed').length;
+  const a = Object.values(decisions).filter(d => d.action==='approved').length;
+  const p = Object.values(decisions).filter(d => d.action==='parked').length;
+  const d = Object.values(decisions).filter(d => d.action==='dismissed').length;
+  const total = DATA.all_findings?.length || 0;
   document.getElementById('decisions-summary').innerHTML = `
-    <div class="item"><span class="label" style="color:var(--ok)">Approved</span><span class="value">${approved}</span></div>
-    <div class="item"><span class="label" style="color:var(--warn)">Parked</span><span class="value">${parked}</span></div>
-    <div class="item"><span class="label" style="color:var(--dim)">Dismissed</span><span class="value">${dismissed}</span></div>
-    <div class="item"><span class="label">Pending</span><span class="value">${(DATA.all_findings?.length || 0) - approved - parked - dismissed}</span></div>
-  `;
+    <div class="item"><span class="label" style="color:var(--ok)">Approved</span><span class="value">${a}</span></div>
+    <div class="item"><span class="label" style="color:var(--warn)">Parked</span><span class="value">${p}</span></div>
+    <div class="item"><span class="label" style="color:var(--dim)">Dismissed</span><span class="value">${d}</span></div>
+    <div class="item"><span class="label">Pending</span><span class="value">${total - a - p - d}</span></div>`;
 
-  // Follow-ups
-  const fups = (DATA.top_5 || []).filter(f => f.follow_up).map(f => `
+  const allTop = [...(DATA.top_strategic||[]), ...(DATA.top_data||[])];
+  const fups = allTop.filter(f => f.follow_up).map(f => `
     <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.03)">
       <div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:3px">${f.agent}</div>
       <div style="font-size:12px;color:var(--text);line-height:1.4">${f.follow_up.follow_up_question}</div>
@@ -398,13 +404,9 @@ function renderMeta() {
   document.getElementById('follow-ups').innerHTML = fups || '<div style="color:var(--dim);font-size:12px">None yet</div>';
 }
 
-// Event listeners
-document.getElementById('filter-category').addEventListener('change', renderFullList);
-document.getElementById('filter-agent').addEventListener('change', renderFullList);
-document.getElementById('filter-bv').addEventListener('change', renderFullList);
-document.getElementById('sort-by').addEventListener('change', renderFullList);
+['filter-track','filter-agent','filter-bv','sort-by'].forEach(id =>
+  document.getElementById(id).addEventListener('change', renderFullList));
 
-// Init
 loadData();
 </script>
 </body>
