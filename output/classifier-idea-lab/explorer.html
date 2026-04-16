@@ -2,282 +2,478 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Classifier Idea Lab — Explorer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classifier Idea Lab · Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0f1a;
-    --surface: #111826;
-    --surface-2: #1a2336;
-    --border: #222b3f;
-    --text: #e6edf7;
-    --muted: #7a8496;
-    --accent: #ffb347;         /* warm orange — this lab's color */
-    --accent-2: #ff7a45;
-    --good: #39d98a;
-    --warn: #ffcc66;
-    --bad: #ff5c6c;
-    --track-strategic: #a384ff;
-    --track-data: #4ec9ff;
-    --track-counter: #ff8aa0;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Inter", sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.5;
-  }
-  header {
-    padding: 22px 24px 14px; border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, #13192a 0%, #0a0f1a 100%);
-    position: sticky; top: 0; z-index: 30;
-    backdrop-filter: blur(8px);
-  }
-  h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: -0.01em; }
-  h1 .accent { color: var(--accent); }
-  .meta { color: var(--muted); font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; }
-  .meta b { color: var(--text); font-weight: 600; }
-  .stats-pill {
-    display: inline-block; padding: 2px 10px; border-radius: 999px;
-    background: var(--surface-2); border: 1px solid var(--border);
-    font-size: 12px; margin-right: 6px;
-  }
-  main {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px;
-    padding: 22px; max-width: 1600px; margin: 0 auto;
-  }
-  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
-  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
-  .col-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
-  .col-title { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
-  .col-count { color: var(--muted); font-size: 13px; }
-  .col-strategic .col-title { color: var(--track-strategic); }
-  .col-data .col-title { color: var(--track-data); }
-  .col-counter .col-title { color: var(--track-counter); }
-  .finding {
-    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 13px 14px; margin-bottom: 10px; cursor: pointer;
-    transition: transform 0.08s ease, border-color 0.12s ease;
-  }
-  .finding:hover { border-color: var(--accent); }
-  .finding.approved { border-color: var(--good); background: rgba(57,217,138,0.06); }
-  .finding.parked { border-color: var(--warn); background: rgba(255,204,102,0.06); }
-  .finding.dismissed { opacity: 0.4; }
-  .finding-title { font-weight: 600; font-size: 14px; line-height: 1.4; margin-bottom: 6px; }
-  .finding-meta { color: var(--muted); font-size: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .finding-body { display: none; margin-top: 10px; font-size: 13px; color: #cfd6e3; }
-  .finding.expanded .finding-body { display: block; }
-  .finding-body p { margin: 6px 0; }
-  .finding-body .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 10px; display: block; }
-  .bv-high { color: var(--good); font-weight: 600; }
-  .bv-medium { color: var(--warn); }
-  .bv-low { color: var(--muted); }
-  .actions { display: flex; gap: 6px; margin-top: 10px; }
-  .btn {
-    flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);
-    background: transparent; color: var(--text); cursor: pointer; font-size: 12px;
-    font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-    transition: all 0.1s ease;
-  }
-  .btn:hover { border-color: var(--accent); }
-  .btn-approve.active, .btn-approve:hover { background: var(--good); color: #0a0f1a; border-color: var(--good); }
-  .btn-park.active, .btn-park:hover { background: var(--warn); color: #0a0f1a; border-color: var(--warn); }
-  .btn-dismiss.active, .btn-dismiss:hover { background: var(--bad); color: #0a0f1a; border-color: var(--bad); }
-  .counterarg {
-    border-left: 3px solid var(--track-counter); padding: 8px 10px; margin-top: 10px;
-    background: rgba(255,138,160,0.06); border-radius: 0 6px 6px 0; font-size: 12.5px;
-  }
-  .counterarg .ca-title { font-weight: 600; color: var(--track-counter); }
-  .counterarg .ca-severity { display: inline-block; padding: 1px 6px; border-radius: 4px;
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    background: var(--track-counter); color: #0a0f1a; margin-left: 6px; }
-  .empty { text-align: center; color: var(--muted); padding: 40px 12px; font-size: 13px; }
-  footer {
-    text-align: center; padding: 16px; color: var(--muted); font-size: 12px;
-    border-top: 1px solid var(--border); margin-top: 20px;
-  }
-  .export-btn {
-    background: var(--accent); color: #0a0f1a; font-weight: 700; border: none;
-    padding: 4px 12px; border-radius: 6px; cursor: pointer; margin-left: 8px; font-size: 12px;
-  }
-  .export-btn:hover { background: var(--accent-2); }
-  code { background: var(--surface-2); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+:root {
+  --bg: #0a0a12; --sf: #12121f; --sf2: #1a1a2e; --bd: #2a2a3e;
+  --tx: #e8eaed; --tx2: #9ca3af; --mt: #6b7280;
+  --ac: #f97316; --ac2: #06b6d4; --r: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;font-size:14px}
+.shell{max-width:1400px;margin:0 auto;padding:24px 16px 80px}
+
+.header{margin-bottom:32px}
+.header h1{font-size:28px;font-weight:800;letter-spacing:-.5px}
+.header h1 span{color:var(--ac)}
+.header .sub{color:var(--tx2);font-size:13px;margin-top:4px;font-family:'Red Hat Mono',monospace}
+
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.stat-pill{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;font-size:12px;font-family:'Red Hat Mono',monospace}
+.stat-pill .num{font-weight:700;color:var(--ac)}
+
+.columns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.columns{grid-template-columns:1fr}}
+
+.col-header{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--mt);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);font-family:'Red Hat Mono',monospace}
+.col-header span{color:var(--ac)}
+.col-header.data span{color:var(--ac2)}
+
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:12px;transition:.2s}
+.card:hover{border-color:var(--ac);transform:translateY(-1px)}
+.card.decided-approved{border-left:3px solid #22c55e;opacity:.7}
+.card.decided-parked{border-left:3px solid #eab308;opacity:.7}
+.card.decided-dismissed{opacity:.35;transform:scale(.97)}
+
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.agent-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--ac);font-family:'Red Hat Mono',monospace;background:rgba(249,115,22,.1);padding:2px 8px;border-radius:10px}
+.score{font-size:12px;font-weight:700;color:var(--tx2);font-family:'Red Hat Mono',monospace}
+
+.card-title{font-size:14px;font-weight:700;line-height:1.3;margin-bottom:8px;letter-spacing:-.2px}
+.card-meta{display:flex;gap:10px;margin-bottom:8px;font-size:11px;font-family:'Red Hat Mono',monospace}
+.conf{color:var(--ac2)}.bv{font-weight:600}.cat{color:var(--mt)}
+.evidence{color:var(--tx2);font-size:13px;line-height:1.5;margin-bottom:8px}
+.action{font-size:12px;color:var(--tx2);margin-bottom:8px}
+
+.ca-block{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:6px;padding:10px;margin-bottom:10px}
+.ca-label{font-size:10px;font-weight:700;text-transform:uppercase;color:#ef4444;font-family:'Red Hat Mono',monospace;margin-bottom:4px}
+.ca-text{font-size:12px;color:var(--tx2)}
+
+.card-actions{display:flex;gap:6px}
+.btn{border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Red Hat Mono',monospace;transition:.15s}
+.btn.approve{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
+.btn.approve:hover{background:rgba(34,197,94,.3)}
+.btn.park{background:rgba(234,179,8,.1);color:#eab308;border:1px solid rgba(234,179,8,.2)}
+.btn.park:hover{background:rgba(234,179,8,.25)}
+.btn.dismiss{background:rgba(107,114,128,.1);color:#6b7280;border:1px solid rgba(107,114,128,.2)}
+.btn.dismiss:hover{background:rgba(107,114,128,.25)}
+
+.ca-item{background:var(--sf);border:1px solid var(--bd);border-left:3px solid #ef4444;border-radius:var(--r);padding:12px;margin-bottom:10px}
+.ca-target{font-weight:600;font-size:13px;margin-bottom:4px}.ca-sev{font-size:10px;color:#ef4444;font-family:'Red Hat Mono',monospace;text-transform:uppercase;margin-bottom:4px}
+.ca-item p{font-size:12px;color:var(--tx2)}
+
+.export-bar{position:fixed;bottom:0;left:0;right:0;background:var(--sf);border-top:1px solid var(--bd);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-family:'Red Hat Mono',monospace;z-index:100}
+.export-bar .count{color:var(--ac)}
+.export-btn{background:var(--ac);color:#000;border:none;border-radius:6px;padding:8px 16px;font-weight:700;cursor:pointer;font-family:'Red Hat Mono',monospace}
 </style>
 </head>
 <body>
-<header>
-  <h1>🧠 <span class="accent">Classifier</span> Idea Lab</h1>
-  <div class="meta" id="meta-row"></div>
-</header>
-<main>
-  <section class="col col-strategic">
-    <div class="col-header">
-      <div class="col-title">Strategic Ideas</div>
-      <div class="col-count" id="count-strategic"></div>
+<div class="shell">
+    <div class="header">
+        <h1><span>Classifier</span> Idea Lab</h1>
+        <div class="sub">Meta-intelligence layer · Analyzing how your classifier performs · 2026-04-16</div>
     </div>
-    <div id="list-strategic"></div>
-  </section>
-  <section class="col col-data">
-    <div class="col-header">
-      <div class="col-title">Data Insights</div>
-      <div class="col-count" id="count-data"></div>
+
+    <div class="stats-row">
+        <div class="stat-pill">Findings: <span class="num">23</span></div>
+        <div class="stat-pill">Strategic: <span class="num">8</span></div>
+        <div class="stat-pill">Data: <span class="num">15</span></div>
+        <div class="stat-pill">Counterargs: <span class="num">8</span></div>
+        <div class="stat-pill">Decisions loaded: <span class="num">0</span></div>
     </div>
-    <div id="list-data"></div>
-  </section>
-  <section class="col col-counter">
-    <div class="col-header">
-      <div class="col-title">Devil's Advocate</div>
-      <div class="col-count" id="count-counter"></div>
+
+    <div class="columns">
+        <div>
+            <div class="col-header"><span>Strategic</span> Ideas</div>
+            <div class="card" data-fid="wildcard-20260416-2503" id="card-0">
+            <div class="card-header">
+                <span class="agent-tag">wildcard</span>
+                <span class="score">0.936</span>
+            </div>
+            <h3 class="card-title">Brand Safety API for Sports Streaming</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 92%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">wildcard_idea</span>
+            </div>
+            <p class="evidence">Sell real-time brand classification as a moderation layer to streaming platforms (YouTube, Twitch, Facebook Gaming). They need to flag unlicensed brand placement, sports betting logos, and competitor products in live feeds. Our taxonomy + rules becom</p>
+            <p class="action"><strong>Action:</strong> Evaluate: platform_play play</p>
+            <div class="ca-block">
+                <div class="ca-label">Devil's Advocate (high risk)</div>
+                <p class="ca-text">Selling brand classification as a &#x27;moderation layer&#x27; to YouTube/Twitch requires real-time SLA guarantees, legal liability for false flags, and competitor-proof accuracy you haven&#x27;t vali</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('wildcard-20260416-2503','approved')">Approve</button>
+                <button class="btn park" onclick="decide('wildcard-20260416-2503','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('wildcard-20260416-2503','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="wildcard-20260416-4552" id="card-1">
+            <div class="card-header">
+                <span class="agent-tag">wildcard</span>
+                <span class="score">0.924</span>
+            </div>
+            <h3 class="card-title">Reverse Brand Intelligence (Competitive Exposure Monitoring)</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 88%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">wildcard_idea</span>
+            </div>
+            <p class="evidence">Sell to brands (Selkirk, Wilson, Yonex) a private dashboard showing every competitor mention in pickleball content—paddles in hand, apparel worn, signage behind players. Invert the model: instead of &#x27;what brands appear,&#x27; ask &#x27;where do MY competitors </p>
+            <p class="action"><strong>Action:</strong> Evaluate: partnership_flip play</p>
+            <div class="ca-block">
+                <div class="ca-label">Devil's Advocate (high risk)</div>
+                <p class="ca-text">A &#x27;competitive exposure&#x27; dashboard requires you to classify *every brand mention with perfect precision*—but your unknown rate is 564 detections (Finding #7), which is 7.5% of your corpus.</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('wildcard-20260416-4552','approved')">Approve</button>
+                <button class="btn park" onclick="decide('wildcard-20260416-4552','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('wildcard-20260416-4552','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="wildcard-20260416-2860" id="card-2">
+            <div class="card-header">
+                <span class="agent-tag">wildcard</span>
+                <span class="score">0.915</span>
+            </div>
+            <h3 class="card-title">Sport Taxonomy Factory (Whitelabel Rule Engine)</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 85%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">wildcard_idea</span>
+            </div>
+            <p class="evidence">Package the 49-rule decision framework + taxonomy-building process as a managed service. Beach volleyball league uploads 500 clips → we deliver a 45-rule classifier for their sport in 6 weeks. Recurring revenue from 10-15 niche sports (padel, kabaddi</p>
+            <p class="action"><strong>Action:</strong> Evaluate: tool_spinoff play</p>
+            <div class="ca-block">
+                <div class="ca-label">Devil's Advocate (high risk)</div>
+                <p class="ca-text">A &#x27;whitelabel rule engine&#x27; sounds like a revenue play, but beach volleyball has zero overlap with pickleball taxonomy, so you&#x27;re selling a generic tool, not a proven framework.</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('wildcard-20260416-2860','approved')">Approve</button>
+                <button class="btn park" onclick="decide('wildcard-20260416-2860','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('wildcard-20260416-2860','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="wildcard-20260416-7470" id="card-3">
+            <div class="card-header">
+                <span class="agent-tag">wildcard</span>
+                <span class="score">0.912</span>
+            </div>
+            <h3 class="card-title">Player-Brand Affinity Scoring (Athlete Marketplace)</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 84%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">wildcard_idea</span>
+            </div>
+            <p class="evidence">Build a &#x27;Brand Fit Score&#x27; for every pro/semi-pro player: which brands appear in their footage, how frequently, in what context? Sell this to brands as athlete scouting data for sponsorship deals (&#x27;Selkirk has 73% affinity overlap with demographics bu</p>
+            <p class="action"><strong>Action:</strong> Evaluate: platform_play play</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('wildcard-20260416-7470','approved')">Approve</button>
+                <button class="btn park" onclick="decide('wildcard-20260416-7470','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('wildcard-20260416-7470','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="wildcard-20260416-6302" id="card-4">
+            <div class="card-header">
+                <span class="agent-tag">wildcard</span>
+                <span class="score">0.909</span>
+            </div>
+            <h3 class="card-title">Venue Sponsorship Optimization Algorithm</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 83%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">wildcard_idea</span>
+            </div>
+            <p class="evidence">Venues want to know: &#x27;If we sign a sponsorship with Brand X, how much on-camera exposure will they actually get?&#x27; Feed our classifier into a simulator that predicts brand visibility for any venue based on tournament size, camera angles, player roster</p>
+            <p class="action"><strong>Action:</strong> Evaluate: tool_spinoff play</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('wildcard-20260416-6302','approved')">Approve</button>
+                <button class="btn park" onclick="decide('wildcard-20260416-6302','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('wildcard-20260416-6302','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="wildcard-20260416-9588" id="card-5">
+            <div class="card-header">
+                <span class="agent-tag">wildcard</span>
+                <span class="score">0.903</span>
+            </div>
+            <h3 class="card-title">Equipment Authenticity Verifier (Anti-Counterfeiting)</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 81%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">wildcard_idea</span>
+            </div>
+            <p class="evidence">Brands fear fake equipment flooding the market. Use the classifier to create a &#x27;brand passport&#x27; service: when a player registers gear, our system learns the exact wear patterns, logos, color codes. Later, if that paddle appears in unauthorized footag</p>
+            <p class="action"><strong>Action:</strong> Evaluate: trust_play play</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('wildcard-20260416-9588','approved')">Approve</button>
+                <button class="btn park" onclick="decide('wildcard-20260416-9588','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('wildcard-20260416-9588','dismissed')">Dismiss</button>
+            </div>
+        </div>
+        </div>
+        <div>
+            <div class="col-header data"><span>Data</span> Insights</div>
+            <div class="card" data-fid="rule_impact_hunter-20260416-8297" id="card-100">
+            <div class="card-header">
+                <span class="agent-tag">rule_impact_hunter</span>
+                <span class="score">0.890</span>
+            </div>
+            <h3 class="card-title">Top 5 rules handle 91.1% of all classifications — heavy concentration risk</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 90%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">rule_hygiene</span>
+            </div>
+            <p class="evidence">Top 5: JOOLA(5820), Nike(591), PICKLEBALL(196), Reolink(109), HEAD(103). If any of these rules has a bug, it cascades across 91.1% of the corpus. Total rule-based classifications: 7489.</p>
+            <p class="action"><strong>Action:</strong> Add regression tests for top 5 rules; consider sub-rules for edge cases</p>
+            <div class="ca-block">
+                <div class="ca-label">Devil's Advocate (high risk)</div>
+                <p class="ca-text">Concentration risk is real, but regression tests alone won&#x27;t catch silent semantic drift—a rule can pass regression tests and still emit false positives at higher confidence thresholds downstream</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('rule_impact_hunter-20260416-8297','approved')">Approve</button>
+                <button class="btn park" onclick="decide('rule_impact_hunter-20260416-8297','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('rule_impact_hunter-20260416-8297','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="rule_impact_hunter-20260416-7338" id="card-101">
+            <div class="card-header">
+                <span class="agent-tag">rule_impact_hunter</span>
+                <span class="score">0.890</span>
+            </div>
+            <h3 class="card-title">5 rules are NOT human-verified but actively classify 28 detections</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 90%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">rule_quality</span>
+            </div>
+            <p class="evidence">Unverified: THE UNDERGROUND PICKLEBALL, Wilson, THE RECOVERY CAVE, BODYARMOR, COMCAST BUSINESS. These were auto-generated or batch-approved without individual review. They fire 28 times — if wrong, they silently corrupt the corpus.</p>
+            <p class="action"><strong>Action:</strong> Review and verify unverified rules, prioritized by fire count</p>
+            <div class="ca-block">
+                <div class="ca-label">Devil's Advocate (medium risk)</div>
+                <p class="ca-text">28 detections from unverified rules is small enough that you could manually verify them today—this is already actionable and likely has high ROI.</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('rule_impact_hunter-20260416-7338','approved')">Approve</button>
+                <button class="btn park" onclick="decide('rule_impact_hunter-20260416-7338','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('rule_impact_hunter-20260416-7338','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="taxonomy_tail_detector-20260416-5727" id="card-102">
+            <div class="card-header">
+                <span class="agent-tag">taxonomy_tail_detector</span>
+                <span class="score">0.875</span>
+            </div>
+            <h3 class="card-title">6 unknown brands appear 5+ times — probably real and need rules</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 85%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">taxonomy_gap</span>
+            </div>
+            <p class="evidence">Rescuable unknowns: JOOLA(435), goomba(21), R&amp;M(20), Foz_4_UG_Court(14), R&amp;M_fox_wifi_goomba(9), R8M(8). These are classified &#x27;unknown&#x27; but appear consistently enough to be real brands. Total unknown detections: 564.</p>
+            <p class="action"><strong>Action:</strong> Research and create rules for top unknown brands</p>
+            <div class="ca-block">
+                <div class="ca-label">Devil's Advocate (medium risk)</div>
+                <p class="ca-text">Unknown detections at 5+ occurrences is a reasonable heuristic, but JOOLA (435 fires) is already in your top 5 rules (Finding #3)—this suggests your &#x27;unknown&#x27; bucket is contaminated by unmap</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('taxonomy_tail_detector-20260416-5727','approved')">Approve</button>
+                <button class="btn park" onclick="decide('taxonomy_tail_detector-20260416-5727','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('taxonomy_tail_detector-20260416-5727','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="taxonomy_tail_detector-20260416-0045" id="card-103">
+            <div class="card-header">
+                <span class="agent-tag">taxonomy_tail_detector</span>
+                <span class="score">0.840</span>
+            </div>
+            <h3 class="card-title">15 brands appear 3+ times with NO rule — pure fallback classification</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 80%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">taxonomy_gap</span>
+            </div>
+            <p class="evidence">Rule-less brands: Foz_Bullet(62), R&amp;M_foz_wifi_goomba(40), N(40), 4K(20), ODESSA(18), PSA(17), Nicol(14), PKLR(12), W(10), COACH(8). These are classified by heuristic only — no human-verified category assignment. Total fallback-only detections: 272.</p>
+            <p class="action"><strong>Action:</strong> Create rules for top fallback-only brands, starting with highest count</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('taxonomy_tail_detector-20260416-0045','approved')">Approve</button>
+                <button class="btn park" onclick="decide('taxonomy_tail_detector-20260416-0045','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('taxonomy_tail_detector-20260416-0045','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="decision_whisperer-20260416-4608" id="card-104">
+            <div class="card-header">
+                <span class="agent-tag">decision_whisperer</span>
+                <span class="score">0.800</span>
+            </div>
+            <h3 class="card-title">Revenue potential predicts approval: high=80.0%, low=27.3%, none=52.4%</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 70%</span>
+                <span class="bv" style="color:#22c55e">HIGH</span>
+                <span class="cat">decision_pattern</span>
+            </div>
+            <p class="evidence">Approval rates by revenue bucket: {&#x27;none&#x27;: 52.4, &#x27;medium&#x27;: 38.1, &#x27;high&#x27;: 80.0, &#x27;low&#x27;: 27.3}. High-revenue brands get approved more often — the system could auto-approve them.</p>
+            <p class="action"><strong>Action:</strong> Consider auto-approving high-revenue brand rules with &gt;80% historical approval rate</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('decision_whisperer-20260416-4608','approved')">Approve</button>
+                <button class="btn park" onclick="decide('decision_whisperer-20260416-4608','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('decision_whisperer-20260416-4608','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="taxonomy_tail_detector-20260416-7686" id="card-105">
+            <div class="card-header">
+                <span class="agent-tag">taxonomy_tail_detector</span>
+                <span class="score">0.750</span>
+            </div>
+            <h3 class="card-title">4 junk names pollute the unknown bucket — dates, gibberish, single chars</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 90%</span>
+                <span class="bv" style="color:#eab308">MEDIUM</span>
+                <span class="cat">data_quality</span>
+            </div>
+            <p class="evidence">Junk entries: 7(26), UG(13), Unknown(9), 2026-01-05(5). These are Gemini hallucinations or OCR artifacts (dates, single characters). They waste investigation effort by appearing in the unknown queue.</p>
+            <p class="action"><strong>Action:</strong> Add a pre-filter to catch junk patterns before classification</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('taxonomy_tail_detector-20260416-7686','approved')">Approve</button>
+                <button class="btn park" onclick="decide('taxonomy_tail_detector-20260416-7686','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('taxonomy_tail_detector-20260416-7686','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="rule_impact_hunter-20260416-5809" id="card-106">
+            <div class="card-header">
+                <span class="agent-tag">rule_impact_hunter</span>
+                <span class="score">0.735</span>
+            </div>
+            <h3 class="card-title">12 rules exist purely to suppress noise — they fire 338 times</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 85%</span>
+                <span class="bv" style="color:#eab308">MEDIUM</span>
+                <span class="cat">rule_hygiene</span>
+            </div>
+            <p class="evidence">Noise-suppressor rules (revenue_potential=none): Courtana, PICKLEBALL, 7, goomba, R&amp;M, Unknown, UG, R&amp;M_fox_wifi_goomba. These classify junk brands like dates, gibberish, venue artifacts. Intel rules (37) fire 7129x — ratio: 21.1:1 intel-to-noise.</p>
+            <p class="action"><strong>Action:</strong> Consider a &#x27;junk bucket&#x27; rule instead of per-brand noise rules</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('rule_impact_hunter-20260416-5809','approved')">Approve</button>
+                <button class="btn park" onclick="decide('rule_impact_hunter-20260416-5809','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('rule_impact_hunter-20260416-5809','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="taxonomy_tail_detector-20260416-4862" id="card-107">
+            <div class="card-header">
+                <span class="agent-tag">taxonomy_tail_detector</span>
+                <span class="score">0.735</span>
+            </div>
+            <h3 class="card-title">15 proposed rules pending review — 13 need investigation</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 95%</span>
+                <span class="bv" style="color:#eab308">MEDIUM</span>
+                <span class="cat">classifier_backlog</span>
+            </div>
+            <p class="evidence">Proposed: ODESSA, PSA, PKLR, FANADIR, READY TO PLAY, Fila, VAERSA, DUDE. These have been auto-generated but not approved. Every day they sit, their detections stay unclassified.</p>
+            <p class="action"><strong>Action:</strong> Review proposed rules in classifier morning report</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('taxonomy_tail_detector-20260416-4862','approved')">Approve</button>
+                <button class="btn park" onclick="decide('taxonomy_tail_detector-20260416-4862','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('taxonomy_tail_detector-20260416-4862','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="decision_whisperer-20260416-8505" id="card-108">
+            <div class="card-header">
+                <span class="agent-tag">decision_whisperer</span>
+                <span class="score">0.735</span>
+            </div>
+            <h3 class="card-title">Decision distribution: {&#x27;approve&#x27;: 33, &#x27;investigate&#x27;: 38, &#x27;reject&#x27;: 3} across 74 decisions</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 95%</span>
+                <span class="bv" style="color:#eab308">MEDIUM</span>
+                <span class="cat">decision_meta</span>
+            </div>
+            <p class="evidence">Action breakdown: {&#x27;approve&#x27;: 33, &#x27;investigate&#x27;: 38, &#x27;reject&#x27;: 3}. Unique brands decided on: 50. This shows how heavily the system relies on Bill&#x27;s input.</p>
+            <p class="action"><strong>Action:</strong> Track decision velocity — are decisions keeping pace with proposals?</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('decision_whisperer-20260416-8505','approved')">Approve</button>
+                <button class="btn park" onclick="decide('decision_whisperer-20260416-8505','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('decision_whisperer-20260416-8505','dismissed')">Dismiss</button>
+            </div>
+        </div>
+<div class="card" data-fid="decision_whisperer-20260416-9368" id="card-109">
+            <div class="card-header">
+                <span class="agent-tag">decision_whisperer</span>
+                <span class="score">0.720</span>
+            </div>
+            <h3 class="card-title">9 brands have been sent to investigation 2+ times — decision limbo</h3>
+            <div class="card-meta">
+                <span class="conf">Conf: 80%</span>
+                <span class="bv" style="color:#eab308">MEDIUM</span>
+                <span class="cat">decision_pattern</span>
+            </div>
+            <p class="evidence">Repeat investigations: R&amp;M_foz_wifi_goomba, W, PKLR, PBS, PSA, FANADIR, ODESSA, VAERSA, WD. These brands keep bouncing between proposed and investigate without resolution. Each loop wastes a classifier cycle.</p>
+            <p class="action"><strong>Action:</strong> Force-decide repeat investigations: approve with caveats or reject definitively</p>
+            
+            <div class="card-actions">
+                <button class="btn approve" onclick="decide('decision_whisperer-20260416-9368','approved')">Approve</button>
+                <button class="btn park" onclick="decide('decision_whisperer-20260416-9368','parked')">Park</button>
+                <button class="btn dismiss" onclick="decide('decision_whisperer-20260416-9368','dismissed')">Dismiss</button>
+            </div>
+        </div>
+        </div>
+        <div>
+            <div class="col-header" style="color:#ef4444">Devil's Advocate</div>
+            <div class="ca-item"><div class="ca-target">4 clips quarantined so far — {&#x27;non_pickleball_sport&#x27;: 4} bre</div><div class="ca-sev">high</div><p>Acting on &#x27;no action needed&#x27; based on n=4 masks the real problem: you may have zero visibility into non-pickleball sport contamination that slipped through. When the corpus grows 1</p></div>
+<div class="ca-item"><div class="ca-target">Brand Safety API for Sports Streaming</div><div class="ca-sev">high</div><p>If your classifier flags a legitimate brand as &#x27;unlicensed&#x27; and the platform acts on it (demonetizes, blocks, or mutes), you expose the brand owner and platform to legal liability.</p></div>
+<div class="ca-item"><div class="ca-target">Top 5 rules handle 91.1% of all classifications — heavy conc</div><div class="ca-sev">high</div><p>If you add regression tests but don&#x27;t audit the *definition* of those top 5 rules (especially JOOLA at 5820 fires—is that one rule or five rules bundled?), you&#x27;re making the codeba</p></div>
+<div class="ca-item"><div class="ca-target">5 rules are NOT human-verified but actively classify 28 dete</div><div class="ca-sev">medium</div><p>This finding is solid, but the *order of operations* matters: if you verify these 5 rules in isolation and don&#x27;t trace back to ask &#x27;how many other rules were batch-approved without</p></div>
+<div class="ca-item"><div class="ca-target">Backlog ratio: 15 pending vs 74 decided = 0.2x</div><div class="ca-sev">medium</div><p>Declaring &#x27;backlog under control&#x27; without audit trail dates creates false confidence. A rule pending for 200 days looks the same as one pending for 5 days in this metric. You may h</p></div>
+<div class="ca-item"><div class="ca-target">Reverse Brand Intelligence (Competitive Exposure Monitoring)</div><div class="ca-sev">high</div><p>If you sell this to Selkirk as &#x27;every competitor mention,&#x27; but your classifier misses 7-10% of actual mentions or falsely flags non-competitors, you&#x27;ll erode trust with the first p</p></div>
+<div class="ca-item"><div class="ca-target">6 unknown brands appear 5+ times — probably real and need ru</div><div class="ca-sev">medium</div><p>Creating new rules for &#x27;unknowns&#x27; without first auditing *why* JOOLA fires 435 times but also appears 435 times in the unknown bucket will lead to rule duplication and silent confl</p></div>
+<div class="ca-item"><div class="ca-target">Sport Taxonomy Factory (Whitelabel Rule Engine)</div><div class="ca-sev">high</div><p>If you package this as a spinoff, you&#x27;re committing to maintain *two* taxonomies (pickleball + customers), and any bug in the shared framework breaks both. You&#x27;ll also lose focus o</p></div>
+        </div>
     </div>
-    <div id="list-counter"></div>
-  </section>
-</main>
-<footer>
-  Decisions stored in localStorage (<code>classifier-lab-decisions</code>).
-  <button class="export-btn" onclick="exportDecisions()">Export JSON</button>
-  <button class="export-btn" onclick="clearDecisions()" style="background:#444;color:#fff">Reset</button>
-</footer>
+</div>
+
+<div class="export-bar">
+    <span>Decisions: <span class="count" id="decision-count">0</span></span>
+    <button class="export-btn" onclick="exportDecisions()">Export Decisions JSON</button>
+</div>
 
 <script>
-const DATA = {"run_id": "classifier-lab-2026-04-15", "generated_at": "2026-04-15T14:53:12.526576+00:00", "mode": "full", "researchers_run": 6, "corpus_stats": {"total_findings": 33, "unique_findings": 24, "strategic_count": 8, "data_count": 16, "counterargs_attached": 8}, "feedback_loop": {"decisions_loaded": 0, "category_signals": {}, "agent_signals": {}}, "top_strategic": [{"finding_id": "wildcard-20260415-1166", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163084+00:00", "title": "Taxonomy Franchise: 'Brand Rules Engine for [Sport]'", "confidence": 0.88, "evidence_summary": "License our methodology (not just rules, but the *decision loop itself*) to tennis, padel, and squash data companies. They upload their corpus; we train a sport-specific classifier and charge them per classification + monthly seats. We become the infrastructure layer for sports brand intelligence.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: licensing play", "source_clips": [], "raw_data": {"flywheel_score": 0.88, "category": "licensing"}, "composite_score": 0.924, "counterargument": {"argument": "Licensing the decision loop itself assumes your pickleball rules are generalizable to tennis/padel/squash, which have completely different equipment, court layouts, and sponsorship norms.", "risk": "You'll export rules that don't transfer (e.g., 'paddle logo rules' don't apply to tennis rackets), creating broken classifiers in partner systems that reflect back on your credibility. Silent failures in downstream partner dashboards will be impossible to debug without access to their data.", "severity": "high"}}, {"finding_id": "wildcard-20260415-5675", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163107+00:00", "title": "Brand Licensing Network (Marketplace Play)", "confidence": 0.87, "evidence_summary": "Build a two-sided marketplace: brands can register themselves + their *approved appearance rules* (e.g., 'JOOLA logos only on paddles, not on apparel'). Venues/streamers query the API: 'Is this appearance compliant?' Revenue from brands (verification), venues (lookups), and licensees (premium terms). You become brand-athlete-venue arbiter.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: platform_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.87, "category": "platform_play"}, "composite_score": 0.921, "counterargument": {"argument": "A brand-managed marketplace assumes brands will self-report accurate appearance rules, which creates garbage-in-garbage-out risk and shifts taxonomy maintenance burden to external actors.", "risk": "Brands will either over-report (claiming restrictions that don't exist) or under-report (hiding restrictions) to game visibility. Your classifier will now be a patchwork of self-served rules you can't audit. Downstream consumers (venues, reports) will lose trust when rules contradict each other or change without notice.", "severity": "medium"}}, {"finding_id": "wildcard-20260415-2238", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163119+00:00", "title": "Brand Safety API for Sports Broadcasters", "confidence": 0.85, "evidence_summary": "Sell real-time classification-as-a-service to ESPN, YouTube Gaming, and Twitch so they can auto-flag, blur, or report unlicensed brand appearances in live sports. We own the taxonomy + rules; they own the distribution. Revenue: per-match SaaS + data licensing.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: platform_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.85, "category": "platform_play"}, "composite_score": 0.915, "counterargument": {"argument": "Real-time blur/flag API on live broadcasts creates legal liability if your classifier misidentifies a brand or flags a legitimate appearance, especially if broadcasters auto-act on your output without human review.", "risk": "A single false positive that causes ESPN to blur a sponsor's logo during a live match is a lawsuit and reputation damage. You're shifting classification risk from internal rules to external action\u2014broadcasters will demand SLAs and indemnification you can't provide. Silent classifier drift will now have immediate on-air consequences.", "severity": "high"}}, {"finding_id": "wildcard-20260415-4509", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163129+00:00", "title": "Brand Intel Consortium (Cooperative Play)", "confidence": 0.84, "evidence_summary": "Partner with 5\u201310 sports data companies (tennis, padel, esports, etc.) to pool decision logs and taxonomies into a shared neutral registry. Sell *aggregate cross-sport brand trends* back to CPG companies and agencies ('Where is Nike gaining mindshare across racquet sports?'). You own the data backbone and licensing terms.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: partnership_flip play", "source_clips": [], "raw_data": {"flywheel_score": 0.84, "category": "partnership_flip"}, "composite_score": 0.912, "counterargument": {"argument": "A neutral registry across 5\u201310 companies assumes you can align taxonomies and governance models\u2014both are expensive migrations that typically take 12+ months and fail.", "risk": "Each partner has different classification needs and political incentives. Merging taxonomies will either water down precision (by averaging to lowest-common-denominator rules) or create silos (defeating the 'pooling' goal). You'll spend more time on governance than on the actual product signal.", "severity": "medium"}}, {"finding_id": "wildcard-20260415-0587", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163138+00:00", "title": "Competitor Intelligence Subscription (Dark Pattern Play)", "confidence": 0.82, "evidence_summary": "Run the classifier on all public/competitor footage (tournaments, YouTube, TikTok) and sell monthly reports: 'What brands are gaining shelf-space in pickleball? Where is your brand losing visibility?' Monetize FOMO and market share anxiety. Data moat: only we have the calibrated rules.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: media_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.82, "category": "media_play"}, "composite_score": 0.906, "counterargument": {"argument": "Monitoring competitor footage without explicit rights may expose you to copyright and right-of-publicity claims, especially if you're re-selling competitor intelligence.", "risk": "This is a legal minefield disguised as a product finding. Even if footage is public, scraping and monetizing it without consent invites cease-and-desist letters from tournament operators and athletes. The 0.82 confidence is borrowed credibility\u2014this is a business/legal decision, not a classifier finding.", "severity": "high"}}, {"finding_id": "wildcard-20260415-3665", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163148+00:00", "title": "Automated Rights-Management Workflow Tool", "confidence": 0.81, "evidence_summary": "Sell to venues and tournament organizers: upload match footage, our classifier auto-flags every brand appearance, auto-generates licensing invoices, and auto-rejects illegal appearances in real-time broadcasts. Revenue: per-venue + per-match micro-transactions. Becomes essential ops infra.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: tool_spinoff play", "source_clips": [], "raw_data": {"flywheel_score": 0.81, "category": "tool_spinoff"}, "composite_score": 0.903, "counterargument": {"argument": "Auto-invoicing based on classifier output creates financial liability\u2014venues will dispute invoices if your classifier misses a brand or false-positives a competitor's logo.", "risk": "You're automating a legal/financial workflow on top of a system with 7.4% fallback rate and unknown precision on edge cases. Venues will demand audit trails and appeal mechanisms, turning your classifier into a payment processor with compliance overhead. One major invoice dispute will kill the product.", "severity": "medium"}}], "top_data": [{"finding_id": "unknown_surfer-20260415-3015", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:43.998596+00:00", "title": "Top 10 unknown brands account for 314 detections \u2014 high-leverage rule targets", "confidence": 0.85, "evidence_summary": "Most frequent unknowns: JOOLA(220): 'shirt chest'; 7(21): 'Signage on the fence in the background'; R&M(16): 'Top left corner of the video feed overla'; goomba(16): 'Top left corner of the video feed overla'; Unknown(9): 'worn by the primary player'; UG(9): 'Banner on the wall behind the court'. A rule for any of these immediately converts N detections from unknown to classified. Sort by frequency and research top 5.", "business_value": "high", "category": "rule_opportunity", "novelty": 0.75, "recommended_action": "For each top unknown: 1-call Haiku research ('what is X in the pickleball world?'); propose rule.", "source_clips": [], "raw_data": {"top_unknowns": [["JOOLA", 220], ["7", 21], ["R&M", 16], ["goomba", 16], ["Unknown", 9], ["UG", 9], ["R&M_fox_wifi_goomba", 9], ["R8M", 6], ["2026-01-05", 4], ["Foz_4_UG_Court", 4]], "location_samples": {"JOOLA": "shirt chest", "7": "Signage on the fence in the background", "R&M": "Top left corner of the video feed overlay", "goomba": "Top left corner of the video feed overlay", "Unknown": "worn by the primary player", "UG": "Banner on the wall behind the court", "R&M_fox_wifi_goomba": "top left corner of the video feed overlay", "R8M": "Top left corner of the video feed overlay", "2026-01-05": "Top left corner of the video feed overlay", "Foz_4_UG_Court": "Signage on the wall behind the court."}}, "composite_score": 0.875, "counterargument": {"argument": "JOOLA 'shirt chest' detections and fence signage are fundamentally different classification problems\u2014one is legitimate brand presence, the other is background clutter.", "risk": "Treating all 314 detections as 'rule gaps' will cause you to add rules that capture noise (background signage, overlays) alongside genuine brand appearances, degrading precision. You'll need to manually audit each cluster first\u2014research calls alone won't tell you whether a pattern should become a rule or a filter.", "severity": "high"}}, {"finding_id": "rule_impact_hunter-20260415-9099", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601674+00:00", "title": "7.4% of classifications are fallback (no rule match) \u2014 every % is a rule gap", "confidence": 0.85, "evidence_summary": "340 detections use fallback classification vs 4261 that match a rule (92.6% rule coverage). Fallback is the classifier guessing \u2014 each one is a rule we haven't written yet.", "business_value": "high", "category": "rule_coverage", "novelty": 0.7, "recommended_action": "Cluster fallback detections and promote the top clusters into new rules.", "source_clips": [], "raw_data": {"by_source": {"rule": 4261, "fallback": 340, "none": 0}, "rule_pct": 92.6, "fallback_pct": 7.4}, "composite_score": 0.865, "counterargument": {"argument": "7.4% fallback rate is low enough that clustering and promoting top clusters may introduce false positives that break existing high-precision rules.", "risk": "You'll be adding rules based on only 340 samples across potentially dozens of clusters\u2014each with <50 examples. New rules built on thin evidence will trigger false positives on edge cases, polluting downstream reports and forcing you to maintain exception lists. The classifier owner likely already knows these gaps exist and chose not to fill them for precision reasons.", "severity": "high"}}, {"finding_id": "rule_impact_hunter-20260415-4927", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601644+00:00", "title": "1 rules look right but you override them often", "confidence": 0.8, "evidence_summary": "DUDE CLOTHING: 1/2 decisions overridden (4 corpus fires). Sample note: \"Probably something there. Keep looking out for underserved brands and try to build some confidence around it. It could be fun and rewarding.\" These rules pass the auto-verified bar but your manual review keeps correcting them \u2014 the classification they produce is technically legal but rarely what you actually want.", "business_value": "high", "category": "rule_calibration", "novelty": 0.8, "recommended_action": "Adjust the rule defaults to match the override you keep making.", "source_clips": [], "raw_data": {"wrong_rules": [["DUDE CLOTHING", 4, 1, 2]], "override_notes_sample": {"PSA": ["Oh, okay, this is cool. You actually have some versions of uploaded videos that I put in for manual AI analysis. Let's definitely classify these as much as possible, and there should be a lot more dat", "Oh, okay, this is cool. You actually have some versions of uploaded videos that I put in for manual AI analysis. Let's definitely classify these as much as possible, and there should be a lot more dat"], "W": ["I'm going to comment on this one along with the last one as an investigate and I think it makes sense to build another branch because these are classes of videos that are actually self-uploaded from a", "I'm going to comment on this one along with the last one as an investigate and I think it makes sense to build another branch because these are classes of videos that are actually self-uploaded from a"], "PBS": ["I personally don't see the PBS on the video, but if you've identified that as an apparel top, I do think that's valuable. This is the kind of granular insights that we want to get into for what it's w"]}}, "composite_score": 0.86}, {"finding_id": "unknown_surfer-20260415-0055", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:43.998537+00:00", "title": "30 items in investigate queue read like real brands", "confidence": 0.8, "evidence_summary": "Likely real brands stuck waiting: PUSHIT; PKLR; PBS; PSA; PKLR; PBS. Their rationales mention product context (paddle, apparel, sponsor, etc.). If left unclassified, they inflate the unknown bucket and hide signal.", "business_value": "high", "category": "unknown_rescue", "novelty": 0.8, "recommended_action": "Auto-research each via web lookup, draft a proposed rule, ship for review.", "source_clips": [], "raw_data": {"likely_brands": ["PUSHIT", "PKLR", "PBS", "PSA", "PKLR", "PBS", "BHP", "FANADIR", "ODESSA", "PSA", "PKLR", "FANADIR", "ODESSA", "VAERSA", "PSA", "PKLR", "FANADIR", "ODESSA", "VAERSA", "ELGOUNA", "USA", "READY TO PLAY", "COLUMBIA", "SQUASH CUP", "IB", "DUDE", "Court", "CGG", "Liberty", "PUSHT"]}, "composite_score": 0.86}, {"finding_id": "decision_whisperer-20260415-2649", "agent": "decision_whisperer", "generated_at": "2026-04-15T14:52:43.922394+00:00", "title": "15 decisions override the classifier's proposed category \u2014 override-to-decision ratio = 20.3%", "confidence": 0.8, "evidence_summary": "Top override categories: {'broadcast_tech': 3, 'unknown': 2, 'court_surface': 2}. Top override values: {'medium': 9, 'high': 3, 'low': 2}. Every override is a signal the rule's default is slightly off. High override-to-decision ratio = classifier is running behind the taxonomy.", "business_value": "high", "category": "override_pattern", "novelty": 0.7, "recommended_action": "For override categories you repeat, update the rule's default \u2014 don't make yourself say it twice.", "source_clips": [], "raw_data": {"override_categories": {"broadcast_tech": 3, "unknown": 2, "court_surface": 2}, "override_values": {"high": 3, "medium": 9, "low": 2}, "override_count": 15}, "composite_score": 0.84}, {"finding_id": "decision_whisperer-20260415-2817", "agent": "decision_whisperer", "generated_at": "2026-04-15T14:52:43.922206+00:00", "title": "Your 'investigate' decisions cluster into 5 reasons \u2014 the classifier could route future ones automatically", "confidence": 0.7, "evidence_summary": "Clustering 30 investigate-notes via Haiku: needs visual evidence to validate (e.g. BHP); ambiguous classification type (e.g. ODESSA); signage vs apparel distinction needed (e.g. PKLR); future value with better data infrastructure (e.g. R&M_foz_wifi_goomba); promising but requires deeper investigation (e.g. DUDE CLOTHING). Each theme is a rule the classifier could apply itself: when a new brand matches theme X, auto-route to investigate with that rationale pre-filled.", "business_value": "high", "category": "decision_prediction", "novelty": 0.85, "recommended_action": "Add a 'pre-route' step: before surfacing unknowns for your review, apply these themes and pre-fill the rationale + override_category.", "source_clips": [], "raw_data": {"themes": [{"theme": "needs visual evidence to validate", "example_brand": "BHP", "rationale": "PO cannot make a decision without seeing pictures or video clips of the brand appearance in context"}, {"theme": "ambiguous classification type", "example_brand": "ODESSA", "rationale": "Could be a brand, location, or other entity type - needs context to disambiguate what it actually is"}, {"theme": "signage vs apparel distinction needed", "example_brand": "PKLR", "rationale": "Need to clarify whether brand appears as worn apparel, signage, banners, or watermarks before classifying"}, {"theme": "future value with better data infrastructure", "example_brand": "R&M_foz_wifi_goomba", "rationale": "Could become valuable if system is built to tie classifications to specific cameras or other contextual metadata"}, {"theme": "promising but requires deeper investigation", "example_brand": "DUDE CLOTHING", "rationale": "Interesting prospect that warrants further analysis before final approval decision"}], "investigate_count": 30}, "composite_score": 0.82}, {"finding_id": "taxonomy_tail_detector-20260415-5162", "agent": "taxonomy_tail_detector", "generated_at": "2026-04-15T14:52:40.666815+00:00", "title": "8 probable taxonomy merges would consolidate 911 items", "confidence": 0.75, "evidence_summary": "Candidate merges: headwear(1) + hat(1) \u2192 headwear (2 items); shoe_brand(1) + shoes(409) \u2192 shoes (410 items); clothing_brand(9) + apparel(40) + apparel_top(22) + apparel_bottom(2) + apparel_graphic(1) \u2192 apparel (74 items); drink_bottle(3) + water_bottle(1) \u2192 water_bottle (4 items); camera_equipment(1) + camera(45) \u2192 camera (46 items); watermark(1) + broadcast_tech(14) \u2192 broadcast_tech (15 items). These categories likely refer to the same concept under different names. Keeping them split fragments category analytics and confuses downstream consumers.", "business_value": "high", "category": "taxonomy_consolidation", "novelty": 0.7, "recommended_action": "Pick one canonical name per merge group, run a migration on classified-corpus.json, bump taxonomy_version.", "source_clips": [], "raw_data": {"merges": [{"canonical": "headwear", "candidates": [["headwear", 1], ["hat", 1]], "total_items": 2}, {"canonical": "shoes", "candidates": [["shoe_brand", 1], ["shoes", 409]], "total_items": 410}, {"canonical": "apparel", "candidates": [["clothing_brand", 9], ["apparel", 40], ["apparel_top", 22], ["apparel_bottom", 2], ["apparel_graphic", 1]], "total_items": 74}, {"canonical": "water_bottle", "candidates": [["drink_bottle", 3], ["water_bottle", 1]], "total_items": 4}, {"canonical": "camera", "candidates": [["camera_equipment", 1], ["camera", 45]], "total_items": 46}, {"canonical": "broadcast_tech", "candidates": [["watermark", 1], ["broadcast_tech", 14]], "total_items": 15}, {"canonical": "venue_equipment", "candidates": [["venue_equipment", 274], ["court_equipment", 4]], "total_items": 278}, {"canonical": "facility_chain", "candidates": [["facility_chain", 78], ["venue_brand", 4]], "total_items": 82}], "singletons": [["hat", 1], ["drink_bottle", 3], ["apparel_graphic", 1], ["other", 2], ["headwear", 1], ["camera_equipment", 1], ["watermark", 1], ["apparel_bottom", 2], ["eyewear", 2], ["water_bottle", 1], ["shoe_brand", 1], ["tech_accessory", 1], ["player_name_graphic", 2]]}, "composite_score": 0.815}, {"finding_id": "taxonomy_tail_detector-20260415-8113", "agent": "taxonomy_tail_detector", "generated_at": "2026-04-15T14:52:40.668639+00:00", "title": "5 brands are classified as multiple primary categories across clips", "confidence": 0.75, "evidence_summary": "Examples: PUSHIT: court_surface\u00d75 + sponsor_signage\u00d74 (of 10); DUNLOP: sponsor_signage\u00d78 + ball\u00d72 (of 10); Franklin: paddle\u00d77 + ball\u00d72 (of 9); PKLR: clothing_brand\u00d76 + apparel_top\u00d72 (of 9); Under Armour: apparel\u00d74 + shoes\u00d72 (of 6). When the same canonical_name gets different category_primary values on different clips, downstream aggregation double-counts or under-counts. The rule is either too loose or the brand legitimately sells in multiple categories.", "business_value": "high", "category": "classification_consistency", "novelty": 0.7, "recommended_action": "For each: decide if the split is real (brand sells in both) or a rule bug. If real, add secondary-category convention; if bug, tighten the when_category clauses.", "source_clips": [], "raw_data": {"inconsistent_brands": [{"brand": "PUSHIT", "primary": ["court_surface", 5], "secondary": ["sponsor_signage", 4], "total": 10}, {"brand": "DUNLOP", "primary": ["sponsor_signage", 8], "secondary": ["ball", 2], "total": 10}, {"brand": "Franklin", "primary": ["paddle", 7], "secondary": ["ball", 2], "total": 9}, {"brand": "PKLR", "primary": ["clothing_brand", 6], "secondary": ["apparel_top", 2], "total": 9}, {"brand": "Under Armour", "primary": ["apparel", 4], "secondary": ["shoes", 2], "total": 6}]}, "composite_score": 0.815}, {"finding_id": "unknown_surfer-20260415-5261", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:48.693878+00:00", "title": "Haiku rescues 1 real brands from the top-15 unknown bucket", "confidence": 0.7, "evidence_summary": "Claude Haiku verdicts: {'real_brand': 1, 'noise': 7, 'new_category': 4}. Proposed as real brands: JOOLA. Each gets a recommended category \u2014 review and convert to rules.", "business_value": "high", "category": "unknown_rescue", "novelty": 0.8, "recommended_action": "Accept the real_brand verdicts, draft proposed-rules entries, ship for morning review.", "source_clips": [], "raw_data": {"verdicts": [{"brand": "JOOLA", "verdict": "real_brand", "reasoning": "JOOLA is a legitimate and major pickleball paddle/equipment manufacturer with significant market presence.", "proposed_category": "paddle"}, {"brand": "7", "verdict": "noise", "reasoning": "A single digit on fence signage is likely a court number or marking, not a brand.", "proposed_category": "noise"}, {"brand": "R&M", "verdict": "new_category", "reasoning": "Appears consistently in video overlay corner, likely a broadcast/production identifier or watermark.", "proposed_category": "broadcast_tech"}, {"brand": "goomba", "verdict": "new_category", "reasoning": "Consistently appears in overlay corner alongside other identifiers, likely a production/streaming platform or tool name.", "proposed_category": "broadcast_tech"}, {"brand": "Unknown", "verdict": "noise", "reasoning": "Placeholder text indicating failed brand recognition or OCR, not an actual brand.", "proposed_category": "noise"}, {"brand": "UG", "verdict": "new_category", "reasoning": "Appears on court signage/banners; likely a venue, organization, or court identifier rather than a consumer brand.", "proposed_category": "venue_identifier"}, {"brand": "R&M_fox_wifi_goomba", "verdict": "noise", "reasoning": "Concatenated string combining overlay elements and Wi-Fi SSID fragments, clear OCR/parsing artifact.", "proposed_category": "noise"}, {"brand": "R8M", "verdict": "noise", "reasoning": "Appears in overlay corner as variant of R&M; likely OCR corruption or duplicate detection of broadcast element.", "proposed_category": "noise"}, {"brand": "2026-01-05", "verdict": "noise", "reasoning": "Date string in overlay is metadata/timestamp, not a brand.", "proposed_category": "noise"}, {"brand": "Foz_4_UG_Court", "verdict": "noise", "reasoning": "Concatenated court identifier and signage elements, appears to be parsing artifact from multiple text sources.", "proposed_category": "noise"}, {"brand": "2026-03-09", "verdict": "noise", "reasoning": "Date string in overlay is metadata/timestamp, not a brand.", "proposed_category": "noise"}, {"brand": "GOOMBA", "verdict": "new_category", "reasoning": "Capitalized variant of goomba appearing in overlay corner; likely broadcast/production platform identifier.", "proposed_category": "broadcast_tech"}], "verdict_distribution": {"real_brand": 1, "noise": 7, "new_category": 4}}, "composite_score": 0.81}, {"finding_id": "rule_impact_hunter-20260415-1097", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601437+00:00", "title": "2 approved rules fire almost never \u2014 cleanup candidates", "confidence": 0.85, "evidence_summary": "Of 49 approved rules, 2 fire \u22641 time against the corpus. 2 of those are flagged as revenue-relevant (not 'none'). Examples: CRBN, SELKIRK. Either the brand is absent from the corpus or the rule's aliases miss the actual spellings.", "business_value": "medium", "category": "rule_pruning", "novelty": 0.65, "recommended_action": "Review each dead rule \u2014 tighten aliases, merge with a sibling, or delete.", "source_clips": [], "raw_data": {"dead_count": 2, "dead_revenue_relevant": 2, "examples": ["CRBN", "SELKIRK"], "total_rules": 49}, "composite_score": 0.735}], "all_findings": [{"finding_id": "rule_impact_hunter-20260415-1097", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601437+00:00", "title": "2 approved rules fire almost never \u2014 cleanup candidates", "confidence": 0.85, "evidence_summary": "Of 49 approved rules, 2 fire \u22641 time against the corpus. 2 of those are flagged as revenue-relevant (not 'none'). Examples: CRBN, SELKIRK. Either the brand is absent from the corpus or the rule's aliases miss the actual spellings.", "business_value": "medium", "category": "rule_pruning", "novelty": 0.65, "recommended_action": "Review each dead rule \u2014 tighten aliases, merge with a sibling, or delete.", "source_clips": [], "raw_data": {"dead_count": 2, "dead_revenue_relevant": 2, "examples": ["CRBN", "SELKIRK"], "total_rules": 49}, "composite_score": 0.735}, {"finding_id": "rule_impact_hunter-20260415-4927", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601644+00:00", "title": "1 rules look right but you override them often", "confidence": 0.8, "evidence_summary": "DUDE CLOTHING: 1/2 decisions overridden (4 corpus fires). Sample note: \"Probably something there. Keep looking out for underserved brands and try to build some confidence around it. It could be fun and rewarding.\" These rules pass the auto-verified bar but your manual review keeps correcting them \u2014 the classification they produce is technically legal but rarely what you actually want.", "business_value": "high", "category": "rule_calibration", "novelty": 0.8, "recommended_action": "Adjust the rule defaults to match the override you keep making.", "source_clips": [], "raw_data": {"wrong_rules": [["DUDE CLOTHING", 4, 1, 2]], "override_notes_sample": {"PSA": ["Oh, okay, this is cool. You actually have some versions of uploaded videos that I put in for manual AI analysis. Let's definitely classify these as much as possible, and there should be a lot more dat", "Oh, okay, this is cool. You actually have some versions of uploaded videos that I put in for manual AI analysis. Let's definitely classify these as much as possible, and there should be a lot more dat"], "W": ["I'm going to comment on this one along with the last one as an investigate and I think it makes sense to build another branch because these are classes of videos that are actually self-uploaded from a", "I'm going to comment on this one along with the last one as an investigate and I think it makes sense to build another branch because these are classes of videos that are actually self-uploaded from a"], "PBS": ["I personally don't see the PBS on the video, but if you've identified that as an apparel top, I do think that's valuable. This is the kind of granular insights that we want to get into for what it's w"]}}, "composite_score": 0.86}, {"finding_id": "rule_impact_hunter-20260415-5431", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601665+00:00", "title": "Top 5 rules carry 3861 of 4261 classifier fires", "confidence": 0.9, "evidence_summary": "Stars: JOOLA (3295 fires), NIKE (319 fires), PICKLEBALL (116 fires), HEAD (74 fires), ADIDAS (57 fires). These rules fire often AND almost never get overridden \u2014 they're doing the heavy lifting. Corpus has 4601 total detections, 92.6% coverage.", "business_value": "medium", "category": "rule_strength", "novelty": 0.4, "recommended_action": "Don't touch these. Use them as templates for new brand rules.", "source_clips": [], "raw_data": {"stars": [["JOOLA", 3295], ["NIKE", 319], ["PICKLEBALL", 116], ["HEAD", 74], ["ADIDAS", 57]], "total_fires": 4261}, "composite_score": 0.71}, {"finding_id": "rule_impact_hunter-20260415-9099", "agent": "rule_impact_hunter", "generated_at": "2026-04-15T14:52:40.601674+00:00", "title": "7.4% of classifications are fallback (no rule match) \u2014 every % is a rule gap", "confidence": 0.85, "evidence_summary": "340 detections use fallback classification vs 4261 that match a rule (92.6% rule coverage). Fallback is the classifier guessing \u2014 each one is a rule we haven't written yet.", "business_value": "high", "category": "rule_coverage", "novelty": 0.7, "recommended_action": "Cluster fallback detections and promote the top clusters into new rules.", "source_clips": [], "raw_data": {"by_source": {"rule": 4261, "fallback": 340, "none": 0}, "rule_pct": 92.6, "fallback_pct": 7.4}, "composite_score": 0.865, "counterargument": {"argument": "7.4% fallback rate is low enough that clustering and promoting top clusters may introduce false positives that break existing high-precision rules.", "risk": "You'll be adding rules based on only 340 samples across potentially dozens of clusters\u2014each with <50 examples. New rules built on thin evidence will trigger false positives on edge cases, polluting downstream reports and forcing you to maintain exception lists. The classifier owner likely already knows these gaps exist and chose not to fill them for precision reasons.", "severity": "high"}}, {"finding_id": "taxonomy_tail_detector-20260415-5162", "agent": "taxonomy_tail_detector", "generated_at": "2026-04-15T14:52:40.666815+00:00", "title": "8 probable taxonomy merges would consolidate 911 items", "confidence": 0.75, "evidence_summary": "Candidate merges: headwear(1) + hat(1) \u2192 headwear (2 items); shoe_brand(1) + shoes(409) \u2192 shoes (410 items); clothing_brand(9) + apparel(40) + apparel_top(22) + apparel_bottom(2) + apparel_graphic(1) \u2192 apparel (74 items); drink_bottle(3) + water_bottle(1) \u2192 water_bottle (4 items); camera_equipment(1) + camera(45) \u2192 camera (46 items); watermark(1) + broadcast_tech(14) \u2192 broadcast_tech (15 items). These categories likely refer to the same concept under different names. Keeping them split fragments category analytics and confuses downstream consumers.", "business_value": "high", "category": "taxonomy_consolidation", "novelty": 0.7, "recommended_action": "Pick one canonical name per merge group, run a migration on classified-corpus.json, bump taxonomy_version.", "source_clips": [], "raw_data": {"merges": [{"canonical": "headwear", "candidates": [["headwear", 1], ["hat", 1]], "total_items": 2}, {"canonical": "shoes", "candidates": [["shoe_brand", 1], ["shoes", 409]], "total_items": 410}, {"canonical": "apparel", "candidates": [["clothing_brand", 9], ["apparel", 40], ["apparel_top", 22], ["apparel_bottom", 2], ["apparel_graphic", 1]], "total_items": 74}, {"canonical": "water_bottle", "candidates": [["drink_bottle", 3], ["water_bottle", 1]], "total_items": 4}, {"canonical": "camera", "candidates": [["camera_equipment", 1], ["camera", 45]], "total_items": 46}, {"canonical": "broadcast_tech", "candidates": [["watermark", 1], ["broadcast_tech", 14]], "total_items": 15}, {"canonical": "venue_equipment", "candidates": [["venue_equipment", 274], ["court_equipment", 4]], "total_items": 278}, {"canonical": "facility_chain", "candidates": [["facility_chain", 78], ["venue_brand", 4]], "total_items": 82}], "singletons": [["hat", 1], ["drink_bottle", 3], ["apparel_graphic", 1], ["other", 2], ["headwear", 1], ["camera_equipment", 1], ["watermark", 1], ["apparel_bottom", 2], ["eyewear", 2], ["water_bottle", 1], ["shoe_brand", 1], ["tech_accessory", 1], ["player_name_graphic", 2]]}, "composite_score": 0.815}, {"finding_id": "taxonomy_tail_detector-20260415-7007", "agent": "taxonomy_tail_detector", "generated_at": "2026-04-15T14:52:40.666834+00:00", "title": "13 taxonomy categories have \u22643 members \u2014 noise or genuine rarity?", "confidence": 0.7, "evidence_summary": "Singleton-ish categories: hat(1), apparel_graphic(1), headwear(1), camera_equipment(1), watermark(1), water_bottle(1), shoe_brand(1), tech_accessory(1), other(2), apparel_bottom(2). A new category should only exist if it will sustain \u22655 detections. Below that, it's either a mistype (same concept as another category) or too rare to sell against.", "business_value": "medium", "category": "taxonomy_pruning", "novelty": 0.5, "recommended_action": "For each singleton: delete, merge into a bigger category, or mark 'archive'.", "source_clips": [], "raw_data": {"singletons": [["hat", 1], ["drink_bottle", 3], ["apparel_graphic", 1], ["other", 2], ["headwear", 1], ["camera_equipment", 1], ["watermark", 1], ["apparel_bottom", 2], ["eyewear", 2], ["water_bottle", 1], ["shoe_brand", 1], ["tech_accessory", 1], ["player_name_graphic", 2]], "near_singletons": [["clothing_brand", 9], ["accessory", 4], ["court_equipment", 4], ["venue_brand", 4], ["vehicle", 5]]}, "composite_score": 0.63}, {"finding_id": "taxonomy_tail_detector-20260415-8113", "agent": "taxonomy_tail_detector", "generated_at": "2026-04-15T14:52:40.668639+00:00", "title": "5 brands are classified as multiple primary categories across clips", "confidence": 0.75, "evidence_summary": "Examples: PUSHIT: court_surface\u00d75 + sponsor_signage\u00d74 (of 10); DUNLOP: sponsor_signage\u00d78 + ball\u00d72 (of 10); Franklin: paddle\u00d77 + ball\u00d72 (of 9); PKLR: clothing_brand\u00d76 + apparel_top\u00d72 (of 9); Under Armour: apparel\u00d74 + shoes\u00d72 (of 6). When the same canonical_name gets different category_primary values on different clips, downstream aggregation double-counts or under-counts. The rule is either too loose or the brand legitimately sells in multiple categories.", "business_value": "high", "category": "classification_consistency", "novelty": 0.7, "recommended_action": "For each: decide if the split is real (brand sells in both) or a rule bug. If real, add secondary-category convention; if bug, tighten the when_category clauses.", "source_clips": [], "raw_data": {"inconsistent_brands": [{"brand": "PUSHIT", "primary": ["court_surface", 5], "secondary": ["sponsor_signage", 4], "total": 10}, {"brand": "DUNLOP", "primary": ["sponsor_signage", 8], "secondary": ["ball", 2], "total": 10}, {"brand": "Franklin", "primary": ["paddle", 7], "secondary": ["ball", 2], "total": 9}, {"brand": "PKLR", "primary": ["clothing_brand", 6], "secondary": ["apparel_top", 2], "total": 9}, {"brand": "Under Armour", "primary": ["apparel", 4], "secondary": ["shoes", 2], "total": 6}]}, "composite_score": 0.815}, {"finding_id": "taxonomy_tail_detector-20260415-4221", "agent": "taxonomy_tail_detector", "generated_at": "2026-04-15T14:52:40.668652+00:00", "title": "Unknown bucket holds 319 items (6.9% of all classifications)", "confidence": 0.95, "evidence_summary": "The 'unknown' primary category has 319 items out of 4601 total \u2014 6.9%. Every unknown is either a brand we haven't written a rule for yet or noise (OCR artifacts, Wi-Fi SSIDs, single letters on fences). The Unknown Surfer researcher digs into WHICH.", "business_value": "medium", "category": "classification_coverage", "novelty": 0.3, "recommended_action": "Run Unknown Surfer; auto-research top clusters; convert winners to rules.", "source_clips": [], "raw_data": {"unknown_count": 319, "total": 4601, "pct": 6.9}, "composite_score": 0.715}, {"finding_id": "decision_whisperer-20260415-3465", "agent": "decision_whisperer", "generated_at": "2026-04-15T14:52:40.675760+00:00", "title": "You write decisions at 3 speeds: 33 approve, 38 investigate, 3 reject", "confidence": 0.95, "evidence_summary": "Across 74 total decisions: {'approve': 33, 'investigate': 38, 'reject': 3}. Revenue tags: {'none': 21, 'medium': 21, 'high': 10, 'low': 22}. 48/74 decisions carry a free-text note (avg 192 chars). The notes are where the policy lives \u2014 any future predictor has to read them, not just the action.", "business_value": "medium", "category": "decision_baseline", "novelty": 0.3, "recommended_action": "Use this distribution as the prior \u2014 a predictor that guesses 'approve' every time scores the base rate.", "source_clips": [], "raw_data": {"by_action": {"approve": 33, "investigate": 38, "reject": 3}, "by_revenue": {"none": 21, "medium": 21, "high": 10, "low": 22}, "total_decisions": 74, "decisions_with_notes": 48}, "composite_score": 0.715}, {"finding_id": "decision_whisperer-20260415-2817", "agent": "decision_whisperer", "generated_at": "2026-04-15T14:52:43.922206+00:00", "title": "Your 'investigate' decisions cluster into 5 reasons \u2014 the classifier could route future ones automatically", "confidence": 0.7, "evidence_summary": "Clustering 30 investigate-notes via Haiku: needs visual evidence to validate (e.g. BHP); ambiguous classification type (e.g. ODESSA); signage vs apparel distinction needed (e.g. PKLR); future value with better data infrastructure (e.g. R&M_foz_wifi_goomba); promising but requires deeper investigation (e.g. DUDE CLOTHING). Each theme is a rule the classifier could apply itself: when a new brand matches theme X, auto-route to investigate with that rationale pre-filled.", "business_value": "high", "category": "decision_prediction", "novelty": 0.85, "recommended_action": "Add a 'pre-route' step: before surfacing unknowns for your review, apply these themes and pre-fill the rationale + override_category.", "source_clips": [], "raw_data": {"themes": [{"theme": "needs visual evidence to validate", "example_brand": "BHP", "rationale": "PO cannot make a decision without seeing pictures or video clips of the brand appearance in context"}, {"theme": "ambiguous classification type", "example_brand": "ODESSA", "rationale": "Could be a brand, location, or other entity type - needs context to disambiguate what it actually is"}, {"theme": "signage vs apparel distinction needed", "example_brand": "PKLR", "rationale": "Need to clarify whether brand appears as worn apparel, signage, banners, or watermarks before classifying"}, {"theme": "future value with better data infrastructure", "example_brand": "R&M_foz_wifi_goomba", "rationale": "Could become valuable if system is built to tie classifications to specific cameras or other contextual metadata"}, {"theme": "promising but requires deeper investigation", "example_brand": "DUDE CLOTHING", "rationale": "Interesting prospect that warrants further analysis before final approval decision"}], "investigate_count": 30}, "composite_score": 0.82}, {"finding_id": "decision_whisperer-20260415-2649", "agent": "decision_whisperer", "generated_at": "2026-04-15T14:52:43.922394+00:00", "title": "15 decisions override the classifier's proposed category \u2014 override-to-decision ratio = 20.3%", "confidence": 0.8, "evidence_summary": "Top override categories: {'broadcast_tech': 3, 'unknown': 2, 'court_surface': 2}. Top override values: {'medium': 9, 'high': 3, 'low': 2}. Every override is a signal the rule's default is slightly off. High override-to-decision ratio = classifier is running behind the taxonomy.", "business_value": "high", "category": "override_pattern", "novelty": 0.7, "recommended_action": "For override categories you repeat, update the rule's default \u2014 don't make yourself say it twice.", "source_clips": [], "raw_data": {"override_categories": {"broadcast_tech": 3, "unknown": 2, "court_surface": 2}, "override_values": {"high": 3, "medium": 9, "low": 2}, "override_count": 15}, "composite_score": 0.84}, {"finding_id": "decision_whisperer-20260415-2938", "agent": "decision_whisperer", "generated_at": "2026-04-15T14:52:43.922478+00:00", "title": "5 brands changed decision across review cycles \u2014 you're second-guessing yourself", "confidence": 0.7, "evidence_summary": "Examples: PUSHIT: investigate \u2192 approve; Foz Bullet UG 4K: investigate \u2192 approve; PBS: investigate \u2192 investigate \u2192 approve; BHP: investigate \u2192 approve; DUDE CLOTHING: investigate \u2192 approve. When the same brand flips approve/investigate/reject across reviews, the decision isn't stable \u2014 either the evidence changed, or the policy is still forming. These brands deserve a note on WHY the flip.", "business_value": "medium", "category": "decision_stability", "novelty": 0.75, "recommended_action": "Surface these on the morning report with both rationales so you can reconcile.", "source_clips": [], "raw_data": {"volatile_brands": [{"brand": "PUSHIT", "trajectory": ["investigate", "approve"]}, {"brand": "Foz Bullet UG 4K", "trajectory": ["investigate", "approve"]}, {"brand": "PBS", "trajectory": ["investigate", "investigate", "approve"]}, {"brand": "BHP", "trajectory": ["investigate", "approve"]}, {"brand": "DUDE CLOTHING", "trajectory": ["investigate", "approve"]}]}, "composite_score": 0.68}, {"finding_id": "unknown_surfer-20260415-0055", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:43.998537+00:00", "title": "30 items in investigate queue read like real brands", "confidence": 0.8, "evidence_summary": "Likely real brands stuck waiting: PUSHIT; PKLR; PBS; PSA; PKLR; PBS. Their rationales mention product context (paddle, apparel, sponsor, etc.). If left unclassified, they inflate the unknown bucket and hide signal.", "business_value": "high", "category": "unknown_rescue", "novelty": 0.8, "recommended_action": "Auto-research each via web lookup, draft a proposed rule, ship for review.", "source_clips": [], "raw_data": {"likely_brands": ["PUSHIT", "PKLR", "PBS", "PSA", "PKLR", "PBS", "BHP", "FANADIR", "ODESSA", "PSA", "PKLR", "FANADIR", "ODESSA", "VAERSA", "PSA", "PKLR", "FANADIR", "ODESSA", "VAERSA", "ELGOUNA", "USA", "READY TO PLAY", "COLUMBIA", "SQUASH CUP", "IB", "DUDE", "Court", "CGG", "Liberty", "PUSHT"]}, "composite_score": 0.86}, {"finding_id": "unknown_surfer-20260415-3015", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:43.998596+00:00", "title": "Top 10 unknown brands account for 314 detections \u2014 high-leverage rule targets", "confidence": 0.85, "evidence_summary": "Most frequent unknowns: JOOLA(220): 'shirt chest'; 7(21): 'Signage on the fence in the background'; R&M(16): 'Top left corner of the video feed overla'; goomba(16): 'Top left corner of the video feed overla'; Unknown(9): 'worn by the primary player'; UG(9): 'Banner on the wall behind the court'. A rule for any of these immediately converts N detections from unknown to classified. Sort by frequency and research top 5.", "business_value": "high", "category": "rule_opportunity", "novelty": 0.75, "recommended_action": "For each top unknown: 1-call Haiku research ('what is X in the pickleball world?'); propose rule.", "source_clips": [], "raw_data": {"top_unknowns": [["JOOLA", 220], ["7", 21], ["R&M", 16], ["goomba", 16], ["Unknown", 9], ["UG", 9], ["R&M_fox_wifi_goomba", 9], ["R8M", 6], ["2026-01-05", 4], ["Foz_4_UG_Court", 4]], "location_samples": {"JOOLA": "shirt chest", "7": "Signage on the fence in the background", "R&M": "Top left corner of the video feed overlay", "goomba": "Top left corner of the video feed overlay", "Unknown": "worn by the primary player", "UG": "Banner on the wall behind the court", "R&M_fox_wifi_goomba": "top left corner of the video feed overlay", "R8M": "Top left corner of the video feed overlay", "2026-01-05": "Top left corner of the video feed overlay", "Foz_4_UG_Court": "Signage on the wall behind the court."}}, "composite_score": 0.875, "counterargument": {"argument": "JOOLA 'shirt chest' detections and fence signage are fundamentally different classification problems\u2014one is legitimate brand presence, the other is background clutter.", "risk": "Treating all 314 detections as 'rule gaps' will cause you to add rules that capture noise (background signage, overlays) alongside genuine brand appearances, degrading precision. You'll need to manually audit each cluster first\u2014research calls alone won't tell you whether a pattern should become a rule or a filter.", "severity": "high"}}, {"finding_id": "unknown_surfer-20260415-5261", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:48.693878+00:00", "title": "Haiku rescues 1 real brands from the top-15 unknown bucket", "confidence": 0.7, "evidence_summary": "Claude Haiku verdicts: {'real_brand': 1, 'noise': 7, 'new_category': 4}. Proposed as real brands: JOOLA. Each gets a recommended category \u2014 review and convert to rules.", "business_value": "high", "category": "unknown_rescue", "novelty": 0.8, "recommended_action": "Accept the real_brand verdicts, draft proposed-rules entries, ship for morning review.", "source_clips": [], "raw_data": {"verdicts": [{"brand": "JOOLA", "verdict": "real_brand", "reasoning": "JOOLA is a legitimate and major pickleball paddle/equipment manufacturer with significant market presence.", "proposed_category": "paddle"}, {"brand": "7", "verdict": "noise", "reasoning": "A single digit on fence signage is likely a court number or marking, not a brand.", "proposed_category": "noise"}, {"brand": "R&M", "verdict": "new_category", "reasoning": "Appears consistently in video overlay corner, likely a broadcast/production identifier or watermark.", "proposed_category": "broadcast_tech"}, {"brand": "goomba", "verdict": "new_category", "reasoning": "Consistently appears in overlay corner alongside other identifiers, likely a production/streaming platform or tool name.", "proposed_category": "broadcast_tech"}, {"brand": "Unknown", "verdict": "noise", "reasoning": "Placeholder text indicating failed brand recognition or OCR, not an actual brand.", "proposed_category": "noise"}, {"brand": "UG", "verdict": "new_category", "reasoning": "Appears on court signage/banners; likely a venue, organization, or court identifier rather than a consumer brand.", "proposed_category": "venue_identifier"}, {"brand": "R&M_fox_wifi_goomba", "verdict": "noise", "reasoning": "Concatenated string combining overlay elements and Wi-Fi SSID fragments, clear OCR/parsing artifact.", "proposed_category": "noise"}, {"brand": "R8M", "verdict": "noise", "reasoning": "Appears in overlay corner as variant of R&M; likely OCR corruption or duplicate detection of broadcast element.", "proposed_category": "noise"}, {"brand": "2026-01-05", "verdict": "noise", "reasoning": "Date string in overlay is metadata/timestamp, not a brand.", "proposed_category": "noise"}, {"brand": "Foz_4_UG_Court", "verdict": "noise", "reasoning": "Concatenated court identifier and signage elements, appears to be parsing artifact from multiple text sources.", "proposed_category": "noise"}, {"brand": "2026-03-09", "verdict": "noise", "reasoning": "Date string in overlay is metadata/timestamp, not a brand.", "proposed_category": "noise"}, {"brand": "GOOMBA", "verdict": "new_category", "reasoning": "Capitalized variant of goomba appearing in overlay corner; likely broadcast/production platform identifier.", "proposed_category": "broadcast_tech"}], "verdict_distribution": {"real_brand": 1, "noise": 7, "new_category": 4}}, "composite_score": 0.81}, {"finding_id": "unknown_surfer-20260415-5643", "agent": "unknown_surfer", "generated_at": "2026-04-15T14:52:48.693892+00:00", "title": "Haiku flags 4 items as needing NEW taxonomy categories", "confidence": 0.65, "evidence_summary": "Candidates for new categories: R&M, goomba, UG, GOOMBA. These are real things (not noise) that don't fit existing buckets \u2014 common suspects: broadcast watermarks, player name graphics, camera models, Wi-Fi devices.", "business_value": "medium", "category": "taxonomy_growth", "novelty": 0.85, "recommended_action": "For each: decide whether to open a new category OR fold into existing 'broadcast_tech' / 'player_name_graphic'.", "source_clips": [], "raw_data": {"new_category_candidates": [{"brand": "R&M", "verdict": "new_category", "reasoning": "Appears consistently in video overlay corner, likely a broadcast/production identifier or watermark.", "proposed_category": "broadcast_tech"}, {"brand": "goomba", "verdict": "new_category", "reasoning": "Consistently appears in overlay corner alongside other identifiers, likely a production/streaming platform or tool name.", "proposed_category": "broadcast_tech"}, {"brand": "UG", "verdict": "new_category", "reasoning": "Appears on court signage/banners; likely a venue, organization, or court identifier rather than a consumer brand.", "proposed_category": "venue_identifier"}, {"brand": "GOOMBA", "verdict": "new_category", "reasoning": "Capitalized variant of goomba appearing in overlay corner; likely broadcast/production platform identifier.", "proposed_category": "broadcast_tech"}]}, "composite_score": 0.675}, {"finding_id": "wildcard-20260415-1166", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163084+00:00", "title": "Taxonomy Franchise: 'Brand Rules Engine for [Sport]'", "confidence": 0.88, "evidence_summary": "License our methodology (not just rules, but the *decision loop itself*) to tennis, padel, and squash data companies. They upload their corpus; we train a sport-specific classifier and charge them per classification + monthly seats. We become the infrastructure layer for sports brand intelligence.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: licensing play", "source_clips": [], "raw_data": {"flywheel_score": 0.88, "category": "licensing"}, "composite_score": 0.924, "counterargument": {"argument": "Licensing the decision loop itself assumes your pickleball rules are generalizable to tennis/padel/squash, which have completely different equipment, court layouts, and sponsorship norms.", "risk": "You'll export rules that don't transfer (e.g., 'paddle logo rules' don't apply to tennis rackets), creating broken classifiers in partner systems that reflect back on your credibility. Silent failures in downstream partner dashboards will be impossible to debug without access to their data.", "severity": "high"}}, {"finding_id": "wildcard-20260415-5675", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163107+00:00", "title": "Brand Licensing Network (Marketplace Play)", "confidence": 0.87, "evidence_summary": "Build a two-sided marketplace: brands can register themselves + their *approved appearance rules* (e.g., 'JOOLA logos only on paddles, not on apparel'). Venues/streamers query the API: 'Is this appearance compliant?' Revenue from brands (verification), venues (lookups), and licensees (premium terms). You become brand-athlete-venue arbiter.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: platform_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.87, "category": "platform_play"}, "composite_score": 0.921, "counterargument": {"argument": "A brand-managed marketplace assumes brands will self-report accurate appearance rules, which creates garbage-in-garbage-out risk and shifts taxonomy maintenance burden to external actors.", "risk": "Brands will either over-report (claiming restrictions that don't exist) or under-report (hiding restrictions) to game visibility. Your classifier will now be a patchwork of self-served rules you can't audit. Downstream consumers (venues, reports) will lose trust when rules contradict each other or change without notice.", "severity": "medium"}}, {"finding_id": "wildcard-20260415-2238", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163119+00:00", "title": "Brand Safety API for Sports Broadcasters", "confidence": 0.85, "evidence_summary": "Sell real-time classification-as-a-service to ESPN, YouTube Gaming, and Twitch so they can auto-flag, blur, or report unlicensed brand appearances in live sports. We own the taxonomy + rules; they own the distribution. Revenue: per-match SaaS + data licensing.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: platform_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.85, "category": "platform_play"}, "composite_score": 0.915, "counterargument": {"argument": "Real-time blur/flag API on live broadcasts creates legal liability if your classifier misidentifies a brand or flags a legitimate appearance, especially if broadcasters auto-act on your output without human review.", "risk": "A single false positive that causes ESPN to blur a sponsor's logo during a live match is a lawsuit and reputation damage. You're shifting classification risk from internal rules to external action\u2014broadcasters will demand SLAs and indemnification you can't provide. Silent classifier drift will now have immediate on-air consequences.", "severity": "high"}}, {"finding_id": "wildcard-20260415-4509", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163129+00:00", "title": "Brand Intel Consortium (Cooperative Play)", "confidence": 0.84, "evidence_summary": "Partner with 5\u201310 sports data companies (tennis, padel, esports, etc.) to pool decision logs and taxonomies into a shared neutral registry. Sell *aggregate cross-sport brand trends* back to CPG companies and agencies ('Where is Nike gaining mindshare across racquet sports?'). You own the data backbone and licensing terms.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: partnership_flip play", "source_clips": [], "raw_data": {"flywheel_score": 0.84, "category": "partnership_flip"}, "composite_score": 0.912, "counterargument": {"argument": "A neutral registry across 5\u201310 companies assumes you can align taxonomies and governance models\u2014both are expensive migrations that typically take 12+ months and fail.", "risk": "Each partner has different classification needs and political incentives. Merging taxonomies will either water down precision (by averaging to lowest-common-denominator rules) or create silos (defeating the 'pooling' goal). You'll spend more time on governance than on the actual product signal.", "severity": "medium"}}, {"finding_id": "wildcard-20260415-0587", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163138+00:00", "title": "Competitor Intelligence Subscription (Dark Pattern Play)", "confidence": 0.82, "evidence_summary": "Run the classifier on all public/competitor footage (tournaments, YouTube, TikTok) and sell monthly reports: 'What brands are gaining shelf-space in pickleball? Where is your brand losing visibility?' Monetize FOMO and market share anxiety. Data moat: only we have the calibrated rules.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: media_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.82, "category": "media_play"}, "composite_score": 0.906, "counterargument": {"argument": "Monitoring competitor footage without explicit rights may expose you to copyright and right-of-publicity claims, especially if you're re-selling competitor intelligence.", "risk": "This is a legal minefield disguised as a product finding. Even if footage is public, scraping and monetizing it without consent invites cease-and-desist letters from tournament operators and athletes. The 0.82 confidence is borrowed credibility\u2014this is a business/legal decision, not a classifier finding.", "severity": "high"}}, {"finding_id": "wildcard-20260415-3665", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163148+00:00", "title": "Automated Rights-Management Workflow Tool", "confidence": 0.81, "evidence_summary": "Sell to venues and tournament organizers: upload match footage, our classifier auto-flags every brand appearance, auto-generates licensing invoices, and auto-rejects illegal appearances in real-time broadcasts. Revenue: per-venue + per-match micro-transactions. Becomes essential ops infra.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: tool_spinoff play", "source_clips": [], "raw_data": {"flywheel_score": 0.81, "category": "tool_spinoff"}, "composite_score": 0.903, "counterargument": {"argument": "Auto-invoicing based on classifier output creates financial liability\u2014venues will dispute invoices if your classifier misses a brand or false-positives a competitor's logo.", "risk": "You're automating a legal/financial workflow on top of a system with 7.4% fallback rate and unknown precision on edge cases. Venues will demand audit trails and appeal mechanisms, turning your classifier into a payment processor with compliance overhead. One major invoice dispute will kill the product.", "severity": "medium"}}, {"finding_id": "wildcard-20260415-5749", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163162+00:00", "title": "Open-Source Classifier + Managed SaaS Upsell", "confidence": 0.79, "evidence_summary": "Release the 49 rules and taxonomy as open-source (build community goodwill, become the standard). Monetize via: (1) managed cloud API for scale users, (2) premium rule updates ($500/mo), (3) custom taxonomy training ($10k). GitOps + trust = defensible SaaS moat.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: tool_spinoff play", "source_clips": [], "raw_data": {"flywheel_score": 0.79, "category": "tool_spinoff"}, "composite_score": 0.897}, {"finding_id": "wildcard-20260415-6016", "agent": "wildcard", "generated_at": "2026-04-15T14:52:59.163173+00:00", "title": "Creator Monetization Layer (Trust Play)", "confidence": 0.77, "evidence_summary": "Allow pickleball content creators to run the classifier on their own footage and auto-generate brand-attribution reports for sponsorship negotiation: 'My last 10 videos featured your logo 47 times.' Creators pay per report; brands buy lead lists. You become the trusted intermediary proving creator value.", "business_value": "high", "category": "wildcard_idea", "novelty": 0.9, "recommended_action": "Evaluate: trust_play play", "source_clips": [], "raw_data": {"flywheel_score": 0.77, "category": "trust_play"}, "composite_score": 0.891}], "counterarguments": [{"title": "Licensing the decision loop itself assumes your pickleball rules are generalizable to tennis/padel/squash, which have completely different equipment, court layouts, and sponsorship norms.", "target_title": "Taxonomy Franchise: 'Brand Rules Engine for [Sport]'", "target_agent": "wildcard", "severity": "high", "risk": "You'll export rules that don't transfer (e.g., 'paddle logo rules' don't apply to tennis rackets), creating broken classifiers in partner systems that reflect back on your credibility. Silent failures in downstream partner dashboards will be impossible to debug without access to their data."}, {"title": "7.4% fallback rate is low enough that clustering and promoting top clusters may introduce false positives that break existing high-precision rules.", "target_title": "7.4% of classifications are fallback (no rule match) \u2014 every % is a rule gap", "target_agent": "rule_impact_hunter", "severity": "high", "risk": "You'll be adding rules based on only 340 samples across potentially dozens of clusters\u2014each with <50 examples. New rules built on thin evidence will trigger false positives on edge cases, polluting downstream reports and forcing you to maintain exception lists. The classifier owner likely already knows these gaps exist and chose not to fill them for precision reasons."}, {"title": "JOOLA 'shirt chest' detections and fence signage are fundamentally different classification problems\u2014one is legitimate brand presence, the other is background clutter.", "target_title": "Top 10 unknown brands account for 314 detections \u2014 high-leverage rule targets", "target_agent": "unknown_surfer", "severity": "high", "risk": "Treating all 314 detections as 'rule gaps' will cause you to add rules that capture noise (background signage, overlays) alongside genuine brand appearances, degrading precision. You'll need to manually audit each cluster first\u2014research calls alone won't tell you whether a pattern should become a rule or a filter."}, {"title": "Real-time blur/flag API on live broadcasts creates legal liability if your classifier misidentifies a brand or flags a legitimate appearance, especially if broadcasters auto-act on your output without human review.", "target_title": "Brand Safety API for Sports Broadcasters", "target_agent": "wildcard", "severity": "high", "risk": "A single false positive that causes ESPN to blur a sponsor's logo during a live match is a lawsuit and reputation damage. You're shifting classification risk from internal rules to external action\u2014broadcasters will demand SLAs and indemnification you can't provide. Silent classifier drift will now have immediate on-air consequences."}, {"title": "Monitoring competitor footage without explicit rights may expose you to copyright and right-of-publicity claims, especially if you're re-selling competitor intelligence.", "target_title": "Competitor Intelligence Subscription (Dark Pattern Play)", "target_agent": "wildcard", "severity": "high", "risk": "This is a legal minefield disguised as a product finding. Even if footage is public, scraping and monetizing it without consent invites cease-and-desist letters from tournament operators and athletes. The 0.82 confidence is borrowed credibility\u2014this is a business/legal decision, not a classifier finding."}, {"title": "A brand-managed marketplace assumes brands will self-report accurate appearance rules, which creates garbage-in-garbage-out risk and shifts taxonomy maintenance burden to external actors.", "target_title": "Brand Licensing Network (Marketplace Play)", "target_agent": "wildcard", "severity": "medium", "risk": "Brands will either over-report (claiming restrictions that don't exist) or under-report (hiding restrictions) to game visibility. Your classifier will now be a patchwork of self-served rules you can't audit. Downstream consumers (venues, reports) will lose trust when rules contradict each other or change without notice."}, {"title": "A neutral registry across 5\u201310 companies assumes you can align taxonomies and governance models\u2014both are expensive migrations that typically take 12+ months and fail.", "target_title": "Brand Intel Consortium (Cooperative Play)", "target_agent": "wildcard", "severity": "medium", "risk": "Each partner has different classification needs and political incentives. Merging taxonomies will either water down precision (by averaging to lowest-common-denominator rules) or create silos (defeating the 'pooling' goal). You'll spend more time on governance than on the actual product signal."}, {"title": "Auto-invoicing based on classifier output creates financial liability\u2014venues will dispute invoices if your classifier misses a brand or false-positives a competitor's logo.", "target_title": "Automated Rights-Management Workflow Tool", "target_agent": "wildcard", "severity": "medium", "risk": "You're automating a legal/financial workflow on top of a system with 7.4% fallback rate and unknown precision on edge cases. Venues will demand audit trails and appeal mechanisms, turning your classifier into a payment processor with compliance overhead. One major invoice dispute will kill the product."}]};
-const LS_KEY = "classifier-lab-decisions";
+const DECISIONS = JSON.parse(localStorage.getItem('classifier-lab-decisions') || '{}');
+updateUI();
 
-function loadDecisions() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); }
-  catch { return {}; }
-}
-function saveDecisions(d) { localStorage.setItem(LS_KEY, JSON.stringify(d)); }
-function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
-
-function renderMeta() {
-  const s = DATA.corpus_stats || {};
-  const fb = DATA.feedback_loop || {};
-  const el = document.getElementById("meta-row");
-  el.innerHTML = `
-    <span><b>${DATA.researchers_run ?? "?"}</b> researchers</span>
-    <span><b>${s.unique_findings ?? 0}</b> findings</span>
-    <span><b>${s.counterargs_attached ?? 0}</b> challenged</span>
-    <span><b>${fb.decisions_loaded ?? 0}</b> previous decisions</span>
-    <span style="color:var(--muted)">run ${esc(DATA.run_id || "?")}</span>
-  `;
+function decide(fid, action) {
+    DECISIONS[fid] = {action, at: new Date().toISOString()};
+    localStorage.setItem('classifier-lab-decisions', JSON.stringify(DECISIONS));
+    updateUI();
 }
 
-function renderFinding(f, decisions) {
-  const bv = f.business_value || "medium";
-  const decision = decisions[f.finding_id]?.action || "";
-  const ca = f.counterargument;
-  const stateClass = decision ? decision : "";
-  return `
-    <div class="finding ${stateClass}" data-id="${f.finding_id}">
-      <div class="finding-title">${esc(f.title || "Untitled")}</div>
-      <div class="finding-meta">
-        <span>[${esc(f.agent || "")}]</span>
-        <span>conf: ${(f.confidence ?? 0).toFixed(2)}</span>
-        <span>score: ${(f.composite_score ?? 0).toFixed(2)}</span>
-        <span class="bv-${bv}">${esc(bv)}</span>
-      </div>
-      <div class="finding-body">
-        <span class="label">Evidence</span>
-        <p>${esc(f.evidence_summary || "")}</p>
-        ${f.recommended_action ? `<span class="label">Recommended action</span><p>${esc(f.recommended_action)}</p>` : ""}
-        ${ca ? `
-          <div class="counterarg">
-            <span class="ca-title">Devil's advocate</span>
-            <span class="ca-severity">${esc(ca.severity || "med")}</span>
-            <p style="margin-top:4px"><b>${esc(ca.argument || "")}</b></p>
-            <p style="color:var(--muted)">${esc(ca.risk || "")}</p>
-          </div>` : ""}
-        <div class="actions">
-          <button class="btn btn-approve ${decision==='approved'?'active':''}" data-a="approved">Approve</button>
-          <button class="btn btn-park ${decision==='parked'?'active':''}" data-a="parked">Park</button>
-          <button class="btn btn-dismiss ${decision==='dismissed'?'active':''}" data-a="dismissed">Dismiss</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderColumn(id, findings, decisions) {
-  const el = document.getElementById(id);
-  if (!findings.length) { el.innerHTML = '<div class="empty">No findings in this track.</div>'; return; }
-  el.innerHTML = findings.map(f => renderFinding(f, decisions)).join("");
-}
-
-function wireCards() {
-  document.querySelectorAll(".finding").forEach(card => {
-    const id = card.dataset.id;
-    card.addEventListener("click", (e) => {
-      if (e.target.closest(".btn")) return;
-      card.classList.toggle("expanded");
+function updateUI() {
+    document.getElementById('decision-count').textContent = Object.keys(DECISIONS).length;
+    document.querySelectorAll('.card').forEach(card => {
+        const fid = card.dataset.fid;
+        card.classList.remove('decided-approved','decided-parked','decided-dismissed');
+        if (DECISIONS[fid]) card.classList.add('decided-' + DECISIONS[fid].action);
     });
-    card.querySelectorAll(".btn").forEach(b => {
-      b.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const action = b.dataset.a;
-        const d = loadDecisions();
-        // find the finding to stash category/agent for feedback signal
-        const finding = (DATA.all_findings || []).find(x => x.finding_id === id);
-        if (d[id]?.action === action) {
-          delete d[id];
-        } else {
-          d[id] = {
-            action,
-            at: new Date().toISOString(),
-            title: finding?.title || "",
-            category: finding?.category || "",
-            agent: finding?.agent || "",
-          };
-        }
-        saveDecisions(d);
-        render();
-      });
-    });
-  });
-}
-
-function render() {
-  renderMeta();
-  const decisions = loadDecisions();
-  const strategic = DATA.top_strategic || [];
-  const data = DATA.top_data || [];
-  // Build counter list from findings that have counterargument attached
-  const counterItems = (DATA.all_findings || [])
-    .filter(f => f.counterargument)
-    .map(f => ({
-      ...f,
-      title: `⚠ ${f.counterargument.argument}`,
-      evidence_summary: `Challenges: "${f.title}". Risk: ${f.counterargument.risk}`,
-      business_value: f.counterargument.severity || "medium",
-      agent: "devils_advocate",
-      composite_score: f.composite_score,
-      recommended_action: `Weigh before acting on: ${f.title}`,
-      counterargument: null,
-    }));
-  document.getElementById("count-strategic").textContent = `${strategic.length} ideas`;
-  document.getElementById("count-data").textContent = `${data.length} insights`;
-  document.getElementById("count-counter").textContent = `${counterItems.length} challenges`;
-  renderColumn("list-strategic", strategic, decisions);
-  renderColumn("list-data", data, decisions);
-  renderColumn("list-counter", counterItems, decisions);
-  wireCards();
 }
 
 function exportDecisions() {
-  const d = loadDecisions();
-  const blob = new Blob([JSON.stringify(d, null, 2)], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "classifier-lab-decisions.json";
-  a.click();
-  URL.revokeObjectURL(url);
+    const blob = new Blob([JSON.stringify(DECISIONS, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'classifier-lab-decisions.json';
+    a.click();
 }
-function clearDecisions() {
-  if (confirm("Reset all approve/park/dismiss decisions for this browser?")) {
-    localStorage.removeItem(LS_KEY);
-    render();
-  }
-}
-
-render();
 </script>
 </body>
 </html>
