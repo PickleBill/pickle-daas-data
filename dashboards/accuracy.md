@@ -1,46 +1,46 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T18:27:52.387759+00:00_
+_Generated: 2026-04-16T21:09:29.607218+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3863 clips
-- **Total analysis files on disk:** 5383 (5383 ≥500 bytes)
-- **Minutes since last analysis:** 1.2
+- **Corpus on gh-pages:** 3879 clips
+- **Total analysis files on disk:** 5453 (5453 ≥500 bytes)
+- **Minutes since last analysis:** 4.9
 - **Human flags:** 109 total (102 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 28.7%  (1710 TP / 5958 predicted)
-- **Recall:**    70.1%  (1710 TP / 2441 awarded)
-- **F1 Score:**  40.7%
-- **Predictions analyzed:** 10496 across 3643 unique clips
+- **Precision:** 28.4%  (1724 TP / 6072 predicted)
+- **Recall:**    70.1%  (1724 TP / 2461 awarded)
+- **F1 Score:**  40.4%
+- **Predictions analyzed:** 10737 across 3730 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Rally Master | 285 | 1482 | 33 | 16% | 90% | 27% |
-| Steady Eddie | 323 | 1153 | 50 | 22% | 87% | 35% |
-| Kitchen King | 66 | 964 | 0 | 6% | 100% | 12% |
-| New Look | 13 | 1 | 158 | 93% | 8% | 14% |
-| Net Magnet | 118 | 24 | 23 | 83% | 84% | 83% |
-| Epic Rally | 73 | 83 | 4 | 47% | 95% | 63% |
+| Rally Master | 287 | 1525 | 33 | 16% | 90% | 27% |
+| Steady Eddie | 329 | 1186 | 50 | 22% | 87% | 35% |
+| Kitchen King | 66 | 985 | 0 | 6% | 100% | 12% |
+| New Look | 13 | 1 | 159 | 93% | 8% | 14% |
+| Net Magnet | 118 | 24 | 24 | 83% | 83% | 83% |
+| Epic Rally | 74 | 83 | 4 | 47% | 95% | 63% |
 | Dink Machine | 0 | 144 | 0 | 0% | 0% | 0% |
-| Fresh Fit | 20 | 0 | 105 | 100% | 16% | 28% |
+| Fresh Fit | 22 | 0 | 105 | 100% | 17% | 30% |
 | Two Up Pressure | 91 | 0 | 29 | 100% | 76% | 86% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
 
 ## Field Fill Rates (Schema Completeness)
 
 Sampled 500 most-recent analyses.
-**2** fields are below 80% population.
+**1** fields are below 80% population.
 
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands ⚠️ | 399/500 | 80% |
-| badge_intelligence.predicted_badges | 484/500 | 97% |
+| brand_detection.brands | 402/500 | 80% |
+| badge_intelligence.predicted_badges | 482/500 | 96% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
