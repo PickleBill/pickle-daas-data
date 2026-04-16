@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Action Plan: Longitudinal tracking possible: 64 players with 5+ clips | Idea Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Red+Hat+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:oklch(10% .008 260);--sf:oklch(15% .009 260);--tx:oklch(96% .006 260);--tx2:oklch(75% .012 260);--mt:oklch(52% .018 260);--ac:oklch(80% .18 155);--pu:oklch(68% .24 300);--bd:oklch(26% .013 260)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.7;padding:24px;max-width:720px;margin:0 auto;-webkit-font-smoothing:antialiased}
+a{color:var(--ac);text-decoration:none}
+h1{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-bottom:6px;color:var(--tx);line-height:1.25}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:1.6px;color:var(--ac);font-family:'Red Hat Mono',monospace;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--bd);font-weight:700}
+h3{font-size:15px;font-weight:700;color:var(--tx);margin:20px 0 8px}
+p{margin-bottom:12px;color:var(--tx2)}
+strong{color:var(--tx)}
+em{color:var(--tx2)}
+code{font-family:'Red Hat Mono',monospace;font-size:13px;background:oklch(18% .01 260);padding:2px 6px;border-radius:4px;color:var(--ac)}
+pre{background:oklch(14% .008 260);border:1px solid var(--bd);border-radius:10px;padding:16px;margin:12px 0;overflow-x:auto}
+pre code{background:none;padding:0;font-size:12px;color:var(--tx2)}
+ul{margin:8px 0 16px 24px;color:var(--tx2)}
+li{margin-bottom:6px;padding-left:4px}
+li::marker{color:var(--pu)}
+.label{display:inline-flex;align-items:center;gap:8px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--pu);font-family:'Red Hat Mono',monospace;font-weight:700;margin-bottom:16px;padding:4px 12px;background:oklch(68% .24 300/.12);border:1px solid oklch(68% .24 300/.3);border-radius:14px}
+.label::before{content:'';width:6px;height:6px;background:var(--pu);border-radius:50%;box-shadow:0 0 10px var(--pu)}
+.note{background:oklch(68% .24 300/.08);border:1px solid oklch(68% .24 300/.2);border-radius:12px;padding:14px 16px;margin:0 0 24px;font-size:13px;color:var(--tx2);line-height:1.6}
+.note-hd{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--pu);font-family:'Red Hat Mono',monospace;font-weight:700;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-bottom:20px;letter-spacing:.3px}
+.back:hover{color:var(--ac)}
+.ts{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:32px;padding-top:16px;border-top:1px solid var(--bd)}
+</style></head><body>
+<a href="../dashboards/idea-lab.html" class="back">← Back to Idea Lab</a>
+<div class="label">Action Plan</div>
+<h1>Longitudinal tracking possible: 64 players with 5+ clips</h1>
+<div class="note"><div class="note-hd">Bill's Note</div>Okay, I like this, and what I would like you to do is build me an actionable automated game plan to start implementing a v1 of this.</div>
+<h1>Automated Game Plan: Player Improvement Trajectory v1</h1>
+
+<h2>Executive Summary</h2>
+<p>You have 64 players with 5+ game clips each—enough data to build a legitimate improvement-tracking product. This plan gets you from zero to a working v1 in 8 weeks that tracks skill progression in real time.</p>
+
+<p>---</p>
+
+<h2>Phase 1: Foundation (Weeks 1–2)</h2>
+
+<h3>What to Do Monday</h3>
+<p>1. Export all 64 players' clip metadata into a single database table with: player ID, date, clip duration, opponent level (if tagged).</p>
+<p>2. Identify the top 5 by activity (PickleBill, Chintan, Tmf, Ironvarr, Irenefuntila) as your <strong>closed beta cohort</strong>.</p>
+<p>3. Define 2–3 measurable skill metrics you can extract from existing clip data without new annotation:</p>
+<ul>
+<li><strong>Win rate trend</strong> (games won / games played, rolling 7-day average)</li>
+<li><strong>Rally length</strong> (average duration of rallies in clips, trending upward = improvement)</li>
+<li><strong>Opponent level upgrade</strong> (are they playing stronger competition over time?)</li>
+</ul>
+
+<h3>Deliverable</h3>
+<p>A <strong>Player Tracking Schema</strong> document with:</p>
+<ul>
+<li>Database table structure (player_id, session_date, metric_1, metric_2, metric_3)</li>
+<li>Calculation logic for each metric in plain English</li>
+<li>Sample output for PickleBill showing his last 10 clips</li>
+</ul>
+
+<p>---</p>
+
+<h2>Phase 2: Build Core Engine (Weeks 3–5)</h2>
+
+<h3>Scope</h3>
+<ul>
+<li>Automated pipeline that recalculates metrics weekly for all 64 players</li>
+<li>Dashboard showing each player's 4-week improvement trend (one line per metric)</li>
+<li>Email/SMS alert when a player hits a milestone (e.g., "Your win rate jumped 12% this month")</li>
+</ul>
+
+<h3>Build Checklist</h3>
+<ul>
+<li>[ ] Write script to auto-ingest new clips from your storage (Google Drive, S3, etc.)</li>
+<li>[ ] Build metric calculation engine in Python or Node.js (4–6 hours of dev work)</li>
+<li>[ ] Create simple web dashboard: player name → trend charts (use Chart.js or Plotly)</li>
+<li>[ ] Set up weekly cron job to update metrics automatically</li>
+</ul>
+
+<h3>Success Criteria</h3>
+<ul>
+<li>Pipeline runs without manual intervention</li>
+<li>All 64 players have 4-week trend data by end of Week 5</li>
+<li>Top 5 beta players can view their own dashboard</li>
+</ul>
+
+<p>---</p>
+
+<h2>Phase 3: Beta Testing & Refinement (Weeks 6–8)</h2>
+
+<h3>Engagement Test</h3>
+<ul>
+<li>Send your top 5 players exclusive access to their improvement dashboard</li>
+<li>Measure: Do they open it? Do they return? Do they request features?</li>
+<li><strong>Hypothesis:</strong> Players who see their own skill trajectory will engage 2x more with Courtana</li>
+</ul>
+
+<h3>Feedback Loop</h3>
+<ul>
+<li>15-minute calls with each of the 5 beta players (target: Week 6)</li>
+<li>Ask: "What metric matters most to you? What's missing?"</li>
+<li>Iterate dashboard based on feedback (Week 7)</li>
+<li>Deploy v1 publicly to all 64 players (Week 8)</li>
+</ul>
+
+<p>---</p>
+
+<h2>Launch Criteria (Go/No-Go)</h2>
+
+<strong>Ship v1 when all of these are true:</strong>
+<p>1. Metrics calculate automatically with zero errors for 2 consecutive weeks</p>
+<p>2. At least 3 of 5 beta players have logged in 3+ times</p>
+<p>3. Dashboard loads in under 2 seconds</p>
+<p>4. You have a clear feature roadmap for v2 based on beta feedback</p>
+
+<p>---</p>
+
+<h2>Resource Requirements</h2>
+
+<p>| Role | Hours | Cost Estimate |</p>
+<p>|------|-------|---------------|</p>
+<p>| Backend Dev (metric engine) | 40 | $2,000–3,000 |</p>
+<p>| Frontend Dev (dashboard) | 20 | $1,000–1,500 |</p>
+<p>| Your time (planning, beta calls) | 15 | Your time |</p>
+<p>| <strong>Total</strong> | <strong>75</strong> | <strong>~$3–4.5K</strong> |</p>
+
+<p>---</p>
+
+<h2>Timeline at a Glance</h2>
+
+<pre><code>Week 1–2:  Schema design + data export
+<p>Week 3–5:  Build pipeline + dashboard</p>
+<p>Week 6–8:  Beta testing + refinement + launch</p>
+</code></pre>
+
+<strong>Public launch target: End of Week 8</strong>
+
+<p>---</p>
+
+<h2>Post-Launch (Month 2+)</h2>
+
+<p>Once v1 is live and stable:</p>
+<ul>
+<li><strong>v1.1:</strong> Add coach/mentor view (see all your players' trends on one screen)</li>
+<li><strong>v1.2:</strong> Predictive insights ("At this rate, you'll hit 60% win rate in 4 weeks")</li>
+<li><strong>v1.3:</strong> Peer comparison (benchmark against players at your skill level, opt-in)</li>
+</ul>
+
+<p>---</p>
+
+<h2>Follow-Up Questions</h2>
+
+<ul>
+<li>How are you currently tagging opponent skill level in clips, and can we automate that detection to fuel the "opponent level upgrade" metric?</li>
+<li>Which of your 64 players are paying vs. free, and should v1 be gated behind a paywall or free to drive adoption?</li>
+<li>Do you have video analysis capabilities (court positioning, shot type detection) that could power deeper metrics, or should v1 stick to win rate + rally length?</li>
+</ul>
+<div class="ts">Generated Apr 16, 2026 at 06:08 AM by Idea Lab v6 Commentary Engine</div>
+</body></html>

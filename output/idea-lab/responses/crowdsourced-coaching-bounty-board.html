@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Experiment Design: Crowdsourced Coaching Bounty Board | Idea Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Red+Hat+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:oklch(10% .008 260);--sf:oklch(15% .009 260);--tx:oklch(96% .006 260);--tx2:oklch(75% .012 260);--mt:oklch(52% .018 260);--ac:oklch(80% .18 155);--pu:oklch(68% .24 300);--bd:oklch(26% .013 260)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.7;padding:24px;max-width:720px;margin:0 auto;-webkit-font-smoothing:antialiased}
+a{color:var(--ac);text-decoration:none}
+h1{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-bottom:6px;color:var(--tx);line-height:1.25}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:1.6px;color:var(--ac);font-family:'Red Hat Mono',monospace;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--bd);font-weight:700}
+h3{font-size:15px;font-weight:700;color:var(--tx);margin:20px 0 8px}
+p{margin-bottom:12px;color:var(--tx2)}
+strong{color:var(--tx)}
+em{color:var(--tx2)}
+code{font-family:'Red Hat Mono',monospace;font-size:13px;background:oklch(18% .01 260);padding:2px 6px;border-radius:4px;color:var(--ac)}
+pre{background:oklch(14% .008 260);border:1px solid var(--bd);border-radius:10px;padding:16px;margin:12px 0;overflow-x:auto}
+pre code{background:none;padding:0;font-size:12px;color:var(--tx2)}
+ul{margin:8px 0 16px 24px;color:var(--tx2)}
+li{margin-bottom:6px;padding-left:4px}
+li::marker{color:var(--pu)}
+.label{display:inline-flex;align-items:center;gap:8px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--pu);font-family:'Red Hat Mono',monospace;font-weight:700;margin-bottom:16px;padding:4px 12px;background:oklch(68% .24 300/.12);border:1px solid oklch(68% .24 300/.3);border-radius:14px}
+.label::before{content:'';width:6px;height:6px;background:var(--pu);border-radius:50%;box-shadow:0 0 10px var(--pu)}
+.note{background:oklch(68% .24 300/.08);border:1px solid oklch(68% .24 300/.2);border-radius:12px;padding:14px 16px;margin:0 0 24px;font-size:13px;color:var(--tx2);line-height:1.6}
+.note-hd{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--pu);font-family:'Red Hat Mono',monospace;font-weight:700;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-bottom:20px;letter-spacing:.3px}
+.back:hover{color:var(--ac)}
+.ts{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:32px;padding-top:16px;border-top:1px solid var(--bd)}
+</style></head><body>
+<a href="../dashboards/idea-lab.html" class="back">← Back to Idea Lab</a>
+<div class="label">Experiment Design</div>
+<h1>Crowdsourced Coaching Bounty Board</h1>
+<div class="note"><div class="note-hd">Bill's Note</div>This is very, very, very, very cool. I love this idea. I want to create an incentive for crowdsourcing. We can use:
+- XP
+- badges
+- credits
+- even a credibility score for a coach they can earn by analyzing videos
+This one's going to fall in line; we can use so many real and fake currencies, social API credits, venue credits from partners being given free playtime, or even the coaches giving lessons. There's a whole ecosystem to be built around this, and I want to go deep on this. Please let's get an entire project around this one. I want the smallest experiment to test this in 30 hours or one day, not 30 days.</div>
+<h1>EXPERIMENT DESIGN: Crowdsourced Coaching Bounty Board MVP</h1>
+
+<h2>Hypothesis</h2>
+<p>Coaches will actively bid on and complete video analysis tasks when offered gamified rewards (XP + badges) tied to a visible credibility score, generating sufficient submission volume and quality feedback to validate the crowdsourcing flywheel.</p>
+
+<p>---</p>
+
+<h2>Success Metric</h2>
+<strong>Primary:</strong> 5+ coaches submit 2+ analyses each within 24 hours, with average feedback quality rated ≥3.5/5 by independent rater.
+
+<strong>Secondary:</strong> ≥1 coach explicitly states they'd return to complete more bounties if reward structure existed.
+
+<p>---</p>
+
+<h2>Build Scope (30-Hour Window)</h2>
+
+<h3>What You're Building</h3>
+<p>A <strong>single-page web form + manual admin dashboard</strong> (not a full platform):</p>
+
+<p>1. <strong>Coach Landing Page</strong> (3 hours)</p>
+<ul>
+<li>Displays 1 anonymized pickleball clip (30 seconds max)</li>
+<li>Shows: "Bounty: Analyze this rally. Submit analysis below."</li>
+<li>Input field for coach feedback (text, max 500 words)</li>
+<li>Displays mock reward: "+10 XP, +1 Analysis Badge"</li>
+<li>One-click submit</li>
+</ul>
+
+<p>2. <strong>Clip + Instructions</strong> (2 hours)</p>
+<ul>
+<li>Pull 1 representative rally from Courtana corpus</li>
+<li>Write 2-sentence coaching prompt: "What's this player doing wrong? What should they fix?"</li>
+<li>Host on simple CDN or embedded video</li>
+</ul>
+
+<p>3. <strong>Manual Scoring Admin Panel</strong> (3 hours)</p>
+<ul>
+<li>Google Sheet or Airtable with columns: Coach Name | Submission | Quality Score (1-5) | Timestamp</li>
+<li>You manually rate each submission</li>
+<li>Export results</li>
+</ul>
+
+<p>4. <strong>Recruitment</strong> (2 hours)</p>
+<ul>
+<li>Email/Slack blast to 10–15 existing Courtana users who've mentioned coaching interest</li>
+<li>Message: "We're testing a new way coaches can earn XP and badges. Try it here: [link]. Takes 5 min."</li>
+<li>No signup required; use email as identifier</li>
+</ul>
+
+<p>5. <strong>Buffer/Polish</strong> (20 hours)</p>
+
+<p>---</p>
+
+<h2>Timeline & Milestones</h2>
+
+<p>| Phase | Duration | Owner | Output |</p>
+<p>|-------|----------|-------|--------|</p>
+<p>| Build landing page + clip | 3 hrs | Dev | Live link |</p>
+<p>| Coach recruitment blast | 2 hrs | You | 10–15 invites sent |</p>
+<p>| Submissions open | 12 hrs | Async | Coaches submit |</p>
+<p>| Manual scoring + analysis | 3 hrs | You | Quality scores logged |</p>
+<p>| Debrief & decision | 2 hrs | You | Next phase approved/pivoted |</p>
+
+<strong>Start:</strong> Monday 9am → <strong>Data in hand:</strong> Tuesday 6pm (30 hours elapsed)
+
+<p>---</p>
+
+<h2>What to Do Monday Morning</h2>
+
+<p>1. <strong>Identify 1 rally clip</strong> from Courtana corpus: intermediate-level play, visible coaching opportunity.</p>
+<p>2. <strong>Write the bounty prompt</strong> (2 sentences max).</p>
+<p>3. <strong>Hand brief to dev</strong>: "Build single-page form, no auth, outputs to Google Sheet."</p>
+<p>4. <strong>List 15 coach prospects</strong> (past players, local pros, Courtana power users).</p>
+<p>5. <strong>Send blast by 11am:</strong> "New experiment: analyze 1 clip, earn 10 XP. 5 min task. Help us test this."</p>
+
+<p>---</p>
+
+<h2>Reward Strategy (What You Show Coaches)</h2>
+
+<ul>
+<li><strong>Display (not paid yet):</strong> "+10 XP, +1 Coaching Badge, +0.1 Credibility Score"</li>
+<li><strong>Copy:</strong> "Top-rated analyses earn coach credits toward Courtana Pro features."</li>
+<li><strong>Don't promise money today.</strong> Just signal it exists. Coaches' intrinsic motivation to build portfolio + visible XP/badge is enough for this sprint.</li>
+</ul>
+
+<p>---</p>
+
+<h2>Success Looks Like</h2>
+
+<ul>
+<li><strong>5+ coaches submit</strong> (not 1, not 2)</li>
+<li><strong>Quality spreads evenly</strong> (no single outlier skewing results)</li>
+<li><strong>At least 1 coach replies</strong> to your follow-up with "I'd do this again if [condition]"</li>
+<li><strong>Feedback is actionable</strong> (not generic; addresses specific technique, positioning, etc.)</li>
+</ul>
+
+<p>---</p>
+
+<h2>What Happens Next (Win Scenario)</h2>
+
+<p>If ≥5 coaches engage with 3.5+ avg quality:</p>
+<ul>
+<li><strong>Phase 2 (48–72 hours):</strong> 10 clips, token reward system (Courtana XP → redeemable for 1-month Pro discount or 30 min coaching session credit)</li>
+<li><strong>Phase 3 (1 week):</strong> Launch credibility scoring algorithm (auto-grade feedback by correlation to player improvement data)</li>
+<li><strong>Phase 4 (2 weeks):</strong> Partner with 1 local venue for lesson-credit rewards + brand sponsorship pilot</li>
+</ul>
+
+<p>---</p>
+
+<h2>Follow-Up Questions</h2>
+
+<ul>
+<li>What venue or coach partner can provide 5–10 coaches willing to test this in <6 hours notice (via email/Slack)?</li>
+<li>From your Courtana corpus, how many "coachable moment" rallies (clear technique flaw, high-engagement potential) exist and ready to pull?</li>
+<li>If a coach's analysis correlates to measurable player improvement over 2 weeks, would you commit real money (lesson credits/venue comps) as reward, or stay experimental?</li>
+</ul>
+<div class="ts">Generated Apr 16, 2026 at 06:08 AM by Idea Lab v6 Commentary Engine</div>
+</body></html>

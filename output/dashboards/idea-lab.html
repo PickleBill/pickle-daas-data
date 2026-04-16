@@ -339,6 +339,7 @@ select:focus{outline:none;border-color:var(--pu);box-shadow:0 0 0 2px var(--pud)
     <div class="wb fb" id="fbx" style="display:none"><strong>Feedback Loop</strong><span id="fbt"></span></div>
     <div class="wb wn"><strong>JOOLA Bias</strong>~43% of brand detections. Findings use balanced samples. Net-tracking detections now flagged separately.</div>
     <div class="sb"><h3>Researchers</h3><div id="rs"></div></div>
+    <div class="sb"><h3>Activity Feed</h3><div id="act-list"><p style="color:var(--mt);font-size:11px">Loading...</p></div></div>
     <div class="sb"><h3>Your Decisions</h3><div id="ds"></div>
       <div id="supa-status" style="margin-top:6px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--mt)"></div>
     </div>
@@ -402,14 +403,16 @@ async function init(){
       const rows=await r.json();
       supaOK=true;
       for(const row of rows){
-        dec[row.finding_id]={action:row.action,at:row.decided_at,category:row.category||'',agent:row.agent||'',title:row.title||'',commentary:row.commentary||''};
+        dec[row.finding_id]={action:row.action,at:row.decided_at,category:row.category||'',agent:row.agent||'',title:row.title||'',commentary:row.commentary||'',
+          response_generated:row.response_generated,response_type:row.response_type||'',response_html:row.response_html||'',response_summary:row.response_summary||'',response_at:row.response_at||'',follow_up_ids:row.follow_up_ids||[]};
       }
       localStorage.setItem('idea-lab-decisions',JSON.stringify(dec));
       document.getElementById('supa-status').innerHTML='<span style="color:var(--ac)">● synced to cloud</span>';
       if(D)render();
     }
   }catch(e){document.getElementById('supa-status').innerHTML='<span style="color:var(--mt)">○ local only</span>'}
-  // Load research requests
+  // Load activity feed + research requests
+  loadActivity();
   loadRequests();
 }
 
@@ -441,6 +444,29 @@ async function confirmDec(id){
 }
 function cancelDec(){pendingDec=null;render()}
 function getDec(id){return dec[id]?.action||null}
+
+/* ====== ACTIVITY FEED ====== */
+async function loadActivity(){
+  try{
+    const r=await supaFetch('idea_lab_activity?select=*&order=created_at.desc&limit=12');
+    if(!r.ok)return;
+    const rows=await r.json();
+    const el=document.getElementById('act-list');
+    if(!el)return;
+    if(!rows.length){el.innerHTML='<p style="color:var(--mt);font-size:11px">No activity yet</p>';return}
+    el.innerHTML=rows.map(r=>{
+      const icons={'decision':'✅','response_generated':'🔬','followups_queued':'📋','daily_run':'🔄','research_request':'🔍'};
+      const icon=icons[r.event_type]||'•';
+      const ago=timeAgo(r.created_at);
+      return `<div style="padding:5px 0;border-bottom:1px solid var(--bds);font-size:11px;color:var(--tx2);line-height:1.4;display:flex;gap:6px"><span style="flex-shrink:0">${icon}</span><span>${esc(r.summary).substring(0,100)} <span style="color:var(--mt);font-size:9px;font-family:'Red Hat Mono',monospace">${ago}</span></span></div>`
+    }).join('');
+  }catch(e){/* silent */}
+}
+function timeAgo(iso){
+  const d=new Date(iso),now=new Date(),s=Math.floor((now-d)/1000);
+  if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';
+}
 
 /* ====== RESEARCH REQUESTS ====== */
 async function submitRequest(){
@@ -502,7 +528,8 @@ function card(f,rk,big=false){
       ${corpusBadge(f)}
     </div>
     <div class="xb" id="${eid}">
-      ${dec[f.finding_id]?.commentary?`<div style="background:var(--pud);border:1px solid var(--pug);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--pu);font-family:'Red Hat Mono',monospace;margin-bottom:4px;font-weight:700">Your Note</div><div style="color:var(--tx2);line-height:1.5">${esc(dec[f.finding_id].commentary)}</div></div>`:''}
+      ${dec[f.finding_id]?.commentary?`<div style="background:var(--pud);border:1px solid var(--pug);border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--pu);font-family:'Red Hat Mono',monospace;margin-bottom:4px;font-weight:700">Your Note</div><div style="color:var(--tx2);line-height:1.5">${esc(dec[f.finding_id].commentary)}</div></div>`:''}
+      ${dec[f.finding_id]?.response_generated?`<div style="background:oklch(80% .18 155/.08);border:1px solid oklch(80% .18 155/.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ac);font-family:'Red Hat Mono',monospace;margin-bottom:4px;font-weight:700;display:flex;justify-content:space-between;align-items:center">🔬 Lab Response — ${esc(dec[f.finding_id].response_type||'')}<span style="color:var(--mt);font-weight:400">${timeAgo(dec[f.finding_id].response_at)}</span></div><div style="color:var(--tx2);line-height:1.5;margin-bottom:8px">${esc(dec[f.finding_id].response_summary||'')}</div><a href="${dec[f.finding_id].response_html}" onclick="event.stopPropagation()" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--acd);border:1px solid oklch(80% .18 155/.25);border-radius:7px;font-size:11px;font-weight:700;color:var(--ac);text-transform:uppercase;letter-spacing:.6px;text-decoration:none;transition:.15s">View Full Response →</a>${dec[f.finding_id].follow_up_ids?.length?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid oklch(80% .18 155/.12);font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace">📋 ${dec[f.finding_id].follow_up_ids.length} follow-up questions queued for next run</div>`:''}</div>`:''}
       <div class="xs"><h4>Evidence</h4><p>${f.evidence_summary||''}</p></div>
       ${f.recommended_action?`<div class="xs"><h4>Action</h4><p>${f.recommended_action}</p></div>`:''}
       ${caHTML(f.counterargument)}${fuH}
