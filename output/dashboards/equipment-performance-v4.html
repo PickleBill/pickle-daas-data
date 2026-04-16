@@ -54,12 +54,12 @@ a{color:inherit;text-decoration:none}
 .shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
 
 /* Reveal */
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;will-change:transform}
 [data-reveal].revealed{opacity:1;transform:none}
 .hero{opacity:1!important;transform:none!important}
 
 /* Divider */
-.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider{width:120px;height:1px;margin:clamp(40px,6vw,80px) auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
 
 /* Status strip */
 .status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
@@ -70,7 +70,7 @@ a{color:inherit;text-decoration:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .v-chip{padding:2px 8px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
 .status nav{display:flex;gap:6px}
-.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a{padding:8px 12px;min-height:44px;display:inline-flex;align-items:center;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .25s ease;touch-action:manipulation}
 .status nav a:hover{color:var(--accent);border-color:var(--accent-b)}
 .portal-link{color:var(--t5);transition:color .2s var(--ease)}
 .portal-link:hover{color:var(--accent)}
@@ -79,7 +79,7 @@ a{color:inherit;text-decoration:none}
 .hero{padding:clamp(40px,5vw,64px) 0 clamp(20px,3vw,32px);position:relative}
 .hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
 .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent)}
-.hero h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:900px}
+.hero h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;max-width:900px}
 .grad-text{background:linear-gradient(135deg,#6BA3FF,#4E8AE6,#BD93F9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:620px;line-height:1.7}
 .hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
@@ -90,7 +90,7 @@ a{color:inherit;text-decoration:none}
 
 /* Category tabs */
 .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
-.cat-tab{padding:10px 20px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-transform:capitalize}
+.cat-tab{padding:12px 20px;min-height:44px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);font-size:13px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .25s ease;font-family:'Manrope',sans-serif;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-transform:capitalize;touch-action:manipulation}
 .cat-tab:hover{color:var(--t2);border-color:var(--bd-h)}
 .cat-tab.on{background:var(--accent-g);color:var(--accent);border-color:var(--accent-b)}
 .cat-tab .cnt{font-family:'Red Hat Mono',monospace;font-size:10px;opacity:.7;margin-left:5px}
@@ -102,7 +102,7 @@ a{color:inherit;text-decoration:none}
 .bar-list.fading-in{opacity:0;transform:translateY(-8px)}
 
 /* Bar rows */
-.bar-row{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(8px);margin-bottom:8px;cursor:pointer;transition:all .2s var(--ease);opacity:0;transform:translateY(12px)}
+.bar-row{display:flex;align-items:center;gap:14px;padding:12px 16px;min-height:44px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin-bottom:8px;cursor:pointer;transition:all .25s ease;opacity:0;transform:translateY(12px);touch-action:manipulation}
 .bar-row.bar-visible{opacity:1;transform:translateY(0)}
 .bar-row:hover{border-color:var(--bd-h);transform:translateY(-2px)!important;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .bar-row:active{transform:scale(.99)!important}
@@ -235,7 +235,7 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
   <div class="hero-glow"></div>
   <div class="hero-eyebrow">Equipment Performance</div>
   <h1>Which brands<br><span class="grad-text">dominate the court?</span></h1>
-  <p class="hero-sub">21 brands classified in the player_equipment lane — paddles, shoes, apparel, bags, accessories. Market share calculated from real video evidence across 3,600+ clips. These aren't all brands in pickleball — they're the ones our AI has detected and our humans have verified.</p>
+  <p class="hero-sub">21 brands across paddles, shoes, apparel, bags, and accessories. Market share from real video evidence across 3,600+ clips -- detected by AI, verified by humans.</p>
   <div class="hero-pills" id="hero-pills"></div>
 </section>
 
@@ -257,7 +257,7 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
 <!-- Footer -->
 <footer>
   <span>Equipment Performance v4 &middot; Pickle DaaS &middot; Data refreshed <span id="foot-ts"></span></span>
-  <span><a href="brand-intelligence-v4.html">Brand Intelligence</a> &middot; <a href="venue-intelligence-v4.html">Venue Intelligence</a></span>
+  <span><a href="brand-intelligence-v4.html">Explore brands &rarr;</a> &middot; <a href="venue-intelligence-v4.html">Explore venues &rarr;</a></span>
 </footer>
 
 </div></div>
@@ -323,7 +323,7 @@ function renderHero(){
 function renderTabs(){
   const cats=EQ_DATA.categories;
   const order=['paddle','shoes','apparel','bag','accessory','sponsor_signage'];
-  const labels={paddle:'Paddle',shoes:'Shoes',apparel:'Apparel',bag:'Bag',accessory:'Accessory',sponsor_signage:'Sponsor'};
+  const labels={paddle:'Paddle',shoes:'Shoes',apparel:'Apparel',bag:'Bag',accessory:'Accessory',sponsor_signage:'Sponsor',player_equipment:'Player Gear',venue_installed:'Venue Tech'};
   const html=[];
   for(const key of order){
     if(!cats[key]) continue;
@@ -369,7 +369,7 @@ function renderBars(withFadeIn){
     const rank=i+1;
     const pct=b.market_share_pct!=null?b.market_share_pct.toFixed(1):((b.total_detections/maxDet)*100).toFixed(1);
     const clips=(b.example_clips||[]).slice(0,3);
-    const clipHtml=clips.map(c=>`<div class="bar-clip"><img src="${c.thumbnail}" alt="${b.brand}" loading="lazy"></div>`).join('');
+    const clipHtml=clips.map(c=>`<div class="bar-clip"><img src="${c.thumbnail}" alt="${b.brand}" loading="lazy" decoding="async"></div>`).join('');
 
     // Rank fill class
     let fillClass='rank-default';
@@ -438,17 +438,17 @@ function openModal(brandName,category){
   if(!brand) return;
   const prov=(PROV_DATA.brands||[]).find(b=>b.name===brandName);
   document.getElementById('m-name').textContent=brandName;
-  document.getElementById('m-cat').textContent=category.replace(/_/g,' ');
+  document.getElementById('m-cat').textContent=category.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
   let html='';
 
   // Provenance
   if(prov){
-    html+=`<div class="m-sec"><h4>Provenance</h4><div class="m-prov">
+    html+=`<div class="m-sec"><h4>How This Was Tagged</h4><div class="m-prov">
       ${prov.rationale||'No rationale available.'}
       <div class="m-flags">
-        <span class="pp rule">Rule v${prov.rule_version}</span>
+        <span class="pp rule">Rule-based</span>
         <span class="pp ${prov.human_verified?'rev':'cat'}">${prov.human_verified?'Human verified':'Unverified'}</span>
-        <span class="pp cat">${prov.category_primary||category}</span>
+        <span class="pp cat">${(prov.category_primary||category).replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</span>
         ${prov.revenue_potential?`<span class="pp cat">${prov.revenue_potential} revenue</span>`:''}
       </div>
     </div></div>`;

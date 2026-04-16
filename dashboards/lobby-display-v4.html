@@ -255,7 +255,7 @@ body::after {
 /* ── Main Three-Panel Grid ── */
 .main-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(400px, 1.6fr) minmax(320px, 1fr);
+  grid-template-columns: 25% 50% 25%;
   gap: 0;
   overflow: hidden;
   min-height: 0;
@@ -265,14 +265,14 @@ body::after {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding: 20px 20px 12px;
+  padding: 20px 24px 16px;
   position: relative;
 }
 .panel + .panel {
   border-left: 1px solid var(--border-subtle);
 }
 .panel-center {
-  padding: 20px 24px 12px;
+  padding: 20px 24px 16px;
 }
 
 /* Panel Header */
@@ -287,7 +287,7 @@ body::after {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2.5px;
@@ -390,7 +390,7 @@ body::after {
   min-width: 0;
 }
 .lb-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
@@ -939,8 +939,8 @@ body::after {
    ══════════════════════════════════════════════════════════════════════════ */
 
 @keyframes livePulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 82, 82, 0.6); }
-  50% { opacity: 0.4; box-shadow: 0 0 4px rgba(255, 82, 82, 0.2); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 82, 82, 0.6); transform: scale(1); }
+  50% { opacity: 0.5; box-shadow: 0 0 12px rgba(255, 82, 82, 0.3); transform: scale(0.85); }
 }
 
 @keyframes corpusPulse {
@@ -1045,12 +1045,12 @@ body::after {
       <div class="panel-header">
         <div class="panel-label">
           <div class="panel-label-bar"></div>
-          Player Leaderboard
+          Top Players
         </div>
         <div class="panel-meta" id="playerCount">-- players</div>
       </div>
       <div class="leaderboard-scroll" id="leaderboard">
-        <div class="loading-state"><div class="loading-spinner"></div>Loading players...</div>
+        <div class="loading-state"><div class="loading-spinner"></div>Getting your data...</div>
       </div>
     </div>
 
@@ -1084,7 +1084,7 @@ body::after {
               <div class="overlay-badge" id="overlayArc">HIGHLIGHT</div>
               <div class="overlay-shot-type" id="overlayShot">--</div>
             </div>
-            <div class="overlay-summary" id="overlaySummary">Loading highlights...</div>
+            <div class="overlay-summary" id="overlaySummary">Getting highlights...</div>
             <div class="overlay-meta">
               <div class="overlay-stat">Viral: <span class="overlay-stat-val" id="overlayViral">--</span>/10</div>
               <div class="overlay-stat">Watch: <span class="overlay-stat-val" id="overlayWatch">--</span>/10</div>
@@ -1104,12 +1104,12 @@ body::after {
       <div class="panel-header">
         <div class="panel-label">
           <div class="panel-label-bar"></div>
-          Intel Feed
+          Intel
         </div>
         <div class="panel-meta" id="intelCycleLabel">Auto-cycling</div>
       </div>
       <div class="intel-feed" id="intelFeed">
-        <div class="loading-state"><div class="loading-spinner"></div>Loading intel...</div>
+        <div class="loading-state"><div class="loading-spinner"></div>Getting your data...</div>
       </div>
     </div>
 
@@ -1255,7 +1255,7 @@ function computeOverall(skills) {
 function renderLeaderboard() {
   const el = document.getElementById('leaderboard');
   if (!playersData.length) {
-    el.innerHTML = '<div class="loading-state">No player data</div>';
+    el.innerHTML = '<div class="loading-state">Refresh to try again</div>';
     return;
   }
 
@@ -1485,7 +1485,7 @@ function buildPlayerSpotlightCard() {
 
   return `
     <div class="intel-card cycle-fade-enter">
-      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Player Spotlight</div>
+      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Spotlight</div>
       <div class="spotlight-row">
         <img class="spotlight-avatar"
              src="${player.avatar || ''}"
@@ -1563,7 +1563,7 @@ function renderIntelFeed() {
   }
 
   if (!cards.length) {
-    el.innerHTML = '<div class="loading-state">No intel data</div>';
+    el.innerHTML = '<div class="loading-state">Refresh to try again</div>';
     return;
   }
   el.innerHTML = cards.join('');

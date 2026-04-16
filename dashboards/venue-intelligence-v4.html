@@ -45,10 +45,10 @@ a{color:inherit;text-decoration:none}
 
 .page{position:relative;z-index:1}
 .shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-reveal]{opacity:0;transform:translateY(24px);will-change:transform;transition:opacity .6s var(--ease),transform .6s var(--ease)}
 [data-reveal].revealed{opacity:1;transform:none}
 .hero{opacity:1!important;transform:none!important}
-.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider{width:120px;height:1px;margin:clamp(40px,6vw,80px) auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
 
 /* Status strip */
 .status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
@@ -59,7 +59,7 @@ a{color:inherit;text-decoration:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .v-chip{padding:2px 8px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
 .status nav{display:flex;gap:6px;align-items:center}
-.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .25s ease;min-height:44px;display:inline-flex;align-items:center}
 .status nav a:hover{color:var(--accent);border-color:var(--accent-b)}
 .portal-link{color:var(--t5);font-size:11px;font-family:'Red Hat Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--bd);border-radius:6px;transition:all .2s var(--ease);display:inline-flex;align-items:center;gap:6px}
 .portal-link:hover{color:var(--accent);border-color:var(--accent-b)}
@@ -83,7 +83,7 @@ a{color:inherit;text-decoration:none}
 .sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
 
 /* Glass cards */
-.glass-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;margin-bottom:32px}
+.glass-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;margin-bottom:32px}
 .gc-stripe{height:3px;width:100%}
 .gc-head{padding:20px 24px 14px;display:flex;justify-content:space-between;align-items:center}
 .gc-label{font-family:'Red Hat Mono',monospace;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
@@ -151,17 +151,26 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
 @media(max-width:600px){
   .hero-pills{flex-direction:column}
   .status nav{display:none}
+  .status-inner{justify-content:center}
   .g-table th:nth-child(3),.g-table td:nth-child(3){display:none}
+  .mobile-tabs .tab-btn{min-height:44px;font-size:11px;padding:12px 6px}
+  .g-table td,.g-table th{font-size:12px;padding:10px 10px}
+  .portal-link{min-height:44px}
 }
 
-.glass-card:hover{border-color:var(--bd-h)}
+.glass-card:hover{border-color:var(--bd-h);transition:border-color .25s ease}
 .glass-card:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:inherit}
 .thumb-cell:active{transform:scale(.95)}
+
+/* Scroll hint for horizontally scrollable tables */
+.scroll-wrap{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.scroll-wrap::after{content:'';position:sticky;right:0;top:0;bottom:0;width:32px;pointer-events:none;background:linear-gradient(to left,var(--bg),transparent);display:block;float:right;margin-top:-100%;height:100%}
+.scroll-wrap.scrolled-end::after{opacity:0}
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .blob,.noise{display:none}
-  [data-reveal]{opacity:1;transform:none}
+  [data-reveal]{opacity:1;transform:none;will-change:auto}
   .g-table tbody tr{opacity:1;transform:none}
 }
 </style>
@@ -206,18 +215,18 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
   <!-- Broadcast Tech -->
   <div data-reveal>
     <div class="sec-head">
-      <div class="sec-eyebrow">Broadcast Infrastructure</div>
+      <div class="sec-eyebrow">Your Camera Setup</div>
       <div class="sec-title">Camera <span class="grad-text">tech on court</span></div>
     </div>
   </div>
   <div class="glass-card" id="broadcast-card" data-reveal>
     <div class="gc-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
     <div class="gc-head">
-      <span class="gc-label">Broadcast Tech</span>
+      <span class="gc-label">Camera Systems</span>
       <span class="gc-count" id="bc-count"></span>
     </div>
-    <div style="overflow-x:auto">
-      <table class="g-table" id="broadcast-table"><thead><tr><th>Brand</th><th>Detections</th><th>Unique Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
+    <div class="scroll-wrap">
+      <table class="g-table" id="broadcast-table"><thead><tr><th>Brand</th><th>Times Seen</th><th>Unique Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
     </div>
   </div>
 
@@ -226,18 +235,18 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
   <!-- Facility Chains -->
   <div data-reveal>
     <div class="sec-head">
-      <div class="sec-eyebrow">Facility Network</div>
+      <div class="sec-eyebrow">Your Venue Network</div>
       <div class="sec-title">The <span class="grad-text">venue ecosystem</span></div>
     </div>
   </div>
   <div class="glass-card" id="facility-card" data-reveal>
     <div class="gc-stripe" style="background:linear-gradient(90deg,#F1C40F,transparent)"></div>
     <div class="gc-head">
-      <span class="gc-label">Facility Chains</span>
+      <span class="gc-label">Venue Network</span>
       <span class="gc-count" id="fc-count"></span>
     </div>
-    <div style="overflow-x:auto">
-      <table class="g-table" id="facility-table"><thead><tr><th>Facility</th><th>Detections</th><th>Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
+    <div class="scroll-wrap">
+      <table class="g-table" id="facility-table"><thead><tr><th>Facility</th><th>Times Seen</th><th>Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
     </div>
   </div>
 
@@ -246,18 +255,18 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
   <!-- Venue Installed -->
   <div data-reveal>
     <div class="sec-head">
-      <div class="sec-eyebrow">Court Equipment</div>
+      <div class="sec-eyebrow">What's Installed</div>
       <div class="sec-title">Venue-installed <span class="grad-text">brands</span></div>
     </div>
   </div>
   <div class="glass-card" id="venue-card" data-reveal>
     <div class="gc-stripe" style="background:linear-gradient(90deg,#FF6B6B,transparent)"></div>
     <div class="gc-head">
-      <span class="gc-label">Venue Installed</span>
+      <span class="gc-label">Venue Tech</span>
       <span class="gc-count" id="vc-count"></span>
     </div>
-    <div style="overflow-x:auto">
-      <table class="g-table" id="venue-table"><thead><tr><th>Brand</th><th>Detections</th><th>Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
+    <div class="scroll-wrap">
+      <table class="g-table" id="venue-table"><thead><tr><th>Brand</th><th>Times Seen</th><th>Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
     </div>
   </div>
 
@@ -266,20 +275,20 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
 <!-- ═══════════ MOBILE: Tabbed interface ═══════════ -->
 <div class="mobile-tabs" id="mobile-tabs">
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="m-broadcast">Broadcast Tech</button>
-    <button class="tab-btn" data-tab="m-facility">Facility Chains</button>
-    <button class="tab-btn" data-tab="m-venue">Court Equipment</button>
+    <button class="tab-btn active" data-tab="m-broadcast">Cameras</button>
+    <button class="tab-btn" data-tab="m-facility">Venues</button>
+    <button class="tab-btn" data-tab="m-venue">Equipment</button>
   </div>
 
   <div class="tab-panel active" id="m-broadcast">
     <div class="glass-card" id="m-broadcast-card">
       <div class="gc-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
       <div class="gc-head">
-        <span class="gc-label">Broadcast Tech</span>
+        <span class="gc-label">Camera Systems</span>
         <span class="gc-count" id="m-bc-count"></span>
       </div>
-      <div style="overflow-x:auto">
-        <table class="g-table" id="m-broadcast-table"><thead><tr><th>Brand</th><th>Detections</th><th>Clips</th></tr></thead><tbody></tbody></table>
+      <div class="scroll-wrap">
+        <table class="g-table" id="m-broadcast-table"><thead><tr><th>Brand</th><th>Times Seen</th><th>Clips</th></tr></thead><tbody></tbody></table>
       </div>
     </div>
   </div>
@@ -288,11 +297,11 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
     <div class="glass-card" id="m-facility-card">
       <div class="gc-stripe" style="background:linear-gradient(90deg,#F1C40F,transparent)"></div>
       <div class="gc-head">
-        <span class="gc-label">Facility Chains</span>
+        <span class="gc-label">Venue Network</span>
         <span class="gc-count" id="m-fc-count"></span>
       </div>
-      <div style="overflow-x:auto">
-        <table class="g-table" id="m-facility-table"><thead><tr><th>Facility</th><th>Detections</th><th>Clips</th></tr></thead><tbody></tbody></table>
+      <div class="scroll-wrap">
+        <table class="g-table" id="m-facility-table"><thead><tr><th>Facility</th><th>Times Seen</th><th>Clips</th></tr></thead><tbody></tbody></table>
       </div>
     </div>
   </div>
@@ -301,11 +310,11 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
     <div class="glass-card" id="m-venue-card">
       <div class="gc-stripe" style="background:linear-gradient(90deg,#FF6B6B,transparent)"></div>
       <div class="gc-head">
-        <span class="gc-label">Venue Installed</span>
+        <span class="gc-label">Venue Tech</span>
         <span class="gc-count" id="m-vc-count"></span>
       </div>
-      <div style="overflow-x:auto">
-        <table class="g-table" id="m-venue-table"><thead><tr><th>Brand</th><th>Detections</th><th>Clips</th></tr></thead><tbody></tbody></table>
+      <div class="scroll-wrap">
+        <table class="g-table" id="m-venue-table"><thead><tr><th>Brand</th><th>Times Seen</th><th>Clips</th></tr></thead><tbody></tbody></table>
       </div>
     </div>
   </div>
@@ -377,7 +386,7 @@ function renderHero(){
 
 function renderSection(key,tableId,countId,showEvidence){
   const items=VT[key]||[];
-  document.getElementById(countId).innerHTML=items.length+' brands &middot; '+items.reduce((s,b)=>s+b.total_detections,0).toLocaleString()+' detections';
+  document.getElementById(countId).innerHTML=items.length+' brands &middot; '+items.reduce((s,b)=>s+b.total_detections,0).toLocaleString()+' times seen';
   const sorted=[...items].sort((a,b)=>b.total_detections-a.total_detections);
   const maxDet=sorted.length?sorted[0].total_detections:1;
   const tbody=document.querySelector('#'+tableId+' tbody');
@@ -396,7 +405,7 @@ function renderSection(key,tableId,countId,showEvidence){
       const clips=(b.example_clips||[]).filter((c,idx,a)=>a.findIndex(x=>x.uuid===c.uuid)===idx).slice(0,4);
       const thumbs=clips.map(c=>{
         const vid=CDN+c.uuid+'.mp4';
-        return `<div class="thumb-cell"><video src="${vid}" poster="${c.thumbnail}" muted loop playsinline preload="none" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video></div>`;
+        return `<div class="thumb-cell"><video src="${vid}" poster="${c.thumbnail}" muted loop playsinline preload="none" loading="lazy" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video></div>`;
       }).join('');
       evidenceCell=`<td><div class="thumb-strip">${thumbs}</div></td>`;
     }
@@ -476,7 +485,7 @@ function initScroll(){
 }
 
 init().catch(err=>{
-  document.querySelector('.page .shell').innerHTML=`<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Loading data&hellip; ${err.message}</p></div>`;
+  document.querySelector('.page .shell').innerHTML=`<div class="ld"><p style="color:var(--t4);font-size:14px">Couldn&rsquo;t load your venue data right now.</p><p style="color:var(--t5);font-size:12px;margin-top:4px"><a href="" onclick="location.reload();return false" style="color:var(--accent);text-decoration:underline">Refresh to try again</a></p></div>`;
 });
 </script>
 </body>

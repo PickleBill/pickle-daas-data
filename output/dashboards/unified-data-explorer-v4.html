@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pickle DaaS · Unified Data Explorer v4</title>
+<title>Pickle DaaS · Unified Data Explorer</title>
 <meta name="description" content="DaaS Intelligence vs Courtana Ground Truth — side-by-side proof that the AI works.">
-<meta property="og:title" content="Pickle DaaS · Unified Data Explorer v4">
+<meta property="og:title" content="Pickle DaaS · Unified Data Explorer">
 <meta property="og:description" content="AI analysis meets ground truth. Every clip, side by side.">
 <meta property="og:image" content="https://courtana.com/og-daas-explorer.png">
 <meta property="og:type" content="website">
@@ -382,6 +382,9 @@ body::before {
 @media(max-width: 640px) {
   .filter-group select, .filter-group input[type="text"] { min-width: 120px; font-size: 12px; }
   .filter-row { gap: 8px; }
+  .toggle-pill { min-height: 44px; padding: 10px 14px; }
+  .sort-btn { min-height: 44px; padding: 10px 12px; }
+  .filter-group select, .filter-group input[type="text"] { min-height: 44px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -945,6 +948,54 @@ section { margin-top: 36px; }
 .footer-link:hover { color: var(--teal); border-color: var(--teal); }
 .footer-link.active { background: var(--teal-dim); color: var(--teal); border-color: rgba(110,239,192,0.2); }
 
+/* ── Hero visual separation ────────────────────────────────────────── */
+.hero { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--border-1); }
+
+/* ── Mobile split panel stacking (<600px) ──────────────────────────── */
+@media(max-width: 600px) {
+  .card-body { grid-template-columns: 1fr; }
+  .side.daas { border-right: none; border-bottom: 1px solid var(--border-1); }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .filter-row { gap: 8px; }
+  .filter-group { flex: 1 1 calc(50% - 8px); min-width: 0; }
+  .filter-group select, .filter-group input[type="text"] { min-width: 0; width: 100%; }
+  .results-tag { margin-left: 0; width: 100%; text-align: center; }
+}
+
+/* ── Skeleton loading state ────────────────────────────────────────── */
+.skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 18px; }
+@media(max-width: 500px) { .skeleton-grid { grid-template-columns: 1fr; } }
+.skeleton-card {
+  border-radius: var(--r-lg);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-1);
+  overflow: hidden;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+.skeleton-card .sk-video { aspect-ratio: 16/9; background: var(--surface-2); }
+.skeleton-card .sk-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.skeleton-card .sk-line { height: 10px; border-radius: 4px; background: var(--surface-3); }
+.skeleton-card .sk-line.w60 { width: 60%; }
+.skeleton-card .sk-line.w80 { width: 80%; }
+.skeleton-card .sk-line.w40 { width: 40%; }
+@keyframes skeletonPulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+/* ── Scroll reveal animation ───────────────────────────────────────── */
+.clip-card { will-change: transform, opacity; }
+.clip-card:hover .side.daas { background: rgba(91,154,255,0.03); }
+.clip-card:hover .side.courtana { background: rgba(110,239,192,0.03); }
+
+/* ── Match indicator text labels (accessibility) ───────────────────── */
+.match-indicator .mi-text { margin-left: 2px; }
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .blob { display: none; }
+  .clip-card { opacity: 1; transform: none; animation: none; }
+  .stat-val[data-target] { opacity: 1; transform: none; }
+}
+
 /* ── Scrollbar ──────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -971,9 +1022,9 @@ section { margin-top: 36px; }
   <div class="hero">
     <div class="hero-top">
       <div>
-        <h1><span class="grad-daas">DaaS Intelligence</span><span class="times">&times;</span><span class="grad-courtana">Courtana Ground Truth</span></h1>
+        <h1><span class="grad-daas">AI Analysis</span><span class="times">vs.</span><span class="grad-courtana">Ground Truth</span></h1>
         <p class="tagline">The proof page. Every clip shows what our AI detected alongside what Courtana's system actually captured. Side by side, no hiding.</p>
-        <div class="version-pill"><span class="dot"></span> Unified Explorer v4</div>
+        <div class="version-pill"><span class="dot"></span> Unified Explorer</div>
       </div>
       <a class="nav-link" href="showcase-portal-v4.html">&larr; Showcase Portal</a>
     </div>
@@ -1017,8 +1068,8 @@ section { margin-top: 36px; }
           <button class="sort-btn" data-sort="viral">Viral</button>
         </div>
       </div>
-      <button class="toggle-pill" id="toggleLinked"><span class="indicator"></span> Linked Only</button>
-      <button class="toggle-pill" id="toggleUnlinked"><span class="indicator"></span> Unlinked Only</button>
+      <button class="toggle-pill" id="toggleLinked"><span class="indicator"></span> Both AI + Courtana</button>
+      <button class="toggle-pill" id="toggleUnlinked"><span class="indicator"></span> AI Only / Courtana Only</button>
       <button class="toggle-pill" id="toggleBadged"><span class="indicator"></span> Has Badges</button>
       <span class="results-tag" id="resultsTag">-- clips</span>
     </div>
@@ -1028,7 +1079,7 @@ section { margin-top: 36px; }
   <section>
     <div class="section-head">
       <h2>Clip Intelligence <span class="badge-tag teal">Split View</span></h2>
-      <span class="section-desc">DaaS analysis left &middot; Courtana ground truth right</span>
+      <span class="section-desc">What the AI found (left) &middot; What Courtana captured (right)</span>
     </div>
     <div id="loadingState" class="loading-state">
       <div class="spinner"></div>
@@ -1049,7 +1100,7 @@ section { margin-top: 36px; }
       <div class="status-item" id="statusCorpus">Corpus: --</div>
       <div class="status-item" id="statusTs">Updated: --</div>
     </div>
-    <div class="status-item">Pickle DaaS v4.0</div>
+    <div class="status-item">Pickle DaaS</div>
   </div>
 
   <!-- Footer nav -->

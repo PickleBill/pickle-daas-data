@@ -39,7 +39,7 @@
   --lane-vi: #FFB86C;
   --lane-ss: #C084FC;
   --lane-bt: #F87171;
-  --radius: 12px;
+  --radius: 16px;
   --radius-sm: 8px;
   --radius-xs: 6px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -86,11 +86,12 @@ body {
 @keyframes blobDrift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
 
 /* ─── Scroll Reveal (shared design system) ─── */
-[data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;will-change:transform}
 [data-reveal].revealed{opacity:1;transform:none}
 
 @media (prefers-reduced-motion: reduce) {
-  .blob { animation: none !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .blob { display: none !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
   .clip-card { animation: none !important; transition: none !important; }
   .scroll-progress { display: none !important; }
@@ -187,7 +188,7 @@ body {
 .hero h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.08;
   margin-bottom: 16px;
   color: var(--t1);
 }
@@ -228,7 +229,7 @@ body {
 .section-divider {
   width: 120px;
   height: 1px;
-  margin: 0 auto;
+  margin: clamp(40px, 6vw, 80px) auto;
   background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
 }
 
@@ -262,7 +263,9 @@ body {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
-  padding: 6px 14px;
+  padding: 10px 14px;
+  min-height: 44px;
+  touch-action: manipulation;
   border-radius: 100px;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
@@ -354,7 +357,8 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.25s var(--ease), border-color 0.25s, box-shadow 0.25s;
+  touch-action: manipulation;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   opacity: 0;
   transform: translateY(24px) scale(0.97);
 }
@@ -503,6 +507,7 @@ body {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--t6);
+  line-height: 1.4;
 }
 .prov-verified { color: #34D399; }
 
@@ -516,7 +521,9 @@ body {
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 600;
-  padding: 12px 32px;
+  padding: 14px 32px;
+  min-height: 44px;
+  touch-action: manipulation;
   border-radius: 100px;
   border: 1px solid var(--accent-dim);
   background: var(--accent-glow);
@@ -673,7 +680,9 @@ body {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 600;
-  padding: 8px 20px;
+  padding: 12px 20px;
+  min-height: 44px;
+  touch-action: manipulation;
   border-radius: 100px;
   cursor: pointer;
   transition: all 0.2s;
@@ -772,6 +781,9 @@ body {
   .filter-group::-webkit-scrollbar { display: none; }
   .swipe-hint { display: block; }
 }
+@media (max-width: 599px) {
+  .status-strip .status-right a { display: none; }
+}
 @media (max-width: 480px) {
   .clip-grid { grid-template-columns: 1fr; }
   .filter-bar { flex-direction: column; align-items: stretch; }
@@ -833,7 +845,7 @@ body {
     <div class="hero-eyebrow">EVIDENCE WALL</div>
     <h1>Every clip, <span class="grad-text">classified.</span></h1>
     <p class="hero-subtitle">
-      <strong id="hero-clip-count">3,575</strong> highlight clips. Each brand on each clip tagged by lane with full provenance.
+      <strong id="hero-clip-count">3,575</strong> highlight clips. Every brand tagged, classified, and traceable.
     </p>
     <div class="stat-pills">
       <div class="stat-pill glass">
@@ -861,8 +873,8 @@ body {
     <div class="filter-bar">
       <div class="filter-group" id="lane-filters">
         <button class="filter-btn active" data-lane="all">All</button>
-        <button class="filter-btn" data-lane="pe"><div class="filter-dot" style="background:var(--lane-pe)"></div> Player Equip</button>
-        <button class="filter-btn" data-lane="vi"><div class="filter-dot" style="background:var(--lane-vi)"></div> Venue</button>
+        <button class="filter-btn" data-lane="pe"><div class="filter-dot" style="background:var(--lane-pe)"></div> Player Gear</button>
+        <button class="filter-btn" data-lane="vi"><div class="filter-dot" style="background:var(--lane-vi)"></div> Venue Tech</button>
         <button class="filter-btn" data-lane="ss"><div class="filter-dot" style="background:var(--lane-ss)"></div> Sponsor</button>
         <button class="filter-btn" data-lane="bt"><div class="filter-dot" style="background:var(--lane-bt)"></div> Broadcast</button>
         <!-- Swipe hint for touch screens -->
@@ -1070,7 +1082,7 @@ body {
       if (cl.human_verified) anyVerified = true;
       if (cl.rule_version) version = cl.rule_version;
     }
-    const label = allRule ? ('all rule v' + (version || '?')) : 'mixed';
+    const label = allRule ? 'rule-based' : 'mixed';
     return { label, verified: anyVerified };
   }
 
@@ -1212,9 +1224,9 @@ body {
 
     // Lane dots HTML
     let laneDots = '';
-    if (lanes.pe) laneDots += '<div class="lane-dot pe" title="Player Equipment"></div>';
-    if (lanes.vi) laneDots += '<div class="lane-dot vi" title="Venue"></div>';
-    if (lanes.ss) laneDots += '<div class="lane-dot ss" title="Sponsor Signage"></div>';
+    if (lanes.pe) laneDots += '<div class="lane-dot pe" title="Player Gear"></div>';
+    if (lanes.vi) laneDots += '<div class="lane-dot vi" title="Venue Tech"></div>';
+    if (lanes.ss) laneDots += '<div class="lane-dot ss" title="Sponsor"></div>';
     if (lanes.bt) laneDots += '<div class="lane-dot bt" title="Broadcast Tech"></div>';
 
     // Brand pills
@@ -1288,11 +1300,11 @@ body {
     // Lanes
     const lanes = getClipLanes(clip);
     let lanesHtml = '';
-    if (lanes.pe) lanesHtml += '<span class="lane-pill pe">Player Equipment</span>';
-    if (lanes.vi) lanesHtml += '<span class="lane-pill vi">Venue Installed</span>';
-    if (lanes.ss) lanesHtml += '<span class="lane-pill ss">Sponsor Signage</span>';
+    if (lanes.pe) lanesHtml += '<span class="lane-pill pe">Player Gear</span>';
+    if (lanes.vi) lanesHtml += '<span class="lane-pill vi">Venue Tech</span>';
+    if (lanes.ss) lanesHtml += '<span class="lane-pill ss">Sponsor</span>';
     if (lanes.bt) lanesHtml += '<span class="lane-pill bt">Broadcast Tech</span>';
-    if (!lanesHtml) lanesHtml = '<span style="font-size:12px;color:var(--t5)">No classification flags</span>';
+    if (!lanesHtml) lanesHtml = '<span style="font-size:12px;color:var(--t5)">No categories detected</span>';
     modalLanes.innerHTML = lanesHtml;
 
     // Brands
@@ -1318,8 +1330,8 @@ body {
             '<span class="brand-item-confidence ' + confClass + '">' + confLabel + ' (' + (typeof conf === 'number' ? (conf * 100).toFixed(0) + '%' : conf) + ')</span>' +
           '</div>' +
           '<div class="brand-item-meta">' +
-            (cl.source ? '<span>src: ' + escHtml(cl.source) + '</span>' : '') +
-            (cl.rule_version ? '<span>rule v' + cl.rule_version + '</span>' : '') +
+            (cl.source ? '<span>tagged by: ' + escHtml(cl.source) + '</span>' : '') +
+            (cl.rule_version ? '<span>rule-based</span>' : '') +
             (cl.human_verified ? '<span style="color:#34D399">&#10003; verified</span>' : '<span style="color:var(--t6)">unverified</span>') +
             (cl.revenue_potential ? '<span>rev: ' + escHtml(cl.revenue_potential) + '</span>' : '') +
           '</div>' +

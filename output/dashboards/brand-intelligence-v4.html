@@ -64,13 +64,13 @@ a{color:inherit;text-decoration:none}
 .shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
 
 /* ── Reveal system ── */
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;will-change:transform}
 [data-reveal].revealed{opacity:1;transform:none}
 /* Hero is always visible — no reveal delay on first section */
 .hero{opacity:1!important;transform:none!important}
 
 /* ── Section divider ── */
-.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider{width:120px;height:1px;margin:clamp(40px, 6vw, 80px) auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
 
 /* ── Status strip ── */
 .status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
@@ -98,8 +98,8 @@ a{color:inherit;text-decoration:none}
 .hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:var(--c-int);opacity:.035;pointer-events:none}
 
 /* ── Glass cards ── */
-.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
-.glass:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease}
+.glass:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.35)}
 
 /* ── Section heading ── */
 .sec-head{margin-bottom:28px}
@@ -115,7 +115,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── Three lanes ── */
 .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
-.lane{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;display:flex;flex-direction:column;position:relative;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .2s}
+.lane{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .25s ease;min-height:0}
 .lane:hover{border-color:var(--bd-h)}
 .lane-stripe{height:3px;width:100%}
 .lane.player .lane-stripe{background:linear-gradient(90deg,var(--c-pl),transparent)}
@@ -128,7 +128,7 @@ a{color:inherit;text-decoration:none}
 .lane.player .lane-count{color:var(--c-pl)}.lane.venue .lane-count{color:var(--c-ve)}.lane.sponsor .lane-count{color:var(--c-sp)}
 
 /* Bubbles */
-.bubbles{position:relative;height:320px;min-height:320px;margin:0 12px}
+.bubbles{position:relative;height:320px;min-height:320px;margin:0 12px;overflow:hidden}
 .bub{position:absolute;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;padding:4px;opacity:0;transform:scale(0);transition:opacity .55s var(--spring),transform .55s var(--spring),box-shadow .25s var(--ease);border:1.5px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 16px rgba(0,0,0,.35)}
 .bub.in{opacity:1;transform:scale(1)}
 .bub:hover{z-index:10;border-color:rgba(255,255,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 12px 40px rgba(0,0,0,.5),0 0 30px var(--glow-color)}
@@ -148,7 +148,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── Whitespace ── */
 .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:48px}
-.ws-item{padding:14px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(8px);transition:border-color .2s,transform .25s var(--ease),box-shadow .25s var(--ease)}
+.ws-item{padding:14px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(8px);transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease}
 .ws-item:hover{border-color:rgba(241,196,15,.25);transform:scale(1.03);box-shadow:0 0 20px rgba(241,196,15,.08),0 8px 32px rgba(0,0,0,.3)}
 .ws-name{font-size:12px;font-weight:600;color:var(--t2)}
 .ws-count{font-size:18px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--c-gd)}
@@ -158,7 +158,7 @@ a{color:inherit;text-decoration:none}
 .search-input{flex:1;min-width:200px;padding:10px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t1);font-size:13px;font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);outline:none;transition:border-color .2s}
 .search-input::placeholder{color:var(--t5)}
 .search-input:focus{border-color:var(--c-int)}
-.tab{padding:8px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.tab{padding:10px 18px;min-height:44px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .25s ease;font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .tab:hover{color:var(--t2);border-color:var(--bd-h)}
 .tab.on{background:var(--c-int-g);color:var(--c-int);border-color:rgba(110,239,192,.25)}
 .tab .cnt{font-family:'Red Hat Mono',monospace;font-size:10px;opacity:.7;margin-left:5px}
@@ -167,8 +167,8 @@ a{color:inherit;text-decoration:none}
 
 /* ── Brand cards ── */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;cursor:pointer;position:relative;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .2s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
-.card:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 20px 56px rgba(0,0,0,.45)}
+.card{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;overflow:hidden;cursor:pointer;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease;will-change:transform}
+.card:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
 /* Card staggered reveal via spring */
 .card[data-reveal]{transition:opacity .5s var(--spring),transform .5s var(--spring),border-color .2s var(--ease),box-shadow .35s var(--ease)}
 .card-stripe{height:3px}
@@ -223,7 +223,7 @@ a{color:inherit;text-decoration:none}
 .m-prov code{background:var(--bg-r);padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-int)}
 .m-flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
 .eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-.ec{border-radius:var(--r);overflow:hidden;background:var(--bg-r);cursor:pointer;transition:all .2s var(--ease)}
+.ec{border-radius:var(--r);overflow:hidden;background:var(--bg-r);cursor:pointer;transition:all .25s ease}
 .ec:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,0,0,.35)}
 .ecv{aspect-ratio:16/9;position:relative}.ecv video,.ecv img{width:100%;height:100%;object-fit:cover;background:#000;display:block}
 .ecv::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:18px;transition:all .2s}
@@ -359,7 +359,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
 <div class="status" id="status-bar">
   <div class="shell status-inner">
     <span><span class="sd"></span>Live · <em id="ref-ts">—</em></span>
-    <span>corpus <em id="ref-corpus">—</em></span>
+    <span>clips <em id="ref-corpus">—</em></span>
     <span>rules <em id="ref-rules">—</em></span>
     <span>coverage <em id="ref-cov">—</em></span>
     <span class="v-chip">v4</span>
@@ -465,7 +465,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
 <!-- All brands -->
 <div data-reveal>
   <div class="sec-head">
-    <div class="sec-eyebrow">Full Corpus</div>
+    <div class="sec-eyebrow">Browse All Brands</div>
     <div class="sec-title">All <span class="grad-text">brands</span></div>
   </div>
 </div>
@@ -478,7 +478,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
 <button id="load-more" onclick="loadMore()">Load more brands</button>
 
 <footer>
-  <div>Pickle DaaS &middot; v4 &middot; taxonomy v6 &middot; <a href="brand-intelligence-v3.2.html">compare to v3.2 &rarr;</a></div>
+  <div>Pickle DaaS &middot; v4 &middot; <a href="brand-intelligence-v3.2.html">compare to v3.2 &rarr;</a></div>
   <div>How was this classified? <a href="classifier-queue.html">Classifier Queue &rarr;</a></div>
 </footer>
 
@@ -766,7 +766,7 @@ function render(){
 
   document.getElementById('cards').innerHTML=visible.map((b,i)=>{
     const cls=b.player_equipment?'player':b.venue_installed?'venue':b.sponsor_signage?'sponsor':b.broadcast_tech?'broadcast':'fallback';
-    const provP=b.source==='rule'?`<span class="pp rule" title="Tagged by approved classification rule, version ${b.rule_version||'?'}">rule v${b.rule_version||'?'}</span>`:'<span class="pp fb" title="AI pattern match — not yet rule-approved">fallback</span>';
+    const provP=b.source==='rule'?`<span class="pp rule" title="Auto-tagged, rule v${b.rule_version||'?'}">rule v${b.rule_version||'?'}</span>`:'<span class="pp fb" title="AI pattern match — not yet rule-approved">fallback</span>';
     const verP=b.human_verified?'<span class="pp ver" title="Verified by a human reviewer">&#10003; verified</span>':'<span class="pp unv" title="Pending human review">unverified</span>';
     const revC=b.revenue_potential==='high'?'rev-h':b.revenue_potential==='medium'?'rev-m':'rev-l';
     // Stagger first 6 cards with spring easing, rest instant
@@ -811,7 +811,7 @@ function openBrand(name){
     ${b.sponsor_signage?'<span class="pp" style="background:var(--c-sp-d);color:var(--c-sp)">sponsor_signage</span>':''}
     ${b.broadcast_tech?'<span class="pp" style="background:var(--c-rd-d);color:var(--c-rd)">broadcast_tech</span>':''}
   </div>`;
-  let body=`<div class="m-sec"><h4>Classification Provenance</h4>${provHtml}${flagsHtml}</div>`;
+  let body=`<div class="m-sec"><h4>How This Was Tagged</h4>${provHtml}${flagsHtml}</div>`;
   if(clips.length){
     body+=`<div class="m-sec"><h4>Source Clips</h4><div class="eg">${clips.slice(0,8).map(c=>`
       <div class="ec" onclick="event.stopPropagation();this.querySelector('video').play()">

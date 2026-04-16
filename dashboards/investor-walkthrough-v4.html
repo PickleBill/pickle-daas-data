@@ -57,13 +57,13 @@ a{color:inherit;text-decoration:none}
 .shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
 
 /* ── Reveal system ── */
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;will-change:transform}
 [data-reveal].revealed{opacity:1;transform:none}
 .hero [data-reveal],.hero[data-reveal]{opacity:1!important;transform:none!important}
 #s1-body{opacity:1!important;transform:none!important}
 
 /* ── Section divider ── */
-.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider{width:120px;height:1px;margin:clamp(40px,6vw,80px) auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
 
 /* ── Status strip ── */
 .status{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:transform .35s var(--ease),box-shadow .3s;transform:translateY(-100%)}
@@ -75,7 +75,7 @@ a{color:inherit;text-decoration:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .v-chip{padding:2px 8px;background:var(--c-int-g);color:var(--c-int);border:1px solid rgba(110,239,192,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
 .status nav{display:flex;gap:6px}
-.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a{padding:8px 12px;min-height:44px;display:inline-flex;align-items:center;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .25s ease;touch-action:manipulation}
 .status nav a:hover{color:var(--c-int);border-color:rgba(110,239,192,.3)}
 .portal-link{color:var(--t4);transition:color .2s;margin-right:8px}
 .portal-link:hover{color:var(--c-int)}
@@ -90,12 +90,12 @@ a{color:inherit;text-decoration:none}
 .side-dot:not(.active){transform:scale(1)}
 
 /* ── Glass ── */
-.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
+.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease}
 .glass:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
 
 /* ── Sec heading ── */
 .sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px}
-.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08;margin-bottom:20px}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
 .grad-text{background:linear-gradient(135deg,var(--c-int),var(--c-pl));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
 /* ═══════════════════════════════════════
@@ -186,7 +186,7 @@ a{color:inherit;text-decoration:none}
    S4: THREE LANES
 ═══════════════════════════════════════ */
 .lanes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
-.lane-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s,transform .35s var(--ease)}
+.lane-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .25s ease,transform .25s ease;touch-action:manipulation}
 .lane-card:hover{border-color:var(--bd-h);transform:translateY(-4px)}
 .lane-stripe{height:3px;width:100%}
 .lane-inner{padding:24px 20px}
@@ -447,7 +447,7 @@ a:focus-visible,.glass:focus-visible,.port-card:focus-visible,.sim-preset:focus-
       <div class="ai-badge" id="ab1" style="top:12px;left:12px" title="Brand detection: classified by approved rule, human-verified">
         <div class="ab-strip" style="background:var(--c-gd)"></div>
         <div class="ab-title" style="color:var(--c-gd)">Brand</div>
-        <div class="ab-body"><strong>JOOLA</strong> &middot; paddle &middot; player_equipment<br>rule v6 &middot; verified</div>
+        <div class="ab-body"><strong>JOOLA</strong> &middot; paddle &middot; Player Gear<br>rule-based &middot; verified</div>
       </div>
       <div class="ai-badge" id="ab2" style="top:12px;right:12px" title="Shot analysis: AI-detected shot types and play classification">
         <div class="ab-strip" style="background:var(--c-pl)"></div>
@@ -459,10 +459,10 @@ a:focus-visible,.glass:focus-visible,.port-card:focus-visible,.sim-preset:focus-
         <div class="ab-title" style="color:var(--c-int)">Player DNA</div>
         <div class="ab-body">Power <strong>9</strong> &middot; IQ <strong>8</strong> &middot; Kitchen <strong>7</strong><br>Coverage <strong>8</strong></div>
       </div>
-      <div class="ai-badge" id="ab4" style="top:12px;left:12px" title="Classification: routed to buyer lane by context flag">
+      <div class="ai-badge" id="ab4" style="top:12px;left:12px" title="Classification: routed to buyer lane by category">
         <div class="ab-strip" style="background:var(--c-rd)"></div>
         <div class="ab-title" style="color:var(--c-rd)">Classified</div>
-        <div class="ab-body"><strong>player_equipment</strong><br>Routed to Brand buyer lane</div>
+        <div class="ab-body"><strong>Player Gear</strong><br>Routed to Brand buyer lane</div>
       </div>
       <div class="ai-badge" id="ab5" style="bottom:12px;right:12px" title="Story arc: narrative intelligence and viral potential scoring">
         <div class="ab-strip" style="background:var(--c-sp)"></div>
@@ -474,8 +474,8 @@ a:focus-visible,.glass:focus-visible,.port-card:focus-visible,.sim-preset:focus-
       <a href="brand-intelligence-v4.html" class="ai-info" style="text-decoration:none;cursor:pointer;transition:border-color .2s,transform .25s;display:block" onmouseenter="this.style.borderColor='rgba(110,239,192,.3)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='';this.style.transform=''">
         <span class="ai-tag" style="background:var(--c-int-g);color:var(--c-int)">Intel</span>
         <h4>Classified Brand Intel</h4>
-        <p>Every brand detection tagged, matched to a rule, routed to a buyer lane. 54 rules, 91.9% coverage.</p>
-        <span style="font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--c-int);margin-top:8px;display:block">Explore brand intelligence &rarr;</span>
+        <p>Every brand tagged, verified, and routed to a buyer lane. 54 rules, 91.9% coverage.</p>
+        <span style="font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--c-int);margin-top:8px;display:block">Explore brands &rarr;</span>
       </a>
       <a href="player-lab-v4.html" class="ai-info" style="text-decoration:none;cursor:pointer;transition:border-color .2s,transform .25s;display:block" onmouseenter="this.style.borderColor='rgba(107,163,255,.3)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='';this.style.transform=''">
         <span class="ai-tag" style="background:var(--c-pl-g);color:var(--c-pl)">DNA</span>
