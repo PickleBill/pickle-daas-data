@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Intelligence V3.1 · Pickle DaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   V3.1 — V2 DESIGN ENGINE × V3 CLASSIFICATION BRAIN
+   V2's oklch system + ambient glow + physics bubble chart + brand modal
+   V3's provenance taxonomy + filter-by-type + classification callouts
+════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+:root{
+  /* V2 color system — exact copy */
+  --bg:oklch(12% .012 155);--sf:oklch(15% .01 155);--sf2:oklch(18% .009 155);
+  --sf3:oklch(22% .008 155);--bd:oklch(26% .012 155);--bds:oklch(20% .008 155);
+  --tx:oklch(92% .01 155);--tx2:oklch(72% .015 155);--mt:oklch(50% .02 155);
+  --ac:oklch(78% .19 155);--acd:oklch(78% .19 155/.07);--acg:oklch(78% .19 155/.15);
+  --gd:oklch(82% .16 85);--fi:oklch(70% .2 30);--pu:oklch(62% .22 300);--pud:oklch(62% .22 300/.07);
+  --ch:oklch(72% .18 155);--cm:oklch(78% .16 85);--cl:oklch(65% .18 25);
+  --up:oklch(76% .17 155);--dn:oklch(65% .2 25);
+  /* V3 classification type colors */
+  --ct-player:oklch(78% .19 155);   /* green = player equipment */
+  --ct-venue:oklch(82% .16 85);     /* gold = venue installed */
+  --ct-sponsor:oklch(62% .22 300);  /* purple = sponsor signage */
+  --ct-broadcast:oklch(62% .2 255); /* blue = broadcast tech */
+  --ct-unknown:oklch(50% .02 155);  /* muted = unclassified */
+  --r:10px;--rl:14px;--ease:cubic-bezier(.22,1,.36,1);
+}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);
+  font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* V2: Ambient gradient blob */
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0}
+.amb::before{content:'';position:absolute;top:-10%;left:40%;width:600px;height:600px;
+  background:radial-gradient(circle,oklch(78% .19 155/.03),transparent 60%);animation:dr 28s ease-in-out infinite}
+.amb::after{content:'';position:absolute;bottom:-15%;right:15%;width:400px;height:400px;
+  background:radial-gradient(circle,oklch(62% .22 300/.02),transparent 60%);animation:dr2 35s ease-in-out infinite}
+@keyframes dr{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,30px)}}
+@keyframes dr2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-25px)}}
+
+.page{position:relative;z-index:1}.shell{max-width:1360px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
+
+/* V2: Header */
+header{padding:20px 0;border-bottom:1px solid var(--bds);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--ac),oklch(60% .15 155));
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:oklch(12% .01 155)}
+.logo-t{font-size:12.5px;font-weight:700}.logo-t em{font-style:normal;color:var(--ac)}
+.logo-s{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.6px}
+nav a{font-size:11px;color:var(--mt);text-decoration:none;font-family:'Red Hat Mono',monospace;
+  padding:5px 10px;border:1px solid var(--bd);border-radius:6px;margin-left:6px;transition:all .2s var(--ease)}
+nav a:hover{color:var(--ac);border-color:var(--ac)}
+nav a.v2-link{background:var(--acd);border-color:oklch(78% .19 155/.2);color:var(--ac)}
+
+/* V2: Hero */
+.hero{padding:clamp(32px,5vw,52px) 0 16px}
+.hero h1{font-size:clamp(28px,4.5vw,48px);font-weight:800;letter-spacing:-1.5px;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--ac)}
+.hero-sub{font-size:14px;color:var(--tx2);margin-top:8px;max-width:620px;line-height:1.6}
+.version-badge{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 12px;
+  background:oklch(62% .22 300/.08);border:1px solid oklch(62% .22 300/.2);border-radius:6px;
+  font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--pu)}
+.version-badge strong{color:oklch(75% .18 300)}
+
+/* V2+V3: Stats bar — merged */
+.stats{display:flex;gap:0;border:1px solid var(--bds);border-radius:var(--rl);overflow:hidden;
+  margin:20px 0 8px;background:var(--bds)}
+.st{flex:1;padding:16px 14px;text-align:center;background:var(--sf);transition:background .2s var(--ease);min-width:0}
+.st:not(:last-child){border-right:1px solid var(--bds)}.st:hover{background:var(--sf2)}
+.st-v{font-size:clamp(17px,2.2vw,28px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1;
+  font-family:'Red Hat Mono',monospace}
+.st-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:5px;font-family:'Red Hat Mono',monospace}
+/* V3 stats addon */
+.stat-divider{width:1px;background:oklch(62% .22 300/.25);margin:8px 0}
+
+/* V3.1: Taxonomy callout (replaces V2's wrong JOOLA caveat) */
+.tax-note{background:oklch(78% .19 155/.05);border:1px solid oklch(78% .19 155/.15);border-radius:var(--r);
+  padding:10px 16px;margin-bottom:8px;font-size:12px;color:oklch(85% .12 155);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tax-note strong{color:var(--ac)}
+.tax-pill{padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;font-family:'Red Hat Mono',monospace;
+  background:oklch(78% .19 155/.1);color:var(--ac);border:1px solid oklch(78% .19 155/.2)}
+
+/* V3: Classification filter tabs */
+.cf-wrap{margin:16px 0 20px}
+.cf-label{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mt);
+  font-family:'Red Hat Mono',monospace;font-weight:600;margin-bottom:8px}
+.cf-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.cf-tab{padding:6px 14px;border:1px solid var(--bd);border-radius:6px;background:var(--sf);
+  font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;transition:all .15s var(--ease);
+  font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px}
+.cf-tab:hover{border-color:var(--ac);color:var(--ac)}
+.cf-tab.active{background:var(--acd);border-color:oklch(78% .19 155/.3);color:var(--ac)}
+.cf-tab[data-cf="venue"].active{background:oklch(82% .16 85/.08);border-color:oklch(82% .16 85/.3);color:var(--gd)}
+.cf-tab[data-cf="sponsor"].active{background:var(--pud);border-color:oklch(62% .22 300/.3);color:var(--pu)}
+.cf-tab[data-cf="broadcast"].active{background:oklch(62% .2 255/.08);border-color:oklch(62% .2 255/.3);color:oklch(62% .2 255)}
+.cf-tab[data-cf="unknown"].active{background:oklch(50% .02 155/.1);border-color:oklch(50% .02 155/.3);color:var(--mt)}
+.cf-count{font-family:'Red Hat Mono',monospace;font-size:9px;opacity:.7}
+
+/* V2: Sections */
+.sec{margin:28px 0 14px;display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:8px;border-bottom:1px solid var(--bds);flex-wrap:wrap;gap:6px}
+.sec h2{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.sec .m{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace}
+
+.panel{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
+
+/* V2: Bubble chart — preserved exactly */
+#bubbles{width:100%;height:420px;position:relative;cursor:default}
+.bub{position:absolute;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+  border:2px solid oklch(0% 0 0/.2)}
+.bub:hover{transform:scale(1.08)!important;z-index:10;box-shadow:0 0 30px oklch(0% 0 0/.5)}
+.bub .bn{font-weight:700;color:oklch(100% 0 0/.9);text-shadow:0 1px 4px oklch(0% 0 0/.6);line-height:1.15}
+.bub .bv{font-family:'Red Hat Mono',monospace;color:oklch(100% 0 0/.7);font-weight:500}
+/* V3.1: Classification ring on bubbles */
+.bub::before{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:0;transition:opacity .3s}
+.bub:hover::before{opacity:1}
+.bub.ct-player::before{box-shadow:0 0 0 2px var(--ct-player)}
+.bub.ct-venue::before{box-shadow:0 0 0 2px var(--ct-venue)}
+.bub.ct-sponsor::before{box-shadow:0 0 0 2px var(--ct-sponsor)}
+.bub.ct-broadcast::before{box-shadow:0 0 0 2px var(--ct-broadcast)}
+
+/* V3.1: Bubble tooltip */
+.bub-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--sf3);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;
+  font-size:10px;font-family:'Red Hat Mono',monospace;white-space:nowrap;pointer-events:none;
+  display:none;z-index:20;line-height:1.6}
+.bub:hover .bub-tip{display:block}
+
+/* V2: Toggle */
+.toggle{display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.tog{padding:5px 12px;background:transparent;border:none;color:var(--tx2);font-family:inherit;font-size:11px;
+  cursor:pointer;transition:all .15s var(--ease)}
+.tog.on{background:var(--acd);color:var(--ac)}.tog:not(:last-child){border-right:1px solid var(--bd)}
+
+/* V2: Rankings table */
+.tw{overflow-x:auto;max-height:500px}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.tbl th{text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--mt);font-family:'Red Hat Mono',monospace;font-weight:600;border-bottom:1px solid var(--bd);
+  background:var(--sf2);white-space:nowrap;position:sticky;top:0;z-index:2;cursor:pointer;transition:color .2s}
+.tbl th:hover{color:var(--ac)}.tbl td{padding:10px 12px;border-bottom:1px solid var(--bds);vertical-align:middle;transition:background .15s}
+.tbl tr:hover td{background:var(--sf2)}.tbl tr{cursor:pointer}
+.bc{display:flex;align-items:center;gap:8px;white-space:nowrap;font-weight:600}
+.sw{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.bar-bg{width:80px;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden}
+.bar-f{height:100%;border-radius:3px;transition:width .6s var(--ease)}
+/* V3: Type chip in table */
+.type-chip{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;font-family:'Red Hat Mono',monospace;
+  white-space:nowrap;display:inline-block}
+.tc-player{background:oklch(78% .19 155/.1);color:var(--ct-player)}
+.tc-venue{background:oklch(82% .16 85/.1);color:var(--ct-venue)}
+.tc-sponsor{background:oklch(62% .22 300/.1);color:var(--ct-sponsor)}
+.tc-broadcast{background:oklch(62% .2 255/.1);color:var(--ct-broadcast)}
+.tc-unknown{background:oklch(50% .02 155/.1);color:var(--mt)}
+.tc-rule{background:oklch(78% .19 155/.07);color:oklch(78% .19 155/.7);font-size:8px}
+.tc-verified{color:var(--ac);font-size:9px}
+
+/* V2: AI Findings */
+.findings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.finding-card{background:var(--sf);border:1px solid oklch(62% .22 300/.12);border-radius:var(--r);
+  padding:16px;transition:all .25s var(--ease);cursor:default}
+.finding-card:hover{border-color:oklch(62% .22 300/.25);transform:translateY(-2px);box-shadow:0 8px 24px oklch(0% 0 0/.3)}
+.fc-agent{font-size:9px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--pu);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.fc-agent .dot{width:6px;height:6px;border-radius:50%;background:var(--pu)}
+.fc-title{font-size:14px;font-weight:700;line-height:1.3;margin-bottom:6px}
+.fc-insight{font-size:12px;color:var(--tx2);line-height:1.5;margin-bottom:8px}
+.fc-meta{display:flex;gap:8px;font-size:10px;font-family:'Red Hat Mono',monospace}
+.fc-meta span{padding:2px 6px;border-radius:4px}
+.fc-meta .conf{background:oklch(72% .18 155/.1);color:var(--ch)}
+.fc-meta .biz{background:oklch(82% .16 85/.1);color:var(--gd)}
+.fc-counter{margin-top:10px;padding:10px;background:oklch(65% .2 25/.06);border:1px solid oklch(65% .2 25/.12);
+  border-radius:6px;font-size:11px;color:oklch(75% .12 25);line-height:1.5}
+.fc-counter strong{color:oklch(70% .18 25)}
+
+/* V2: Heatmap */
+.hw{overflow-x:auto;padding:4px 0}
+.heat{border-collapse:separate;border-spacing:3px;font-size:11px}
+.heat th{padding:6px 8px;font-weight:500;color:var(--tx2);font-size:9px;letter-spacing:.3px;text-transform:uppercase;font-family:'Red Hat Mono',monospace}
+.heat th.rl{text-align:right;white-space:nowrap}
+.heat td{width:56px;height:34px;text-align:center;vertical-align:middle;border-radius:4px;font-weight:600;
+  font-size:12px;font-family:'Red Hat Mono',monospace;transition:all .2s var(--ease);cursor:pointer}
+.heat td:hover{transform:scale(1.1);z-index:5}
+
+/* V2: Whitespace */
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ws-item{background:var(--sf2);border-radius:var(--r);padding:12px;display:flex;justify-content:space-between;align-items:center;
+  border:1px solid var(--bds);transition:all .2s var(--ease)}
+.ws-item:hover{border-color:var(--gd);transform:translateY(-1px)}
+.ws-name{font-size:12px;font-weight:600}.ws-count{font-size:16px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--gd)}
+
+/* V2+V3: Brand cards */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;
+  transition:all .25s var(--ease);cursor:pointer}
+.card:hover{border-color:oklch(92% .01 155/.15);transform:translateY(-3px);box-shadow:0 12px 40px oklch(0% 0 0/.4)}
+/* V3: classification type border */
+.card.ct-player{border-left:3px solid var(--ct-player)}
+.card.ct-venue{border-left:3px solid var(--ct-venue)}
+.card.ct-sponsor{border-left:3px solid var(--ct-sponsor)}
+.card.ct-broadcast{border-left:3px solid var(--ct-broadcast)}
+.ct{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 18px 12px;border-bottom:1px solid var(--bds)}
+.cn{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.cc2{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.cnum{font-size:26px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1}
+.cb{padding:0 18px 16px}
+.csk{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin:10px 0}
+.sk{display:flex;align-items:center;gap:5px}
+.skl{width:44px;font-size:8px;color:var(--mt);text-transform:uppercase;font-family:'Red Hat Mono',monospace;text-align:right;flex-shrink:0}
+.skt{flex:1;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden}
+.skf{height:100%;border-radius:3px;transition:width .6s var(--ease)}
+.skv{width:18px;font-size:10px;font-weight:600;font-family:'Red Hat Mono',monospace;text-align:right}
+.cm3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bds);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+.cmi{background:var(--sf2);padding:8px;text-align:center}
+.cmv{font-size:14px;font-weight:700;font-family:'Red Hat Mono',monospace}
+.cml{font-size:8px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.cpills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.cpill{padding:2px 7px;border-radius:8px;font-size:9px;font-weight:500;background:var(--sf3);color:var(--tx2)}
+.cclips{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.cclips::-webkit-scrollbar{display:none}
+.ccl{width:80px;height:45px;border-radius:4px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer}
+.ccl video{width:100%;height:100%;object-fit:cover;background:#000}
+.ccl::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:oklch(0% 0 0/.3);color:white;font-size:10px;transition:opacity .2s}
+.ccl:hover::after{background:oklch(0% 0 0/.1)}.ccl.playing::after{opacity:0}
+/* V3: provenance row in card */
+.c-prov{display:flex;gap:5px;flex-wrap:wrap;padding:6px 0 2px;margin-top:4px}
+.cpv{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;font-family:'Red Hat Mono',monospace;
+  border:1px solid transparent}
+.cpv.player{background:oklch(78% .19 155/.08);color:var(--ct-player);border-color:oklch(78% .19 155/.2)}
+.cpv.venue{background:oklch(82% .16 85/.08);color:var(--ct-venue);border-color:oklch(82% .16 85/.2)}
+.cpv.sponsor{background:oklch(62% .22 300/.08);color:var(--ct-sponsor);border-color:oklch(62% .22 300/.2)}
+.cpv.broadcast{background:oklch(62% .2 255/.08);color:oklch(62% .2 255);border-color:oklch(62% .2 255/.2)}
+.cpv.rule{background:oklch(78% .19 155/.05);color:oklch(78% .19 155/.6)}
+.cpv.verified{color:var(--ac);font-size:9px}
+.cpv.rev-high{background:oklch(78% .19 155/.08);color:var(--ac)}
+.cpv.rev-med{background:oklch(82% .16 85/.06);color:var(--gd)}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--acd);
+  border:1px solid oklch(78% .19 155/.2);border-radius:6px;color:var(--ac);font-size:11px;font-weight:600;
+  cursor:pointer;transition:all .2s var(--ease);font-family:'Manrope',sans-serif;margin-top:8px}
+.dl-btn:hover{background:oklch(78% .19 155/.12);border-color:var(--ac)}
+
+/* V2+V3: Modal */
+.mbg{position:fixed;inset:0;background:oklch(0% 0 0/.75);z-index:100;display:none;
+  align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.mbg.open{display:flex}
+.modal{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);
+  max-width:960px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
+  animation:ms .3s var(--ease)}
+@keyframes ms{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--bds);flex-shrink:0}
+.mti{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.mx{width:32px;height:32px;border-radius:8px;background:var(--sf2);border:1px solid var(--bd);
+  color:var(--mt);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s var(--ease)}
+.mx:hover{background:var(--sf3);color:var(--tx)}
+.mtabs{display:flex;border-bottom:1px solid var(--bds);flex-shrink:0;padding:0 20px;overflow-x:auto}
+.mtab{padding:10px 14px;font-size:12px;font-weight:600;color:var(--mt);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all .2s var(--ease);white-space:nowrap}
+.mtab:hover{color:var(--tx2)}.mtab.on{color:var(--ac);border-bottom-color:var(--ac)}
+.mc{flex:1;overflow-y:auto;padding:20px}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px}
+.mgs{background:var(--sf2);border-radius:var(--r);padding:12px;text-align:center}
+.mgv{font-size:20px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1}
+.mgl{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;font-family:'Red Hat Mono',monospace}
+.msk{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-bottom:16px}
+.msb{display:flex;align-items:center;gap:6px}
+.msbl{width:52px;font-size:9px;color:var(--mt);text-transform:uppercase;font-family:'Red Hat Mono',monospace;text-align:right;flex-shrink:0}
+.msbt{flex:1;height:7px;background:var(--sf3);border-radius:4px;overflow:hidden}
+.msbf{height:100%;border-radius:4px;transition:width .5s var(--ease)}
+.msbv{width:22px;font-size:11px;font-weight:600;font-family:'Red Hat Mono',monospace;text-align:right}
+.eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.ec{border-radius:var(--r);overflow:hidden;background:var(--sf2);cursor:pointer;transition:all .2s var(--ease)}
+.ec:hover{transform:translateY(-2px);box-shadow:0 8px 24px oklch(0% 0 0/.3)}
+.ecv{aspect-ratio:16/9;position:relative}.ecv video{width:100%;height:100%;object-fit:cover;background:#000}
+.ecv::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:oklch(0% 0 0/.35);color:white;font-size:16px;transition:all .2s var(--ease)}
+.ec:hover .ecv::after{background:oklch(0% 0 0/.15)}.ec.playing .ecv::after{opacity:0}
+.eci{padding:10px}.ecs{font-size:11px;color:var(--tx2);line-height:1.4;margin-bottom:6px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ect{display:flex;gap:3px;flex-wrap:wrap}
+.et{padding:1px 6px;border-radius:6px;font-size:9px;font-weight:600;font-family:'Red Hat Mono',monospace}
+.et.high{background:oklch(72% .18 155/.15);color:var(--ch)}.et.medium{background:oklch(78% .16 85/.15);color:var(--cm)}
+.et.low{background:oklch(65% .18 25/.15);color:var(--cl)}
+.mpg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.mpc{background:var(--sf2);border-radius:var(--r);padding:12px;display:flex;align-items:center;gap:10px;transition:all .2s var(--ease)}
+.mpc:hover{background:var(--sf3)}.mpc img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+.mpc .mpn{font-size:13px;font-weight:600}.mpc .mps{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace}
+.mbg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.mbc{background:var(--sf2);border-radius:var(--r);padding:10px;text-align:center;transition:all .2s var(--ease)}
+.mbc:hover{transform:translateY(-1px)}.mbc img{width:32px;height:32px;border-radius:6px;object-fit:cover;margin-bottom:4px}
+.mbn{font-size:11px;font-weight:600}.mbc2{font-size:14px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--pu);margin-top:2px}
+/* V3: Classification modal tab */
+.class-block{background:var(--sf2);border-radius:var(--rl);padding:20px;margin-bottom:12px}
+.class-block .ct-big{font-size:32px;font-weight:800;font-family:'Red Hat Mono',monospace;margin:4px 0 12px}
+.class-block .ct-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-bottom:4px}
+.class-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.cdd{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px}
+.cdd .cdv{font-size:18px;font-weight:700;font-family:'Red Hat Mono',monospace;line-height:1}
+.cdd .cdl{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;font-family:'Red Hat Mono',monospace}
+.rationale-box{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-top:12px;font-size:12px;color:var(--tx2);line-height:1.6}
+.rationale-box strong{color:var(--tx);display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-family:'Red Hat Mono',monospace}
+
+/* V2: Confidence ring */
+.conf-wrap{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.cring{width:100px;height:100px;position:relative;flex-shrink:0}
+.cring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.crb{fill:none;stroke:var(--sf3);stroke-width:8}.crf{fill:none;stroke-width:8;stroke-linecap:round}
+.crv{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:800;font-family:'Red Hat Mono',monospace}
+.cdtl{flex:1;min-width:200px;font-size:12px;color:var(--tx2);line-height:1.8}
+/* V3: Coverage rings alongside F1 ring */
+.rings-row{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+
+footer{margin-top:48px;padding:20px 0;border-top:1px solid var(--bds);color:var(--mt);font-size:11px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:var(--ac);text-decoration:none}
+
+.ld{display:flex;flex-direction:column;align-items:center;padding:80px 20px;gap:12px}
+.sp{width:32px;height:32px;border:2.5px solid var(--bd);border-top-color:var(--ac);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:768px){.stats{flex-wrap:wrap}.st{flex:1 1 45%}
+  .cg{grid-template-columns:1fr}.mg{grid-template-columns:1fr 1fr}
+  .eg{grid-template-columns:1fr 1fr}nav .nav-hide{display:none}
+  .findings-grid{grid-template-columns:1fr}
+  .heat td{width:40px;height:28px;font-size:10px}}
+
+.fi{opacity:0;transform:translateY(8px);animation:fi .35s var(--ease) forwards}
+@keyframes fi{to{opacity:1;transform:translateY(0)}}
+
+@media print{
+  body{background:white;color:#1a1a1a}
+  .amb,header,nav,.tax-note,.cf-wrap,.toggle,.mbg,.sec .m,footer,.dl-btn,.ccl,.cclips,.c-prov{display:none!important}
+  .panel,.card,.finding-card{border:1px solid #ddd;break-inside:avoid;box-shadow:none;background:white}
+  .stats{border-color:#ddd}.st{background:white;border-color:#ddd}
+  .st-v,.cn,.cmv,.skv,.mgv,.fc-title{color:#1a1a1a!important}
+  h1,h2{color:#1a1a1a!important}.hero h1 em{color:#059669!important}
+}
+</style>
+</head>
+<body>
+<div class="amb"></div>
+<div class="page"><div class="shell">
+
+<header>
+  <div class="logo">
+    <div class="logo-i">P</div>
+    <div>
+      <div class="logo-t">Pickle <em>DaaS</em></div>
+      <div class="logo-s">Brand Intelligence V3.1</div>
+    </div>
+  </div>
+  <nav>
+    <a href="player-intelligence.html" class="nav-hide">Players</a>
+    <a href="equipment-performance.html" class="nav-hide">Equipment</a>
+    <a href="investor-walkthrough-v3.html" class="nav-hide">Investor V3</a>
+    <a href="evidence-wall-v3.html" class="nav-hide">Evidence V3</a>
+    <a href="brand-intelligence-v2.html">V2 ↗</a>
+    <a href="showcase-portal.html">Portal</a>
+  </nav>
+</header>
+
+<section class="hero fi">
+  <h1>The Pickleball <em>Brand Landscape</em></h1>
+  <p class="hero-sub">V2's visual intelligence engine, now powered by taxonomy v6 classification. Every detection typed, sourced, and verified — player equipment separated from venue hardware, sponsor signage tracked independently. The moat is the classification layer.</p>
+  <div class="version-badge">
+    <strong>V3.1</strong> — V2 design × V3 classification brain · taxonomy v6 · <span id="cov-badge">—</span> rule coverage · <span id="ver-badge">—</span> human-verified brands
+  </div>
+</section>
+
+<div class="stats fi" id="stats"></div>
+
+<!-- V3.1: Taxonomy callout (replaces V2's wrong JOOLA caveat) -->
+<div class="tax-note fi" id="tax-note" style="display:none">
+  <span style="font-size:16px;flex-shrink:0">✅</span>
+  <span><strong>Taxonomy v6 live:</strong> JOOLA net/ball/bag detections are now separated from paddle detections via classification rules. The "JOOLA everywhere" inflation is fixed. Filter by <span class="tax-pill">Player Equipment</span> to see paddle-only counts.</span>
+</div>
+
+<div class="ld" id="ld"><div class="sp"></div><div style="color:var(--mt);font-size:12px;font-family:'Red Hat Mono',monospace">Loading brand intelligence + classification data…</div></div>
+
+<div id="content" style="display:none">
+
+  <!-- V3: Classification type filter -->
+  <div class="cf-wrap fi">
+    <div class="cf-label">Filter by classification type</div>
+    <div class="cf-tabs" id="cf-tabs">
+      <button class="cf-tab active" data-cf="all" onclick="setCF('all',this)">All Brands <span class="cf-count" id="cf-ct-all">—</span></button>
+      <button class="cf-tab" data-cf="player" onclick="setCF('player',this)">🏓 Player Equipment <span class="cf-count" id="cf-ct-player">—</span></button>
+      <button class="cf-tab" data-cf="venue" onclick="setCF('venue',this)">🏟️ Venue Installed <span class="cf-count" id="cf-ct-venue">—</span></button>
+      <button class="cf-tab" data-cf="sponsor" onclick="setCF('sponsor',this)">💼 Sponsors <span class="cf-count" id="cf-ct-sponsor">—</span></button>
+      <button class="cf-tab" data-cf="broadcast" onclick="setCF('broadcast',this)">📡 Broadcast Tech <span class="cf-count" id="cf-ct-broadcast">—</span></button>
+      <button class="cf-tab" data-cf="unknown" onclick="setCF('unknown',this)">❓ Unclassified <span class="cf-count" id="cf-ct-unknown">—</span></button>
+    </div>
+  </div>
+
+  <!-- V2: Bubble chart -->
+  <div class="sec fi">
+    <h2>Market Share <span id="cf-label" style="font-size:12px;color:var(--mt);font-family:'Red Hat Mono',monospace;font-weight:400"></span></h2>
+    <div class="toggle">
+      <button class="tog on" onclick="setM('count',this)">Appearances</button>
+      <button class="tog" onclick="setM('share',this)">Share %</button>
+    </div>
+  </div>
+  <div class="panel fi"><div id="bubbles"></div></div>
+
+  <!-- V2: AI Findings -->
+  <div class="sec fi"><h2>AI Research Findings</h2><span class="m" id="findings-meta"></span></div>
+  <div class="findings-grid fi" id="findings"></div>
+
+  <!-- V2+V3: Rankings -->
+  <div class="sec fi"><h2>Rankings</h2><span class="m">click row to explore brand</span></div>
+  <div class="panel fi">
+    <div class="tw">
+      <table class="tbl">
+        <thead><tr>
+          <th>#</th><th>Brand</th><th>Classification</th><th>Category</th>
+          <th>Detections</th><th>Clips</th><th>Share</th><th>Quality</th><th>Viral</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- V2: Skill heatmap -->
+  <div class="sec fi"><h2>Skill × Brand</h2><span class="m">which brands correlate with elite play · click to explore</span></div>
+  <div class="panel fi"><div class="hw" id="heatmap"></div></div>
+
+  <!-- V2: Whitespace -->
+  <div class="sec fi"><h2>Sponsorship Whitespace</h2><span class="m" id="ws-m"></span></div>
+  <div class="panel fi"><div class="ws-grid" id="ws"></div></div>
+
+  <!-- V2+V3: Brand cards -->
+  <div class="sec fi"><h2>Brand Profiles</h2><span class="m" id="cm"></span></div>
+  <div class="cg" id="cards"></div>
+
+  <!-- V2+V3: Data confidence + V3 coverage -->
+  <div class="sec fi"><h2>System Confidence</h2></div>
+  <div class="panel fi" id="conf"></div>
+
+  <footer>
+    <div>Live data · Taxonomy v6 · <span id="ft-corpus">—</span> clips · <a href="brand-intelligence-v2.html">V2 (stable)</a> · <a href="showcase-portal.html">Showcase Portal</a></div>
+    <div>Pickle <strong>DaaS</strong> × <strong>Courtana</strong> · V3.1</div>
+  </footer>
+</div>
+
+<!-- V2: Brand Modal — 5 tabs (V3 adds Classification) -->
+<div class="mbg" id="mbg" onclick="if(event.target===this)closeM()">
+  <div class="modal">
+    <div class="mh">
+      <div class="mti" id="mti">Brand</div>
+      <button class="mx" onclick="closeM()">✕</button>
+    </div>
+    <div class="mtabs" id="mtabs"></div>
+    <div class="mc" id="mc"></div>
+  </div>
+</div>
+
+</div></div>
+
+<script>
+/* ════════════════════════════════════
+   V3.1 JavaScript — V2 engine + V3 classification brain
+════════════════════════════════════ */
+
+/* V2: Brand color + category lookup */
+const BC={JOOLA:'oklch(76% .17 155)',Nike:'oklch(68% .15 240)',Selkirk:'oklch(70% .2 30)',
+  CRBN:'oklch(62% .22 300)',Franklin:'oklch(82% .16 85)',HEAD:'oklch(68% .15 240)',
+  Onix:'oklch(75% .12 200)',Courtana:'oklch(62% .22 300)','PICKLEBALL KINGDOM':'oklch(82% .16 85)',
+  On:'oklch(73% .01 260)',adidas:'oklch(55% .01 260)',PBS:'oklch(70% .2 30)',
+  Reolink:'oklch(62% .2 255)',Foz_Bullet:'oklch(60% .15 200)'};
+const CATS={JOOLA:'Paddles',Nike:'Shoes',HEAD:'Paddles',Selkirk:'Paddles',CRBN:'Paddles',
+  Franklin:'Paddles',Onix:'Paddles','PICKLEBALL KINGDOM':'Venue',On:'Shoes',
+  adidas:'Shoes',Courtana:'Technology',PBS:'Apparel',Reolink:'Camera'};
+const SK=['court_coverage','kitchen','power','touch','athleticism','court_iq','consistency','composure'];
+const SL={court_coverage:'Cover',kitchen:'Kitchen',power:'Power',touch:'Touch',
+  athleticism:'Athletic',court_iq:'Court IQ',consistency:'Consist',composure:'Compose'};
+
+function bcolor(n){return BC[n]||'oklch(55% .02 260)'}
+function bcat(n){return CATS[n]||'Other'}
+function fmtS(s){return s>=60?Math.round(s/60)+'m':'~'+Math.round(s)+'s'}
+
+/* V3: Classification state */
+let apiBrands=[];let apiIdeas=[];let apiFeed={};let corpus=[];let provIndex={};let classStats={};
+let metric='count';let classFilter='all';let modalBrand=null;let modalTab='overview';
+
+/* V3: Get classification type for a brand */
+function ctOf(brand){
+  const p=brand._prov;if(!p)return'unknown';
+  if(p.player_equipment)return'player';
+  if(p.venue_installed)return'venue';
+  if(p.sponsor_signage)return'sponsor';
+  if(p.broadcast_tech)return'broadcast';
+  return'unknown';
+}
+function ctColor(ct){
+  return{player:'var(--ct-player)',venue:'var(--ct-venue)',sponsor:'var(--ct-sponsor)',
+    broadcast:'var(--ct-broadcast)',unknown:'var(--ct-unknown)'}[ct]||'var(--ct-unknown)';
+}
+function ctLabel(ct){
+  return{player:'player_equipment',venue:'venue_installed',sponsor:'sponsor_signage',
+    broadcast:'broadcast_tech',unknown:'unclassified'}[ct]||'unclassified';
+}
+
+/* V3: Classification filter */
+function setCF(cf,btn){
+  classFilter=cf;
+  document.querySelectorAll('.cf-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const labels={all:'',player:'· player equipment only',venue:'· venue installed only',
+    sponsor:'· sponsor signage only',broadcast:'· broadcast tech only',unknown:'· unclassified only'};
+  document.getElementById('cf-label').textContent=labels[cf]||'';
+  renderBubbles();renderTable();renderCards();renderHeatmap();
+}
+
+function filterBrands(){
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE','PICKLEBALL KINGDOM']);
+  let b=apiBrands.filter(x=>!skip.has(x.name));
+  if(classFilter==='all')return b;
+  return b.filter(x=>ctOf(x)===classFilter);
+}
+
+/* V2+V3: Metric mode */
+function setM(m,btn){metric=m;document.querySelectorAll('.tog').forEach(t=>t.classList.remove('on'));btn.classList.add('on');renderBubbles()}
+
+/* V2: Video toggle */
+function toggleV(el){const v=el.querySelector('video');
+  if(el.classList.contains('playing')){v.pause();el.classList.remove('playing')}
+  else{document.querySelectorAll('.playing').forEach(c=>{const vid=c.querySelector('video');if(vid)vid.pause();c.classList.remove('playing')});v.play();el.classList.add('playing')}}
+
+/* V2+V3: Modal */
+function openM(name){
+  const brand=apiBrands.find(b=>b.name===name);if(!brand)return;
+  modalBrand={...brand,clips:corpus.filter(c=>(c.brands||[]).some(b=>(typeof b==='string'?b:(b.name||''))===name))};
+  const color=bcolor(name);const ct=ctOf(brand);const ctc=ctColor(ct);
+  document.getElementById('mti').innerHTML=`<span style="color:${color}">${name}</span> <span style="color:var(--mt);font-size:12px;font-weight:400">${bcat(name)}</span>
+    <span class="type-chip tc-${ct}" style="margin-left:8px;vertical-align:middle">${ctLabel(ct)}</span>`;
+  const tabs=['Overview','Evidence','Players','Badges','Classification'];
+  document.getElementById('mtabs').innerHTML=tabs.map((t,i)=>`<div class="mtab${i===0?' on':''}" onclick="switchT('${t.toLowerCase()}',this)">${t}</div>`).join('');
+  modalTab='overview';renderMC();
+  document.getElementById('mbg').classList.add('open');
+}
+function closeM(){document.getElementById('mbg').classList.remove('open');
+  document.querySelectorAll('video').forEach(v=>v.pause());document.querySelectorAll('.playing').forEach(c=>c.classList.remove('playing'));modalBrand=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+
+function switchT(t,el){modalTab=t;document.querySelectorAll('.mtab').forEach(x=>x.classList.remove('on'));el.classList.add('on');renderMC()}
+
+function renderMC(){
+  const b=modalBrand;if(!b)return;const el=document.getElementById('mc');const color=bcolor(b.name);
+  const skills=b.avg_skills||b.skills||{};const prov=b._prov;const ct=ctOf(b);const ctc=ctColor(ct);
+
+  if(modalTab==='overview'){
+    let bars=SK.map(sk=>{const v=skills[sk]||0;
+      return`<div class="msb"><div class="msbl">${SL[sk]}</div><div class="msbt"><div class="msbf" style="width:${v*10}%;background:${color}"></div></div><div class="msbv" style="color:${v>0?color:'var(--mt)'}">${v>0?v.toFixed(1):'—'}</div></div>`}).join('');
+    el.innerHTML=`
+      <div class="mg">
+        <div class="mgs"><div class="mgv" style="color:${color}">${b.detections||0}</div><div class="mgl">Detections</div></div>
+        <div class="mgs"><div class="mgv">${b.unique_clips||0}</div><div class="mgl">Clips</div></div>
+        <div class="mgs"><div class="mgv">${(b.share_of_court||0).toFixed(1)}%</div><div class="mgl">Share</div></div>
+        <div class="mgs"><div class="mgv">${(b.avg_quality||0).toFixed(1)}</div><div class="mgl">Quality</div></div>
+        <div class="mgs"><div class="mgv">${(b.avg_viral||0).toFixed(1)}</div><div class="mgl">Viral</div></div>
+        <div class="mgs"><div class="mgv" style="color:${ctc};font-size:11px">${ctLabel(ct)}</div><div class="mgl">Type</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;font-family:'Red Hat Mono',monospace;margin-bottom:6px">Skill Profile</div>
+      <div class="msk">${bars}</div>
+      <button class="dl-btn" onclick="printReport('${b.name}')">📄 Download Brand Report</button>`;
+  } else if(modalTab==='evidence'){
+    const clips=(b.clips||[]).sort((a,c)=>(c.quality||0)-(a.quality||0)).slice(0,20);
+    el.innerHTML=clips.length?`<div class="eg">${clips.map(c=>{
+      const bo=(c.brands||[]).find(x=>(typeof x==='object'?x.name:x)===b.name);
+      const conf=typeof bo==='object'?(bo.confidence||'unknown'):'unknown';
+      return`<div class="ec" onclick="toggleV(this)"><div class="ecv"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video></div>
+        <div class="eci"><div class="ecs">${c.summary||''}</div><div class="ect"><span class="et ${conf}">${conf}</span>
+          <span class="et" style="background:var(--sf3);color:var(--tx2)">Q${c.quality||0}</span>
+          <span class="et" style="background:var(--sf3);color:var(--tx2)">${c.dominant_shot||'—'}</span></div></div></div>`}).join('')}</div>`
+      :'<div style="color:var(--mt);text-align:center;padding:20px">No clips available</div>';
+  } else if(modalTab==='players'){
+    const pc={};(b.clips||[]).forEach(c=>{(c.courtana_participants||[]).forEach(p=>{
+      const u=p.username||'';if(!u||u==='Unknown')return;
+      if(!pc[u])pc[u]={name:u,count:0,avatar:p.avatar_file||''};pc[u].count++})});
+    const sorted=Object.values(pc).sort((a,c)=>c.count-a.count);
+    el.innerHTML=sorted.length?`<div class="mpg">${sorted.map(p=>
+      `<a class="mpc" href="player-intelligence.html" style="text-decoration:none;color:inherit">
+        ${p.avatar?`<img src="${p.avatar}" loading="lazy">`:`<div style="width:36px;height:36px;border-radius:8px;background:var(--sf3);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ac)">${p.name[0]}</div>`}
+        <div><div class="mpn">${p.name}</div><div class="mps">${p.count} clips</div></div></a>`).join('')}</div>`
+      :'<div style="color:var(--mt);text-align:center;padding:20px">No player data</div>';
+  } else if(modalTab==='badges'){
+    const bc2={};(b.clips||[]).forEach(c=>{(c.courtana_badge_awards||[]).forEach(ba=>{
+      const n=ba.badge_name||'';if(!n)return;
+      if(!bc2[n])bc2[n]={count:0,img:ba.badge_thumbnail_small||ba.badge_file||''};bc2[n].count++})});
+    const sorted=Object.entries(bc2).sort((a,c)=>c[1].count-a[1].count);
+    el.innerHTML=sorted.length?`<div class="mbg2">${sorted.map(([n,d])=>
+      `<div class="mbc">${d.img?`<img src="${d.img}" loading="lazy">`:''}<div class="mbn">${n}</div><div class="mbc2">${d.count}</div></div>`
+    ).join('')}</div>`:'<div style="color:var(--mt);text-align:center;padding:20px">No badge data</div>';
+  } else if(modalTab==='classification'){
+    /* V3: Classification tab */
+    const rv=prov?.rule_version||'?';
+    const src=prov?.source||'unknown';
+    const verified=prov?.human_verified;
+    const rev=prov?.revenue_potential||'low';
+    const rationale=prov?.rationale||'No rationale available.';
+    el.innerHTML=`
+      <div class="class-block">
+        <div class="ct-label">Classification type</div>
+        <div class="ct-big" style="color:${ctc}">${ctLabel(ct)}</div>
+        <div class="class-detail-grid">
+          <div class="cdd">
+            <div class="cdv" style="color:${src==='rule'?'var(--ac)':'var(--gd)'}">${src==='rule'?`rule v${rv}`:'fallback'}</div>
+            <div class="cdl">Classification source</div>
+          </div>
+          <div class="cdd">
+            <div class="cdv" style="color:${verified?'var(--ac)':'var(--mt)'}">${verified?'✓ Verified':'Pending'}</div>
+            <div class="cdl">Human verification</div>
+          </div>
+          <div class="cdd">
+            <div class="cdv" style="color:${rev==='high'?'var(--ac)':rev==='medium'?'var(--gd)':'var(--mt)'}">${rev||'—'}</div>
+            <div class="cdl">Revenue potential</div>
+          </div>
+          <div class="cdd">
+            <div class="cdv">v${rv}</div>
+            <div class="cdl">Rule version</div>
+          </div>
+        </div>
+        <div class="rationale-box">
+          <strong>Rationale</strong>
+          ${rationale}
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--mt);line-height:1.8;font-family:'Red Hat Mono',monospace;padding:8px;background:var(--sf2);border-radius:6px;border:1px solid var(--bds)">
+        This classification is derived from taxonomy v${rv}.<br>
+        ${verified?`Bill has manually verified this classification.`:`Awaiting human verification.`}<br>
+        Revenue tier: <strong style="color:${rev==='high'?'var(--ac)':rev==='medium'?'var(--gd)':'var(--mt)'}">${rev}</strong> ·
+        Source: <strong>${src}</strong>
+      </div>`;
+  }
+}
+
+/* V2: Print report */
+function printReport(name){
+  const b=apiBrands.find(x=>x.name===name);if(!b)return;
+  const skills=b.avg_skills||b.skills||{};const ct=ctOf(b);
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Brand Report: ${name}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Manrope',sans-serif;padding:40px;color:#1a1a1a;max-width:800px;margin:0 auto}
+    h1{font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+    .sub{font-size:12px;color:#666;margin-bottom:24px}
+    .class-tag{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Red Hat Mono',monospace;margin-bottom:16px;background:#f0faf5;color:#059669;border:1px solid #059669}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+    .stat{background:#f8f8f8;border-radius:8px;padding:14px;text-align:center}
+    .stat .v{font-size:22px;font-weight:800;font-family:'Red Hat Mono',monospace}
+    .stat .l{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+    h2{font-size:16px;font-weight:700;margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid #eee}
+    .skill{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .skill .sl{width:80px;font-size:10px;color:#666;text-align:right;font-family:'Red Hat Mono',monospace;text-transform:uppercase}
+    .skill .st2{flex:1;height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+    .skill .sf{height:100%;background:#059669;border-radius:4px}
+    .skill .sv{width:30px;font-size:12px;font-weight:600;font-family:'Red Hat Mono',monospace;text-align:right}
+    .footer{margin-top:32px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#999;display:flex;justify-content:space-between}
+    </style></head><body>
+    <h1>${name} Brand Intelligence Report</h1>
+    <div class="sub">Generated by Pickle DaaS V3.1 · ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} · ${corpus.length} clips analyzed</div>
+    <div class="class-tag">Classification: ${ctLabel(ct)} · taxonomy v${b._prov?.rule_version||'?'} · ${b._prov?.human_verified?'✓ Verified':'Pending'}</div>
+    <div class="stats">
+      <div class="stat"><div class="v">${b.detections||0}</div><div class="l">Detections</div></div>
+      <div class="stat"><div class="v">${(b.share_of_court||0).toFixed(1)}%</div><div class="l">Share of Court</div></div>
+      <div class="stat"><div class="v">${(b.avg_quality||0).toFixed(1)}</div><div class="l">Avg Quality</div></div>
+      <div class="stat"><div class="v">${b._prov?.revenue_potential||'low'}</div><div class="l">Revenue Tier</div></div>
+    </div>
+    <h2>Skill Correlations</h2>
+    <p style="font-size:11px;color:#888;margin-bottom:10px">Average skill ratings of players detected using ${name} equipment</p>
+    ${SK.map(sk=>{const v=skills[sk]||0;return`<div class="skill"><div class="sl">${SL[sk]}</div><div class="st2"><div class="sf" style="width:${v*10}%"></div></div><div class="sv">${v>0?v.toFixed(1):'—'}</div></div>`}).join('')}
+    <h2>Classification</h2>
+    <p style="font-size:13px;margin-bottom:6px"><strong>Type:</strong> ${ctLabel(ct)} &nbsp;|&nbsp; <strong>Source:</strong> ${b._prov?.source||'unknown'} &nbsp;|&nbsp; <strong>Revenue:</strong> ${b._prov?.revenue_potential||'low'}</p>
+    ${b._prov?.rationale?`<p style="font-size:12px;color:#666;line-height:1.5">${b._prov.rationale}</p>`:''}
+    <div class="footer"><span>Pickle DaaS V3.1 — AI-powered pickleball intelligence</span><span>courtana.com</span></div>
+    </body></html>`);
+  w.document.close();setTimeout(()=>w.print(),500);
+}
+
+/* ════ RENDER FUNCTIONS ════ */
+
+/* V2+V3: Bubble chart — V2 physics engine + V3 classification colors */
+function renderBubbles(){
+  const el=document.getElementById('bubbles');el.innerHTML='';
+  const W=el.clientWidth;const H=420;el.style.height=H+'px';
+  const brands=filterBrands().slice(0,28).map(b=>({
+    name:b.name,value:metric==='count'?(b.detections||0):(b.share_of_court||0),
+    color:bcolor(b.name),ct:ctOf(b)
+  }));
+  if(!brands.length){el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--mt);font-family:\'Red Hat Mono\',monospace;font-size:12px">No brands in this category</div>';return}
+  const maxVal=Math.max(...brands.map(i=>i.value));
+  const minR=16;const maxR=Math.min(W/5,H/3);
+  const circles=brands.map(it=>({...it,r:minR+Math.sqrt(it.value/maxVal)*(maxR-minR),x:W/2+(Math.random()-.5)*W*.3,y:H/2+(Math.random()-.5)*H*.3}));
+  /* V2: 150-iteration force-directed layout */
+  for(let iter=0;iter<150;iter++){
+    circles.forEach(c=>{c.x+=(W/2-c.x)*.02;c.y+=(H/2-c.y)*.02});
+    for(let i=0;i<circles.length;i++)for(let j=i+1;j<circles.length;j++){
+      const dx=circles[j].x-circles[i].x,dy=circles[j].y-circles[i].y;
+      const dist=Math.sqrt(dx*dx+dy*dy),minDist=circles[i].r+circles[j].r+3;
+      if(dist<minDist&&dist>0){const f=(minDist-dist)/dist*.5;
+        circles[i].x-=dx*f;circles[i].y-=dy*f;circles[j].x+=dx*f;circles[j].y+=dy*f}}
+    circles.forEach(c=>{c.x=Math.max(c.r,Math.min(W-c.r,c.x));c.y=Math.max(c.r,Math.min(H-c.r,c.y))});
+  }
+  circles.forEach(c=>{
+    const div=document.createElement('div');div.className=`bub ct-${c.ct}`;
+    div.style.cssText=`left:${c.x-c.r}px;top:${c.y-c.r}px;width:${c.r*2}px;height:${c.r*2}px;background:${c.color};`;
+    const fs=Math.max(8,Math.min(16,c.r/3.5));
+    const valStr=metric==='count'?c.value.toLocaleString():(c.value.toFixed(1)+'%');
+    const tipHtml=`<div class="bub-tip">${c.name}<br><span style="color:${ctColor(c.ct)}">${ctLabel(c.ct)}</span></div>`;
+    div.innerHTML=c.r>25?`${tipHtml}<div class="bn" style="font-size:${fs}px">${c.name}</div>${c.r>40?`<div class="bv" style="font-size:${Math.max(8,fs-3)}px">${valStr}</div>`:''}`
+      :`${tipHtml}<div class="bn" style="font-size:${fs}px">${c.name.slice(0,4)}</div>`;
+    div.addEventListener('click',()=>openM(c.name));el.appendChild(div)});
+}
+
+/* V2: AI Findings */
+function renderFindings(){
+  const brand_findings=apiIdeas.filter(f=>['brand_analyst','opportunity_scout'].includes(f.agent||f.researcher));
+  const other_findings=apiIdeas.filter(f=>!['brand_analyst','opportunity_scout'].includes(f.agent||f.researcher)).slice(0,2);
+  const all=[...brand_findings,...other_findings].slice(0,6);
+  document.getElementById('findings-meta').textContent=`${apiIdeas.length} findings from ${new Set(apiIdeas.map(f=>f.agent||f.researcher)).size} AI researchers`;
+  const counters=(window._labData?.counterarguments||[]);
+  document.getElementById('findings').innerHTML=all.map((f,i)=>{
+    const agent=f.agent||f.researcher||'unknown';const conf=f.confidence||0;const biz=f.business_value||'';
+    const counter=counters.find(c=>(c.finding||'').includes((f.title||'').slice(0,30)));
+    return`<div class="finding-card fi" style="animation-delay:${i*.04}s">
+      <div class="fc-agent"><span class="dot"></span>${agent}</div>
+      <div class="fc-title">${f.title||''}</div>
+      <div class="fc-insight">${f.insight||f.description||''}</div>
+      <div class="fc-meta">
+        ${conf?`<span class="conf">${(conf*100).toFixed(0)}% conf</span>`:''}
+        ${biz?`<span class="biz">${biz} value</span>`:''}
+      </div>
+      ${counter?`<div class="fc-counter"><strong>Devil's Advocate:</strong> ${counter.counter||counter.argument||''}</div>`:''}
+    </div>`}).join('');
+}
+
+/* V2+V3: Rankings table */
+function renderTable(){
+  const brands=filterBrands();const max=brands[0]?.detections||1;
+  document.getElementById('tbody').innerHTML=brands.slice(0,30).map((b,i)=>{
+    const ct=ctOf(b);const prov=b._prov;
+    const srcChip=prov?`<span class="type-chip tc-rule" style="margin-left:4px">${prov.source==='rule'?'rule':'fallback'}</span>`:'';
+    const verChip=prov?.human_verified?`<span style="color:var(--ac);font-size:10px;margin-left:3px">✓</span>`:'';
+    return`<tr onclick="openM('${b.name}')">
+      <td style="font-family:'Red Hat Mono',monospace;font-weight:700;color:${i<3?'var(--gd)':'var(--mt)'}">${i+1}</td>
+      <td><div class="bc"><span class="sw" style="background:${bcolor(b.name)}"></span>${b.name}</div></td>
+      <td><span class="type-chip tc-${ct}">${ctLabel(ct)}</span>${srcChip}${verChip}</td>
+      <td style="color:var(--tx2);font-size:12px">${b.primary_category||bcat(b.name)}</td>
+      <td style="font-family:'Red Hat Mono',monospace;font-weight:500">${(b.detections||0).toLocaleString()}</td>
+      <td style="font-family:'Red Hat Mono',monospace;color:var(--tx2)">${b.unique_clips||'—'}</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="bar-bg"><div class="bar-f" style="width:${(b.detections||0)/max*100}%;background:${bcolor(b.name)}"></div></div><span style="font-family:'Red Hat Mono',monospace;font-size:11px">${(b.share_of_court||0).toFixed(1)}%</span></div></td>
+      <td style="font-family:'Red Hat Mono',monospace;font-weight:500">${(b.avg_quality||0).toFixed(1)}</td>
+      <td style="font-family:'Red Hat Mono',monospace;color:var(--tx2)">${(b.avg_viral||0).toFixed(1)}</td>
+    </tr>`}).join('');
+}
+
+/* V2: Skill heatmap */
+function renderHeatmap(){
+  const el=document.getElementById('heatmap');
+  const top=filterBrands().filter(b=>b.avg_skills||b.skills).slice(0,8);
+  let h='<table class="heat"><thead><tr><th></th>';
+  SK.forEach(sk=>{h+=`<th>${SL[sk]}</th>`});h+='</tr></thead><tbody>';
+  top.forEach(b=>{
+    const skills=b.avg_skills||b.skills||{};const color=bcolor(b.name);
+    h+=`<tr><th class="rl" style="color:${color}">${b.name}</th>`;
+    SK.forEach(sk=>{const v=skills[sk]||0;
+      h+=`<td style="background:${v>0?color+'22':'var(--sf3)'};color:${v>0?color:'var(--mt)'}" onclick="openM('${b.name}')">${v>0?v.toFixed(1):'—'}</td>`});
+    h+='</tr>'});
+  h+='</tbody></table>';el.innerHTML=h;
+}
+
+/* V2: Whitespace */
+function renderWS(signals){
+  const ws=signals?.sponsorship_whitespace||{};
+  const sorted=Object.entries(ws).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ws-m').textContent=sorted.length+' opportunity categories';
+  document.getElementById('ws').innerHTML=sorted.slice(0,18).map(([n,c])=>
+    `<div class="ws-item"><span class="ws-name">${n}</span><span class="ws-count">${c}</span></div>`).join('');
+}
+
+/* V2+V3: Brand cards — V2 visual + V3 provenance row */
+function renderCards(){
+  const top=filterBrands().slice(0,12);
+  document.getElementById('cm').textContent=top.length+' brands shown';
+  const el=document.getElementById('cards');el.innerHTML='';
+  top.forEach((b,i)=>{
+    const card=document.createElement('div');const ct=ctOf(b);const prov=b._prov;
+    card.className=`card ct-${ct} fi`;card.style.animationDelay=(i*.03)+'s';
+    card.onclick=()=>openM(b.name);const color=bcolor(b.name);
+    const skills=b.avg_skills||b.skills||{};
+    let bars=SK.slice(0,6).map(sk=>{const v=skills[sk]||0;
+      return`<div class="sk"><div class="skl">${SL[sk]}</div><div class="skt"><div class="skf" style="width:${v*10}%;background:${color}"></div></div><div class="skv" style="color:${v>0?color:'var(--mt)'}">${v>0?v.toFixed(1):'—'}</div></div>`}).join('');
+    const clips=corpus.filter(c=>(c.brands||[]).some(x=>(typeof x==='string'?x:(x.name||''))===b.name)).sort((a,c)=>(c.quality||0)-(a.quality||0)).slice(0,5);
+    /* V3: provenance row */
+    const provHtml=prov?`<div class="c-prov">
+      <span class="cpv ${ct}">${ctLabel(ct)}</span>
+      <span class="cpv rule">${prov.source==='rule'?`rule v${prov.rule_version||'?'}`:'fallback'}</span>
+      ${prov.human_verified?'<span class="cpv verified">✓ Bill</span>':''}
+      ${prov.revenue_potential==='high'?'<span class="cpv rev-high">high value</span>':prov.revenue_potential==='medium'?'<span class="cpv rev-med">med value</span>':''}
+    </div>`:''
+    card.innerHTML=`
+      <div class="ct">
+        <div><div class="cn" style="color:${color}">${b.name}</div><div class="cc2">${b.primary_category||bcat(b.name)}</div></div>
+        <div><div class="cnum" style="color:${color}">${(b.detections||0).toLocaleString()}</div><div style="font-size:8px;color:var(--mt);text-transform:uppercase;letter-spacing:.6px;text-align:right;margin-top:1px">detections</div></div>
+      </div>
+      <div class="cb">
+        ${provHtml}
+        <div class="csk">${bars}</div>
+        <div class="cm3">
+          <div class="cmi"><div class="cmv" style="color:${color}">${(b.avg_quality||0).toFixed(1)}</div><div class="cml">Quality</div></div>
+          <div class="cmi"><div class="cmv">${(b.share_of_court||0).toFixed(1)}%</div><div class="cml">Share</div></div>
+          <div class="cmi"><div class="cmv">${(b.avg_viral||0).toFixed(1)}</div><div class="cml">Viral</div></div>
+        </div>
+        ${clips.length?`<div class="cclips">${clips.map(c=>`<div class="ccl" onclick="event.stopPropagation();toggleV(this)"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" loop muted playsinline></video></div>`).join('')}</div>`:''}
+        <button class="dl-btn" onclick="event.stopPropagation();printReport('${b.name}')">📄 Download Report</button>
+      </div>`;
+    el.appendChild(card)});
+}
+
+/* V2+V3: Confidence + Coverage ring */
+function renderConf(trend){
+  let f1=.03;if(trend?.length){const l=trend[trend.length-1];f1=l.f1||f1}
+  const cov=(classStats.coverage_pct||91.9)/100;
+  const verified=classStats.human_verified_count||0;
+
+  function ring(pct,color,label){
+    const circ=2*Math.PI*38,off=circ*(1-pct);
+    return`<div style="text-align:center">
+      <div class="cring" style="width:88px;height:88px">
+        <svg viewBox="0 0 100 100"><circle fill="none" cx="50" cy="50" r="38" stroke="var(--sf3)" stroke-width="8"/>
+        <circle fill="none" cx="50" cy="50" r="38" stroke="${color}" stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 50 50)"/></svg>
+        <div class="crv" style="color:${color};font-size:18px">${(pct*100).toFixed(0)}%</div>
+      </div>
+      <div style="font-size:10px;color:var(--mt);text-transform:uppercase;letter-spacing:.8px;margin-top:6px;font-family:'Red Hat Mono',monospace">${label}</div>
+    </div>`;
+  }
+  document.getElementById('conf').innerHTML=`
+    <div class="rings-row">
+      ${ring(f1,f1>.5?'var(--ch)':f1>.2?'var(--cm)':'var(--cl)','Badge F1')}
+      ${ring(cov,'var(--ac)','Rule Coverage')}
+      ${ring(Math.min(1,verified/70),'var(--pu)','Brands Verified')}
+      <div class="cdtl" style="flex:1;min-width:220px">
+        <strong style="display:block;margin-bottom:8px;color:var(--tx)">System Confidence</strong>
+        <div><strong style="color:var(--ac)">${(cov*100).toFixed(1)}%</strong> of brand detections classified by approved taxonomy rules (v${classStats.taxonomy_version||6})</div>
+        <div style="margin-top:4px"><strong style="color:var(--pu)">${verified}</strong> brands manually reviewed and verified by Bill</div>
+        <div style="margin-top:4px"><strong style="color:var(--ch)">${(f1*100).toFixed(0)}%</strong> badge prediction F1 score — improving as more clips are reviewed</div>
+        <div style="margin-top:4px">${classStats.rule_count||54} approved rules · Taxonomy v${classStats.taxonomy_version||6} · JOOLA net inflation fixed</div>
+      </div>
+    </div>`;
+}
+
+/* V3: Update classification filter counts */
+function updateCFCounts(){
+  const skip=new Set(['Unknown','Skull Logo','PICKLEBALL','LIVE','PICKLEBALL KINGDOM']);
+  const all=apiBrands.filter(x=>!skip.has(x.name));
+  document.getElementById('cf-ct-all').textContent=`(${all.length})`;
+  document.getElementById('cf-ct-player').textContent=`(${all.filter(b=>ctOf(b)==='player').length})`;
+  document.getElementById('cf-ct-venue').textContent=`(${all.filter(b=>ctOf(b)==='venue').length})`;
+  document.getElementById('cf-ct-sponsor').textContent=`(${all.filter(b=>ctOf(b)==='sponsor').length})`;
+  document.getElementById('cf-ct-broadcast').textContent=`(${all.filter(b=>ctOf(b)==='broadcast').length})`;
+  document.getElementById('cf-ct-unknown').textContent=`(${all.filter(b=>ctOf(b)==='unknown').length})`;
+}
+
+/* V2+V3: Stats bar */
+function renderStats(){
+  const totalDet=apiBrands.reduce((s,b)=>s+b.detections,0);
+  const fc=apiFeed.corpus||{};
+  const cov=classStats.coverage_pct||91.9;
+  const verified=classStats.human_verified_count||0;
+  document.getElementById('cov-badge').textContent=cov+'%';
+  document.getElementById('ver-badge').textContent=verified;
+  document.getElementById('stats').innerHTML=`
+    <div class="st"><div class="st-v" style="color:var(--ac)">${(fc.total_clips||corpus.length).toLocaleString()}</div><div class="st-l">Clips</div></div>
+    <div class="st"><div class="st-v">${fc.unique_brands||apiBrands.length}</div><div class="st-l">Brands</div></div>
+    <div class="st"><div class="st-v">${totalDet.toLocaleString()}</div><div class="st-l">Detections</div></div>
+    <div class="st"><div class="st-v" style="color:var(--ac)">${cov}%</div><div class="st-l">Rule Coverage</div></div>
+    <div class="st"><div class="st-v" style="color:var(--pu)">${verified}</div><div class="st-l">Verified</div></div>
+    <div class="st"><div class="st-v" style="color:var(--gd)">${apiFeed.idea_lab?.total_findings||apiIdeas.length||'—'}</div><div class="st-l">AI Findings</div></div>
+  `;
+  document.getElementById('ft-corpus').textContent=(fc.total_clips||corpus.length).toLocaleString();
+}
+
+/* ════ BOOT ════ */
+(async function(){
+  const [brandsR,ideasR,feedR,corpusR,signalsR,trendR,provR,statsR]=await Promise.all([
+    fetch('../api/brands.json').catch(()=>null),
+    fetch('../api/ideas.json').catch(()=>null),
+    fetch('../api/feed.json').catch(()=>null),
+    fetch('../corpus-export.json').then(r=>r.ok?r.json():[]).catch(()=>[]),
+    fetch('../brand-signals.json').catch(()=>null),
+    fetch('accuracy-trend.json').then(r=>r.ok?r.json():[]).catch(()=>[]),
+    fetch('../brand-provenance.json').catch(()=>null),
+    fetch('../classification-stats.json').catch(()=>null),
+  ]);
+
+  if(brandsR?.ok){const d=await brandsR.json();apiBrands=d.brands||d||[]}
+  if(ideasR?.ok){const d=await ideasR.json();apiIdeas=d.all_findings||d.findings||[];window._labData=d}
+  if(feedR?.ok)apiFeed=await feedR.json();
+  corpus=Array.isArray(corpusR)?corpusR:corpusR.clips||[];
+  const signals=signalsR?.ok?await signalsR.json():null;
+  if(statsR?.ok)classStats=await statsR.json();
+
+  /* V3: Build provenance index */
+  if(provR?.ok){
+    const pd=await provR.json();
+    for(const b of(pd.brands||[]))provIndex[b.name.toLowerCase()]=b;
+  }
+
+  /* Build from corpus if no API brands */
+  if(!apiBrands.length&&corpus.length){
+    const bm={};
+    corpus.forEach(c=>{(c.brands||[]).forEach(b=>{
+      const n=typeof b==='string'?b:(b.name||'');if(!n)return;
+      if(!bm[n])bm[n]={name:n,detections:0,unique_clips:0,clipSet:new Set(),share_of_court:0,
+        primary_category:bcat(n),avg_viral:0,avg_quality:0,avg_skills:{},_skills:{},_q:[],_v:[]};
+      bm[n].detections++;if(!bm[n].clipSet.has(c.uuid)){bm[n].clipSet.add(c.uuid);bm[n].unique_clips++}
+      bm[n]._q.push(c.quality||0);bm[n]._v.push(c.viral||0);
+      SK.forEach(sk=>{const v=(c.skills||{})[sk];if(v&&v>0){if(!bm[n]._skills[sk])bm[n]._skills[sk]=[];bm[n]._skills[sk].push(v)}})
+    })});
+    const total=Object.values(bm).reduce((s,b)=>s+b.detections,0);
+    apiBrands=Object.values(bm).map(b=>{
+      b.share_of_court=total?(b.detections/total*100):0;
+      b.avg_quality=b._q.length?b._q.reduce((a,v)=>a+v,0)/b._q.length:0;
+      b.avg_viral=b._v.length?b._v.reduce((a,v)=>a+v,0)/b._v.length:0;
+      b.avg_skills={};Object.entries(b._skills).forEach(([k,vals])=>{b.avg_skills[k]=vals.reduce((a,v)=>a+v,0)/vals.length});
+      return b}).sort((a,b)=>b.detections-a.detections);
+  }
+
+  /* V3: Inject provenance into each brand */
+  apiBrands=apiBrands.map(b=>({...b,_prov:provIndex[b.name.toLowerCase()]||null}));
+
+  /* Render */
+  document.getElementById('ld').style.display='none';
+  document.getElementById('content').style.display='block';
+  if(classStats.rule_count)document.getElementById('tax-note').style.display='flex';
+
+  renderStats();
+  updateCFCounts();
+  renderBubbles();
+  renderFindings();
+  renderTable();
+  renderHeatmap();
+  renderWS(signals);
+  renderCards();
+  renderConf(trendR);
+
+  window.addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderBubbles,200)});
+})();
+</script>
+</body>
+</html>
