@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investor Walk-Through v3.2 · Pickle DaaS</title>
+<meta name="description" content="Pickleball video, turned into classified intelligence. Three revenue lanes. 54 human-approved rules. Live corpus running now.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   INVESTOR WALKTHROUGH v3.2
+   Design system matched to brand-intelligence-v3.2
+   Near-black bg · noise · glass · 7-tier text
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --c-int:#6EEFC0;--c-int-g:rgba(110,239,192,.12);--c-int-d:rgba(110,239,192,.06);--c-int-gh:rgba(110,239,192,.03);
+  --c-pl:#6BA3FF;--c-pl-g:rgba(107,163,255,.12);--c-pl-d:rgba(107,163,255,.06);--c-pl-gh:rgba(107,163,255,.03);
+  --c-ve:#FFB86C;--c-ve-g:rgba(255,184,108,.12);--c-ve-d:rgba(255,184,108,.06);--c-ve-gh:rgba(255,184,108,.03);
+  --c-sp:#BD93F9;--c-sp-g:rgba(189,147,249,.12);--c-sp-d:rgba(189,147,249,.06);--c-sp-gh:rgba(189,147,249,.03);
+  --c-gd:#F1C40F;--c-gd-g:rgba(241,196,15,.12);--c-gd-d:rgba(241,196,15,.06);--c-gd-gh:rgba(241,196,15,.03);
+  --c-rd:#FF6B6B;--c-rd-g:rgba(255,107,107,.12);--c-rd-d:rgba(255,107,107,.06);--c-rd-gh:rgba(255,107,107,.03);
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+
+/* ── Noise ── */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+
+/* ── Ambient blobs ── */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:var(--c-int);opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:var(--c-pl);opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:var(--c-sp);opacity:.03;animation:bd3 72s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+
+/* ── Reveal system ── */
+[data-reveal]{opacity:0;transform:translateY(52px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+
+/* ── Section divider ── */
+.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+
+/* ── Status strip ── */
+.status{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:transform .35s var(--ease),box-shadow .3s;transform:translateY(-100%)}
+.status.visible{transform:translateY(0)}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--c-int);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--c-int);box-shadow:0 0 10px var(--c-int);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--c-int-g);color:var(--c-int);border:1px solid rgba(110,239,192,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--c-int);border-color:rgba(110,239,192,.3)}
+
+/* ── Side nav dots ── */
+.side-nav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:14px}
+.side-dot{width:8px;height:8px;border-radius:50%;background:var(--t6);cursor:pointer;transition:all .3s var(--ease);position:relative}
+.side-dot::after{content:attr(data-label);position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t5);white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.side-dot:hover::after{opacity:1}
+.side-dot.active{background:var(--c-int);box-shadow:0 0 10px var(--c-int)}
+
+/* ── Glass ── */
+.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
+.glass:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+
+/* ── Sec heading ── */
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08;margin-bottom:20px}
+.grad-text{background:linear-gradient(135deg,var(--c-int),var(--c-pl));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ═══════════════════════════════════════
+   S1: HERO
+═══════════════════════════════════════ */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.hero-video{position:absolute;inset:0;z-index:0}
+.hero-video video{width:100%;height:100%;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(8,8,12,.42) 0%,rgba(8,8,12,.92) 70%);z-index:1}
+.hero-content{position:relative;z-index:2;padding:clamp(80px,15vh,160px) 0 clamp(40px,6vh,64px)}
+.hero-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.hero-logo .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--c-int);box-shadow:0 0 12px var(--c-int);animation:pulse 2.5s ease-in-out infinite}
+.hero-logo span{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.15em;color:var(--t3)}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1.1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px}
+.hero h1{font-size:clamp(2.4rem,5.5vw,4.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.04;max-width:900px}
+.hero-stat{font-family:'Red Hat Mono',monospace;font-size:clamp(.7rem,1.1vw,.82rem);color:var(--t4);margin-top:28px;letter-spacing:.02em}
+.hero-stat em{font-style:normal;color:var(--c-int);font-weight:600}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:10px 22px;background:var(--c-int-g);border:1px solid rgba(110,239,192,.2);border-radius:20px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700;color:var(--c-int);text-transform:uppercase;letter-spacing:.1em}
+.hero-cta .dot{width:6px;height:6px;border-radius:50%;background:var(--c-int);animation:pulse 2.5s ease-in-out infinite}
+.scroll-cue{position:absolute;bottom:clamp(24px,4vh,48px);left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--t5),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.6;transform:scaleY(1)}50%{opacity:.2;transform:scaleY(.6)}}
+.scroll-cue span{font-family:'Red Hat Mono',monospace;font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.2em}
+
+/* ═══════════════════════════════════════
+   S2: WHAT THE AI SEES
+═══════════════════════════════════════ */
+.ai-sees{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;margin-bottom:48px}
+.ai-video-wrap{position:relative;border-radius:var(--rl);overflow:hidden;background:#000;aspect-ratio:16/9}
+.ai-video-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.ai-badge{position:absolute;padding:8px 12px;background:rgba(8,8,12,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:10px;border:1px solid var(--glass-b);opacity:0;transform:scale(.9);transition:opacity .45s var(--ease),transform .45s var(--ease);max-width:180px;z-index:5}
+.ai-badge.show{opacity:1;transform:scale(1)}
+.ai-badge .ab-strip{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.ai-badge .ab-title{font-family:'Red Hat Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.ai-badge .ab-body{font-size:11px;color:var(--t3);line-height:1.4}
+.ai-badge .ab-body strong{color:var(--t1);font-weight:700}
+.ai-cards-col{display:flex;flex-direction:column;gap:14px}
+.ai-info{padding:20px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.ai-info h4{font-size:14px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
+.ai-info p{font-size:13px;color:var(--t3);line-height:1.6}
+.ai-info .ai-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;margin-right:4px;margin-bottom:4px}
+
+/* ═══════════════════════════════════════
+   S3: THE NUMBERS
+═══════════════════════════════════════ */
+.num-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:32px}
+.num-cell{background:var(--bg-s);padding:clamp(20px,3vw,32px) 16px;text-align:center;transition:background .2s}
+.num-cell:hover{background:var(--bg-r)}
+.num-v{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1}
+.num-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:6px}
+.num-src{font-size:9px;color:var(--t6);font-family:'JetBrains Mono',monospace;margin-top:4px}
+.quote-glass{padding:24px 28px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin-top:28px;position:relative;font-size:14px;color:var(--t3);line-height:1.7;font-style:italic}
+.quote-glass::before{content:'"';position:absolute;top:-8px;left:16px;font-size:48px;color:var(--c-int);opacity:.3;font-style:normal;line-height:1}
+
+/* ═══════════════════════════════════════
+   S4: THREE LANES
+═══════════════════════════════════════ */
+.lanes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+.lane-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s,transform .35s var(--ease)}
+.lane-card:hover{border-color:var(--bd-h);transform:translateY(-4px)}
+.lane-stripe{height:3px;width:100%}
+.lane-inner{padding:24px 20px}
+.lane-label{font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.lane-count{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1;margin-bottom:12px}
+.lane-desc{font-size:13px;color:var(--t3);line-height:1.6;margin-bottom:16px}
+.lane-proof{padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--bd);border-radius:8px;font-size:11px;color:var(--t4);line-height:1.5;margin-bottom:14px}
+.lane-proof strong{color:var(--t2)}
+.lane-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;transition:color .2s}
+
+/* ═══════════════════════════════════════
+   S5: FLYWHEEL
+═══════════════════════════════════════ */
+.flywheel-container{display:flex;flex-direction:column;align-items:center;margin-bottom:48px}
+.flywheel{position:relative;width:min(380px,85vw);aspect-ratio:1}
+.fw-node{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--glass);border:1px solid var(--glass-b);border-radius:50%;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .3s,box-shadow .3s;cursor:default}
+.fw-node:hover{border-color:var(--bd-h);box-shadow:0 0 30px rgba(110,239,192,.1)}
+.fw-node .fw-icon{font-size:18px;margin-bottom:2px}
+.fw-node .fw-label{font-family:'Red Hat Mono',monospace;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);line-height:1.2}
+.fw-node .fw-val{font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--c-int);font-weight:600;margin-top:1px}
+.fw-center{position:absolute;left:50%;top:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;background:var(--c-int-g);border:1px solid rgba(110,239,192,.2);display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Red Hat Mono',monospace;font-size:9px;font-weight:700;color:var(--c-int);text-transform:uppercase;letter-spacing:.08em;line-height:1.3;animation:fwPulse 3s ease-in-out infinite}
+@keyframes fwPulse{0%,100%{box-shadow:0 0 0 0 rgba(110,239,192,.1)}50%{box-shadow:0 0 0 20px rgba(110,239,192,0)}}
+.fw-ring{position:absolute;inset:40px;border:1px dashed var(--t7);border-radius:50%;animation:fwSpin 60s linear infinite}
+@keyframes fwSpin{to{transform:rotate(360deg)}}
+.fw-arrows{position:absolute;inset:0;pointer-events:none}
+.fw-arrows svg{width:100%;height:100%;opacity:.15}
+.fw-mobile{display:none;flex-direction:column;gap:12px;width:100%}
+.fw-mobile .fw-step{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.fw-mobile .fw-step-num{font-family:'Red Hat Mono',monospace;font-size:18px;font-weight:800;color:var(--c-int);min-width:28px}
+.fw-mobile .fw-step-text{font-size:13px;color:var(--t2)}
+.fw-mobile .fw-step-text strong{color:var(--t1)}
+.fw-explain{max-width:640px;margin-top:32px;padding:24px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:14px;color:var(--t3);line-height:1.7}
+
+/* ═══════════════════════════════════════
+   S6: CLASSIFICATION ENGINE
+═══════════════════════════════════════ */
+.engine-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.engine-stat{padding:20px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-align:center}
+.engine-stat .es-v{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1}
+.engine-stat .es-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:6px}
+.provenance-chain{padding:20px 24px;background:var(--bg-s);border:1px solid var(--bd);border-radius:var(--rl);margin-bottom:28px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:var(--t4);overflow-x:auto;white-space:pre-wrap}
+.provenance-chain .pc-step{color:var(--t2)}
+.provenance-chain .pc-arrow{color:var(--c-int);margin:0 4px}
+.provenance-chain .pc-val{color:var(--c-pl)}
+.engine-link{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--c-pl-d);border:1px solid rgba(107,163,255,.2);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--c-pl);transition:all .2s}
+.engine-link:hover{background:var(--c-pl-g);border-color:var(--c-pl)}
+
+/* ═══════════════════════════════════════
+   S7: AI DEBATE
+═══════════════════════════════════════ */
+.agree-bar-wrap{margin-bottom:28px}
+.agree-bar-label{display:flex;justify-content:space-between;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t4);margin-bottom:8px}
+.agree-bar{height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden}
+.agree-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--c-rd),var(--c-ve));transition:width 1.2s var(--ease)}
+.debate-arena{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.debate-col{padding:20px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.debate-model{font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.debate-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.debate-item:last-child{border-bottom:none}
+.debate-field{color:var(--t4);font-family:'Red Hat Mono',monospace;font-size:10px}
+.debate-val{font-weight:700;font-family:'Red Hat Mono',monospace;font-size:11px}
+.verdict-box{padding:20px 24px;background:var(--c-int-d);border:1px solid rgba(110,239,192,.15);border-radius:var(--rl);font-size:13px;color:var(--t2);line-height:1.7}
+.verdict-box strong{color:var(--c-int)}
+
+/* ═══════════════════════════════════════
+   S8: PORTFOLIO
+═══════════════════════════════════════ */
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:48px}
+.port-card{padding:20px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s,transform .35s var(--ease);display:flex;flex-direction:column;gap:10px;text-decoration:none}
+.port-card:hover{border-color:var(--bd-h);transform:translateY(-4px)}
+.port-card.featured{border-color:rgba(110,239,192,.2);background:var(--c-int-gh)}
+.port-top{display:flex;justify-content:space-between;align-items:flex-start}
+.port-emoji{font-size:24px}
+.port-tag{padding:2px 8px;border-radius:6px;font-family:'Red Hat Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.port-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.port-desc{font-size:12px;color:var(--t4);line-height:1.5}
+.port-link{font-size:11px;font-weight:600;color:var(--c-int);transition:color .2s}
+.port-card:hover .port-link{color:var(--t1)}
+
+/* ═══════════════════════════════════════
+   S9: REVENUE SIMULATOR + CTA
+═══════════════════════════════════════ */
+.sim-wrap{max-width:800px;margin:0 auto 48px}
+.sim-presets{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.sim-preset{padding:8px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .2s var(--ease)}
+.sim-preset:hover{color:var(--t2);border-color:var(--bd-h)}
+.sim-preset.on{background:var(--c-gd-g);color:var(--c-gd);border-color:rgba(241,196,15,.25)}
+.sim-body{padding:28px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin-bottom:24px}
+.sim-row{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.sim-row:last-child{margin-bottom:0}
+.sim-label{min-width:140px;font-size:12px;color:var(--t4);font-family:'Red Hat Mono',monospace}
+.sim-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:rgba(255,255,255,.08);border-radius:2px;outline:none;cursor:pointer}
+.sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--c-gd);cursor:pointer;box-shadow:0 0 10px rgba(241,196,15,.3)}
+.sim-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--c-gd);cursor:pointer;border:none}
+.sim-val{min-width:60px;text-align:right;font-family:'Red Hat Mono',monospace;font-size:14px;font-weight:700;color:var(--c-gd)}
+.sim-outputs{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:20px}
+.sim-out{background:var(--bg-s);padding:20px 14px;text-align:center}
+.sim-out-v{font-size:clamp(1.2rem,2vw,1.8rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1;transition:color .3s}
+.sim-out-v.pulse{animation:simPulse .5s var(--ease)}
+@keyframes simPulse{0%{transform:scale(1)}30%{transform:scale(1.08)}100%{transform:scale(1)}}
+.sim-out-l{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:6px}
+.sim-note{padding:16px 20px;background:var(--c-gd-gh);border:1px solid rgba(241,196,15,.12);border-radius:var(--r);font-size:12px;color:var(--t4);line-height:1.6}
+.sim-note strong{color:var(--c-gd)}
+
+.cta-block{text-align:center;padding:48px 0 32px}
+.cta-name{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.cta-email{font-family:'Red Hat Mono',monospace;font-size:14px;color:var(--c-int);margin-bottom:4px}
+.cta-title{font-size:12px;color:var(--t4)}
+
+/* ── Sticky CTA bar ── */
+.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:45;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--bd);padding:12px 0;transform:translateY(100%);transition:transform .4s var(--ease)}
+.sticky-cta.visible{transform:translateY(0)}
+.sticky-inner{display:flex;justify-content:space-between;align-items:center}
+.sticky-label{font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t4);display:flex;align-items:center;gap:8px}
+.sticky-label .sd{margin-right:0}
+.sticky-btn{padding:8px 20px;background:var(--c-int-g);border:1px solid rgba(110,239,192,.2);border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700;color:var(--c-int);cursor:pointer;transition:all .2s;text-decoration:none}
+.sticky-btn:hover{background:var(--c-int-d);border-color:var(--c-int)}
+
+/* ── Footer ── */
+footer{margin-top:48px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:900px){
+  .ai-sees{grid-template-columns:1fr}
+  .ai-cards-col{flex-direction:row;overflow-x:auto;gap:12px;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
+  .ai-cards-col .ai-info{min-width:260px;scroll-snap-align:start;flex-shrink:0}
+  .lanes-grid{grid-template-columns:1fr}
+  .debate-arena{grid-template-columns:1fr}
+  .engine-stats{grid-template-columns:repeat(2,1fr)}
+  .num-grid{grid-template-columns:repeat(2,1fr)}
+  .sim-outputs{grid-template-columns:repeat(2,1fr)}
+  .flywheel{display:none}
+  .fw-mobile{display:flex}
+}
+@media(max-width:600px){
+  .port-grid{grid-template-columns:1fr}
+  .sim-row{flex-direction:column;align-items:stretch;gap:8px}
+  .sim-label{min-width:0}
+  .sim-val{text-align:left}
+  .sim-presets{flex-direction:column}
+  .side-nav{display:none}
+  .status nav{display:none}
+  .sticky-label span:not(.sd){display:none}
+  .hero h1{font-size:clamp(2rem,8vw,3rem)}
+}
+</style>
+</head>
+<body>
+
+<!-- Noise texture -->
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+<!-- Ambient blobs -->
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<!-- Side nav dots -->
+<nav class="side-nav" id="side-nav"></nav>
+
+<!-- Status strip (hidden initially, shown after hero) -->
+<div class="status" id="status-bar">
+  <div class="shell status-inner">
+    <span><span class="sd"></span>Live <em id="ref-clips">--</em> clips</span>
+    <span class="v-chip">v3.2</span>
+    <nav>
+      <a href="brand-intelligence-v3.2.html">Brands</a>
+      <a href="evidence-wall-v3.1.html">Evidence</a>
+      <a href="equipment-performance-v3.1.html">Equipment</a>
+      <a href="classifier-queue.html">Classifier</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ═══ S1: HERO ═══ -->
+<section class="hero" id="s-hero" data-section="Hero">
+  <div class="hero-video">
+    <video autoplay muted loop playsinline poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
+      <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-content shell">
+    <div class="hero-logo">
+      <span class="pulse-dot"></span>
+      <span>PICKLE DAAS</span>
+    </div>
+    <div class="hero-eyebrow">Investor Walk-Through</div>
+    <h1>Pickleball video, turned into<br><span class="grad-text">classified intelligence.</span></h1>
+    <div class="hero-stat" id="hero-stat">
+      <em id="hs-clips">--</em> clips &middot; <em id="hs-brands">--</em> brands &middot; <em id="hs-rules">--</em> rules &middot; $0.005/clip
+    </div>
+    <div class="hero-cta"><span class="dot"></span> LIVE CORPUS &middot; APRIL 2026</div>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<div class="shell">
+
+<!-- ═══ S2: WHAT THE AI SEES ═══ -->
+<section id="s-aisees" data-section="AI Vision" style="padding:80px 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">What the AI Sees</div>
+    <div class="sec-title">You see a clip.<br><span class="grad-text">Our AI sees classified, traceable data.</span></div>
+  </div>
+  <div class="ai-sees" data-reveal data-reveal-delay="150">
+    <div class="ai-video-wrap" id="ai-video-wrap">
+      <video id="ai-video" muted loop playsinline poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
+        <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4" type="video/mp4">
+      </video>
+      <!-- 5 timed badges -->
+      <div class="ai-badge" id="ab1" style="top:12px;left:12px">
+        <div class="ab-strip" style="background:var(--c-gd)"></div>
+        <div class="ab-title" style="color:var(--c-gd)">Brand</div>
+        <div class="ab-body"><strong>JOOLA</strong> &middot; paddle &middot; player_equipment<br>rule v6 &middot; verified</div>
+      </div>
+      <div class="ai-badge" id="ab2" style="top:12px;right:12px">
+        <div class="ab-strip" style="background:var(--c-pl)"></div>
+        <div class="ab-title" style="color:var(--c-pl)">Shot</div>
+        <div class="ab-body"><strong>Overhead smash</strong> &middot; 16 shots<br>top play</div>
+      </div>
+      <div class="ai-badge" id="ab3" style="bottom:12px;left:12px">
+        <div class="ab-strip" style="background:var(--c-int)"></div>
+        <div class="ab-title" style="color:var(--c-int)">Player DNA</div>
+        <div class="ab-body">Power <strong>9</strong> &middot; IQ <strong>8</strong> &middot; Kitchen <strong>7</strong><br>Coverage <strong>8</strong></div>
+      </div>
+      <div class="ai-badge" id="ab4" style="top:12px;left:12px">
+        <div class="ab-strip" style="background:var(--c-rd)"></div>
+        <div class="ab-title" style="color:var(--c-rd)">Classified</div>
+        <div class="ab-body"><strong>player_equipment</strong><br>Routed to Brand buyer lane</div>
+      </div>
+      <div class="ai-badge" id="ab5" style="bottom:12px;right:12px">
+        <div class="ab-strip" style="background:var(--c-sp)"></div>
+        <div class="ab-title" style="color:var(--c-sp)">Arc</div>
+        <div class="ab-body">Top play <strong>&uarr;</strong> &middot; Viral <strong>7.4</strong>/10</div>
+      </div>
+    </div>
+    <div class="ai-cards-col">
+      <div class="ai-info">
+        <span class="ai-tag" style="background:var(--c-int-g);color:var(--c-int)">Intel</span>
+        <h4>Classified Brand Intel</h4>
+        <p>Every brand detection is tagged with a context flag (player equipment, venue installed, sponsor signage), matched to a human-approved rule, and routed to a buyer lane.</p>
+      </div>
+      <div class="ai-info">
+        <span class="ai-tag" style="background:var(--c-pl-g);color:var(--c-pl)">DNA</span>
+        <h4>Player DNA</h4>
+        <p>Power, IQ, kitchen mastery, court coverage, composure. Multi-dimensional player profiles built from every clip, every shot, every rally.</p>
+      </div>
+      <div class="ai-info">
+        <span class="ai-tag" style="background:var(--c-sp-g);color:var(--c-sp)">Story</span>
+        <h4>Storytelling Engine</h4>
+        <p>Story arcs, viral potential, badge predictions. The AI doesn't just see the play. It writes the narrative around it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S3: THE NUMBERS ═══ -->
+<section id="s-numbers" data-section="Numbers" style="padding:0 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">The Numbers</div>
+    <div class="sec-title">The data is <span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-int),var(--c-ve))">real.</span><br>Running right now.</div>
+  </div>
+  <div class="num-grid" id="num-grid" data-reveal data-reveal-delay="200"></div>
+  <div class="quote-glass" data-reveal data-reveal-delay="300">
+    Every number on this page is live. The corpus updates hourly. The classification engine runs on every new clip. No synthetic data. No projections. Just what the AI has already processed and humans have verified.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S4: THREE LANES ═══ -->
+<section id="s-lanes" data-section="Lanes" style="padding:0 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">Three Lanes, Three Buyers</div>
+    <div class="sec-title">Same corpus.<br>Three classified lanes.<br><span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-gd),var(--c-ve))">Three revenue streams.</span></div>
+  </div>
+  <div class="lanes-grid" data-reveal data-reveal-delay="150">
+    <div class="lane-card" id="lane-pe">
+      <div class="lane-stripe" style="background:linear-gradient(90deg,var(--c-pl),transparent)"></div>
+      <div class="lane-inner">
+        <div class="lane-label" style="color:var(--c-pl)">Player Equipment</div>
+        <div class="lane-count" style="color:var(--c-pl)" data-to="5841">0</div>
+        <div class="lane-desc">Paddle, shoe, bag, apparel detections on players. The biggest lane. JOOLA alone accounts for 5,638 detections across the corpus.</div>
+        <div class="lane-proof"><strong>Proof point:</strong> JOOLA paddle detected in 71% of all clips. Rule v6 verified. Context flag: player_equipment.</div>
+        <a href="brand-intelligence-v3.2.html" class="lane-link" style="color:var(--c-pl)">Brand Intelligence &rarr;</a>
+      </div>
+    </div>
+    <div class="lane-card" id="lane-vi">
+      <div class="lane-stripe" style="background:linear-gradient(90deg,var(--c-ve),transparent)"></div>
+      <div class="lane-inner">
+        <div class="lane-label" style="color:var(--c-ve)">Venue Installed</div>
+        <div class="lane-count" style="color:var(--c-ve)" data-to="1174">0</div>
+        <div class="lane-desc">Cameras, net systems, court surfaces, installed equipment. What the venue bought, visible in every clip filmed there.</div>
+        <div class="lane-proof"><strong>Proof point:</strong> Reolink cameras + JOOLA net systems co-detected across venue footage. Context flag: venue_installed.</div>
+        <a href="evidence-wall-v3.1.html" class="lane-link" style="color:var(--c-ve)">Evidence Wall &rarr;</a>
+      </div>
+    </div>
+    <div class="lane-card" id="lane-ss">
+      <div class="lane-stripe" style="background:linear-gradient(90deg,var(--c-sp),transparent)"></div>
+      <div class="lane-inner">
+        <div class="lane-label" style="color:var(--c-sp)">Sponsor Signage</div>
+        <div class="lane-count" style="color:var(--c-sp)" data-to="119">0</div>
+        <div class="lane-desc">Banners, logos, branded surfaces. The whitespace signal -- which sponsors are present and which categories have zero coverage.</div>
+        <div class="lane-proof"><strong>Proof point:</strong> 119+ detections with subtypes (banner, court_logo, backdrop). Whitespace = unsold inventory.</div>
+        <a href="brand-intelligence-v3.2.html" class="lane-link" style="color:var(--c-sp)">Sponsor Intel &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S5: THE FLYWHEEL ═══ -->
+<section id="s-flywheel" data-section="Moat" style="padding:0 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">The Moat</div>
+    <div class="sec-title">The data + classification <span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-int),var(--c-gd))">flywheel.</span></div>
+  </div>
+  <div class="flywheel-container" data-reveal data-reveal-delay="200">
+    <div class="flywheel" id="flywheel">
+      <div class="fw-ring"></div>
+      <div class="fw-center">HUMAN<br>+ AI</div>
+      <!-- 6 nodes positioned via JS -->
+    </div>
+    <div class="fw-mobile" id="fw-mobile"></div>
+    <div class="fw-explain">
+      Each revolution of the flywheel makes the next one faster. More venues produce more video. More video trains better rules. Better rules build a cleaner corpus. A cleaner corpus attracts more buyers. More revenue funds more venues. The classification layer is the compounding asset -- every human-verified rule makes every future detection more accurate.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S6: CLASSIFICATION ENGINE ═══ -->
+<section id="s-engine" data-section="Engine" style="padding:0 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">Inside the Engine</div>
+    <div class="sec-title">The classification engine is the <span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-pl),var(--c-sp))">unfair advantage.</span></div>
+  </div>
+  <div class="engine-stats" data-reveal data-reveal-delay="150">
+    <div class="engine-stat">
+      <div class="es-v" style="color:var(--c-pl)" data-to="7903">0</div>
+      <div class="es-l">Detections</div>
+    </div>
+    <div class="engine-stat">
+      <div class="es-v" style="color:var(--c-sp)">v6</div>
+      <div class="es-l">Taxonomy</div>
+    </div>
+    <div class="engine-stat">
+      <div class="es-v" style="color:var(--c-int)" data-to="54">0</div>
+      <div class="es-l">Rules</div>
+    </div>
+    <div class="engine-stat">
+      <div class="es-v" style="color:var(--c-ve)" data-to="91.9" data-dec="1" data-suf="%">0</div>
+      <div class="es-l">Coverage</div>
+    </div>
+  </div>
+  <div class="provenance-chain" data-reveal data-reveal-delay="250">
+<span class="pc-step">Video clip</span> <span class="pc-arrow">&rarr;</span> <span class="pc-val">Gemini 2.5 Flash</span> <span class="pc-arrow">&rarr;</span> <span class="pc-step">Raw detection</span> <span class="pc-arrow">&rarr;</span> <span class="pc-val">Taxonomy v6</span> <span class="pc-arrow">&rarr;</span> <span class="pc-step">Rule match</span> <span class="pc-arrow">&rarr;</span> <span class="pc-val">Context flag</span> <span class="pc-arrow">&rarr;</span> <span class="pc-step">Buyer lane</span>
+<span class="pc-step">  &#x2514;&rarr; Human review</span> <span class="pc-arrow">&rarr;</span> <span class="pc-val">Verified / Rejected</span> <span class="pc-arrow">&rarr;</span> <span class="pc-step">Rule updated</span> <span class="pc-arrow">&rarr;</span> <span class="pc-val">Corpus improved</span>
+  </div>
+  <a href="classifier-queue.html" class="engine-link" data-reveal data-reveal-delay="350">View Classifier Queue &rarr;</a>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S7: AI DEBATE ═══ -->
+<section id="s-debate" data-section="Debate" style="padding:0 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">Self-Critique</div>
+    <div class="sec-title">Two AIs walk into a clip.<br><span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-rd),var(--c-ve))">They disagree.</span></div>
+  </div>
+  <div class="agree-bar-wrap" data-reveal data-reveal-delay="100">
+    <div class="agree-bar-label">
+      <span>Agreement rate</span>
+      <span id="agree-pct">8.3%</span>
+    </div>
+    <div class="agree-bar">
+      <div class="agree-fill" id="agree-fill" style="width:0"></div>
+    </div>
+  </div>
+  <div class="debate-arena" data-reveal data-reveal-delay="200" id="debate-arena"></div>
+  <div class="verdict-box" data-reveal data-reveal-delay="300">
+    <strong>Why this matters:</strong> When Flash and Pro disagree on badges and arcs, the classification layer resolves it. The human-approved rules don't care which model said what -- they care whether the detection matches a verified pattern. That's why 91.9% of detections are covered by rules, not model consensus. The disagreement is a feature, not a bug. It reveals where human judgment adds the most value.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S8: PORTFOLIO ═══ -->
+<section id="s-portfolio" data-section="Portfolio" style="padding:0 0 0">
+  <div data-reveal>
+    <div class="sec-eyebrow">Live System</div>
+    <div class="sec-title">Every dashboard, <span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-int),var(--c-sp))">classified.</span></div>
+  </div>
+  <div class="port-grid" data-reveal data-reveal-delay="150">
+    <a href="brand-intelligence-v3.2.html" class="port-card featured">
+      <div class="port-top"><span class="port-emoji">&#x1F50D;</span><span class="port-tag" style="background:var(--c-int-g);color:var(--c-int)">Featured</span></div>
+      <div class="port-title">Brand Intelligence v3.2</div>
+      <div class="port-desc">348 brands classified into 3 revenue lanes. Provenance trails. Bubble maps. Full search. The flagship dashboard.</div>
+      <span class="port-link">Explore &rarr;</span>
+    </a>
+    <a href="evidence-wall-v3.1.html" class="port-card">
+      <div class="port-top"><span class="port-emoji">&#x1F3AC;</span><span class="port-tag" style="background:var(--c-pl-d);color:var(--c-pl)">Evidence</span></div>
+      <div class="port-title">Evidence Wall v3.1</div>
+      <div class="port-desc">Visual proof for every detection. Side-by-side clip + classification. Filter by brand, lane, or rule.</div>
+      <span class="port-link">Explore &rarr;</span>
+    </a>
+    <a href="equipment-performance-v3.1.html" class="port-card">
+      <div class="port-top"><span class="port-emoji">&#x1F3D3;</span><span class="port-tag" style="background:var(--c-ve-d);color:var(--c-ve)">Equipment</span></div>
+      <div class="port-title">Equipment Performance v3.1</div>
+      <div class="port-desc">Which paddle correlates with which play style? Equipment intelligence tied to Player DNA.</div>
+      <span class="port-link">Explore &rarr;</span>
+    </a>
+    <a href="idea-lab.html" class="port-card">
+      <div class="port-top"><span class="port-emoji">&#x1F4A1;</span><span class="port-tag" style="background:var(--c-sp-d);color:var(--c-sp)">Research</span></div>
+      <div class="port-title">Idea Lab</div>
+      <div class="port-desc">AI-generated research findings from the corpus. Strategic + data insights. 37 findings and counting.</div>
+      <span class="port-link">Explore &rarr;</span>
+    </a>
+    <a href="classifier-queue.html" class="port-card">
+      <div class="port-top"><span class="port-emoji">&#x2699;&#xFE0F;</span><span class="port-tag" style="background:var(--c-rd-d);color:var(--c-rd)">Engine</span></div>
+      <div class="port-title">Classifier Queue</div>
+      <div class="port-desc">The human-in-the-loop review queue. See pending classifications, approve rules, track accuracy.</div>
+      <span class="port-link">Explore &rarr;</span>
+    </a>
+    <a href="brand-intelligence-v3.1.html" class="port-card" style="opacity:.6">
+      <div class="port-top"><span class="port-emoji">&#x1F4C1;</span><span class="port-tag" style="background:rgba(255,255,255,.04);color:var(--t5)">Archive</span></div>
+      <div class="port-title">Brand Intelligence v3.1</div>
+      <div class="port-desc">Previous version. Preserved for comparison and audit trail.</div>
+      <span class="port-link">View archive &rarr;</span>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ S9: REVENUE SIMULATOR + CTA ═══ -->
+<section id="s-revenue" data-section="Revenue" style="padding:0 0 64px">
+  <div data-reveal>
+    <div class="sec-eyebrow">The Ask</div>
+    <div class="sec-title">Now imagine this <span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-gd),var(--c-ve))">at scale.</span></div>
+  </div>
+  <div class="sim-wrap" data-reveal data-reveal-delay="150">
+    <div class="sim-presets" id="sim-presets">
+      <button class="sim-preset on" data-p="today">Today (3 venues)</button>
+      <button class="sim-preset" data-p="y1">12 months</button>
+      <button class="sim-preset" data-p="net">Network of 50</button>
+    </div>
+    <div class="sim-body">
+      <div class="sim-row">
+        <span class="sim-label">Venues</span>
+        <input type="range" class="sim-slider" id="sl-venues" min="1" max="100" value="3">
+        <span class="sim-val" id="sv-venues">3</span>
+      </div>
+      <div class="sim-row">
+        <span class="sim-label">Clips/venue/mo</span>
+        <input type="range" class="sim-slider" id="sl-clips" min="100" max="10000" value="1000" step="100">
+        <span class="sim-val" id="sv-clips">1,000</span>
+      </div>
+      <div class="sim-row">
+        <span class="sim-label">Sponsor CPM ($)</span>
+        <input type="range" class="sim-slider" id="sl-cpm" min="5" max="100" value="25">
+        <span class="sim-val" id="sv-cpm">$25</span>
+      </div>
+      <div class="sim-row">
+        <span class="sim-label">Brand subs</span>
+        <input type="range" class="sim-slider" id="sl-subs" min="0" max="50" value="2">
+        <span class="sim-val" id="sv-subs">2</span>
+      </div>
+    </div>
+    <div class="sim-outputs" id="sim-outputs">
+      <div class="sim-out"><div class="sim-out-v" id="so-clips" style="color:var(--c-int)">--</div><div class="sim-out-l">Clips/year</div></div>
+      <div class="sim-out"><div class="sim-out-v" id="so-cost" style="color:var(--c-rd)">--</div><div class="sim-out-l">AI cost</div></div>
+      <div class="sim-out"><div class="sim-out-v" id="so-arr" style="color:var(--c-gd)">--</div><div class="sim-out-l">ARR est.</div></div>
+      <div class="sim-out"><div class="sim-out-v" id="so-margin" style="color:var(--c-int)">--</div><div class="sim-out-l">Gross margin</div></div>
+    </div>
+    <div class="sim-note">
+      <strong>Brand intelligence pricing:</strong> $500/mo per brand subscriber for full intel feed. <strong>Sponsor CPM:</strong> impression-based pricing on classified sponsor detections. At $25 CPM with 50 venues, sponsor revenue alone covers AI costs 40x over. The classification layer is the margin engine.
+    </div>
+  </div>
+
+  <div class="cta-block" data-reveal>
+    <div class="cta-name">Bill Bricker</div>
+    <a href="mailto:bill@courtana.com" class="cta-email">bill@courtana.com</a>
+    <div class="cta-title">Founder, Pickle DaaS</div>
+  </div>
+
+  <footer>
+    <div>Pickle DaaS &middot; v3.2 &middot; taxonomy v6 &middot; <a href="brand-intelligence-v3.2.html">Brand Intelligence &rarr;</a></div>
+    <div>Classification engine &middot; <a href="classifier-queue.html">Classifier Queue &rarr;</a></div>
+  </footer>
+</section>
+
+</div><!-- .shell -->
+</div><!-- .page -->
+
+<!-- Sticky CTA bar -->
+<div class="sticky-cta" id="sticky-cta">
+  <div class="shell sticky-inner">
+    <span class="sticky-label"><span class="sd"></span> Pickle DaaS &middot; Classified Intelligence</span>
+    <a href="mailto:bill@courtana.com" class="sticky-btn">Contact Bill &rarr;</a>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA + STATE
+═══════════════════════════════════════ */
+const FB={clips:3443,brands:348,rules:54,cov:91.9,detections:7903,pe:5841,vi:1174,ss:119,cost:0.005};
+let D={feed:null,stats:null,debate:null};
+
+async function jf(u){try{const r=await fetch(u,{cache:'no-store'});if(r.ok)return r.json()}catch(e){}return null}
+function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?(n/1e3).toFixed(0)+'k':n>=1e3?(n/1e3).toFixed(1)+'k':String(n)}
+function money(n){return n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1e3?'$'+(n/1e3).toFixed(0)+'k':'$'+n.toFixed(0)}
+
+/* ═══════════════════════════════════════
+   REVEAL SYSTEM
+═══════════════════════════════════════ */
+function initReveals(){
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    const el=e.target,d=parseInt(el.dataset.revealDelay||'0');
+    setTimeout(()=>el.classList.add('revealed'),d);obs.unobserve(el);
+  }})},{threshold:.12,rootMargin:'0px 0px -50px 0px'});
+  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
+}
+
+/* ═══════════════════════════════════════
+   COUNTER ANIMATION
+═══════════════════════════════════════ */
+function countUp(el){
+  if(el.dataset.done)return;el.dataset.done='1';
+  const to=parseFloat(el.dataset.to),dec=parseInt(el.dataset.dec||'0'),
+    pre=el.dataset.pre||'',suf=el.dataset.suf||'',dur=1800,t0=performance.now();
+  const ease=t=>1-Math.pow(1-t,4);
+  (function tick(now){
+    const p=Math.min(1,(now-t0)/dur),v=to*ease(p);
+    el.textContent=pre+v.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;
+    if(p<1)requestAnimationFrame(tick);
+  })(t0);
+}
+function initCounters(){
+  document.querySelectorAll('[data-to]').forEach(el=>{
+    new IntersectionObserver(([e],o)=>{if(e.isIntersecting){countUp(el);o.disconnect()}},{threshold:.3}).observe(el);
+  });
+}
+
+/* ═══════════════════════════════════════
+   SIDE NAV DOTS
+═══════════════════════════════════════ */
+const sections=[
+  {id:'s-hero',label:'Hero'},
+  {id:'s-aisees',label:'AI Vision'},
+  {id:'s-numbers',label:'Numbers'},
+  {id:'s-lanes',label:'Lanes'},
+  {id:'s-flywheel',label:'Moat'},
+  {id:'s-engine',label:'Engine'},
+  {id:'s-debate',label:'Debate'},
+  {id:'s-portfolio',label:'Portfolio'},
+  {id:'s-revenue',label:'Revenue'}
+];
+function buildSideNav(){
+  const nav=document.getElementById('side-nav');
+  nav.innerHTML=sections.map(s=>`<div class="side-dot" data-label="${s.label}" onclick="document.getElementById('${s.id}').scrollIntoView({behavior:'smooth'})"></div>`).join('');
+  const dots=nav.querySelectorAll('.side-dot');
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{
+    if(e.isIntersecting){
+      const idx=sections.findIndex(s=>s.id===e.target.id);
+      dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }
+  })},{threshold:.3,rootMargin:'-10% 0px -60% 0px'});
+  sections.forEach(s=>{const el=document.getElementById(s.id);if(el)obs.observe(el)});
+}
+
+/* ═══════════════════════════════════════
+   STATUS STRIP + STICKY CTA
+═══════════════════════════════════════ */
+function initScrollBehavior(){
+  const status=document.getElementById('status-bar');
+  const sticky=document.getElementById('sticky-cta');
+  const hero=document.getElementById('s-hero');
+  const numbers=document.getElementById('s-numbers');
+  let lastY=0;
+  window.addEventListener('scroll',()=>{
+    const y=window.scrollY;
+    const heroBottom=hero.getBoundingClientRect().bottom;
+    const numbersBottom=numbers?numbers.getBoundingClientRect().bottom:0;
+    // Status: show after hero
+    status.classList.toggle('visible',heroBottom<0);
+    status.classList.toggle('scrolled',y>20);
+    // Sticky CTA: show after numbers leave viewport
+    sticky.classList.toggle('visible',numbersBottom<0);
+    lastY=y;
+  },{passive:true});
+}
+
+/* ═══════════════════════════════════════
+   S2: AI VIDEO BADGE TIMING
+═══════════════════════════════════════ */
+function initAIBadges(){
+  const video=document.getElementById('ai-video');
+  const badges=[
+    {id:'ab1',start:0.8,end:3.6},
+    {id:'ab2',start:4.0,end:6.8},
+    {id:'ab3',start:7.2,end:10.0},
+    {id:'ab4',start:10.4,end:13.2},
+    {id:'ab5',start:13.6,end:16.4}
+  ];
+  let started=false;
+  const obs=new IntersectionObserver(([e])=>{
+    if(e.isIntersecting&&!started){
+      started=true;
+      video.play().catch(()=>{});
+    }
+  },{threshold:.4});
+  obs.observe(video);
+  video.addEventListener('timeupdate',()=>{
+    const t=video.currentTime;
+    badges.forEach(b=>{
+      const el=document.getElementById(b.id);
+      if(!el)return;
+      el.classList.toggle('show',t>=b.start&&t<=b.end);
+    });
+  });
+  // Loop reset
+  video.addEventListener('ended',()=>{video.currentTime=0;video.play().catch(()=>{})});
+}
+
+/* ═══════════════════════════════════════
+   S3: BUILD NUMBERS GRID
+═══════════════════════════════════════ */
+function buildNumbers(){
+  const f=D.feed?.corpus||{};
+  const s=D.stats||{};
+  const cells=[
+    {v:f.total_clips||FB.clips,l:'Clips analyzed',src:'corpus-export',c:'var(--c-int)'},
+    {v:s.total_brand_detections||FB.detections,l:'Total detections',src:'classified',c:'var(--c-pl)'},
+    {v:f.unique_brands||FB.brands,l:'Unique brands',src:'provenance',c:'var(--c-ve)'},
+    {v:s.rule_count||FB.rules,l:'Approved rules',src:'taxonomy v6',c:'var(--c-int)'},
+    {v:0.005,l:'Cost per clip',src:'gemini 2.5 flash',c:'var(--c-gd)',pre:'$',dec:3},
+    {v:s.coverage_pct||FB.cov,l:'Rule coverage',src:'taxonomy v6',c:'var(--c-sp)',suf:'%',dec:1}
+  ];
+  document.getElementById('num-grid').innerHTML=cells.map(x=>`<div class="num-cell"><div class="num-v" style="color:${x.c}" data-to="${x.v}" data-dec="${x.dec||0}" data-pre="${x.pre||''}" data-suf="${x.suf||''}">0</div><div class="num-l">${x.l}</div><div class="num-src">${x.src}</div></div>`).join('');
+}
+
+/* ═══════════════════════════════════════
+   S5: FLYWHEEL
+═══════════════════════════════════════ */
+function buildFlywheel(){
+  const nodes=[
+    {icon:'\u{1F3DF}',label:'More Venues',val:'3+'},
+    {icon:'\u{1F3AC}',label:'More Video',val:'20K+'},
+    {icon:'\u{1F4CF}',label:'Better Rules',val:'+v6'},
+    {icon:'\u{1F4CA}',label:'Cleaner Corpus',val:'3,443'},
+    {icon:'\u{1F465}',label:'More Buyers',val:'3 lanes'},
+    {icon:'\u{1F4B0}',label:'More Revenue',val:'\u2192ARR'}
+  ];
+  const fw=document.getElementById('flywheel');
+  const radius=140; // distance from center
+  nodes.forEach((n,i)=>{
+    const angle=(i/6)*2*Math.PI - Math.PI/2;
+    const x=Math.cos(angle)*radius;
+    const y=Math.sin(angle)*radius;
+    const el=document.createElement('div');
+    el.className='fw-node';
+    el.style.transform=`translate(${x}px,${y}px)`;
+    el.innerHTML=`<div class="fw-icon">${n.icon}</div><div class="fw-label">${n.label}</div><div class="fw-val">${n.val}</div>`;
+    fw.appendChild(el);
+  });
+  // Mobile fallback
+  const mob=document.getElementById('fw-mobile');
+  mob.innerHTML=nodes.map((n,i)=>`<div class="fw-step"><div class="fw-step-num">${i+1}</div><div class="fw-step-text"><strong>${n.label}</strong> ${n.val}</div></div>`).join('');
+}
+
+/* ═══════════════════════════════════════
+   S7: AI DEBATE
+═══════════════════════════════════════ */
+function buildDebate(){
+  const deb=D.debate?.debate?.highlights?.[0];
+  if(!deb){
+    // Fallback
+    document.getElementById('debate-arena').innerHTML='<div class="glass" style="padding:24px;grid-column:1/-1;text-align:center;color:var(--t4)">Debate data loading...</div>';
+    return;
+  }
+  document.getElementById('agree-pct').textContent=(deb.agreement_rate*100).toFixed(1)+'%';
+  // Animate fill
+  setTimeout(()=>{document.getElementById('agree-fill').style.width=(deb.agreement_rate*100)+'%'},400);
+  const flash=deb.badge_disagree?.flash_only||[];
+  const pro=deb.badge_disagree?.pro_only||[];
+  const skillD=deb.skill_disagrees||[];
+  const arena=document.getElementById('debate-arena');
+  arena.innerHTML=`
+    <div class="debate-col">
+      <div class="debate-model" style="color:var(--c-ve)">${deb.flash_model||'Flash'}</div>
+      <div class="debate-item"><span class="debate-field">Story arc</span><span class="debate-val" style="color:var(--c-ve)">${deb.arc_disagree?.flash||'--'}</span></div>
+      <div class="debate-item"><span class="debate-field">Dominant shot</span><span class="debate-val" style="color:var(--c-ve)">${deb.shot_disagree?.flash||'--'}</span></div>
+      <div class="debate-item"><span class="debate-field">Badges</span><span class="debate-val" style="color:var(--c-ve)">${flash.join(', ')||'--'}</span></div>
+      ${skillD.slice(0,3).map(s=>`<div class="debate-item"><span class="debate-field">${s.field.split('.').pop()}</span><span class="debate-val" style="color:var(--c-ve)">${s.flash}</span></div>`).join('')}
+    </div>
+    <div class="debate-col">
+      <div class="debate-model" style="color:var(--c-pl)">${deb.pro_model||'Pro'}</div>
+      <div class="debate-item"><span class="debate-field">Story arc</span><span class="debate-val" style="color:var(--c-pl)">${deb.arc_disagree?.pro||'--'}</span></div>
+      <div class="debate-item"><span class="debate-field">Dominant shot</span><span class="debate-val" style="color:var(--c-pl)">${deb.shot_disagree?.pro||'--'}</span></div>
+      <div class="debate-item"><span class="debate-field">Badges</span><span class="debate-val" style="color:var(--c-pl)">${pro.join(', ')||'--'}</span></div>
+      ${skillD.slice(0,3).map(s=>`<div class="debate-item"><span class="debate-field">${s.field.split('.').pop()}</span><span class="debate-val" style="color:var(--c-pl)">${s.pro}</span></div>`).join('')}
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════
+   S9: REVENUE SIMULATOR
+═══════════════════════════════════════ */
+const presets={
+  today:{venues:3,clips:1000,cpm:25,subs:2},
+  y1:{venues:12,clips:2000,cpm:30,subs:8},
+  net:{venues:50,clips:3000,cpm:35,subs:20}
+};
+function initSimulator(){
+  const slV=document.getElementById('sl-venues'),slC=document.getElementById('sl-clips'),
+        slM=document.getElementById('sl-cpm'),slS=document.getElementById('sl-subs');
+  const svV=document.getElementById('sv-venues'),svC=document.getElementById('sv-clips'),
+        svM=document.getElementById('sv-cpm'),svS=document.getElementById('sv-subs');
+
+  function calc(){
+    const v=+slV.value,c=+slC.value,cpm=+slM.value,subs=+slS.value;
+    svV.textContent=v;
+    svC.textContent=c.toLocaleString();
+    svM.textContent='$'+cpm;
+    svS.textContent=subs;
+    const clipsYear=v*c*12;
+    const aiCost=clipsYear*0.005;
+    const sponsorRev=(clipsYear/1000)*cpm*0.12; // ~12% are sponsor-visible
+    const brandRev=subs*500*12;
+    const arr=sponsorRev+brandRev;
+    const margin=arr>0?((arr-aiCost)/arr*100):0;
+    const outs=[
+      {id:'so-clips',v:fmt(clipsYear)},
+      {id:'so-cost',v:money(aiCost)},
+      {id:'so-arr',v:money(arr)},
+      {id:'so-margin',v:margin.toFixed(0)+'%'}
+    ];
+    outs.forEach(o=>{
+      const el=document.getElementById(o.id);
+      el.textContent=o.v;
+      el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+    });
+  }
+  [slV,slC,slM,slS].forEach(s=>s.addEventListener('input',()=>{
+    // Deselect presets
+    document.querySelectorAll('.sim-preset').forEach(p=>p.classList.remove('on'));
+    calc();
+  }));
+  // Presets
+  document.querySelectorAll('.sim-preset').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const p=presets[btn.dataset.p];
+      if(!p)return;
+      document.querySelectorAll('.sim-preset').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      slV.value=p.venues;slC.value=p.clips;slM.value=p.cpm;slS.value=p.subs;
+      calc();
+    });
+  });
+  calc();
+}
+
+/* ═══════════════════════════════════════
+   HERO STATS UPDATE
+═══════════════════════════════════════ */
+function updateHeroStats(){
+  const f=D.feed?.corpus||{};
+  const s=D.stats||{};
+  document.getElementById('hs-clips').textContent=(f.total_clips||FB.clips).toLocaleString();
+  document.getElementById('hs-brands').textContent=f.unique_brands||FB.brands;
+  document.getElementById('hs-rules').textContent=s.rule_count||FB.rules;
+  document.getElementById('ref-clips').textContent=(f.total_clips||FB.clips).toLocaleString();
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+async function init(){
+  // Fetch data in parallel
+  const [feed,stats,debate]=await Promise.all([
+    jf('../api/feed.json'),
+    jf('../classification-stats.json'),
+    jf('../dashboards/walkthrough-data.json')
+  ]);
+  D.feed=feed;D.stats=stats;D.debate=debate;
+
+  updateHeroStats();
+  buildNumbers();
+  buildFlywheel();
+  buildDebate();
+  buildSideNav();
+  initScrollBehavior();
+  initAIBadges();
+  initSimulator();
+  initReveals();
+  // Delay counter init slightly to let DOM settle
+  requestAnimationFrame(()=>requestAnimationFrame(initCounters));
+}
+init();
+</script>
+</body>
+</html>
