@@ -272,6 +272,56 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
 
 /* ── Provenance pill tooltip ── */
 .pp[title]{cursor:help}
+
+/* ═══════════════════════════════
+   TIME-MACHINE SLIDER
+═══════════════════════════════ */
+.time-machine{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin-bottom:24px;flex-wrap:wrap}
+.tm-label{font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t4);text-transform:uppercase;letter-spacing:.1em;flex-shrink:0}
+.tm-range{flex:1;min-width:200px;-webkit-appearance:none;height:4px;background:rgba(255,255,255,.08);border-radius:2px;outline:none;cursor:pointer}
+.tm-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--c-int);cursor:pointer;border:2px solid var(--bg-deep);box-shadow:0 0 12px rgba(110,239,192,.4)}
+.tm-date{font-family:'Red Hat Mono',monospace;font-size:14px;font-weight:700;color:var(--c-int);min-width:100px}
+.tm-play{width:32px;height:32px;border-radius:50%;background:var(--c-int-g);border:1px solid rgba(110,239,192,.25);color:var(--c-int);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s var(--ease);flex-shrink:0}
+.tm-play:hover{background:rgba(110,239,192,.18);border-color:var(--c-int)}
+.tm-play:active{transform:scale(.9)}
+
+/* ═══════════════════════════════
+   CONSTELLATION MAP (Canvas)
+═══════════════════════════════ */
+.constellation-wrap{position:relative;width:100%;height:500px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;margin-bottom:16px;cursor:crosshair}
+.constellation-wrap canvas{width:100%;height:100%;display:block}
+.const-tooltip{position:absolute;pointer-events:none;padding:8px 12px;background:rgba(14,14,20,.92);border:1px solid var(--glass-h);border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t1);white-space:nowrap;opacity:0;transition:opacity .15s;z-index:10;backdrop-filter:blur(8px)}
+.const-tooltip.vis{opacity:1}
+.const-legend{display:flex;gap:14px;justify-content:center;margin-top:10px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t5);flex-wrap:wrap}
+.const-legend span{display:flex;align-items:center;gap:5px}
+.const-legend .dot{width:8px;height:8px;border-radius:50%}
+.view-toggle{display:flex;gap:6px;margin-bottom:14px}
+.vt-btn{padding:7px 14px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;backdrop-filter:blur(8px)}
+.vt-btn:hover{color:var(--t2);border-color:var(--bd-h)}
+.vt-btn.on{background:var(--c-int-g);color:var(--c-int);border-color:rgba(110,239,192,.25)}
+.vt-btn:active{transform:scale(.97)}
+
+/* ═══════════════════════════════
+   VIDEO EVIDENCE FILMSTRIP
+═══════════════════════════════ */
+.filmstrip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 12px 12px;margin-top:4px}
+.filmstrip::-webkit-scrollbar{display:none}
+.fs-clip{width:96px;height:54px;border-radius:6px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.06);transition:border-color .2s,transform .2s var(--ease)}
+.fs-clip:hover{border-color:rgba(255,255,255,.2);transform:scale(1.05)}
+.fs-clip:active{transform:scale(.98)}
+.fs-clip video,.fs-clip img{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.fs-clip::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:10px;transition:opacity .2s}
+.fs-clip:hover::after{opacity:.2}
+.fs-clip.playing::after{opacity:0}
+
+/* ═══════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .blob,.noise{display:none}
+  [data-reveal]{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -312,8 +362,40 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   <a href="#lanes" class="hero-cta"><span class="cta-dot"></span>Explore the three lanes</a>
 </section>
 
+<!-- Time-Machine Slider -->
+<div class="time-machine" id="time-machine" data-reveal data-reveal-delay="100">
+  <span class="tm-label">Time machine</span>
+  <input type="range" class="tm-range" id="tm-range" min="0" max="7" value="7" oninput="scrubTimeline(this.value)">
+  <span class="tm-date" id="tm-date">Today</span>
+  <button class="tm-play" id="tm-play" onclick="playTimeline()" title="Auto-play growth timeline">▶</button>
+</div>
+
 <!-- Stat grid -->
 <div class="stat-grid" id="stat-grid" data-reveal data-reveal-delay="200"></div>
+
+<div class="divider"></div>
+
+<!-- Brand Constellation Map -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Brand Relationships</div>
+    <div class="sec-title">The brand <span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-sp),var(--c-int))">constellation</span></div>
+  </div>
+</div>
+<div class="view-toggle" data-reveal data-reveal-delay="100">
+  <button class="vt-btn on" onclick="setView('constellation')">Constellation</button>
+  <button class="vt-btn" onclick="setView('bubbles')">Bubble Pack</button>
+</div>
+<div class="constellation-wrap" id="constellation" data-reveal data-reveal-delay="200">
+  <canvas id="const-canvas"></canvas>
+  <div class="const-tooltip" id="const-tip"></div>
+</div>
+<div class="const-legend" data-reveal data-reveal-delay="300">
+  <span><span class="dot" style="background:var(--c-pl)"></span>Player equipment</span>
+  <span><span class="dot" style="background:var(--c-ve)"></span>Venue installed</span>
+  <span><span class="dot" style="background:var(--c-sp)"></span>Sponsor signage</span>
+  <span>Line thickness = co-occurrence frequency</span>
+</div>
 
 <div class="divider"></div>
 
@@ -525,9 +607,31 @@ function renderLanes(){
       <div class="lane-stripe"></div>
       <div class="lane-head"><span class="lane-label">${c.label}</span><span class="lane-count" data-to="${c.tot}">0</span></div>
       <div class="bubbles" id="bub-${c.cls}" data-color="${c.color}" data-glow="${c.glow}"></div>
+      <div class="filmstrip" id="film-${c.cls}"></div>
       <div class="lane-foot"><span><strong>${c.brands.length}</strong> top brands</span><span><strong>${ver}</strong>/${c.brands.length} verified</span></div>
     </div>`;
   }).join('');
+
+  // Populate filmstrips from API data
+  setTimeout(() => {
+    const filmSources = {
+      player: () => {const cats=S.pe.categories||{};const all=[];for(const arr of Object.values(cats))for(const b of arr)if(b.example_clips)all.push(...b.example_clips.slice(0,2));return all.slice(0,5)},
+      venue: () => {const all=[];for(const k of['venue_installed','broadcast_tech','facility_chains']){const arr=S.venue[k]||[];for(const b of arr)if(b.example_clips)all.push(...b.example_clips.slice(0,2));}return all.slice(0,5)},
+      sponsor: () => {const subs=S.sponsors.subtypes||{};const all=[];for(const arr of Object.values(subs))for(const b of arr)if(b.example_clips)all.push(...b.example_clips.slice(0,2));return all.slice(0,5)}
+    };
+    for (const [cls, fn] of Object.entries(filmSources)){
+      const el = document.getElementById('film-'+cls);
+      if (!el) continue;
+      const clips = fn();
+      el.innerHTML = clips.map(c => {
+        const url = c.video_url || `https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/${c.uuid}.mp4`;
+        const thumb = c.thumbnail || `https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/${c.uuid}.jpeg`;
+        return `<div class="fs-clip" onmouseenter="this.querySelector('video').play().catch(()=>{})" onmouseleave="const v=this.querySelector('video');v.pause();v.currentTime=0">
+          <video src="${esc(url)}" poster="${esc(thumb)}" preload="none" muted loop playsinline></video>
+        </div>`;
+      }).join('') || '<span style="font-size:10px;color:var(--t6);font-family:Red Hat Mono,monospace;padding:8px">No clips available</span>';
+    }
+  }, 300);
 
   // Render bubbles after layout settles
   setTimeout(()=>{
@@ -666,7 +770,265 @@ function openBrand(name){
 function closeModal(){document.getElementById('m-bg').classList.remove('open')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
-load();
+/* ═══════════════════════════════════════
+   TIME-MACHINE SLIDER
+═══════════════════════════════════════ */
+let timelineData = [];
+async function loadTimeline(){
+  const d = await jf('../corpus-timeline.json');
+  if (d && d.timeline) {
+    timelineData = d.timeline;
+    const slider = document.getElementById('tm-range');
+    slider.max = timelineData.length - 1;
+    slider.value = timelineData.length - 1;
+    scrubTimeline(slider.value);
+  }
+}
+function scrubTimeline(idx){
+  idx = parseInt(idx);
+  if (!timelineData[idx]) return;
+  const pt = timelineData[idx];
+  document.getElementById('tm-date').textContent = pt.date;
+  // Update stat grid values to this point in time
+  const cells = document.querySelectorAll('.sg-v');
+  const vals = [pt.clips, pt.unique_brands, pt.total_detections, null, null, null, null, null];
+  cells.forEach((c, i) => {
+    if (vals[i] != null) {
+      const suf = c.dataset.suf || '';
+      c.textContent = vals[i].toLocaleString() + suf;
+      c.style.transition = 'color .3s';
+      c.style.color = idx < timelineData.length - 1 ? 'rgba(241,196,15,.9)' : ''; // gold when scrubbing history
+    }
+  });
+}
+let tmPlaying = false;
+function playTimeline(){
+  if (tmPlaying) return;
+  tmPlaying = true;
+  const slider = document.getElementById('tm-range');
+  const btn = document.getElementById('tm-play');
+  btn.textContent = '⏸';
+  let idx = 0;
+  slider.value = 0;
+  scrubTimeline(0);
+  const iv = setInterval(() => {
+    idx++;
+    if (idx >= timelineData.length) { clearInterval(iv); btn.textContent = '▶'; tmPlaying = false; return; }
+    slider.value = idx;
+    scrubTimeline(idx);
+  }, 600);
+}
+
+/* ═══════════════════════════════════════
+   CONSTELLATION MAP (Force-Directed)
+═══════════════════════════════════════ */
+let constData = null;
+let constNodes = [];
+let constEdges = [];
+let constAnim = null;
+let hoveredNode = null;
+let currentView = 'constellation';
+
+const COLORS = {
+  player_equipment: '#6BA3FF',
+  venue_installed: '#FFB86C',
+  sponsor_signage: '#BD93F9',
+  default: '#6EEFC0'
+};
+
+function nodeColor(n){
+  if (n.player_equipment) return COLORS.player_equipment;
+  if (n.venue_installed) return COLORS.venue_installed;
+  if (n.sponsor_signage) return COLORS.sponsor_signage;
+  return COLORS.default;
+}
+
+async function loadConstellation(){
+  constData = await jf('../brand-co-occurrence.json');
+  if (!constData) return;
+  initConstellation();
+}
+
+function initConstellation(){
+  const canvas = document.getElementById('const-canvas');
+  const wrap = document.getElementById('constellation');
+  if (!canvas || !constData) return;
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+  canvas.width = W * 2; // retina
+  canvas.height = H * 2;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+
+  const maxClips = Math.max(...constData.nodes.map(n => n.clips));
+  constNodes = constData.nodes.map((n, i) => ({
+    ...n,
+    x: W/2 + (Math.random() - 0.5) * W * 0.6,
+    y: H/2 + (Math.random() - 0.5) * H * 0.6,
+    vx: 0, vy: 0,
+    radius: 8 + Math.sqrt(n.clips / maxClips) * 32,
+    color: nodeColor(n)
+  }));
+  constEdges = constData.edges.map(e => ({
+    source: constNodes.find(n => n.name === e.source),
+    target: constNodes.find(n => n.name === e.target),
+    weight: e.weight
+  })).filter(e => e.source && e.target);
+
+  // Run simulation
+  let tick = 0;
+  const maxWeight = Math.max(...constEdges.map(e => e.weight));
+  function simulate(){
+    tick++;
+    const damping = 0.92;
+    const repulsion = 800;
+    const attraction = 0.0004;
+    const centerPull = 0.001;
+
+    // Repulsion between all nodes
+    for (let i = 0; i < constNodes.length; i++){
+      for (let j = i+1; j < constNodes.length; j++){
+        const a = constNodes[i], b = constNodes[j];
+        let dx = b.x - a.x, dy = b.y - a.y;
+        let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        let force = repulsion / (dist * dist);
+        let fx = (dx/dist) * force, fy = (dy/dist) * force;
+        a.vx -= fx; a.vy -= fy;
+        b.vx += fx; b.vy += fy;
+      }
+    }
+    // Attraction along edges
+    for (const e of constEdges){
+      let dx = e.target.x - e.source.x, dy = e.target.y - e.source.y;
+      let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      let force = dist * attraction * (e.weight / maxWeight);
+      let fx = (dx/dist) * force, fy = (dy/dist) * force;
+      e.source.vx += fx; e.source.vy += fy;
+      e.target.vx -= fx; e.target.vy -= fy;
+    }
+    // Center gravity
+    for (const n of constNodes){
+      n.vx += (W/2 - n.x) * centerPull;
+      n.vy += (H/2 - n.y) * centerPull;
+      n.vx *= damping; n.vy *= damping;
+      n.x += n.vx; n.y += n.vy;
+      // Bounds
+      n.x = Math.max(n.radius + 4, Math.min(W - n.radius - 4, n.x));
+      n.y = Math.max(n.radius + 4, Math.min(H - n.radius - 4, n.y));
+    }
+  }
+
+  function draw(){
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(2, 0, 0, 2, 0, 0); // retina scale
+    ctx.clearRect(0, 0, W, H);
+
+    // Draw edges
+    for (const e of constEdges){
+      const isHighlighted = hoveredNode && (e.source.name === hoveredNode || e.target.name === hoveredNode);
+      const alpha = hoveredNode ? (isHighlighted ? 0.5 : 0.04) : 0.12;
+      const width = 1 + (e.weight / maxWeight) * 3;
+      ctx.beginPath();
+      ctx.moveTo(e.source.x, e.source.y);
+      ctx.lineTo(e.target.x, e.target.y);
+      ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+      ctx.lineWidth = isHighlighted ? width * 1.5 : width;
+      ctx.stroke();
+    }
+    // Draw nodes
+    for (const n of constNodes){
+      const isHov = hoveredNode === n.name;
+      const isConnected = hoveredNode && constEdges.some(e => (e.source.name === hoveredNode && e.target.name === n.name) || (e.target.name === hoveredNode && e.source.name === n.name));
+      const alpha = hoveredNode ? (isHov || isConnected ? 1 : 0.15) : 0.85;
+      const r = isHov ? n.radius * 1.15 : n.radius;
+
+      // Glow
+      if (isHov){
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r + 8, 0, Math.PI * 2);
+        ctx.fillStyle = n.color.replace(')', ',.15)').replace('rgb','rgba');
+        ctx.fill();
+      }
+      // Circle
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = n.color + Math.round(alpha * 255).toString(16).padStart(2,'0');
+      ctx.fill();
+      ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.3})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Label
+      if (r > 14 || isHov){
+        ctx.fillStyle = `rgba(255,255,255,${alpha * 0.9})`;
+        ctx.font = `${isHov ? '600' : '500'} ${Math.max(9, r * 0.4)}px 'Red Hat Mono', monospace`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(n.name, n.x, n.y - (r > 20 ? 4 : 0));
+        if (r > 20 || isHov){
+          ctx.fillStyle = `rgba(255,255,255,${alpha * 0.5})`;
+          ctx.font = `400 ${Math.max(8, r * 0.3)}px 'Red Hat Mono', monospace`;
+          ctx.fillText(n.clips.toLocaleString(), n.x, n.y + (r > 20 ? 10 : 8));
+        }
+      }
+    }
+    if (tick < 300) simulate();
+    constAnim = requestAnimationFrame(draw);
+  }
+
+  // Mouse hover detection
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    let found = null;
+    for (const n of constNodes){
+      const dx = mx - n.x, dy = my - n.y;
+      if (Math.sqrt(dx*dx + dy*dy) < n.radius + 4) { found = n; break; }
+    }
+    hoveredNode = found ? found.name : null;
+    const tip = document.getElementById('const-tip');
+    if (found){
+      tip.innerHTML = `<strong>${esc(found.name)}</strong> · ${found.clips.toLocaleString()} clips · ${found.category}`;
+      tip.style.left = (mx + 16) + 'px';
+      tip.style.top = (my - 10) + 'px';
+      tip.classList.add('vis');
+      canvas.style.cursor = 'pointer';
+    } else {
+      tip.classList.remove('vis');
+      canvas.style.cursor = 'crosshair';
+    }
+  });
+  canvas.addEventListener('mouseleave', () => {
+    hoveredNode = null;
+    document.getElementById('const-tip').classList.remove('vis');
+  });
+  canvas.addEventListener('click', e => {
+    if (hoveredNode) openBrand(hoveredNode);
+  });
+
+  // Start animation
+  new IntersectionObserver(([entry], obs) => {
+    if (entry.isIntersecting) { draw(); obs.disconnect(); }
+  }, {threshold: 0.1}).observe(wrap);
+}
+
+function setView(v){
+  currentView = v;
+  document.querySelectorAll('.vt-btn').forEach(b => b.classList.toggle('on', b.textContent.toLowerCase().includes(v)));
+  document.getElementById('constellation').style.display = v === 'constellation' ? 'block' : 'none';
+  document.getElementById('lanes').style.display = v === 'bubbles' ? 'grid' : 'grid'; // lanes always visible
+  // Constellation section heading
+  if (v === 'constellation' && constData && !constAnim) initConstellation();
+}
+
+/* ═══════════════════════════════════════
+   LOAD ALL
+═══════════════════════════════════════ */
+async function loadAll(){
+  await load();
+  loadTimeline();
+  loadConstellation();
+}
+loadAll();
 </script>
 </body>
 </html>
