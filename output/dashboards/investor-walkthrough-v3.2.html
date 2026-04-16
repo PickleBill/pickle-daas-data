@@ -693,13 +693,18 @@ function initReveals(){
 function countUp(el){
   if(el.dataset.done)return;el.dataset.done='1';
   const to=parseFloat(el.dataset.to),dec=parseInt(el.dataset.dec||'0'),
-    pre=el.dataset.pre||'',suf=el.dataset.suf||'',dur=1800,t0=performance.now();
+    pre=el.dataset.pre||'',suf=el.dataset.suf||'',dur=1800;
   const ease=t=>1-Math.pow(1-t,4);
-  (function tick(now){
-    const p=Math.min(1,(now-t0)/dur),v=to*ease(p);
-    el.textContent=pre+v.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;
+  const fmt=v=>pre+v.toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf;
+  let t0=null;
+  function tick(now){
+    if(!t0)t0=now;
+    const p=Math.min(1,(now-t0)/dur);
+    el.textContent=fmt(to*ease(p));
     if(p<1)requestAnimationFrame(tick);
-  })(t0);
+    else el.textContent=fmt(to);
+  }
+  requestAnimationFrame(tick);
 }
 function initCounters(){
   document.querySelectorAll('[data-to]').forEach(el=>{
