@@ -53,8 +53,11 @@ a{color:inherit;text-decoration:none}
 .shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
 
 /* ── Reveal system ── */
-[data-reveal]{opacity:0;transform:translateY(52px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
 [data-reveal].revealed{opacity:1;transform:none}
+/* Hero is always visible — first section, no reveal needed */
+.hero [data-reveal],.hero[data-reveal]{opacity:1!important;transform:none!important}
+#s1-body{opacity:1!important;transform:none!important}
 
 /* ── Section divider ── */
 .divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
@@ -674,11 +677,14 @@ function money(n){return n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1e3?'$'+(n/1e3).to
    REVEAL SYSTEM
 ═══════════════════════════════════════ */
 function initReveals(){
-  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
-    const el=e.target,d=parseInt(el.dataset.revealDelay||'0');
-    setTimeout(()=>el.classList.add('revealed'),d);obs.unobserve(el);
-  }})},{threshold:.12,rootMargin:'0px 0px -50px 0px'});
-  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
+  const els=document.querySelectorAll('[data-reveal]:not(.revealed)');
+  if(!els.length)return;
+  const reveal=(el)=>{if(el.classList.contains('revealed'))return;const d=parseInt(el.dataset.revealDelay||'0');setTimeout(()=>el.classList.add('revealed'),d)};
+  const isInView=(el)=>{const r=el.getBoundingClientRect();return r.top<window.innerHeight+50&&r.bottom>-50};
+  els.forEach(el=>{if(isInView(el))reveal(el)});
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){reveal(e.target);obs.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(el=>{if(!el.classList.contains('revealed'))obs.observe(el)});
+  setTimeout(()=>{document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el=>{if(isInView(el))reveal(el)})},3000);
 }
 
 /* ═══════════════════════════════════════
