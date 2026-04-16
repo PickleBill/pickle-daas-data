@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venue Intelligence v3.3 · Pickle DaaS</title>
+<meta name="description" content="The venue ecosystem — cameras, facilities, court surfaces. Every venue is a data source.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   V3.3 DESIGN SYSTEM — Venue Intelligence
+   Amber accent (#FFB86C) · Near-black bg · glass
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --accent:#FFB86C;--accent-g:rgba(255,184,108,.12);--accent-d:rgba(255,184,108,.06);
+  --accent-b:rgba(255,184,108,.2);--accent-2:#F1C40F;
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:#FFB86C;opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:#F1C40F;opacity:.03;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:#FF6B6B;opacity:.02;animation:bd3 72s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+.hero{opacity:1!important;transform:none!important}
+.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+
+/* Status strip */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--accent);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--accent);border-color:var(--accent-b)}
+
+/* Hero */
+.hero{padding:clamp(64px,10vw,120px) 0 clamp(32px,5vw,56px);position:relative}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:900px}
+.grad-text{background:linear-gradient(135deg,#FFB86C,#F1C40F);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:620px;line-height:1.7}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t3)}
+.hero-pill .hp-v{font-size:20px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
+.hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5)}
+.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:#FFB86C;opacity:.035;pointer-events:none}
+
+/* Section heading */
+.sec-head{margin-bottom:28px}
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+
+/* Glass cards */
+.glass-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;margin-bottom:32px}
+.gc-stripe{height:3px;width:100%}
+.gc-head{padding:20px 24px 14px;display:flex;justify-content:space-between;align-items:center}
+.gc-label{font-family:'Red Hat Mono',monospace;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
+.gc-count{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t5)}
+
+/* Glass table */
+.g-table{width:100%;border-collapse:collapse}
+.g-table th{text-align:left;padding:10px 16px;font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);border-bottom:1px solid var(--bd);font-weight:600}
+.g-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+.g-table tr:last-child td{border-bottom:none}
+.g-table tr:hover td{background:rgba(255,255,255,.02)}
+.g-table .brand-name{font-size:14px;font-weight:700;color:var(--t1)}
+.g-table .det-num{font-size:16px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--accent)}
+.g-table .clip-num{font-size:13px;font-family:'Red Hat Mono',monospace;color:var(--t3)}
+.thumb-strip{display:flex;gap:4px}
+.thumb-cell{width:48px;height:28px;border-radius:4px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.06);transition:border-color .2s,transform .2s var(--ease)}
+.thumb-cell:hover{border-color:rgba(255,184,108,.3);transform:scale(1.08)}
+.thumb-cell video,.thumb-cell img{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.thumb-cell::after{content:'\25B6';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);color:white;font-size:8px;transition:opacity .2s}
+.thumb-cell:hover::after{opacity:.2}
+
+/* Footer */
+footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)}
+
+.ld{display:flex;flex-direction:column;align-items:center;padding:100px 20px;gap:16px}
+.spinner{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  .g-table .thumb-strip{display:none}
+  .gc-head{flex-direction:column;align-items:flex-start;gap:6px}
+}
+@media(max-width:600px){
+  .hero-pills{flex-direction:column}
+  .status nav{display:none}
+  .g-table th:nth-child(3),.g-table td:nth-child(3){display:none}
+}
+
+.glass-card:hover{border-color:var(--bd-h)}
+.glass-card:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:inherit}
+.thumb-cell:active{transform:scale(.95)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .blob,.noise{display:none}
+  [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="page"><div class="shell">
+
+<!-- Status strip -->
+<div class="status" id="status-bar">
+  <div class="shell status-inner">
+    <span><span class="sd"></span>Live &middot; <em id="ref-ts">&mdash;</em></span>
+    <span>venue detections <em id="ref-det">&mdash;</em></span>
+    <span>taxonomy <em id="ref-tax">&mdash;</em></span>
+    <span class="v-chip">v3.3</span>
+    <nav>
+      <a href="brand-intelligence-v3.2.html">Brands</a>
+      <a href="equipment-performance-v3.3.html">Equipment</a>
+      <a href="story-hub-v3.3.html">Stories</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero" data-reveal>
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">Venue Intelligence</div>
+  <h1>Every venue is<br><span class="grad-text">a data source.</span></h1>
+  <p class="hero-sub">Cameras, facility chains, court surfaces, net systems. The install base that powers the data flywheel. Every detection traced to the clip that captured it.</p>
+  <div class="hero-pills" id="hero-pills"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Broadcast Tech -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Broadcast Infrastructure</div>
+    <div class="sec-title">Camera <span class="grad-text">tech on court</span></div>
+  </div>
+</div>
+<div class="glass-card" id="broadcast-card" data-reveal>
+  <div class="gc-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
+  <div class="gc-head">
+    <span class="gc-label">Broadcast Tech</span>
+    <span class="gc-count" id="bc-count"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="g-table" id="broadcast-table"><thead><tr><th>Brand</th><th>Detections</th><th>Unique Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Facility Chains -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Facility Network</div>
+    <div class="sec-title">The <span class="grad-text">venue ecosystem</span></div>
+  </div>
+</div>
+<div class="glass-card" id="facility-card" data-reveal>
+  <div class="gc-stripe" style="background:linear-gradient(90deg,#F1C40F,transparent)"></div>
+  <div class="gc-head">
+    <span class="gc-label">Facility Chains</span>
+    <span class="gc-count" id="fc-count"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="g-table" id="facility-table"><thead><tr><th>Facility</th><th>Detections</th><th>Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Venue Installed -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Court Equipment</div>
+    <div class="sec-title">Venue-installed <span class="grad-text">brands</span></div>
+  </div>
+</div>
+<div class="glass-card" id="venue-card" data-reveal>
+  <div class="gc-stripe" style="background:linear-gradient(90deg,#FF6B6B,transparent)"></div>
+  <div class="gc-head">
+    <span class="gc-label">Venue Installed</span>
+    <span class="gc-count" id="vc-count"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="g-table" id="venue-table"><thead><tr><th>Brand</th><th>Detections</th><th>Clips</th><th>Evidence</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Footer -->
+<footer>
+  <span>Venue Intelligence v3.3 &middot; Pickle DaaS &middot; Data refreshed <span id="foot-ts"></span></span>
+  <span><a href="brand-intelligence-v3.2.html">Brand Intelligence</a> &middot; <a href="equipment-performance-v3.3.html">Equipment</a> &middot; <a href="story-hub-v3.3.html">Story Hub</a></span>
+</footer>
+
+</div></div>
+
+<script>
+const CDN='https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/';
+let VT=null,FEED=null,STATS=null;
+
+async function init(){
+  const [vtR,feedR,statsR]=await Promise.all([
+    fetch('../api/venue-tech.json').then(r=>r.json()),
+    fetch('../api/feed.json').then(r=>r.json()),
+    fetch('../classification-stats.json').then(r=>r.json())
+  ]);
+  VT=vtR; FEED=feedR; STATS=statsR;
+  renderStatus();
+  renderHero();
+  renderSection('broadcast_tech','broadcast-table','bc-count');
+  renderSection('facility_chains','facility-table','fc-count');
+  renderSection('venue_installed','venue-table','vc-count');
+  initReveal();
+  initScroll();
+}
+
+function renderStatus(){
+  const ts=VT.generated_at||'';
+  const d=ts?new Date(ts):new Date();
+  document.getElementById('ref-ts').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('foot-ts').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const venueDet=STATS.by_context_flag?.venue_installed||0;
+  const bcDet=STATS.by_context_flag?.broadcast_tech||0;
+  document.getElementById('ref-det').textContent=(venueDet+bcDet).toLocaleString();
+  document.getElementById('ref-tax').textContent='v'+VT.taxonomy_version;
+}
+
+function renderHero(){
+  const bc=VT.broadcast_tech||[];
+  const fc=VT.facility_chains||[];
+  const vi=VT.venue_installed||[];
+  const venueDet=STATS.by_context_flag?.venue_installed||0;
+  const bcDet=STATS.by_context_flag?.broadcast_tech||0;
+  const pills=[
+    {v:(venueDet+bcDet).toLocaleString(),l:'Venue detections'},
+    {v:fc.length,l:'Facility chains'},
+    {v:bc.length,l:'Camera brands'}
+  ];
+  document.getElementById('hero-pills').innerHTML=pills.map(p=>`
+    <div class="hero-pill"><div><span class="hp-v">${p.v}</span><div class="hp-l">${p.l}</div></div></div>
+  `).join('');
+}
+
+function renderSection(key,tableId,countId){
+  const items=VT[key]||[];
+  document.getElementById(countId).textContent=items.length+' brands &middot; '+items.reduce((s,b)=>s+b.total_detections,0).toLocaleString()+' detections';
+  const sorted=[...items].sort((a,b)=>b.total_detections-a.total_detections);
+  const tbody=document.querySelector('#'+tableId+' tbody');
+  tbody.innerHTML=sorted.map(b=>{
+    const clips=(b.example_clips||[]).filter((c,i,a)=>a.findIndex(x=>x.uuid===c.uuid)===i).slice(0,4);
+    const thumbs=clips.map(c=>{
+      const vid=CDN+c.uuid+'.mp4';
+      return `<div class="thumb-cell"><video src="${vid}" poster="${c.thumbnail}" muted loop playsinline preload="none" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video></div>`;
+    }).join('');
+    return `<tr>
+      <td class="brand-name">${b.brand}</td>
+      <td class="det-num">${b.total_detections.toLocaleString()}</td>
+      <td class="clip-num">${b.unique_clips}</td>
+      <td><div class="thumb-strip">${thumbs}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function initReveal(){
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target)}});
+  },{threshold:.1});
+  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
+}
+
+function initScroll(){
+  const bar=document.getElementById('status-bar');
+  window.addEventListener('scroll',()=>{bar.classList.toggle('scrolled',window.scrollY>20)},{passive:true});
+}
+
+init().catch(err=>{
+  document.querySelector('.page .shell').innerHTML=`<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Loading data&hellip; ${err.message}</p></div>`;
+});
+</script>
+</body>
+</html>
