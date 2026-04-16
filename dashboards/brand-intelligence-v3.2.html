@@ -102,8 +102,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── Stat grid ── */
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:48px}
-.sg-cell{background:var(--bg-s);padding:clamp(18px,3vw,28px) 16px;text-align:center;transition:background .2s}
-.sg-cell:hover{background:var(--bg-r)}
+.sg-cell{background:var(--bg-s);padding:clamp(18px,3vw,28px) 16px;text-align:center}
 .sg-v{font-size:clamp(1.4rem,2.8vw,2.2rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1}
 .sg-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:6px}
 .sg-src{font-size:9px;color:var(--t6);font-family:'JetBrains Mono',monospace;margin-top:4px}
@@ -252,6 +251,27 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   .search-input{min-width:0;width:100%}
   .sub-name{min-width:100px}
 }
+
+/* ── Active & focus-visible states ── */
+.glass:active,.card:active,.tab:active,.ws-item:active,#load-more:active,.m-btn:active,.m-x:active,.bub:active{transform:scale(.97)!important}
+.glass:focus-visible,.card:focus-visible,.tab:focus-visible,#load-more:focus-visible,.m-btn:focus-visible,.m-x:focus-visible,.bub:focus-visible,a:focus-visible{outline:2px solid var(--c-int);outline-offset:2px;border-radius:inherit}
+
+/* ── Glass-static (non-interactive containers) ── */
+.glass-static{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+/* ── Hero CTA button ── */
+.hero-cta{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--c-int-g);border:1px solid rgba(110,239,192,.25);border-radius:var(--r);font-family:'Red Hat Mono',monospace;font-size:12px;font-weight:600;color:var(--c-int);cursor:pointer;transition:all .2s var(--ease);text-decoration:none;margin-top:24px}
+.hero-cta:hover{background:rgba(110,239,192,.18);border-color:var(--c-int)}
+.hero-cta:active{transform:scale(.97)}
+.hero-cta .cta-dot{width:6px;height:6px;border-radius:50%;background:var(--c-int);box-shadow:0 0 8px var(--c-int);animation:pulse 2.5s infinite}
+
+/* ── Section-end CTA link ── */
+.sec-cta{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:8px 16px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;color:var(--t3);border:1px solid var(--bd);border-radius:8px;cursor:pointer;transition:all .2s var(--ease);text-decoration:none}
+.sec-cta:hover{color:var(--c-int);border-color:rgba(110,239,192,.3);background:var(--c-int-d)}
+.sec-cta:active{transform:scale(.97)}
+
+/* ── Provenance pill tooltip ── */
+.pp[title]{cursor:help}
 </style>
 </head>
 <body>
@@ -289,6 +309,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   <h1>The Pickleball<br><span class="grad-text">Brand Landscape</span></h1>
   <p class="hero-sub">Every brand on every clip — classified into a revenue lane, tagged by an approved rule, traceable to the human who verified it. Click any brand for its provenance trail.</p>
   <div class="hero-pills" id="hero-pills"></div>
+  <a href="#lanes" class="hero-cta"><span class="cta-dot"></span>Explore the three lanes</a>
 </section>
 
 <!-- Stat grid -->
@@ -304,6 +325,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   </div>
 </div>
 <div class="lanes" id="lanes"></div>
+<div style="text-align:center;margin-top:20px"><a href="#tabs" class="sec-cta">See all 327 brands &rarr;</a></div>
 
 <div class="divider"></div>
 
@@ -326,6 +348,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   </div>
 </div>
 <div class="ws-grid" id="ws" data-reveal data-reveal-delay="200"></div>
+<div style="text-align:center;margin-top:16px"><a href="mailto:bill@courtana.com" class="sec-cta">Interested in sponsoring? Contact us &rarr;</a></div>
 
 <div class="divider"></div>
 
@@ -549,7 +572,7 @@ function renderSubtypes(){
 function renderWhitespace(){
   const ws=(S.signals&&S.signals.sponsorship_whitespace)||{};
   const entries=Object.entries(ws).slice(0,15);
-  document.getElementById('ws').innerHTML=entries.map(([k,v],i)=>`<div class="ws-item" data-reveal data-reveal-delay="${i*40}"><span class="ws-name">${esc(k)}</span><span class="ws-count">${fmt(v)}</span></div>`).join('');
+  document.getElementById('ws').innerHTML=entries.map(([k,v],i)=>`<div class="ws-item" data-reveal data-reveal-delay="${i*40}" style="cursor:pointer" onclick="setTab('ss');document.getElementById('q').value='${esc(k)}';render();document.getElementById('tabs').scrollIntoView({behavior:'smooth'})"><span class="ws-name">${esc(k)}</span><span class="ws-count">${fmt(v)}</span></div>`).join('');
 }
 
 function renderTabs(){
@@ -582,8 +605,8 @@ function render(){
 
   document.getElementById('cards').innerHTML=visible.map((b,i)=>{
     const cls=b.player_equipment?'player':b.venue_installed?'venue':b.sponsor_signage?'sponsor':b.broadcast_tech?'broadcast':'fallback';
-    const provP=b.source==='rule'?`<span class="pp rule">rule v${b.rule_version||'?'}</span>`:'<span class="pp fb">fallback</span>';
-    const verP=b.human_verified?'<span class="pp ver">✓ verified</span>':'<span class="pp unv">unverified</span>';
+    const provP=b.source==='rule'?`<span class="pp rule" title="Tagged by approved classification rule, version ${b.rule_version||'?'}">rule v${b.rule_version||'?'}</span>`:'<span class="pp fb" title="AI pattern match — not yet rule-approved">fallback</span>';
+    const verP=b.human_verified?'<span class="pp ver" title="Verified by a human reviewer">✓ verified</span>':'<span class="pp unv" title="Pending human review">unverified</span>';
     const revC=b.revenue_potential==='high'?'rev-h':b.revenue_potential==='medium'?'rev-m':'rev-l';
     return `<div class="card ${cls}" data-reveal data-reveal-delay="${Math.min(i,6)*60}" onclick='openBrand(${JSON.stringify(b.name)})'>
       <div class="card-stripe"></div>
@@ -593,7 +616,7 @@ function render(){
       </div>
       <div class="card-body">
         <div class="card-prov"><span class="card-prov-l">tagged</span>${provP}${verP}</div>
-        <div class="card-pills">${b.category_primary?`<span class="pp cat">${esc(b.category_primary)}</span>`:''}
+        <div class="card-pills">${b.category_primary?`<span class="pp cat" title="Primary product category">${esc(b.category_primary)}</span>`:''}
         <span class="pp ${revC}">${esc(b.revenue_potential||'?')} rev</span></div>
       </div>
     </div>`;
@@ -629,7 +652,7 @@ function openBrand(name){
   if(clips.length){
     body+=`<div class="m-sec"><h4>Source Clips</h4><div class="eg">${clips.slice(0,8).map(c=>`
       <div class="ec" onclick="event.stopPropagation();this.querySelector('video').play()">
-        <div class="ecv"><video src="${esc(c.video_url||'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/'+c.uuid+'.mp4')}" poster="${esc(c.thumbnail||'')}" preload="none" muted loop playsinline></video></div>
+        <div class="ecv"><video src="${esc(c.video_url||'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/'+c.uuid+'.mp4')}" poster="${esc(c.thumbnail||'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg')}" preload="none" muted loop playsinline></video></div>
         <div class="eci">${esc(c.summary||'')}</div>
       </div>`).join('')}</div></div>`;
   }

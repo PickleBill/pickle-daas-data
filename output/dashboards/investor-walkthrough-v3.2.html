@@ -135,8 +135,7 @@ a{color:inherit;text-decoration:none}
    S3: THE NUMBERS
 ═══════════════════════════════════════ */
 .num-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:32px}
-.num-cell{background:var(--bg-s);padding:clamp(20px,3vw,32px) 16px;text-align:center;transition:background .2s}
-.num-cell:hover{background:var(--bg-r)}
+.num-cell{background:var(--bg-s);padding:clamp(20px,3vw,32px) 16px;text-align:center}
 .num-v{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1}
 .num-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:6px}
 .num-src{font-size:9px;color:var(--t6);font-family:'JetBrains Mono',monospace;margin-top:4px}
@@ -296,6 +295,22 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   .sticky-label span:not(.sd){display:none}
   .hero h1{font-size:clamp(2rem,8vw,3rem)}
 }
+
+/* ── Active & focus-visible states ── */
+.glass:active,.lane-card:active,.port-card:active,.sim-preset:active,.sticky-btn:active{transform:scale(.97)!important}
+a:focus-visible,.glass:focus-visible,.port-card:focus-visible,.sim-preset:focus-visible,.sticky-btn:focus-visible,.side-dot:focus-visible{outline:2px solid #6EEFC0;outline-offset:2px}
+
+/* ── Override hover on non-interactive quote-glass ── */
+.quote-glass:hover{transform:none!important;box-shadow:none!important}
+
+/* ── Flywheel nodes clickable ── */
+.fw-node{cursor:pointer}
+
+/* ── Scroll cue clickable ── */
+.scroll-cue{cursor:pointer}
+
+/* ── CTA email link hover ── */
+.cta-email:hover{text-decoration:underline;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -343,9 +358,9 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
     <div class="hero-stat" id="hero-stat">
       <em id="hs-clips">--</em> clips &middot; <em id="hs-brands">--</em> brands &middot; <em id="hs-rules">--</em> rules &middot; $0.005/clip
     </div>
-    <div class="hero-cta"><span class="dot"></span> LIVE CORPUS &middot; APRIL 2026</div>
+    <a href="#s-aisees" class="hero-cta" style="text-decoration:none"><span class="dot"></span> LIVE CORPUS &middot; APRIL 2026</a>
   </div>
-  <div class="scroll-cue">
+  <div class="scroll-cue" onclick="document.getElementById('s-aisees').scrollIntoView({behavior:'smooth'})">
     <div class="scroll-line"></div>
     <span>Scroll</span>
   </div>
@@ -365,27 +380,27 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
         <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4" type="video/mp4">
       </video>
       <!-- 5 timed badges -->
-      <div class="ai-badge" id="ab1" style="top:12px;left:12px">
+      <div class="ai-badge" id="ab1" style="top:12px;left:12px" title="Brand detection: classified by approved rule, human-verified">
         <div class="ab-strip" style="background:var(--c-gd)"></div>
         <div class="ab-title" style="color:var(--c-gd)">Brand</div>
         <div class="ab-body"><strong>JOOLA</strong> &middot; paddle &middot; player_equipment<br>rule v6 &middot; verified</div>
       </div>
-      <div class="ai-badge" id="ab2" style="top:12px;right:12px">
+      <div class="ai-badge" id="ab2" style="top:12px;right:12px" title="Shot analysis: AI-detected shot types and play classification">
         <div class="ab-strip" style="background:var(--c-pl)"></div>
         <div class="ab-title" style="color:var(--c-pl)">Shot</div>
         <div class="ab-body"><strong>Overhead smash</strong> &middot; 16 shots<br>top play</div>
       </div>
-      <div class="ai-badge" id="ab3" style="bottom:12px;left:12px">
+      <div class="ai-badge" id="ab3" style="bottom:12px;left:12px" title="Player DNA: multi-dimensional skill profile from clip analysis">
         <div class="ab-strip" style="background:var(--c-int)"></div>
         <div class="ab-title" style="color:var(--c-int)">Player DNA</div>
         <div class="ab-body">Power <strong>9</strong> &middot; IQ <strong>8</strong> &middot; Kitchen <strong>7</strong><br>Coverage <strong>8</strong></div>
       </div>
-      <div class="ai-badge" id="ab4" style="top:12px;left:12px">
+      <div class="ai-badge" id="ab4" style="top:12px;left:12px" title="Classification: routed to buyer lane by context flag">
         <div class="ab-strip" style="background:var(--c-rd)"></div>
         <div class="ab-title" style="color:var(--c-rd)">Classified</div>
         <div class="ab-body"><strong>player_equipment</strong><br>Routed to Brand buyer lane</div>
       </div>
-      <div class="ai-badge" id="ab5" style="bottom:12px;right:12px">
+      <div class="ai-badge" id="ab5" style="bottom:12px;right:12px" title="Story arc: narrative intelligence and viral potential scoring">
         <div class="ab-strip" style="background:var(--c-sp)"></div>
         <div class="ab-title" style="color:var(--c-sp)">Arc</div>
         <div class="ab-body">Top play <strong>&uarr;</strong> &middot; Viral <strong>7.4</strong>/10</div>
@@ -434,7 +449,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
     <div class="sec-title">Same corpus.<br>Three classified lanes.<br><span class="grad-text" style="background-image:linear-gradient(135deg,var(--c-gd),var(--c-ve))">Three revenue streams.</span></div>
   </div>
   <div class="lanes-grid" data-reveal data-reveal-delay="150">
-    <div class="lane-card" id="lane-pe">
+    <div class="lane-card" id="lane-pe" style="cursor:pointer" onclick="window.location.href='brand-intelligence-v3.2.html'">
       <div class="lane-stripe" style="background:linear-gradient(90deg,var(--c-pl),transparent)"></div>
       <div class="lane-inner">
         <div class="lane-label" style="color:var(--c-pl)">Player Equipment</div>
@@ -444,7 +459,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
         <a href="brand-intelligence-v3.2.html" class="lane-link" style="color:var(--c-pl)">Brand Intelligence &rarr;</a>
       </div>
     </div>
-    <div class="lane-card" id="lane-vi">
+    <div class="lane-card" id="lane-vi" style="cursor:pointer" onclick="window.location.href='evidence-wall-v3.1.html'">
       <div class="lane-stripe" style="background:linear-gradient(90deg,var(--c-ve),transparent)"></div>
       <div class="lane-inner">
         <div class="lane-label" style="color:var(--c-ve)">Venue Installed</div>
@@ -454,7 +469,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
         <a href="evidence-wall-v3.1.html" class="lane-link" style="color:var(--c-ve)">Evidence Wall &rarr;</a>
       </div>
     </div>
-    <div class="lane-card" id="lane-ss">
+    <div class="lane-card" id="lane-ss" style="cursor:pointer" onclick="window.location.href='brand-intelligence-v3.2.html'">
       <div class="lane-stripe" style="background:linear-gradient(90deg,var(--c-sp),transparent)"></div>
       <div class="lane-inner">
         <div class="lane-label" style="color:var(--c-sp)">Sponsor Signage</div>
@@ -485,6 +500,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
     <div class="fw-explain">
       Each revolution of the flywheel makes the next one faster. More venues produce more video. More video trains better rules. Better rules build a cleaner corpus. A cleaner corpus attracts more buyers. More revenue funds more venues. The classification layer is the compounding asset -- every human-verified rule makes every future detection more accurate.
     </div>
+    <div style="text-align:center;margin-top:20px"><a href="evidence-wall-v3.1.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.08);border-radius:8px;text-decoration:none;transition:all .2s">See the evidence &rarr;</a></div>
   </div>
 </section>
 
@@ -542,6 +558,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
   <div class="verdict-box" data-reveal data-reveal-delay="300">
     <strong>Why this matters:</strong> When Flash and Pro disagree on badges and arcs, the classification layer resolves it. The human-approved rules don't care which model said what -- they care whether the detection matches a verified pattern. That's why 91.9% of detections are covered by rules, not model consensus. The disagreement is a feature, not a bug. It reveals where human judgment adds the most value.
   </div>
+  <div style="text-align:center;margin-top:20px"><a href="classifier-queue.html" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.08);border-radius:8px;text-decoration:none;transition:all .2s">How we resolve disagreements &rarr;</a></div>
 </section>
 
 <div class="divider"></div>
@@ -637,6 +654,7 @@ footer a{color:var(--c-int);transition:color .2s}footer a:hover{color:var(--t2)}
     <div class="sim-note">
       <strong>Brand intelligence pricing:</strong> $500/mo per brand subscriber for full intel feed. <strong>Sponsor CPM:</strong> impression-based pricing on classified sponsor detections. At $25 CPM with 50 venues, sponsor revenue alone covers AI costs 40x over. The classification layer is the margin engine.
     </div>
+    <div style="text-align:center;margin-top:20px"><a href="mailto:bill@courtana.com" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.08);border-radius:8px;text-decoration:none;transition:all .2s">Let's discuss how to get here &rarr;</a></div>
   </div>
 
   <div class="cta-block" data-reveal>
