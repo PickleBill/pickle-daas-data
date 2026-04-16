@@ -1,11 +1,11 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T17:43:13.991380+00:00_
+_Generated: 2026-04-16T18:27:52.387759+00:00_
 
 ## Summary
 
 - **Corpus on gh-pages:** 3863 clips
-- **Total analysis files on disk:** 5372 (5372 ≥500 bytes)
-- **Minutes since last analysis:** 58.9
+- **Total analysis files on disk:** 5383 (5383 ≥500 bytes)
+- **Minutes since last analysis:** 1.2
 - **Human flags:** 109 total (102 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
@@ -39,7 +39,7 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands ⚠️ | 398/500 | 80% |
+| brand_detection.brands ⚠️ | 399/500 | 80% |
 | badge_intelligence.predicted_badges | 484/500 | 97% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
