@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Underground — Court Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface-2: #1a1a26;
+  --surface-3: #222233;
+  --border: #2a2a3a;
+  --text: #e8e8f0;
+  --text-muted: #8888aa;
+  --accent: #7c5cfc;
+  --accent-glow: rgba(124,92,252,0.15);
+  --green: #34d399;
+  --green-glow: rgba(52,211,153,0.12);
+  --amber: #fbbf24;
+  --amber-glow: rgba(251,191,36,0.12);
+  --red: #f87171;
+  --red-glow: rgba(248,113,113,0.12);
+  --blue: #60a5fa;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === HEADER === */
+.app-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+}
+.header-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px; color: white;
+}
+.brand-text h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+.brand-text span { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+.live-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--green-glow); border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 20px; padding: 4px 12px 4px 8px;
+  font-size: 11px; color: var(--green); font-weight: 500;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* === STATS === */
+.stats-bar {
+  max-width: 900px; margin: 16px auto 0; padding: 0 20px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px; text-align: center;
+}
+.stat-value { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+
+/* === LIVE AGENT PANEL === */
+.agent-panel {
+  max-width: 900px; margin: 16px auto 0; padding: 0 20px;
+}
+.agent-card {
+  background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(96,165,250,0.06));
+  border: 1px solid rgba(124,92,252,0.25);
+  border-radius: var(--radius); padding: 20px;
+}
+.agent-card h2 {
+  font-size: 14px; font-weight: 600; color: var(--accent);
+  margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+}
+.agent-card p { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+.agent-input-row { display: flex; gap: 8px; }
+.agent-input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  font-size: 13px; color: var(--text); font-family: 'Space Grotesk', system-ui;
+  outline: none;
+}
+.agent-input:focus { border-color: var(--accent); }
+.agent-input::placeholder { color: var(--text-muted); }
+.btn-run {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: none; background: var(--accent); color: white;
+  font-family: 'Space Grotesk', system-ui; transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-run:hover { background: #6b4fe0; }
+.btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
+.agent-presets { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.preset {
+  padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+}
+.preset:hover { border-color: var(--accent); color: var(--accent); }
+
+/* === AGENT RESPONSE === */
+.agent-response {
+  margin-top: 16px; border-top: 1px solid rgba(124,92,252,0.15); padding-top: 16px;
+}
+.agent-response.loading-state { text-align: center; padding: 30px; }
+.perspective-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px;
+}
+.perspective-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.perspective-name { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.perspective-confidence {
+  font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+}
+.conf-high { background: var(--green-glow); color: var(--green); }
+.conf-medium { background: var(--amber-glow); color: var(--amber); }
+.conf-low { background: var(--red-glow); color: var(--red); }
+.perspective-points { list-style: none; padding: 0; }
+.perspective-points li {
+  font-size: 12px; color: var(--text-muted); padding: 3px 0 3px 14px;
+  position: relative; line-height: 1.5;
+}
+.perspective-points li::before {
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent); position: absolute; left: 0; top: 10px;
+}
+.synthesis-card {
+  background: linear-gradient(135deg, rgba(52,211,153,0.06), rgba(124,92,252,0.06));
+  border: 1px solid rgba(52,211,153,0.25);
+  border-radius: var(--radius); padding: 16px; margin-top: 12px;
+}
+.synthesis-card h3 { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
+.synthesis-card .rec { font-size: 13px; line-height: 1.6; }
+.synthesis-card .tensions {
+  margin-top: 10px; font-size: 12px; color: var(--amber); line-height: 1.5;
+}
+
+/* === TABS === */
+.tabs {
+  max-width: 900px; margin: 20px auto 0; padding: 0 20px;
+  display: flex; gap: 4px; border-bottom: 1px solid var(--border);
+}
+.tab {
+  padding: 10px 18px; font-size: 13px; font-weight: 500; color: var(--text-muted);
+  cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab .count {
+  display: inline-block; background: var(--surface-3); border-radius: 10px;
+  padding: 1px 7px; font-size: 11px; margin-left: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* === FINDINGS === */
+.findings-container { max-width: 900px; margin: 0 auto; padding: 16px 20px; }
+.finding-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.finding-card:hover { border-color: rgba(124,92,252,0.3); }
+.finding-card.approved { border-left: 3px solid var(--green); }
+.finding-card.dismissed { opacity: 0.5; border-left: 3px solid var(--red); }
+.finding-card.live-result { border-left: 3px solid var(--accent); border-color: rgba(124,92,252,0.2); }
+.finding-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.finding-title { font-size: 15px; font-weight: 600; line-height: 1.4; flex: 1; }
+.finding-score {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+  padding: 3px 10px; border-radius: 6px; white-space: nowrap;
+}
+.score-high { background: var(--green-glow); color: var(--green); }
+.score-mid { background: var(--amber-glow); color: var(--amber); }
+.score-low { background: var(--surface-3); color: var(--text-muted); }
+.score-live { background: var(--accent-glow); color: var(--accent); }
+.finding-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tag { font-size: 10px; padding: 3px 9px; border-radius: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+.tag-agent { background: var(--accent-glow); color: var(--accent); }
+.tag-track { background: var(--surface-3); color: var(--text-muted); }
+.tag-category { background: rgba(96,165,250,0.12); color: var(--blue); }
+.tag-live { background: rgba(124,92,252,0.15); color: var(--accent); border: 1px solid rgba(124,92,252,0.3); }
+.finding-evidence {
+  margin-top: 12px; padding: 12px 14px; background: var(--surface-2);
+  border-radius: var(--radius-sm); font-size: 13px; line-height: 1.6; color: var(--text-muted);
+}
+.finding-action {
+  margin-top: 10px; padding: 10px 14px;
+  background: rgba(124,92,252,0.06); border-left: 2px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 13px; line-height: 1.5; color: var(--text);
+}
+.finding-action strong { color: var(--accent); font-weight: 600; }
+
+/* === BUTTONS === */
+.finding-actions { display: flex; gap: 8px; margin-top: 14px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1px solid transparent; transition: all 0.2s;
+  font-family: 'Space Grotesk', system-ui;
+}
+.btn-approve { background: rgba(52,211,153,0.1); color: var(--green); border-color: rgba(52,211,153,0.3); }
+.btn-approve:hover { background: rgba(52,211,153,0.2); }
+.btn-dismiss { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+.btn-dismiss:hover { background: var(--surface-3); color: var(--red); }
+.btn-deeper { background: rgba(124,92,252,0.1); color: var(--accent); border-color: rgba(124,92,252,0.3); }
+.btn-deeper:hover { background: rgba(124,92,252,0.2); }
+.comment-input {
+  flex: 1; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  font-size: 12px; color: var(--text); font-family: 'Space Grotesk', system-ui; outline: none;
+}
+.comment-input:focus { border-color: var(--accent); }
+.comment-input::placeholder { color: var(--text-muted); }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.empty-state h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.loading { display: flex; align-items: center; justify-content: center; padding: 80px 20px; gap: 12px; }
+.loading-spinner {
+  width: 20px; height: 20px; border: 2px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 20px;
+  font-size: 13px; font-weight: 500; z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.success { border-color: rgba(52,211,153,0.4); color: var(--green); }
+.toast.error { border-color: rgba(248,113,113,0.4); color: var(--red); }
+
+/* === WHAT'S NEW BANNER === */
+.whats-new {
+  max-width: 900px; margin: 12px auto 0; padding: 0 20px;
+}
+.whats-new-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.whats-new-card .wn-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--amber-glow); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.whats-new-card .wn-text { flex: 1; }
+.whats-new-card .wn-text strong { font-size: 12px; color: var(--amber); }
+.whats-new-card .wn-text p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+@media (max-width: 640px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .stat-value { font-size: 18px; }
+  .finding-header { flex-direction: column; }
+  .finding-actions { flex-wrap: wrap; }
+  .comment-input { min-width: 100%; order: -1; }
+  .agent-input-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">U</div>
+      <div class="brand-text">
+        <h1>The Underground</h1>
+        <span>Court Intelligence by Courtana</span>
+      </div>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div><span>AI Active</span></div>
+  </div>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-card"><div class="stat-value" id="statFindings">—</div><div class="stat-label">Findings</div></div>
+  <div class="stat-card"><div class="stat-value" id="statResearchers">9</div><div class="stat-label">Researchers</div></div>
+  <div class="stat-card"><div class="stat-value" id="statApproved">0</div><div class="stat-label">Approved</div></div>
+  <div class="stat-card"><div class="stat-value" id="statClips">—</div><div class="stat-label">Clips Analyzed</div></div>
+</div>
+
+<div class="whats-new" id="whatsNewContainer"></div>
+
+<!-- LIVE AGENT PANEL -->
+<div class="agent-panel">
+  <div class="agent-card">
+    <h2><span style="font-size:16px">⚡</span> Ask Your AI Research Team</h2>
+    <p>Ask any question about your court data. Multiple AI perspectives analyze it in parallel and synthesize a recommendation.</p>
+    <div class="agent-presets">
+      <span class="preset" onclick="setPreset('What shot types drive the most player engagement and why?')">Shot engagement</span>
+      <span class="preset" onclick="setPreset('Which brands have the best sponsorship opportunity based on court visibility gaps?')">Sponsorship gaps</span>
+      <span class="preset" onclick="setPreset('What coaching insights could we sell as a premium product?')">Coaching product</span>
+      <span class="preset" onclick="setPreset('How should we structure a player loyalty program using badge data?')">Loyalty program</span>
+      <span class="preset" onclick="setPreset('What content types generate the most viral highlights?')">Viral content</span>
+    </div>
+    <div class="agent-input-row">
+      <input class="agent-input" id="agentQuestion" placeholder="Ask a question about your court intelligence..." />
+      <button class="btn-run" id="btnRunAgent" onclick="runAgent()">Run Analysis</button>
+    </div>
+    <div id="agentResponse"></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabBar">
+  <button class="tab active" data-tab="all">All<span class="count" id="countAll">0</span></button>
+  <button class="tab" data-tab="strategic">Strategic<span class="count" id="countStrategic">0</span></button>
+  <button class="tab" data-tab="data">Data<span class="count" id="countData">0</span></button>
+  <button class="tab" data-tab="live">Live<span class="count" id="countLive">0</span></button>
+  <button class="tab" data-tab="approved">Approved<span class="count" id="countApproved">0</span></button>
+</div>
+
+<div class="findings-container" id="findingsContainer">
+  <div class="loading"><div class="loading-spinner"></div>
+    <span style="color:var(--text-muted);font-size:13px;">Loading intelligence...</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://ulgoahsxkrkzoquvntei.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZ29haHN4a3Jrem9xdXZudGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxOTk4MTUsImV4cCI6MjA4ODc3NTgxNX0.UKGLnqSE0OaYrGKekZtYjhamOfvnVhkATk5dwla8j0k';
+const API_BASES = [
+  'https://picklebill.github.io/pickle-daas-data/output/api',
+  '../api'
+];
+
+let allFindings = [];
+let liveFindings = []; // Agent-generated findings
+let decisions = {};
+let currentTab = 'all';
+let corpusSummary = ''; // Cached for agent context
+
+// ─── Data Loading ───
+
+async function fetchJSON(filename) {
+  for (const base of API_BASES) {
+    try { const r = await fetch(`${base}/${filename}`); if (r.ok) return await r.json(); } catch(e) {}
+  }
+  return null;
+}
+
+async function loadDecisions() {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/idea_lab_decisions?select=*`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if (r.ok) { const data = await r.json(); data.forEach(d => { decisions[d.finding_id] = d; }); }
+  } catch(e) {}
+}
+
+async function saveDecision(findingId, action, commentary, finding) {
+  decisions[findingId] = { action, commentary, category: finding.category, agent: finding.agent, title: finding.title, facility: 'underground' };
+  localStorage.setItem('underground_decisions', JSON.stringify(decisions));
+  showToast(`Finding ${action}`, 'success');
+  renderFindings();
+}
+
+// ─── LIVE AGENT INVOCATION ───
+
+function setPreset(q) { document.getElementById('agentQuestion').value = q; }
+
+async function runAgent() {
+  const question = document.getElementById('agentQuestion').value.trim();
+  if (!question) return;
+
+  const btn = document.getElementById('btnRunAgent');
+  const responseDiv = document.getElementById('agentResponse');
+
+  btn.disabled = true;
+  btn.textContent = 'Agents running...';
+  responseDiv.innerHTML = `<div class="agent-response loading-state">
+    <div class="loading-spinner" style="margin:0 auto;"></div>
+    <p style="margin-top:12px;font-size:12px;color:var(--text-muted);">
+      Firing 3 AI perspectives in parallel... (10-30 seconds)
+    </p>
+  </div>`;
+
+  // Build a brief object that the persona-perspective function expects
+  const brief = {
+    problem: question,
+    target_customer: 'Facility operator at The Underground — a pickleball venue with smart courts',
+    core_features: allFindings.slice(0,3).map(f => ({ name: f.title, description: f.evidence || f.action || '' })),
+    revenue_model: '$99/court/month SaaS + revenue share on highlights, coaching, gaming',
+    industry_trends: `${document.getElementById('statClips').textContent} clips analyzed, ${allFindings.length} findings from 9 AI researchers. ${corpusSummary}`
+  };
+
+  const personas = ['champion', 'skeptic', 'customer'];
+  const startTime = Date.now();
+
+  try {
+    // Fire 3 persona-perspective calls in PARALLEL
+    const perspectivePromises = personas.map(persona =>
+      fetch(`${SUPABASE_URL}/functions/v1/persona-perspective`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          apikey: SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ persona, brief, mode: 'fast' })
+      }).then(r => r.ok ? r.json() : Promise.reject(new Error(`${persona}: ${r.status}`)))
+        .then(data => ({ persona, ...data, _ok: true }))
+        .catch(err => ({ persona, _ok: false, error: err.message }))
+    );
+
+    const results = await Promise.all(perspectivePromises);
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    const successful = results.filter(r => r._ok);
+
+    renderAgentResponse({
+      perspectives: successful.map(r => ({
+        persona: r.persona,
+        key_points: (r.challenge_questions || []).map(q => q.question || q),
+        confidence: r.investment_readiness?.verdict === 'invest' ? 'high' : r.investment_readiness?.verdict === 'pass' ? 'low' : 'medium',
+        position: r.narrative || r.key_insight || JSON.stringify(r).substring(0, 300)
+      })),
+      synthesis: {
+        recommendation: successful.length > 0
+          ? `${successful.length} agents analyzed in ${elapsed}s. ` +
+            (successful[0]?.key_insight || successful[0]?.narrative || question).substring(0, 200)
+          : 'No perspectives returned',
+        key_tensions: successful.flatMap(r => (r.challenge_questions || []).slice(0,1).map(q => q.question || q)),
+        confidence_score: successful.length >= 2 ? 0.75 : 0.4
+      },
+      timing: { total: elapsed + 's' }
+    }, question);
+
+    // Add to live findings
+    if (successful.length > 0) {
+      const liveFinding = {
+        id: 'live-' + Date.now(),
+        title: question.substring(0, 80),
+        agent: 'live_panel',
+        track: 'live',
+        confidence: 0.8,
+        business_value: 'high',
+        category: 'live_analysis',
+        evidence: successful.map(r => `${r.persona}: ${(r.key_insight || '').substring(0, 100)}`).join(' | '),
+        action: successful[0]?.key_insight || 'See agent panel above for full analysis',
+        _live: true
+      };
+      liveFindings.unshift(liveFinding);
+      renderFindings();
+      showToast(`${successful.length} agents returned in ${elapsed}s`, 'success');
+    }
+
+  } catch(e) {
+    responseDiv.innerHTML = `<div class="agent-response" style="padding:16px;color:var(--red);font-size:13px;">
+      Agent error: ${e.message}
+    </div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Run Analysis';
+}
+
+function renderAgentResponse(result, question) {
+  const responseDiv = document.getElementById('agentResponse');
+  const perspectives = result.perspectives || [];
+  const synthesis = result.synthesis || {};
+
+  let html = '<div class="agent-response">';
+
+  // Perspectives
+  perspectives.forEach(p => {
+    const confClass = p.confidence === 'high' ? 'conf-high' : p.confidence === 'medium' ? 'conf-medium' : 'conf-low';
+    const personaColors = { champion: 'var(--green)', skeptic: 'var(--red)', pragmatist: 'var(--amber)', builder: 'var(--blue)', strategist: 'var(--accent)' };
+    const color = personaColors[p.persona] || 'var(--text)';
+
+    html += `<div class="perspective-card">
+      <div class="perspective-header">
+        <span class="perspective-name" style="color:${color}">${p.persona || 'Analyst'}</span>
+        <span class="perspective-confidence ${confClass}">${(p.confidence || 'medium').toUpperCase()}</span>
+      </div>
+      <ul class="perspective-points">
+        ${(p.key_points || []).map(pt => `<li>${pt}</li>`).join('')}
+      </ul>
+    </div>`;
+  });
+
+  // Synthesis
+  if (synthesis.recommendation) {
+    html += `<div class="synthesis-card">
+      <h3>Synthesized Recommendation</h3>
+      <div class="rec">${synthesis.recommendation}</div>
+      ${synthesis.key_tensions ? `<div class="tensions"><strong>Key tensions:</strong> ${Array.isArray(synthesis.key_tensions) ? synthesis.key_tensions.join(' vs. ') : synthesis.key_tensions}</div>` : ''}
+    </div>`;
+  }
+
+  html += '</div>';
+  responseDiv.innerHTML = html;
+}
+
+// ─── Rendering ───
+
+function getAllDisplayFindings() {
+  return [...liveFindings, ...allFindings];
+}
+
+function renderFindings() {
+  const container = document.getElementById('findingsContainer');
+  const all = getAllDisplayFindings();
+
+  let filtered = all;
+  if (currentTab === 'strategic') filtered = all.filter(f => f.track === 'strategic');
+  else if (currentTab === 'data') filtered = all.filter(f => f.track === 'data');
+  else if (currentTab === 'live') filtered = all.filter(f => f._live);
+  else if (currentTab === 'approved') filtered = all.filter(f => decisions[f.id]?.action === 'approved');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <h3>${currentTab === 'live' ? 'No live analyses yet' : 'No findings'}</h3>
+      <p>${currentTab === 'live' ? 'Use the AI Research Team above to run a live analysis.' : 'Your AI research team is analyzing court data.'}</p>
+    </div>`;
+    updateCounts(all);
+    return;
+  }
+
+  container.innerHTML = filtered.map(f => renderFindingCard(f)).join('');
+  updateCounts(all);
+}
+
+function updateCounts(all) {
+  const approvedCount = all.filter(f => decisions[f.id]?.action === 'approved').length;
+  document.getElementById('countAll').textContent = allFindings.length;
+  document.getElementById('countStrategic').textContent = allFindings.filter(f => f.track === 'strategic').length;
+  document.getElementById('countData').textContent = allFindings.filter(f => f.track === 'data').length;
+  document.getElementById('countLive').textContent = liveFindings.length;
+  document.getElementById('countApproved').textContent = approvedCount;
+  document.getElementById('statApproved').textContent = approvedCount;
+  document.getElementById('statFindings').textContent = allFindings.length + liveFindings.length;
+}
+
+function renderFindingCard(f) {
+  const decision = decisions[f.id];
+  const stateClass = decision ? decision.action : (f._live ? 'live-result' : '');
+  const confidence = f.confidence || 0;
+  const scoreClass = f._live ? 'score-live' : confidence >= 0.7 ? 'score-high' : confidence >= 0.4 ? 'score-mid' : 'score-low';
+  const scoreLabel = f._live ? 'LIVE' : confidence >= 0.7 ? 'HIGH' : confidence >= 0.4 ? 'MED' : 'LOW';
+  const agentLabel = (f.agent || '').replace(/_/g, ' ');
+  const categoryLabel = (f.category || '').replace(/_/g, ' ');
+
+  let actionsHTML = '';
+  if (!decision) {
+    actionsHTML = `<div class="finding-actions">
+      <input class="comment-input" id="comment-${f.id}" placeholder="Add a note (optional)..." />
+      <button class="btn btn-approve" onclick="handleAction('${f.id}', 'approved')">✓ Approve</button>
+      <button class="btn btn-deeper" onclick="handleAction('${f.id}', 'deeper')">→ Go Deeper</button>
+      <button class="btn btn-dismiss" onclick="handleAction('${f.id}', 'dismissed')">✕</button>
+    </div>`;
+  } else {
+    const statusColor = decision.action === 'approved' ? 'var(--green)' : decision.action === 'deeper' ? 'var(--accent)' : 'var(--text-muted)';
+    const statusText = decision.action === 'approved' ? '✓ Approved' : decision.action === 'deeper' ? '→ Investigating' : '✕ Dismissed';
+    actionsHTML = `<div class="finding-actions" style="justify-content:space-between;">
+      <span style="font-size:12px;color:${statusColor};font-weight:600;">${statusText}</span>
+      ${decision.commentary ? `<span style="font-size:11px;color:var(--text-muted);font-style:italic;">"${decision.commentary}"</span>` : ''}
+    </div>`;
+  }
+
+  return `<div class="finding-card ${stateClass}" data-id="${f.id}">
+    <div class="finding-header">
+      <div class="finding-title">${f.title}</div>
+      <div class="finding-score ${scoreClass}">${scoreLabel}</div>
+    </div>
+    <div class="finding-meta">
+      <span class="tag tag-agent">${agentLabel}</span>
+      <span class="tag tag-track">${f.track}</span>
+      <span class="tag tag-category">${categoryLabel}</span>
+      ${f._live ? '<span class="tag tag-live">LIVE RESULT</span>' : ''}
+      ${f.business_value === 'high' ? '<span class="tag" style="background:var(--amber-glow);color:var(--amber);">HIGH VALUE</span>' : ''}
+    </div>
+    ${f.evidence ? `<div class="finding-evidence">${f.evidence}</div>` : ''}
+    ${f.action ? `<div class="finding-action"><strong>Recommended action:</strong> ${f.action}</div>` : ''}
+    ${actionsHTML}
+  </div>`;
+}
+
+function handleAction(findingId, action) {
+  const all = getAllDisplayFindings();
+  const finding = all.find(f => f.id === findingId);
+  if (!finding) return;
+  const commentEl = document.getElementById(`comment-${findingId}`);
+  const commentary = commentEl ? commentEl.value.trim() : '';
+  saveDecision(findingId, action, commentary, finding);
+}
+
+// ─── Toast + Tabs ───
+
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast show ${type}`;
+  setTimeout(() => toast.className = 'toast', 2500);
+}
+
+document.getElementById('tabBar').addEventListener('click', (e) => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentTab = tab.dataset.tab;
+  renderFindings();
+});
+
+// Enter key runs analysis
+document.getElementById('agentQuestion').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') runAgent();
+});
+
+// ─── What's New ───
+
+function renderWhatsNew(ideas, feed) {
+  const container = document.getElementById('whatsNewContainer');
+  const parts = [];
+
+  if (ideas?.version) parts.push(`v${ideas.version} analysis engine`);
+  if (feed?.corpus?.total_clips) parts.push(`${feed.corpus.total_clips.toLocaleString()} clips in corpus`);
+  const strategicCount = (ideas?.top_strategic || []).length;
+  const dataCount = (ideas?.top_data || []).length;
+  if (strategicCount + dataCount > 0) parts.push(`${strategicCount} strategic + ${dataCount} data findings today`);
+
+  if (parts.length > 0) {
+    container.innerHTML = `<div class="whats-new-card">
+      <div class="wn-icon">✦</div>
+      <div class="wn-text">
+        <strong>Today's Intelligence Run</strong>
+        <p>${parts.join(' · ')}</p>
+      </div>
+    </div>`;
+  }
+}
+
+// ─── Init ───
+
+async function init() {
+  try { Object.assign(decisions, JSON.parse(localStorage.getItem('underground_decisions') || '{}')); } catch(e) {}
+  await loadDecisions();
+
+  const ideas = await fetchJSON('ideas.json');
+  if (ideas) {
+    allFindings = ideas.all_findings || [];
+    corpusSummary = `${allFindings.length} findings from 9 researchers. Top: ${allFindings.slice(0,3).map(f=>f.title).join('; ')}`;
+  }
+
+  const feed = await fetchJSON('feed.json');
+  if (feed?.corpus) {
+    document.getElementById('statClips').textContent = feed.corpus.total_clips?.toLocaleString() || '—';
+    corpusSummary += ` Corpus: ${feed.corpus.total_clips} clips.`;
+  }
+
+  renderWhatsNew(ideas, feed);
+  renderFindings();
+}
+
+init();
+</script>
+</body>
+</html>
