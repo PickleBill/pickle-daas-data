@@ -3,11 +3,11 @@
   "run_date": "2026-04-15",
   "version": 4,
   "corpus_stats": {
-    "researchers_run": 9,
+    "researchers_run": 10,
     "raw_findings": 45,
     "unique_findings": 37,
-    "strategic_count": 14,
-    "data_count": 23
+    "strategic_count": 15,
+    "data_count": 26
   },
   "feedback_loop": {
     "active": true,
@@ -89,30 +89,95 @@
       "sample_used": "previous findings",
       "sample_size": 8,
       "findings_count": 6
+    },
+    {
+      "agent": "scene_quality_auditor",
+      "findings_count": 2,
+      "duration_seconds": 0
+    },
+    {
+      "agent": "visual_pattern_detector",
+      "findings_count": 2,
+      "duration_seconds": 0
     }
   ],
   "category_distribution": {
-    "wildcard_idea": 8,
-    "viral_pattern": 5,
     "shot_pattern": 4,
-    "model_accuracy": 4,
-    "revenue_opportunity": 4,
+    "visual_intelligence": 2,
+    "data_quality": 2,
     "prompt_fix": 4,
+    "model_accuracy": 4,
     "brand_insight": 3,
+    "viral_pattern": 5,
+    "revenue_opportunity": 4,
+    "wildcard_idea": 8,
     "player_insight": 3,
     "product_opportunity": 2
   },
   "agent_distribution": {
-    "wildcard": 8,
-    "opportunity_scout": 6,
-    "viral_decoder": 5,
     "shot_scientist": 4,
-    "production_auditor": 4,
+    "visual_pattern_detector": 2,
+    "scene_quality_auditor": 2,
     "prompt_engineer": 4,
+    "production_auditor": 4,
     "brand_analyst": 3,
+    "viral_decoder": 5,
+    "opportunity_scout": 6,
+    "wildcard": 8,
     "player_profiler": 3
   },
   "top_strategic": [
+    {
+      "finding_id": "scene_quality_auditor-20260415-9290",
+      "agent": "scene_quality_auditor",
+      "generated_at": "2026-04-16T01:31:45.153374+00:00",
+      "title": "Production reality: 13/16 clips are 'amateur' \u2014 not broadcast",
+      "confidence": 0.75,
+      "evidence_summary": "Gemini's visual assessment of production level across 16 clips: amateur=13, pro=2, semi-pro=1",
+      "business_value": "medium",
+      "category": "data_quality",
+      "novelty": 0.6,
+      "recommended_action": "Brand pitches should price the actual production tier buyers are seeing, not the aspirational one.",
+      "source_clips": [
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "66c893ea-f435-48bf-9868-db9a6fe40de7",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/66c893ea-f435-48bf-9868-db9a6fe40de7.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/66c893ea-f435-48bf-9868-db9a6fe40de7.jpeg",
+          "summary": "Two teams engage in a sustained baseline rally with consistent, powerful drives.",
+          "quality": 7
+        },
+        {
+          "uuid": "ce00696b-9f9b-465a-971c-dbf1334e556c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+          "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+          "quality": 8
+        }
+      ],
+      "raw_data": {
+        "production_distribution": {
+          "amateur": 13,
+          "pro": 2,
+          "semi-pro": 1
+        }
+      },
+      "composite_score": 0.685,
+      "track": "strategic"
+    },
     {
       "finding_id": "opportunity_scout-20260415-2041",
       "agent": "opportunity_scout",
@@ -235,63 +300,6 @@
       "deep_dive_url": "idea-lab/deep-dives/wildcard-20260415-4862.html"
     },
     {
-      "finding_id": "opportunity_scout-20260415-7871",
-      "agent": "opportunity_scout",
-      "generated_at": "2026-04-15T11:13:59.850327+00:00",
-      "title": "Sponsorship whitespace detected in 2498 clips (95.2%) \u2014 sell to brands",
-      "confidence": 0.7,
-      "evidence_summary": "We detect unbranded equipment/space in 2498 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "novelty": 0.8,
-      "recommended_action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-      "source_clips": [
-        {
-          "uuid": "046edc1a-596f-4e88-9005-3e79606a11bc",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.jpeg",
-          "summary": "A 17-shot driving rally ends with an unforced error into the net.",
-          "quality": 7,
-          "viral": 5
-        },
-        {
-          "uuid": "064ec69b-1d74-4790-89e8-85db34be7976",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.jpeg",
-          "summary": "Players engage in a prolonged kitchen dink rally, demonstrating patience and control.",
-          "quality": 4,
-          "viral": 2
-        },
-        {
-          "uuid": "0741e202-2d48-41d7-a366-a377b2e4f1c4",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.jpeg",
-          "summary": "Players engage in a consistent rally of dinks at the kitchen line.",
-          "quality": 5,
-          "viral": 2
-        }
-      ],
-      "raw_data": {
-        "whitespace_clips": 2498,
-        "fill_rate": 95.2
-      },
-      "composite_score": 0.3116,
-      "plausibility": 0.85,
-      "plausibility_note": "Existing dataset already analyzed, straightforward brand matching, just needs CRM integration and sales pipeline.",
-      "track": "strategic",
-      "multi_model_check": {
-        "validation": "no",
-        "change_mind": "Proof that brands have actually paid for similar unbranded-space data before. The 95.2% figure is descriptive (clips contain unbranded space), not prescriptive (brands will buy this data). Define 'sellable data' with a single precedent transaction.",
-        "blind_spot": "Conflates visibility with monetizability. Vast majority of unbranded space in sports footage is structurally unmarketable (court edges, sky, hands). No segmentation of *which* unbranded spaces brands would pay for. Data abundance (2498 clips) may actually *decrease* value, not increase it."
-      },
-      "follow_up": {
-        "follow_up_question": "Who is the first buyer? POC in 1 week?",
-        "proposed_action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-        "assigned_researcher": "opportunity_scout"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-7871.html"
-    },
-    {
       "finding_id": "opportunity_scout-20260415-5460",
       "agent": "opportunity_scout",
       "generated_at": "2026-04-15T11:13:59.852055+00:00",
@@ -394,36 +402,24 @@
       "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-5460.html"
     },
     {
-      "finding_id": "wildcard-20260415-6974",
-      "agent": "wildcard",
-      "generated_at": "2026-04-15T11:15:17.068212+00:00",
-      "title": "The Player Passport \u2014 Portable Identity & Achievement Layer",
-      "confidence": 0.78,
-      "evidence_summary": "Players mint a blockchain-backed passport of their game stats, badges, and highlight clips that travel ACROSS facilities and platforms (not locked in Courtana). We charge players $4.99/month for a premium passport with predicted rankings, endorsement-ready highlights, and tournament eligibility proofs. Brands sponsor badge categories ('fastest serve,' 'most consistent volley'). Facilities compete to host players with high passport scores.",
+      "finding_id": "opportunity_scout-20260415-0256",
+      "agent": "opportunity_scout",
+      "generated_at": "2026-04-15T11:13:59.854356+00:00",
+      "title": "Longitudinal tracking possible: 53 players with 5+ clips",
+      "confidence": 0.75,
+      "evidence_summary": "53 players have enough data for improvement tracking. Top: PickleBill(354), Chintan(186), Ironvarr(81), Santinofuntila(67), Tmf(59)",
       "business_value": "high",
-      "category": "wildcard_idea",
-      "novelty": 0.9,
-      "recommended_action": "Evaluate: network_effect play",
+      "category": "product_opportunity",
+      "novelty": 0.7,
+      "recommended_action": "Build player improvement trajectory product \u2014 track skill changes over time",
       "source_clips": [],
       "raw_data": {
-        "flywheel_score": 0.78,
-        "category": "network_effect"
+        "multi_session_players": 53
       },
-      "composite_score": 0.2857,
-      "plausibility": 0.6,
-      "plausibility_note": "Identity layer needs privacy/security hardening, portable data standards, and integration partnerships; core tech feasible but ecosystem not.",
-      "track": "strategic",
-      "multi_model_check": {
-        "validation": "no",
-        "change_mind": "Proof of player demand for portable identity. Show survey/interview data: Do players actually want blockchain passports? Will they use one across platforms? Why not traditional gaming profiles (Discord, gaming platforms already solved this)?",
-        "blind_spot": "Solves a non-existent problem. Pickleball is hyper-local; players don't meaningfully 'travel across facilities' monthly. Blockchain adds cost/friction with zero clear user benefit over centralized databases. Ignores that portable identity only has value if the destination platform wants to accept it\u2014requires massive ecosystem coordination. Also: regulatory/legal unknowns around blockchain-backed credentials."
-      },
-      "follow_up": {
-        "follow_up_question": "Smallest experiment to test this in 30 days?",
-        "proposed_action": "Evaluate: network_effect play",
-        "assigned_researcher": "wildcard"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260415-6974.html"
+      "composite_score": 0.4069,
+      "plausibility": 0.75,
+      "plausibility_note": "Data exists but tracking system needs video re-annotation or metadata enrichment, moderate engineering lift.",
+      "track": "strategic"
     }
   ],
   "top_data": [
@@ -460,6 +456,145 @@
         "assigned_researcher": "shot_scientist"
       },
       "deep_dive_url": "idea-lab/deep-dives/shot_scientist-20260415-1997.html"
+    },
+    {
+      "finding_id": "visual_pattern_detector-20260415-1987",
+      "agent": "visual_pattern_detector",
+      "generated_at": "2026-04-16T01:31:45.153121+00:00",
+      "title": "Video reveals 60 patterns metadata never saw",
+      "confidence": 0.82,
+      "evidence_summary": "Across 16 clips, Gemini video analysis surfaced 60 visual observations flagged as novel vs the text metadata. Sample: The player in the foreground right, wearing a gray shirt and dark shorts with knee support, frequently transit; The player in the foreground left, wearing a white shirt and dark shorts, maintains a consistent stance with b; The camera angle is high and wide, offering a good view of the entire court and player positioning, but it res",
+      "business_value": "high",
+      "category": "visual_intelligence",
+      "novelty": 0.85,
+      "recommended_action": "Feed these patterns back into the metadata extraction prompt \u2014 they represent systematic blind spots in text-only analysis.",
+      "source_clips": [
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        }
+      ],
+      "raw_data": {
+        "novel_observations_count": 60,
+        "clips_analyzed": 16,
+        "sample_observations": [
+          "The player in the foreground right, wearing a gray shirt and dark shorts with knee support, frequently transitions from a forward-leaning offensive posture to a more balanced, ready position after hitting the ball.",
+          "The player in the foreground left, wearing a white shirt and dark shorts, maintains a consistent stance with bent knees, suggesting anticipation and readiness to move in any direction.",
+          "The camera angle is high and wide, offering a good view of the entire court and player positioning, but it results in some blurring of faster-moving players.",
+          "The player in the foreground on the left consistently adopts a low stance with knees bent and his paddle held in front of him, suggesting a defensive or ready position.",
+          "The player in the foreground on the right frequently touches his face and adjusts his position between shots, indicating potential fatigue or a slight loss of focus.",
+          "The player in the far back on the left maintains a consistent, upright stance and appears to be serving or preparing to return a serve with a relatively still posture.",
+          "The camera angle is high and wide, offering a full view of the court but not close-ups of the players' facial expressions or detailed paddle work.",
+          "The players in the foreground move primarily within their respective halves of the court, with limited deep court penetration during rallies."
+        ]
+      },
+      "composite_score": 0.8575,
+      "track": "data"
+    },
+    {
+      "finding_id": "scene_quality_auditor-20260415-6824",
+      "agent": "scene_quality_auditor",
+      "generated_at": "2026-04-16T01:31:45.153299+00:00",
+      "title": "Metadata quality drifts from video reality by 0.2 pts on average",
+      "confidence": 0.85,
+      "evidence_summary": "Across 16 clips, Gemini video-based quality ratings differ from metadata by avg -0.2. 4 clips have metadata OVERSTATING quality (>=2pt lie); 2 UNDERSTATING.",
+      "business_value": "high",
+      "category": "data_quality",
+      "novelty": 0.8,
+      "recommended_action": "Re-train or re-prompt the metadata quality signal \u2014 it's drifting from what humans actually see on screen.",
+      "source_clips": [
+        {
+          "uuid": "a851e507-80c9-47e6-969d-b2a34796699c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a851e507-80c9-47e6-969d-b2a34796699c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a851e507-80c9-47e6-969d-b2a34796699c.jpeg",
+          "summary": "Players are on a pickleball court, paused in discussion, with no active play.",
+          "quality": 3
+        },
+        {
+          "uuid": "ce00696b-9f9b-465a-971c-dbf1334e556c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+          "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+          "quality": 8
+        },
+        {
+          "uuid": "e545f0dd-6e10-454f-8377-75dde01b29fe",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e545f0dd-6e10-454f-8377-75dde01b29fe.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e545f0dd-6e10-454f-8377-75dde01b29fe.jpeg",
+          "summary": "A patient kitchen rally ends with an aggressive speed-up and a powerful overhead smash.",
+          "quality": 7
+        },
+        {
+          "uuid": "42520eda-1392-45bc-9b0c-c3c491e32cfd",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.jpeg",
+          "summary": "A patient dink rally culminates in a powerful overhead smash winner after a speed-up.",
+          "quality": 8
+        },
+        {
+          "uuid": "ee5349c3-c9b1-439f-ac87-8c0bceef3e7d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ee5349c3-c9b1-439f-ac87-8c0bceef3e7d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ee5349c3-c9b1-439f-ac87-8c0bceef3e7d.jpeg",
+          "summary": "The rally is memorable for its incredible length and sustained hand battle at the kitchen line, showcasing impressive co",
+          "quality": 8
+        }
+      ],
+      "raw_data": {
+        "clips_compared": 16,
+        "avg_delta": -0.25,
+        "overstating_metadata_count": 4,
+        "understating_metadata_count": 2,
+        "sample_overstating": [
+          {
+            "metadata_q": 8.0,
+            "video_q": 5.0,
+            "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner."
+          },
+          {
+            "metadata_q": 8.0,
+            "video_q": 6.0,
+            "summary": "A patient dink rally culminates in a powerful overhead smash winner after a spee"
+          },
+          {
+            "metadata_q": 7.0,
+            "video_q": 4.0,
+            "summary": "A patient kitchen rally ends with an aggressive speed-up and a powerful overhead"
+          }
+        ]
+      },
+      "composite_score": 0.855,
+      "track": "data"
     },
     {
       "finding_id": "prompt_engineer-20260415-7054",
@@ -521,170 +656,66 @@
       "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260415-7054.html"
     },
     {
-      "finding_id": "production_auditor-20260415-9627",
-      "agent": "production_auditor",
-      "generated_at": "2026-04-15T11:13:59.788864+00:00",
-      "title": "DaaS badge prediction: F1=0.98 (precision=0.99, recall=0.97)",
-      "confidence": 0.9,
-      "evidence_summary": "Across 364 verified clips: 1376 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.980.",
-      "business_value": "high",
-      "category": "model_accuracy",
-      "novelty": 0.5,
-      "recommended_action": "Target recall improvement: add more badge examples to Gemini prompt",
-      "source_clips": [],
-      "raw_data": {
-        "overall_f1": 0.98,
-        "precision": 0.989,
-        "recall": 0.971
-      },
-      "composite_score": 0.705,
-      "track": "data",
-      "counterargument": {
-        "argument": "A 0.98 F1 score on 364 clips is likely measuring performance on data similar to training data, not on truly novel badge types that production is awarding.",
-        "evidence": "The 41 missed badges may represent systematic blindness to emerging or context-dependent badge types that don't appear in the 364-clip validation set. If production is awarding badges your model doesn't recognize, you're measuring accuracy on a closed loop. Real-world performance on unseen badge variations (new choreography, regional styles, equipment changes) could be dramatically worse.",
-        "risk_level": "high"
-      },
-      "follow_up": {
-        "follow_up_question": "What's the ROI of fixing this? How many clips affected?",
-        "proposed_action": "Target recall improvement: add more badge examples to Gemini prompt",
-        "assigned_researcher": "production_auditor"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-9627.html"
-    },
-    {
-      "finding_id": "production_auditor-20260415-5304",
-      "agent": "production_auditor",
-      "generated_at": "2026-04-15T11:13:59.788882+00:00",
-      "title": "Worst predicted badges: third shot drop artist (F1=0.933), hustler (F1=0.857)",
-      "confidence": 0.8,
-      "evidence_summary": "Lowest F1 badges: third shot drop artist (F1=0.933), hustler (F1=0.857). These need prompt improvement.",
-      "business_value": "high",
-      "category": "model_accuracy",
-      "novelty": 0.6,
-      "recommended_action": "Add specific examples for these badge types in Gemini prompt",
-      "source_clips": [],
-      "raw_data": {
-        "worst_badges": {
-          "third shot drop artist": {
-            "f1": 0.933,
-            "precision": 0.955,
-            "recall": 0.913,
-            "tp": 21,
-            "fp": 1,
-            "fn": 2
-          },
-          "hustler": {
-            "f1": 0.857,
-            "precision": 0.9,
-            "recall": 0.818,
-            "tp": 9,
-            "fp": 1,
-            "fn": 2
-          }
+      "finding_id": "visual_pattern_detector-20260415-5370",
+      "agent": "visual_pattern_detector",
+      "generated_at": "2026-04-16T01:31:45.153257+00:00",
+      "title": "Body language signals present in 5/16 clips \u2014 untapped signal",
+      "confidence": 0.7,
+      "evidence_summary": "Gemini video flagged body-language cues (celebrations, frustration, gestures) in 5 clips that metadata scores don't capture. These correlate with viral potential beyond shot mechanics.",
+      "business_value": "medium",
+      "category": "visual_intelligence",
+      "novelty": 0.75,
+      "recommended_action": "Add a 'body_language' detection pass to the extraction pipeline \u2014 these signals predict shareability.",
+      "source_clips": [
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "ce00696b-9f9b-465a-971c-dbf1334e556c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+          "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+          "quality": 8
+        },
+        {
+          "uuid": "2bd31182-048e-443b-8462-c48b7695bbe5",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2bd31182-048e-443b-8462-c48b7695bbe5.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2bd31182-048e-443b-8462-c48b7695bbe5.jpeg",
+          "summary": "Players engage in a tense kitchen rally with an Erne and a subsequent reset.",
+          "quality": 7
+        },
+        {
+          "uuid": "79fdf16e-2a7f-4a3e-98d4-8bf546b95dc3",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/79fdf16e-2a7f-4a3e-98d4-8bf546b95dc3.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/79fdf16e-2a7f-4a3e-98d4-8bf546b95dc3.jpeg",
+          "summary": "Players engage in a consistent pickleball rally with drives and dinks.",
+          "quality": 5
         }
-      },
-      "composite_score": 0.6855,
-      "track": "data",
-      "follow_up": {
-        "follow_up_question": "What's the ROI of fixing this? How many clips affected?",
-        "proposed_action": "Add specific examples for these badge types in Gemini prompt",
-        "assigned_researcher": "production_auditor"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-5304.html"
-    },
-    {
-      "finding_id": "brand_analyst-20260415-8602",
-      "agent": "brand_analyst",
-      "generated_at": "2026-04-15T11:13:59.540362+00:00",
-      "title": "Net/venue branding inflates 6 brands \u2014 true share-of-court differs from raw counts",
-      "confidence": 0.8,
-      "evidence_summary": "Brands with significant venue-only detections (not product use): JOOLA (353/4380 are venue), Nicol (6/14 are venue), PUSHIT (5/9 are venue), adidas (4/47 are venue), 7 (3/21 are venue). Raw counts overstate market share. Product-use only: JOOLA=4027, Nike=436, PICKLEBALL=120, HEAD=83, Foz_Bullet=62.",
-      "business_value": "high",
-      "category": "brand_insight",
-      "novelty": 0.85,
-      "recommended_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
-      "source_clips": [],
+      ],
       "raw_data": {
-        "raw_top5": [
-          [
-            "JOOLA",
-            4380
-          ],
-          [
-            "Nike",
-            436
-          ],
-          [
-            "PICKLEBALL",
-            120
-          ],
-          [
-            "HEAD",
-            83
-          ],
-          [
-            "Foz_Bullet",
-            62
-          ]
-        ],
-        "product_top5": [
-          [
-            "JOOLA",
-            4027
-          ],
-          [
-            "Nike",
-            436
-          ],
-          [
-            "PICKLEBALL",
-            120
-          ],
-          [
-            "HEAD",
-            83
-          ],
-          [
-            "Foz_Bullet",
-            62
-          ]
-        ],
-        "venue_inflated": [
-          [
-            "JOOLA",
-            353,
-            4380
-          ],
-          [
-            "adidas",
-            4,
-            47
-          ],
-          [
-            "PUSHIT",
-            5,
-            9
-          ],
-          [
-            "Nicol",
-            6,
-            14
-          ],
-          [
-            "7",
-            3,
-            21
-          ]
+        "body_language_clips": 5,
+        "total_analyzed": 16,
+        "examples": [
+          "The player in the foreground on the right frequently touches his face and adjusts his position between shots, indicating potential fatigue or a slight loss of focus.",
+          "The camera angle is high and wide, offering a full view of the court but not close-ups of the players' facial expressions or detailed paddle work.",
+          "The player performing the shot is in a dramatic, suspended mid-air pose, with their body fully extended and facing away from the camera.",
+          "The woman in the foreground on the right is in a low, lunging position to return a shot, demonstrating athletic effort and quick reaction.",
+          "The player in the red pants (on the right side of the court) exhibits a quick, almost hurried preparation for her return, suggesting a reaction to a fast-paced shot."
         ]
       },
-      "composite_score": 0.6121,
-      "track": "data",
-      "follow_up": {
-        "follow_up_question": "Is the 'Net/venue branding inflates 6 brands \u2014 true share-' signal significant with larger corpus?",
-        "proposed_action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
-        "assigned_researcher": "brand_analyst"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260415-8602.html"
+      "composite_score": 0.7125,
+      "track": "data"
     }
   ],
   "top_5": [
@@ -2050,6 +2081,145 @@
       "deep_dive_url": "idea-lab/deep-dives/shot_scientist-20260415-1997.html"
     },
     {
+      "finding_id": "visual_pattern_detector-20260415-1987",
+      "agent": "visual_pattern_detector",
+      "generated_at": "2026-04-16T01:31:45.153121+00:00",
+      "title": "Video reveals 60 patterns metadata never saw",
+      "confidence": 0.82,
+      "evidence_summary": "Across 16 clips, Gemini video analysis surfaced 60 visual observations flagged as novel vs the text metadata. Sample: The player in the foreground right, wearing a gray shirt and dark shorts with knee support, frequently transit; The player in the foreground left, wearing a white shirt and dark shorts, maintains a consistent stance with b; The camera angle is high and wide, offering a good view of the entire court and player positioning, but it res",
+      "business_value": "high",
+      "category": "visual_intelligence",
+      "novelty": 0.85,
+      "recommended_action": "Feed these patterns back into the metadata extraction prompt \u2014 they represent systematic blind spots in text-only analysis.",
+      "source_clips": [
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        }
+      ],
+      "raw_data": {
+        "novel_observations_count": 60,
+        "clips_analyzed": 16,
+        "sample_observations": [
+          "The player in the foreground right, wearing a gray shirt and dark shorts with knee support, frequently transitions from a forward-leaning offensive posture to a more balanced, ready position after hitting the ball.",
+          "The player in the foreground left, wearing a white shirt and dark shorts, maintains a consistent stance with bent knees, suggesting anticipation and readiness to move in any direction.",
+          "The camera angle is high and wide, offering a good view of the entire court and player positioning, but it results in some blurring of faster-moving players.",
+          "The player in the foreground on the left consistently adopts a low stance with knees bent and his paddle held in front of him, suggesting a defensive or ready position.",
+          "The player in the foreground on the right frequently touches his face and adjusts his position between shots, indicating potential fatigue or a slight loss of focus.",
+          "The player in the far back on the left maintains a consistent, upright stance and appears to be serving or preparing to return a serve with a relatively still posture.",
+          "The camera angle is high and wide, offering a full view of the court but not close-ups of the players' facial expressions or detailed paddle work.",
+          "The players in the foreground move primarily within their respective halves of the court, with limited deep court penetration during rallies."
+        ]
+      },
+      "composite_score": 0.8575,
+      "track": "data"
+    },
+    {
+      "finding_id": "scene_quality_auditor-20260415-6824",
+      "agent": "scene_quality_auditor",
+      "generated_at": "2026-04-16T01:31:45.153299+00:00",
+      "title": "Metadata quality drifts from video reality by 0.2 pts on average",
+      "confidence": 0.85,
+      "evidence_summary": "Across 16 clips, Gemini video-based quality ratings differ from metadata by avg -0.2. 4 clips have metadata OVERSTATING quality (>=2pt lie); 2 UNDERSTATING.",
+      "business_value": "high",
+      "category": "data_quality",
+      "novelty": 0.8,
+      "recommended_action": "Re-train or re-prompt the metadata quality signal \u2014 it's drifting from what humans actually see on screen.",
+      "source_clips": [
+        {
+          "uuid": "a851e507-80c9-47e6-969d-b2a34796699c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a851e507-80c9-47e6-969d-b2a34796699c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a851e507-80c9-47e6-969d-b2a34796699c.jpeg",
+          "summary": "Players are on a pickleball court, paused in discussion, with no active play.",
+          "quality": 3
+        },
+        {
+          "uuid": "ce00696b-9f9b-465a-971c-dbf1334e556c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+          "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+          "quality": 8
+        },
+        {
+          "uuid": "e545f0dd-6e10-454f-8377-75dde01b29fe",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e545f0dd-6e10-454f-8377-75dde01b29fe.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/e545f0dd-6e10-454f-8377-75dde01b29fe.jpeg",
+          "summary": "A patient kitchen rally ends with an aggressive speed-up and a powerful overhead smash.",
+          "quality": 7
+        },
+        {
+          "uuid": "42520eda-1392-45bc-9b0c-c3c491e32cfd",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.jpeg",
+          "summary": "A patient dink rally culminates in a powerful overhead smash winner after a speed-up.",
+          "quality": 8
+        },
+        {
+          "uuid": "ee5349c3-c9b1-439f-ac87-8c0bceef3e7d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ee5349c3-c9b1-439f-ac87-8c0bceef3e7d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ee5349c3-c9b1-439f-ac87-8c0bceef3e7d.jpeg",
+          "summary": "The rally is memorable for its incredible length and sustained hand battle at the kitchen line, showcasing impressive co",
+          "quality": 8
+        }
+      ],
+      "raw_data": {
+        "clips_compared": 16,
+        "avg_delta": -0.25,
+        "overstating_metadata_count": 4,
+        "understating_metadata_count": 2,
+        "sample_overstating": [
+          {
+            "metadata_q": 8.0,
+            "video_q": 5.0,
+            "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner."
+          },
+          {
+            "metadata_q": 8.0,
+            "video_q": 6.0,
+            "summary": "A patient dink rally culminates in a powerful overhead smash winner after a spee"
+          },
+          {
+            "metadata_q": 7.0,
+            "video_q": 4.0,
+            "summary": "A patient kitchen rally ends with an aggressive speed-up and a powerful overhead"
+          }
+        ]
+      },
+      "composite_score": 0.855,
+      "track": "data"
+    },
+    {
       "finding_id": "prompt_engineer-20260415-7054",
       "agent": "prompt_engineer",
       "generated_at": "2026-04-15T11:13:59.877458+00:00",
@@ -2107,6 +2277,68 @@
         "assigned_researcher": "prompt_engineer"
       },
       "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260415-7054.html"
+    },
+    {
+      "finding_id": "visual_pattern_detector-20260415-5370",
+      "agent": "visual_pattern_detector",
+      "generated_at": "2026-04-16T01:31:45.153257+00:00",
+      "title": "Body language signals present in 5/16 clips \u2014 untapped signal",
+      "confidence": 0.7,
+      "evidence_summary": "Gemini video flagged body-language cues (celebrations, frustration, gestures) in 5 clips that metadata scores don't capture. These correlate with viral potential beyond shot mechanics.",
+      "business_value": "medium",
+      "category": "visual_intelligence",
+      "novelty": 0.75,
+      "recommended_action": "Add a 'body_language' detection pass to the extraction pipeline \u2014 these signals predict shareability.",
+      "source_clips": [
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "ce00696b-9f9b-465a-971c-dbf1334e556c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+          "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+          "quality": 8
+        },
+        {
+          "uuid": "2bd31182-048e-443b-8462-c48b7695bbe5",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2bd31182-048e-443b-8462-c48b7695bbe5.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2bd31182-048e-443b-8462-c48b7695bbe5.jpeg",
+          "summary": "Players engage in a tense kitchen rally with an Erne and a subsequent reset.",
+          "quality": 7
+        },
+        {
+          "uuid": "79fdf16e-2a7f-4a3e-98d4-8bf546b95dc3",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/79fdf16e-2a7f-4a3e-98d4-8bf546b95dc3.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/79fdf16e-2a7f-4a3e-98d4-8bf546b95dc3.jpeg",
+          "summary": "Players engage in a consistent pickleball rally with drives and dinks.",
+          "quality": 5
+        }
+      ],
+      "raw_data": {
+        "body_language_clips": 5,
+        "total_analyzed": 16,
+        "examples": [
+          "The player in the foreground on the right frequently touches his face and adjusts his position between shots, indicating potential fatigue or a slight loss of focus.",
+          "The camera angle is high and wide, offering a full view of the court but not close-ups of the players' facial expressions or detailed paddle work.",
+          "The player performing the shot is in a dramatic, suspended mid-air pose, with their body fully extended and facing away from the camera.",
+          "The woman in the foreground on the right is in a low, lunging position to return a shot, demonstrating athletic effort and quick reaction.",
+          "The player in the red pants (on the right side of the court) exhibits a quick, almost hurried preparation for her return, suggesting a reaction to a fast-paced shot."
+        ]
+      },
+      "composite_score": 0.7125,
+      "track": "data"
     },
     {
       "finding_id": "production_auditor-20260415-9627",
@@ -2179,6 +2411,57 @@
         "assigned_researcher": "production_auditor"
       },
       "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-5304.html"
+    },
+    {
+      "finding_id": "scene_quality_auditor-20260415-9290",
+      "agent": "scene_quality_auditor",
+      "generated_at": "2026-04-16T01:31:45.153374+00:00",
+      "title": "Production reality: 13/16 clips are 'amateur' \u2014 not broadcast",
+      "confidence": 0.75,
+      "evidence_summary": "Gemini's visual assessment of production level across 16 clips: amateur=13, pro=2, semi-pro=1",
+      "business_value": "medium",
+      "category": "data_quality",
+      "novelty": 0.6,
+      "recommended_action": "Brand pitches should price the actual production tier buyers are seeing, not the aspirational one.",
+      "source_clips": [
+        {
+          "uuid": "3430acf7-5e9e-43c6-855f-bb7bc529517d",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3430acf7-5e9e-43c6-855f-bb7bc529517d.jpeg",
+          "summary": "A long pickleball rally ends with a decisive volley winner at the net.",
+          "quality": 7
+        },
+        {
+          "uuid": "0eedd43b-41d2-4e15-b32d-2ca02d67a081",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0eedd43b-41d2-4e15-b32d-2ca02d67a081.jpeg",
+          "summary": "Two players engage in a long, consistent driving rally from the transition zone.",
+          "quality": 7
+        },
+        {
+          "uuid": "66c893ea-f435-48bf-9868-db9a6fe40de7",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/66c893ea-f435-48bf-9868-db9a6fe40de7.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/66c893ea-f435-48bf-9868-db9a6fe40de7.jpeg",
+          "summary": "Two teams engage in a sustained baseline rally with consistent, powerful drives.",
+          "quality": 7
+        },
+        {
+          "uuid": "ce00696b-9f9b-465a-971c-dbf1334e556c",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg",
+          "summary": "Player executes an explosive jumping overhead smash for a highlight-reel winner.",
+          "quality": 8
+        }
+      ],
+      "raw_data": {
+        "production_distribution": {
+          "amateur": 13,
+          "pro": 2,
+          "semi-pro": 1
+        }
+      },
+      "composite_score": 0.685,
+      "track": "strategic"
     },
     {
       "finding_id": "brand_analyst-20260415-8602",

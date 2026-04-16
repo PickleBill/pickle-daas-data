@@ -1,7 +1,20 @@
 {
-  "generated_at": "2026-04-16T01:24:52.066126Z",
+  "generated_at": "2026-04-16T01:40:36.748665Z",
   "version": 4,
   "top_strategic": [
+    {
+      "id": "scene_quality_auditor-20260415-9290",
+      "title": "Production reality: 13/16 clips are 'amateur' \u2014 not broadcast",
+      "agent": "scene_quality_auditor",
+      "track": "strategic",
+      "confidence": 0.75,
+      "business_value": "medium",
+      "category": "data_quality",
+      "evidence": "Gemini's visual assessment of production level across 16 clips: amateur=13, pro=2, semi-pro=1",
+      "action": "Brand pitches should price the actual production tier buyers are seeing, not the aspirational one.",
+      "score": 0.685,
+      "deep_dive_url": ""
+    },
     {
       "id": "opportunity_scout-20260415-2041",
       "title": "Sponsorship whitespace: 4 equipment categories with ZERO brand detection",
@@ -29,19 +42,6 @@
       "deep_dive_url": "idea-lab/deep-dives/wildcard-20260415-4862.html"
     },
     {
-      "id": "opportunity_scout-20260415-7871",
-      "title": "Sponsorship whitespace detected in 2498 clips (95.2%) \u2014 sell to brands",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.7,
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "evidence": "We detect unbranded equipment/space in 2498 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
-      "action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-      "score": 0.3116,
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-7871.html"
-    },
-    {
       "id": "opportunity_scout-20260415-5460",
       "title": "Endorsement intelligence: 131 player-brand pairs with 3+ co-occurrences",
       "agent": "opportunity_scout",
@@ -55,17 +55,17 @@
       "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260415-5460.html"
     },
     {
-      "id": "wildcard-20260415-6974",
-      "title": "The Player Passport \u2014 Portable Identity & Achievement Layer",
-      "agent": "wildcard",
+      "id": "opportunity_scout-20260415-0256",
+      "title": "Longitudinal tracking possible: 53 players with 5+ clips",
+      "agent": "opportunity_scout",
       "track": "strategic",
-      "confidence": 0.78,
+      "confidence": 0.75,
       "business_value": "high",
-      "category": "wildcard_idea",
-      "evidence": "Players mint a blockchain-backed passport of their game stats, badges, and highlight clips that travel ACROSS facilities and platforms (not locked in Courtana). We charge players $4.99/month for a premium passport with predicted rankings, endorsement-ready highlights, and tournament eligibility proofs. Brands sponsor badge categories ('fastest serve,' 'most consistent volley'). Facilities compete to host players with high passport scores.",
-      "action": "Evaluate: network_effect play",
-      "score": 0.2857,
-      "deep_dive_url": "idea-lab/deep-dives/wildcard-20260415-6974.html"
+      "category": "product_opportunity",
+      "evidence": "53 players have enough data for improvement tracking. Top: PickleBill(354), Chintan(186), Ironvarr(81), Santinofuntila(67), Tmf(59)",
+      "action": "Build player improvement trajectory product \u2014 track skill changes over time",
+      "score": 0.4069,
+      "deep_dive_url": ""
     }
   ],
   "top_data": [
@@ -83,6 +83,32 @@
       "deep_dive_url": "idea-lab/deep-dives/shot_scientist-20260415-1997.html"
     },
     {
+      "id": "visual_pattern_detector-20260415-1987",
+      "title": "Video reveals 60 patterns metadata never saw",
+      "agent": "visual_pattern_detector",
+      "track": "data",
+      "confidence": 0.82,
+      "business_value": "high",
+      "category": "visual_intelligence",
+      "evidence": "Across 16 clips, Gemini video analysis surfaced 60 visual observations flagged as novel vs the text metadata. Sample: The player in the foreground right, wearing a gray shirt and dark shorts with knee support, frequently transit; The player in the foreground left, wearing a white shirt and dark shorts, maintains a consistent stance with b; The camera angle is high and wide, offering a good view of the entire court and player positioning, but it res",
+      "action": "Feed these patterns back into the metadata extraction prompt \u2014 they represent systematic blind spots in text-only analysis.",
+      "score": 0.8575,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "scene_quality_auditor-20260415-6824",
+      "title": "Metadata quality drifts from video reality by 0.2 pts on average",
+      "agent": "scene_quality_auditor",
+      "track": "data",
+      "confidence": 0.85,
+      "business_value": "high",
+      "category": "data_quality",
+      "evidence": "Across 16 clips, Gemini video-based quality ratings differ from metadata by avg -0.2. 4 clips have metadata OVERSTATING quality (>=2pt lie); 2 UNDERSTATING.",
+      "action": "Re-train or re-prompt the metadata quality signal \u2014 it's drifting from what humans actually see on screen.",
+      "score": 0.855,
+      "deep_dive_url": ""
+    },
+    {
       "id": "prompt_engineer-20260415-7054",
       "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
       "agent": "prompt_engineer",
@@ -96,43 +122,17 @@
       "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260415-7054.html"
     },
     {
-      "id": "production_auditor-20260415-9627",
-      "title": "DaaS badge prediction: F1=0.98 (precision=0.99, recall=0.97)",
-      "agent": "production_auditor",
+      "id": "visual_pattern_detector-20260415-5370",
+      "title": "Body language signals present in 5/16 clips \u2014 untapped signal",
+      "agent": "visual_pattern_detector",
       "track": "data",
-      "confidence": 0.9,
-      "business_value": "high",
-      "category": "model_accuracy",
-      "evidence": "Across 364 verified clips: 1376 correct predictions, 16 false positives, 41 missed badges. Overall F1=0.980.",
-      "action": "Target recall improvement: add more badge examples to Gemini prompt",
-      "score": 0.705,
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-9627.html"
-    },
-    {
-      "id": "production_auditor-20260415-5304",
-      "title": "Worst predicted badges: third shot drop artist (F1=0.933), hustler (F1=0.857)",
-      "agent": "production_auditor",
-      "track": "data",
-      "confidence": 0.8,
-      "business_value": "high",
-      "category": "model_accuracy",
-      "evidence": "Lowest F1 badges: third shot drop artist (F1=0.933), hustler (F1=0.857). These need prompt improvement.",
-      "action": "Add specific examples for these badge types in Gemini prompt",
-      "score": 0.6855,
-      "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-5304.html"
-    },
-    {
-      "id": "brand_analyst-20260415-8602",
-      "title": "Net/venue branding inflates 6 brands \u2014 true share-of-court differs from raw counts",
-      "agent": "brand_analyst",
-      "track": "data",
-      "confidence": 0.8,
-      "business_value": "high",
-      "category": "brand_insight",
-      "evidence": "Brands with significant venue-only detections (not product use): JOOLA (353/4380 are venue), Nicol (6/14 are venue), PUSHIT (5/9 are venue), adidas (4/47 are venue), 7 (3/21 are venue). Raw counts overstate market share. Product-use only: JOOLA=4027, Nike=436, PICKLEBALL=120, HEAD=83, Foz_Bullet=62.",
-      "action": "Report TRUE share-of-court (product-use only) to brand partners, not raw detection counts",
-      "score": 0.6121,
-      "deep_dive_url": "idea-lab/deep-dives/brand_analyst-20260415-8602.html"
+      "confidence": 0.7,
+      "business_value": "medium",
+      "category": "visual_intelligence",
+      "evidence": "Gemini video flagged body-language cues (celebrations, frustration, gestures) in 5 clips that metadata scores don't capture. These correlate with viral potential beyond shot mechanics.",
+      "action": "Add a 'body_language' detection pass to the extraction pipeline \u2014 these signals predict shareability.",
+      "score": 0.7125,
+      "deep_dive_url": ""
     }
   ],
   "all_findings": [
@@ -150,6 +150,32 @@
       "deep_dive_url": "idea-lab/deep-dives/shot_scientist-20260415-1997.html"
     },
     {
+      "id": "visual_pattern_detector-20260415-1987",
+      "title": "Video reveals 60 patterns metadata never saw",
+      "agent": "visual_pattern_detector",
+      "track": "data",
+      "confidence": 0.82,
+      "business_value": "high",
+      "category": "visual_intelligence",
+      "evidence": "Across 16 clips, Gemini video analysis surfaced 60 visual observations flagged as novel vs the text metadata. Sample: The player in the foreground right, wearing a gray shirt and dark shorts with knee support, frequently transit; The player in the foreground left, wearing a white shirt and dark shorts, maintains a consistent stance with b; The camera angle is high and wide, offering a good view of the entire court and player positioning, but it res",
+      "action": "Feed these patterns back into the metadata extraction prompt \u2014 they represent systematic blind spots in text-only analysis.",
+      "score": 0.8575,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "scene_quality_auditor-20260415-6824",
+      "title": "Metadata quality drifts from video reality by 0.2 pts on average",
+      "agent": "scene_quality_auditor",
+      "track": "data",
+      "confidence": 0.85,
+      "business_value": "high",
+      "category": "data_quality",
+      "evidence": "Across 16 clips, Gemini video-based quality ratings differ from metadata by avg -0.2. 4 clips have metadata OVERSTATING quality (>=2pt lie); 2 UNDERSTATING.",
+      "action": "Re-train or re-prompt the metadata quality signal \u2014 it's drifting from what humans actually see on screen.",
+      "score": 0.855,
+      "deep_dive_url": ""
+    },
+    {
       "id": "prompt_engineer-20260415-7054",
       "title": "Prompt fix: 5 badges consistently missed \u2014 add positive examples",
       "agent": "prompt_engineer",
@@ -161,6 +187,19 @@
       "action": "Add positive examples to Gemini prompt:\n'When analyzing badges, make sure to check for these commonly missed badges:\n  - rally master: Look for [describe visual pattern]\n  - new look: Look for [describe visual pattern]\n  - steady eddie: Look for [describe visual pattern]\n  - paddle tap celebration: Look for [describe visual pattern]\n  - fresh fit: Look for [describe visual pattern]\n",
       "score": 0.757,
       "deep_dive_url": "idea-lab/deep-dives/prompt_engineer-20260415-7054.html"
+    },
+    {
+      "id": "visual_pattern_detector-20260415-5370",
+      "title": "Body language signals present in 5/16 clips \u2014 untapped signal",
+      "agent": "visual_pattern_detector",
+      "track": "data",
+      "confidence": 0.7,
+      "business_value": "medium",
+      "category": "visual_intelligence",
+      "evidence": "Gemini video flagged body-language cues (celebrations, frustration, gestures) in 5 clips that metadata scores don't capture. These correlate with viral potential beyond shot mechanics.",
+      "action": "Add a 'body_language' detection pass to the extraction pipeline \u2014 these signals predict shareability.",
+      "score": 0.7125,
+      "deep_dive_url": ""
     },
     {
       "id": "production_auditor-20260415-9627",
@@ -187,6 +226,19 @@
       "action": "Add specific examples for these badge types in Gemini prompt",
       "score": 0.6855,
       "deep_dive_url": "idea-lab/deep-dives/production_auditor-20260415-5304.html"
+    },
+    {
+      "id": "scene_quality_auditor-20260415-9290",
+      "title": "Production reality: 13/16 clips are 'amateur' \u2014 not broadcast",
+      "agent": "scene_quality_auditor",
+      "track": "strategic",
+      "confidence": 0.75,
+      "business_value": "medium",
+      "category": "data_quality",
+      "evidence": "Gemini's visual assessment of production level across 16 clips: amateur=13, pro=2, semi-pro=1",
+      "action": "Brand pitches should price the actual production tier buyers are seeing, not the aspirational one.",
+      "score": 0.685,
+      "deep_dive_url": ""
     },
     {
       "id": "brand_analyst-20260415-8602",
@@ -342,58 +394,6 @@
       "evidence": "Top-viral clips average 2.1 brand detections, bottom-viral average 1.4.",
       "action": "Investigate if brand presence correlates with production quality or camera angle",
       "score": 0.4097,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "opportunity_scout-20260415-0256",
-      "title": "Longitudinal tracking possible: 53 players with 5+ clips",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.75,
-      "business_value": "high",
-      "category": "product_opportunity",
-      "evidence": "53 players have enough data for improvement tracking. Top: PickleBill(354), Chintan(186), Ironvarr(81), Santinofuntila(67), Tmf(59)",
-      "action": "Build player improvement trajectory product \u2014 track skill changes over time",
-      "score": 0.4069,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "shot_scientist-20260415-9887",
-      "title": "Rally length matters: long rallies are more viral (long=3.2 vs short=2.2)",
-      "agent": "shot_scientist",
-      "track": "data",
-      "confidence": 0.65,
-      "business_value": "medium",
-      "category": "shot_pattern",
-      "evidence": "Avg rally: 15.8 shots. Long rallies (15+): 1346 clips, avg viral 3.2. Short (4-): 55 clips, avg viral 2.2.",
-      "action": "Use rally length as a quality signal in highlight curation",
-      "score": 0.3786,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "production_auditor-20260415-5113",
-      "title": "Best predicted badges: lob recovery duo (F1=1.0), dink master (F1=1.0), speed up specialist (F1=1.0)",
-      "agent": "production_auditor",
-      "track": "data",
-      "confidence": 0.8,
-      "business_value": "medium",
-      "category": "model_accuracy",
-      "evidence": "Top performing badges by F1 score: lob recovery duo (F1=1.0), dink master (F1=1.0), speed up specialist (F1=1.0)",
-      "action": "Use these badges as confidence anchors for the prediction system",
-      "score": 0.3672,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "prompt_engineer-20260415-8710",
-      "title": "Arc-specific prompt issue: 'strategic' clips cause 94% of false positives",
-      "agent": "prompt_engineer",
-      "track": "data",
-      "confidence": 0.7,
-      "business_value": "medium",
-      "category": "prompt_fix",
-      "evidence": "The 'strategic' arc type produces disproportionate badge false positives (15/16 = 94%). The prompt may be misinterpreting this arc type's visual patterns.",
-      "action": "Add arc-specific badge guidance: 'For strategic clips, badge X is common but Y is not'",
-      "score": 0.3598,
       "deep_dive_url": ""
     }
   ],

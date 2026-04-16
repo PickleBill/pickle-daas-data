@@ -1,32 +1,32 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T00:39:32.618841+00:00_
+_Generated: 2026-04-16T01:40:06.598828+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3246 clips
-- **Total analysis files on disk:** 4766 (4766 ≥500 bytes)
-- **Minutes since last analysis:** 0.1
+- **Corpus on gh-pages:** 3268 clips
+- **Total analysis files on disk:** 4786 (4786 ≥500 bytes)
+- **Minutes since last analysis:** 4.0
 - **Human flags:** 62 total (55 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 31.8%  (1560 TP / 4913 predicted)
-- **Recall:**    69.2%  (1560 TP / 2254 awarded)
-- **F1 Score:**  43.5%
-- **Predictions analyzed:** 8743 across 2956 unique clips
+- **Precision:** 30.7%  (1561 TP / 5088 predicted)
+- **Recall:**    69.2%  (1561 TP / 2255 awarded)
+- **F1 Score:**  42.5%
+- **Predictions analyzed:** 9089 across 3083 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Rally Master | 262 | 1115 | 33 | 19% | 89% | 31% |
-| Steady Eddie | 296 | 863 | 50 | 26% | 86% | 39% |
-| Kitchen King | 62 | 749 | 0 | 8% | 100% | 14% |
+| Rally Master | 262 | 1184 | 33 | 18% | 89% | 30% |
+| Steady Eddie | 296 | 922 | 50 | 24% | 86% | 38% |
+| Kitchen King | 62 | 787 | 0 | 7% | 100% | 14% |
 | New Look | 10 | 1 | 151 | 91% | 6% | 12% |
 | Epic Rally | 71 | 83 | 3 | 46% | 96% | 62% |
 | Dink Machine | 0 | 143 | 0 | 0% | 0% | 0% |
-| Net Magnet | 101 | 18 | 21 | 85% | 83% | 84% |
+| Net Magnet | 101 | 20 | 21 | 84% | 83% | 83% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
 | Two Up Pressure | 90 | 0 | 29 | 100% | 76% | 86% |
 | Fresh Fit | 15 | 0 | 100 | 100% | 13% | 23% |
@@ -39,8 +39,8 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands | 400/500 | 80% |
-| badge_intelligence.predicted_badges | 487/500 | 97% |
+| brand_detection.brands | 406/500 | 81% |
+| badge_intelligence.predicted_badges | 488/500 | 98% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
