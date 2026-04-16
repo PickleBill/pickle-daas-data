@@ -136,6 +136,44 @@ select:focus{outline:none;border-color:var(--pu)}
 .cd:nth-child(2){animation-delay:.03s}.cd:nth-child(3){animation-delay:.06s}.cd:nth-child(4){animation-delay:.09s}.cd:nth-child(5){animation-delay:.12s}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ac);animation:pulse 2s infinite;margin-right:3px}
+
+/* CHAT SIDEBAR (v5 iteration 1) */
+.bt.ak{border-color:oklch(72% .18 195/.35);color:var(--cy)}.bt.ak:hover{background:var(--cyd)}
+.csh{position:fixed;inset:0;background:oklch(0% 0 0/.45);backdrop-filter:blur(2px);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.csh.on{opacity:1;pointer-events:auto}
+.cs{position:fixed;top:0;right:0;bottom:0;width:min(440px,92vw);background:var(--sf);border-left:1px solid var(--bd);z-index:100;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s var(--ease);box-shadow:-12px 0 40px oklch(0% 0 0/.4)}
+.cs.on{transform:translateX(0)}
+.cs-hd{padding:16px 18px;border-bottom:1px solid var(--bd);background:var(--sf2)}
+.cs-hd .ti{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--cy);font-family:'Red Hat Mono',monospace;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.cs-hd .ti .x{cursor:pointer;color:var(--mt);font-size:18px;line-height:1;padding:0 4px;border-radius:4px}
+.cs-hd .ti .x:hover{color:var(--tx);background:var(--sf3)}
+.cs-hd .nm{font-size:14px;font-weight:700;line-height:1.35;color:var(--tx);letter-spacing:-.2px}
+.cs-hd .meta{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:6px}
+.cs-bd{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.cs-bd .empty{color:var(--mt);font-size:12px;text-align:center;padding:24px 8px;line-height:1.6}
+.cs-bd .empty .h{color:var(--tx2);font-size:13px;font-weight:600;margin-bottom:4px}
+.cs-bd .sg{display:flex;flex-direction:column;gap:5px;margin-top:14px;text-align:left}
+.cs-bd .sg-bt{background:var(--sf2);border:1px solid var(--bd);color:var(--tx2);padding:8px 11px;border-radius:8px;font-size:12px;text-align:left;cursor:pointer;font-family:inherit;transition:.15s;line-height:1.4}
+.cs-bd .sg-bt:hover{border-color:oklch(72% .18 195/.35);color:var(--cy);background:var(--cyd)}
+.msg{font-size:13px;line-height:1.6;border-radius:10px;padding:10px 12px;animation:fadeUp .25s var(--ease) both}
+.msg.q{background:var(--pud);border:1px solid oklch(62% .22 300/.18);color:var(--tx);align-self:flex-end;max-width:90%}
+.msg.a{background:var(--sf2);border:1px solid var(--bd);color:var(--tx2);max-width:100%}
+.msg.a strong{color:var(--tx)}
+.msg.a code{font-family:'Red Hat Mono',monospace;font-size:11.5px;background:var(--sf3);padding:1px 5px;border-radius:3px}
+.msg.a p{margin-bottom:8px}.msg.a p:last-child{margin-bottom:0}
+.msg.a ul,.msg.a ol{margin:6px 0 8px 20px}.msg.a li{margin-bottom:3px}
+.msg.thinking{color:var(--mt);font-style:italic;background:transparent;border:1px dashed var(--bd)}
+.msg.thinking .dot{margin-right:4px;background:var(--cy)}
+.msg.err{background:var(--erd);border:1px solid oklch(65% .22 25/.2);color:var(--er)}
+.cs-ft{padding:12px 14px;border-top:1px solid var(--bd);background:var(--sf2)}
+.cs-ft .row{display:flex;gap:6px}
+.cs-ft textarea{flex:1;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:9px 11px;font-family:inherit;font-size:13px;line-height:1.45;resize:none;min-height:42px;max-height:140px;transition:.15s}
+.cs-ft textarea:focus{outline:none;border-color:var(--cy)}
+.cs-ft button{background:var(--cy);color:var(--bg);border:none;border-radius:8px;padding:0 16px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:.6px;transition:.15s}
+.cs-ft button:hover:not(:disabled){background:oklch(78% .18 195)}
+.cs-ft button:disabled{opacity:.4;cursor:not-allowed}
+.cs-ft .hint{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-top:6px;display:flex;justify-content:space-between}
+.cs-ft .hint .ok{color:var(--ac)}.cs-ft .hint .down{color:var(--er)}
 </style>
 </head>
 <body>
@@ -188,6 +226,24 @@ select:focus{outline:none;border-color:var(--pu)}
   </div>
 </div>
 
+<!-- CHAT SIDEBAR (v5 iteration 1) -->
+<div class="csh" id="csh" onclick="closeChat()"></div>
+<aside class="cs" id="cs" aria-hidden="true">
+  <div class="cs-hd">
+    <div class="ti"><span><span class="dot"></span>Ask the Lab</span><span class="x" onclick="closeChat()" title="Close (Esc)">&times;</span></div>
+    <div class="nm" id="cs-nm">—</div>
+    <div class="meta" id="cs-meta">—</div>
+  </div>
+  <div class="cs-bd" id="cs-bd"></div>
+  <div class="cs-ft">
+    <div class="row">
+      <textarea id="cs-q" placeholder="Ask why, ask for clips, ask what would confirm it…" rows="2" onkeydown="qkey(event)"></textarea>
+      <button id="cs-send" onclick="sendChat()">Send</button>
+    </div>
+    <div class="hint"><span id="cs-status">Powered by Claude Haiku</span><span id="cs-conn">checking…</span></div>
+  </div>
+</aside>
+
 <script>
 const U='../idea-lab/latest.json';let D=null,dec=JSON.parse(localStorage.getItem('idea-lab-decisions')||'{}');
 
@@ -229,6 +285,7 @@ function card(f,rk,big=false){
       ${caHTML(f.counterargument)}${fuH}
       ${f.source_clips?`<div class="xs"><h4>Source Clips</h4>${clipsHTML(f.source_clips)}</div>`:''}
       <div class="acts">
+        <button class="bt ak" onclick="event.stopPropagation();openChat('${f.finding_id}')">Ask</button>
         <button class="bt ap" onclick="event.stopPropagation();saveDec('${f.finding_id}','approved')">Approve</button>
         <button class="bt pk" onclick="event.stopPropagation();saveDec('${f.finding_id}','parked')">Park</button>
         <button class="bt dm" onclick="event.stopPropagation();saveDec('${f.finding_id}','dismissed')">Dismiss</button>
