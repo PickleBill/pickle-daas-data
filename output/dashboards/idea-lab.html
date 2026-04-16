@@ -142,6 +142,9 @@ a:hover{opacity:.75}
 .bt.pk:hover{background:var(--wnd);border-color:var(--wn)}
 .bt.dm{border-color:oklch(40% .02 260/.55);color:var(--mt)}
 .bt.dm:hover{background:oklch(20% .01 260);color:var(--tx2)}
+.bt.ap.active{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.bt.pk.active{background:var(--wn);color:var(--bg);border-color:var(--wn)}
+.bt.dm.active{background:var(--mt);color:var(--bg);border-color:var(--mt)}
 .bt.dd{border-color:oklch(68% .24 300/.35);color:var(--pu)}
 .bt.dd:hover{background:var(--pud);border-color:var(--pu);box-shadow:0 0 12px oklch(68% .24 300/.25)}
 .bt.ex{font-size:9px;padding:4px 10px;letter-spacing:.7px}
@@ -337,10 +340,21 @@ select:focus{outline:none;border-color:var(--pu);box-shadow:0 0 0 2px var(--pud)
     <div class="wb wn"><strong>JOOLA Bias</strong>~43% of brand detections. Findings use balanced samples. Net-tracking detections now flagged separately.</div>
     <div class="sb"><h3>Researchers</h3><div id="rs"></div></div>
     <div class="sb"><h3>Your Decisions</h3><div id="ds"></div>
-      <div style="margin-top:6px;display:flex;gap:4px">
-        <button class="bt ex" onclick="exportDec()">Export</button>
-        <button class="bt ex" onclick="clearDec()" style="border-color:oklch(65% .22 25/.3);color:var(--er)">Reset</button>
+      <div id="supa-status" style="margin-top:6px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--mt)"></div>
+    </div>
+    <div class="sb" id="rrx">
+      <h3>Request Investigation</h3>
+      <textarea id="rr-topic" placeholder="What should the lab investigate next?" rows="3"
+        style="width:100%;resize:vertical;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:10px;font-size:12px;font-family:'Manrope',sans-serif;line-height:1.5;transition:.15s"></textarea>
+      <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+        <select id="rr-pri" style="flex:1">
+          <option value="normal">Normal</option>
+          <option value="urgent">Urgent</option>
+          <option value="someday">Someday</option>
+        </select>
+        <button class="bt ap" style="flex:1;text-align:center" onclick="submitRequest()">Submit</button>
       </div>
+      <div id="rr-list" style="margin-top:10px"></div>
     </div>
     <div class="sb" id="cnx" style="display:none"><h3>Cross-Researcher Connections</h3><div id="cn"></div></div>
     <div class="sb"><h3>Categories</h3><div id="cb"></div></div>
@@ -367,18 +381,105 @@ select:focus{outline:none;border-color:var(--pu);box-shadow:0 0 0 2px var(--pud)
 <script>
 const U='../idea-lab/latest.json';let D=null,dec=JSON.parse(localStorage.getItem('idea-lab-decisions')||'{}');
 
-async function init(){try{const r=await fetch(U);D=await r.json();render()}catch(e){document.getElementById('sc').innerHTML='<p style="color:var(--er);padding:16px;font-size:13px">Load failed. Run idea_lab_runner.py</p>'}}
+/* ====== SUPABASE CONFIG ====== */
+const SUPA_URL='https://vlcjaftwnllfjyckjchg.supabase.co';
+const SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsY2phZnR3bmxsZmp5Y2tqY2hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTkxNjQsImV4cCI6MjA5MTQ5NTE2NH0.JX7qlGA-i-nfPEbKGEFyC-2rgykWjLHikZGLLp4d93Y';
+const SUPA_HDR={'apikey':SUPA_ANON,'Authorization':'Bearer '+SUPA_ANON,'Content-Type':'application/json'};
+let supaOK=false;
 
-function saveDec(id,a){const f=D?.all_findings?.find(x=>x.finding_id===id);dec[id]={action:a,at:new Date().toISOString(),category:f?.category||'',agent:f?.agent||'',title:f?.title||''};localStorage.setItem('idea-lab-decisions',JSON.stringify(dec));render()}
+async function supaFetch(path,opts={}){
+  const r=await fetch(SUPA_URL+'/rest/v1/'+path,{...opts,headers:{...SUPA_HDR,...(opts.headers||{})}});
+  return r;
+}
+
+async function init(){
+  try{const r=await fetch(U);D=await r.json();render()}
+  catch(e){document.getElementById('sc').innerHTML='<p style="color:var(--er);padding:16px;font-size:13px">Load failed. Run idea_lab_runner.py</p>'}
+  // Load decisions from Supabase (merge with localStorage)
+  try{
+    const r=await supaFetch('idea_lab_decisions?select=*');
+    if(r.ok){
+      const rows=await r.json();
+      supaOK=true;
+      for(const row of rows){
+        dec[row.finding_id]={action:row.action,at:row.decided_at,category:row.category||'',agent:row.agent||'',title:row.title||'',commentary:row.commentary||''};
+      }
+      localStorage.setItem('idea-lab-decisions',JSON.stringify(dec));
+      document.getElementById('supa-status').innerHTML='<span style="color:var(--ac)">● synced to cloud</span>';
+      if(D)render();
+    }
+  }catch(e){document.getElementById('supa-status').innerHTML='<span style="color:var(--mt)">○ local only</span>'}
+  // Load research requests
+  loadRequests();
+}
+
+/* ====== DECISIONS WITH COMMENTARY ====== */
+let pendingDec=null; // {id, action} waiting for commentary
+function startDec(id,action){
+  event.stopPropagation();
+  // If already decided with same action, toggle off
+  if(dec[id]?.action===action){delete dec[id];localStorage.setItem('idea-lab-decisions',JSON.stringify(dec));render();return}
+  pendingDec={id,action};
+  render(); // will show commentary textarea
+}
+async function confirmDec(id){
+  if(!pendingDec||pendingDec.id!==id)return;
+  const {action}=pendingDec;
+  const commentary=(document.getElementById('cmt-'+id)?.value||'').trim();
+  const f=D?.all_findings?.find(x=>x.finding_id===id);
+  const row={finding_id:id,action,commentary,category:f?.category||'',agent:f?.agent||'',title:f?.title||'',finding_run:D?.run_date||''};
+  // Save to localStorage
+  dec[id]={action,at:new Date().toISOString(),category:row.category,agent:row.agent,title:row.title,commentary};
+  localStorage.setItem('idea-lab-decisions',JSON.stringify(dec));
+  pendingDec=null;
+  render();
+  // Sync to Supabase (async, don't block UI)
+  try{
+    await supaFetch('idea_lab_decisions',{method:'POST',headers:{...SUPA_HDR,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(row)});
+    document.getElementById('supa-status').innerHTML='<span style="color:var(--ac)">● synced to cloud</span>';
+  }catch(e){document.getElementById('supa-status').innerHTML='<span style="color:var(--er)">● sync failed</span>'}
+}
+function cancelDec(){pendingDec=null;render()}
 function getDec(id){return dec[id]?.action||null}
-function exportDec(){const b=new Blob([JSON.stringify(dec,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='idea-lab-decisions.json';a.click()}
-function clearDec(){if(confirm('Reset all decisions?')){dec={};localStorage.removeItem('idea-lab-decisions');render()}}
+
+/* ====== RESEARCH REQUESTS ====== */
+async function submitRequest(){
+  const topic=document.getElementById('rr-topic').value.trim();
+  if(!topic)return;
+  const pri=document.getElementById('rr-pri').value;
+  try{
+    await supaFetch('idea_lab_research_requests',{method:'POST',body:JSON.stringify({topic,priority:pri})});
+    document.getElementById('rr-topic').value='';
+    loadRequests();
+  }catch(e){alert('Submit failed: '+e.message)}
+}
+async function loadRequests(){
+  try{
+    const r=await supaFetch('idea_lab_research_requests?select=*&order=requested_at.desc&limit=10');
+    if(!r.ok)return;
+    const rows=await r.json();
+    const el=document.getElementById('rr-list');
+    if(!rows.length){el.innerHTML='<p style="color:var(--mt);font-size:11px">No requests yet</p>';return}
+    el.innerHTML=rows.map(r=>{
+      const st=r.status==='completed'?'<span style="color:var(--ac)">✓</span>':r.status==='in_progress'?'<span style="color:var(--wn)">⟳</span>':'<span style="color:var(--mt)">○</span>';
+      const pri=r.priority==='urgent'?'<span style="color:var(--er);font-size:8px;font-weight:700"> URGENT</span>':'';
+      return `<div style="padding:6px 0;border-bottom:1px solid var(--bds);font-size:11px;color:var(--tx2);line-height:1.4">${st} ${esc(r.topic).substring(0,100)}${pri}${r.result_summary?`<div style="color:var(--ac);font-size:10px;margin-top:2px">→ ${esc(r.result_summary).substring(0,80)}</div>`:''}</div>`
+    }).join('');
+  }catch(e){/* silent */}
+}
 
 function mr(v,mx=1){const p=Math.round(v/mx*100),c=p>=70?'g':p>=40?'y':'r';return `<span class="mr"><span class="mr-f ${c}" style="width:${p}%"></span></span>`}
 
 function clipsHTML(cl){if(!cl?.length)return'';return'<div class="cg">'+cl.map(c=>`<div class="ct"><video src="${c.video_url}" poster="${c.thumbnail}" preload="none" controls muted playsinline></video><div class="cp">${(c.summary||'').substring(0,80)}</div></div>`).join('')+'</div>'}
 
 function caHTML(ca){if(!ca)return'';return `<div class="ca"><div class="ca-h">Devil's Advocate &middot; ${ca.risk_level||'medium'} risk</div><div class="ca-b">${ca.evidence||ca.argument||''}</div></div>`}
+
+function corpusBadge(f){
+  const rs=D?.researcher_stats?.find(r=>r.agent===f.agent);
+  const n=rs?.sample_size||rs?.findings_count||0;
+  if(!n)return'';
+  return `<span style="color:var(--mt);font-size:8.5px;font-family:'Red Hat Mono',monospace;border:1px solid var(--bd);padding:1px 5px;border-radius:3px;opacity:.8" title="${rs?.sample_used||f.agent} sample">n=${n}</span>`;
+}
 
 function card(f,rk,big=false){
   const d=getDec(f.finding_id),dc=d?` ${d}`:'',trk=f.track==='strategic'?' s':' d',
@@ -398,19 +499,29 @@ function card(f,rk,big=false){
       <span style="color:var(--mt);font-size:9px;font-family:'Red Hat Mono',monospace">${(f.confidence*100).toFixed(0)}%${mr(f.confidence)}</span>
       ${f.composite_score?`<span style="color:oklch(40% .02 155);font-size:9px;font-family:'Red Hat Mono',monospace">${f.composite_score.toFixed(3)}</span>`:''}
       ${f.counterargument?'<span style="color:var(--er);font-size:9px;font-family:\'Red Hat Mono\',monospace">DA</span>':''}
+      ${corpusBadge(f)}
     </div>
     <div class="xb" id="${eid}">
+      ${dec[f.finding_id]?.commentary?`<div style="background:var(--pud);border:1px solid var(--pug);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--pu);font-family:'Red Hat Mono',monospace;margin-bottom:4px;font-weight:700">Your Note</div><div style="color:var(--tx2);line-height:1.5">${esc(dec[f.finding_id].commentary)}</div></div>`:''}
       <div class="xs"><h4>Evidence</h4><p>${f.evidence_summary||''}</p></div>
       ${f.recommended_action?`<div class="xs"><h4>Action</h4><p>${f.recommended_action}</p></div>`:''}
       ${caHTML(f.counterargument)}${fuH}
       ${f.source_clips?`<div class="xs"><h4>Source Clips</h4>${clipsHTML(f.source_clips)}</div>`:''}
       <div class="acts">
         <button class="bt dg" onclick="event.stopPropagation();openDeepDive('${f.finding_id}')">Dig Deeper</button>
-        <button class="bt ap" onclick="event.stopPropagation();saveDec('${f.finding_id}','approved')">Approve</button>
-        <button class="bt pk" onclick="event.stopPropagation();saveDec('${f.finding_id}','parked')">Park</button>
-        <button class="bt dm" onclick="event.stopPropagation();saveDec('${f.finding_id}','dismissed')">Dismiss</button>
+        <button class="bt ap${getDec(f.finding_id)==='approved'?' active':''}" onclick="startDec('${f.finding_id}','approved')">Approve</button>
+        <button class="bt pk${getDec(f.finding_id)==='parked'?' active':''}" onclick="startDec('${f.finding_id}','parked')">Park</button>
+        <button class="bt dm${getDec(f.finding_id)==='dismissed'?' active':''}" onclick="startDec('${f.finding_id}','dismissed')">Dismiss</button>
         ${ddUrl}
       </div>
+      ${pendingDec?.id===f.finding_id?`<div onclick="event.stopPropagation()" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bds)">
+        <textarea id="cmt-${f.finding_id}" placeholder="Add a note (optional) — e.g. 'explore by skill level'" rows="2"
+          style="width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--pu);border-radius:8px;padding:9px 11px;font-family:inherit;font-size:12px;resize:vertical;margin-bottom:6px"></textarea>
+        <div style="display:flex;gap:6px">
+          <button class="bt ap" onclick="event.stopPropagation();confirmDec('${f.finding_id}')" style="flex:1;text-align:center">Save ${pendingDec.action}</button>
+          <button class="bt dm" onclick="event.stopPropagation();cancelDec()" style="flex:0">Cancel</button>
+        </div>
+      </div>`:''}
       <div id="rel-${f.finding_id}"></div>
     </div>
   </div>`}
@@ -438,7 +549,7 @@ function render(){
   const agents=[...new Set(af.map(f=>f.agent))].sort();
   document.getElementById('fa').innerHTML='<option value="">All Researchers</option>'+agents.map(a=>`<option value="${a}">${a}</option>`).join('');
 
-  renderList();renderMeta(rs,fl,cas,cns)}
+  renderList();renderMeta(rs,fl,cas,cns);autoExpandPending()}
 
 function renderList(){
   const t=document.getElementById('ft').value,a=document.getElementById('fa').value,
@@ -450,6 +561,23 @@ function renderList(){
   else if(so==='agent')it.sort((a,b)=>a.agent.localeCompare(b.agent));
   document.getElementById('fc').textContent=`${it.length} findings`;
   document.getElementById('fl').innerHTML=it.map((f,i)=>card(f,i+1)).join('')}
+
+function autoExpandPending(){
+  if(!pendingDec)return;
+  const eid='x-'+pendingDec.id;
+  const xb=document.getElementById(eid);
+  if(xb){
+    const card=xb.closest('.cd');
+    if(card&&!card.classList.contains('ex')){
+      card.classList.add('ex');
+      // scroll into view + focus the textarea
+      setTimeout(()=>{
+        const ta=document.getElementById('cmt-'+pendingDec.id);
+        if(ta){ta.scrollIntoView({block:'center',behavior:'smooth'});ta.focus()}
+      },100);
+    }
+  }
+}
 
 function renderMeta(rs,fl,cas,cns){
   if(fl?.active){document.getElementById('fbx').style.display='block';
