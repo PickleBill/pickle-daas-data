@@ -57,10 +57,10 @@ nav a.primary{background:var(--acd);color:var(--ac);border-color:var(--acg)}
 nav a.v2{color:oklch(72% .013 165)}
 
 /* Hero */
-.hero{padding:clamp(28px,4vw,44px) 0 16px}
-.hero h1{font-size:clamp(28px,4.5vw,46px);font-weight:800;letter-spacing:-1.6px;line-height:1.05}
+.hero{padding:clamp(28px,4vw,44px) 0 12px}
+.hero h1{font-size:clamp(28px,4.2vw,42px);font-weight:800;letter-spacing:-1.4px;line-height:1.08}
 .hero h1 em{font-style:normal;color:var(--ac)}
-.hero-sub{font-size:14px;color:var(--tx2);margin-top:12px;max-width:640px;line-height:1.65}
+.hero-sub{font-size:13.5px;color:var(--tx2);margin-top:10px;max-width:600px;line-height:1.6}
 
 /* Stats grid */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:24px 0 20px;background:var(--bds)}
@@ -97,12 +97,12 @@ nav a.v2{color:oklch(72% .013 165)}
 .lane-h .l-c{font-size:18px;font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums}
 .lane-blurb{font-size:11px;color:var(--tx2);line-height:1.5;margin-bottom:12px;font-style:italic}
 
-/* Bubble field */
-.bubbles{flex:1;position:relative;height:340px;margin:8px 0}
-.bub{position:absolute;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease);border:2px solid oklch(0% 0 0/.25);padding:4px}
-.bub:hover{transform:scale(1.1)!important;z-index:10;box-shadow:0 0 24px oklch(0% 0 0/.5)}
-.bub .bn{font-weight:700;color:oklch(98% 0 0/.95);text-shadow:0 1px 4px oklch(0% 0 0/.6);line-height:1.1;letter-spacing:-.2px}
-.bub .bv{font-family:'Red Hat Mono',monospace;color:oklch(98% 0 0/.7);font-weight:500;margin-top:2px}
+/* Bubble field — packed, non-overlapping */
+.bubbles{flex:1;position:relative;height:340px;margin:8px 0;overflow:hidden}
+.bub{position:absolute;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .2s;border:1.5px solid oklch(0% 0 0/.3);padding:4px;box-shadow:inset 0 1px 0 oklch(100% 0 0/.12),0 4px 14px oklch(0% 0 0/.3)}
+.bub:hover{transform:scale(1.08)!important;z-index:10;box-shadow:inset 0 1px 0 oklch(100% 0 0/.15),0 10px 32px oklch(0% 0 0/.5);border-color:oklch(100% 0 0/.3)}
+.bub .bn{font-weight:700;color:oklch(99% 0 0/.96);text-shadow:0 1px 3px oklch(0% 0 0/.55);line-height:1.05;letter-spacing:-.3px;padding:0 2px;overflow:hidden;text-overflow:ellipsis;max-width:90%;white-space:nowrap}
+.bub .bv{font-family:'Red Hat Mono',monospace;color:oklch(100% 0 0/.75);font-weight:500;margin-top:1px}
 
 /* Lane footer note */
 .lane-foot{padding-top:12px;border-top:1px solid var(--bds);font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;display:flex;justify-content:space-between;align-items:center}
@@ -249,33 +249,25 @@ footer a:hover{text-decoration:underline}
 </header>
 
 <section class="hero fi">
-  <h1>The Pickleball <em>Brand Landscape</em><br>— now <em>classified</em></h1>
-  <p class="hero-sub">Every brand on every clip, tagged by the classification engine. Player equipment, venue installations, and sponsor signage as separate revenue lanes — each detection traceable to the rule that tagged it.</p>
+  <h1>The Pickleball <em>Brand Landscape</em></h1>
+  <p class="hero-sub">Every brand on every clip, tagged by lane — player equipment, venue installed, sponsor signage. Click any brand to see its provenance trail.</p>
 </section>
 
 <div class="stats fi" id="stats"></div>
 
-<div class="prov-legend fi">
-  <strong>Provenance:</strong>
-  <span class="prov-pill rule">rule v6</span> = tagged by an approved rule ·
-  <span class="prov-pill fallback">fallback</span> = pattern guess ·
-  <span class="prov-pill verified">✓ verified</span> = human-approved ·
-  <span class="prov-pill unverified">unverified</span> = pending review.
-</div>
-
 <div class="ld" id="ld"><div class="sp"></div><div style="color:var(--mt);font-size:12px;font-family:'Red Hat Mono',monospace">Loading classified brand landscape…</div></div>
 
 <div id="content" style="display:none">
-  <div class="sec fi"><h2>The Three Lanes</h2><span class="m">classified by context_flag</span></div>
+  <div class="sec fi"><h2>Three <em>Lanes</em></h2><span class="m">click any brand for provenance</span></div>
   <div class="three-col fi" id="three-col"></div>
 
-  <div class="sec fi"><h2>Sponsor Subtype <em>Breakdown</em></h2><span class="m">api/sponsors.json</span></div>
+  <div class="sec fi"><h2>Sponsor <em>Subtypes</em></h2></div>
   <div class="sub-list fi" id="sponsor-subtypes" style="margin-bottom:24px"></div>
 
-  <div class="sec fi"><h2>Sponsorship <em>Whitespace</em></h2><span class="m">brands present, no spend yet</span></div>
+  <div class="sec fi"><h2>Sponsorship <em>Whitespace</em></h2><span class="m">named brands · no court presence yet</span></div>
   <div class="ws-grid fi" id="ws"></div>
 
-  <div class="sec fi"><h2>All Classified Brands</h2><span class="m" id="brand-count">—</span></div>
+  <div class="sec fi"><h2>All <em>Brands</em></h2><span class="m" id="brand-count">—</span></div>
   <div class="tabs fi" id="tabs"></div>
   <div class="cg fi" id="cards"></div>
 </div>
@@ -365,36 +357,63 @@ function renderStats(){
     <div class="st"><div class="st-v ${i.cls}">${i.v}</div><div class="st-l">${i.l}</div>${i.d?`<div class="st-d">${i.d}</div>`:''}</div>`).join('');
 }
 
-function renderThreeCol(){
-  // Player: brands where player_equipment === true
-  const playerBrands = state.brands.filter(b=>b.player_equipment).slice(0,12);
-  const venueBrands = state.brands.filter(b=>b.venue_installed).slice(0,12);
-  const sponsorBrands = state.brands.filter(b=>b.sponsor_signage).slice(0,12);
+// Circle-pack brands into a fixed-size lane. Returns absolute pixel positions per bubble.
+// Uses a relaxation-based pack: place the largest first in the center, then the rest spiralling around.
+function packBubbles(brands, laneW, laneH){
+  if (!brands.length) return [];
+  const max = Math.max(...brands.map(b=>b.detections));
+  const min = Math.min(...brands.map(b=>b.detections));
+  // Radius scale — bounded so lane always fits
+  const area = laneW * laneH;
+  const totalDet = brands.reduce((a,b)=>a+b.detections,0);
+  const scale = Math.sqrt(area * 0.42 / (totalDet * Math.PI));
+  const sorted = brands.slice().sort((a,b)=>b.detections-a.detections);
+  const placed = [];
+  for (const b of sorted){
+    const r = Math.max(22, Math.min(laneH*0.34, Math.sqrt(b.detections) * scale));
+    let best = null;
+    if (!placed.length){
+      best = {x: laneW/2, y: laneH/2};
+    } else {
+      // Try candidate positions along spiral; pick the one closest to center with no overlap.
+      const cx = laneW/2, cy = laneH/2;
+      const step = 2;
+      let found = null;
+      for (let attempts = 0; attempts < 280 && !found; attempts++){
+        const angle = attempts * 0.6;
+        const rad = 4 + attempts * step;
+        const x = cx + Math.cos(angle) * rad;
+        const y = cy + Math.sin(angle) * rad;
+        if (x - r < 2 || x + r > laneW - 2 || y - r < 2 || y + r > laneH - 2) continue;
+        let ok = true;
+        for (const p of placed){
+          const dx = x - p.x, dy = y - p.y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < r + p.r + 3){ ok = false; break; }
+        }
+        if (ok) found = {x, y};
+      }
+      best = found || {x: Math.random()*(laneW-2*r)+r, y: Math.random()*(laneH-2*r)+r};
+    }
+    placed.push({...b, r, x: best.x, y: best.y});
+  }
+  return placed;
+}
 
-  const renderLane = (cls, title, blurb, brands, tot, color) => {
-    if (!brands.length) return `<div class="lane ${cls}"><div class="lane-h"><span class="l-t">${title}</span><span class="l-c">0</span></div><div style="color:var(--mt);font-size:12px;padding:40px 0;text-align:center">No brands classified into this lane yet.</div></div>`;
-    const max = Math.max(...brands.map(b=>b.detections));
-    // Pack bubbles
-    const bubbleHtml = brands.map((b,i) => {
-      const radius = 25 + Math.sqrt(b.detections/max) * 60;
-      const cols = 4, rows = 3;
-      const ci = i % cols, ri = Math.floor(i/cols);
-      const cellW = 100/cols, cellH = 100/rows;
-      const cx = (ci + 0.5) * cellW + (Math.random()-0.5)*8;
-      const cy = (ri + 0.5) * cellH + (Math.random()-0.5)*8;
-      const fontS = Math.max(9, Math.min(13, radius*0.22));
-      return `<div class="bub" style="width:${radius*2}px;height:${radius*2}px;left:calc(${cx}% - ${radius}px);top:calc(${cy}% - ${radius}px);background:${color}" onclick='openBrand(${JSON.stringify(b.name)})'>
-        <div class="bn" style="font-size:${fontS}px">${esc(b.name)}</div>
-        <div class="bv" style="font-size:${Math.max(8,fontS-2)}px">${fmt(b.detections)}</div>
-      </div>`;
-    }).join('');
+function renderThreeCol(){
+  const playerBrands = state.brands.filter(b=>b.player_equipment).slice(0,10);
+  const venueBrands  = state.brands.filter(b=>b.venue_installed).slice(0,10);
+  const sponsorBrands= state.brands.filter(b=>b.sponsor_signage).slice(0,10);
+
+  const renderLane = (cls, title, brands, tot, color) => {
+    if (!brands.length) return `<div class="lane ${cls}"><div class="lane-h"><span class="l-t">${title}</span><span class="l-c">0</span></div><div style="color:var(--mt);font-size:12px;padding:40px 0;text-align:center">No brands in this lane yet.</div></div>`;
     const verified = brands.filter(b=>b.human_verified).length;
+    const laneId = 'lane-'+cls;
     return `<div class="lane ${cls}">
       <div class="lane-h"><span class="l-t">${title}</span><span class="l-c">${tot.toLocaleString()}</span></div>
-      <div class="lane-blurb">${blurb}</div>
-      <div class="bubbles">${bubbleHtml}</div>
+      <div class="bubbles" id="${laneId}" data-cls="${cls}" data-color="${color}"></div>
       <div class="lane-foot">
-        <span><strong>${brands.length}</strong> shown · top by detections</span>
+        <span><strong>${brands.length}</strong> top brands</span>
         <span><strong>${verified}</strong>/${brands.length} ✓ verified</span>
       </div>
     </div>`;
@@ -402,10 +421,33 @@ function renderThreeCol(){
 
   const cf = state.stats.by_context_flag || {};
   document.getElementById('three-col').innerHTML = [
-    renderLane('player', 'Player Equipment', 'What players hold, wear, and use. Sells to brands (paddle, apparel, shoes).', playerBrands, cf.player_equipment||0, 'oklch(70% .15 235/.55)'),
-    renderLane('venue', 'Venue Installed', 'What the facility owns. Nets, court surfaces, cameras. Sells to venues (Courtana hardware/install).', venueBrands, cf.venue_installed||0, 'oklch(80% .15 75/.55)'),
-    renderLane('sponsor', 'Sponsor Signage', 'Brand signage on banners, courts, broadcasts. Sells to sponsors (CPM, brand intel).', sponsorBrands, cf.sponsor_signage||0, 'oklch(68% .19 300/.55)')
+    renderLane('player',  'Player Equipment', playerBrands,  cf.player_equipment||0, 'oklch(70% .15 235/.62)'),
+    renderLane('venue',   'Venue Installed',  venueBrands,   cf.venue_installed||0,  'oklch(80% .15 75/.62)'),
+    renderLane('sponsor', 'Sponsor Signage',  sponsorBrands, cf.sponsor_signage||0,  'oklch(68% .19 300/.62)')
   ].join('');
+
+  // Render bubbles after layout so we have real dimensions
+  requestAnimationFrame(() => {
+    const lanes = [
+      {id:'lane-player',  brands:playerBrands,  color:'oklch(70% .15 235/.62)', hover:'oklch(70% .15 235/.85)'},
+      {id:'lane-venue',   brands:venueBrands,   color:'oklch(80% .15 75/.62)',  hover:'oklch(80% .15 75/.85)'},
+      {id:'lane-sponsor', brands:sponsorBrands, color:'oklch(68% .19 300/.62)', hover:'oklch(68% .19 300/.85)'}
+    ];
+    for (const L of lanes){
+      const el = document.getElementById(L.id);
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      const packed = packBubbles(L.brands, rect.width, rect.height);
+      el.innerHTML = packed.map(p => {
+        const fontS = Math.max(9, Math.min(14, p.r * 0.26));
+        const vFontS = Math.max(8, fontS - 2);
+        return `<div class="bub" style="width:${p.r*2}px;height:${p.r*2}px;left:${p.x-p.r}px;top:${p.y-p.r}px;background:${L.color}" onclick='openBrand(${JSON.stringify(p.name)})' title="${esc(p.name)} · ${p.detections.toLocaleString()} detections">
+          <div class="bn" style="font-size:${fontS}px">${esc(p.name)}</div>
+          <div class="bv" style="font-size:${vFontS}px">${fmt(p.detections)}</div>
+        </div>`;
+      }).join('');
+    }
+  });
 }
 
 function renderSponsorSubtypes(){
