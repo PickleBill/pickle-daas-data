@@ -1,35 +1,35 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T11:50:58.362794+00:00_
+_Generated: 2026-04-16T12:38:21.520688+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3689 clips
-- **Total analysis files on disk:** 5209 (5209 ≥500 bytes)
-- **Minutes since last analysis:** 4.1
+- **Corpus on gh-pages:** 3745 clips
+- **Total analysis files on disk:** 5261 (5261 ≥500 bytes)
+- **Minutes since last analysis:** 0.0
 - **Human flags:** 79 total (72 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 29.6%  (1561 TP / 5271 predicted)
-- **Recall:**    69.2%  (1561 TP / 2255 awarded)
-- **F1 Score:**  41.5%
-- **Predictions analyzed:** 9442 across 3229 unique clips
+- **Precision:** 28.8%  (1652 TP / 5740 predicted)
+- **Recall:**    69.6%  (1652 TP / 2372 awarded)
+- **F1 Score:**  40.7%
+- **Predictions analyzed:** 10210 across 3532 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Rally Master | 262 | 1260 | 33 | 17% | 89% | 29% |
-| Steady Eddie | 296 | 984 | 50 | 23% | 86% | 36% |
-| Kitchen King | 62 | 828 | 0 | 7% | 100% | 13% |
-| New Look | 10 | 1 | 151 | 91% | 6% | 12% |
-| Epic Rally | 71 | 83 | 3 | 46% | 96% | 62% |
-| Net Magnet | 101 | 22 | 21 | 82% | 83% | 82% |
-| Dink Machine | 0 | 143 | 0 | 0% | 0% | 0% |
+| Rally Master | 273 | 1415 | 33 | 16% | 89% | 27% |
+| Steady Eddie | 313 | 1100 | 50 | 22% | 86% | 35% |
+| Kitchen King | 65 | 926 | 0 | 7% | 100% | 12% |
+| New Look | 12 | 1 | 155 | 92% | 7% | 13% |
+| Net Magnet | 114 | 24 | 21 | 83% | 84% | 84% |
+| Epic Rally | 72 | 83 | 3 | 46% | 96% | 63% |
+| Dink Machine | 0 | 144 | 0 | 0% | 0% | 0% |
+| Fresh Fit | 18 | 0 | 103 | 100% | 15% | 26% |
+| Two Up Pressure | 91 | 0 | 29 | 100% | 76% | 86% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
-| Two Up Pressure | 90 | 0 | 29 | 100% | 76% | 86% |
-| Fresh Fit | 15 | 0 | 100 | 100% | 13% | 23% |
 
 ## Field Fill Rates (Schema Completeness)
 
@@ -39,8 +39,8 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands ⚠️ | 395/500 | 79% |
-| badge_intelligence.predicted_badges | 491/500 | 98% |
+| brand_detection.brands ⚠️ | 392/500 | 78% |
+| badge_intelligence.predicted_badges | 488/500 | 98% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
