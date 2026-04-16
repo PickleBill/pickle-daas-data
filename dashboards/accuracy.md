@@ -1,12 +1,12 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T01:40:06.598828+00:00_
+_Generated: 2026-04-16T02:37:06.523373+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3268 clips
-- **Total analysis files on disk:** 4786 (4786 ≥500 bytes)
-- **Minutes since last analysis:** 4.0
-- **Human flags:** 62 total (55 real, rest seed)
+- **Corpus on gh-pages:** 3281 clips
+- **Total analysis files on disk:** 4842 (4842 ≥500 bytes)
+- **Minutes since last analysis:** 0.0
+- **Human flags:** 71 total (64 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
@@ -39,7 +39,7 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands | 406/500 | 81% |
+| brand_detection.brands | 401/500 | 80% |
 | badge_intelligence.predicted_badges | 488/500 | 98% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
@@ -52,12 +52,12 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 62
-- **Real (non-seed) flags:** 55
+- **Total flags captured:** 71
+- **Real (non-seed) flags:** 64
 
 Flags by field:
-- `badge_predictions` — 52 flag(s)
-- `overall_accuracy` — 4 flag(s)
+- `badge_predictions` — 60 flag(s)
+- `overall_accuracy` — 5 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
@@ -65,11 +65,11 @@ Flags by field:
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 19% precision — 1115 false positives out of 1
-- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 26% precision — 863 false positives out of 11
-- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 8% precision — 749 false positives out of 811
-- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 161 times but the model only 
-- `_systemic_Fr...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Fresh Fit' was awarded by Courtana 115 times but the model only
+- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 18% precision — 1184 false positives out of 1
+- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 24% precision — 922 false positives out of 12
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 7% precision — 787 false positives out of 849
+- `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Rally Master' was wrongly predicted: 005fc717-736, 0065b84d
+- `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Steady Eddie' was wrongly predicted: 005fc717-736, 0065b84d
 
 ---
 
