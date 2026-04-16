@@ -3,48 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player Archetypes v3.3 · Pickle DaaS</title>
-<meta name="description" content="Your Pickleball DNA, unwrapped. Player archetypes from real court footage — Spotify Wrapped for Pickleball.">
+<title>Player DNA Lab v3.3 - Pickle DaaS</title>
+<meta name="description" content="9 dimensions of play. Interactive player profiling, skill distribution, and brand-skill cross-tabulation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════
-   V3.3 PLAYER ARCHETYPES — Spotify Wrapped Mode
-   Bold gradients · card reveals · shareable cards
-   Near-black bg · noise · glass + gradient cards
-═══════════════════════════════════════════════ */
+/* ===================================
+   PLAYER DNA LAB v3.3 DESIGN SYSTEM
+   Near-black bg, noise, teal/cyan blobs,
+   glass morphism, 7-tier text
+=================================== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
   --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
   --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
   --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --teal:#2DD4BF;--teal-g:rgba(45,212,191,.12);--teal-d:rgba(45,212,191,.06);
+  --cyan:#22D3EE;--cyan-g:rgba(34,211,238,.12);--cyan-d:rgba(34,211,238,.06);
+  --purple:#A78BFA;--purple-g:rgba(167,139,250,.12);
+  --gold:#FBBF24;--gold-g:rgba(251,191,36,.12);
   --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
   --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
   --r:12px;--rl:16px;
-  /* Chapter accents */
-  --c-int:#6EEFC0;--c-int-g:rgba(110,239,192,.12);
-  --c-pl:#6BA3FF;--c-pl-g:rgba(107,163,255,.12);
-  --c-sp:#BD93F9;--c-sp-g:rgba(189,147,249,.12);
-  --c-ve:#FFB86C;--c-ve-g:rgba(255,184,108,.12);
-  --c-rd:#FF6B6B;--c-rd-g:rgba(255,107,107,.12);
-  --c-gd:#F1C40F;--c-gd-g:rgba(241,196,15,.12);
 }
 html{scroll-behavior:smooth}
 body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-.mono{font-family:'Red Hat Mono',monospace}.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+button{font-family:'Manrope',system-ui,sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:'Manrope',system-ui,sans-serif}
 
-/* ── Noise overlay ── */
+/* Noise overlay */
 .noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
 
-/* ── Ambient blobs — wrapped-inspired colors ── */
+/* Ambient blobs - teal/cyan */
 .blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .blob{position:absolute;border-radius:50%;filter:blur(120px)}
-.b1{width:520px;height:520px;top:-12%;left:18%;background:#BD93F9;opacity:.04;animation:bd1 78s ease-in-out infinite}
-.b2{width:460px;height:460px;bottom:-16%;right:3%;background:#6BA3FF;opacity:.035;animation:bd2 86s ease-in-out infinite}
-.b3{width:400px;height:400px;top:38%;left:-9%;background:#FF6B6B;opacity:.03;animation:bd3 72s ease-in-out infinite}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:var(--teal);opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:var(--cyan);opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:var(--teal);opacity:.03;animation:bd3 72s ease-in-out infinite}
 @keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
 @keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
 @keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
@@ -52,857 +52,1058 @@ a{color:inherit;text-decoration:none}
 .page{position:relative;z-index:1}
 .shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
 
-/* ── Reveal system ── */
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+/* Reveal system */
+[data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 [data-reveal].revealed{opacity:1;transform:none}
-[data-reveal].revealed[data-delay="1"]{transition-delay:.1s}
-[data-reveal].revealed[data-delay="2"]{transition-delay:.2s}
-[data-reveal].revealed[data-delay="3"]{transition-delay:.3s}
-[data-reveal].revealed[data-delay="4"]{transition-delay:.4s}
-[data-reveal].revealed[data-delay="5"]{transition-delay:.5s}
-[data-reveal].revealed[data-delay="6"]{transition-delay:.6s}
-[data-reveal].revealed[data-delay="7"]{transition-delay:.7s}
 
-/* ── Status strip ── */
+.divider{width:120px;height:1px;margin:64px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+
+/* Status strip */
 .status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
 .status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
 .status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
-.status em{font-style:normal;color:var(--c-int);font-weight:600}
-.sd{width:6px;height:6px;border-radius:50%;background:var(--c-int);box-shadow:0 0 10px var(--c-int);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+.status em{font-style:normal;color:var(--teal);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.v-chip{padding:2px 8px;background:var(--c-int-g);color:var(--c-int);border:1px solid rgba(110,239,192,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.v-chip{padding:2px 8px;background:var(--teal-g);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
 .status nav{display:flex;gap:6px}
 .status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
-.status nav a:hover{color:var(--c-int);border-color:rgba(110,239,192,.3)}
-.status nav a:active{transform:scale(.97)}
-.status nav a:focus-visible{outline:2px solid var(--c-int);outline-offset:2px}
+.status nav a:hover{color:var(--teal);border-color:rgba(45,212,191,.3)}
+.status nav a:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 
-/* ── Hero ── */
-.hero{padding:clamp(64px,10vw,120px) 0 clamp(32px,5vw,56px);position:relative}
-.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--c-sp)}
-.hero h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:900px}
-.hero h1 .wrapped{background:linear-gradient(135deg,#BD93F9,#FF79C6,#FFB86C);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:gshift 4s ease infinite}
-@keyframes gshift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:620px;line-height:1.7}
-.hero-sub strong{color:var(--t1);font-weight:700}
-.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
-.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t3)}
-.hero-pill .hp-v{font-size:20px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
-.hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5)}
-.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:#BD93F9;opacity:.035;pointer-events:none}
+/* Hero - COMPACT */
+.hero{padding:clamp(48px,8vw,80px) 0 clamp(20px,3vw,32px)}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--teal)}
+.hero h1{font-size:clamp(2.4rem,5.5vw,4.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:800px}
+.grad-text{background:linear-gradient(135deg,var(--teal),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.88rem,1.4vw,1.05rem);color:var(--t3);margin-top:14px;max-width:580px;line-height:1.6}
+.hero-sub strong{color:var(--teal);font-weight:600}
 
-/* ── Divider ── */
-.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+/* Section heading */
+.sec-head{margin-bottom:24px}
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:8px}
+.sec-title{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
 
-/* ── Section heading ── */
-.sec-head{margin-bottom:28px}
-.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px}
-.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+/* Glass card */
+.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 
-/* ═══════════════════════════════════════════
-   FEATURED ARCHETYPE CARD (Wrapped Hero)
-═══════════════════════════════════════════ */
-.featured-card{position:relative;border-radius:24px;overflow:hidden;padding:clamp(32px,5vw,56px);min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:48px;cursor:pointer;transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
-.featured-card:hover{transform:translateY(-6px) scale(1.005);box-shadow:0 40px 80px rgba(0,0,0,.5)}
-.featured-card:active{transform:scale(.98)}
-.featured-card:focus-visible{outline:2px solid #fff;outline-offset:4px}
-.featured-card .fc-bg{position:absolute;inset:0;z-index:0}
-.featured-card .fc-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.65) 100%)}
-.featured-card .fc-content{position:relative;z-index:1}
-.fc-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:100px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;width:fit-content}
-.fc-emoji{font-size:clamp(3rem,7vw,5rem);margin-bottom:12px;filter:drop-shadow(0 4px 20px rgba(0,0,0,.3))}
-.fc-name{font-size:clamp(2rem,5vw,3.6rem);font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:8px;text-shadow:0 2px 20px rgba(0,0,0,.3)}
-.fc-desc{font-size:clamp(.85rem,1.3vw,1rem);color:rgba(255,255,255,.8);max-width:480px;margin-bottom:20px;line-height:1.6}
-.fc-stats{display:flex;gap:24px;flex-wrap:wrap}
-.fc-stat{display:flex;flex-direction:column}
-.fc-stat-v{font-family:'Red Hat Mono',monospace;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:800;font-variant-numeric:tabular-nums}
-.fc-stat-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);font-family:'Red Hat Mono',monospace}
-.fc-cta{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:12px 24px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:100px;font-family:'Red Hat Mono',monospace;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;transition:all .2s var(--ease);cursor:pointer;color:#fff}
-.fc-cta:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35);transform:translateX(4px)}
+/* Radar section */
+.radar-section{margin-bottom:48px}
+.radar-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.player-search-wrap{position:relative;flex:1;min-width:240px;max-width:400px}
+.player-search{width:100%;padding:10px 16px 10px 38px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t1);font-size:13px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);outline:none;transition:border-color .2s}
+.player-search::placeholder{color:var(--t5)}
+.player-search:focus{border-color:var(--teal)}
+.player-search:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t5);font-size:14px;pointer-events:none}
+.dropdown{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--bg-s);border:1px solid var(--bd-d);border-radius:var(--r);max-height:280px;overflow-y:auto;z-index:40;display:none}
+.dropdown.open{display:block}
+.dropdown-item{padding:8px 14px;font-size:13px;color:var(--t2);cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.dropdown-item:hover,.dropdown-item.active{background:var(--teal-d);color:var(--t1)}
+.dropdown-item:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.dropdown-item .di-arch{font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t5)}
+.compare-toggle{padding:8px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);transition:all .15s var(--ease)}
+.compare-toggle:hover{color:var(--t2);border-color:var(--bd-h)}
+.compare-toggle:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.compare-toggle.on{background:var(--teal-g);color:var(--teal);border-color:rgba(45,212,191,.25)}
+.compare-chips{display:flex;gap:6px;flex-wrap:wrap}
+.compare-chip{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;font-family:'Red Hat Mono',monospace;display:flex;align-items:center;gap:6px;border:1px solid}
+.compare-chip .chip-x{cursor:pointer;opacity:.6;transition:opacity .15s;font-size:13px}
+.compare-chip .chip-x:hover{opacity:1}
+.clear-btn{padding:6px 12px;font-size:11px;color:var(--t5);border:1px solid var(--bd);border-radius:6px;transition:all .15s}
+.clear-btn:hover{color:var(--teal);border-color:rgba(45,212,191,.3)}
+.clear-btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 
-/* ═══════════════════════════════════════════
-   ARCHETYPE GRID — Bold Gradient Cards
-═══════════════════════════════════════════ */
-.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:64px}
-.arch-card{position:relative;border-radius:20px;overflow:hidden;padding:28px;min-height:320px;display:flex;flex-direction:column;cursor:pointer;transition:transform .4s var(--ease),box-shadow .4s var(--ease);perspective:800px}
-.arch-card:hover{transform:translateY(-8px);box-shadow:0 30px 60px rgba(0,0,0,.5)}
-.arch-card:active{transform:scale(.97)}
-.arch-card:focus-visible{outline:2px solid #fff;outline-offset:4px}
-.arch-card .ac-bg{position:absolute;inset:0;z-index:0;transition:transform .5s var(--ease)}
-.arch-card:hover .ac-bg{transform:scale(1.05)}
-.arch-card .ac-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.6) 100%)}
-.arch-card .ac-content{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
-.ac-emoji{font-size:2.8rem;margin-bottom:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,.3))}
-.ac-name{font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,.25)}
-.ac-trait{font-size:12px;color:rgba(255,255,255,.75);font-family:'Red Hat Mono',monospace;margin-bottom:16px}
-.ac-bottom{display:flex;justify-content:space-between;align-items:flex-end}
-.ac-count{font-family:'Red Hat Mono',monospace;font-size:clamp(1.1rem,2vw,1.4rem);font-weight:800;font-variant-numeric:tabular-nums}
-.ac-count-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);font-family:'Red Hat Mono',monospace}
-.ac-skill-badge{padding:4px 10px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border-radius:100px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600}
+.radar-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:800px){.radar-layout{grid-template-columns:1fr}}
 
-/* ═══════════════════════════════════════════
-   3D TILT on hover (applied via JS)
-═══════════════════════════════════════════ */
-.tilt-card{transform-style:preserve-3d;transition:transform .15s ease-out}
+.radar-canvas-wrap{display:flex;flex-direction:column;align-items:center;padding:24px 16px;border-radius:var(--rl)}
+#radarCanvas{max-width:100%;display:block}
 
-/* ═══════════════════════════════════════════
-   SKILL RADAR (Canvas + SVG fallback)
-═══════════════════════════════════════════ */
-.radar-section{padding:48px 0}
-.radar-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-.radar-chart{width:100%;max-width:480px;margin:0 auto;aspect-ratio:1}
-.radar-legend{display:flex;flex-direction:column;gap:12px}
-.rl-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);transition:border-color .2s}
-.rl-item:hover{border-color:var(--bd-h)}
-.rl-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
-.rl-bar{height:100%;border-radius:3px;transition:width 1.2s var(--ease);width:0}
-.rl-bar.animated{width:var(--pct)}
-.rl-name{font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t3);min-width:100px;text-transform:uppercase;letter-spacing:.06em}
-.rl-val{font-family:'Red Hat Mono',monospace;font-size:13px;font-weight:700;color:var(--t1);min-width:32px;text-align:right}
+.radar-info{padding:20px 24px;border-radius:var(--rl)}
+.ri-name{font-size:clamp(1.2rem,2.5vw,1.6rem);font-weight:800;letter-spacing:-.02em}
+.ri-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.ri-pill{padding:4px 10px;border-radius:6px;font-size:11px;font-family:'Red Hat Mono',monospace;border:1px solid var(--bd);color:var(--t3)}
+.ri-pill em{font-style:normal;color:var(--teal);font-weight:600}
+.ri-skills{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.ri-skill-row{display:flex;align-items:center;gap:10px}
+.ri-skill-label{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);min-width:110px;text-transform:uppercase;letter-spacing:.06em}
+.ri-skill-bar{flex:1;height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden}
+.ri-skill-fill{height:100%;border-radius:3px;transition:width .6s var(--ease);background:linear-gradient(90deg,var(--teal),var(--cyan))}
+.ri-skill-val{font-size:12px;font-weight:700;font-family:'Red Hat Mono',monospace;color:var(--teal);min-width:30px;text-align:right}
 
-/* ═══════════════════════════════════════════
-   BRAND x ARCHETYPE CROSS-TAB
-═══════════════════════════════════════════ */
-.xtab-section{padding:48px 0}
-.xtab-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.xtab{width:100%;border-collapse:collapse;font-size:13px}
-.xtab thead th{font-family:'Red Hat Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);padding:12px 16px;text-align:left;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--bg)}
-.xtab tbody tr{border-bottom:1px solid var(--bd);transition:background .15s}
-.xtab tbody tr:hover{background:rgba(255,255,255,.03)}
-.xtab td{padding:12px 16px;color:var(--t2);vertical-align:middle}
-.xtab td:first-child{font-weight:700;color:var(--t1)}
-.xtab .xt-bar{display:inline-block;height:4px;border-radius:2px;min-width:4px;vertical-align:middle;margin-right:8px}
-.xtab .xt-val{font-family:'Red Hat Mono',monospace;font-size:12px;font-variant-numeric:tabular-nums}
+/* Skill distribution */
+.dist-section{margin-bottom:48px}
+.dist-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.dist-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.dist-grid{grid-template-columns:1fr}}
+.dist-card{padding:14px 16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--glass-b);cursor:pointer;transition:all .2s var(--ease)}
+.dist-card:hover{border-color:var(--bd-h);transform:translateY(-2px)}
+.dist-card:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.dist-card.selected{border-color:rgba(45,212,191,.35);background:var(--teal-d)}
+.dist-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dist-card-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-family:'Red Hat Mono',monospace;color:var(--t3)}
+.dist-card-avg{font-size:14px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--teal)}
+.dist-bars{display:flex;gap:2px;height:40px;align-items:flex-end}
+.dist-bar-seg{flex:1;border-radius:2px 2px 0 0;transition:height .6s var(--ease);min-width:0;position:relative}
+.dist-bar-seg:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);padding:3px 7px;background:var(--bg-s);border:1px solid var(--bd);border-radius:4px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t2);white-space:nowrap;z-index:10;pointer-events:none}
+.dist-range{display:flex;justify-content:space-between;margin-top:4px;font-size:9px;font-family:'Red Hat Mono',monospace;color:var(--t6)}
 
-/* ═══════════════════════════════════════════
-   PLAYER CARDS CAROUSEL
-═══════════════════════════════════════════ */
-.player-row{display:flex;gap:14px;overflow-x:auto;padding:8px 0 20px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
-.player-row::-webkit-scrollbar{height:4px}
-.player-row::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:2px}
-.player-row::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
-.p-card{flex:0 0 200px;scroll-snap-align:start;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);padding:20px;text-align:center;transition:border-color .2s,transform .3s var(--ease)}
-.p-card:hover{border-color:var(--bd-h);transform:translateY(-4px)}
-.p-card-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:2px solid var(--bd);display:block}
-.p-card-name{font-weight:700;font-size:14px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.p-card-arch{font-family:'Red Hat Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t4);margin-bottom:10px}
-.p-card-stat{font-family:'Red Hat Mono',monospace;font-size:18px;font-weight:800;color:var(--c-sp)}
-.p-card-stat-l{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace}
+/* Cross-tab */
+.xtab-section{margin-bottom:48px}
+.xtab-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rl);border:1px solid var(--glass-b)}
+.xtab-wrap::-webkit-scrollbar{height:6px}
+.xtab-wrap::-webkit-scrollbar-track{background:var(--bg-s)}
+.xtab-wrap::-webkit-scrollbar-thumb{background:var(--t6);border-radius:3px}
+table.xtab{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+.xtab th{padding:10px 12px;text-align:left;font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--t4);background:var(--bg-s);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:2;cursor:pointer;transition:color .15s;white-space:nowrap;user-select:none}
+.xtab th:hover{color:var(--teal)}
+.xtab th:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.xtab th.sorted{color:var(--teal)}
+.xtab th .sort-arrow{font-size:9px;margin-left:3px;opacity:.5}
+.xtab th.sorted .sort-arrow{opacity:1}
+.xtab td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.02);transition:background .15s}
+.xtab tr{transition:background .15s}
+.xtab tbody tr:hover td{background:rgba(45,212,191,.04)}
+.xtab tbody tr.xt-highlight td{background:rgba(45,212,191,.06)}
+.xtab tbody tr{cursor:pointer}
+.xtab tbody tr:focus-visible td{outline:2px solid var(--teal);outline-offset:-2px}
+.xtab .brand-cell{font-weight:700;color:var(--t1);white-space:nowrap}
+.xtab .count-cell{font-family:'Red Hat Mono',monospace;font-weight:600;color:var(--t3)}
+.xtab .skill-cell{font-family:'Red Hat Mono',monospace;font-weight:600;text-align:center;font-size:12px;position:relative}
+.xtab .col-highlight{background:rgba(45,212,191,.03)!important}
 
-/* ═══════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════ */
-.footer{border-top:1px solid var(--bd);padding:48px 0 64px;margin-top:80px}
-.footer-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px}
-.footer-brand{max-width:320px}
-.footer-brand h3{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.footer-brand p{font-size:12px;color:var(--t5);line-height:1.6}
-.footer-links{display:flex;gap:24px;font-family:'Red Hat Mono',monospace;font-size:11px}
-.footer-links a{color:var(--t4);transition:color .2s}
-.footer-links a:hover{color:var(--c-int)}
-.footer-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t6);margin-top:32px}
-
-/* ═══════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════ */
-@media(max-width:960px){
-  .radar-wrap{grid-template-columns:1fr}
-  .radar-chart{max-width:360px}
+/* Player list */
+.plist-section{margin-bottom:64px}
+.plist-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.plist-search-wrap{position:relative;flex:1;min-width:200px;max-width:360px}
+.plist-search{width:100%;padding:10px 16px 10px 38px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t1);font-size:13px;backdrop-filter:blur(8px);outline:none;transition:border-color .2s}
+.plist-search::placeholder{color:var(--t5)}
+.plist-search:focus{border-color:var(--teal)}
+.plist-search:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.plist-filter-tag{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--teal);padding:4px 10px;border:1px solid rgba(45,212,191,.25);border-radius:6px;background:var(--teal-d);display:none;align-items:center;gap:6px}
+.plist-filter-tag .pft-x{cursor:pointer;opacity:.6}
+.plist-filter-tag .pft-x:hover{opacity:1}
+.plist-count{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t5)}
+.plist-grid{display:flex;flex-direction:column;gap:2px}
+.plist-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 120px;gap:8px;padding:8px 14px;font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--t5);border-bottom:1px solid var(--bd)}
+@media(max-width:700px){.plist-header{display:none}}
+.plist-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 120px;gap:8px;padding:10px 14px;background:var(--glass);border:1px solid transparent;border-radius:var(--r);align-items:center;cursor:pointer;transition:all .15s var(--ease)}
+.plist-row:hover{border-color:var(--bd-h);background:var(--teal-d)}
+.plist-row:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+@media(max-width:700px){
+  .plist-row{grid-template-columns:1fr 1fr;gap:4px 12px}
+  .plist-row .pr-spark{display:none}
 }
-@media(max-width:768px){
-  .arch-grid{grid-template-columns:1fr 1fr}
-  .fc-stats{gap:16px}
-  .status nav{display:none}
-}
-@media(max-width:480px){
-  .arch-grid{grid-template-columns:1fr}
-  .hero-pills{flex-direction:column}
-  .footer-inner{flex-direction:column}
-}
+.pr-name{font-weight:700;font-size:14px}
+.pr-arch{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4)}
+.pr-brand{font-size:12px;color:var(--t3)}
+.pr-top-skill{font-size:12px;color:var(--teal);font-family:'Red Hat Mono',monospace;font-weight:600}
+.pr-avg{font-size:14px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--t2)}
+.pr-spark{display:flex;gap:1px;align-items:flex-end;height:20px}
+.pr-spark-bar{width:10px;border-radius:1px 1px 0 0;transition:height .4s var(--ease)}
+
+.load-more{display:none;margin:20px auto;padding:12px 36px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t3);font-size:13px;font-weight:600;transition:all .2s var(--ease)}
+.load-more:hover{border-color:var(--teal);color:var(--teal)}
+.load-more:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* Legend for compare */
+.radar-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;justify-content:center}
+.radar-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t3)}
+.radar-legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* Footer */
+footer{margin-top:48px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a{color:var(--teal);transition:color .2s}
+footer a:hover{color:var(--t2)}
+
+/* Loading */
+.ld{display:flex;flex-direction:column;align-items:center;padding:100px 20px;gap:16px}
+.spinner{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Reduced motion */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}
+  [data-reveal]{opacity:1;transform:none}
   .blob{animation:none!important}
-  [data-reveal]{opacity:1!important;transform:none!important}
+  .sd{animation:none!important}
+}
+
+/* Responsive */
+@media(max-width:600px){
+  .status nav{display:none}
+  .radar-controls{flex-direction:column;align-items:stretch}
+  .player-search-wrap{max-width:none}
 }
 </style>
 </head>
 <body>
-<!-- Noise texture -->
-<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
 
-<!-- Ambient blobs -->
+<!-- Noise -->
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+<!-- Blobs -->
 <div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
 <div class="page">
 
-<!-- ════════════ STATUS STRIP ════════════ -->
-<div class="status" id="statusBar">
-<div class="shell">
-<div class="status-inner">
-  <div><span class="sd"></span><em>Pickle DaaS</em> &middot; Player Archetypes <span class="v-chip">v3.3</span></div>
-  <nav>
-    <a href="#archetypes">Archetypes</a>
-    <a href="#radar">Skills</a>
-    <a href="#brands">Brands</a>
-    <a href="#players">Players</a>
-  </nav>
-</div>
-</div>
-</div>
-
-<!-- ════════════ HERO ════════════ -->
-<section class="hero">
-<div class="shell">
-  <div class="hero-eyebrow">Player Archetypes</div>
-  <h1>Your Pickleball DNA, <span class="wrapped">unwrapped.</span></h1>
-  <p class="hero-sub" id="heroSub">Loading player profiles...</p>
-  <div class="hero-pills" id="heroPills"></div>
-  <div class="hero-glow"></div>
-</div>
-</section>
-
-<!-- ════════════ FEATURED ARCHETYPE ════════════ -->
-<section class="shell" id="featuredSection" data-reveal>
-  <div class="featured-card" id="featuredCard" tabindex="0">
-    <div class="fc-bg" id="featuredBg"></div>
-    <div class="fc-content" id="featuredContent"></div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ════════════ ARCHETYPE GRID ════════════ -->
-<section class="shell" id="archetypes">
-  <div class="sec-head" data-reveal>
-    <div class="sec-eyebrow">Archetype Collection</div>
-    <div class="sec-title">Every playstyle, classified.</div>
-  </div>
-  <div class="arch-grid" id="archGrid"></div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ════════════ SKILL RADAR ════════════ -->
-<section class="shell radar-section" id="radar">
-  <div class="sec-head" data-reveal>
-    <div class="sec-eyebrow">Skill Breakdown</div>
-    <div class="sec-title">9 dimensions of play.</div>
-  </div>
-  <div class="radar-wrap" data-reveal>
-    <canvas class="radar-chart" id="radarCanvas" width="480" height="480"></canvas>
-    <div class="radar-legend" id="radarLegend"></div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ════════════ BRAND x ARCHETYPE ════════════ -->
-<section class="shell xtab-section" id="brands">
-  <div class="sec-head" data-reveal>
-    <div class="sec-eyebrow">Brand Affinity</div>
-    <div class="sec-title">Who uses what.</div>
-  </div>
-  <div class="xtab-wrap" data-reveal>
-    <table class="xtab" id="xtabTable">
-      <thead><tr id="xtabHead"></tr></thead>
-      <tbody id="xtabBody"></tbody>
-    </table>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ════════════ TOP PLAYERS ════════════ -->
-<section class="shell" id="players">
-  <div class="sec-head" data-reveal>
-    <div class="sec-eyebrow">Player Spotlight</div>
-    <div class="sec-title">Top performers by archetype.</div>
-  </div>
-  <div class="player-row" id="playerRow" data-reveal></div>
-</section>
-
-<!-- ════════════ FOOTER ════════════ -->
-<footer class="footer">
-<div class="shell">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <h3>Pickle DaaS</h3>
-      <p>Player archetype intelligence from real court footage. Powered by Gemini vision analysis across thousands of highlight clips.</p>
+  <!-- Status strip -->
+  <header class="status" id="status">
+    <div class="shell status-inner">
+      <div><span class="sd"></span><em>PLAYER DNA LAB</em> <span class="v-chip">v3.3</span></div>
+      <nav>
+        <a href="../dashboards/brand-intelligence-v3.2.html">Brands</a>
+        <a href="../dashboards/pickle-daas-investor-v3.2.html">Investor</a>
+        <a href="../dashboards/evidence-browser-v3.2.html">Evidence</a>
+        <a href="../dashboards/equipment-dna-v3.2.html">Equipment</a>
+      </nav>
     </div>
-    <div class="footer-links">
-      <a href="showcase-portal-v3.1.html">Portal</a>
-      <a href="brand-intelligence-v3.2.html">Brands</a>
-      <a href="evidence-wall-v3.1.html">Evidence</a>
-    </div>
-  </div>
-  <div class="footer-meta" id="footerMeta">Generated by Pickle DaaS pipeline</div>
-</div>
-</footer>
+  </header>
 
-</div><!-- /.page -->
+  <div class="shell">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-eyebrow">Player DNA Lab</div>
+      <h1><span class="grad-text">9 dimensions of play.</span></h1>
+      <p class="hero-sub"><strong id="playerCount">--</strong> players profiled. Select any player to see their DNA.</p>
+    </section>
+
+    <!-- Radar Section -->
+    <section class="radar-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Interactive Profile</div>
+        <div class="sec-title">Skill Radar</div>
+      </div>
+      <div class="radar-controls">
+        <div class="player-search-wrap">
+          <span class="search-icon">&#9906;</span>
+          <input class="player-search" id="playerSearch" type="text" placeholder="Search players by name..." autocomplete="off" aria-label="Search players">
+          <div class="dropdown" id="playerDropdown" role="listbox"></div>
+        </div>
+        <button class="compare-toggle" id="compareToggle" aria-pressed="false">Compare</button>
+        <div class="compare-chips" id="compareChips"></div>
+        <button class="clear-btn" id="clearBtn" style="display:none">Clear all</button>
+      </div>
+      <div class="radar-layout">
+        <div class="radar-canvas-wrap glass" id="radarWrap">
+          <canvas id="radarCanvas" width="420" height="420"></canvas>
+          <div class="radar-legend" id="radarLegend"></div>
+        </div>
+        <div class="radar-info glass" id="radarInfo">
+          <div class="ri-name" id="riName">All Players Average</div>
+          <div class="ri-meta" id="riMeta"></div>
+          <div class="ri-skills" id="riSkills"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Skill Distribution -->
+    <section class="dist-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Skill Dimensions</div>
+        <div class="sec-title">Distribution across the corpus</div>
+      </div>
+      <div class="dist-grid" id="distGrid"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Brand x Skill Cross-Tab -->
+    <section class="xtab-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Cross-Tabulation</div>
+        <div class="sec-title">Brand x Skill Matrix</div>
+      </div>
+      <p style="font-size:12px;color:var(--t4);margin-bottom:14px;font-family:'Red Hat Mono',monospace">Click a brand row to load its average profile into the radar. Click column headers to sort.</p>
+      <div class="xtab-wrap">
+        <table class="xtab" id="xtab">
+          <thead id="xtabHead"></thead>
+          <tbody id="xtabBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Player List -->
+    <section class="plist-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Full Roster</div>
+        <div class="sec-title">Player Directory</div>
+      </div>
+      <div class="plist-controls">
+        <div class="plist-search-wrap">
+          <span class="search-icon" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t5);font-size:14px;pointer-events:none">&#9906;</span>
+          <input class="plist-search" id="plistSearch" type="text" placeholder="Filter players..." aria-label="Filter players">
+        </div>
+        <div class="plist-filter-tag" id="plistFilterTag">
+          Sorted by: <strong id="plistFilterName"></strong>
+          <span class="pft-x" id="plistFilterX">x</span>
+        </div>
+        <div class="plist-count" id="plistCount"></div>
+      </div>
+      <div class="plist-header">
+        <div>Player</div><div>Archetype</div><div>Brand</div><div>Top Skill</div><div>Avg</div><div>Profile</div>
+      </div>
+      <div class="plist-grid" id="plistGrid"></div>
+      <button class="load-more" id="loadMore">Load more</button>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div>Pickle DaaS -- Player DNA Lab v3.3 -- <a href="https://courtana.com">courtana.com</a></div>
+      <div>Data pipeline: Courtana corpus</div>
+    </footer>
+  </div>
+</div>
 
 <script>
-/* ═══════════════════════════════════════════════
-   PLAYER ARCHETYPES v3.3 — Runtime
-   Fetch data → build archetypes → render cards
-═══════════════════════════════════════════════ */
+(function(){
+'use strict';
 
-// ── Archetype definitions (enriched metadata for known + synthetic types) ──
-const ARCHETYPE_META = {
-  'Kitchen Master': {
-    emoji: '\u{1F3D3}', // table tennis paddle
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    desc: 'Lives at the non-volley zone. Soft hands, fast reflexes, and an uncanny ability to win dink rallies. The kitchen is their kingdom.',
-    trait: 'Soft-hand specialist',
-    color: '#667eea'
-  },
-  'All-Rounder': {
-    emoji: '\u{1F3AF}', // bullseye
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    desc: 'No weaknesses, no wasted motion. Adapts to any opponent and owns every zone. The complete package.',
-    trait: 'Balanced versatility',
-    color: '#f093fb'
-  },
-  'Power Punisher': {
-    emoji: '\u26A1',
-    gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    desc: 'Overpowering drives and smashes that end rallies fast. When they step back, the court shakes.',
-    trait: 'Drive-dominant aggressor',
-    color: '#fa709a'
-  },
-  'Court General': {
-    emoji: '\u{1F9E0}', // brain
-    gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-    desc: 'Reads the game three shots ahead. Strategic shot placement and court positioning that controls every point.',
-    trait: 'High-IQ strategist',
-    color: '#a8edea'
-  },
-  'Touch Artist': {
-    emoji: '\u{1F3A8}', // palette
-    gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-    desc: 'Drops, spins, and angle shots that defy physics. They make the ball dance with creativity and finesse.',
-    trait: 'Creative shotmaker',
-    color: '#fcb69f'
-  },
-  'Defensive Wall': {
-    emoji: '\u{1F6E1}\uFE0F', // shield
-    gradient: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)',
-    desc: 'Nothing gets past them. Impossible gets and rally extensions that frustrate opponents into errors.',
-    trait: 'Reset machine',
-    color: '#89f7fe'
-  },
-  'Baseline Brawler': {
-    emoji: '\u{1F4AA}', // flexed bicep
-    gradient: 'linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%)',
-    desc: 'Dominates from the back court with deep drives and powerful groundstrokes. Wins the war of attrition.',
-    trait: 'Deep-court warrior',
-    color: '#fdcbf1'
-  },
-  'Scrambler': {
-    emoji: '\u{1F525}', // fire
-    gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)',
-    desc: 'Pure hustle and athleticism. They chase down everything and turn defense into offense with sheer willpower.',
-    trait: 'Athletic playmaker',
-    color: '#ff9a9e'
-  }
-};
-
+const SKILL_KEYS = ['court_coverage','kitchen','power','touch','athleticism','creativity','court_iq','consistency','composure'];
 const SKILL_LABELS = {
-  court_coverage: 'Court Coverage',
-  kitchen: 'Kitchen Play',
-  power: 'Power',
-  touch: 'Touch',
-  athleticism: 'Athleticism',
-  creativity: 'Creativity',
-  court_iq: 'Court IQ',
-  consistency: 'Consistency',
-  composure: 'Composure'
+  court_coverage:'Court Coverage', kitchen:'Kitchen', power:'Power', touch:'Touch',
+  athleticism:'Athleticism', creativity:'Creativity', court_iq:'Court IQ',
+  consistency:'Consistency', composure:'Composure'
 };
+const COMPARE_COLORS = ['#2DD4BF','#A78BFA','#FBBF24'];
+const PAGE_SIZE = 20;
 
-const SKILL_COLORS = [
-  '#BD93F9','#6BA3FF','#FF79C6','#FFB86C','#6EEFC0','#F1C40F','#FF6B6B','#50FA7B','#8BE9FD'
-];
+let allPlayers = [];
+let allBrands = [];
+let corpusStats = {};
+let selectedPlayers = [];
+let compareMode = false;
+let sortCol = 'clips';
+let sortDir = 'desc';
+let plistFilter = '';
+let plistSkillFilter = null;
+let plistPage = 1;
+let animFrame = null;
+let radarTargets = [];
+let radarCurrent = [];
 
-// ── State ──
-let STATE = { players: [], archetypes: {}, brands: [], corpus: null };
-
-// ── Data loading ──
+/* ── Data Loading ── */
 async function loadData() {
-  const [pRes, fRes, bRes] = await Promise.allSettled([
-    fetch('../api/players.json').then(r => r.ok ? r.json() : null),
-    fetch('../api/feed.json').then(r => r.ok ? r.json() : null),
-    fetch('../api/brands.json').then(r => r.ok ? r.json() : null)
-  ]);
-
-  const playersData = pRes.status === 'fulfilled' && pRes.value ? pRes.value : null;
-  const feedData = fRes.status === 'fulfilled' && fRes.value ? fRes.value : null;
-  const brandsData = bRes.status === 'fulfilled' && bRes.value ? bRes.value : null;
-
-  STATE.players = playersData ? playersData.players : [];
-  STATE.corpus = feedData ? feedData.corpus : null;
-  STATE.brands = brandsData ? brandsData.brands.slice(0, 20) : [];
-
-  // Build archetypes from players
-  STATE.archetypes = {};
-  STATE.players.forEach(p => {
-    const a = p.archetype;
-    if (!STATE.archetypes[a]) {
-      STATE.archetypes[a] = { count: 0, players: [], skills: {}, brands: {} };
-    }
-    STATE.archetypes[a].count++;
-    STATE.archetypes[a].players.push(p);
-    const b = p.primary_brand;
-    if (b) STATE.archetypes[a].brands[b] = (STATE.archetypes[a].brands[b] || 0) + 1;
-    Object.entries(p.skills || {}).forEach(([k, v]) => {
-      STATE.archetypes[a].skills[k] = (STATE.archetypes[a].skills[k] || 0) + v;
-    });
-  });
-
-  // Compute averages
-  Object.values(STATE.archetypes).forEach(a => {
-    const n = a.count;
-    Object.keys(a.skills).forEach(k => { a.skills[k] = +(a.skills[k] / n).toFixed(1); });
-    a.topSkill = Object.entries(a.skills).sort((x, y) => y[1] - x[1])[0];
-    a.topBrand = Object.entries(a.brands).sort((x, y) => y[1] - x[1])[0];
-  });
-
-  // If we have fewer than 4 archetypes from data, enrich with synthetic ones
-  // based on skill extremes in actual player pool
-  const realCount = Object.keys(STATE.archetypes).length;
-  if (realCount < 4 && STATE.players.length > 5) {
-    enrichSyntheticArchetypes();
+  try {
+    const [pRes, bRes, fRes] = await Promise.all([
+      fetch('../api/players.json').then(r=>r.json()),
+      fetch('../api/brands.json').then(r=>r.json()),
+      fetch('../api/feed.json').then(r=>r.json())
+    ]);
+    allPlayers = pRes.players || [];
+    allBrands = bRes.brands || [];
+    corpusStats = fRes.corpus || {};
+    document.getElementById('playerCount').textContent = allPlayers.length;
+    init();
+  } catch(e) {
+    document.querySelector('.page').innerHTML =
+      '<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Failed to load data. Ensure API files are available.</p></div>';
   }
-
-  render();
 }
 
-function enrichSyntheticArchetypes() {
-  // Find players with extreme skill profiles and assign synthetic archetypes
-  const assigned = new Set(Object.keys(STATE.archetypes));
-  const synthMap = [
-    { name: 'Power Punisher', key: 'power', thresh: 5.0 },
-    { name: 'Court General', key: 'court_iq', thresh: 6.5 },
-    { name: 'Touch Artist', key: 'creativity', thresh: 4.0 },
-    { name: 'Defensive Wall', key: 'court_coverage', thresh: 6.3 },
-    { name: 'Scrambler', key: 'athleticism', thresh: 5.9 }
-  ];
-
-  synthMap.forEach(s => {
-    if (assigned.has(s.name)) return;
-    // Find qualifying players from "All-Rounder" pool
-    const pool = STATE.archetypes['All-Rounder'];
-    if (!pool || pool.count < 6) return;
-
-    const qualifying = pool.players.filter(p => p.skills && p.skills[s.key] >= s.thresh);
-    if (qualifying.length >= 2) {
-      const subset = qualifying.slice(0, Math.min(qualifying.length, Math.ceil(qualifying.length / 2)));
-      const newArch = { count: subset.length, players: subset, skills: {}, brands: {} };
-      subset.forEach(p => {
-        Object.entries(p.skills || {}).forEach(([k, v]) => {
-          newArch.skills[k] = (newArch.skills[k] || 0) + v;
-        });
-        const b = p.primary_brand;
-        if (b) newArch.brands[b] = (newArch.brands[b] || 0) + 1;
-      });
-      const n = newArch.count;
-      Object.keys(newArch.skills).forEach(k => { newArch.skills[k] = +(newArch.skills[k] / n).toFixed(1); });
-      newArch.topSkill = Object.entries(newArch.skills).sort((x, y) => y[1] - x[1])[0];
-      newArch.topBrand = Object.entries(newArch.brands).sort((x, y) => y[1] - x[1])[0];
-      STATE.archetypes[s.name] = newArch;
-      // Remove from All-Rounder count (keep in both for cross-ref)
-    }
-  });
-}
-
-// ── Render ──
-function render() {
-  renderHero();
-  renderFeatured();
-  renderGrid();
-  renderRadar();
-  renderCrossTab();
-  renderPlayers();
-  renderFooter();
-  initReveals();
-  initTilt();
+function init() {
+  initRadar();
+  initDistribution();
+  initCrossTab();
+  initPlayerList();
+  initReveal();
   initStatusScroll();
 }
 
-function renderHero() {
-  const total = STATE.players.length || 93;
-  const archCount = Object.keys(STATE.archetypes).length || 8;
-  const avgSkill = STATE.players.length
-    ? (STATE.players.reduce((s, p) => {
-        const vals = Object.values(p.skills || {});
-        return s + (vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0);
-      }, 0) / STATE.players.length).toFixed(1)
-    : '6.2';
-
-  document.getElementById('heroSub').innerHTML =
-    `<strong>${total}</strong> player profiles. <strong>9</strong> skill dimensions. Which archetype are you?`;
-
-  document.getElementById('heroPills').innerHTML = `
-    <div class="hero-pill"><div><div class="hp-v">${total}</div><div class="hp-l">Players</div></div></div>
-    <div class="hero-pill"><div><div class="hp-v">${archCount}</div><div class="hp-l">Archetypes</div></div></div>
-    <div class="hero-pill"><div><div class="hp-v">${avgSkill}</div><div class="hp-l">Avg Skill</div></div></div>
-  `;
-}
-
-function renderFeatured() {
-  const sorted = Object.entries(STATE.archetypes).sort((a, b) => b[1].count - a[1].count);
-  if (!sorted.length) return;
-
-  const [name, data] = sorted[0];
-  const meta = ARCHETYPE_META[name] || ARCHETYPE_META['All-Rounder'];
-  const topSkill = data.topSkill || ['consistency', '7.0'];
-  const topBrand = data.topBrand || ['JOOLA', 0];
-
-  document.getElementById('featuredBg').style.background = meta.gradient;
-  document.getElementById('featuredContent').innerHTML = `
-    <div class="fc-badge">\u2B50 #1 Archetype</div>
-    <div class="fc-emoji">${meta.emoji}</div>
-    <div class="fc-name">${name}</div>
-    <div class="fc-desc">${meta.desc}</div>
-    <div class="fc-stats">
-      <div class="fc-stat"><div class="fc-stat-v">${data.count}</div><div class="fc-stat-l">Players</div></div>
-      <div class="fc-stat"><div class="fc-stat-v">${topSkill[1]}</div><div class="fc-stat-l">Top: ${SKILL_LABELS[topSkill[0]] || topSkill[0]}</div></div>
-      <div class="fc-stat"><div class="fc-stat-v">${topBrand[0]}</div><div class="fc-stat-l">Fav Brand</div></div>
-    </div>
-    <button class="fc-cta" onclick="document.getElementById('archetypes').scrollIntoView({behavior:'smooth'})">
-      Explore all archetypes <span>\u2192</span>
-    </button>
-  `;
-}
-
-function renderGrid() {
-  const grid = document.getElementById('archGrid');
-  const sorted = Object.entries(STATE.archetypes).sort((a, b) => b[1].count - a[1].count);
-
-  grid.innerHTML = sorted.map(([name, data], i) => {
-    const meta = ARCHETYPE_META[name] || {
-      emoji: '\u{1F3BE}',
-      gradient: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
-      desc: 'A unique playstyle discovered in the data.',
-      trait: 'Distinct approach',
-      color: '#a29bfe'
-    };
-    const topSkill = data.topSkill || ['consistency', '7.0'];
-    return `
-      <div class="arch-card tilt-card" data-reveal data-delay="${i % 6}" tabindex="0">
-        <div class="ac-bg" style="background:${meta.gradient}"></div>
-        <div class="ac-content">
-          <div class="ac-emoji">${meta.emoji}</div>
-          <div style="margin-top:auto">
-            <div class="ac-name">${name}</div>
-            <div class="ac-trait">${meta.trait}</div>
-            <div class="ac-bottom">
-              <div>
-                <div class="ac-count">${data.count}</div>
-                <div class="ac-count-label">Players</div>
-              </div>
-              <div class="ac-skill-badge">${SKILL_LABELS[topSkill[0]] || topSkill[0]} ${topSkill[1]}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderRadar() {
-  const sorted = Object.entries(STATE.archetypes).sort((a, b) => b[1].count - a[1].count);
-  if (!sorted.length) return;
-
-  const [topName, topData] = sorted[0];
-  const skills = topData.skills;
-  const keys = Object.keys(SKILL_LABELS);
-  const values = keys.map(k => skills[k] || 0);
-  const maxVal = 10;
-
-  // Draw radar on canvas
-  const canvas = document.getElementById('radarCanvas');
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = 480 * dpr;
-  canvas.height = 480 * dpr;
-  ctx.scale(dpr, dpr);
-  canvas.style.width = '100%';
-  canvas.style.maxWidth = '480px';
-
-  const cx = 240, cy = 240, maxR = 180;
-  const n = keys.length;
-  const step = (Math.PI * 2) / n;
-
-  function drawRadarFrame() {
-    ctx.clearRect(0, 0, 480, 480);
-
-    // Grid rings
-    [.2, .4, .6, .8, 1].forEach(f => {
-      ctx.beginPath();
-      for (let i = 0; i <= n; i++) {
-        const angle = -Math.PI / 2 + step * (i % n);
-        const x = cx + Math.cos(angle) * maxR * f;
-        const y = cy + Math.sin(angle) * maxR * f;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = 'rgba(255,255,255,.06)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
-
-    // Axis lines
-    for (let i = 0; i < n; i++) {
-      const angle = -Math.PI / 2 + step * i;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
-      ctx.strokeStyle = 'rgba(255,255,255,.04)';
-      ctx.stroke();
-    }
-
-    // Labels
-    ctx.font = '500 11px "Red Hat Mono", monospace';
-    ctx.fillStyle = 'rgba(255,255,255,.45)';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    for (let i = 0; i < n; i++) {
-      const angle = -Math.PI / 2 + step * i;
-      const lx = cx + Math.cos(angle) * (maxR + 28);
-      const ly = cy + Math.sin(angle) * (maxR + 28);
-      ctx.fillText(SKILL_LABELS[keys[i]].toUpperCase(), lx, ly);
-    }
-
-    return { cx, cy, maxR, n, step, keys, values, maxVal };
-  }
-
-  // Animate the data polygon
-  let progress = 0;
-  const radarMeta = ARCHETYPE_META[topName] || ARCHETYPE_META['All-Rounder'];
-
-  function animateRadar() {
-    const p = drawRadarFrame();
-    progress = Math.min(progress + 0.025, 1);
-    const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
-
-    // Data polygon
-    ctx.beginPath();
-    for (let i = 0; i <= p.n; i++) {
-      const idx = i % p.n;
-      const angle = -Math.PI / 2 + p.step * idx;
-      const r = (p.values[idx] / p.maxVal) * p.maxR * eased;
-      const x = p.cx + Math.cos(angle) * r;
-      const y = p.cy + Math.sin(angle) * r;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-
-    // Fill with gradient
-    const grd = ctx.createRadialGradient(p.cx, p.cy, 0, p.cx, p.cy, p.maxR);
-    grd.addColorStop(0, radarMeta.color + '33');
-    grd.addColorStop(1, radarMeta.color + '08');
-    ctx.fillStyle = grd;
-    ctx.fill();
-    ctx.strokeStyle = radarMeta.color + 'cc';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Data points
-    for (let i = 0; i < p.n; i++) {
-      const angle = -Math.PI / 2 + p.step * i;
-      const r = (p.values[i] / p.maxVal) * p.maxR * eased;
-      const x = p.cx + Math.cos(angle) * r;
-      const y = p.cy + Math.sin(angle) * r;
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = radarMeta.color;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(x, y, 2, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
-      ctx.fill();
-    }
-
-    if (progress < 1) requestAnimationFrame(animateRadar);
-  }
-
-  // Observe the radar section, start animation on reveal
-  const radarObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        progress = 0;
-        animateRadar();
-        // Also animate bars
-        document.querySelectorAll('.rl-bar').forEach(b => b.classList.add('animated'));
-        radarObs.disconnect();
-      }
-    });
-  }, { threshold: 0.3 });
-  radarObs.observe(canvas);
-
-  // Legend bars
-  const legend = document.getElementById('radarLegend');
-  legend.innerHTML = `
-    <div style="margin-bottom:8px;font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t4);text-transform:uppercase;letter-spacing:.1em">${topName} Skill Profile</div>
-    ${keys.map((k, i) => `
-      <div class="rl-item">
-        <div class="rl-name">${SKILL_LABELS[k]}</div>
-        <div class="rl-bar-wrap">
-          <div class="rl-bar" style="--pct:${(values[i] / maxVal * 100).toFixed(0)}%;background:${SKILL_COLORS[i]}"></div>
-        </div>
-        <div class="rl-val">${values[i]}</div>
-      </div>
-    `).join('')}
-  `;
-}
-
-function renderCrossTab() {
-  const archNames = Object.keys(STATE.archetypes).sort();
-  const brandSet = {};
-
-  // Collect brand->archetype mappings
-  STATE.players.forEach(p => {
-    const b = p.primary_brand;
-    const a = p.archetype;
-    if (!b) return;
-    if (!brandSet[b]) brandSet[b] = {};
-    brandSet[b][a] = (brandSet[b][a] || 0) + 1;
-  });
-
-  // Also count for synthetic archetypes
-  Object.entries(STATE.archetypes).forEach(([archName, archData]) => {
-    archData.players.forEach(p => {
-      const b = p.primary_brand;
-      if (!b) return;
-      if (!brandSet[b]) brandSet[b] = {};
-      brandSet[b][archName] = (brandSet[b][archName] || 0) + 1;
-    });
-  });
-
-  // Deduplicate counts: recalculate from archetype data
-  const brandRows = {};
-  Object.entries(STATE.archetypes).forEach(([archName, archData]) => {
-    Object.entries(archData.brands).forEach(([brand, count]) => {
-      if (!brandRows[brand]) brandRows[brand] = {};
-      brandRows[brand][archName] = count;
-    });
-  });
-
-  // Sort brands by total
-  const sortedBrands = Object.entries(brandRows)
-    .map(([name, archs]) => ({ name, archs, total: Object.values(archs).reduce((s, v) => s + v, 0) }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 12);
-
-  const maxBrandTotal = sortedBrands.length ? sortedBrands[0].total : 1;
-
-  const headTr = document.getElementById('xtabHead');
-  headTr.innerHTML = `<th>Brand</th>${archNames.map(a => `<th>${a}</th>`).join('')}<th>Total</th>`;
-
-  const body = document.getElementById('xtabBody');
-  body.innerHTML = sortedBrands.map(b => {
-    const cells = archNames.map(a => {
-      const v = b.archs[a] || 0;
-      const meta = ARCHETYPE_META[a] || { color: '#a29bfe' };
-      const w = v ? Math.max(12, (v / maxBrandTotal) * 80) : 0;
-      return `<td>
-        ${v ? `<span class="xt-bar" style="width:${w}px;background:${meta.color}"></span>` : ''}
-        <span class="xt-val">${v || '\u2014'}</span>
-      </td>`;
-    }).join('');
-    return `<tr><td>${b.name}</td>${cells}<td class="xt-val" style="font-weight:700">${b.total}</td></tr>`;
-  }).join('');
-}
-
-function renderPlayers() {
-  const row = document.getElementById('playerRow');
-  const topPlayers = STATE.players.slice(0, 20);
-
-  row.innerHTML = topPlayers.map(p => {
-    const meta = ARCHETYPE_META[p.archetype] || { color: '#a29bfe' };
-    const avgSkill = Object.values(p.skills || {});
-    const avg = avgSkill.length ? (avgSkill.reduce((s, v) => s + v, 0) / avgSkill.length).toFixed(1) : '0';
-    return `
-      <div class="p-card">
-        <img class="p-card-avatar" src="${p.avatar}" alt="${p.username}" loading="lazy"
-             onerror="this.style.display='none'">
-        <div class="p-card-name">${p.username}</div>
-        <div class="p-card-arch" style="color:${meta.color}">${p.archetype}</div>
-        <div class="p-card-stat" style="color:${meta.color}">${avg}</div>
-        <div class="p-card-stat-l">Avg Skill</div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderFooter() {
-  const now = new Date().toISOString().split('T')[0];
-  document.getElementById('footerMeta').textContent =
-    `Generated ${now} \u00B7 Pickle DaaS v3.3 \u00B7 Player Archetypes \u00B7 ${STATE.players.length} players analyzed`;
-}
-
-// ── Scroll reveal ──
-function initReveals() {
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('revealed');
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+/* ── Scroll Reveal ── */
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('revealed'); obs.unobserve(e.target); }});
+  }, {threshold:0.08});
   document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
 }
 
-// ── 3D tilt on cards ──
-function initTilt() {
-  document.querySelectorAll('.tilt-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const rotY = (x - 0.5) * 12;
-      const rotX = (0.5 - y) * 12;
-      card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-    });
-  });
-}
-
-// ── Sticky status shadow ──
 function initStatusScroll() {
-  const bar = document.getElementById('statusBar');
+  const s = document.getElementById('status');
   let ticking = false;
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        bar.classList.toggle('scrolled', window.scrollY > 20);
-        ticking = false;
-      });
-      ticking = true;
+    if(!ticking){ requestAnimationFrame(()=>{ s.classList.toggle('scrolled', window.scrollY>20); ticking=false; }); ticking=true; }
+  }, {passive:true});
+}
+
+/* ── Utility ── */
+function avgSkills(players) {
+  if(!players.length) return SKILL_KEYS.reduce((o,k)=>(o[k]=0,o),{});
+  const sums = {};
+  SKILL_KEYS.forEach(k => sums[k]=0);
+  players.forEach(p => SKILL_KEYS.forEach(k => sums[k]+=(p.skills[k]||0)));
+  SKILL_KEYS.forEach(k => sums[k]=+(sums[k]/players.length).toFixed(2));
+  return sums;
+}
+
+function topSkill(skills) {
+  let best='', bestV=0;
+  SKILL_KEYS.forEach(k => { if((skills[k]||0)>bestV){ bestV=skills[k]; best=k; }});
+  return {key:best, val:bestV};
+}
+
+function overallAvg(skills) {
+  const vals = SKILL_KEYS.map(k => skills[k]||0);
+  return +(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+}
+
+function skillColor(val, min, max) {
+  const t = Math.max(0, Math.min(1, (val-min)/(max-min||1)));
+  const r = Math.round(8 + t*37);
+  const g = Math.round(8 + t*204);
+  const b = Math.round(12 + t*179);
+  return 'rgb('+r+','+g+','+b+')';
+}
+
+/* ── RADAR CHART ── */
+function initRadar() {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const size = 420;
+  canvas.width = size*dpr;
+  canvas.height = size*dpr;
+  canvas.style.width = size+'px';
+  canvas.style.height = size+'px';
+  ctx.scale(dpr,dpr);
+
+  const avg = avgSkills(allPlayers);
+  radarCurrent = [{skills:{...avg}, color:COMPARE_COLORS[0], label:'Average'}];
+  radarTargets = [{skills:{...avg}, color:COMPARE_COLORS[0], label:'Average'}];
+  drawRadar(ctx, size);
+  updateRadarInfo(null);
+  updateLegend();
+  initPlayerSearch();
+}
+
+function drawRadar(ctx, size) {
+  const cx=size/2, cy=size/2;
+  const maxR=size*0.36;
+  const n=SKILL_KEYS.length;
+  const step=(Math.PI*2)/n;
+  const startAngle=-Math.PI/2;
+
+  ctx.clearRect(0,0,size,size);
+
+  // Grid rings
+  for(let r=1;r<=5;r++){
+    const rad=maxR*(r/5);
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const a=startAngle+(i%n)*step;
+      const x=cx+Math.cos(a)*rad;
+      const y=cy+Math.sin(a)*rad;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle='rgba(255,255,255,'+(r===5?'.08':'.04')+')';
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    // Scale labels on first axis
+    if(r%2===0){
+      const a=startAngle;
+      const lx=cx+Math.cos(a)*rad+8;
+      const ly=cy+Math.sin(a)*rad+3;
+      ctx.font='9px "Red Hat Mono", monospace';
+      ctx.fillStyle='rgba(255,255,255,.2)';
+      ctx.textAlign='left';
+      ctx.textBaseline='middle';
+      ctx.fillText(String(r*2), lx, ly);
+    }
+  }
+
+  // Axis lines + labels
+  ctx.font='10px "Red Hat Mono", monospace';
+  ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){
+    const a=startAngle+i*step;
+    const ex=cx+Math.cos(a)*maxR;
+    const ey=cy+Math.sin(a)*maxR;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(ex,ey);
+    ctx.strokeStyle='rgba(255,255,255,.05)';
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    // Label position
+    const labelR=maxR+28;
+    const lx=cx+Math.cos(a)*labelR;
+    const ly=cy+Math.sin(a)*labelR;
+
+    // Text alignment based on angle
+    const deg=((a*180/Math.PI)%360+360)%360;
+    if(deg>80&&deg<100) ctx.textAlign='center';
+    else if(deg>260&&deg<280) ctx.textAlign='center';
+    else if(deg>90&&deg<270) ctx.textAlign='right';
+    else ctx.textAlign='left';
+
+    ctx.fillStyle='rgba(255,255,255,.4)';
+    const label=SKILL_LABELS[SKILL_KEYS[i]];
+    const parts=label.split(' ');
+    if(parts.length>1){
+      parts.forEach((p,pi) => ctx.fillText(p, lx, ly+(pi-(parts.length-1)/2)*11));
+    } else {
+      ctx.fillText(label, lx, ly);
+    }
+  }
+
+  // Data polygons
+  radarCurrent.forEach(entry => {
+    const sk=entry.skills;
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const ki=i%n;
+      const val=(sk[SKILL_KEYS[ki]]||0)/10;
+      const a=startAngle+ki*step;
+      const x=cx+Math.cos(a)*maxR*val;
+      const y=cy+Math.sin(a)*maxR*val;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+
+    // Fill
+    ctx.fillStyle=entry.color+'18';
+    ctx.fill();
+
+    // Stroke
+    ctx.strokeStyle=entry.color;
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    // Dots
+    for(let i=0;i<n;i++){
+      const val=(sk[SKILL_KEYS[i]]||0)/10;
+      const a=startAngle+i*step;
+      const x=cx+Math.cos(a)*maxR*val;
+      const y=cy+Math.sin(a)*maxR*val;
+      ctx.beginPath();
+      ctx.arc(x,y,3.5,0,Math.PI*2);
+      ctx.fillStyle=entry.color;
+      ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.3)';
+      ctx.lineWidth=1;
+      ctx.stroke();
     }
   });
 }
 
-// ── Reduced motion check ──
-const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function animateRadar() {
+  if(animFrame) cancelAnimationFrame(animFrame);
+  const canvas=document.getElementById('radarCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const size=420;
 
-// ── Boot ──
-loadData().catch(err => {
-  console.warn('Data load failed, using fallbacks:', err);
-  // Minimal fallback render
-  document.getElementById('heroSub').innerHTML =
-    '<strong>93</strong> player profiles. <strong>9</strong> skill dimensions. Which archetype are you?';
-  document.getElementById('heroPills').innerHTML = `
-    <div class="hero-pill"><div><div class="hp-v">93</div><div class="hp-l">Players</div></div></div>
-    <div class="hero-pill"><div><div class="hp-v">8</div><div class="hp-l">Archetypes</div></div></div>
-    <div class="hero-pill"><div><div class="hp-v">6.2</div><div class="hp-l">Avg Skill</div></div></div>
-  `;
-  initReveals();
-  initStatusScroll();
-});
+  // Match lengths
+  while(radarCurrent.length<radarTargets.length){
+    const t=radarTargets[radarCurrent.length];
+    const empty={};
+    SKILL_KEYS.forEach(k=>empty[k]=0);
+    radarCurrent.push({skills:empty, color:t.color, label:t.label});
+  }
+  while(radarCurrent.length>radarTargets.length) radarCurrent.pop();
+
+  let done=true;
+  radarCurrent.forEach((cur,idx) => {
+    const tgt=radarTargets[idx];
+    cur.color=tgt.color;
+    cur.label=tgt.label;
+    SKILL_KEYS.forEach(k => {
+      const diff=tgt.skills[k]-cur.skills[k];
+      if(Math.abs(diff)>0.02){
+        cur.skills[k]+=diff*0.1;
+        done=false;
+      } else {
+        cur.skills[k]=tgt.skills[k];
+      }
+    });
+  });
+
+  ctx.save();
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  drawRadar(ctx, size);
+  ctx.restore();
+
+  if(!done) animFrame=requestAnimationFrame(animateRadar);
+}
+
+function setRadarTarget(entries) {
+  radarTargets=entries;
+  updateLegend();
+  animateRadar();
+}
+
+function updateLegend() {
+  const el=document.getElementById('radarLegend');
+  if(radarTargets.length<=1&&!selectedPlayers.length){
+    el.innerHTML='';
+    return;
+  }
+  el.innerHTML=radarTargets.map(e =>
+    '<div class="radar-legend-item"><span class="radar-legend-dot" style="background:'+e.color+'"></span>'+e.label+'</div>'
+  ).join('');
+}
+
+function updateRadarInfo(player) {
+  const nameEl=document.getElementById('riName');
+  const metaEl=document.getElementById('riMeta');
+  const skillsEl=document.getElementById('riSkills');
+
+  if(!player){
+    nameEl.textContent='All Players Average';
+    const avg=avgSkills(allPlayers);
+    metaEl.innerHTML='<div class="ri-pill"><em>'+allPlayers.length+'</em> players</div><div class="ri-pill">Avg <em>'+overallAvg(avg)+'</em></div>';
+    renderSkillBars(skillsEl, avg);
+    return;
+  }
+
+  nameEl.textContent=player.username;
+  const ts=topSkill(player.skills);
+  metaEl.innerHTML=
+    '<div class="ri-pill">'+player.archetype+'</div>'+
+    '<div class="ri-pill"><em>'+(player.primary_brand||'--')+'</em></div>'+
+    '<div class="ri-pill">Avg <em>'+overallAvg(player.skills)+'</em></div>'+
+    '<div class="ri-pill">Top: <em>'+SKILL_LABELS[ts.key]+' '+ts.val.toFixed(1)+'</em></div>';
+  renderSkillBars(skillsEl, player.skills);
+}
+
+function renderSkillBars(container, skills) {
+  container.innerHTML=SKILL_KEYS.map(k => {
+    const v=skills[k]||0;
+    const pct=(v/10)*100;
+    return '<div class="ri-skill-row">'+
+      '<span class="ri-skill-label">'+SKILL_LABELS[k]+'</span>'+
+      '<div class="ri-skill-bar"><div class="ri-skill-fill" style="width:'+pct+'%"></div></div>'+
+      '<span class="ri-skill-val">'+v.toFixed(1)+'</span></div>';
+  }).join('');
+}
+
+/* ── Player Search/Dropdown ── */
+function initPlayerSearch() {
+  const input=document.getElementById('playerSearch');
+  const dd=document.getElementById('playerDropdown');
+  const toggle=document.getElementById('compareToggle');
+  const clearBtn=document.getElementById('clearBtn');
+
+  input.addEventListener('input', () => {
+    const q=input.value.toLowerCase().trim();
+    if(!q){ dd.classList.remove('open'); return; }
+    const matches=allPlayers.filter(p=>p.username.toLowerCase().includes(q)).slice(0,20);
+    dd.innerHTML=matches.map(p =>
+      '<div class="dropdown-item" role="option" tabindex="0" data-idx="'+allPlayers.indexOf(p)+'">'+
+      '<span>'+p.username+'</span><span class="di-arch">'+p.archetype+'</span></div>'
+    ).join('');
+    dd.classList.toggle('open', matches.length>0);
+  });
+
+  input.addEventListener('keydown', e => {
+    if(e.key==='Escape') dd.classList.remove('open');
+    if(e.key==='ArrowDown'){
+      e.preventDefault();
+      const first=dd.querySelector('.dropdown-item');
+      if(first) first.focus();
+    }
+  });
+
+  dd.addEventListener('click', e => {
+    const item=e.target.closest('.dropdown-item');
+    if(!item) return;
+    selectPlayer(allPlayers[+item.dataset.idx]);
+    dd.classList.remove('open');
+    input.value='';
+  });
+
+  dd.addEventListener('keydown', e => {
+    const item=e.target.closest('.dropdown-item');
+    if(!item) return;
+    if(e.key==='Enter'){
+      selectPlayer(allPlayers[+item.dataset.idx]);
+      dd.classList.remove('open');
+      input.value='';
+      input.focus();
+    }
+    if(e.key==='ArrowDown'){
+      e.preventDefault();
+      const next=item.nextElementSibling;
+      if(next) next.focus();
+    }
+    if(e.key==='ArrowUp'){
+      e.preventDefault();
+      const prev=item.previousElementSibling;
+      if(prev) prev.focus(); else input.focus();
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if(!e.target.closest('.player-search-wrap')) dd.classList.remove('open');
+  });
+
+  toggle.addEventListener('click', () => {
+    compareMode=!compareMode;
+    toggle.classList.toggle('on', compareMode);
+    toggle.setAttribute('aria-pressed', compareMode);
+    if(!compareMode){
+      selectedPlayers=selectedPlayers.slice(0,1);
+      updateCompareChips();
+      syncRadar();
+    }
+  });
+
+  clearBtn.addEventListener('click', () => {
+    selectedPlayers=[];
+    compareMode=false;
+    toggle.classList.remove('on');
+    toggle.setAttribute('aria-pressed','false');
+    updateCompareChips();
+    setRadarTarget([{skills:avgSkills(allPlayers), color:COMPARE_COLORS[0], label:'Average'}]);
+    updateRadarInfo(null);
+  });
+}
+
+function selectPlayer(player) {
+  if(compareMode){
+    if(selectedPlayers.find(p=>p.username===player.username)) return;
+    if(selectedPlayers.length>=3) selectedPlayers.shift();
+    selectedPlayers.push(player);
+  } else {
+    selectedPlayers=[player];
+  }
+  updateCompareChips();
+  syncRadar();
+  updateRadarInfo(selectedPlayers[selectedPlayers.length-1]);
+}
+
+function selectBrandForRadar(brandName) {
+  const brand=allBrands.find(b=>b.name===brandName);
+  if(!brand||!brand.avg_skills) return;
+  selectedPlayers=[];
+  compareMode=false;
+  document.getElementById('compareToggle').classList.remove('on');
+  updateCompareChips();
+  setRadarTarget([{skills:{...brand.avg_skills}, color:COMPARE_COLORS[0], label:brandName}]);
+
+  const nameEl=document.getElementById('riName');
+  const metaEl=document.getElementById('riMeta');
+  const skillsEl=document.getElementById('riSkills');
+  nameEl.textContent=brandName+' Average';
+  const pCount=allPlayers.filter(p=>p.primary_brand===brandName).length;
+  metaEl.innerHTML=
+    '<div class="ri-pill">'+brand.primary_category+'</div>'+
+    '<div class="ri-pill"><em>'+brand.unique_clips+'</em> clips</div>'+
+    (pCount?'<div class="ri-pill"><em>'+pCount+'</em> players</div>':'');
+  renderSkillBars(skillsEl, brand.avg_skills);
+  document.getElementById('radarWrap').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function syncRadar() {
+  if(!selectedPlayers.length){
+    setRadarTarget([{skills:avgSkills(allPlayers), color:COMPARE_COLORS[0], label:'Average'}]);
+  } else {
+    setRadarTarget(selectedPlayers.map((p,i)=>({
+      skills:{...p.skills}, color:COMPARE_COLORS[i%3], label:p.username
+    })));
+  }
+}
+
+function updateCompareChips() {
+  const container=document.getElementById('compareChips');
+  const clearBtn=document.getElementById('clearBtn');
+  container.innerHTML=selectedPlayers.map((p,i)=>
+    '<div class="compare-chip" style="background:'+COMPARE_COLORS[i]+'15;color:'+COMPARE_COLORS[i]+';border-color:'+COMPARE_COLORS[i]+'40">'+
+    p.username+'<span class="chip-x" data-idx="'+i+'">x</span></div>'
+  ).join('');
+  clearBtn.style.display=selectedPlayers.length>0?'':'none';
+
+  container.querySelectorAll('.chip-x').forEach(x => {
+    x.addEventListener('click', () => {
+      selectedPlayers.splice(+x.dataset.idx,1);
+      updateCompareChips();
+      syncRadar();
+      if(selectedPlayers.length) updateRadarInfo(selectedPlayers[selectedPlayers.length-1]);
+      else updateRadarInfo(null);
+    });
+  });
+}
+
+/* ── SKILL DISTRIBUTION ── */
+function initDistribution() {
+  const grid=document.getElementById('distGrid');
+  const buckets={};
+  SKILL_KEYS.forEach(k => {
+    buckets[k]=[0,0,0,0,0,0,0,0,0,0];
+    allPlayers.forEach(p => {
+      const v=Math.max(1,Math.min(10,Math.round(p.skills[k]||0)));
+      buckets[k][v-1]++;
+    });
+  });
+
+  const avgAll=avgSkills(allPlayers);
+
+  grid.innerHTML=SKILL_KEYS.map(k => {
+    const maxCount=Math.max(...buckets[k],1);
+    const bars=buckets[k].map((count,i) => {
+      const h=Math.max(2,(count/maxCount)*36);
+      const intensity=(i+1)/10;
+      const r=Math.round(14+intensity*31);
+      const g=Math.round(40+intensity*172);
+      const b=Math.round(50+intensity*141);
+      return '<div class="dist-bar-seg" data-tip="Score '+(i+1)+': '+count+' players" style="height:0px;background:rgb('+r+','+g+','+b+')" data-target-h="'+h+'"></div>';
+    }).join('');
+    return '<div class="dist-card" tabindex="0" data-skill="'+k+'">'+
+      '<div class="dist-card-head"><span class="dist-card-name">'+SKILL_LABELS[k]+'</span>'+
+      '<span class="dist-card-avg">'+avgAll[k].toFixed(1)+'</span></div>'+
+      '<div class="dist-bars">'+bars+'</div>'+
+      '<div class="dist-range"><span>1</span><span>5</span><span>10</span></div></div>';
+  }).join('');
+
+  // Animate bars on scroll-in
+  const obs=new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.dist-bar-seg').forEach((bar,i) => {
+          setTimeout(()=>{ bar.style.height=bar.dataset.targetH+'px'; }, i*40);
+        });
+        obs.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.2});
+  grid.querySelectorAll('.dist-card').forEach(c => obs.observe(c));
+
+  // Click to filter player list by skill
+  grid.addEventListener('click', e => {
+    const card=e.target.closest('.dist-card');
+    if(!card) return;
+    const skill=card.dataset.skill;
+    grid.querySelectorAll('.dist-card').forEach(c=>c.classList.remove('selected'));
+    if(plistSkillFilter===skill){
+      plistSkillFilter=null;
+      updateSkillFilterTag();
+    } else {
+      plistSkillFilter=skill;
+      card.classList.add('selected');
+      updateSkillFilterTag();
+    }
+    plistPage=1;
+    renderPlayerList();
+    document.getElementById('plistGrid').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+}
+
+function updateSkillFilterTag() {
+  const tag=document.getElementById('plistFilterTag');
+  const name=document.getElementById('plistFilterName');
+  if(plistSkillFilter){
+    tag.style.display='flex';
+    name.textContent=SKILL_LABELS[plistSkillFilter];
+  } else {
+    tag.style.display='none';
+  }
+}
+
+/* ── CROSS-TAB ── */
+function initCrossTab() {
+  // Build brand data from brands.json (which has avg_skills for all brands)
+  let brandRows=allBrands.filter(b=>b.avg_skills).map(b => {
+    const pCount=allPlayers.filter(p=>p.primary_brand===b.name).length;
+    return {
+      name:b.name,
+      players:pCount,
+      clips:b.unique_clips||0,
+      skills:{...b.avg_skills},
+      avg:overallAvg(b.avg_skills),
+      category:b.primary_category||''
+    };
+  });
+
+  // Sort by clips, take top 15
+  brandRows.sort((a,b)=>b.clips-a.clips);
+  brandRows=brandRows.slice(0,15);
+
+  // Color scale bounds
+  const allVals=[];
+  brandRows.forEach(b=>SKILL_KEYS.forEach(k=>allVals.push(b.skills[k]||0)));
+  const vMin=Math.min(...allVals);
+  const vMax=Math.max(...allVals);
+
+  function renderTable() {
+    const thead=document.getElementById('xtabHead');
+    const tbody=document.getElementById('xtabBody');
+
+    const sortInd=col => {
+      if(sortCol!==col) return '<span class="sort-arrow"></span>';
+      return '<span class="sort-arrow">'+(sortDir==='asc'?'\u25B2':'\u25BC')+'</span>';
+    };
+
+    thead.innerHTML='<tr>'+
+      '<th tabindex="0" data-sort="name" class="'+(sortCol==='name'?'sorted':'')+'">Brand'+sortInd('name')+'</th>'+
+      '<th tabindex="0" data-sort="clips" class="'+(sortCol==='clips'?'sorted':'')+'">Clips'+sortInd('clips')+'</th>'+
+      '<th tabindex="0" data-sort="players" class="'+(sortCol==='players'?'sorted':'')+'">Players'+sortInd('players')+'</th>'+
+      SKILL_KEYS.map(k=>
+        '<th tabindex="0" data-sort="'+k+'" class="'+(sortCol===k?'sorted':'')+'">'+
+        SKILL_LABELS[k].replace(/ /g,'\u00A0')+sortInd(k)+'</th>'
+      ).join('')+
+      '<th tabindex="0" data-sort="avg" class="'+(sortCol==='avg'?'sorted':'')+'">Avg'+sortInd('avg')+'</th></tr>';
+
+    const sorted=[...brandRows];
+    sorted.sort((a,b) => {
+      let va,vb;
+      if(sortCol==='name'){ va=a.name.toLowerCase(); vb=b.name.toLowerCase(); return sortDir==='asc'?(va<vb?-1:1):(va>vb?-1:1); }
+      if(sortCol==='players'){ va=a.players; vb=b.players; }
+      else if(sortCol==='clips'){ va=a.clips; vb=b.clips; }
+      else if(sortCol==='avg'){ va=a.avg; vb=b.avg; }
+      else { va=a.skills[sortCol]||0; vb=b.skills[sortCol]||0; }
+      return sortDir==='asc'?va-vb:vb-va;
+    });
+
+    tbody.innerHTML=sorted.map(b =>
+      '<tr tabindex="0" data-brand="'+b.name+'">'+
+      '<td class="brand-cell">'+b.name+'</td>'+
+      '<td class="count-cell">'+b.clips.toLocaleString()+'</td>'+
+      '<td class="count-cell">'+b.players+'</td>'+
+      SKILL_KEYS.map(k => {
+        const v=b.skills[k]||0;
+        return '<td class="skill-cell" data-col="'+k+'" style="color:'+skillColor(v,vMin,vMax)+'">'+v.toFixed(1)+'</td>';
+      }).join('')+
+      '<td class="skill-cell" style="color:var(--teal);font-weight:800">'+b.avg.toFixed(1)+'</td></tr>'
+    ).join('');
+  }
+
+  renderTable();
+
+  // Sort on header click
+  document.getElementById('xtabHead').addEventListener('click', e => {
+    const th=e.target.closest('th');
+    if(!th||!th.dataset.sort) return;
+    const col=th.dataset.sort;
+    if(sortCol===col) sortDir=sortDir==='asc'?'desc':'asc';
+    else { sortCol=col; sortDir='desc'; }
+    renderTable();
+    attachTableEvents();
+  });
+
+  document.getElementById('xtabHead').addEventListener('keydown', e => {
+    if(e.key==='Enter'){ const th=e.target.closest('th'); if(th) th.click(); }
+  });
+
+  function attachTableEvents() {
+    // Click row -> update radar
+    document.getElementById('xtabBody').querySelectorAll('tr').forEach(row => {
+      row.addEventListener('click', ()=>selectBrandForRadar(row.dataset.brand));
+      row.addEventListener('keydown', e=>{ if(e.key==='Enter') selectBrandForRadar(row.dataset.brand); });
+    });
+
+    // Hover cross-hair effect
+    const table=document.getElementById('xtab');
+    const allCells=table.querySelectorAll('td.skill-cell');
+    allCells.forEach(cell => {
+      cell.addEventListener('mouseenter', () => {
+        const col=cell.dataset.col;
+        if(!col) return;
+        table.querySelectorAll('td[data-col="'+col+'"]').forEach(c=>c.classList.add('col-highlight'));
+        cell.closest('tr').classList.add('xt-highlight');
+      });
+      cell.addEventListener('mouseleave', () => {
+        table.querySelectorAll('.col-highlight').forEach(c=>c.classList.remove('col-highlight'));
+        table.querySelectorAll('.xt-highlight').forEach(c=>c.classList.remove('xt-highlight'));
+      });
+    });
+  }
+
+  attachTableEvents();
+}
+
+/* ── PLAYER LIST ── */
+function initPlayerList() {
+  const searchInput=document.getElementById('plistSearch');
+  searchInput.addEventListener('input', () => {
+    plistFilter=searchInput.value.toLowerCase().trim();
+    plistPage=1;
+    renderPlayerList();
+  });
+
+  document.getElementById('plistFilterX').addEventListener('click', () => {
+    plistSkillFilter=null;
+    updateSkillFilterTag();
+    document.querySelectorAll('.dist-card').forEach(c=>c.classList.remove('selected'));
+    plistPage=1;
+    renderPlayerList();
+  });
+
+  renderPlayerList();
+}
+
+function getFilteredPlayers() {
+  let list=[...allPlayers];
+  if(plistFilter) list=list.filter(p=>p.username.toLowerCase().includes(plistFilter));
+  if(plistSkillFilter) list.sort((a,b)=>(b.skills[plistSkillFilter]||0)-(a.skills[plistSkillFilter]||0));
+  else list.sort((a,b)=>b.clip_count-a.clip_count);
+  return list;
+}
+
+function renderPlayerList() {
+  const grid=document.getElementById('plistGrid');
+  const loadBtn=document.getElementById('loadMore');
+  const countEl=document.getElementById('plistCount');
+  const filtered=getFilteredPlayers();
+  const shown=filtered.slice(0, plistPage*PAGE_SIZE);
+
+  countEl.textContent=filtered.length+' players';
+
+  grid.innerHTML=shown.map(p => {
+    const ts=topSkill(p.skills);
+    const avg=overallAvg(p.skills);
+    const sparkBars=SKILL_KEYS.map(k => {
+      const v=p.skills[k]||0;
+      const h=Math.max(2,(v/10)*20);
+      const intensity=v/10;
+      const r=Math.round(14+intensity*31);
+      const g=Math.round(40+intensity*172);
+      const b=Math.round(50+intensity*141);
+      return '<div class="pr-spark-bar" style="height:'+h+'px;background:rgb('+r+','+g+','+b+')"></div>';
+    }).join('');
+
+    return '<div class="plist-row" tabindex="0" data-player="'+p.username+'">'+
+      '<div><span class="pr-name">'+p.username+'</span></div>'+
+      '<div class="pr-arch">'+p.archetype+'</div>'+
+      '<div class="pr-brand">'+(p.primary_brand||'--')+'</div>'+
+      '<div class="pr-top-skill">'+SKILL_LABELS[ts.key]+' '+ts.val.toFixed(1)+'</div>'+
+      '<div class="pr-avg">'+avg+'</div>'+
+      '<div class="pr-spark">'+sparkBars+'</div></div>';
+  }).join('');
+
+  if(shown.length<filtered.length){
+    loadBtn.style.display='block';
+    loadBtn.onclick=()=>{ plistPage++; renderPlayerList(); };
+  } else {
+    loadBtn.style.display='none';
+  }
+
+  // Click player row -> update radar and scroll
+  grid.querySelectorAll('.plist-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const p=allPlayers.find(pl=>pl.username===row.dataset.player);
+      if(p){
+        selectPlayer(p);
+        document.getElementById('radarWrap').scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+    row.addEventListener('keydown', e => { if(e.key==='Enter') row.click(); });
+  });
+}
+
+/* ── Launch ── */
+loadData();
+
+})();
 </script>
 </body>
 </html>
