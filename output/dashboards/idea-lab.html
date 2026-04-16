@@ -359,6 +359,121 @@ function renderMeta(rs,fl,cas,cns){
 
 ['ft','fa','fb','fs'].forEach(id=>document.getElementById(id).addEventListener('change',renderList));
 init();
+
+/* ====== CHAT SIDEBAR (v5 iteration 1) ====== */
+const CHAT_API='http://127.0.0.1:7857';
+let CHAT_FID=null,CHAT_HIST={};
+
+async function checkChatHealth(){
+  const el=document.getElementById('cs-conn');
+  try{
+    const r=await fetch(CHAT_API+'/health',{cache:'no-store'});
+    const j=await r.json();
+    if(j.ok&&j.key_present){el.textContent='● connected';el.className='ok'}
+    else if(j.ok&&!j.key_present){el.textContent='● no API key';el.className='down'}
+    else{el.textContent='● error';el.className='down'}
+  }catch(e){el.textContent='● server offline';el.className='down'}
+}
+checkChatHealth();setInterval(checkChatHealth,15000);
+
+function openChat(fid){
+  const f=D?.all_findings?.find(x=>x.finding_id===fid);
+  if(!f)return;
+  CHAT_FID=fid;
+  document.getElementById('cs-nm').textContent=f.title;
+  document.getElementById('cs-meta').textContent=`${f.agent} · ${f.category} · ${(f.confidence*100).toFixed(0)}% conf · ${f.business_value} value`;
+  document.getElementById('cs').classList.add('on');
+  document.getElementById('csh').classList.add('on');
+  document.getElementById('cs').setAttribute('aria-hidden','false');
+  renderChat();
+  setTimeout(()=>document.getElementById('cs-q').focus(),300);
+}
+function closeChat(){
+  CHAT_FID=null;
+  document.getElementById('cs').classList.remove('on');
+  document.getElementById('csh').classList.remove('on');
+  document.getElementById('cs').setAttribute('aria-hidden','true');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&CHAT_FID)closeChat()});
+
+function renderChat(){
+  const bd=document.getElementById('cs-bd');
+  const hist=CHAT_HIST[CHAT_FID]||[];
+  if(!hist.length){
+    const sg=[
+      'Why did you find this?',
+      'What clips is this based on?',
+      'What would confirm or deny this?',
+      'How does this compare across skill levels?'
+    ];
+    bd.innerHTML=`<div class="empty">
+      <div class="h">Ask a question about this finding</div>
+      <div>Claude Haiku will answer using the finding's evidence and raw data — not generic chat.</div>
+      <div class="sg">${sg.map(s=>`<button class="sg-bt" onclick="askPreset('${s.replace(/'/g,"\\'")}')">${s}</button>`).join('')}</div>
+    </div>`;
+    return;
+  }
+  bd.innerHTML=hist.map(m=>{
+    if(m.role==='user')return `<div class="msg q">${esc(m.text)}</div>`;
+    if(m.role==='thinking')return `<div class="msg a thinking"><span class="dot"></span>thinking…</div>`;
+    if(m.role==='error')return `<div class="msg err">${esc(m.text)}</div>`;
+    return `<div class="msg a">${mdLite(m.text)}</div>`;
+  }).join('');
+  bd.scrollTop=bd.scrollHeight;
+}
+
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function mdLite(s){
+  // Tiny markdown: **bold**, `code`, paragraphs, bullet lists.
+  s=esc(s);
+  s=s.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  s=s.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  // bullet list
+  const lines=s.split('\n');
+  let out='',inList=false;
+  for(const line of lines){
+    const m=line.match(/^\s*[-*]\s+(.+)/);
+    if(m){if(!inList){out+='<ul>';inList=true}out+=`<li>${m[1]}</li>`}
+    else{
+      if(inList){out+='</ul>';inList=false}
+      if(line.trim()==='')out+='';else out+=`<p>${line}</p>`;
+    }
+  }
+  if(inList)out+='</ul>';
+  return out;
+}
+
+function askPreset(q){document.getElementById('cs-q').value=q;sendChat()}
+function qkey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}}
+
+async function sendChat(){
+  const ta=document.getElementById('cs-q'),btn=document.getElementById('cs-send');
+  const q=ta.value.trim();
+  if(!q||!CHAT_FID)return;
+  const fid=CHAT_FID;
+  CHAT_HIST[fid]=CHAT_HIST[fid]||[];
+  CHAT_HIST[fid].push({role:'user',text:q});
+  CHAT_HIST[fid].push({role:'thinking'});
+  ta.value='';btn.disabled=true;
+  renderChat();
+  try{
+    const r=await fetch(CHAT_API+'/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({finding_id:fid,question:q})
+    });
+    const j=await r.json();
+    // pop thinking
+    CHAT_HIST[fid]=CHAT_HIST[fid].filter(m=>m.role!=='thinking');
+    if(!r.ok||j.error){CHAT_HIST[fid].push({role:'error',text:j.error||`HTTP ${r.status}`})}
+    else{CHAT_HIST[fid].push({role:'assistant',text:j.answer||'(empty response)'})}
+  }catch(e){
+    CHAT_HIST[fid]=CHAT_HIST[fid].filter(m=>m.role!=='thinking');
+    CHAT_HIST[fid].push({role:'error',text:`Can't reach chat server. Run: cd PICKLE-DAAS && python3 tools/chat-endpoint.py`});
+  }
+  btn.disabled=false;
+  if(CHAT_FID===fid)renderChat();
+}
 </script>
 </body>
 </html>

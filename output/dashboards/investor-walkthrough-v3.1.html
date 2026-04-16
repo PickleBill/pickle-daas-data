@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle DaaS — Investor Walk-Through v3.1</title>
+<meta name="description" content="AI turns pickleball video into structured, classified data intelligence. Live system. Self-improving. Every detection traceable.">
+<meta property="og:title" content="Pickle DaaS — Investor Walk-Through v3.1">
+<meta property="og:description" content="3,131 clips. 327 brands. 54 human-approved classification rules. Every brand traceable to a rule.">
+<meta property="og:image" content="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:oklch(8% .02 260);--bg2:oklch(10% .02 260);--surf:oklch(13% .02 260);
+  --border:oklch(18% .015 260);--bds:oklch(15% .012 260);
+  --text:oklch(94% .01 260);--muted:oklch(52% .03 260);--mt2:oklch(65% .02 260);
+  --green:oklch(72% .19 155);--gd:oklch(72% .19 155/.15);
+  --blue:oklch(70% .15 235);--bd:oklch(70% .15 235/.15);
+  --amber:oklch(80% .15 75);--ad:oklch(80% .15 75/.15);
+  --purple:oklch(68% .19 300);--pd:oklch(68% .19 300/.15);
+  --red:oklch(65% .2 25);--rd:oklch(65% .2 25/.15);
+  --gold:oklch(78% .15 90);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-snap-type:y mandatory;overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.55}
+a{color:inherit;text-decoration:none}
+code,.mono{font-family:'Red Hat Mono',ui-monospace,monospace}
+
+/* GLOBAL */
+.screen{min-height:100svh;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:72px 7vw}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:3.5px;color:var(--green);font-weight:600;font-family:'Red Hat Mono',monospace;margin-bottom:20px}
+.headline{font-size:clamp(2.2rem,5.5vw,4.6rem);font-weight:800;letter-spacing:-2.5px;line-height:1.02}
+.subhead{font-size:clamp(1rem,2vw,1.2rem);color:var(--muted);line-height:1.7;max-width:600px;margin-top:22px;font-weight:400}
+
+/* ambient orb */
+.orb{position:absolute;border-radius:50%;filter:blur(110px);pointer-events:none;opacity:.05}
+.orb-g{background:var(--green)}.orb-b{background:var(--blue)}.orb-p{background:var(--purple)}.orb-a{background:var(--amber)}
+
+/* Status strip */
+.status-strip{position:fixed;top:0;left:0;right:0;background:rgba(8,12,28,.85);backdrop-filter:blur(8px);padding:8px 7vw;border-bottom:1px solid var(--border);font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;z-index:100}
+.status-strip span{display:inline-flex;align-items:center;gap:6px}
+.status-strip em{font-style:normal;color:var(--green);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:lp 2.4s infinite}
+.v-tag{padding:2px 7px;background:var(--gd);color:var(--green);border:1px solid oklch(72% .19 155/.25);border-radius:3px;font-size:9px;font-weight:600;letter-spacing:.5px}
+
+/* nav dots */
+#nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:11px;z-index:200}
+.nd{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .25s;border:none;padding:0;outline:none}
+.nd.on{background:var(--green);transform:scale(1.8);box-shadow:0 0 8px oklch(72% .19 155/.3)}
+@media(max-width:700px){#nav{display:none}}
+
+/* Provenance pill (used throughout) */
+.pp{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:11px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;border:1px solid transparent}
+.pp.rule{background:var(--gd);color:var(--green);border-color:oklch(72% .19 155/.25)}
+.pp.fb{background:var(--ad);color:var(--amber);border-color:oklch(80% .15 75/.25)}
+.pp.ver{background:var(--gd);color:var(--green)}
+.pp.cls{background:var(--bd);color:var(--blue)}
+
+/* ═══ S1 — HOOK ═══ */
+#s1{padding:0;justify-content:flex-end}
+#s1 video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#s1-ov{position:absolute;inset:0;background:linear-gradient(170deg,oklch(8% .02 260/.92),oklch(8% .02 260/.45) 50%,oklch(8% .02 260/.95))}
+#s1-body{position:relative;z-index:10;padding:8vh 7vw 14vh;max-width:1100px}
+#s1-logo{display:flex;align-items:center;gap:10px;margin-bottom:48px}
+.ldot{width:9px;height:9px;border-radius:50%;background:var(--green);animation:lp 2s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1;box-shadow:0 0 0 0 oklch(72% .19 155/.4)}50%{opacity:.8;box-shadow:0 0 0 8px oklch(72% .19 155/0)}}
+.lname{font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-family:'Red Hat Mono',monospace}
+#s1-hook{font-size:clamp(2.4rem,6.5vw,5.2rem);font-weight:800;letter-spacing:-3px;line-height:1;text-shadow:0 4px 60px oklch(8% .02 260/.6)}
+#s1-hook .em{color:var(--green)}
+#s1-sub{font-size:clamp(1rem,1.8vw,1.2rem);color:oklch(94% .01 260/.65);max-width:560px;margin-top:28px;line-height:1.75}
+#s1-tag{display:inline-flex;align-items:center;gap:9px;margin-top:36px;padding:10px 20px;border:1px solid oklch(72% .19 155/.25);border-radius:5px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--green);background:oklch(72% .19 155/.05);letter-spacing:.8px}
+#s1-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:lp 2s infinite}
+.scroll-cue{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-family:'Red Hat Mono',monospace;animation:scp 2.5s ease-in-out infinite}
+.scroll-cue .sl{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--muted))}
+@keyframes scp{0%,100%{opacity:.2}50%{opacity:.75}}
+
+/* ═══ S2 — WHAT THE AI SEES ═══ */
+#s2{background:var(--bg2);gap:28px}
+#s2-head{font-size:clamp(1.7rem,4vw,3.2rem);font-weight:800;letter-spacing:-1.8px;line-height:1.06}
+#s2-layout{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;flex:1}
+#s2-vwrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9}
+#s2-vwrap video{width:100%;height:100%;object-fit:cover;display:block}
+.ann{position:absolute;padding:9px 13px;border-radius:8px;font-size:11px;font-family:'Red Hat Mono',monospace;line-height:1.45;backdrop-filter:blur(12px);border:1px solid;max-width:200px;opacity:0;transform:translateY(10px);transition:opacity .6s,transform .6s}
+.ann.vis{opacity:1;transform:none}
+.ann-lbl{font-size:9px;opacity:.65;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+.ann-val{font-weight:600;font-size:12px}
+.ann-sub{font-size:10px;opacity:.7;margin-top:2px}
+.ann-prov{font-size:9px;margin-top:5px;padding:3px 6px;border-radius:4px;font-weight:500;background:rgba(255,255,255,.06);display:inline-block}
+.ann-brand{top:8%;left:4%;background:oklch(78% .15 90/.12);border-color:oklch(78% .15 90/.35);color:oklch(88% .08 90)}
+.ann-shot{top:8%;right:4%;background:oklch(70% .15 235/.12);border-color:oklch(70% .15 235/.35);color:oklch(80% .08 235);text-align:right}
+.ann-skill{bottom:10%;left:4%;background:oklch(72% .19 155/.1);border-color:oklch(72% .19 155/.3);color:oklch(85% .08 155)}
+.ann-arc{bottom:10%;right:4%;background:oklch(68% .19 300/.1);border-color:oklch(68% .19 300/.3);color:oklch(82% .08 300);text-align:right}
+
+#s2-panel{display:flex;flex-direction:column;gap:18px}
+.s2pt{padding:18px 22px;border:1px solid var(--border);border-radius:10px;background:var(--surf);position:relative;overflow:hidden}
+.s2pt-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1.8px;color:var(--muted);font-family:'Red Hat Mono',monospace;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.s2pt-txt{font-size:14px;line-height:1.65}.s2pt-txt strong{color:var(--green);font-weight:600}
+
+/* ═══ S3 — NUMBERS ═══ */
+#s3{background:var(--bg);align-items:center;text-align:center}
+#s3-inner{width:100%;max-width:1000px;position:relative}
+#s3-hl{font-size:clamp(2rem,4.5vw,3.6rem);font-weight:800;letter-spacing:-2.3px;line-height:1.06;margin-bottom:14px}
+.sg{display:grid;gap:2px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:3px}
+#sg1,#sg2{grid-template-columns:repeat(3,1fr)}
+.sstat{background:var(--bg2);padding:38px 18px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.snum{font-size:clamp(2.4rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-1.6px;line-height:1;font-variant-numeric:tabular-nums;font-family:'Manrope',sans-serif}
+.slbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.6px;font-family:'Red Hat Mono',monospace;margin-top:5px}
+.sdet{font-size:10px;color:var(--mt2);font-family:'Red Hat Mono',monospace;margin-top:3px}
+.c-green .snum{color:var(--green)}.c-amber .snum{color:var(--amber)}.c-blue .snum{color:var(--blue)}.c-purple .snum{color:var(--purple)}.c-red .snum{color:var(--red)}.c-gold .snum{color:var(--gold)}
+
+/* ═══ S4 — WHO PAYS ═══ */
+#s4{background:var(--bg2)}
+#s4-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}
+.s4c{padding:30px 26px;border:1px solid var(--border);border-radius:12px;background:var(--surf);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.s4c::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.s4c.br::before{background:var(--blue)}.s4c.co::before{background:var(--amber)}.s4c.me::before{background:var(--purple)}
+.s4-ico{font-size:24px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.s4-who{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'Red Hat Mono',monospace}
+.s4c.br .s4-who{color:var(--blue)}.s4c.co .s4-who{color:var(--amber)}.s4c.me .s4-who{color:var(--purple)}
+.s4-pitch{font-size:1rem;font-weight:600;line-height:1.4;margin-bottom:18px}
+.s4-flag{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.s4c.br .s4-flag{background:var(--bd);color:var(--blue);border:1px solid oklch(70% .15 235/.2)}
+.s4c.co .s4-flag{background:var(--ad);color:var(--amber);border:1px solid oklch(80% .15 75/.2)}
+.s4c.me .s4-flag{background:var(--pd);color:var(--purple);border:1px solid oklch(68% .19 300/.2)}
+.s4-proof{padding:13px 15px;border-radius:8px;font-size:12.5px;color:var(--muted);line-height:1.6;border:1px solid var(--border);background:var(--bg2);flex:1}
+.s4-proof strong{color:var(--text);font-weight:600}
+.s4-proof a{color:var(--green);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.s4-num{font-size:2rem;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1;margin:8px 0 4px}
+.s4c.br .s4-num{color:var(--blue)}.s4c.co .s4-num{color:var(--amber)}.s4c.me .s4-num{color:var(--purple)}
+.s4-numl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Red Hat Mono',monospace}
+
+/* ═══ S5 — FLYWHEEL ═══ */
+#s5{background:var(--bg);align-items:center;text-align:center}
+#s5-inner{width:100%;max-width:920px;position:relative}
+#s5-hl{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-2px;margin-bottom:14px}
+#s5-sub{font-size:1rem;color:var(--muted);max-width:600px;margin:0 auto 40px;line-height:1.7}
+#fw{position:relative;width:380px;height:380px;margin:0 auto 36px}
+.fw-ring{position:absolute;inset:15px;border-radius:50%;border:1px solid var(--border)}
+.fw-spin{position:absolute;inset:72px;border-radius:50%;border:1px dashed oklch(70% .15 235/.18);animation:fws 22s linear infinite}
+@keyframes fws{to{transform:rotate(360deg)}}
+.fwn{position:absolute;width:108px;height:108px;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:50%;padding:8px;transition:all .3s}
+.fwn:hover{border-color:var(--green);transform:translate(-50%,-50%) scale(1.1)}
+.fn-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;line-height:1.3;color:var(--text)}
+.fn-num{font-size:14px;font-weight:800;margin-top:5px;font-family:'Red Hat Mono',monospace}
+.fwn.n0{left:190px;top:62px}.fwn.n0 .fn-num{color:var(--green)}
+.fwn.n1{left:300px;top:130px}.fwn.n1 .fn-num{color:var(--blue)}
+.fwn.n2{left:300px;top:250px}.fwn.n2 .fn-num{color:var(--amber)}
+.fwn.n3{left:190px;top:318px}.fwn.n3 .fn-num{color:var(--green)}
+.fwn.n4{left:80px;top:250px}.fwn.n4 .fn-num{color:var(--purple)}
+.fwn.n5{left:80px;top:130px}.fwn.n5 .fn-num{color:var(--red)}
+.fw-ctr{position:absolute;left:190px;top:190px;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;background:oklch(72% .19 155/.06);border:2px solid oklch(72% .19 155/.25);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--green);font-weight:700;animation:ctp 3s ease-in-out infinite}
+@keyframes ctp{0%,100%{box-shadow:0 0 0 0 oklch(72% .19 155/.2)}50%{box-shadow:0 0 0 18px oklch(72% .19 155/0)}}
+.fw-ctr .ci{font-size:22px;margin-bottom:2px}
+#s5-note{font-size:.92rem;color:var(--muted);line-height:1.75;max-width:640px;margin:0 auto;padding:18px 22px;border:1px solid var(--border);border-radius:10px;background:var(--surf)}
+#s5-note .gt{color:var(--green);font-weight:600}
+#fw-mobile{display:none;margin-bottom:32px}
+.fms{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--border);border-radius:10px;background:var(--surf);margin-bottom:8px;text-align:left}
+.fms-n{font-size:1rem;font-weight:800;color:var(--green);min-width:60px;font-family:'Red Hat Mono',monospace}
+.fms-l{font-size:13px;font-weight:600}
+.fma{text-align:center;color:var(--muted);font-size:16px;margin:0 0 8px;opacity:.4}
+
+/* ═══ S6 — CLASSIFICATION ENGINE (NEW) ═══ */
+#s6{background:var(--bg2);background-image:radial-gradient(ellipse 60% 50% at 30% 40%,oklch(70% .15 235/.05),transparent 60%)}
+#s6-inner{width:100%;max-width:1000px;margin:0 auto;position:relative}
+#s6-hl{font-size:clamp(1.7rem,3.5vw,3rem);font-weight:800;letter-spacing:-1.8px;margin-bottom:8px}
+#s6-sub{font-size:1rem;color:var(--muted);margin-bottom:32px;max-width:620px;line-height:1.7}
+.ce-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+.ce-card{padding:22px 20px;border:1px solid var(--border);border-radius:10px;background:var(--surf);position:relative;overflow:hidden}
+.ce-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ce-card.in::before{background:var(--blue)}
+.ce-card.cl::before{background:var(--purple)}
+.ce-card.ru::before{background:var(--green)}
+.ce-card.fb::before{background:var(--amber)}
+.ce-num{font-size:34px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1;margin-bottom:6px}
+.ce-card.in .ce-num{color:var(--blue)}.ce-card.cl .ce-num{color:var(--purple)}.ce-card.ru .ce-num{color:var(--green)}.ce-card.fb .ce-num{color:var(--amber)}
+.ce-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;font-family:'Red Hat Mono',monospace;margin-bottom:6px;color:var(--text)}
+.ce-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.ce-flow{padding:22px 26px;border:1px solid oklch(70% .15 235/.2);border-radius:12px;background:oklch(70% .15 235/.04);font-size:13px;line-height:1.7;color:var(--text)}
+.ce-flow strong{color:var(--blue)}
+.ce-flow code{background:var(--bg2);padding:2px 8px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--green)}
+
+/* ═══ S7 — DEBATE ═══ */
+#s7{background:var(--bg);background-image:radial-gradient(ellipse 60% 50% at 50% 30%,oklch(65% .2 25/.04),transparent 60%)}
+#s7-inner{width:100%;max-width:980px;margin:0 auto;position:relative}
+#s7-hl{font-size:clamp(1.7rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-1.8px;margin-bottom:8px}
+#s7-sub{font-size:1rem;color:var(--muted);margin-bottom:32px;max-width:600px;line-height:1.7}
+#debate-arena{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px}
+.agent-col{display:flex;flex-direction:column;gap:12px}
+.agent-header{display:flex;align-items:center;gap:9px;padding:12px 16px;border-radius:10px 10px 4px 4px;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;font-family:'Red Hat Mono',monospace}
+.agent-a .agent-header{background:oklch(70% .15 235/.08);color:var(--blue);border:1px solid oklch(70% .15 235/.2)}
+.agent-b .agent-header{background:oklch(65% .2 25/.08);color:var(--red);border:1px solid oklch(65% .2 25/.2)}
+.agent-dot{width:8px;height:8px;border-radius:50%}
+.agent-a .agent-dot{background:var(--blue)}.agent-b .agent-dot{background:var(--red)}
+.debate-msg{padding:14px 18px;border-radius:10px;font-size:13px;line-height:1.55;border:1px solid var(--border);background:var(--surf)}
+.debate-msg .d-field{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-family:'Red Hat Mono',monospace;margin-bottom:5px}
+.debate-msg .d-val{font-weight:700;font-size:15px}
+.agent-a .d-val{color:var(--blue)}.agent-b .d-val{color:var(--red)}
+.debate-msg.disagree{border-color:oklch(65% .2 25/.25)}
+#agree-bar{height:8px;background:var(--border);border-radius:4px;margin-bottom:14px;overflow:hidden}
+#agree-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber));border-radius:4px;width:8.3%}
+#agree-label{font-size:12px;font-family:'Red Hat Mono',monospace;color:var(--muted);text-align:center;margin-bottom:18px}
+#agree-label strong{color:var(--red);font-weight:700}
+#verdict-box{padding:18px 22px;border:1px solid oklch(72% .19 155/.25);border-radius:10px;background:oklch(72% .19 155/.04);margin-bottom:20px}
+#verdict-box .v-text{font-size:14px;line-height:1.6}
+#verdict-box .v-text strong{color:var(--green)}
+#s7-coda{font-size:.93rem;color:var(--muted);line-height:1.65;font-style:italic;border-left:2px solid var(--green);padding-left:16px;max-width:620px}
+
+/* ═══ S8 — PORTFOLIO ═══ */
+#s8{background:var(--bg2);justify-content:flex-start;padding-top:7vh;padding-bottom:7vh}
+#s8-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:36px}
+.pc{border:1px solid var(--border);border-radius:12px;background:var(--surf);overflow:hidden;transition:all .25s ease;display:block}
+.pc:hover{border-color:var(--green);transform:translateY(-4px);box-shadow:0 12px 40px oklch(72% .19 155/.06)}
+.pc-thumb{aspect-ratio:16/6;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(135deg,var(--bg),var(--surf))}
+.pc-body{padding:18px 22px}
+.pc-tag{font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.8px;padding:3px 9px;border-radius:4px;margin-bottom:10px;display:inline-block}
+.pc.feat .pc-tag{background:var(--gd);color:var(--green);border:1px solid oklch(72% .19 155/.25)}
+.pc.v3 .pc-tag{background:var(--bd);color:var(--blue);border:1px solid oklch(70% .15 235/.25)}
+.pc.v2 .pc-tag{background:oklch(50% .03 260/.18);color:var(--mt2);border:1px solid var(--border)}
+.pc-title{font-size:16px;font-weight:700;margin-bottom:6px;line-height:1.3}
+.pc-desc{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.pc-lnk{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--green);letter-spacing:.4px}
+
+/* ═══ S9 — REVENUE SIM + ASK ═══ */
+#s9{background:var(--bg);align-items:center;text-align:center}
+#s9-inner{max-width:880px;width:100%;position:relative}
+#s9-pre{font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--muted);font-family:'Red Hat Mono',monospace;margin-bottom:20px}
+#s9-hl{font-size:clamp(2.2rem,5vw,4rem);font-weight:800;letter-spacing:-2.5px;line-height:1.03;margin-bottom:16px}
+#s9-pitch{font-size:1.05rem;color:var(--muted);line-height:1.75;max-width:560px;margin:0 auto 32px}
+#rev-sim{border:1px solid var(--border);border-radius:12px;background:var(--surf);padding:28px 26px;margin-bottom:28px;text-align:left}
+#rev-sim h3{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-family:'Red Hat Mono',monospace;margin-bottom:20px;text-align:center}
+.sim-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.sim-row label{font-size:12px;color:var(--muted);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.5px;min-width:140px;text-align:right}
+.sim-row input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+.sim-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--green);cursor:pointer;border:2px solid var(--bg);box-shadow:0 2px 8px oklch(72% .19 155/.3)}
+.sim-val{font-size:14px;font-weight:700;color:var(--text);min-width:80px;font-variant-numeric:tabular-nums;font-family:'Red Hat Mono',monospace;text-align:left}
+.sim-presets{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap}
+.sim-preset{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--muted);font-size:11px;font-family:'Red Hat Mono',monospace;cursor:pointer;transition:all .2s}
+.sim-preset:hover,.sim-preset.active{border-color:var(--green);color:var(--green);background:var(--gd)}
+#sim-output{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:18px;border:1px solid var(--border)}
+.sim-metric{background:var(--bg2);padding:18px 12px;text-align:center}
+.sim-metric .sm-num{font-size:clamp(1.2rem,2.4vw,1.7rem);font-weight:800;color:var(--green);font-variant-numeric:tabular-nums;letter-spacing:-1px;font-family:'Manrope',sans-serif}
+.sim-metric .sm-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Red Hat Mono',monospace;margin-top:5px}
+#brand-cpm{margin-top:16px;padding:13px 18px;border:1px solid oklch(78% .15 90/.2);border-radius:8px;background:oklch(78% .15 90/.04);font-size:12px;font-family:'Red Hat Mono',monospace;color:oklch(78% .15 90/.85);text-align:center;line-height:1.5}
+#brand-cpm strong{color:var(--gold);font-weight:600}
+#s9-cta{padding:24px;border:1px solid var(--border);border-radius:12px;background:var(--surf);margin-bottom:20px}
+.cname{font-size:1.05rem;font-weight:700;margin-bottom:5px}
+.cemail{font-size:.95rem;color:var(--blue);font-family:'Red Hat Mono',monospace}.cemail:hover{text-decoration:underline}
+.crole{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Red Hat Mono',monospace;letter-spacing:.5px}
+#s9-disc{font-size:11px;color:var(--muted);opacity:.55;line-height:1.5;font-family:'Red Hat Mono',monospace}
+
+/* Footer link */
+.foot-prov{margin-top:36px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--muted);text-align:center}
+.foot-prov a{color:var(--green)}.foot-prov a:hover{text-decoration:underline}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .ce-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:800px){
+  .screen{padding:62px 5vw}
+  #s2-layout{grid-template-columns:1fr}#s2-panel{display:none}
+  #s4-grid{grid-template-columns:1fr}
+  #sg1,#sg2{grid-template-columns:repeat(2,1fr)}
+  #sim-output{grid-template-columns:repeat(2,1fr)}
+  #debate-arena{grid-template-columns:1fr}
+  #fw{display:none}#fw-mobile{display:block}
+  #s8-grid{grid-template-columns:1fr}
+  .sim-row{flex-direction:column;align-items:stretch;gap:6px}
+  .sim-row label{text-align:left;min-width:0}
+  .ann{font-size:9px;padding:5px 8px;max-width:140px}
+  .status-strip{font-size:9px;padding:6px 5vw;gap:6px;flex-wrap:wrap}
+}
+@media(max-width:480px){#s1-hook{letter-spacing:-2px;font-size:clamp(2rem,8vw,3rem)}}
+</style>
+</head>
+<body>
+
+<div class="status-strip">
+  <span><span class="sd"></span>Live <em id="ts">—</em></span>
+  <span>corpus <em id="ss-corpus">—</em></span>
+  <span>brands <em id="ss-brands">—</em></span>
+  <span>rules <em id="ss-rules">—</em> <span class="v-tag">v3.1</span></span>
+</div>
+
+<nav id="nav">
+  <button class="nd on" data-t="s1"></button><button class="nd" data-t="s2"></button>
+  <button class="nd" data-t="s3"></button><button class="nd" data-t="s4"></button>
+  <button class="nd" data-t="s5"></button><button class="nd" data-t="s6"></button>
+  <button class="nd" data-t="s7"></button><button class="nd" data-t="s8"></button>
+  <button class="nd" data-t="s9"></button>
+</nav>
+
+<!-- ═══ S1: HOOK ═══ -->
+<section id="s1" class="screen">
+  <video autoplay muted loop playsinline preload="none" poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
+    <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4" type="video/mp4">
+  </video>
+  <div id="s1-ov"></div>
+  <div class="orb orb-g" style="width:500px;height:500px;right:-150px;top:10%"></div>
+  <div class="orb orb-b" style="width:400px;height:400px;left:-100px;bottom:20%"></div>
+  <div id="s1-body">
+    <div id="s1-logo"><span class="ldot"></span><span class="lname">Pickle DaaS &nbsp;·&nbsp; Investor Walk-Through &nbsp;·&nbsp; v3.1</span></div>
+    <h1 id="s1-hook">Every hour, thousands<br>of pickleball videos are<br>captured and <span class="em">forgotten.</span><br>We turn that video<br>into <span class="em">classified intelligence.</span></h1>
+    <p id="s1-sub">AI-powered intelligence at $0.005 per clip. <span id="live-clips">3,131</span> clips analyzed. <span id="live-brands">327</span> brands detected, <strong style="color:var(--green)">classified</strong>, and traceable to <span id="live-rules">54</span> human-approved rules. Self-improving. Live right now.</p>
+    <div id="s1-tag">CLASSIFIED LIVE DATA &nbsp;·&nbsp; APRIL 2026</div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="sl"></div></div>
+</section>
+
+<!-- ═══ S2: WHAT THE AI SEES ═══ -->
+<section id="s2" class="screen">
+  <div class="orb orb-a" style="width:350px;height:350px;right:5%;top:10%"></div>
+  <div class="eyebrow">01 — What the AI Sees</div>
+  <h2 id="s2-head">You see a clip.<br>Our AI sees <span style="color:var(--green)">classified, provenance-tagged data.</span></h2>
+  <div id="s2-layout">
+    <div>
+      <div id="s2-vwrap">
+        <video id="s2-vid" autoplay muted loop playsinline poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
+          <source src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4" type="video/mp4">
+        </video>
+        <div class="ann ann-brand vis">
+          <div class="ann-lbl">Brand · classified</div>
+          <div class="ann-val">JOOLA</div>
+          <div class="ann-sub">paddle · player_equipment</div>
+          <div class="ann-prov">rule v6 · ✓ verified</div>
+        </div>
+        <div class="ann ann-shot vis">
+          <div class="ann-lbl">Shot Type</div>
+          <div class="ann-val">Overhead Smash</div>
+          <div class="ann-sub">16 shots · top play</div>
+        </div>
+        <div class="ann ann-skill vis">
+          <div class="ann-lbl">Player DNA</div>
+          <div class="ann-val">Power 9/10</div>
+          <div class="ann-sub">Court Coverage 8 · Kitchen 7</div>
+        </div>
+        <div class="ann ann-arc vis">
+          <div class="ann-lbl">Story Arc</div>
+          <div class="ann-val">Top Play ↑</div>
+          <div class="ann-sub">viral score: 7/10</div>
+        </div>
+      </div>
+    </div>
+    <div id="s2-panel">
+      <div class="s2pt">
+        <div class="s2pt-lbl"><span>Classified Brand Intelligence</span><span class="pp cls">NEW v3.1</span></div>
+        <div class="s2pt-txt">Every brand isn't just <em>detected</em> — it's <strong>tagged</strong>. Player equipment, venue installed, sponsor signage, broadcast tech. Each tag points back to the rule and the human who approved it. <strong>91.9% rule coverage.</strong> No black box.</div>
+      </div>
+      <div class="s2pt">
+        <div class="s2pt-lbl"><span>Player DNA</span></div>
+        <div class="s2pt-txt"><strong>88 real players profiled</strong> with 9 skill dimensions, verified badges, and Courtana avatars. Cross-referenced with ground truth from the live platform.</div>
+      </div>
+      <div class="s2pt">
+        <div class="s2pt-lbl"><span>Storytelling Engine</span></div>
+        <div class="s2pt-txt">Every clip gets a <strong>narrative arc</strong>, ESPN commentary, coaching breakdown, and social caption. Publish-ready content, automatically.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3: NUMBERS ═══ -->
+<section id="s3" class="screen">
+  <div class="orb orb-g" style="width:600px;height:600px;left:50%;top:-20%;transform:translateX(-50%)"></div>
+  <div id="s3-inner">
+    <div class="eyebrow" style="text-align:center">02 — The Numbers</div>
+    <h2 id="s3-hl">The data is <span style="color:var(--green)">real.</span><br>Running right now.</h2>
+    <p style="font-size:1rem;color:var(--muted);margin-bottom:48px;text-align:center">Every number below is live from the corpus. No projections.</p>
+    <div class="sg" id="sg1">
+      <div class="sstat c-green"><div class="snum"><span class="ctr" data-to="3131">—</span></div><div class="slbl">Clips analyzed</div><div class="sdet">corpus-export.json</div></div>
+      <div class="sstat c-amber"><div class="snum"><span class="ctr" data-to="7239">—</span></div><div class="slbl">Brand detections</div><div class="sdet">classified, traceable</div></div>
+      <div class="sstat c-blue"><div class="snum"><span class="ctr" data-to="327">—</span></div><div class="slbl">Unique brands</div><div class="sdet">tagged across 4 lanes</div></div>
+    </div>
+    <div class="sg" id="sg2">
+      <div class="sstat c-purple"><div class="snum"><span class="ctr" data-to="54">—</span></div><div class="slbl">Approved rules</div><div class="sdet">human-verified by Bill</div></div>
+      <div class="sstat c-green"><div class="snum">$<span class="ctr" data-to="0.005" data-dec="3">—</span></div><div class="slbl">Cost per clip</div><div class="sdet">Gemini 2.5 Flash</div></div>
+      <div class="sstat c-gold"><div class="snum"><span class="ctr" data-to="91.9" data-dec="1">—</span><span style="font-size:.5em;opacity:.6">%</span></div><div class="slbl">Rule coverage</div><div class="sdet">vs 8.1% fallback</div></div>
+    </div>
+    <p style="margin-top:30px;font-size:.92rem;color:var(--muted);font-style:italic;text-align:center">"Built by 2 people with ~$20 in API costs." — And every detection is now traceable to a rule.</p>
+  </div>
+</section>
+
+<!-- ═══ S4: WHO PAYS — three lanes ═══ -->
+<section id="s4" class="screen">
+  <div class="orb orb-a" style="width:400px;height:400px;left:-100px;top:30%"></div>
+  <div>
+    <div class="eyebrow">03 — Three Lanes, Three Buyers</div>
+    <h2 class="headline" style="max-width:760px">Same corpus.<br>Three classified lanes.<br><span style="color:var(--green)">Three revenue streams.</span></h2>
+    <p class="subhead">Brand classifications aren't just labels — they're how we route detections to the right buyer.</p>
+  </div>
+  <div id="s4-grid">
+    <div class="s4c br">
+      <div class="s4-ico">🏷️ <div class="s4-who">Brands</div></div>
+      <div class="s4-flag"><span class="pp cls" style="background:var(--bd);color:var(--blue);border:none">player_equipment</span></div>
+      <div class="s4-pitch">Where your paddle, shoes, and apparel actually appear on courts — and who's playing with them.</div>
+      <div class="s4-num"><span class="ctr" data-to="5364">—</span></div>
+      <div class="s4-numl">Player equipment detections</div>
+      <div class="s4-proof" style="margin-top:12px"><strong>From the corpus:</strong> JOOLA paddle dominates with 5,158 detections across 1,841 clips. Apparel category is wide open. <a href="brand-intelligence-v3.1.html" target="_blank">Explore the lane →</a></div>
+    </div>
+    <div class="s4c co">
+      <div class="s4-ico">🏟️ <div class="s4-who">Venues</div></div>
+      <div class="s4-flag"><span class="pp cls" style="background:var(--ad);color:var(--amber);border:none">venue_installed</span></div>
+      <div class="s4-pitch">What facilities own. Nets, court surfaces, cameras, signage. Sells to chains and operators.</div>
+      <div class="s4-num"><span class="ctr" data-to="1061">—</span></div>
+      <div class="s4-numl">Venue install detections</div>
+      <div class="s4-proof" style="margin-top:12px"><strong>From the corpus:</strong> Reolink cameras (89 detections), JOOLA nets, The Underground (50). Facility chains are emerging as a distinct buyer class.</div>
+    </div>
+    <div class="s4c me">
+      <div class="s4-ico">📡 <div class="s4-who">Sponsors</div></div>
+      <div class="s4-flag"><span class="pp cls" style="background:var(--pd);color:var(--purple);border:none">sponsor_signage</span></div>
+      <div class="s4-pitch">Brand signage on banners, courts, broadcasts. Sells to sponsors as priced impressions.</div>
+      <div class="s4-num"><span class="ctr" data-to="409">—</span></div>
+      <div class="s4-numl">Sponsor subtype detections</div>
+      <div class="s4-proof" style="margin-top:12px"><strong>From the corpus:</strong> 5 sponsor subtypes classified — national_corporate, wellness_recovery, food_beverage, regional_corporate. Whitespace = 50+ named brands with zero current spend.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: FLYWHEEL ═══ -->
+<section id="s5" class="screen">
+  <div class="orb orb-b" style="width:500px;height:500px;left:50%;top:50%;transform:translate(-50%,-50%)"></div>
+  <div id="s5-inner">
+    <div class="eyebrow" style="text-align:center">04 — The Moat</div>
+    <h2 id="s5-hl">The data + classification flywheel.</h2>
+    <p id="s5-sub">More venues → more video → AI tags brands → humans approve rules → next pass is more accurate → the corpus becomes a moat that competitors can't replicate without our human-in-the-loop.</p>
+    <div id="fw">
+      <div class="fw-ring"></div><div class="fw-spin"></div>
+      <div class="fwn n0"><div class="fn-lbl">More<br>Venues</div><div class="fn-num">3+</div></div>
+      <div class="fwn n1"><div class="fn-lbl">More<br>Video</div><div class="fn-num">20K+</div></div>
+      <div class="fwn n2"><div class="fn-lbl">Better<br>Rules</div><div class="fn-num">+v6</div></div>
+      <div class="fwn n3"><div class="fn-lbl">Cleaner<br>Corpus</div><div class="fn-num" id="fw-corpus">3,131</div></div>
+      <div class="fwn n4"><div class="fn-lbl">More<br>Buyers</div><div class="fn-num">3 lanes</div></div>
+      <div class="fwn n5"><div class="fn-lbl">More<br>Revenue</div><div class="fn-num">→ARR</div></div>
+      <div class="fw-ctr"><div class="ci">⟳</div><div>HUMAN<br>+ AI</div></div>
+    </div>
+    <div id="fw-mobile">
+      <div class="fms"><div class="fms-n">3+</div><div class="fms-l">Venues generating video</div></div><div class="fma">↓</div>
+      <div class="fms"><div class="fms-n">20K+</div><div class="fms-l">Clips/month upcoming</div></div><div class="fma">↓</div>
+      <div class="fms"><div class="fms-n">+v6</div><div class="fms-l">Rules approved by humans</div></div><div class="fma">↓</div>
+      <div class="fms"><div class="fms-n">3 lanes</div><div class="fms-l">Player · Venue · Sponsor</div></div><div class="fma">↓</div>
+      <div class="fms"><div class="fms-n">→ ARR</div><div class="fms-l">Revenue funds more venues</div></div>
+    </div>
+    <div id="s5-note">The classifier feedback loop is the moat. Anyone can run Gemini on a clip. <span class="gt">Almost no one has 3,131 corrected, human-approved labels with 54 production rules.</span> That's six months of expert review — replicate it and you've already lost.</div>
+  </div>
+</section>
+
+<!-- ═══ S6: CLASSIFICATION ENGINE (NEW) ═══ -->
+<section id="s6" class="screen">
+  <div class="orb orb-b" style="width:400px;height:400px;left:-100px;top:30%"></div>
+  <div id="s6-inner">
+    <div class="eyebrow">05 — Inside the Engine</div>
+    <h2 id="s6-hl">The classification engine is the <span style="color:var(--blue)">unfair advantage.</span></h2>
+    <p id="s6-sub">Detection is commodity. Anyone can ask an LLM "what brand is this?" The hard part — the part with no shortcut — is teaching it which brands belong in which lane, and proving every label.</p>
+    <div class="ce-grid">
+      <div class="ce-card in">
+        <div class="ce-num"><span class="ctr" data-to="7239">—</span></div>
+        <div class="ce-lbl">Detections in</div>
+        <div class="ce-desc">Raw brand mentions extracted from the corpus by Gemini.</div>
+      </div>
+      <div class="ce-card cl">
+        <div class="ce-num">v6</div>
+        <div class="ce-lbl">Taxonomy</div>
+        <div class="ce-desc">4 context flags + primary categories + revenue tier. Versioned.</div>
+      </div>
+      <div class="ce-card ru">
+        <div class="ce-num"><span class="ctr" data-to="54">—</span></div>
+        <div class="ce-lbl">Approved rules</div>
+        <div class="ce-desc">Each rule is a deterministic mapping (e.g. JOOLA → paddle), reviewed and approved by a human.</div>
+      </div>
+      <div class="ce-card fb">
+        <div class="ce-num"><span class="ctr" data-to="91.9" data-dec="1">—</span>%</div>
+        <div class="ce-lbl">Rule coverage</div>
+        <div class="ce-desc">Of all detections, this share are tagged by an approved rule. The rest are honest fallbacks.</div>
+      </div>
+    </div>
+    <div class="ce-flow">
+      <strong>The flow:</strong>
+      Gemini detects "<code>JOOLA</code> on paddle face" →
+      classifier looks up rule <code>JOOLA</code> (v6) →
+      tags <code>player_equipment=true</code>, <code>category=paddle</code>, <code>revenue=high</code> →
+      records <code>source=rule</code>, <code>verified=true</code>.
+      <br><br>
+      Every detection in v3.1 carries this provenance. When Bill clicks "verify" in the <a href="classifier-queue.html" style="color:var(--blue);text-decoration:underline">Classifier Queue</a>, that approval propagates to all future runs. The corpus gets sharper every week.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: AI DEBATE ═══ -->
+<section id="s7" class="screen">
+  <div class="orb orb-p" style="width:500px;height:500px;right:-150px;top:30%"></div>
+  <div id="s7-inner">
+    <div class="eyebrow">06 — Self-Critique</div>
+    <h2 id="s7-hl">Two AIs walk into a clip.<br><span style="color:var(--red)">They disagree.</span></h2>
+    <p id="s7-sub">We run Gemini Flash and Gemini Pro on the same clip and compare. The disagreements are where the rules need work — and where the classification engine learns.</p>
+    <div id="agree-bar"><div id="agree-fill"></div></div>
+    <div id="agree-label">On this clip — <strong>agreement: 8.3%</strong> &nbsp; · &nbsp; 11 fields disagreed across badges and brand context</div>
+    <div id="debate-arena">
+      <div class="agent-col agent-a">
+        <div class="agent-header"><span class="agent-dot"></span>Gemini Flash · $0.0014</div>
+        <div class="debate-msg disagree"><div class="d-field">Predicted Badges</div><div class="d-val">"highlight reel", "steady eddie"</div></div>
+        <div class="debate-msg"><div class="d-field">Brand · context flag</div><div class="d-val">JOOLA · player_equipment</div></div>
+      </div>
+      <div class="agent-col agent-b">
+        <div class="agent-header"><span class="agent-dot"></span>Gemini Pro · $0.034</div>
+        <div class="debate-msg disagree"><div class="d-field">Predicted Badges</div><div class="d-val">"nice try", "whiff"</div></div>
+        <div class="debate-msg"><div class="d-field">Brand · context flag</div><div class="d-val">JOOLA · player_equipment</div></div>
+      </div>
+    </div>
+    <div id="verdict-box">
+      <div class="v-text"><strong>Verdict:</strong> Both agreed on the brand classification (rule v6 caught JOOLA → player_equipment in both runs — the classifier removed that ambiguity). They disagreed on subjective badges. <strong>This is exactly what the rules layer is for:</strong> remove disagreement on facts, keep healthy debate on judgment.</div>
+    </div>
+    <p id="s7-coda">"The classification engine isn't replacing human judgment — it's freezing the parts where humans already agreed, so the model's energy goes to the hard calls."</p>
+  </div>
+</section>
+
+<!-- ═══ S8: PORTFOLIO ═══ -->
+<section id="s8" class="screen">
+  <div class="orb orb-g" style="width:400px;height:400px;left:50%;top:-100px;transform:translateX(-50%)"></div>
+  <div class="eyebrow">07 — Live System Portfolio</div>
+  <h2 class="headline" style="max-width:780px">Every dashboard, classified.</h2>
+  <p class="subhead">Click any card. All v3.1 pages share the classification provenance layer. v2 pages remain accessible as a stable fallback.</p>
+  <div id="s8-grid">
+    <a href="brand-intelligence-v3.1.html" class="pc feat">
+      <div class="pc-thumb" style="background:linear-gradient(135deg,oklch(72% .19 155/.15),oklch(70% .15 235/.1))">🏷️</div>
+      <div class="pc-body"><span class="pc-tag">v3.1 · primary</span><div class="pc-title">Brand Intelligence</div><div class="pc-desc">3 lanes, 327 brands, every detection traceable to a rule.</div><div class="pc-lnk">brand-intelligence-v3.1.html →</div></div>
+    </a>
+    <a href="evidence-wall-v3.1.html" class="pc feat">
+      <div class="pc-thumb" style="background:linear-gradient(135deg,oklch(80% .15 75/.15),oklch(72% .19 155/.1))">🎬</div>
+      <div class="pc-body"><span class="pc-tag">v3.1 · primary</span><div class="pc-title">Evidence Wall</div><div class="pc-desc">3,131 clips with classification badges. Filter by sponsor subtype, verify inline.</div><div class="pc-lnk">evidence-wall-v3.1.html →</div></div>
+    </a>
+    <a href="equipment-performance-v3.1.html" class="pc feat">
+      <div class="pc-thumb" style="background:linear-gradient(135deg,oklch(70% .15 235/.15),oklch(68% .19 300/.1))">🏓</div>
+      <div class="pc-body"><span class="pc-tag">v3.1 · primary</span><div class="pc-title">Equipment Performance</div><div class="pc-desc">Brands by category. Market share. Player skill correlations.</div><div class="pc-lnk">equipment-performance-v3.1.html →</div></div>
+    </a>
+    <a href="idea-lab.html" class="pc v3">
+      <div class="pc-thumb" style="background:linear-gradient(135deg,oklch(68% .19 300/.15),oklch(70% .15 235/.1))">💡</div>
+      <div class="pc-body"><span class="pc-tag">live engine</span><div class="pc-title">Idea Lab</div><div class="pc-desc">9 AI researchers, daily findings, debate engine. Strategic + data tracks.</div><div class="pc-lnk">idea-lab.html →</div></div>
+    </a>
+    <a href="classifier-queue.html" class="pc v3">
+      <div class="pc-thumb" style="background:linear-gradient(135deg,oklch(80% .15 75/.15),oklch(72% .19 155/.1))">⚙️</div>
+      <div class="pc-body"><span class="pc-tag">classification engine</span><div class="pc-title">Classifier Queue</div><div class="pc-desc">Where rules are reviewed, approved, and propagated to the corpus.</div><div class="pc-lnk">classifier-queue.html →</div></div>
+    </a>
+    <a href="brand-intelligence-v2.html" class="pc v2">
+      <div class="pc-thumb" style="background:linear-gradient(135deg,oklch(20% .015 165),oklch(18% .015 165))">📊</div>
+      <div class="pc-body"><span class="pc-tag">v2 · stable</span><div class="pc-title">Brand Intelligence v2</div><div class="pc-desc">The original. Still live as a comparison baseline.</div><div class="pc-lnk">brand-intelligence-v2.html →</div></div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ S9: REVENUE SIM + ASK ═══ -->
+<section id="s9" class="screen">
+  <div class="orb orb-g" style="width:500px;height:500px;left:50%;top:50%;transform:translate(-50%,-50%)"></div>
+  <div id="s9-inner">
+    <div id="s9-pre">08 — The ask</div>
+    <h2 id="s9-hl">Now imagine this <span style="color:var(--green)">at scale.</span></h2>
+    <p id="s9-pitch">Drag the sliders. The math comes from real classification data: per-lane CPMs, real corpus volume.</p>
+    <div id="rev-sim">
+      <h3>Revenue Simulator · classified by lane</h3>
+      <div class="sim-presets">
+        <button class="sim-preset active" data-p="now" onclick="preset('now',this)">Today (3 venues)</button>
+        <button class="sim-preset" data-p="next" onclick="preset('next',this)">12 mo</button>
+        <button class="sim-preset" data-p="big" onclick="preset('big',this)">Network of 50</button>
+      </div>
+      <div class="sim-row"><label>Venues</label><input type="range" id="r-v" min="3" max="200" value="3" oninput="recalc()"><div class="sim-val" id="v-v">3</div></div>
+      <div class="sim-row"><label>Clips / venue / mo</label><input type="range" id="r-c" min="100" max="20000" step="100" value="1000" oninput="recalc()"><div class="sim-val" id="v-c">1,000</div></div>
+      <div class="sim-row"><label>Sponsor CPM ($)</label><input type="range" id="r-cpm" min="1" max="40" value="8" oninput="recalc()"><div class="sim-val" id="v-cpm">$8</div></div>
+      <div class="sim-row"><label>Brand subscribers</label><input type="range" id="r-b" min="0" max="50" value="3" oninput="recalc()"><div class="sim-val" id="v-b">3</div></div>
+      <div id="sim-output">
+        <div class="sim-metric"><div class="sm-num" id="m-clips">—</div><div class="sm-lbl">Clips/year</div></div>
+        <div class="sim-metric"><div class="sm-num" id="m-cost">—</div><div class="sm-lbl">AI cost</div></div>
+        <div class="sim-metric"><div class="sm-num" id="m-rev">—</div><div class="sm-lbl">ARR estimate</div></div>
+        <div class="sim-metric"><div class="sm-num" id="m-marg">—</div><div class="sm-lbl">Gross margin</div></div>
+      </div>
+      <div id="brand-cpm"><strong>Subtype CPM mix:</strong> national_corporate $20 · wellness_recovery $15 · regional_corporate $8 · food_beverage $6 · player equipment subscription $2.5K/mo.</div>
+    </div>
+    <div id="s9-cta">
+      <div class="cname">Bill Bricker</div>
+      <a href="mailto:bill@courtana.com" class="cemail">bill@courtana.com</a>
+      <div class="crole">Founder · PickleBills / Courtana</div>
+    </div>
+    <p id="s9-disc">All numbers above are live from the production classification corpus on April 15, 2026. Simulator math is illustrative; no forward projections expressed or implied.</p>
+    <div class="foot-prov">
+      How was this classified? <a href="classifier-queue.html">Classifier Queue →</a>
+      &nbsp;·&nbsp; <a href="brand-intelligence-v2.html">Compare to v2 (stable) →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+const FEED_URL = '../api/feed.json';
+const STATS_URL = '../classification-stats.json';
+const PROV_URL = '../brand-provenance.json';
+
+async function fetchJson(u){try{const r=await fetch(u,{cache:'no-store'});if(r.ok)return await r.json();}catch(e){}return null;}
+
+(async ()=>{
+  const [feed, stats, prov] = await Promise.all([fetchJson(FEED_URL), fetchJson(STATS_URL), fetchJson(PROV_URL)]);
+  if (feed){
+    document.getElementById('ts').textContent = new Date(feed.generated_at).toLocaleString();
+    document.getElementById('ss-corpus').textContent = (feed.corpus.total_clips || 3131).toLocaleString();
+    document.getElementById('ss-brands').textContent = (feed.corpus.unique_brands || 327).toLocaleString();
+    document.getElementById('live-clips').textContent = (feed.corpus.total_clips || 3131).toLocaleString();
+    document.getElementById('live-brands').textContent = (feed.corpus.unique_brands || 327).toLocaleString();
+    document.getElementById('fw-corpus').textContent = (feed.corpus.total_clips || 3131).toLocaleString();
+  }
+  if (stats){
+    document.getElementById('ss-rules').textContent = stats.rule_count || 54;
+    document.getElementById('live-rules').textContent = stats.rule_count || 54;
+  }
+  // Animate counters
+  const ctrs = document.querySelectorAll('.ctr');
+  ctrs.forEach(c => {
+    const to = parseFloat(c.dataset.to);
+    const dec = parseInt(c.dataset.dec || '0');
+    let cur = 0;
+    const start = performance.now();
+    const dur = 1400;
+    function step(t){
+      const p = Math.min(1, (t-start)/dur);
+      const eased = 1-Math.pow(1-p,3);
+      cur = to*eased;
+      c.textContent = cur.toLocaleString(undefined,{maximumFractionDigits:dec, minimumFractionDigits:dec});
+      if (p<1) requestAnimationFrame(step);
+      else c.textContent = to.toLocaleString(undefined,{maximumFractionDigits:dec, minimumFractionDigits:dec});
+    }
+    // Start when in viewport
+    new IntersectionObserver(([e],o)=>{if(e.isIntersecting){requestAnimationFrame(step);o.disconnect();}},{threshold:.3}).observe(c);
+  });
+})();
+
+// nav dots
+const sects = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'].map(id=>document.getElementById(id));
+const dots = document.querySelectorAll('.nd');
+const navObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){
+    const idx = sects.indexOf(e.target);
+    dots.forEach((d,i)=>d.classList.toggle('on', i===idx));
+  }});
+},{threshold:.5});
+sects.forEach(s=>navObs.observe(s));
+dots.forEach((d,i)=>d.addEventListener('click',()=>sects[i].scrollIntoView({behavior:'smooth'})));
+
+// revenue sim
+const PRESETS = {
+  now:{v:3,c:1000,cpm:8,b:3},
+  next:{v:12,c:5000,cpm:12,b:8},
+  big:{v:50,c:8000,cpm:18,b:18}
+};
+function preset(p,el){
+  document.querySelectorAll('.sim-preset').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const x = PRESETS[p];
+  document.getElementById('r-v').value = x.v;
+  document.getElementById('r-c').value = x.c;
+  document.getElementById('r-cpm').value = x.cpm;
+  document.getElementById('r-b').value = x.b;
+  recalc();
+}
+function recalc(){
+  const v = +document.getElementById('r-v').value;
+  const c = +document.getElementById('r-c').value;
+  const cpm = +document.getElementById('r-cpm').value;
+  const b = +document.getElementById('r-b').value;
+  document.getElementById('v-v').textContent = v;
+  document.getElementById('v-c').textContent = c.toLocaleString();
+  document.getElementById('v-cpm').textContent = '$'+cpm;
+  document.getElementById('v-b').textContent = b;
+  const clipsYear = v*c*12;
+  const aiCost = clipsYear*0.005;
+  const sponsorRev = clipsYear * (cpm/1000) * 4; // ~4 brand impressions/clip
+  const brandSubs = b * 2500 * 12; // $2.5K/mo
+  const venueSubs = v * 800 * 12;
+  const arr = sponsorRev + brandSubs + venueSubs;
+  const margin = arr ? Math.round(((arr-aiCost)/arr)*100) : 0;
+  const fmt = n => n>=1e6 ? '$'+(n/1e6).toFixed(1)+'M' : n>=1e3 ? '$'+(n/1e3).toFixed(0)+'k' : '$'+n.toFixed(0);
+  const fmtN = n => n>=1e6 ? (n/1e6).toFixed(1)+'M' : n>=1e3 ? (n/1e3).toFixed(0)+'k' : n.toFixed(0);
+  document.getElementById('m-clips').textContent = fmtN(clipsYear);
+  document.getElementById('m-cost').textContent = fmt(aiCost);
+  document.getElementById('m-rev').textContent = fmt(arr);
+  document.getElementById('m-marg').textContent = margin+'%';
+}
+recalc();
+</script>
+</body>
+</html>

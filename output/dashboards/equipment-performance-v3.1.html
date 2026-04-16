@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipment Performance v3.1 · Pickle DaaS</title>
+<meta name="description" content="Player equipment brands by category. Market share, skill correlations, source clips.">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:oklch(11% .012 165);--sf:oklch(15% .011 165);--sf2:oklch(18% .009 165);
+  --sf3:oklch(22% .008 165);--bd:oklch(26% .01 165);--bds:oklch(20% .008 165);
+  --tx:oklch(94% .008 165);--tx2:oklch(72% .013 165);--mt:oklch(50% .015 165);
+  --ac:oklch(78% .19 155);--acd:oklch(78% .19 155/.08);--acg:oklch(78% .19 155/.18);
+  --bl:oklch(70% .15 235);--bld:oklch(70% .15 235/.1);
+  --am:oklch(80% .15 75);--amd:oklch(80% .15 75/.1);
+  --pu:oklch(68% .19 300);--pud:oklch(68% .19 300/.1);
+  --r:10px;--rl:14px;--ease:cubic-bezier(.22,1,.36,1);
+}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.amb::before{content:'';position:absolute;top:-15%;left:30%;width:600px;height:600px;background:var(--bl);border-radius:50%;filter:blur(120px);opacity:.05;animation:dr 32s ease-in-out infinite}
+@keyframes dr{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+
+.page{position:relative;z-index:1}
+.shell{max-width:1380px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
+
+.status-strip{padding:8px 0;border-bottom:1px solid var(--bds);font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--mt);text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.status-strip span{display:inline-flex;align-items:center;gap:6px}
+.status-strip em{font-style:normal;color:var(--ac);font-weight:600}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+header{padding:20px 0;border-bottom:1px solid var(--bds);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-i{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--bl),oklch(58% .14 235));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:oklch(12% .01 165)}
+.logo-t{font-size:13px;font-weight:700}.logo-t em{font-style:normal;color:var(--bl)}
+.logo-s{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.6px}
+.v-tag{padding:3px 8px;background:var(--acd);color:var(--ac);border:1px solid var(--acg);border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;margin-left:8px;letter-spacing:.5px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;padding:6px 11px;border:1px solid var(--bd);border-radius:6px;transition:all .2s var(--ease)}
+nav a:hover{color:var(--ac);border-color:var(--ac)}
+nav a.primary{background:var(--acd);color:var(--ac);border-color:var(--acg)}
+
+.hero{padding:clamp(28px,4vw,42px) 0 16px}
+.hero h1{font-size:clamp(28px,4.5vw,44px);font-weight:800;letter-spacing:-1.6px;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--bl)}
+.hero-sub{font-size:14px;color:var(--tx2);margin-top:12px;max-width:640px;line-height:1.65}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin:24px 0 24px;background:var(--bds)}
+.st{padding:18px 16px;background:var(--sf);transition:background .2s var(--ease)}
+.st:hover{background:var(--sf2)}
+.st-v{font-size:clamp(20px,2.4vw,28px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1;font-family:'Red Hat Mono',monospace}
+.st-v.bl{color:var(--bl)} .st-v.ac{color:var(--ac)} .st-v.am{color:var(--am)}
+.st-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-top:6px;font-family:'Red Hat Mono',monospace}
+
+/* Category tabs */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.ct-btn{padding:9px 18px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--tx2);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;text-transform:capitalize}
+.ct-btn:hover{border-color:var(--bl);color:var(--bl)}
+.ct-btn.on{background:var(--bld);border-color:oklch(70% .15 235/.3);color:var(--bl)}
+.ct-btn .cn{font-family:'Red Hat Mono',monospace;font-size:11px;opacity:.7;margin-left:6px}
+
+/* Sec */
+.sec{margin:24px 0 14px;display:flex;justify-content:space-between;align-items:baseline;padding-bottom:8px;border-bottom:1px solid var(--bds);flex-wrap:wrap;gap:6px}
+.sec h2{font-size:18px;font-weight:700;letter-spacing:-.4px;text-transform:capitalize}
+.sec h2 em{font-style:normal;color:var(--bl)}
+.sec .m{font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace}
+
+/* Brand cards by category */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.bcard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;transition:all .25s var(--ease);position:relative;display:flex;flex-direction:column}
+.bcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--bl)}
+.bcard:hover{border-color:oklch(94% .008 165/.18);transform:translateY(-3px);box-shadow:0 14px 40px oklch(0% 0 0/.4)}
+.bc-top{padding:18px 18px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.bc-name{font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.1}
+.bc-cat{font-size:10px;color:var(--mt);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
+.bc-share{text-align:right;flex-shrink:0}
+.bc-share-v{font-size:30px;font-weight:800;font-family:'Red Hat Mono',monospace;line-height:1;color:var(--bl)}
+.bc-share-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.6px;font-family:'Red Hat Mono',monospace;margin-top:4px}
+
+/* Share bar */
+.bc-bar{margin:0 18px 14px;height:8px;background:var(--sf2);border-radius:4px;overflow:hidden;position:relative}
+.bc-bar-f{height:100%;background:linear-gradient(90deg,var(--bl),oklch(78% .19 155));border-radius:4px;transition:width .8s var(--ease)}
+.bc-num-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bds);margin:0 18px 12px;border-radius:6px;overflow:hidden}
+.bc-ni{background:var(--sf2);padding:9px;text-align:center}
+.bc-nv{font-size:14px;font-weight:700;font-family:'Red Hat Mono',monospace}
+.bc-nl{font-size:8px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;font-family:'Red Hat Mono',monospace}
+
+/* Provenance pills inline on cards */
+.bc-prov{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:0 18px 12px;padding:8px 11px;background:var(--sf2);border:1px solid var(--bds);border-radius:6px;font-family:'Red Hat Mono',monospace}
+.bc-prov-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+.pp{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:11px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600}
+.pp.rule{background:var(--acd);color:var(--ac);border:1px solid var(--acg)}
+.pp.fb{background:var(--amd);color:var(--am);border:1px solid oklch(80% .15 75/.2)}
+.pp.ver{background:var(--acd);color:var(--ac)}
+.pp.unv{background:oklch(50% .015 165/.15);color:var(--mt)}
+
+/* Source clips strip */
+.bc-clips{padding:0 18px 14px;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none}
+.bc-clips::-webkit-scrollbar{display:none}
+.bc-clip{width:90px;height:50px;border-radius:5px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer}
+.bc-clip video,.bc-clip img{width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.bc-clip::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:oklch(0% 0 0/.35);color:white;font-size:11px;transition:opacity .2s}
+.bc-clip:hover::after{background:oklch(0% 0 0/.15)}
+
+/* Compete view */
+.compete-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.cg-row{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px;transition:all .2s var(--ease)}
+.cg-row:hover{border-color:var(--bl)}
+.cg-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.cg-share{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-bottom:6px}
+.cg-share strong{color:var(--bl);font-size:14px;font-weight:700}
+.cg-bar{height:5px;background:var(--sf3);border-radius:3px;overflow:hidden}
+.cg-bar-f{height:100%;background:var(--bl);border-radius:3px;transition:width .6s var(--ease)}
+
+/* Modal */
+.mbg{position:fixed;inset:0;background:oklch(0% 0 0/.78);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.mbg.open{display:flex}
+.modal{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);max-width:920px;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;animation:ms .35s var(--ease)}
+@keyframes ms{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 22px;border-bottom:1px solid var(--bds);flex-shrink:0;gap:10px}
+.mti{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.mti .msub{display:block;font-size:11px;color:var(--mt);font-weight:500;margin-top:3px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.6px}
+.mx{width:34px;height:34px;border-radius:8px;background:var(--sf2);border:1px solid var(--bd);color:var(--mt);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s var(--ease);flex-shrink:0}
+.mx:hover{background:var(--sf3);color:var(--tx)}
+.mc{flex:1;overflow-y:auto;padding:22px}
+.msec{margin-bottom:20px}
+.msec h4{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--mt);font-family:'Red Hat Mono',monospace;margin-bottom:10px}
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.sk{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--sf2);border-radius:6px}
+.sk-l{flex:1;font-size:11px;color:var(--tx2);text-transform:capitalize}
+.sk-bar{flex:1;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden}
+.sk-f{height:100%;background:var(--bl);border-radius:3px;transition:width .5s var(--ease)}
+.sk-v{width:24px;font-size:11px;font-weight:700;font-family:'Red Hat Mono',monospace;text-align:right}
+.eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ec{border-radius:var(--r);overflow:hidden;background:var(--sf2);cursor:pointer;transition:all .2s var(--ease)}
+.ec:hover{transform:translateY(-2px);box-shadow:0 8px 24px oklch(0% 0 0/.3)}
+.ecv{aspect-ratio:16/9;position:relative}
+.ecv video,.ecv img{width:100%;height:100%;object-fit:cover;background:#000}
+.ecv::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:oklch(0% 0 0/.4);color:white;font-size:18px;transition:all .2s var(--ease)}
+.ec:hover .ecv::after{background:oklch(0% 0 0/.15)}
+.eci{padding:10px}.ecs{font-size:11px;color:var(--tx2);line-height:1.4}
+
+/* Footer */
+footer{margin-top:48px;padding:24px 0;border-top:1px solid var(--bds);color:var(--mt);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:'Red Hat Mono',monospace}
+footer a{color:var(--ac);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+.ld{display:flex;flex-direction:column;align-items:center;padding:80px 20px;gap:14px}
+.sp{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--bl);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){nav{display:none}}
+</style>
+</head>
+<body>
+<div class="amb"></div>
+<div class="page"><div class="shell">
+
+<div class="status-strip">
+  <span><span class="status-dot"></span>Live · <em id="ref-ts">—</em></span>
+  <span>player_equipment lane: <em id="ref-pe">—</em></span>
+  <span>rules: <em id="ref-rules">—</em></span>
+  <span>taxonomy: <em id="ref-tax">—</em></span>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-i">⚙</div>
+    <div>
+      <div class="logo-t">Pickle <em>DaaS</em><span class="v-tag">v3.1</span></div>
+      <div class="logo-s">Equipment Performance · Classified</div>
+    </div>
+  </div>
+  <nav>
+    <a href="showcase-portal-v3.1.html" class="primary">Portal</a>
+    <a href="brand-intelligence-v3.1.html">Brands</a>
+    <a href="evidence-wall-v3.1.html">Evidence</a>
+    <a href="investor-walkthrough-v3.1.html">Investor</a>
+    <a href="classifier-queue.html">Rules Queue</a>
+    <a href="equipment-performance.html" style="opacity:.6">v1</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Player <em>Equipment</em> — by category</h1>
+  <p class="hero-sub">Only brands classified as <code style="background:var(--bld);color:var(--bl);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:12px">player_equipment</code> appear here. Market share within category. Skill correlations from clips. Source evidence on every tile.</p>
+</section>
+
+<div class="stats" id="stats"></div>
+
+<div class="ld" id="ld"><div class="sp"></div><div style="color:var(--mt);font-size:12px;font-family:'Red Hat Mono',monospace">Loading classified equipment…</div></div>
+
+<div id="content" style="display:none">
+  <div class="cat-tabs" id="tabs"></div>
+  <div class="sec"><h2 id="cat-title">paddle <em>brands</em></h2><span class="m" id="cat-meta">—</span></div>
+  <div class="cg" id="cards"></div>
+
+  <div class="sec"><h2>Compete View · <em>Same Category</em></h2><span class="m">share of total detections within selected category</span></div>
+  <div class="compete-grid" id="compete"></div>
+</div>
+
+<footer>
+  <div>Pickle DaaS · v3.1 · player equipment lane · taxonomy v6 · <a href="equipment-performance.html">v1 still live →</a></div>
+  <div>How was this classified? <a href="classifier-queue.html">Classifier Queue →</a></div>
+</footer>
+
+</div></div>
+
+<div class="mbg" id="modal-bg" onclick="if(event.target.id==='modal-bg')closeModal()">
+  <div class="modal">
+    <div class="mh"><div class="mti" id="m-title">—<span class="msub" id="m-subtitle"></span></div>
+      <button class="mx" onclick="closeModal()">×</button></div>
+    <div class="mc" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+const PE_URL = '../api/player-equipment.json';
+const STATS_URL = '../classification-stats.json';
+const PROV_URL = '../brand-provenance.json';
+const BRANDS_URL = '../api/brands.json';
+
+let state = {pe:{categories:{}}, stats:{}, prov:{brands:[]}, brands:[], activeCat:'paddle'};
+
+const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => n>=1000 ? (n/1000).toFixed(1)+'k' : String(n);
+
+async function fetchJson(u){try{const r=await fetch(u,{cache:'no-store'});if(r.ok)return await r.json();}catch(e){}return null;}
+
+async function load(){
+  const [pe, stats, prov, brands] = await Promise.all([fetchJson(PE_URL), fetchJson(STATS_URL), fetchJson(PROV_URL), fetchJson(BRANDS_URL)]);
+  state.pe = pe || {categories:{}};
+  state.stats = stats || {};
+  state.prov = prov || {brands:[]};
+  state.brands = (brands && brands.brands) || [];
+  // Default to first category that has brands
+  const cats = Object.keys(state.pe.categories || {});
+  if (cats.length && !state.pe.categories[state.activeCat]) state.activeCat = cats[0];
+
+  document.getElementById('ld').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  renderStatusStrip();
+  renderStats();
+  renderTabs();
+  renderCards();
+  renderCompete();
+}
+
+function renderStatusStrip(){
+  const s = state.stats;
+  document.getElementById('ref-ts').textContent = s.computed_at ? new Date(s.computed_at).toLocaleString() : '—';
+  const cf = s.by_context_flag || {};
+  document.getElementById('ref-pe').textContent = (cf.player_equipment||0).toLocaleString();
+  document.getElementById('ref-rules').textContent = s.rule_count || '—';
+  document.getElementById('ref-tax').textContent = 'v'+(s.taxonomy_version||'?');
+}
+
+function renderStats(){
+  const cats = state.pe.categories || {};
+  const totalBrands = state.pe.total_brands || Object.values(cats).reduce((a,arr)=>a+arr.length,0);
+  const totalDet = Object.values(cats).reduce((a,arr)=>a+arr.reduce((s,b)=>s+(b.total_detections||0),0),0);
+  const verified = state.prov.brands.filter(b=>b.player_equipment && b.human_verified).length;
+  const items = [
+    {v: totalBrands, l:'brands tagged', cls:'bl'},
+    {v: Object.keys(cats).length, l:'categories', cls:'bl'},
+    {v: fmt(totalDet), l:'detections', cls:'ac'},
+    {v: verified, l:'human verified', cls:'ac'},
+    {v: 'v'+(state.stats.taxonomy_version||'?'), l:'taxonomy', cls:''}
+  ];
+  document.getElementById('stats').innerHTML = items.map(i=>`
+    <div class="st"><div class="st-v ${i.cls}">${i.v}</div><div class="st-l">${i.l}</div></div>`).join('');
+}
+
+function renderTabs(){
+  const cats = state.pe.categories || {};
+  const order = ['paddle','shoes','apparel','accessory','bag','cpg_beverage','sponsor_signage','unknown'].filter(c=>cats[c]);
+  const html = order.map(cat => {
+    const arr = cats[cat] || [];
+    return `<button class="ct-btn ${state.activeCat===cat?'on':''}" onclick="setCat('${cat}')">${cat.replace(/_/g,' ')}<span class="cn">${arr.length}</span></button>`;
+  }).join('');
+  document.getElementById('tabs').innerHTML = html;
+}
+
+function setCat(c){state.activeCat=c;renderTabs();renderCards();renderCompete();
+  document.getElementById('cat-title').innerHTML = `${c.replace(/_/g,' ')} <em>brands</em>`;
+}
+
+function findProv(name){return state.prov.brands.find(b=>b.name===name) || {};}
+function findBrandStats(name){return state.brands.find(b=>b.name===name) || {};}
+
+function renderCards(){
+  const cat = state.activeCat;
+  const arr = (state.pe.categories[cat] || []).slice().sort((a,b)=>(b.total_detections||0)-(a.total_detections||0));
+  document.getElementById('cat-title').innerHTML = `${cat.replace(/_/g,' ')} <em>brands</em>`;
+  document.getElementById('cat-meta').textContent = `${arr.length} brands · sorted by detections`;
+
+  const totalCat = arr.reduce((s,b)=>s+(b.total_detections||0),0);
+  document.getElementById('cards').innerHTML = arr.slice(0,30).map(b => {
+    const p = findProv(b.brand);
+    const bs = findBrandStats(b.brand);
+    const share = b.market_share_pct != null ? b.market_share_pct : (totalCat ? (b.total_detections/totalCat*100) : 0);
+    const provPills = [
+      p.source==='rule' ? `<span class="pp rule">rule v${p.rule_version||'?'}</span>` : `<span class="pp fb">fallback</span>`,
+      p.human_verified ? `<span class="pp ver">✓ verified</span>` : `<span class="pp unv">unverified</span>`
+    ].join('');
+    const exClips = (b.example_clips || []).slice(0, 5);
+    return `<div class="bcard" onclick='openBrand(${JSON.stringify(b.brand)})'>
+      <div class="bc-top">
+        <div><div class="bc-name">${esc(b.brand)}</div><div class="bc-cat">${esc(cat.replace(/_/g,' '))}${b.revenue_potential?` · ${esc(b.revenue_potential)} revenue`:''}</div></div>
+        <div class="bc-share"><div class="bc-share-v">${share.toFixed(1)}%</div><div class="bc-share-l">share</div></div>
+      </div>
+      <div class="bc-bar"><div class="bc-bar-f" style="width:${Math.min(100,share)}%"></div></div>
+      <div class="bc-num-row">
+        <div class="bc-ni"><div class="bc-nv">${fmt(b.total_detections||0)}</div><div class="bc-nl">detections</div></div>
+        <div class="bc-ni"><div class="bc-nv">${fmt(b.unique_clips||0)}</div><div class="bc-nl">unique clips</div></div>
+        <div class="bc-ni"><div class="bc-nv">${bs.share_of_court ? bs.share_of_court.toFixed(1)+'%' : '—'}</div><div class="bc-nl">share of court</div></div>
+      </div>
+      <div class="bc-prov"><span class="bc-prov-l">tagged</span>${provPills}</div>
+      ${exClips.length?`<div class="bc-clips">${exClips.map(c=>`
+        <div class="bc-clip" onclick="event.stopPropagation();this.classList.add('p');const v=this.querySelector('video');v.play()">
+          <video src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/${esc(c.uuid)}.mp4" poster="${esc(c.thumbnail||'')}" preload="none" muted loop playsinline></video>
+        </div>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderCompete(){
+  const cat = state.activeCat;
+  const arr = (state.pe.categories[cat] || []).slice().sort((a,b)=>(b.total_detections||0)-(a.total_detections||0));
+  const totalCat = arr.reduce((s,b)=>s+(b.total_detections||0),0);
+  document.getElementById('compete').innerHTML = arr.slice(0,16).map(b => {
+    const share = totalCat ? (b.total_detections/totalCat*100) : 0;
+    return `<div class="cg-row">
+      <div class="cg-name">${esc(b.brand)}</div>
+      <div class="cg-share">${fmt(b.total_detections||0)} det. <strong>${share.toFixed(1)}%</strong></div>
+      <div class="cg-bar"><div class="cg-bar-f" style="width:${share}%"></div></div>
+    </div>`;
+  }).join('') || '<div style="grid-column:1/-1;color:var(--mt);font-size:12px;text-align:center;padding:20px">No brands in this category yet.</div>';
+}
+
+function openBrand(name){
+  const cats = state.pe.categories || {};
+  let row = null, cat = null;
+  for (const [c, arr] of Object.entries(cats)){
+    const m = arr.find(b=>b.brand===name);
+    if (m){row=m;cat=c;break;}
+  }
+  if (!row) return;
+  const p = findProv(name);
+  const bs = findBrandStats(name);
+  const skills = bs.avg_skills || {};
+
+  document.getElementById('m-title').innerHTML = `${esc(name)}<span class="msub">${esc(cat.replace(/_/g,' '))} · ${fmt(row.total_detections||0)} detections · ${fmt(row.unique_clips||0)} clips</span>`;
+
+  const skillHtml = Object.keys(skills).length ? `<div class="msec"><h4>Player skill correlations · avg across ${row.unique_clips||0} clips</h4><div class="skill-grid">${
+    Object.entries(skills).map(([k,v]) => `<div class="sk"><div class="sk-l">${k.replace(/_/g,' ')}</div><div class="sk-bar"><div class="sk-f" style="width:${(v/10*100)}%"></div></div><div class="sk-v">${v.toFixed(1)}</div></div>`).join('')
+  }</div></div>` : '';
+
+  const provHtml = `<div class="msec"><h4>Classification Provenance</h4>
+    <div style="padding:14px 16px;background:var(--bld);border:1px solid oklch(70% .15 235/.18);border-radius:var(--r);font-size:13px;color:var(--tx2);line-height:1.6">
+      Category: <code style="background:var(--sf2);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--ac)">${esc(p.category_primary||cat)}</code> ·
+      Source: <code style="background:var(--sf2);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--ac)">${esc(p.source||'?')}</code> ·
+      Rule v<code style="background:var(--sf2);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--ac)">${p.rule_version||'?'}</code> ·
+      Verified: <code style="background:var(--sf2);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--ac)">${p.human_verified?'yes':'pending'}</code>
+      ${p.rationale ? `<br><em style="display:block;margin-top:8px">"${esc(p.rationale)}"</em>` : ''}
+    </div>
+  </div>`;
+
+  const exClips = (row.example_clips || []).slice(0, 8);
+  const clipsHtml = exClips.length ? `<div class="msec"><h4>Source clips</h4><div class="eg">${
+    exClips.map(c=>`<div class="ec" onclick="this.classList.add('playing');this.querySelector('video').play()">
+      <div class="ecv"><video src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/${esc(c.uuid)}.mp4" poster="${esc(c.thumbnail||'')}" preload="none" muted loop playsinline></video></div>
+      <div class="eci"><div class="ecs">${esc(c.summary||'')}</div></div>
+    </div>`).join('')
+  }</div></div>` : '';
+
+  document.getElementById('m-body').innerHTML = provHtml + skillHtml + clipsHtml;
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+document.addEventListener('keydown', e => {if (e.key==='Escape')closeModal();});
+
+load();
+</script>
+</body>
+</html>
