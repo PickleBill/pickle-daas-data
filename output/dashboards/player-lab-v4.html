@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Lab v4 -- Pickle DaaS</title>
+<meta name="description" content="90 real players. 9 skill dimensions. Interactive radar, leaderboard, skill distribution, and brand-skill cross-tab in one unified lab.">
+<meta property="og:title" content="Player Lab v4 -- Pickle DaaS">
+<meta property="og:description" content="The unified player intelligence layer of pickleball.">
+<meta property="og:image" content="https://courtana.com/static/og-player-lab.png">
+<link rel="icon" href="https://courtana.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   PLAYER LAB v4 — Unified Design System
+   Near-black bg, noise, teal/cyan blobs,
+   glass morphism, 7-tier text, spring easing
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --teal:#2DD4BF;--teal-g:rgba(45,212,191,.12);--teal-d:rgba(45,212,191,.06);
+  --cyan:#22D3EE;--cyan-g:rgba(34,211,238,.12);--cyan-d:rgba(34,211,238,.06);
+  --purple:#A78BFA;--purple-g:rgba(167,139,250,.12);
+  --gold:#FBBF24;--gold-g:rgba(251,191,36,.12);
+  --silver:#94A3B8;--bronze:#CD7F32;
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+button{font-family:'Manrope',system-ui,sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:'Manrope',system-ui,sans-serif}
+
+/* Noise overlay */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+
+/* Ambient blobs */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:var(--teal);opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:var(--cyan);opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:var(--teal);opacity:.03;animation:bd3 72s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+
+/* Reveal system */
+[data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+
+.divider{width:120px;height:1px;margin:64px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+
+/* ── Status strip ── */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--teal);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--teal-g);color:var(--teal);border:1px solid rgba(45,212,191,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px;align-items:center}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--teal);border-color:rgba(45,212,191,.3)}
+.status nav a:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.portal-link{color:var(--t5)!important;border-color:transparent!important;font-weight:600}
+.portal-link:hover{color:var(--teal)!important}
+
+/* ── Hero ── */
+.hero{padding:clamp(48px,8vw,80px) 0 clamp(20px,3vw,32px)}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--teal)}
+.hero h1{font-size:clamp(2.4rem,5.5vw,4.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:800px}
+.grad-text{background:linear-gradient(135deg,var(--teal),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.88rem,1.4vw,1.05rem);color:var(--t3);margin-top:14px;max-width:620px;line-height:1.6}
+.hero-sub strong{color:var(--teal);font-weight:600}
+
+/* Hero pills */
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t3)}
+.hero-pill .hp-v{font-size:20px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
+.hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5)}
+
+/* ── Section heading ── */
+.sec-head{margin-bottom:24px}
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:8px}
+.sec-title{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+
+/* ── Glass card ── */
+.glass{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+/* ═══════════════════════════════════════════
+   SECTION 1: INTERACTIVE RADAR
+═══════════════════════════════════════════ */
+.radar-section{margin-bottom:48px}
+.radar-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.player-search-wrap{position:relative;flex:1;min-width:240px;max-width:400px}
+.player-search{width:100%;padding:10px 16px 10px 38px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t1);font-size:13px;backdrop-filter:blur(8px);outline:none;transition:border-color .2s}
+.player-search::placeholder{color:var(--t5)}
+.player-search:focus{border-color:var(--teal)}
+.player-search:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t5);font-size:14px;pointer-events:none}
+.dropdown{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--bg-s);border:1px solid var(--bd-d);border-radius:var(--r);max-height:280px;overflow-y:auto;z-index:40;display:none}
+.dropdown.open{display:block}
+.dropdown-item{padding:8px 14px;font-size:13px;color:var(--t2);cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.dropdown-item:hover,.dropdown-item.active{background:var(--teal-d);color:var(--t1)}
+.dropdown-item:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.dropdown-item .di-arch{font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t5)}
+.compare-toggle{padding:8px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);transition:all .15s var(--ease)}
+.compare-toggle:hover{color:var(--t2);border-color:var(--bd-h)}
+.compare-toggle:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.compare-toggle.on{background:var(--teal-g);color:var(--teal);border-color:rgba(45,212,191,.25)}
+.compare-chips{display:flex;gap:6px;flex-wrap:wrap}
+.compare-chip{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;font-family:'Red Hat Mono',monospace;display:flex;align-items:center;gap:6px;border:1px solid}
+.compare-chip .chip-x{cursor:pointer;opacity:.6;transition:opacity .15s;font-size:13px}
+.compare-chip .chip-x:hover{opacity:1}
+.clear-btn{padding:6px 12px;font-size:11px;color:var(--t5);border:1px solid var(--bd);border-radius:6px;transition:all .15s}
+.clear-btn:hover{color:var(--teal);border-color:rgba(45,212,191,.3)}
+.clear-btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+.radar-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:800px){.radar-layout{grid-template-columns:1fr}}
+
+.radar-canvas-wrap{display:flex;flex-direction:column;align-items:center;padding:24px 16px;border-radius:var(--rl)}
+#radarCanvas{max-width:100%;display:block}
+
+.radar-info{padding:20px 24px;border-radius:var(--rl)}
+.ri-name{font-size:clamp(1.2rem,2.5vw,1.6rem);font-weight:800;letter-spacing:-.02em}
+.ri-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.ri-pill{padding:4px 10px;border-radius:6px;font-size:11px;font-family:'Red Hat Mono',monospace;border:1px solid var(--bd);color:var(--t3)}
+.ri-pill em{font-style:normal;color:var(--teal);font-weight:600}
+.ri-skills{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.ri-skill-row{display:flex;align-items:center;gap:10px}
+.ri-skill-label{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);min-width:110px;text-transform:uppercase;letter-spacing:.06em}
+.ri-skill-bar{flex:1;height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden}
+.ri-skill-fill{height:100%;border-radius:3px;transition:width .6s var(--ease);background:linear-gradient(90deg,var(--teal),var(--cyan))}
+.ri-skill-val{font-size:12px;font-weight:700;font-family:'Red Hat Mono',monospace;color:var(--teal);min-width:30px;text-align:right}
+
+.radar-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;justify-content:center}
+.radar-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t3)}
+.radar-legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* ═══════════════════════════════════════════
+   SECTION 2: LEADERBOARD
+═══════════════════════════════════════════ */
+.lb-section{margin-bottom:48px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.search-input{flex:1;min-width:200px;max-width:360px;padding:10px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t1);font-size:13px;backdrop-filter:blur(8px);outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--t5)}
+.search-input:focus{border-color:var(--teal)}
+.search-input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.tab{padding:8px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);backdrop-filter:blur(8px)}
+.tab:hover{color:var(--t2);border-color:var(--bd-h)}
+.tab:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.tab.on{background:var(--teal-g);color:var(--teal);border-color:rgba(45,212,191,.25)}
+.results-line{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t5);margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.results-line em{font-style:normal;color:var(--teal);font-weight:600}
+
+.skill-select{padding:8px 12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);color:var(--t1);font-size:12px;font-family:'Red Hat Mono',monospace;backdrop-filter:blur(8px);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='rgba(255,255,255,.4)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.skill-select:focus{border-color:var(--teal)}
+.skill-select option{background:var(--bg-s);color:var(--t1)}
+
+.lb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px}
+.lb{width:100%;border-collapse:collapse;font-size:13px}
+.lb th{position:sticky;top:0;background:var(--bg-s);font-family:'Red Hat Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);padding:12px 10px;text-align:left;cursor:pointer;user-select:none;white-space:nowrap;border-bottom:1px solid var(--bd);z-index:2}
+.lb th:hover{color:var(--teal)}
+.lb th.sorted{color:var(--teal)}
+.lb th .arr{font-size:8px;margin-left:4px;opacity:.6}
+.lb td{padding:10px;border-bottom:1px solid var(--bd);vertical-align:middle;white-space:nowrap}
+.lb tr{transition:background .15s,opacity .4s var(--ease),transform .4s var(--ease);cursor:pointer}
+.lb tbody tr:hover{background:rgba(45,212,191,.03)}
+.lb tbody tr.selected{background:rgba(45,212,191,.06)}
+.lb .rank{font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--t4);width:40px;text-align:center}
+.lb .rank-gold{color:var(--gold)}
+.lb .rank-silver{color:var(--silver)}
+.lb .rank-bronze{color:var(--bronze)}
+.lb .player-cell{display:flex;align-items:center;gap:10px}
+.lb .avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;background:var(--bg-r);border:1px solid var(--bd);flex-shrink:0}
+.lb .pname{font-weight:700;color:var(--t1)}
+.lb .arch-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-family:'Red Hat Mono',monospace;font-weight:600;letter-spacing:.04em}
+.arch-km{background:var(--teal-g);color:var(--teal);border:1px solid rgba(45,212,191,.2)}
+.arch-ar{background:var(--cyan-g);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.arch-pw{background:var(--purple-g);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.arch-def{background:var(--glass);color:var(--t3);border:1px solid var(--bd)}
+.lb .brand-cell{font-size:12px;color:var(--t3)}
+.lb .skill-cell{font-family:'Red Hat Mono',monospace;font-size:12px;font-weight:700;color:var(--t2)}
+.lb .avg-cell{font-family:'Red Hat Mono',monospace;font-weight:800;font-size:14px}
+
+/* Gold/silver/bronze left border */
+.lb tbody tr.medal-gold{border-left:3px solid var(--gold)}
+.lb tbody tr.medal-silver{border-left:3px solid var(--silver)}
+.lb tbody tr.medal-bronze{border-left:3px solid var(--bronze)}
+
+/* Sparkline */
+.spark{display:flex;align-items:flex-end;gap:1px;height:22px}
+.spark-bar{width:4px;border-radius:1px;transition:height .5s var(--ease),opacity .3s,transform .15s}
+.spark-bar{opacity:.6}
+.lb tbody tr:hover .spark-bar{opacity:1;animation:sparkPulse .3s var(--spring)}
+@keyframes sparkPulse{0%{transform:scaleY(.85)}50%{transform:scaleY(1.1)}100%{transform:scaleY(1)}}
+
+/* Stagger entrance */
+.lb tbody tr{opacity:0;transform:translateY(12px)}
+.lb tbody tr.row-visible{opacity:1;transform:none}
+
+/* Archetype groups */
+.arch-group{margin-bottom:24px}
+.arch-group-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px 14px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(8px)}
+.arch-group-name{font-size:14px;font-weight:700;color:var(--t1)}
+.arch-group-count{font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t4)}
+
+/* ═══════════════════════════════════════════
+   SECTION 3: PLAYER DETAIL PANEL
+═══════════════════════════════════════════ */
+.detail-panel{display:none;margin-bottom:48px;padding:28px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);animation:dp-in .4s var(--ease)}
+.detail-panel.open{display:block}
+@keyframes dp-in{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.dp-header{display:flex;align-items:flex-start;gap:20px;margin-bottom:28px;flex-wrap:wrap}
+.dp-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--teal);background:var(--bg-r);flex-shrink:0}
+.dp-info{flex:1;min-width:200px}
+.dp-name{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;letter-spacing:-.03em}
+.dp-meta{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.dp-close{width:36px;height:36px;border-radius:10px;background:var(--glass);border:1px solid var(--glass-b);color:var(--t4);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;flex-shrink:0}
+.dp-close:hover{background:var(--bg-r);color:var(--t1)}
+.dp-close:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.dp-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dp-radar-wrap{position:relative;aspect-ratio:1;max-width:380px;margin:0 auto}
+.dp-radar-wrap canvas{width:100%;height:100%}
+.dp-skills{display:flex;flex-direction:column;gap:8px}
+.skill-row{display:flex;align-items:center;gap:10px}
+.skill-label{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.06em;min-width:120px;flex-shrink:0}
+.skill-track{flex:1;height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden}
+.skill-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--cyan));width:0;transition:width 1s var(--ease)}
+.skill-val{font-size:12px;font-weight:700;font-family:'Red Hat Mono',monospace;color:var(--teal);min-width:36px;text-align:right}
+.dp-brand-info{margin-top:20px;padding:14px 16px;background:var(--teal-d);border:1px solid rgba(45,212,191,.08);border-radius:var(--r);font-size:13px;color:var(--t3)}
+.dp-brand-info strong{color:var(--t1);font-weight:700}
+
+/* ═══════════════════════════════════════════
+   SECTION 4: SKILL DISTRIBUTION
+═══════════════════════════════════════════ */
+.dist-section{margin-bottom:48px}
+.dist-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.dist-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.dist-grid{grid-template-columns:1fr}}
+.dist-card{padding:14px 16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--glass-b);cursor:pointer;transition:all .2s var(--ease)}
+.dist-card:hover{border-color:var(--bd-h);transform:translateY(-2px)}
+.dist-card:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.dist-card.selected{border-color:rgba(45,212,191,.35);background:var(--teal-d)}
+.dist-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dist-card-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-family:'Red Hat Mono',monospace;color:var(--t3)}
+.dist-card-avg{font-size:14px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--teal)}
+.dist-bars{display:flex;gap:2px;height:40px;align-items:flex-end}
+.dist-bar-seg{flex:1;border-radius:2px 2px 0 0;transition:height .6s var(--ease);min-width:0;position:relative}
+.dist-bar-seg:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);padding:3px 7px;background:var(--bg-s);border:1px solid var(--bd);border-radius:4px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t2);white-space:nowrap;z-index:10;pointer-events:none}
+.dist-range{display:flex;justify-content:space-between;margin-top:4px;font-size:9px;font-family:'Red Hat Mono',monospace;color:var(--t6)}
+
+/* ═══════════════════════════════════════════
+   SECTION 5: BRAND x SKILL CROSS-TAB
+═══════════════════════════════════════════ */
+.xtab-section{margin-bottom:48px}
+.xtab-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rl);border:1px solid var(--glass-b)}
+.xtab-wrap::-webkit-scrollbar{height:6px}
+.xtab-wrap::-webkit-scrollbar-track{background:var(--bg-s)}
+.xtab-wrap::-webkit-scrollbar-thumb{background:var(--t6);border-radius:3px}
+table.xtab{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+.xtab th{padding:10px 12px;text-align:left;font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--t4);background:var(--bg-s);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:2;cursor:pointer;transition:color .15s;white-space:nowrap;user-select:none}
+.xtab th:hover{color:var(--teal)}
+.xtab th:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.xtab th.sorted{color:var(--teal)}
+.xtab th .sort-arrow{font-size:9px;margin-left:3px;opacity:.5}
+.xtab th.sorted .sort-arrow{opacity:1}
+.xtab td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.02);transition:background .15s}
+.xtab tr{transition:background .15s}
+.xtab tbody tr:hover td{background:rgba(45,212,191,.04)}
+.xtab tbody tr.xt-highlight td{background:rgba(45,212,191,.06)}
+.xtab tbody tr{cursor:pointer}
+.xtab tbody tr:focus-visible td{outline:2px solid var(--teal);outline-offset:-2px}
+.xtab .brand-cell{font-weight:700;color:var(--t1);white-space:nowrap}
+.xtab .count-cell{font-family:'Red Hat Mono',monospace;font-weight:600;color:var(--t3)}
+.xtab .skill-cell{font-family:'Red Hat Mono',monospace;font-weight:600;text-align:center;font-size:12px;position:relative}
+.xtab .col-highlight{background:rgba(45,212,191,.03)!important}
+
+/* ── Footer ── */
+footer{margin-top:48px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a{color:var(--teal);transition:color .2s}
+footer a:hover{color:var(--t2)}
+
+/* ── Loading ── */
+.ld{display:flex;flex-direction:column;align-items:center;padding:100px 20px;gap:16px}
+.spinner{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  .dp-grid{grid-template-columns:1fr}
+  .dp-radar-wrap{max-width:300px}
+}
+@media(max-width:600px){
+  .status nav{display:none}
+  .radar-controls{flex-direction:column;align-items:stretch}
+  .player-search-wrap{max-width:none}
+  .hero-pills{flex-direction:column}
+  .filter-bar{flex-direction:column}
+  .search-input{min-width:0;width:100%}
+  .dp-grid{grid-template-columns:1fr}
+  .dp-radar-wrap{max-width:260px}
+  .lb{font-size:12px}
+  .lb .player-cell{gap:6px}
+  .lb .avatar{width:22px;height:22px}
+  .spark{height:16px}
+  .spark-bar{width:3px}
+}
+
+/* ═══════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .blob,.noise{display:none}
+  [data-reveal]{opacity:1;transform:none}
+  .lb tbody tr{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Noise -->
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+<!-- Blobs -->
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="page">
+
+  <!-- ═══ STATUS STRIP ═══ -->
+  <header class="status" id="statusBar">
+    <div class="shell status-inner">
+      <div><a href="showcase-portal-v4.html" class="portal-link">&larr; Portal</a> &nbsp; <span class="sd"></span><em>PLAYER LAB</em> <span class="v-chip">v4</span></div>
+      <nav>
+        <a href="brand-intelligence-v4.html">Brands</a>
+        <a href="investor-walkthrough-v4.html">Investor</a>
+        <a href="evidence-wall-v4.html">Evidence</a>
+        <a href="equipment-performance-v4.html">Equipment</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+      <div class="hero-eyebrow">Player Lab</div>
+      <h1><span class="grad-text" id="heroHeadline">-- real players. 9 skill dimensions.</span></h1>
+      <p class="hero-sub">Every player profiled across court coverage, kitchen play, power, touch, athleticism, creativity, court IQ, consistency, and composure. Cross-referenced with brands and clips.</p>
+      <div class="hero-pills" id="heroPills"></div>
+    </section>
+
+    <!-- ═══ SECTION 1: INTERACTIVE RADAR ═══ -->
+    <section class="radar-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Interactive Profile</div>
+        <div class="sec-title">Skill Radar</div>
+      </div>
+      <div class="radar-controls">
+        <div class="player-search-wrap">
+          <span class="search-icon">&#9906;</span>
+          <input class="player-search" id="radarSearch" type="text" placeholder="Search players by name..." autocomplete="off" aria-label="Search players for radar">
+          <div class="dropdown" id="radarDropdown" role="listbox"></div>
+        </div>
+        <button class="compare-toggle" id="compareToggle" aria-pressed="false">Compare</button>
+        <div class="compare-chips" id="compareChips"></div>
+        <button class="clear-btn" id="clearBtn" style="display:none">Clear all</button>
+      </div>
+      <div class="radar-layout">
+        <div class="radar-canvas-wrap glass" id="radarWrap">
+          <canvas id="radarCanvas" width="420" height="420"></canvas>
+          <div class="radar-legend" id="radarLegend"></div>
+        </div>
+        <div class="radar-info glass" id="radarInfo">
+          <div class="ri-name" id="riName">All Players Average</div>
+          <div class="ri-meta" id="riMeta"></div>
+          <div class="ri-skills" id="riSkills"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══ SECTION 2: LEADERBOARD ═══ -->
+    <section class="lb-section" id="lbSection" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Leaderboard</div>
+        <div class="sec-title">Player Rankings</div>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <input type="text" class="search-input" id="lbSearch" placeholder="Search by player name..." aria-label="Search leaderboard">
+        <button class="tab on" data-view="all">All Players</button>
+        <button class="tab" data-view="skill">By Skill</button>
+        <button class="tab" data-view="archetype">By Archetype</button>
+        <select class="skill-select" id="skillSelect" style="display:none" aria-label="Select skill to sort by">
+          <option value="">Pick a skill...</option>
+        </select>
+      </div>
+      <div class="results-line" id="resultsLine"><span>Loading...</span></div>
+      <div id="tableView">
+        <div class="lb-wrap">
+          <table class="lb" id="lbTable">
+            <thead><tr id="lbHead"></tr></thead>
+            <tbody id="lbBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="archetypeView" style="display:none"></div>
+    </section>
+
+    <!-- ═══ SECTION 3: PLAYER DETAIL PANEL ═══ -->
+    <section id="detailSection">
+      <div class="detail-panel" id="detailPanel">
+        <div class="dp-header">
+          <img class="dp-avatar" id="dpAvatar" src="" alt="">
+          <div class="dp-info">
+            <div class="dp-name" id="dpName"></div>
+            <div class="dp-meta" id="dpMeta"></div>
+          </div>
+          <button class="dp-close" id="dpClose" title="Close">&times;</button>
+        </div>
+        <div class="dp-grid">
+          <div class="dp-radar-wrap">
+            <canvas id="dpRadarCanvas" width="380" height="380"></canvas>
+          </div>
+          <div>
+            <div class="dp-skills" id="dpSkills"></div>
+            <div class="dp-brand-info" id="dpBrandInfo"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══ SECTION 4: SKILL DISTRIBUTION ═══ -->
+    <section class="dist-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Skill Dimensions</div>
+        <div class="sec-title">Distribution across the corpus</div>
+      </div>
+      <p style="font-size:12px;color:var(--t4);margin-bottom:14px;font-family:'Red Hat Mono',monospace">Click a card to sort the leaderboard by that skill.</p>
+      <div class="dist-grid" id="distGrid"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ═══ SECTION 5: BRAND x SKILL CROSS-TAB ═══ -->
+    <section class="xtab-section" data-reveal>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Cross-Tabulation</div>
+        <div class="sec-title">Brand x Skill Matrix</div>
+      </div>
+      <p style="font-size:12px;color:var(--t4);margin-bottom:14px;font-family:'Red Hat Mono',monospace">Click a brand row to load its average profile into the radar. Click column headers to sort.</p>
+      <div class="xtab-wrap">
+        <table class="xtab" id="xtab">
+          <thead id="xtabHead"></thead>
+          <tbody id="xtabBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer>
+      <div>Pickle DaaS &middot; Player Lab v4 &middot; <a href="https://courtana.com">courtana.com</a></div>
+      <div>Data pipeline: Courtana corpus</div>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════ */
+const SKILL_KEYS = ['court_coverage','kitchen','power','touch','athleticism','creativity','court_iq','consistency','composure'];
+const SKILL_LABELS = {
+  court_coverage:'Court Coverage', kitchen:'Kitchen', power:'Power', touch:'Touch',
+  athleticism:'Athleticism', creativity:'Creativity', court_iq:'Court IQ',
+  consistency:'Consistency', composure:'Composure'
+};
+const COMPARE_COLORS = ['#2DD4BF','#A78BFA','#FBBF24'];
+const ARCHETYPE_CLASS = {
+  'Kitchen Master':'arch-km','All-Rounder':'arch-ar','Power Player':'arch-pw'
+};
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let allPlayers = [];
+let allBrands = [];
+let corpusStats = {};
+
+// Radar state
+let radarSelectedPlayers = [];
+let compareMode = false;
+let radarTargets = [];
+let radarCurrent = [];
+let animFrame = null;
+
+// Leaderboard state
+let lbSort = {col:'avg', dir:'desc'};
+let lbView = 'all';
+let lbQuery = '';
+let lbSkillFilter = null;
+let selectedPlayerUsername = null;
+
+// Cross-tab state
+let xtabSortCol = 'clips';
+let xtabSortDir = 'desc';
+
+/* ═══════════════════════════════════════════
+   DATA LOADING
+═══════════════════════════════════════════ */
+async function loadData() {
+  try {
+    const [pRes, bRes, fRes] = await Promise.all([
+      fetch('../api/players.json').then(r=>r.json()),
+      fetch('../api/brands.json').then(r=>r.json()),
+      fetch('../api/feed.json').then(r=>r.json())
+    ]);
+    allPlayers = (pRes.players||[]).map((p,i)=>{
+      const vals = SKILL_KEYS.map(k=>p.skills[k]||0);
+      const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+      const topSk = SKILL_KEYS.reduce((best,k)=>(p.skills[k]||0)>(p.skills[best]||0)?k:best, SKILL_KEYS[0]);
+      return {...p, avg:+avg.toFixed(2), topSkill:topSk, skillVals:vals, _idx:i};
+    });
+    allBrands = bRes.brands || [];
+    corpusStats = fRes.corpus || {};
+    boot();
+  } catch(e) {
+    document.querySelector('.page').innerHTML =
+      '<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Failed to load data. Ensure API files are available.</p></div>';
+    console.error(e);
+  }
+}
+
+function boot() {
+  populateHero();
+  initRadar();
+  initLeaderboard();
+  initDistribution();
+  initCrossTab();
+  initReveal();
+  initStatusScroll();
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+function populateHero() {
+  document.getElementById('heroHeadline').textContent = allPlayers.length + ' real players. 9 skill dimensions.';
+
+  const avgQ = allPlayers.length ? (allPlayers.reduce((s,p)=>s+p.avg,0)/allPlayers.length).toFixed(1) : '--';
+  const archetypes = {};
+  allPlayers.forEach(p=>{ archetypes[p.archetype]=(archetypes[p.archetype]||0)+1; });
+  const topArch = Object.entries(archetypes).sort((a,b)=>b[1]-a[1])[0];
+
+  const pills = [
+    {v:allPlayers.length, l:'Total Players'},
+    {v:avgQ, l:'Avg Quality'},
+    {v:topArch?topArch[0]:'--', l:'Top Archetype'}
+  ];
+  document.getElementById('heroPills').innerHTML = pills.map(p =>
+    '<div class="hero-pill"><div><div class="hp-v">'+p.v+'</div><div class="hp-l">'+p.l+'</div></div></div>'
+  ).join('');
+}
+
+/* ═══════════════════════════════════════════
+   UTILITY FUNCTIONS
+═══════════════════════════════════════════ */
+function avgSkills(players) {
+  if(!players.length) return SKILL_KEYS.reduce((o,k)=>(o[k]=0,o),{});
+  const sums = {};
+  SKILL_KEYS.forEach(k=>sums[k]=0);
+  players.forEach(p=>SKILL_KEYS.forEach(k=>sums[k]+=(p.skills[k]||0)));
+  SKILL_KEYS.forEach(k=>sums[k]=+(sums[k]/players.length).toFixed(2));
+  return sums;
+}
+
+function topSkill(skills) {
+  let best='',bestV=0;
+  SKILL_KEYS.forEach(k=>{ if((skills[k]||0)>bestV){bestV=skills[k];best=k;} });
+  return {key:best, val:bestV};
+}
+
+function overallAvg(skills) {
+  const vals=SKILL_KEYS.map(k=>skills[k]||0);
+  return +(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+}
+
+function skillColor(val,min,max) {
+  const t=Math.max(0,Math.min(1,(val-min)/(max-min||1)));
+  return 'rgb('+Math.round(8+t*37)+','+Math.round(8+t*204)+','+Math.round(12+t*179)+')';
+}
+
+function archClass(arch) {
+  return ARCHETYPE_CLASS[arch] || 'arch-def';
+}
+
+function debounce(fn,ms){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),ms);}}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL + STATUS BAR
+═══════════════════════════════════════════ */
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target);} });
+  },{threshold:0.08});
+  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
+}
+
+function initStatusScroll() {
+  const bar = document.getElementById('statusBar');
+  let ticking = false;
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){requestAnimationFrame(()=>{bar.classList.toggle('scrolled',window.scrollY>20);ticking=false;});ticking=true;}
+  },{passive:true});
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 1: INTERACTIVE RADAR
+═══════════════════════════════════════════ */
+function initRadar() {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const size = 420;
+  canvas.width = size*dpr;
+  canvas.height = size*dpr;
+  canvas.style.width = size+'px';
+  canvas.style.height = size+'px';
+  ctx.scale(dpr,dpr);
+
+  const avg = avgSkills(allPlayers);
+  radarCurrent = [{skills:{...avg},color:COMPARE_COLORS[0],label:'Average'}];
+  radarTargets = [{skills:{...avg},color:COMPARE_COLORS[0],label:'Average'}];
+  drawRadar(ctx,size);
+  updateRadarInfo(null);
+  updateRadarLegend();
+  initRadarSearch();
+}
+
+function drawRadar(ctx,size) {
+  const cx=size/2,cy=size/2;
+  const maxR=size*0.36;
+  const n=SKILL_KEYS.length;
+  const step=(Math.PI*2)/n;
+  const startAngle=-Math.PI/2;
+
+  ctx.clearRect(0,0,size,size);
+
+  // Grid rings
+  for(let r=1;r<=5;r++){
+    const rad=maxR*(r/5);
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const a=startAngle+(i%n)*step;
+      const x=cx+Math.cos(a)*rad;
+      const y=cy+Math.sin(a)*rad;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle='rgba(255,255,255,'+(r===5?'.08':'.04')+')';
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    if(r%2===0){
+      const a=startAngle;
+      const lx=cx+Math.cos(a)*rad+8;
+      const ly=cy+Math.sin(a)*rad+3;
+      ctx.font='9px "Red Hat Mono",monospace';
+      ctx.fillStyle='rgba(255,255,255,.2)';
+      ctx.textAlign='left';
+      ctx.textBaseline='middle';
+      ctx.fillText(String(r*2),lx,ly);
+    }
+  }
+
+  // Axis lines + labels
+  ctx.font='10px "Red Hat Mono",monospace';
+  ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){
+    const a=startAngle+i*step;
+    const ex=cx+Math.cos(a)*maxR;
+    const ey=cy+Math.sin(a)*maxR;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);
+    ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.stroke();
+
+    const labelR=maxR+28;
+    const lx=cx+Math.cos(a)*labelR;
+    const ly=cy+Math.sin(a)*labelR;
+    const deg=((a*180/Math.PI)%360+360)%360;
+    if(deg>80&&deg<100) ctx.textAlign='center';
+    else if(deg>260&&deg<280) ctx.textAlign='center';
+    else if(deg>90&&deg<270) ctx.textAlign='right';
+    else ctx.textAlign='left';
+
+    ctx.fillStyle='rgba(255,255,255,.4)';
+    const label=SKILL_LABELS[SKILL_KEYS[i]];
+    const parts=label.split(' ');
+    if(parts.length>1){
+      parts.forEach((p,pi)=>ctx.fillText(p,lx,ly+(pi-(parts.length-1)/2)*11));
+    } else {
+      ctx.fillText(label,lx,ly);
+    }
+  }
+
+  // Data polygons
+  radarCurrent.forEach(entry => {
+    const sk=entry.skills;
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const ki=i%n;
+      const val=(sk[SKILL_KEYS[ki]]||0)/10;
+      const a=startAngle+ki*step;
+      const x=cx+Math.cos(a)*maxR*val;
+      const y=cy+Math.sin(a)*maxR*val;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.fillStyle=entry.color+'18';
+    ctx.fill();
+    ctx.strokeStyle=entry.color;
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    for(let i=0;i<n;i++){
+      const val=(sk[SKILL_KEYS[i]]||0)/10;
+      const a=startAngle+i*step;
+      const x=cx+Math.cos(a)*maxR*val;
+      const y=cy+Math.sin(a)*maxR*val;
+      ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);
+      ctx.fillStyle=entry.color;ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=1;ctx.stroke();
+    }
+  });
+}
+
+function animateRadar() {
+  if(animFrame) cancelAnimationFrame(animFrame);
+  const canvas=document.getElementById('radarCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const size=420;
+
+  while(radarCurrent.length<radarTargets.length){
+    const t=radarTargets[radarCurrent.length];
+    const empty={};SKILL_KEYS.forEach(k=>empty[k]=0);
+    radarCurrent.push({skills:empty,color:t.color,label:t.label});
+  }
+  while(radarCurrent.length>radarTargets.length) radarCurrent.pop();
+
+  let done=true;
+  radarCurrent.forEach((cur,idx) => {
+    const tgt=radarTargets[idx];
+    cur.color=tgt.color;
+    cur.label=tgt.label;
+    SKILL_KEYS.forEach(k => {
+      const diff=tgt.skills[k]-cur.skills[k];
+      if(Math.abs(diff)>0.02){
+        // Spring easing: faster approach + overshoot
+        cur.skills[k]+=diff*0.14;
+        done=false;
+      } else {
+        cur.skills[k]=tgt.skills[k];
+      }
+    });
+  });
+
+  ctx.save();
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  drawRadar(ctx,size);
+  ctx.restore();
+
+  if(!done) animFrame=requestAnimationFrame(animateRadar);
+}
+
+function setRadarTarget(entries) {
+  radarTargets=entries;
+  updateRadarLegend();
+  animateRadar();
+}
+
+function updateRadarLegend() {
+  const el=document.getElementById('radarLegend');
+  if(radarTargets.length<=1&&!radarSelectedPlayers.length){el.innerHTML='';return;}
+  el.innerHTML=radarTargets.map(e =>
+    '<div class="radar-legend-item"><span class="radar-legend-dot" style="background:'+e.color+'"></span>'+e.label+'</div>'
+  ).join('');
+}
+
+function updateRadarInfo(player) {
+  const nameEl=document.getElementById('riName');
+  const metaEl=document.getElementById('riMeta');
+  const skillsEl=document.getElementById('riSkills');
+
+  if(!player){
+    nameEl.textContent='All Players Average';
+    const avg=avgSkills(allPlayers);
+    metaEl.innerHTML='<div class="ri-pill"><em>'+allPlayers.length+'</em> players</div><div class="ri-pill">Avg <em>'+overallAvg(avg)+'</em></div>';
+    renderRadarSkillBars(skillsEl,avg);
+    return;
+  }
+
+  nameEl.textContent=player.username;
+  const ts=topSkill(player.skills);
+  metaEl.innerHTML=
+    '<div class="ri-pill">'+player.archetype+'</div>'+
+    '<div class="ri-pill"><em>'+(player.primary_brand||'--')+'</em></div>'+
+    '<div class="ri-pill">Avg <em>'+overallAvg(player.skills)+'</em></div>'+
+    '<div class="ri-pill">Top: <em>'+SKILL_LABELS[ts.key]+' '+ts.val.toFixed(1)+'</em></div>';
+  renderRadarSkillBars(skillsEl,player.skills);
+}
+
+function renderRadarSkillBars(container,skills) {
+  container.innerHTML=SKILL_KEYS.map(k => {
+    const v=skills[k]||0;
+    const pct=(v/10)*100;
+    return '<div class="ri-skill-row">'+
+      '<span class="ri-skill-label">'+SKILL_LABELS[k]+'</span>'+
+      '<div class="ri-skill-bar"><div class="ri-skill-fill" style="width:'+pct+'%"></div></div>'+
+      '<span class="ri-skill-val">'+v.toFixed(1)+'</span></div>';
+  }).join('');
+}
+
+/* ── Radar Search/Dropdown ── */
+function initRadarSearch() {
+  const input=document.getElementById('radarSearch');
+  const dd=document.getElementById('radarDropdown');
+  const toggle=document.getElementById('compareToggle');
+  const clearBtn=document.getElementById('clearBtn');
+
+  input.addEventListener('input', ()=>{
+    const q=input.value.toLowerCase().trim();
+    if(!q){dd.classList.remove('open');return;}
+    const matches=allPlayers.filter(p=>p.username.toLowerCase().includes(q)).slice(0,20);
+    dd.innerHTML=matches.map(p =>
+      '<div class="dropdown-item" role="option" tabindex="0" data-idx="'+p._idx+'">'+
+      '<span>'+p.username+'</span><span class="di-arch">'+p.archetype+'</span></div>'
+    ).join('');
+    dd.classList.toggle('open',matches.length>0);
+  });
+
+  input.addEventListener('keydown', e=>{
+    if(e.key==='Escape') dd.classList.remove('open');
+    if(e.key==='ArrowDown'){e.preventDefault();const f=dd.querySelector('.dropdown-item');if(f)f.focus();}
+  });
+
+  dd.addEventListener('click', e=>{
+    const item=e.target.closest('.dropdown-item');
+    if(!item)return;
+    radarSelectPlayer(allPlayers[+item.dataset.idx]);
+    dd.classList.remove('open');input.value='';
+  });
+
+  dd.addEventListener('keydown', e=>{
+    const item=e.target.closest('.dropdown-item');
+    if(!item)return;
+    if(e.key==='Enter'){radarSelectPlayer(allPlayers[+item.dataset.idx]);dd.classList.remove('open');input.value='';input.focus();}
+    if(e.key==='ArrowDown'){e.preventDefault();const nx=item.nextElementSibling;if(nx)nx.focus();}
+    if(e.key==='ArrowUp'){e.preventDefault();const pv=item.previousElementSibling;if(pv)pv.focus();else input.focus();}
+  });
+
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('.player-search-wrap')) dd.classList.remove('open');
+  });
+
+  toggle.addEventListener('click', ()=>{
+    compareMode=!compareMode;
+    toggle.classList.toggle('on',compareMode);
+    toggle.setAttribute('aria-pressed',compareMode);
+    if(!compareMode){
+      radarSelectedPlayers=radarSelectedPlayers.slice(0,1);
+      updateCompareChips();
+      syncRadar();
+    }
+  });
+
+  clearBtn.addEventListener('click', ()=>{
+    radarSelectedPlayers=[];
+    compareMode=false;
+    toggle.classList.remove('on');
+    toggle.setAttribute('aria-pressed','false');
+    updateCompareChips();
+    setRadarTarget([{skills:avgSkills(allPlayers),color:COMPARE_COLORS[0],label:'Average'}]);
+    updateRadarInfo(null);
+  });
+}
+
+function radarSelectPlayer(player) {
+  if(compareMode){
+    if(radarSelectedPlayers.find(p=>p.username===player.username)) return;
+    if(radarSelectedPlayers.length>=3) radarSelectedPlayers.shift();
+    radarSelectedPlayers.push(player);
+  } else {
+    radarSelectedPlayers=[player];
+  }
+  updateCompareChips();
+  syncRadar();
+  updateRadarInfo(radarSelectedPlayers[radarSelectedPlayers.length-1]);
+}
+
+function selectBrandForRadar(brandName) {
+  const brand=allBrands.find(b=>b.name===brandName);
+  if(!brand||!brand.avg_skills) return;
+  radarSelectedPlayers=[];
+  compareMode=false;
+  document.getElementById('compareToggle').classList.remove('on');
+  updateCompareChips();
+  setRadarTarget([{skills:{...brand.avg_skills},color:COMPARE_COLORS[0],label:brandName}]);
+
+  const nameEl=document.getElementById('riName');
+  const metaEl=document.getElementById('riMeta');
+  const skillsEl=document.getElementById('riSkills');
+  nameEl.textContent=brandName+' Average';
+  const pCount=allPlayers.filter(p=>p.primary_brand===brandName).length;
+  metaEl.innerHTML=
+    '<div class="ri-pill">'+brand.primary_category+'</div>'+
+    '<div class="ri-pill"><em>'+brand.unique_clips+'</em> clips</div>'+
+    (pCount?'<div class="ri-pill"><em>'+pCount+'</em> players</div>':'');
+  renderRadarSkillBars(skillsEl,brand.avg_skills);
+  document.getElementById('radarWrap').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function syncRadar() {
+  if(!radarSelectedPlayers.length){
+    setRadarTarget([{skills:avgSkills(allPlayers),color:COMPARE_COLORS[0],label:'Average'}]);
+  } else {
+    setRadarTarget(radarSelectedPlayers.map((p,i)=>({
+      skills:{...p.skills},color:COMPARE_COLORS[i%3],label:p.username
+    })));
+  }
+}
+
+function updateCompareChips() {
+  const container=document.getElementById('compareChips');
+  const clearBtn=document.getElementById('clearBtn');
+  container.innerHTML=radarSelectedPlayers.map((p,i)=>
+    '<div class="compare-chip" style="background:'+COMPARE_COLORS[i]+'15;color:'+COMPARE_COLORS[i]+';border-color:'+COMPARE_COLORS[i]+'40">'+
+    p.username+'<span class="chip-x" data-idx="'+i+'">x</span></div>'
+  ).join('');
+  clearBtn.style.display=radarSelectedPlayers.length>0?'':'none';
+
+  container.querySelectorAll('.chip-x').forEach(x=>{
+    x.addEventListener('click', ()=>{
+      radarSelectedPlayers.splice(+x.dataset.idx,1);
+      updateCompareChips();
+      syncRadar();
+      if(radarSelectedPlayers.length) updateRadarInfo(radarSelectedPlayers[radarSelectedPlayers.length-1]);
+      else updateRadarInfo(null);
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 2: LEADERBOARD
+═══════════════════════════════════════════ */
+function initLeaderboard() {
+  const searchInput = document.getElementById('lbSearch');
+  searchInput.addEventListener('input', debounce(()=>{
+    lbQuery = searchInput.value.trim().toLowerCase();
+    lbSortAndRender();
+  },200));
+
+  // View tabs
+  document.querySelectorAll('#filterBar .tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      const view = tab.dataset.view;
+      lbView = view;
+      document.querySelectorAll('#filterBar .tab').forEach(t=>t.classList.toggle('on',t.dataset.view===view));
+      document.getElementById('skillSelect').style.display = view==='skill'?'':'none';
+      document.getElementById('tableView').style.display = view==='archetype'?'none':'';
+      document.getElementById('archetypeView').style.display = view==='archetype'?'':'none';
+      if(view==='archetype') renderArchetypeView();
+      else if(view==='skill'){
+        const sel=document.getElementById('skillSelect');
+        if(sel.value){lbSort={col:sel.value,dir:'desc'};lbSortAndRender();}
+        else lbSortAndRender();
+      } else {
+        lbSort={col:'avg',dir:'desc'};
+        lbSortAndRender();
+      }
+    });
+  });
+
+  // Skill select
+  const sel=document.getElementById('skillSelect');
+  SKILL_KEYS.forEach(k=>{
+    const o=document.createElement('option');o.value=k;o.textContent=SKILL_LABELS[k];sel.appendChild(o);
+  });
+  sel.addEventListener('change', ()=>{
+    if(sel.value){lbSort={col:sel.value,dir:'desc'};lbSortAndRender();}
+  });
+
+  // Close detail panel
+  document.getElementById('dpClose').addEventListener('click', closeDetail);
+
+  lbSortAndRender();
+}
+
+function getFilteredPlayers() {
+  let list=[...allPlayers];
+  if(lbQuery) list=list.filter(p=>p.username.toLowerCase().includes(lbQuery));
+  return list;
+}
+
+function lbSortAndRender() {
+  let filtered=getFilteredPlayers();
+
+  filtered.sort((a,b)=>{
+    let va,vb;
+    if(lbSort.col==='name'){va=a.username.toLowerCase();vb=b.username.toLowerCase();return lbSort.dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);}
+    if(lbSort.col==='archetype'){va=a.archetype;vb=b.archetype;return lbSort.dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);}
+    if(lbSort.col==='brand'){va=(a.primary_brand||'');vb=(b.primary_brand||'');return lbSort.dir==='asc'?va.localeCompare(vb):vb.localeCompare(va);}
+    if(lbSort.col==='avg'){va=a.avg;vb=b.avg;}
+    else if(SKILL_KEYS.includes(lbSort.col)){va=a.skills[lbSort.col]||0;vb=b.skills[lbSort.col]||0;}
+    else{va=a.skills[a.topSkill]||0;vb=b.skills[b.topSkill]||0;}
+    return lbSort.dir==='asc'?va-vb:vb-va;
+  });
+
+  renderLbHead();
+  renderLbBody(filtered);
+  updateResultsLine(filtered.length);
+}
+
+function renderLbHead() {
+  const cols=[
+    {key:'rank',label:'#',sortable:false},
+    {key:'name',label:'Player',sortable:true},
+    {key:'archetype',label:'Archetype',sortable:true},
+    {key:'brand',label:'Brand',sortable:true},
+    {key:'topSkill',label:'Top Skill',sortable:false},
+    {key:'avg',label:'Overall',sortable:true},
+    {key:'sparkline',label:'Profile',sortable:false}
+  ];
+  const head=document.getElementById('lbHead');
+  head.innerHTML=cols.map(c=>{
+    const sorted=c.key===lbSort.col;
+    const arrow=sorted?(lbSort.dir==='asc'?'&#9650;':'&#9660;'):'';
+    if(!c.sortable) return '<th>'+c.label+'</th>';
+    return '<th class="'+(sorted?'sorted':'')+'" data-sort="'+c.key+'">'+c.label+'<span class="arr">'+arrow+'</span></th>';
+  }).join('');
+
+  head.querySelectorAll('th[data-sort]').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const col=th.dataset.sort;
+      if(lbSort.col===col) lbSort.dir=lbSort.dir==='desc'?'asc':'desc';
+      else lbSort={col,dir:'desc'};
+      lbSortAndRender();
+    });
+  });
+}
+
+function renderLbBody(players) {
+  const tbody=document.getElementById('lbBody');
+  tbody.innerHTML=players.map((p,i)=>{
+    const rank=i+1;
+    const medalClass=rank===1?'medal-gold':rank===2?'medal-silver':rank===3?'medal-bronze':'';
+    const rankClass=rank===1?'rank-gold':rank===2?'rank-silver':rank===3?'rank-bronze':'';
+    const isSelected=selectedPlayerUsername===p.username;
+    const sparkBars=p.skillVals.map(v=>{
+      const h=Math.round((v/10)*22);
+      const t=v/10;
+      return '<div class="spark-bar" style="height:'+h+'px;background:rgb('+Math.round(14+t*31)+','+Math.round(40+t*172)+','+Math.round(50+t*141)+')"></div>';
+    }).join('');
+
+    return '<tr class="'+medalClass+(isSelected?' selected':'')+'" data-user="'+p.username+'">'+
+      '<td class="rank '+rankClass+'">'+rank+'</td>'+
+      '<td><div class="player-cell"><img class="avatar" src="'+p.avatar+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><span class="pname">'+p.username.trim()+'</span></div></td>'+
+      '<td><span class="arch-badge '+archClass(p.archetype)+'">'+p.archetype+'</span></td>'+
+      '<td class="brand-cell">'+(p.primary_brand||'--')+'</td>'+
+      '<td class="skill-cell">'+(SKILL_LABELS[p.topSkill]||p.topSkill)+'</td>'+
+      '<td class="avg-cell" style="color:'+(p.avg>=6.5?'var(--teal)':p.avg>=5.5?'var(--t2)':'var(--t4)')+'">'+p.avg.toFixed(1)+'</td>'+
+      '<td><div class="spark">'+sparkBars+'</div></td></tr>';
+  }).join('');
+
+  // Staggered reveal
+  const rows=tbody.querySelectorAll('tr');
+  const batchSize=6;
+  const gap=40;
+  rows.forEach((row,i)=>{
+    const batchIndex=Math.floor(i/batchSize);
+    const delay=batchIndex*gap*batchSize + (i%batchSize)*gap;
+    setTimeout(()=>row.classList.add('row-visible'), delay);
+  });
+
+  // Click to open detail
+  rows.forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const p=allPlayers.find(pl=>pl.username===row.dataset.user);
+      if(p) openPlayerDetail(p);
+    });
+  });
+}
+
+function updateResultsLine(count) {
+  const colLabel = lbSort.col==='avg'?'overall':SKILL_LABELS[lbSort.col]||lbSort.col;
+  document.getElementById('resultsLine').innerHTML =
+    '<span>Showing <em>'+count+'</em> of <em>'+allPlayers.length+'</em> players</span>'+
+    '<span>sorted by <em>'+colLabel+'</em> '+(lbSort.dir==='desc'?'(high to low)':'(low to high)')+'</span>';
+}
+
+/* ── Archetype view ── */
+function renderArchetypeView() {
+  const groups={};
+  getFilteredPlayers().forEach(p=>{
+    if(!groups[p.archetype]) groups[p.archetype]=[];
+    groups[p.archetype].push(p);
+  });
+  const container=document.getElementById('archetypeView');
+  container.innerHTML=Object.entries(groups).sort((a,b)=>b[1].length-a[1].length).map(([arch,players])=>{
+    players.sort((a,b)=>b.avg-a.avg);
+    const rows=players.map((p,i)=>{
+      const sparkBars=p.skillVals.map(v=>'<div class="spark-bar" style="height:'+Math.round((v/10)*22)+'px"></div>').join('');
+      return '<tr data-user="'+p.username+'" style="cursor:pointer">'+
+        '<td class="rank '+(i<3?'rank-gold':'')+'">'+( i+1)+'</td>'+
+        '<td><div class="player-cell"><img class="avatar" src="'+p.avatar+'" alt="" loading="lazy" onerror="this.style.display=\'none\'"><span class="pname">'+p.username.trim()+'</span></div></td>'+
+        '<td class="skill-cell">'+(SKILL_LABELS[p.topSkill]||'')+'</td>'+
+        '<td class="avg-cell" style="color:'+(p.avg>=6.5?'var(--teal)':'var(--t2)')+'">'+p.avg.toFixed(1)+'</td>'+
+        '<td><div class="spark">'+sparkBars+'</div></td></tr>';
+    }).join('');
+    return '<div class="arch-group">'+
+      '<div class="arch-group-head"><span class="arch-badge '+archClass(arch)+'">'+arch+'</span>'+
+      '<span class="arch-group-name">'+players.length+' players</span>'+
+      '<span class="arch-group-count">avg '+(players.reduce((s,p)=>s+p.avg,0)/players.length).toFixed(1)+'</span></div>'+
+      '<div class="lb-wrap"><table class="lb"><thead><tr><th>#</th><th>Player</th><th>Top Skill</th><th>Overall</th><th>Profile</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div></div>';
+  }).join('');
+
+  // Bind clicks
+  container.querySelectorAll('tr[data-user]').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const p=allPlayers.find(pl=>pl.username===row.dataset.user);
+      if(p) openPlayerDetail(p);
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 3: PLAYER DETAIL PANEL
+═══════════════════════════════════════════ */
+function openPlayerDetail(player) {
+  selectedPlayerUsername=player.username;
+
+  // Highlight row in table
+  document.querySelectorAll('#lbBody tr, #archetypeView tr').forEach(r=>r.classList.remove('selected'));
+  const row=document.querySelector('tr[data-user="'+player.username+'"]');
+  if(row) row.classList.add('selected');
+
+  const panel=document.getElementById('detailPanel');
+  panel.classList.add('open');
+  document.getElementById('dpAvatar').src=player.avatar;
+  document.getElementById('dpName').textContent=player.username.trim();
+  document.getElementById('dpMeta').innerHTML=
+    '<span class="arch-badge '+archClass(player.archetype)+'">'+player.archetype+'</span>'+
+    '<span style="font-family:\'Red Hat Mono\',monospace;font-size:12px;color:var(--t4)">'+player.clip_count+' clips</span>'+
+    '<span style="font-family:\'Red Hat Mono\',monospace;font-size:12px;color:var(--t4)">Avg '+player.avg.toFixed(1)+'</span>';
+
+  // Skill bars
+  const skillsDiv=document.getElementById('dpSkills');
+  skillsDiv.innerHTML='<div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:\'Red Hat Mono\',monospace;margin-bottom:8px">Skill Breakdown</div>'+
+    SKILL_KEYS.map(k=>{
+      const v=player.skills[k]||0;
+      return '<div class="skill-row"><span class="skill-label">'+SKILL_LABELS[k]+'</span>'+
+        '<div class="skill-track"><div class="skill-fill" data-w="'+((v/10)*100)+'"></div></div>'+
+        '<span class="skill-val">'+v.toFixed(1)+'</span></div>';
+    }).join('');
+
+  // Brand info
+  document.getElementById('dpBrandInfo').innerHTML=
+    '<strong>Primary Brand:</strong> '+(player.primary_brand||'--')+' &nbsp;|&nbsp; '+
+    '<strong>Play Style:</strong> '+(player.favorite_arc||'--')+' &nbsp;|&nbsp; '+
+    '<strong>Clips:</strong> '+player.clip_count;
+
+  // Animate skill fills
+  requestAnimationFrame(()=>{
+    skillsDiv.querySelectorAll('.skill-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});
+  });
+
+  // Draw detail radar
+  drawDetailRadar(player);
+
+  // Also load into main radar
+  radarSelectPlayer(player);
+
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('open');
+  selectedPlayerUsername=null;
+  document.querySelectorAll('#lbBody tr').forEach(r=>r.classList.remove('selected'));
+}
+
+function drawDetailRadar(player) {
+  const canvas=document.getElementById('dpRadarCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const size=380;
+  canvas.width=size*dpr;
+  canvas.height=size*dpr;
+  canvas.style.width=size+'px';
+  canvas.style.height=size+'px';
+  ctx.scale(dpr,dpr);
+
+  const cx=size/2,cy=size/2;
+  const maxR=size/2-50;
+  const n=SKILL_KEYS.length;
+  const step=(Math.PI*2)/n;
+  const targetVals=SKILL_KEYS.map(k=>(player.skills[k]||0)/10);
+
+  // Animated draw
+  const dur=800;
+  const start=performance.now();
+
+  function frame(now){
+    const t=Math.min((now-start)/dur,1);
+    const eased=1-Math.pow(1-t,3); // cubic ease-out
+
+    ctx.save();
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,size,size);
+
+    // Grid rings
+    for(let ring=1;ring<=5;ring++){
+      const r=(ring/5)*maxR;
+      ctx.beginPath();
+      for(let i=0;i<=n;i++){
+        const angle=i*step-Math.PI/2;
+        const x=cx+r*Math.cos(angle);
+        const y=cy+r*Math.sin(angle);
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle='rgba(255,255,255,'+(ring===5?'.08':'.04')+')';
+      ctx.lineWidth=1;
+      ctx.stroke();
+      if(ring%2===0){
+        ctx.font='8px "Red Hat Mono",monospace';
+        ctx.fillStyle='rgba(255,255,255,.2)';
+        ctx.textAlign='center';ctx.textBaseline='bottom';
+        ctx.fillText((ring*2).toString(),cx,cy-r-2);
+      }
+    }
+
+    // Axis lines + labels
+    for(let i=0;i<n;i++){
+      const angle=i*step-Math.PI/2;
+      const x=cx+maxR*Math.cos(angle);
+      const y=cy+maxR*Math.sin(angle);
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);
+      ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;ctx.stroke();
+      const lx=cx+(maxR+22)*Math.cos(angle);
+      const ly=cy+(maxR+22)*Math.sin(angle);
+      ctx.font='500 9px "Red Hat Mono",monospace';
+      ctx.fillStyle='rgba(255,255,255,.4)';
+      ctx.textAlign=Math.abs(Math.cos(angle))<.1?'center':Math.cos(angle)>0?'left':'right';
+      ctx.textBaseline=Math.abs(Math.sin(angle))<.1?'middle':Math.sin(angle)>0?'top':'bottom';
+      ctx.fillText(SKILL_LABELS[SKILL_KEYS[i]].toUpperCase(),lx,ly);
+    }
+
+    // Data shape
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const idx=i%n;
+      const v=targetVals[idx]*eased;
+      const angle=idx*step-Math.PI/2;
+      const x=cx+v*maxR*Math.cos(angle);
+      const y=cy+v*maxR*Math.sin(angle);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,maxR);
+    grad.addColorStop(0,'rgba(45,212,191,.18)');
+    grad.addColorStop(1,'rgba(34,211,238,.06)');
+    ctx.fillStyle=grad;
+    ctx.fill();
+    ctx.strokeStyle='rgba(45,212,191,.6)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    // Data points
+    for(let i=0;i<n;i++){
+      const v=targetVals[i]*eased;
+      const angle=i*step-Math.PI/2;
+      const x=cx+v*maxR*Math.cos(angle);
+      const y=cy+v*maxR*Math.sin(angle);
+      ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle='#2DD4BF';ctx.fill();
+      ctx.strokeStyle='rgba(8,8,12,.5)';ctx.lineWidth=1.5;ctx.stroke();
+    }
+
+    ctx.restore();
+    if(t<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 4: SKILL DISTRIBUTION
+═══════════════════════════════════════════ */
+function initDistribution() {
+  const grid=document.getElementById('distGrid');
+  const buckets={};
+  SKILL_KEYS.forEach(k=>{
+    buckets[k]=[0,0,0,0,0,0,0,0,0,0];
+    allPlayers.forEach(p=>{
+      const v=Math.max(1,Math.min(10,Math.round(p.skills[k]||0)));
+      buckets[k][v-1]++;
+    });
+  });
+  const avgAll=avgSkills(allPlayers);
+
+  grid.innerHTML=SKILL_KEYS.map(k=>{
+    const maxCount=Math.max(...buckets[k],1);
+    const bars=buckets[k].map((count,i)=>{
+      const h=Math.max(2,(count/maxCount)*36);
+      const intensity=(i+1)/10;
+      const r=Math.round(14+intensity*31);
+      const g=Math.round(40+intensity*172);
+      const b=Math.round(50+intensity*141);
+      return '<div class="dist-bar-seg" data-tip="Score '+(i+1)+': '+count+' players" style="height:0px;background:rgb('+r+','+g+','+b+')" data-target-h="'+h+'"></div>';
+    }).join('');
+    return '<div class="dist-card" tabindex="0" data-skill="'+k+'">'+
+      '<div class="dist-card-head"><span class="dist-card-name">'+SKILL_LABELS[k]+'</span>'+
+      '<span class="dist-card-avg">'+avgAll[k].toFixed(1)+'</span></div>'+
+      '<div class="dist-bars">'+bars+'</div>'+
+      '<div class="dist-range"><span>1</span><span>5</span><span>10</span></div></div>';
+  }).join('');
+
+  // Animate bars on scroll-in
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.dist-bar-seg').forEach((bar,i)=>{
+          setTimeout(()=>{bar.style.height=bar.dataset.targetH+'px';},i*40);
+        });
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.2});
+  grid.querySelectorAll('.dist-card').forEach(c=>obs.observe(c));
+
+  // Click to sort leaderboard by skill
+  grid.addEventListener('click', e=>{
+    const card=e.target.closest('.dist-card');
+    if(!card)return;
+    const skill=card.dataset.skill;
+    grid.querySelectorAll('.dist-card').forEach(c=>c.classList.remove('selected'));
+    if(lbSkillFilter===skill){
+      lbSkillFilter=null;
+    } else {
+      lbSkillFilter=skill;
+      card.classList.add('selected');
+    }
+    // Switch leaderboard to sort by this skill
+    if(lbSkillFilter){
+      lbSort={col:lbSkillFilter,dir:'desc'};
+      lbView='all';
+      document.querySelectorAll('#filterBar .tab').forEach(t=>t.classList.toggle('on',t.dataset.view==='all'));
+      document.getElementById('tableView').style.display='';
+      document.getElementById('archetypeView').style.display='none';
+      document.getElementById('skillSelect').style.display='none';
+    } else {
+      lbSort={col:'avg',dir:'desc'};
+    }
+    lbSortAndRender();
+    document.getElementById('lbSection').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 5: BRAND x SKILL CROSS-TAB
+═══════════════════════════════════════════ */
+function initCrossTab() {
+  let brandRows=allBrands.filter(b=>b.avg_skills).map(b=>{
+    const pCount=allPlayers.filter(p=>p.primary_brand===b.name).length;
+    return {
+      name:b.name,players:pCount,clips:b.unique_clips||0,
+      skills:{...b.avg_skills},avg:overallAvg(b.avg_skills),
+      category:b.primary_category||''
+    };
+  });
+  brandRows.sort((a,b)=>b.clips-a.clips);
+  brandRows=brandRows.slice(0,15);
+
+  const allVals=[];
+  brandRows.forEach(b=>SKILL_KEYS.forEach(k=>allVals.push(b.skills[k]||0)));
+  const vMin=Math.min(...allVals);
+  const vMax=Math.max(...allVals);
+
+  function renderTable() {
+    const thead=document.getElementById('xtabHead');
+    const tbody=document.getElementById('xtabBody');
+
+    const sortInd=col=>{
+      if(xtabSortCol!==col) return '<span class="sort-arrow"></span>';
+      return '<span class="sort-arrow">'+(xtabSortDir==='asc'?'\u25B2':'\u25BC')+'</span>';
+    };
+
+    thead.innerHTML='<tr>'+
+      '<th tabindex="0" data-sort="name" class="'+(xtabSortCol==='name'?'sorted':'')+'">Brand'+sortInd('name')+'</th>'+
+      '<th tabindex="0" data-sort="clips" class="'+(xtabSortCol==='clips'?'sorted':'')+'">Clips'+sortInd('clips')+'</th>'+
+      '<th tabindex="0" data-sort="players" class="'+(xtabSortCol==='players'?'sorted':'')+'">Players'+sortInd('players')+'</th>'+
+      SKILL_KEYS.map(k=>
+        '<th tabindex="0" data-sort="'+k+'" class="'+(xtabSortCol===k?'sorted':'')+'">'+
+        SKILL_LABELS[k].replace(/ /g,'\u00A0')+sortInd(k)+'</th>'
+      ).join('')+
+      '<th tabindex="0" data-sort="avg" class="'+(xtabSortCol==='avg'?'sorted':'')+'">Avg'+sortInd('avg')+'</th></tr>';
+
+    const sorted=[...brandRows];
+    sorted.sort((a,b)=>{
+      let va,vb;
+      if(xtabSortCol==='name'){va=a.name.toLowerCase();vb=b.name.toLowerCase();return xtabSortDir==='asc'?(va<vb?-1:1):(va>vb?-1:1);}
+      if(xtabSortCol==='players'){va=a.players;vb=b.players;}
+      else if(xtabSortCol==='clips'){va=a.clips;vb=b.clips;}
+      else if(xtabSortCol==='avg'){va=a.avg;vb=b.avg;}
+      else{va=a.skills[xtabSortCol]||0;vb=b.skills[xtabSortCol]||0;}
+      return xtabSortDir==='asc'?va-vb:vb-va;
+    });
+
+    tbody.innerHTML=sorted.map(b=>
+      '<tr tabindex="0" data-brand="'+b.name+'">'+
+      '<td class="brand-cell">'+b.name+'</td>'+
+      '<td class="count-cell">'+b.clips.toLocaleString()+'</td>'+
+      '<td class="count-cell">'+b.players+'</td>'+
+      SKILL_KEYS.map(k=>{
+        const v=b.skills[k]||0;
+        return '<td class="skill-cell" data-col="'+k+'" style="color:'+skillColor(v,vMin,vMax)+'">'+v.toFixed(1)+'</td>';
+      }).join('')+
+      '<td class="skill-cell" style="color:var(--teal);font-weight:800">'+b.avg.toFixed(1)+'</td></tr>'
+    ).join('');
+  }
+
+  renderTable();
+
+  // Sort on header click
+  document.getElementById('xtabHead').addEventListener('click', e=>{
+    const th=e.target.closest('th');
+    if(!th||!th.dataset.sort)return;
+    const col=th.dataset.sort;
+    if(xtabSortCol===col) xtabSortDir=xtabSortDir==='asc'?'desc':'asc';
+    else{xtabSortCol=col;xtabSortDir='desc';}
+    renderTable();
+    attachXtabEvents();
+  });
+
+  document.getElementById('xtabHead').addEventListener('keydown', e=>{
+    if(e.key==='Enter'){const th=e.target.closest('th');if(th)th.click();}
+  });
+
+  function attachXtabEvents() {
+    document.getElementById('xtabBody').querySelectorAll('tr').forEach(row=>{
+      row.addEventListener('click', ()=>selectBrandForRadar(row.dataset.brand));
+      row.addEventListener('keydown', e=>{if(e.key==='Enter') selectBrandForRadar(row.dataset.brand);});
+    });
+
+    // Hover cross-hair effect
+    const table=document.getElementById('xtab');
+    const allCells=table.querySelectorAll('td.skill-cell');
+    allCells.forEach(cell=>{
+      cell.addEventListener('mouseenter', ()=>{
+        const col=cell.dataset.col;
+        if(!col)return;
+        table.querySelectorAll('td[data-col="'+col+'"]').forEach(c=>c.classList.add('col-highlight'));
+        cell.closest('tr').classList.add('xt-highlight');
+      });
+      cell.addEventListener('mouseleave', ()=>{
+        table.querySelectorAll('.col-highlight').forEach(c=>c.classList.remove('col-highlight'));
+        table.querySelectorAll('.xt-highlight').forEach(c=>c.classList.remove('xt-highlight'));
+      });
+    });
+  }
+
+  attachXtabEvents();
+}
+
+/* ═══════════════════════════════════════════
+   LAUNCH
+═══════════════════════════════════════════ */
+loadData();
+
+})();
+</script>
+</body>
+</html>

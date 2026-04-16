@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Hub v4 · Pickle DaaS</title>
+<meta name="description" content="We don't just detect — we narrate. Every clip gets ESPN-style storytelling, coaching breakdown, and social caption.">
+<meta property="og:image" content="https://courtana.com/og-story-hub.png">
+<link rel="icon" href="https://courtana.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   V4 DESIGN SYSTEM — Story Hub
+   Purple accent (#BD93F9) · Near-black bg · glass
+   Arc-type color system · Typewriter · Animations
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --accent:#BD93F9;--accent-g:rgba(189,147,249,.12);--accent-d:rgba(189,147,249,.06);
+  --accent-b:rgba(189,147,249,.2);--accent-2:#6BA3FF;
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+
+  /* Arc type colors */
+  --arc-comeback:#6EEFC0;
+  --arc-dominant:#F1C40F;
+  --arc-close:#6BA3FF;
+  --arc-learning:#FFB86C;
+  --arc-viral:#FF79C6;
+  --arc-unknown:#BD93F9;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:#BD93F9;opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:#6BA3FF;opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:#FF79C6;opacity:.02;animation:bd3 72s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+.hero{opacity:1!important;transform:none!important}
+.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+
+/* Status strip */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--accent);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--accent);border-color:var(--accent-b)}
+.portal-link{color:var(--t5);transition:color .2s var(--ease)}
+.portal-link:hover{color:var(--accent)}
+
+/* Hero */
+.hero{padding:clamp(64px,10vw,120px) 0 clamp(32px,5vw,56px);position:relative}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:900px}
+.grad-text{background:linear-gradient(135deg,#BD93F9,#6BA3FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:680px;line-height:1.7}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t3)}
+.hero-pill .hp-v{font-size:20px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
+.hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5)}
+.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:#BD93F9;opacity:.035;pointer-events:none}
+
+/* Section heading */
+.sec-head{margin-bottom:28px}
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+
+/* Featured clip */
+.featured-video{width:100%;aspect-ratio:16/9;border-radius:var(--rl);overflow:hidden;background:#000;margin-bottom:20px;position:relative}
+.featured-video video{width:100%;height:100%;object-fit:cover;display:block}
+.featured-video .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);cursor:pointer;transition:background .2s}
+.featured-video .play-overlay:hover{background:rgba(0,0,0,.15)}
+.play-btn{width:64px;height:64px;border-radius:50%;background:rgba(189,147,249,.25);border:2px solid rgba(189,147,249,.5);display:flex;align-items:center;justify-content:center;color:white;font-size:22px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .2s;animation:breathe 3s ease-in-out infinite}
+.play-overlay:hover .play-btn{background:rgba(189,147,249,.4);transform:scale(1.1);animation:none}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* Narrative cards */
+.narr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.narr-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:border-color .2s var(--ease),transform .35s var(--ease)}
+.narr-card:hover{border-color:var(--bd-h);transform:translateY(-4px)}
+.narr-stripe{height:3px}
+.narr-head{padding:12px 14px 8px;font-family:'Red Hat Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-weight:600}
+.narr-body{padding:0 14px 14px;font-size:13px;color:var(--t3);line-height:1.6}
+.narr-body.italic{font-style:italic}
+
+/* Typewriter effect */
+.typewriter-text{visibility:hidden}
+.typewriter-text.tw-active{visibility:visible}
+.typewriter-cursor{display:inline-block;width:1px;height:1em;background:var(--accent);margin-left:1px;vertical-align:text-bottom;animation:tw-blink .6s step-end infinite}
+@keyframes tw-blink{50%{opacity:0}}
+
+/* Quality badges */
+.q-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700}
+.q-badge.high{background:rgba(110,239,192,.12);color:#6EEFC0;border:1px solid rgba(110,239,192,.2)}
+.q-badge.mid{background:rgba(107,163,255,.12);color:#6BA3FF;border:1px solid rgba(107,163,255,.2)}
+.q-badge.low{background:rgba(255,255,255,.04);color:var(--t5);border:1px solid var(--bd)}
+
+/* Arc badge — colorized per arc type */
+.arc-badge{display:inline-flex;padding:3px 10px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;text-transform:capitalize}
+.arc-badge[data-arc="comeback"]{background:rgba(110,239,192,.12);color:var(--arc-comeback);border:1px solid rgba(110,239,192,.2)}
+.arc-badge[data-arc="dominant_performance"]{background:rgba(241,196,15,.12);color:var(--arc-dominant);border:1px solid rgba(241,196,15,.2)}
+.arc-badge[data-arc="close_match"]{background:rgba(107,163,255,.12);color:var(--arc-close);border:1px solid rgba(107,163,255,.2)}
+.arc-badge[data-arc="learning_moment"]{background:rgba(255,184,108,.12);color:var(--arc-learning);border:1px solid rgba(255,184,108,.2)}
+.arc-badge[data-arc="viral_moment"]{background:rgba(255,121,198,.12);color:var(--arc-viral);border:1px solid rgba(255,121,198,.2)}
+.arc-badge[data-arc="unknown"],.arc-badge:not([data-arc]){background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b)}
+.feat-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+
+/* Arc browser pills — colorized */
+.arc-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.arc-pill{position:relative;padding:8px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-transform:capitalize;overflow:visible}
+.arc-pill:hover{color:var(--t2);border-color:var(--bd-h)}
+.arc-pill .cnt{font-family:'Red Hat Mono',monospace;font-size:10px;opacity:.7;margin-left:5px}
+
+/* Default "All" pill active state */
+.arc-pill.on{background:var(--accent-g);color:var(--accent);border-color:var(--accent-b)}
+
+/* Arc-specific active states */
+.arc-pill[data-arc="comeback"].on{background:rgba(110,239,192,.12);color:var(--arc-comeback);border-color:rgba(110,239,192,.3)}
+.arc-pill[data-arc="dominant_performance"].on{background:rgba(241,196,15,.12);color:var(--arc-dominant);border-color:rgba(241,196,15,.3)}
+.arc-pill[data-arc="close_match"].on{background:rgba(107,163,255,.12);color:var(--arc-close);border-color:rgba(107,163,255,.3)}
+.arc-pill[data-arc="learning_moment"].on{background:rgba(255,184,108,.12);color:var(--arc-learning);border-color:rgba(255,184,108,.3)}
+.arc-pill[data-arc="viral_moment"].on{background:rgba(255,121,198,.12);color:var(--arc-viral);border-color:rgba(255,121,198,.3)}
+.arc-pill[data-arc="unknown"].on{background:var(--accent-g);color:var(--accent);border-color:var(--accent-b)}
+
+/* Pulse ring on pill click */
+.arc-pill .pulse-ring{position:absolute;inset:-4px;border-radius:calc(var(--r) + 4px);border:2px solid currentColor;opacity:0;pointer-events:none}
+.arc-pill.pulsing .pulse-ring{animation:pill-pulse .3s var(--ease) forwards}
+@keyframes pill-pulse{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1.15)}}
+
+/* Clip grid */
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.clip-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;cursor:default;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .2s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
+.clip-card:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 20px 56px rgba(0,0,0,.45)}
+.clip-vid{aspect-ratio:16/9;position:relative}
+.clip-vid video,.clip-vid img{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.clip-vid::after{content:'\25B6';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:18px;transition:all .2s}
+.clip-card:hover .clip-vid::after{background:rgba(0,0,0,.2)}
+.clip-info{padding:14px 16px}
+.clip-summary{font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:8px}
+.clip-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+/* Staggered card entrance */
+.clip-card{opacity:0;transform:translateY(24px) scale(.97)}
+.clip-card.card-visible{animation:card-enter .5s var(--spring) forwards}
+@keyframes card-enter{to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Footer */
+footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)}
+.footer-pitch{font-size:13px;color:var(--t3);line-height:1.6;max-width:700px;margin-bottom:12px}
+
+.ld{display:flex;flex-direction:column;align-items:center;padding:100px 20px;gap:16px}
+.spinner{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  .narr-grid{grid-template-columns:repeat(2,1fr)}
+  .clip-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+}
+@media(max-width:600px){
+  .narr-grid{grid-template-columns:1fr}
+  .hero-pills{flex-direction:column}
+  .status nav{display:none}
+  .clip-grid{grid-template-columns:1fr}
+  .arc-pills{flex-direction:column}
+}
+
+.narr-card:focus-visible,.arc-pill:focus-visible,.clip-card:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:inherit}
+.arc-pill:active{transform:scale(.97)}
+.clip-card:active{transform:scale(.99)!important}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .blob,.noise{display:none}
+  [data-reveal]{opacity:1;transform:none}
+  .clip-card{opacity:1;transform:none}
+  .typewriter-text{visibility:visible!important}
+  .typewriter-cursor{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="page"><div class="shell">
+
+<!-- Status strip -->
+<div class="status" id="status-bar">
+  <div class="shell status-inner">
+    <span><a href="showcase-portal-v4.html" class="portal-link">&larr; Portal</a></span>
+    <span><span class="sd"></span>Live &middot; <em id="ref-ts">&mdash;</em></span>
+    <span>narrated clips <em id="ref-narr">&mdash;</em></span>
+    <span>arc types <em id="ref-arcs">&mdash;</em></span>
+    <span class="v-chip">v4</span>
+    <nav>
+      <a href="brand-intelligence-v4.html">Brands</a>
+      <a href="equipment-performance-v4.html">Equipment</a>
+      <a href="venue-intelligence-v4.html">Venues</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero" data-reveal>
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">Story Hub</div>
+  <h1>We don't just detect &mdash;<br><span class="grad-text">we narrate.</span></h1>
+  <p class="hero-sub">Every clip in the corpus gets an ESPN-style narrative arc, coaching breakdown, and social caption. Publish-ready content generated at $0.005 per clip.</p>
+  <div class="hero-pills" id="hero-pills"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Featured Clip -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Featured Clip</div>
+    <div class="sec-title">The <span class="grad-text">narrative stack</span></div>
+  </div>
+</div>
+
+<div id="featured-section" data-reveal></div>
+
+<div class="divider"></div>
+
+<!-- Arc Browser -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Arc Browser</div>
+    <div class="sec-title">Filter by <span class="grad-text">narrative arc</span></div>
+  </div>
+</div>
+<div class="arc-pills" id="arc-pills" data-reveal></div>
+<div class="clip-grid" id="clip-grid" data-reveal></div>
+
+<div class="divider"></div>
+
+<!-- Footer -->
+<footer>
+  <div>
+    <div class="footer-pitch">Every clip in the corpus has this narrative layer. At $0.005/clip, that's publish-ready content at scale.</div>
+    <span>Story Hub v4 &middot; Pickle DaaS</span>
+  </div>
+  <span><a href="brand-intelligence-v4.html">Brand Intelligence</a> &middot; <a href="equipment-performance-v4.html">Equipment</a> &middot; <a href="venue-intelligence-v4.html">Venues</a></span>
+</footer>
+
+</div></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   Story Hub v4 — Runtime
+═══════════════════════════════════════════ */
+const CDN='https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/';
+let CORPUS=null, FEED=null;
+let TOP100=[], ARC_MAP={}, currentArc=null;
+
+/* Arc color map */
+const ARC_COLORS={
+  comeback:'#6EEFC0',
+  dominant_performance:'#F1C40F',
+  close_match:'#6BA3FF',
+  learning_moment:'#FFB86C',
+  viral_moment:'#FF79C6'
+};
+function arcColor(arc){return ARC_COLORS[arc]||'#BD93F9'}
+function arcKey(arc){return arc&&ARC_COLORS[arc]?arc:'unknown'}
+
+/* ─── Init ─── */
+async function init(){
+  const [corpusR,feedR]=await Promise.all([
+    fetch('../corpus-export.json').then(r=>r.json()),
+    fetch('../api/feed.json').then(r=>r.json())
+  ]);
+  CORPUS=corpusR; FEED=feedR;
+
+  const sorted=[...CORPUS].sort((a,b)=>(b.quality||0)-(a.quality||0)||(b.viral||0)-(a.viral||0));
+  TOP100=sorted.slice(0,100);
+
+  TOP100.forEach(c=>{
+    const arc=c.arc||'unknown';
+    if(!ARC_MAP[arc]) ARC_MAP[arc]=[];
+    ARC_MAP[arc].push(c);
+  });
+
+  renderStatus();
+  renderHero();
+  renderFeatured();
+  renderArcPills();
+  renderClipGrid(TOP100);
+  initReveal();
+  initScroll();
+  initTypewriterObserver();
+}
+
+/* ─── Status strip ─── */
+function renderStatus(){
+  const ts=FEED.generated_at||'';
+  const d=ts?new Date(ts):new Date();
+  document.getElementById('ref-ts').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const withNarr=CORPUS.filter(c=>c.espn||c.coaching||c.social_caption).length;
+  document.getElementById('ref-narr').textContent=withNarr.toLocaleString();
+  const arcSet=new Set(CORPUS.filter(c=>c.arc).map(c=>c.arc));
+  document.getElementById('ref-arcs').textContent=arcSet.size;
+}
+
+/* ─── Hero ─── */
+function renderHero(){
+  const withEspn=CORPUS.filter(c=>c.espn).length;
+  const arcSet=new Set(CORPUS.filter(c=>c.arc).map(c=>c.arc));
+  const pills=[
+    {v:CORPUS.length.toLocaleString(),l:'Total clips'},
+    {v:withEspn.toLocaleString(),l:'ESPN narratives'},
+    {v:arcSet.size,l:'Arc types'}
+  ];
+  document.getElementById('hero-pills').innerHTML=pills.map(p=>`
+    <div class="hero-pill"><div><span class="hp-v">${p.v}</span><div class="hp-l">${p.l}</div></div></div>
+  `).join('');
+}
+
+/* ─── Featured clip ─── */
+function renderFeatured(){
+  const sorted=[...CORPUS].sort((a,b)=>(b.quality||0)-(a.quality||0)||(b.viral||0)-(a.viral||0));
+  let feat=sorted.find(c=>c.espn||c.coaching||c.social_caption)||sorted[0];
+  if(!feat) return;
+
+  const vid=feat.video_url||CDN+feat.uuid+'.mp4';
+  const poster=feat.thumbnail||CDN+feat.uuid+'.jpeg';
+  const qLevel=feat.quality>=8?'high':feat.quality>=5?'mid':'low';
+  const ak=arcKey(feat.arc);
+
+  let html=`
+    <div class="featured-video" id="feat-vid-wrap">
+      <video id="feat-vid" src="${vid}" poster="${poster}" controls preload="none" playsinline></video>
+    </div>
+    <div class="feat-meta">
+      <span class="arc-badge" data-arc="${ak}">${(feat.arc||'unknown').replace(/_/g,' ')}</span>
+      <span class="q-badge ${qLevel}">Quality ${feat.quality||'\u2014'}/10</span>
+      <span class="q-badge ${feat.viral>=5?'high':'mid'}">Viral ${feat.viral||'\u2014'}/10</span>
+    </div>
+    <div class="narr-grid" id="narr-grid">`;
+
+  // Summary card (no typewriter)
+  html+=`<div class="narr-card">
+    <div class="narr-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
+    <div class="narr-head">Summary</div>
+    <div class="narr-body">${feat.summary||'No summary available.'}</div>
+  </div>`;
+
+  // ESPN card — typewriter
+  const espnText=feat.espn||'';
+  html+=`<div class="narr-card">
+    <div class="narr-stripe" style="background:linear-gradient(90deg,#6BA3FF,transparent)"></div>
+    <div class="narr-head">ESPN Commentary</div>
+    <div class="narr-body italic">${espnText?`<span class="typewriter-text" data-tw="espn" data-tw-text="${escAttr(espnText)}"></span>`:'<span style="color:var(--t5)">Not yet generated for this clip.</span>'}</div>
+  </div>`;
+
+  // Coaching card — typewriter
+  const coachText=feat.coaching||'';
+  html+=`<div class="narr-card">
+    <div class="narr-stripe" style="background:linear-gradient(90deg,#6EEFC0,transparent)"></div>
+    <div class="narr-head">Coaching Notes</div>
+    <div class="narr-body">${coachText?`<span class="typewriter-text" data-tw="coaching" data-tw-text="${escAttr(coachText)}"></span>`:'<span style="color:var(--t5)">Not yet generated for this clip.</span>'}</div>
+  </div>`;
+
+  // Social caption card — typewriter
+  const socialText=feat.social_caption||'';
+  html+=`<div class="narr-card">
+    <div class="narr-stripe" style="background:linear-gradient(90deg,#FF79C6,transparent)"></div>
+    <div class="narr-head">Social Caption</div>
+    <div class="narr-body">${socialText?`<span class="typewriter-text" data-tw="social" data-tw-text="${escAttr(socialText)}"></span>`:'<span style="color:var(--t5)">Not yet generated for this clip.</span>'}</div>
+  </div>`;
+
+  html+=`</div>`;
+  document.getElementById('featured-section').innerHTML=html;
+}
+
+function escAttr(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ─── Typewriter engine ─── */
+let twTriggered=false;
+function initTypewriterObserver(){
+  const grid=document.getElementById('narr-grid');
+  if(!grid) return;
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting&&!twTriggered){
+        twTriggered=true;
+        obs.unobserve(e.target);
+        runTypewriterSequence();
+      }
+    });
+  },{threshold:.3});
+  obs.observe(grid);
+}
+
+function runTypewriterSequence(){
+  const espnEl=document.querySelector('[data-tw="espn"]');
+  const coachEl=document.querySelector('[data-tw="coaching"]');
+  const socialEl=document.querySelector('[data-tw="social"]');
+
+  let delay=0;
+  if(espnEl){
+    typewrite(espnEl,espnEl.dataset.twText,30,delay,()=>{
+      if(coachEl){
+        typewrite(coachEl,coachEl.dataset.twText,30,500,()=>{
+          if(socialEl){
+            typewrite(socialEl,socialEl.dataset.twText,30,500);
+          }
+        });
+      } else if(socialEl){
+        typewrite(socialEl,socialEl.dataset.twText,30,500);
+      }
+    });
+  } else if(coachEl){
+    typewrite(coachEl,coachEl.dataset.twText,30,0,()=>{
+      if(socialEl) typewrite(socialEl,socialEl.dataset.twText,30,500);
+    });
+  } else if(socialEl){
+    typewrite(socialEl,socialEl.dataset.twText,30,0);
+  }
+}
+
+function typewrite(el,text,speed,startDelay,onDone){
+  setTimeout(()=>{
+    el.classList.add('tw-active');
+    el.textContent='';
+    const cursor=document.createElement('span');
+    cursor.className='typewriter-cursor';
+    el.appendChild(cursor);
+    let i=0;
+    const iv=setInterval(()=>{
+      if(i<text.length){
+        el.insertBefore(document.createTextNode(text[i]),cursor);
+        i++;
+      } else {
+        clearInterval(iv);
+        // Remove cursor after a beat
+        setTimeout(()=>{if(cursor.parentNode) cursor.remove()},600);
+        if(onDone) onDone();
+      }
+    },speed);
+  },startDelay);
+}
+
+/* ─── Arc pills ─── */
+function renderArcPills(){
+  const arcEntries=Object.entries(ARC_MAP).sort((a,b)=>b[1].length-a[1].length);
+  let html=`<button class="arc-pill on" onclick="filterArc(null,this)" data-arc="all">All<span class="cnt">${TOP100.length}</span><span class="pulse-ring"></span></button>`;
+  arcEntries.forEach(([arc,clips])=>{
+    const label=arc.replace(/_/g,' ');
+    html+=`<button class="arc-pill" onclick="filterArc('${arc}',this)" data-arc="${arc}">${label}<span class="cnt">${clips.length}</span><span class="pulse-ring"></span></button>`;
+  });
+  document.getElementById('arc-pills').innerHTML=html;
+}
+
+function filterArc(arc,btn){
+  currentArc=arc;
+  document.querySelectorAll('.arc-pill').forEach(p=>{
+    p.classList.toggle('on',arc===null?p.dataset.arc==='all':p.dataset.arc===arc);
+  });
+
+  // Pulse ring animation on the clicked button
+  if(btn){
+    btn.classList.remove('pulsing');
+    void btn.offsetWidth; // reflow to restart animation
+    btn.classList.add('pulsing');
+    btn.addEventListener('animationend',()=>btn.classList.remove('pulsing'),{once:true});
+  }
+
+  const clips=arc?ARC_MAP[arc]||[]:TOP100;
+  renderClipGrid(clips);
+}
+
+/* ─── Clip grid ─── */
+function renderClipGrid(clips){
+  const html=clips.map(c=>{
+    const vid=c.video_url||CDN+c.uuid+'.mp4';
+    const poster=c.thumbnail||CDN+c.uuid+'.jpeg';
+    const qLevel=(c.quality||0)>=8?'high':(c.quality||0)>=5?'mid':'low';
+    const ak=arcKey(c.arc);
+    const arcLabel=(c.arc||'unknown').replace(/_/g,' ');
+    return `<div class="clip-card">
+      <div class="clip-vid">
+        <video src="${vid}" poster="${poster}" muted loop playsinline preload="none"
+          onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>
+      </div>
+      <div class="clip-info">
+        <div class="clip-summary">${c.summary||''}</div>
+        <div class="clip-meta">
+          <span class="arc-badge" data-arc="${ak}" style="font-size:10px;padding:2px 8px">${arcLabel}</span>
+          <span class="q-badge ${qLevel}" style="font-size:10px;padding:2px 8px">Q${c.quality||'?'}</span>
+          ${c.viral>=5?`<span class="q-badge high" style="font-size:10px;padding:2px 8px">V${c.viral}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('clip-grid').innerHTML=html||'<p style="color:var(--t4);text-align:center;padding:40px">No clips for this arc type.</p>';
+
+  // Staggered entrance animation — 6 at a time, 60ms gap
+  requestAnimationFrame(()=>{
+    const cards=document.querySelectorAll('.clip-card');
+    cards.forEach((card,i)=>{
+      const delay=Math.floor(i/6)*60+((i%6)*60);
+      setTimeout(()=>card.classList.add('card-visible'),delay);
+    });
+  });
+}
+
+/* ─── Scroll reveal ─── */
+function initReveal(){
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target)}});
+  },{threshold:.1});
+  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
+}
+
+function initScroll(){
+  const bar=document.getElementById('status-bar');
+  window.addEventListener('scroll',()=>{bar.classList.toggle('scrolled',window.scrollY>20)},{passive:true});
+}
+
+/* ─── Boot ─── */
+init().catch(err=>{
+  document.querySelector('.page .shell').innerHTML=`<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Loading data&hellip; ${err.message}</p></div>`;
+});
+</script>
+</body>
+</html>
