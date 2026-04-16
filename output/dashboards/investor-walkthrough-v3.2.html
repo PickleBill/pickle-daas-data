@@ -846,13 +846,17 @@ function buildFlywheel(){
   ];
   const fw=document.getElementById('flywheel');
   const radius=140; // distance from center
+  const links=['venue-intelligence-v3.3.html','evidence-wall-v3.3.html','classifier-queue.html','brand-intelligence-v3.2.html','showcase-portal-v3.3.html','#s-revenue'];
   nodes.forEach((n,i)=>{
     const angle=(i/6)*2*Math.PI - Math.PI/2;
     const x=Math.cos(angle)*radius;
     const y=Math.sin(angle)*radius;
-    const el=document.createElement('div');
+    const el=document.createElement('a');
     el.className='fw-node';
+    el.href=links[i]||'#';
     el.style.transform=`translate(${x}px,${y}px)`;
+    el.style.textDecoration='none';
+    el.title=`${n.label}: ${n.val} — click to explore`;
     el.innerHTML=`<div class="fw-icon">${n.icon}</div><div class="fw-label">${n.label}</div><div class="fw-val">${n.val}</div>`;
     fw.appendChild(el);
   });

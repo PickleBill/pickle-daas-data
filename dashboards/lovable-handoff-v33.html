@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovable Handoff — Pickle DaaS v3.3</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{background:#08080C;color:rgba(255,255,255,.88);font-family:'Manrope',sans-serif;max-width:900px;margin:0 auto;padding:40px 24px;line-height:1.7;font-size:15px}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.03em;margin:32px 0 16px;color:rgba(110,239,192,.9)}
+h2{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin:28px 0 12px;color:rgba(107,163,255,.9)}
+h3{font-size:1.1rem;font-weight:600;margin:20px 0 8px;color:rgba(255,184,108,.9)}
+p{margin:6px 0;color:rgba(255,255,255,.7)}
+strong{color:rgba(255,255,255,.92);font-weight:700}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:13px;color:rgba(110,239,192,.85)}
+pre{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:12px 0}
+pre code{background:none;padding:0;font-size:12px;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th,td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+th{color:rgba(255,255,255,.5);font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-family:'Red Hat Mono',monospace}
+li{margin:4px 0 4px 20px;color:rgba(255,255,255,.7)}
+hr{border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);margin:32px 0}
+a{color:rgba(110,239,192,.85)}
+</style></head><body>
+<h1>Lovable Handoff Prompt — Pickle DaaS v3.3</h1>
+<p>_Copy-paste this into a fresh Lovable project to bootstrap the full app._</p>
+<p>_Last updated: 2026-04-16_</p>
+<br>
+<hr>
+<br>
+<h2>PASTE THIS INTO LOVABLE:</h2>
+<br>
+<p>Build a full-featured data intelligence dashboard app for <strong>Pickle DaaS</strong> — an AI-powered system that turns pickleball video into structured brand intelligence, player profiles, and narrative content.</p>
+<br>
+<h3>What Pickle DaaS Is</h3>
+<br>
+<p>An AI pipeline that processes pickleball video clips: detects brands (paddles, shoes, sponsor banners), profiles players (9 skill dimensions), classifies everything into revenue lanes (player equipment vs venue installs vs sponsor signage), and generates ESPN-style narratives. Currently analyzing 3,588 clips with 358 brands detected across 54 human-approved classification rules.</p>
+<br>
+<h3>Data Architecture</h3>
+<br>
+<p>All data is served as static JSON from GitHub Pages. Base URL:</p>
+<pre><code>
+https://picklebill.github.io/pickle-daas-data/
+</code></pre>
+<br>
+<p><strong>API Endpoints (fetch these):</strong></p>
+<br>
+<table>
+<tr><th>Endpoint</th><th>What</th><th>Key fields</th></tr>
+<p>|----------|------|------------|</p>
+<tr><td>`api/feed.json`</td><td>Master stats</td><td>`corpus.total_clips`, `corpus.unique_brands`, `corpus.unique_players`, `top_brands`</td></tr>
+<tr><td>`api/brands.json`</td><td>All brands with analytics</td><td>`brands[].name`, `.detections`, `.unique_clips`, `.share_of_court`, `.primary_category`, `.avg_skills`</td></tr>
+<tr><td>`api/players.json`</td><td>Player profiles</td><td>`players[].username`, `.archetype`, `.skills` (9 dimensions), `.primary_brand`, `.avg_quality`</td></tr>
+<tr><td>`api/clips.json`</td><td>Top clips</td><td>`top_quality[]`, `top_viral[]` — each has `uuid`, `video_url`, `thumbnail`, `summary`, `brands[]`</td></tr>
+<tr><td>`api/sponsors.json`</td><td>Sponsor classification</td><td>`subtypes` (5 types), `subtype_totals`, each brand has `example_clips`</td></tr>
+<tr><td>`api/player-equipment.json`</td><td>Equipment by category</td><td>`categories` (paddle, shoes, apparel, etc.), each brand has `market_share_pct`, `example_clips`</td></tr>
+<tr><td>`api/venue-tech.json`</td><td>Venue hardware</td><td>`broadcast_tech`, `facility_chains`, `venue_installed` — each brand has detections + clips</td></tr>
+<tr><td>`api/ideas.json`</td><td>AI research findings</td><td>`top_strategic[]`, `top_data[]`, each has `title`, `evidence`, `confidence`, `business_value`</td></tr>
+<tr><td>`brand-provenance.json`</td><td>Classification rules</td><td>`brands[].source` (rule/fallback), `.rule_version`, `.human_verified`, `.rationale`</td></tr>
+<tr><td>`classification-stats.json`</td><td>System stats</td><td>`total_brand_detections`, `rule_count`, `coverage_pct`, `by_context_flag`</td></tr>
+<tr><td>`brand-co-occurrence.json`</td><td>Brand relationships</td><td>`nodes[]` (brands), `edges[]` (co-occurrence pairs with weights)</td></tr>
+<tr><td>`corpus-timeline.json`</td><td>Growth over time</td><td>`timeline[]` with `date`, `clips`, `unique_brands`, `total_detections`</td></tr>
+</table>
+<br>
+<p><strong>Video/thumbnail CDN pattern:</strong></p>
+<pre><code>
+Video: https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/{uuid}.mp4
+Thumb: https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/{uuid}.jpeg
+</code></pre>
+<br>
+<h3>Design System</h3>
+<br>
+<li>**Background:** `#08080C` (near-black with blue-purple undertone)</li>
+<li>**Text:** White at 7 opacity tiers: 0.92, 0.70, 0.50, 0.40, 0.30, 0.25, 0.20</li>
+<li>**Accent colors:** Green `#6EEFC0`, Blue `#6BA3FF`, Amber `#FFB86C`, Purple `#BD93F9`, Gold `#F1C40F`, Red `#FF6B6B`</li>
+<li>**Glass cards:** `rgba(255,255,255,0.03)` bg, `0.05` border, `backdrop-filter:blur(12px)`</li>
+<li>**Fonts:** Manrope (display, weight 800, tracking -0.04em), Red Hat Mono (data labels)</li>
+<li>**Gradient text:** `-webkit-background-clip:text` with per-section gradient pairs</li>
+<li>**Animations:** Scroll reveals (translateY 40px → 0), counter animations, hover lift on cards</li>
+<br>
+<h3>App Structure (Routes)</h3>
+<br>
+<p>1. <strong><code>/</code> — Showcase Portal</strong> (home)</p>
+<p>   - Hero with live stats from <code>feed.json</code></p>
+<p>   - Card grid linking to all pages, organized by audience: Investors, Brands, Venues, Explore, Tools</p>
+<br>
+<p>2. <strong><code>/brands</code> — Brand Intelligence</strong></p>
+<p>   - Three classification lanes: Player Equipment, Venue Installed, Sponsor Signage</p>
+<p>   - Brand constellation map (force-directed graph from <code>brand-co-occurrence.json</code>)</p>
+<p>   - Filterable brand card grid with provenance pills</p>
+<p>   - Time-machine slider showing corpus growth from <code>corpus-timeline.json</code></p>
+<br>
+<p>3. <strong><code>/investor</code> — Investor Walkthrough</strong></p>
+<p>   - 9-section scrolling narrative with video hero</p>
+<p>   - Revenue simulator with sliders</p>
+<p>   - AI debate visualization</p>
+<p>   - Contact CTA</p>
+<br>
+<p>4. <strong><code>/equipment</code> — Equipment Performance</strong></p>
+<p>   - Category tabs (paddle, shoes, apparel, etc.) from <code>player-equipment.json</code></p>
+<p>   - Market share bars per category</p>
+<p>   - Brand cards with skill correlations</p>
+<br>
+<p>5. <strong><code>/players</code> — Player Intelligence / DNA Lab</strong></p>
+<p>   - Interactive radar chart (9 skill axes) with player selection</p>
+<p>   - Compare 2-3 players with overlaid radars</p>
+<p>   - Brand × Skill cross-tab (interactive table)</p>
+<p>   - Player leaderboard sortable by any skill</p>
+<br>
+<p>6. <strong><code>/venues</code> — Venue Intelligence</strong></p>
+<p>   - Venue tech breakdown from <code>venue-tech.json</code></p>
+<p>   - Camera tech, facility chains, court surfaces</p>
+<p>   - Install base visualization</p>
+<br>
+<p>7. <strong><code>/stories</code> — Story Hub</strong></p>
+<p>   - Browse clips by narrative arc type</p>
+<p>   - Full clip breakdown: ESPN commentary, coaching notes, social caption</p>
+<p>   - Featured clip with all narrative layers visible</p>
+<br>
+<p>8. <strong><code>/evidence</code> — Evidence Wall</strong></p>
+<p>   - Filterable clip grid with hover-play video</p>
+<p>   - Lane filter buttons + sponsor subtype dropdown + search</p>
+<p>   - Click clip → modal with full classification details</p>
+<br>
+<p>9. <strong><code>/classifier</code> — Classifier Queue</strong> (tools)</p>
+<p>   - Rule review and approval interface</p>
+<br>
+<h3>Key Requirements</h3>
+<br>
+<li>Dark mode only (the `#08080C` background)</li>
+<li>Fetch all data from the GitHub Pages API (no backend needed)</li>
+<li>Video embeds use CDN URLs directly with `<video>` tags</li>
+<li>NEVER use `api.courtana.com` — that domain doesn't exist</li>
+<li>Mobile-first responsive design</li>
+<li>Animated counter numbers on scroll-in</li>
+<li>Glass morphism on interactive cards</li>
+<li>Every number should pull from live JSON, not be hardcoded</li>
+<br>
+<h3>Brand & Tone</h3>
+<br>
+<p>Product: Courtana / Pickle DaaS</p>
+<p>Tagline: "Pickleball video, classified into intelligence."</p>
+<p>Founder: Bill Bricker (bill@courtana.com)</p>
+<p>Vibe: Premium data product, not a toy dashboard. Think Bloomberg terminal meets dreamworkhq.com.</p>
+<br>
+</body></html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Session Transfer Snippets — Pickle DaaS v3.3</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{background:#08080C;color:rgba(255,255,255,.88);font-family:'Manrope',sans-serif;max-width:900px;margin:0 auto;padding:40px 24px;line-height:1.7;font-size:15px}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.03em;margin:32px 0 16px;color:rgba(110,239,192,.9)}
+h2{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin:28px 0 12px;color:rgba(107,163,255,.9)}
+h3{font-size:1.1rem;font-weight:600;margin:20px 0 8px;color:rgba(255,184,108,.9)}
+p{margin:6px 0;color:rgba(255,255,255,.7)}
+strong{color:rgba(255,255,255,.92);font-weight:700}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-family:'Red Hat Mono',monospace;font-size:13px;color:rgba(110,239,192,.85)}
+pre{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:12px 0}
+pre code{background:none;padding:0;font-size:12px;line-height:1.5}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th,td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+th{color:rgba(255,255,255,.5);font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-family:'Red Hat Mono',monospace}
+li{margin:4px 0 4px 20px;color:rgba(255,255,255,.7)}
+hr{border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);margin:32px 0}
+a{color:rgba(110,239,192,.85)}
+</style></head><body>
+<h1>Session Transfer Snippets — Pickle DaaS v3.3</h1>
+<p>_Copy-paste these into new Claude Code (Cowork) sessions to transfer context._</p>
+<p>_Last updated: 2026-04-16_</p>
+<br>
+<hr>
+<br>
+<h2>1. FULL CONTEXT LOADER</h2>
+<p>_Paste into a new session to onboard it on everything._</p>
+<br>
+<pre><code>
+I'm working on Pickle DaaS — an AI data intelligence product for pickleball. Here's what you need to know:
+
+WORKING DIRECTORY: cd "/Users/billbricker/PickleBill Dropbox/PickleBill Team Folder/Claude Projects/PICKLE-DAAS"
+
+READ THESE FILES FIRST (in order):
+1. BILL-OS/DESIGN-SYSTEM-V32.md — the v3.3 design system (colors, fonts, glass, animations, anti-patterns)
+2. BILL-OS/LOVABLE-HANDOFF-V33.md — full product description, API endpoints, data schemas
+3. .claude/skills/pickle-daas-page/reference/anti-patterns.md — what to avoid
+4. .claude/plans/wise-skipping-donut.md — current build plan with Bill's feedback
+
+CRITICAL RULES:
+- NEVER use api.courtana.com (doesn't exist). Use courtana.com or relative paths.
+- Always set Accept: application/json header on API calls.
+- CDN assets at cdn.courtana.com are public — embed directly.
+- Vanilla HTML/CSS/JS only — no frameworks, no build step. Single self-contained files.
+- Background: #08080C. Noise SVG at 4%. 3 ambient blobs. 7-tier text opacity. Glass morphism at 3%.
+- Every interactive element needs :hover + :active + :focus-visible states.
+- Every &lt;video&gt; needs a real poster thumbnail.
+- @media (prefers-reduced-motion) on all pages.
+
+DATA ENDPOINTS (static JSON on GitHub Pages):
+Base: https://picklebill.github.io/pickle-daas-data/
+- api/feed.json — master stats (3,588 clips, 358 brands)
+- api/brands.json — all brands with analytics
+- api/players.json — 104 players with 9 skill dimensions
+- api/sponsors.json — sponsor subtypes
+- api/player-equipment.json — equipment by category
+- api/venue-tech.json — venue hardware
+- brand-provenance.json — classification rules per brand
+- classification-stats.json — 8,150 detections, 54 rules, 91.9% coverage
+- brand-co-occurrence.json — brand relationship graph
+- corpus-timeline.json — growth over time
+
+PAGES ALREADY BUILT (v3.3 design system):
+- showcase-portal-v3.3.html — front door portal
+- brand-intelligence-v3.2.html — constellation map, time-machine, 3 lanes
+- investor-walkthrough-v3.2.html — 9-section narrative scroll
+- evidence-wall-v3.3.html — filterable clip grid
+- player-archetypes-v3.3.html — needs redesign → "Player DNA Lab"
+
+DEPLOY: python3 tools/push-to-ghpages.py (rebuilds corpus, syncs all files, pushes to gh-pages)
+
+Current corpus: 3,588 clips. Growing daily via auto-ingest.
+</code></pre>
+<br>
+<hr>
+<br>
+<h2>2. PAGE BUILDER SNIPPET</h2>
+<p>_Paste to have a session build a specific page._</p>
+<br>
+<pre><code>
+Build a new Pickle DaaS dashboard page using the v3.3 design system.
+
+Read these first:
+- BILL-OS/DESIGN-SYSTEM-V32.md (the design system)
+- .claude/skills/pickle-daas-page/reference/anti-patterns.md (what to avoid)
+- output/dashboards/brand-intelligence-v3.2.html (reference implementation — read the first 100 lines for the CSS token system)
+
+The page I want to build is: [DESCRIBE PAGE HERE]
+Mode: [narrative / explorer / portal]
+Accent color: [green/blue/amber/purple/gold/red]
+
+Write to: output/dashboards/[filename].html
+
+Key patterns to follow:
+- Background #08080C, SVG noise at 4%, 3 ambient blobs (72/78/86s cycles)
+- Glass cards: rgba(255,255,255,.03) bg, .05 border, blur(12px)
+- Fonts: Manrope 800 (headlines, -0.04em tracking), Red Hat Mono (data), JetBrains Mono (code)
+- Gradient text on headlines: -webkit-background-clip:text
+- Scroll reveals: [data-reveal] with IntersectionObserver
+- Counter animation: [data-to] with quartic ease-out
+- Status strip: sticky top with live data + v3.3 chip
+- All interactions: :hover + :active (scale .97) + :focus-visible (2px outline)
+- @media (prefers-reduced-motion) disables all animation
+- Mobile-first: 375px primary target
+
+Data: fetch from relative paths (../api/feed.json, ../classification-stats.json, etc.)
+Videos: CDN at cdn.courtana.com, never api.courtana.com
+Deploy after: python3 tools/push-to-ghpages.py
+</code></pre>
+<br>
+<hr>
+<br>
+<h2>3. AUDIT SNIPPET</h2>
+<p>_Paste to have a session audit an existing page._</p>
+<br>
+<pre><code>
+Audit this Pickle DaaS page against the v3.3 design system.
+
+Read the design system: BILL-OS/DESIGN-SYSTEM-V32.md
+Read the anti-patterns: .claude/skills/pickle-daas-page/reference/anti-patterns.md
+Read the page: output/dashboards/[FILENAME].html
+
+Check every item on this list:
+- [ ] Background is #08080C (not green-tinted, not pure black)
+- [ ] SVG noise overlay present at 4% opacity
+- [ ] 3 ambient blobs with different animation durations (72/78/86s)
+- [ ] Text uses 7-tier white opacity system (no arbitrary alpha values)
+- [ ] All headings use clamp() (no px-only or breakpoint jumps)
+- [ ] Gradient text on at least one headline per section
+- [ ] Glass morphism only on interactive cards (not static content)
+- [ ] Every :hover has matching :active and :focus-visible
+- [ ] Every &lt;video&gt; has a real poster thumbnail URL (not empty)
+- [ ] Every provenance pill has a title tooltip
+- [ ] Every section ends with a contextual CTA
+- [ ] @media (prefers-reduced-motion) present and comprehensive
+- [ ] Mobile tested at 375px — no overflow, touch targets ≥44px
+- [ ] Status strip is sticky with live data from JSON
+- [ ] Footer links to Classifier Queue + comparison page
+- [ ] No "AI slop" indicators (flat 8-stat grid, left-stripe cards, green-on-black monotone, emoji icons, section numbering)
+
+Report findings with severity: P0 (broken), P1 (degrades quality), P2 (polish), P3 (debt).
+</code></pre>
+<br>
+<hr>
+<br>
+<h2>4. DATA PIPELINE SNIPPET</h2>
+<p>_Paste to run the full data pipeline._</p>
+<br>
+<pre><code>
+Run the Pickle DaaS data pipeline to refresh all data and deploy.
+
+cd "/Users/billbricker/PickleBill Dropbox/PickleBill Team Folder/Claude Projects/PICKLE-DAAS"
+
+Step 1 — Reclassify corpus:
+python3 tools/apply-classification.py
+
+Step 2 — Rebuild API feeds:
+python3 tools/build-data-feed.py
+
+Step 3 — Rebuild derived data:
+python3 tools/build-co-occurrence.py
+python3 tools/build-corpus-timeline.py
+
+Step 4 — Deploy everything to gh-pages:
+python3 tools/push-to-ghpages.py
+
+This will:
+- Reapply 54 classification rules to all clips
+- Regenerate all API JSON files (brands, players, sponsors, equipment, venue-tech)
+- Rebuild the co-occurrence graph and corpus timeline
+- Push corpus + dashboards + API data to gh-pages branch
+- Live at: https://picklebill.github.io/pickle-daas-data/
+
+Verify after:
+curl -s https://picklebill.github.io/pickle-daas-data/api/feed.json | python3 -m json.tool | head -10
+</code></pre>
+<br>
+<hr>
+<br>
+<h2>5. INVESTOR DEMO POLISH SNIPPET</h2>
+<p>_Paste to polish the investor walkthrough._</p>
+<br>
+<pre><code>
+Polish the investor walkthrough page for Pickle DaaS.
+
+Read: output/dashboards/investor-walkthrough-v3.2.html
+
+Focus areas:
+1. Video overlay badges — make them look like "floating instrument readouts" not tooltips. Frosted glass with gradient border, accent line on left, soft glow on appearance. More compact than current.
+2. Copy audit — tighten every headline and description. No filler. Every sentence advances the argument.
+3. Clickability — every card/stat/proof point should link somewhere or explain itself on hover.
+4. Narrative flow — 9 sections should tell: Hook → What we see → Numbers → Who pays → Moat → Engine → Self-critique → Portfolio → Ask. Each section CTA should say "Next: [section name]".
+5. Revenue simulator — add subtle green glow when ARR crosses $1M. Larger output numbers.
+</code></pre>
+<br>
+</body></html>
