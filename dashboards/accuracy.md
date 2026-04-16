@@ -1,12 +1,12 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T05:31:03.159514+00:00_
+_Generated: 2026-04-16T05:50:02.566808+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3402 clips
-- **Total analysis files on disk:** 4920 (4920 ≥500 bytes)
-- **Minutes since last analysis:** 12.0
-- **Human flags:** 71 total (64 real, rest seed)
+- **Corpus on gh-pages:** 3415 clips
+- **Total analysis files on disk:** 4948 (4948 ≥500 bytes)
+- **Minutes since last analysis:** 5.6
+- **Human flags:** 79 total (72 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
@@ -52,12 +52,12 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 71
-- **Real (non-seed) flags:** 64
+- **Total flags captured:** 79
+- **Real (non-seed) flags:** 72
 
 Flags by field:
-- `badge_predictions` — 60 flag(s)
-- `overall_accuracy` — 5 flag(s)
+- `badge_predictions` — 67 flag(s)
+- `overall_accuracy` — 6 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
@@ -65,9 +65,9 @@ Flags by field:
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 18% precision — 1184 false positives out of 1
-- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 24% precision — 922 false positives out of 12
-- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 7% precision — 787 false positives out of 849
+- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 17% precision — 1260 false positives out of 1
+- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 23% precision — 984 false positives out of 12
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 7% precision — 828 false positives out of 890
 - `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Rally Master' was wrongly predicted: 005fc717-736, 0065b84d
 - `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Steady Eddie' was wrongly predicted: 005fc717-736, 0065b84d
 
