@@ -790,7 +790,11 @@ function scrubTimeline(idx){
   idx = parseInt(idx);
   if (!timelineData[idx]) return;
   const pt = timelineData[idx];
-  document.getElementById('tm-date').textContent = pt.date;
+  const isProjected = pt.source === 'projected';
+  const isHistory = idx < timelineData.length - 1 && !isProjected;
+  const dateEl = document.getElementById('tm-date');
+  dateEl.textContent = pt.date + (isProjected ? ' (projected)' : '');
+  dateEl.style.color = isProjected ? 'rgba(189,147,249,.9)' : isHistory ? 'rgba(241,196,15,.9)' : '';
   // Update stat grid values to this point in time
   const cells = document.querySelectorAll('.sg-v');
   const vals = [pt.clips, pt.unique_brands, pt.total_detections, null, null, null, null, null];
@@ -799,7 +803,7 @@ function scrubTimeline(idx){
       const suf = c.dataset.suf || '';
       c.textContent = vals[i].toLocaleString() + suf;
       c.style.transition = 'color .3s';
-      c.style.color = idx < timelineData.length - 1 ? 'rgba(241,196,15,.9)' : ''; // gold when scrubbing history
+      c.style.color = isProjected ? 'rgba(189,147,249,.9)' : isHistory ? 'rgba(241,196,15,.9)' : '';
     }
   });
 }
