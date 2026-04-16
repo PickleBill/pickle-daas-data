@@ -1,12 +1,12 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T16:20:34.597111+00:00_
+_Generated: 2026-04-16T16:22:43.132765+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3832 clips
+- **Corpus on gh-pages:** 3849 clips
 - **Total analysis files on disk:** 5358 (5358 ≥500 bytes)
-- **Minutes since last analysis:** 0.3
-- **Human flags:** 102 total (95 real, rest seed)
+- **Minutes since last analysis:** 2.4
+- **Human flags:** 109 total (102 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
@@ -52,12 +52,12 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 102
-- **Real (non-seed) flags:** 95
+- **Total flags captured:** 109
+- **Real (non-seed) flags:** 102
 
 Flags by field:
-- `badge_predictions` — 88 flag(s)
-- `overall_accuracy` — 8 flag(s)
+- `badge_predictions` — 94 flag(s)
+- `overall_accuracy` — 9 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
@@ -65,11 +65,11 @@ Flags by field:
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 16% precision — 1459 false positives out of 1
-- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 22% precision — 1132 false positives out of 1
-- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 6% precision — 952 false positives out of 101
-- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 171 times but the model only 
-- `_systemic_Fr...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'Fresh Fit' was awarded by Courtana 125 times but the model only
+- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 16% precision — 1482 false positives out of 1
+- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 22% precision — 1153 false positives out of 1
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 6% precision — 964 false positives out of 103
+- `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Rally Master' was wrongly predicted: 005fc717-736, 0065b84d
+- `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Steady Eddie' was wrongly predicted: 005fc717-736, 0065b84d
 
 ---
 
