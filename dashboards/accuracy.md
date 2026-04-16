@@ -1,33 +1,33 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-16T12:53:17.518667+00:00_
+_Generated: 2026-04-16T14:37:22.107708+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 3753 clips
-- **Total analysis files on disk:** 5276 (5276 ≥500 bytes)
-- **Minutes since last analysis:** 0.2
+- **Corpus on gh-pages:** 3808 clips
+- **Total analysis files on disk:** 5341 (5341 ≥500 bytes)
+- **Minutes since last analysis:** 3.9
 - **Human flags:** 92 total (85 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
-- **Precision:** 28.8%  (1652 TP / 5740 predicted)
-- **Recall:**    69.6%  (1652 TP / 2372 awarded)
-- **F1 Score:**  40.7%
-- **Predictions analyzed:** 10210 across 3532 unique clips
+- **Precision:** 28.9%  (1704 TP / 5896 predicted)
+- **Recall:**    70.0%  (1704 TP / 2434 awarded)
+- **F1 Score:**  40.9%
+- **Predictions analyzed:** 10424 across 3615 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
 
 | Badge | TP | FP | FN | Precision | Recall | F1 |
 |-------|---:|---:|---:|----------:|-------:|---:|
-| Rally Master | 273 | 1415 | 33 | 16% | 89% | 27% |
-| Steady Eddie | 313 | 1100 | 50 | 22% | 86% | 35% |
-| Kitchen King | 65 | 926 | 0 | 7% | 100% | 12% |
-| New Look | 12 | 1 | 155 | 92% | 7% | 13% |
-| Net Magnet | 114 | 24 | 21 | 83% | 84% | 84% |
-| Epic Rally | 72 | 83 | 3 | 46% | 96% | 63% |
+| Rally Master | 284 | 1459 | 33 | 16% | 90% | 28% |
+| Steady Eddie | 322 | 1132 | 50 | 22% | 87% | 35% |
+| Kitchen King | 66 | 952 | 0 | 6% | 100% | 12% |
+| New Look | 13 | 1 | 158 | 93% | 8% | 14% |
+| Net Magnet | 118 | 24 | 22 | 83% | 84% | 84% |
+| Epic Rally | 73 | 83 | 4 | 47% | 95% | 63% |
 | Dink Machine | 0 | 144 | 0 | 0% | 0% | 0% |
-| Fresh Fit | 18 | 0 | 103 | 100% | 15% | 26% |
+| Fresh Fit | 20 | 0 | 105 | 100% | 16% | 28% |
 | Two Up Pressure | 91 | 0 | 29 | 100% | 76% | 86% |
 | Consistency King | 0 | 120 | 0 | 0% | 0% | 0% |
 
@@ -39,8 +39,8 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands ⚠️ | 385/500 | 77% |
-| badge_intelligence.predicted_badges | 488/500 | 98% |
+| brand_detection.brands ⚠️ | 393/500 | 79% |
+| badge_intelligence.predicted_badges | 485/500 | 97% |
 | clip_meta.clip_quality_score | 500/500 | 100% |
 | clip_meta.viral_potential_score | 500/500 | 100% |
 | clip_meta.watchability_score | 500/500 | 100% |
