@@ -3,555 +3,738 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pickle DaaS — Showcase Portal v3.3</title>
+<title>Pickle DaaS — Intelligence Portal</title>
+<meta name="description" content="Pickleball video classified into intelligence. Three revenue lanes. 54 rules. Every detection traceable.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ── RESET ─────────────────────────────────────────── */
+/* ═══════════════════════════════════════════
+   SHOWCASE PORTAL — v3.3 Design System
+   Near-black blue-purple bg · noise texture ·
+   glass morphism · 7-tier text · color chapters
+═══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:'Manrope',system-ui,sans-serif;background:#08080C;color:rgba(255,255,255,0.70);line-height:1.6;overflow-x:hidden;min-height:100vh}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --c-inv:#6EEFC0;--c-inv-g:rgba(110,239,192,.12);--c-inv-d:rgba(110,239,192,.06);
+  --c-brand:#BD93F9;--c-brand-g:rgba(189,147,249,.12);--c-brand-d:rgba(189,147,249,.06);
+  --c-venue:#FFB86C;--c-venue-g:rgba(255,184,108,.12);--c-venue-d:rgba(255,184,108,.06);
+  --c-explore:#6BA3FF;--c-explore-g:rgba(107,163,255,.12);--c-explore-d:rgba(107,163,255,.06);
+  --c-tools:#F1C40F;--c-tools-g:rgba(241,196,15,.12);--c-tools-d:rgba(241,196,15,.06);
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t2);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;min-height:100vh}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
 
-/* ── NOISE TEXTURE ─────────────────────────────────── */
-.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.04}
+/* ── Noise overlay ── */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
 
-/* ── AMBIENT BLOBS ─────────────────────────────────── */
-.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px)}
-.blob-1{width:520px;height:520px;background:radial-gradient(circle,#6EEFC0 0%,transparent 70%);top:-10%;left:-8%;opacity:0.035;animation:drift1 72s ease-in-out infinite alternate}
-.blob-2{width:460px;height:460px;background:radial-gradient(circle,#6BA3FF 0%,transparent 70%);bottom:-5%;right:-6%;opacity:0.03;animation:drift2 78s ease-in-out infinite alternate}
-.blob-3{width:400px;height:400px;background:radial-gradient(circle,#BD93F9 0%,transparent 70%);top:40%;left:50%;opacity:0.04;animation:drift3 86s ease-in-out infinite alternate}
-@keyframes drift1{0%{transform:translate(0,0)}100%{transform:translate(60px,40px)}}
-@keyframes drift2{0%{transform:translate(0,0)}100%{transform:translate(-50px,-30px)}}
-@keyframes drift3{0%{transform:translate(-50%,-50%)}100%{transform:translate(calc(-50% + 40px),calc(-50% - 50px))}}
+/* ── Ambient blobs ── */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:var(--c-inv);opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:var(--c-explore);opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:var(--c-brand);opacity:.03;animation:bd3 72s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
 
-/* ── TEXT TIERS ────────────────────────────────────── */
-.t1{color:rgba(255,255,255,0.92)}
-.t2{color:rgba(255,255,255,0.70)}
-.t3{color:rgba(255,255,255,0.50)}
-.t4{color:rgba(255,255,255,0.40)}
-.t5{color:rgba(255,255,255,0.30)}
-.t6{color:rgba(255,255,255,0.25)}
-.t7{color:rgba(255,255,255,0.20)}
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
 
-/* ── FONTS ─────────────────────────────────────────── */
-.font-display{font-family:'Manrope',system-ui,sans-serif;font-weight:800;letter-spacing:-0.04em}
-.font-data{font-family:'Red Hat Mono',monospace}
-.font-code{font-family:'JetBrains Mono',monospace}
+/* ── Reveal system ── */
+[data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none;transition:none}}
 
-/* ── GLASS ─────────────────────────────────────────── */
-.glass{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+/* ══ STATUS STRIP ══ */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--c-inv);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--c-inv);box-shadow:0 0 10px var(--c-inv);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--c-inv-g);color:var(--c-inv);border:1px solid rgba(110,239,192,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--c-inv);border-color:rgba(110,239,192,.3)}
+.status-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.status-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
-/* ── GRADIENT TEXT ─────────────────────────────────── */
-.grad-text{-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* ══ HERO ══ */
+.hero{padding:clamp(64px,10vw,120px) 0 clamp(40px,6vw,64px);position:relative}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--c-inv)}
+.hero h1{font-size:clamp(2.6rem,5.8vw,4.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;max-width:880px}
+.grad-text{background:linear-gradient(135deg,var(--c-inv),var(--c-explore));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:620px;line-height:1.7}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hero-pill .hp-v{font-size:20px;font-weight:800;color:var(--t1);font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums}
+.hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5);font-family:'Red Hat Mono',monospace}
+.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:var(--c-inv);opacity:.035;pointer-events:none}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;margin-top:32px;padding:14px 32px;background:linear-gradient(135deg,rgba(110,239,192,.12),rgba(107,163,255,.12));border:1px solid rgba(110,239,192,.25);border-radius:var(--r);color:var(--c-inv);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s var(--ease);letter-spacing:.02em}
+.hero-cta:hover{border-color:rgba(110,239,192,.5);transform:translateY(-2px);box-shadow:0 8px 32px rgba(110,239,192,.15)}
+.hero-cta span{transition:transform .2s var(--ease)}
+.hero-cta:hover span{transform:translateX(4px)}
 
-/* ── INTERACTION STATES ────────────────────────────── */
-.interactive{transition:transform 0.2s ease,box-shadow 0.2s ease,border-color 0.2s ease}
-.interactive:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.10)}
-.interactive:active{transform:scale(0.97)}
-.interactive:focus-visible{outline:2px solid rgba(107,163,255,0.6);outline-offset:2px}
+/* ══ SECTION HEADINGS ══ */
+.sec-head{margin-bottom:28px}
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sec-eyebrow::before{content:'';width:16px;height:1px}
+.sec-title{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
 
-/* ── SCROLL REVEAL ─────────────────────────────────── */
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity 0.7s ease,transform 0.7s ease}
-[data-reveal].revealed{opacity:1;transform:translateY(0)}
+/* ══ CARD GRID ══ */
+.card-section{margin-bottom:56px}
+.card-grid{display:grid;gap:16px}
+.card-grid.lg{grid-template-columns:repeat(2,1fr)}
+.card-grid.md{grid-template-columns:repeat(3,1fr)}
+.card-grid.sm{grid-template-columns:repeat(3,1fr)}
+.card-grid.compact{grid-template-columns:repeat(2,1fr)}
 
-/* ── REDUCED MOTION ────────────────────────────────── */
-@media(prefers-reduced-motion:reduce){
-  .blob,.pulse-dot{animation:none!important}
-  [data-reveal]{opacity:1;transform:none;transition:none}
-  .interactive{transition:none}
-  .counter{transition:none}
+/* ══ INDIVIDUAL CARDS ══ */
+.portal-card{display:flex;flex-direction:column;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .25s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease);text-decoration:none;color:inherit}
+.portal-card:hover{border-color:var(--bd-h);transform:translateY(-5px)}
+.portal-card.glow-inv:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(110,239,192,.08)}
+.portal-card.glow-brand:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(189,147,249,.08)}
+.portal-card.glow-venue:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(255,184,108,.08)}
+.portal-card.glow-explore:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(107,163,255,.08)}
+.portal-card.glow-tools:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(241,196,15,.08)}
+
+.card-stripe{height:3px;width:100%}
+.stripe-inv{background:linear-gradient(90deg,var(--c-inv),transparent)}
+.stripe-brand{background:linear-gradient(90deg,var(--c-brand),transparent)}
+.stripe-venue{background:linear-gradient(90deg,var(--c-venue),transparent)}
+.stripe-explore{background:linear-gradient(90deg,var(--c-explore),transparent)}
+.stripe-tools{background:linear-gradient(90deg,var(--c-tools),transparent)}
+
+/* Visual preview area */
+.card-preview{height:80px;position:relative;overflow:hidden}
+.card-preview.lg-preview{height:100px}
+.card-preview .preview-shape{position:absolute;inset:0}
+
+/* Investor: sweeping teal-to-blue arcs */
+.preview-investor-walk .preview-shape{
+  background:
+    radial-gradient(ellipse 70% 120% at 20% 80%, rgba(110,239,192,.14) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 100% at 80% 20%, rgba(107,163,255,.1) 0%, transparent 50%);
+}
+.preview-investor-walk .preview-shape::after{
+  content:'';position:absolute;bottom:0;left:10%;width:80%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(110,239,192,.25),rgba(107,163,255,.2),transparent);
+}
+/* Brand intelligence: purple nebula clusters */
+.preview-brand-intel .preview-shape{
+  background:
+    radial-gradient(circle 60px at 30% 50%, rgba(189,147,249,.18) 0%, transparent 70%),
+    radial-gradient(circle 40px at 60% 40%, rgba(189,147,249,.12) 0%, transparent 60%),
+    radial-gradient(circle 30px at 75% 65%, rgba(110,239,192,.08) 0%, transparent 50%);
+}
+/* Equipment: stacked horizontal bars */
+.preview-equipment .preview-shape{
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(189,147,249,.06) 14px, rgba(189,147,249,.06) 16px);
+}
+.preview-equipment .preview-shape::after{
+  content:'';position:absolute;top:20%;left:10%;width:60%;height:4px;border-radius:2px;
+  background:linear-gradient(90deg,rgba(189,147,249,.3),rgba(189,147,249,.05));
+  box-shadow:0 18px 0 rgba(189,147,249,.2),0 36px 0 rgba(189,147,249,.12);
+}
+/* Sponsor: constellation dots */
+.preview-sponsor .preview-shape{
+  background:radial-gradient(circle 2px at 25% 35%, rgba(189,147,249,.4) 0%, transparent 3px),
+    radial-gradient(circle 2px at 55% 25%, rgba(189,147,249,.3) 0%, transparent 3px),
+    radial-gradient(circle 3px at 70% 55%, rgba(189,147,249,.35) 0%, transparent 4px),
+    radial-gradient(circle 2px at 40% 65%, rgba(110,239,192,.25) 0%, transparent 3px),
+    radial-gradient(circle 2px at 85% 40%, rgba(107,163,255,.3) 0%, transparent 3px);
+}
+.preview-sponsor .preview-shape::after{
+  content:'';position:absolute;top:35%;left:25%;width:45%;height:1px;
+  background:linear-gradient(90deg,rgba(189,147,249,.15),rgba(107,163,255,.15));transform:rotate(-8deg);
+}
+/* Brand constellation: network graph */
+.preview-constellation .preview-shape{
+  background:
+    radial-gradient(circle 4px at 30% 40%, rgba(189,147,249,.35) 0%, transparent 5px),
+    radial-gradient(circle 6px at 60% 30%, rgba(110,239,192,.25) 0%, transparent 7px),
+    radial-gradient(circle 3px at 75% 60%, rgba(107,163,255,.3) 0%, transparent 4px),
+    radial-gradient(circle 5px at 45% 70%, rgba(189,147,249,.2) 0%, transparent 6px),
+    radial-gradient(circle 3px at 20% 65%, rgba(255,184,108,.2) 0%, transparent 4px);
+}
+.preview-constellation .preview-shape::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(135deg, transparent 28%, rgba(189,147,249,.06) 29%, rgba(189,147,249,.06) 29.5%, transparent 30%),
+    linear-gradient(45deg, transparent 38%, rgba(110,239,192,.05) 39%, rgba(110,239,192,.05) 39.5%, transparent 40%);
+}
+/* Venue: warm amber grid */
+.preview-venue .preview-shape{
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 80%, rgba(255,184,108,.1) 0%, transparent 70%);
+}
+.preview-venue .preview-shape::after{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(255,184,108,.04) 48px, rgba(255,184,108,.04) 50px),
+    repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,184,108,.04) 48px, rgba(255,184,108,.04) 50px);
+}
+/* Evidence wall: tiled grid with small rects */
+.preview-evidence .preview-shape{
+  background:repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,184,108,.04) 28px, rgba(255,184,108,.04) 30px),
+    repeating-linear-gradient(0deg, transparent, transparent 22px, rgba(255,184,108,.04) 22px, rgba(255,184,108,.04) 24px);
+}
+.preview-evidence .preview-shape::after{
+  content:'';position:absolute;top:15%;left:12%;width:20px;height:14px;border-radius:3px;
+  background:rgba(255,184,108,.15);
+  box-shadow:30px 0 0 rgba(255,184,108,.12),60px 0 0 rgba(255,184,108,.1),0 24px 0 rgba(255,184,108,.1),30px 24px 0 rgba(255,184,108,.13),60px 24px 0 rgba(255,184,108,.08);
+}
+/* Player DNA: double helix hint */
+.preview-player-dna .preview-shape{
+  background:
+    radial-gradient(ellipse 60% 100% at 40% 50%, rgba(107,163,255,.1) 0%, transparent 60%);
+}
+.preview-player-dna .preview-shape::after{
+  content:'';position:absolute;top:20%;left:30%;width:40%;height:60%;
+  border:2px solid rgba(107,163,255,.08);border-radius:50%;
+  box-shadow:10px -5px 0 rgba(107,163,255,.06);
+}
+/* Player intel: data columns */
+.preview-player-intel .preview-shape{
+  background:repeating-linear-gradient(90deg, transparent, transparent 32px, rgba(107,163,255,.05) 32px, rgba(107,163,255,.05) 34px);
+}
+.preview-player-intel .preview-shape::after{
+  content:'';position:absolute;bottom:10%;left:15%;width:6px;height:40%;border-radius:3px;
+  background:rgba(107,163,255,.2);
+  box-shadow:14px 10% 0 rgba(107,163,255,.15),28px 5% 0 rgba(107,163,255,.22),42px 15% 0 rgba(107,163,255,.12),56px 8% 0 rgba(107,163,255,.18);
+}
+/* Story hub: flowing lines */
+.preview-story .preview-shape{
+  background:
+    linear-gradient(135deg, transparent 40%, rgba(107,163,255,.06) 50%, transparent 60%),
+    linear-gradient(225deg, transparent 30%, rgba(110,239,192,.05) 45%, transparent 55%);
+}
+/* Classifier: queue dots */
+.preview-classifier .preview-shape{
+  background:
+    radial-gradient(circle 3px at 20% 50%, rgba(241,196,15,.25) 0%, transparent 4px),
+    radial-gradient(circle 3px at 35% 50%, rgba(241,196,15,.2) 0%, transparent 4px),
+    radial-gradient(circle 3px at 50% 50%, rgba(241,196,15,.15) 0%, transparent 4px),
+    radial-gradient(circle 3px at 65% 50%, rgba(241,196,15,.1) 0%, transparent 4px),
+    radial-gradient(circle 3px at 80% 50%, rgba(241,196,15,.08) 0%, transparent 4px);
+}
+/* Idea lab: scattered sparks */
+.preview-ideas .preview-shape{
+  background:
+    radial-gradient(circle 2px at 30% 30%, rgba(241,196,15,.3) 0%, transparent 3px),
+    radial-gradient(circle 3px at 55% 55%, rgba(241,196,15,.2) 0%, transparent 4px),
+    radial-gradient(circle 2px at 70% 35%, rgba(241,196,15,.25) 0%, transparent 3px),
+    radial-gradient(circle 2px at 40% 70%, rgba(241,196,15,.15) 0%, transparent 3px);
 }
 
-/* ── SECTION DIVIDER ───────────────────────────────── */
-.divider{height:1px;max-width:120px;margin:0 auto;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)}
+.card-body{padding:16px 18px 14px;flex:1;display:flex;flex-direction:column}
+.card-body.compact-body{padding:12px 16px 10px}
+.card-title{font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--t1);margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--t3);line-height:1.5;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{margin-top:10px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t5);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.card-meta .dot{width:3px;height:3px;border-radius:50%;background:var(--t6)}
+.compact-card .card-body{padding:12px 16px}
+.compact-card .card-title{font-size:14px}
+.compact-card .card-desc{font-size:12px;-webkit-line-clamp:1}
+.compact-card .card-preview{height:48px}
 
-/* ── LAYOUT ────────────────────────────────────────── */
-.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-section{padding:80px 0}
+/* ══ CLASSIFICATION ENGINE STATS ══ */
+.engine-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:12px}
+.eb-cell{background:var(--bg-s);padding:clamp(16px,2.5vw,24px) 12px;text-align:center}
+.eb-v{font-size:clamp(1.2rem,2.4vw,1.8rem);font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1;color:var(--t1)}
+.eb-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:6px}
+.engine-link{text-align:center;margin-bottom:56px}
+.engine-link a{font-size:12px;font-family:'Red Hat Mono',monospace;color:var(--t4);transition:color .2s;letter-spacing:.04em}
+.engine-link a:hover{color:var(--c-inv)}
 
-/* ── STATUS STRIP ──────────────────────────────────── */
-.status-strip{position:sticky;top:0;z-index:100;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(8,8,12,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-.status-inner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px}
-.pulse-wrap{display:flex;align-items:center;gap:6px;white-space:nowrap}
-.pulse-dot{width:7px;height:7px;border-radius:50%;background:#6EEFC0;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(110,239,192,0.4)}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(110,239,192,0)}}
-.status-stats{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto}
-.status-stat{display:flex;align-items:center;gap:4px}
-.status-stat .val{font-family:'Red Hat Mono',monospace;font-weight:600;color:rgba(255,255,255,0.70)}
-.status-stat .lbl{color:rgba(255,255,255,0.30)}
-.v-chip{font-family:'Red Hat Mono',monospace;font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.40);border:1px solid rgba(255,255,255,0.06);white-space:nowrap}
-.nav-links{display:flex;gap:12px;flex-wrap:wrap}
-.nav-links a{font-size:12px;color:rgba(255,255,255,0.35);padding:3px 8px;border-radius:4px;transition:color 0.2s,background 0.2s}
-.nav-links a:hover{color:rgba(255,255,255,0.70);background:rgba(255,255,255,0.04)}
-.nav-links a:focus-visible{outline:2px solid rgba(107,163,255,0.6);outline-offset:1px}
+/* ══ FOOTER ══ */
+.site-footer{border-top:1px solid var(--bd);padding:32px 0 40px}
+.footer-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.footer-brand{font-size:12px;font-family:'Red Hat Mono',monospace;color:var(--t5);letter-spacing:.06em}
+.footer-links{display:flex;gap:16px;font-size:12px;font-family:'Red Hat Mono',monospace}
+.footer-links a{color:var(--t4);transition:color .2s}
+.footer-links a:hover{color:var(--c-inv)}
+.compare-toggle{cursor:pointer;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);padding:6px 0;transition:color .2s;border:none;background:none;letter-spacing:.04em}
+.compare-toggle:hover{color:var(--t3)}
+.compare-panel{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+.compare-panel.open{max-height:400px}
+.compare-inner{padding:16px 0;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);line-height:2}
+.compare-inner a{color:var(--t4);text-decoration:underline;text-underline-offset:3px;transition:color .2s}
+.compare-inner a:hover{color:var(--c-inv)}
 
-/* ── HERO ──────────────────────────────────────────── */
-.hero{padding:100px 0 80px;text-align:center}
-.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(11px,1.2vw,13px);letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.30);margin-bottom:20px}
-.hero-headline{font-family:'Manrope',system-ui,sans-serif;font-weight:800;letter-spacing:-0.04em;font-size:clamp(2.8rem,6vw,5.2rem);line-height:1.05;color:rgba(255,255,255,0.92);margin-bottom:24px;max-width:900px;margin-left:auto;margin-right:auto}
-.hero-headline .grad{background:linear-gradient(135deg,#6EEFC0,#6BA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,0.50);max-width:640px;margin:0 auto 40px;line-height:1.5}
-.hero-stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:40px}
-.stat-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;font-size:14px}
-.stat-pill .num{font-family:'Red Hat Mono',monospace;font-weight:700;font-size:18px;color:rgba(255,255,255,0.92)}
-.stat-pill .label{color:rgba(255,255,255,0.40);font-size:13px}
-.hero-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;color:rgba(255,255,255,0.92);background:linear-gradient(135deg,rgba(110,239,192,0.12),rgba(107,163,255,0.12));border:1px solid rgba(110,239,192,0.20);transition:all 0.2s}
-.hero-cta:hover{background:linear-gradient(135deg,rgba(110,239,192,0.18),rgba(107,163,255,0.18));border-color:rgba(110,239,192,0.35);transform:translateY(-1px);box-shadow:0 4px 20px rgba(110,239,192,0.1)}
-.hero-cta:active{transform:scale(0.97)}
-.hero-cta:focus-visible{outline:2px solid rgba(110,239,192,0.6);outline-offset:2px}
+/* ══ DIVIDER ══ */
+.divider{width:120px;height:1px;margin:0 auto 56px;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
 
-/* ── EYEBROW ───────────────────────────────────────── */
-.eyebrow{font-family:'Red Hat Mono',monospace;font-size:12px;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.30);margin-bottom:16px}
-
-/* ── FEATURED SECTION ──────────────────────────────── */
-.featured-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
-.featured-card{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;position:relative;padding:0;min-height:260px}
-.featured-card .accent-stripe{height:3px;width:100%;flex-shrink:0}
-.featured-card .card-body{padding:28px 24px;flex:1;display:flex;flex-direction:column}
-.featured-card .card-icon{font-size:28px;margin-bottom:12px}
-.featured-card .card-tag{display:inline-flex;align-items:center;gap:4px;font-family:'Red Hat Mono',monospace;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.35);margin-bottom:12px;width:fit-content}
-.featured-card .card-title{font-family:'Manrope',system-ui,sans-serif;font-weight:700;font-size:20px;color:rgba(255,255,255,0.92);margin-bottom:8px;letter-spacing:-0.02em}
-.featured-card .card-desc{font-size:14px;color:rgba(255,255,255,0.45);line-height:1.5;flex:1}
-.featured-card .card-link{margin-top:16px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.50);display:flex;align-items:center;gap:4px;transition:color 0.2s}
-.featured-card:hover .card-link{color:rgba(255,255,255,0.85)}
-
-/* ── ENGINE SECTION ────────────────────────────────── */
-.engine-card{border-radius:16px;padding:32px;margin-top:24px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;position:relative;overflow:hidden}
-.engine-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6BA3FF,#BD93F9)}
-.engine-stats{display:flex;gap:32px;flex-wrap:wrap;flex:1}
-.engine-stat{text-align:center;min-width:80px}
-.engine-stat .num{font-family:'Red Hat Mono',monospace;font-weight:700;font-size:28px;color:rgba(255,255,255,0.92);display:block}
-.engine-stat .lbl{font-size:12px;color:rgba(255,255,255,0.35);margin-top:2px}
-.engine-link{font-weight:600;font-size:14px;color:rgba(107,163,255,0.8);display:flex;align-items:center;gap:6px;padding:10px 20px;border-radius:10px;border:1px solid rgba(107,163,255,0.15);transition:all 0.2s;white-space:nowrap}
-.engine-link:hover{background:rgba(107,163,255,0.08);border-color:rgba(107,163,255,0.30)}
-.engine-link:active{transform:scale(0.97)}
-.engine-link:focus-visible{outline:2px solid rgba(107,163,255,0.6);outline-offset:2px}
-
-/* ── EXPLORER GRID ─────────────────────────────────── */
-.explorer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
-.explorer-card{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;padding:0;min-height:180px}
-.explorer-card .accent-stripe{height:2px;width:100%;flex-shrink:0}
-.explorer-card .card-body{padding:24px 20px;flex:1;display:flex;flex-direction:column}
-.explorer-card .card-tag{font-family:'Red Hat Mono',monospace;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.30);margin-bottom:10px}
-.explorer-card .card-title{font-family:'Manrope',system-ui,sans-serif;font-weight:700;font-size:17px;color:rgba(255,255,255,0.88);margin-bottom:6px;letter-spacing:-0.01em}
-.explorer-card .card-desc{font-size:13px;color:rgba(255,255,255,0.40);line-height:1.45;flex:1}
-.explorer-card .card-link{margin-top:12px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:4px;transition:color 0.2s}
-.explorer-card:hover .card-link{color:rgba(255,255,255,0.80)}
-
-/* ── FALLBACK SECTION ──────────────────────────────── */
-.fallback-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:20px}
-.fallback-card{border-radius:12px;padding:20px 18px;opacity:0.7;display:flex;flex-direction:column;transition:opacity 0.2s,transform 0.2s,box-shadow 0.2s}
-.fallback-card:hover{opacity:0.9;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
-.fallback-card:active{transform:scale(0.97)}
-.fallback-card:focus-visible{outline:2px solid rgba(107,163,255,0.6);outline-offset:2px}
-.fallback-card .f-tag{font-family:'Red Hat Mono',monospace;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.20);margin-bottom:8px}
-.fallback-card .f-title{font-weight:600;font-size:14px;color:rgba(255,255,255,0.55);line-height:1.35}
-
-/* ── FOOTER ────────────────────────────────────────── */
-.site-footer{padding:48px 0 40px;text-align:center;border-top:1px solid rgba(255,255,255,0.04)}
-.footer-brand{font-family:'Red Hat Mono',monospace;font-size:13px;color:rgba(255,255,255,0.25);margin-bottom:12px}
-.footer-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
-.footer-links a{font-size:13px;color:rgba(255,255,255,0.30);transition:color 0.2s}
-.footer-links a:hover{color:rgba(255,255,255,0.60)}
-.footer-links a:focus-visible{outline:2px solid rgba(107,163,255,0.6);outline-offset:2px}
-
-/* ── MOBILE ────────────────────────────────────────── */
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){
+  .card-grid.lg,.card-grid.md{grid-template-columns:repeat(2,1fr)}
+  .card-grid.sm{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:768px){
-  .status-inner{gap:8px;font-size:12px}
-  .status-stats{margin-left:0;width:100%}
-  .nav-links{display:none}
-  .hero{padding:72px 0 56px}
-  .featured-grid{grid-template-columns:1fr}
-  .explorer-grid{grid-template-columns:1fr}
-  .engine-card{flex-direction:column;align-items:flex-start;gap:20px}
-  .engine-stats{gap:20px}
-  section{padding:56px 0}
-  .fallback-grid{grid-template-columns:1fr 1fr}
+  .card-grid.lg,.card-grid.md,.card-grid.sm,.card-grid.compact{grid-template-columns:1fr}
+  .engine-bar{grid-template-columns:repeat(2,1fr)}
+  .status-inner{justify-content:center;text-align:center}
+  .hero h1{font-size:clamp(2rem,7vw,3.2rem)}
+  .footer-top{flex-direction:column;text-align:center}
 }
 @media(max-width:480px){
-  .hero-stats{flex-direction:column;align-items:center}
-  .stat-pill{width:100%;justify-content:center}
-  .engine-stats{flex-direction:column;align-items:flex-start}
-  .fallback-grid{grid-template-columns:1fr}
+  .hero-pills{flex-direction:column}
+  .engine-bar{grid-template-columns:1fr 1fr}
 }
 
-/* ── STAGGER CHILDREN ──────────────────────────────── */
-[data-reveal-stagger]>[data-reveal]{transition-delay:calc(var(--i,0)*100ms)}
+/* ══ REDUCED MOTION ══ */
+@media(prefers-reduced-motion:reduce){
+  .blob,.b1,.b2,.b3{animation:none!important}
+  .sd{animation:none!important;opacity:1}
+  .portal-card{transition:none}
+  .hero-cta{transition:none}
+  [data-reveal]{opacity:1;transform:none;transition:none}
+}
 </style>
 </head>
 <body>
 
 <!-- Noise texture -->
-<svg class="noise" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-  <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/></filter>
-  <rect width="100%" height="100%" filter="url(#noise)"/>
-</svg>
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
 
 <!-- Ambient blobs -->
-<div class="blob blob-1" aria-hidden="true"></div>
-<div class="blob blob-2" aria-hidden="true"></div>
-<div class="blob blob-3" aria-hidden="true"></div>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
-<!-- ═══ STATUS STRIP ═══ -->
-<header class="status-strip" role="banner">
-  <div class="wrap status-inner">
-    <span class="pulse-wrap">
-      <span class="pulse-dot" aria-hidden="true"></span>
-      <span class="t3 font-data" style="font-size:12px">LIVE</span>
-      <span class="t5 font-data" style="font-size:12px" id="strip-date"></span>
-    </span>
-    <div class="status-stats">
-      <span class="status-stat"><span class="val font-data" id="strip-clips">--</span><span class="lbl"> clips</span></span>
-      <span class="status-stat"><span class="val font-data" id="strip-rules">--</span><span class="lbl"> rules</span></span>
-      <span class="status-stat"><span class="val font-data" id="strip-coverage">--</span><span class="lbl">% coverage</span></span>
+<div class="page">
+
+<!-- ══════════════ STATUS STRIP ══════════════ -->
+<header class="status" id="status">
+  <div class="shell">
+    <div class="status-inner">
+      <div class="status-left">
+        <span><span class="sd"></span> <em>Live</em></span>
+        <span id="status-date"></span>
+        <span><em id="s-clips">3,588</em> clips</span>
+        <span><em id="s-rules">54</em> rules</span>
+        <span><em id="s-cov">91.9</em>% coverage</span>
+        <span class="v-chip">v3.3</span>
+      </div>
+      <nav class="status-right">
+        <a href="#investors">Investors</a>
+        <a href="#brands">Brands</a>
+        <a href="#venues">Venues</a>
+        <a href="#explore">Explore</a>
+      </nav>
     </div>
-    <span class="v-chip">v3.3</span>
-    <nav class="nav-links" aria-label="Quick navigation">
-      <a href="brand-intelligence-v3.2.html">Brands</a>
-      <a href="investor-walkthrough-v3.2.html">Investor</a>
-      <a href="evidence-wall-v3.html">Evidence</a>
-      <a href="equipment-performance-v3.1.html">Equipment</a>
-      <a href="classifier-queue.html">Classifier</a>
-    </nav>
   </div>
 </header>
 
-<!-- ═══ HERO ═══ -->
-<section class="hero" data-reveal>
-  <div class="wrap">
-    <p class="hero-eyebrow">PICKLE DAAS SHOWCASE</p>
-    <h1 class="hero-headline">Pickleball video, <span class="grad">classified into intelligence.</span></h1>
-    <p class="hero-sub">Three revenue lanes. 54 human-approved rules. Every detection traceable.</p>
-
-    <div class="hero-stats" data-reveal>
-      <div class="stat-pill glass">
-        <span class="num" data-counter="clips">0</span>
-        <span class="label">clips</span>
-      </div>
-      <div class="stat-pill glass">
-        <span class="num" data-counter="brands">0</span>
-        <span class="label">brands</span>
-      </div>
-      <div class="stat-pill glass">
-        <span class="num" data-counter="rules">0</span>
-        <span class="label">rules</span>
-      </div>
-      <div class="stat-pill glass">
-        <span class="num" data-counter="coverage" data-suffix="%">0</span>
-        <span class="label">coverage</span>
-      </div>
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="shell">
+    <div class="hero-glow"></div>
+    <div class="hero-eyebrow">Pickle DaaS</div>
+    <h1>Pickleball video, <span class="grad-text">classified into intelligence.</span></h1>
+    <p class="hero-sub">Three revenue lanes. 54 rules. Every detection traceable.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><div><div class="hp-v" data-count="3588" id="h-clips">0</div><div class="hp-l">Clips</div></div></div>
+      <div class="hero-pill"><div><div class="hp-v" data-count="358" id="h-brands">0</div><div class="hp-l">Brands</div></div></div>
+      <div class="hero-pill"><div><div class="hp-v" data-count="54" id="h-rules">0</div><div class="hp-l">Rules</div></div></div>
+      <div class="hero-pill"><div><div class="hp-v" data-count="91.9" data-decimal="true" id="h-cov">0</div><div class="hp-l">% Coverage</div></div></div>
     </div>
-
-    <a href="brand-intelligence-v3.2.html" class="hero-cta">Explore Brand Intelligence <span aria-hidden="true">&rarr;</span></a>
+    <a href="#investors" class="hero-cta">Start exploring <span>&rarr;</span></a>
   </div>
 </section>
 
-<div class="wrap"><div class="divider"></div></div>
+<div class="divider"></div>
 
-<!-- ═══ FEATURED SECTION ═══ -->
-<section>
-  <div class="wrap">
-    <p class="eyebrow" data-reveal>V3.3 &middot; FEATURED</p>
-    <div class="featured-grid" data-reveal-stagger>
-
-      <a href="brand-intelligence-v3.2.html" class="featured-card glass interactive" data-reveal style="--i:0" tabindex="0">
-        <div class="accent-stripe" style="background:linear-gradient(90deg,#6EEFC0,#6BA3FF)"></div>
+<!-- ══════════════ FOR INVESTORS ══════════════ -->
+<section class="card-section" id="investors" data-reveal>
+  <div class="shell">
+    <div class="sec-head">
+      <div class="sec-eyebrow" style="--ey-color:var(--c-inv)"><span style="display:inline-block;width:16px;height:1px;background:var(--c-inv)"></span> For Investors</div>
+      <div class="sec-title" style="color:var(--t1)">The full picture, end to end</div>
+    </div>
+    <div class="card-grid lg">
+      <!-- Investor Walkthrough -->
+      <a href="investor-walkthrough-v3.2.html" class="portal-card glow-inv">
+        <div class="card-stripe stripe-inv"></div>
+        <div class="card-preview lg-preview preview-investor-walk"><div class="preview-shape"></div></div>
         <div class="card-body">
-          <div class="card-icon" aria-hidden="true">&#x1F50D;</div>
-          <span class="card-tag">v3.3 &middot; Intel</span>
-          <h2 class="card-title">Brand Intelligence</h2>
-          <p class="card-desc">Equipment exposure, brand frequency, and sponsorship signals across the entire video corpus.</p>
-          <span class="card-link">Open dashboard <span aria-hidden="true">&rarr;</span></span>
+          <div class="card-title">Investor Walkthrough</div>
+          <div class="card-desc">Guided tour of the classification engine, revenue model, and proof points. Start here for the full thesis.</div>
+          <div class="card-meta"><span id="m-clips-1">3,588 clips</span><span class="dot"></span><span id="m-brands-1">358 brands</span></div>
         </div>
       </a>
-
-      <a href="investor-walkthrough-v3.2.html" class="featured-card glass interactive" data-reveal style="--i:1" tabindex="0">
-        <div class="accent-stripe" style="background:linear-gradient(90deg,#F1C40F,#FFB86C)"></div>
+      <!-- Brand Intelligence -->
+      <a href="brand-intelligence-v3.2.html" class="portal-card glow-inv">
+        <div class="card-stripe stripe-inv"></div>
+        <div class="card-preview lg-preview preview-brand-intel"><div class="preview-shape"></div></div>
         <div class="card-body">
-          <div class="card-icon" aria-hidden="true">&#x1F4C8;</div>
-          <span class="card-tag">v3.3 &middot; Revenue</span>
-          <h2 class="card-title">Investor Walkthrough</h2>
-          <p class="card-desc">The full data story: from raw video to classified intelligence to three monetization lanes.</p>
-          <span class="card-link">Open walkthrough <span aria-hidden="true">&rarr;</span></span>
+          <div class="card-title">Brand Intelligence</div>
+          <div class="card-desc">Every brand in the corpus, classified by type and context. The core of the DaaS value prop.</div>
+          <div class="card-meta"><span id="m-brands-2">358 brands</span><span class="dot"></span><span>54 rules</span></div>
         </div>
       </a>
-
-      <a href="evidence-wall-v3.html" class="featured-card glass interactive" data-reveal style="--i:2" tabindex="0">
-        <div class="accent-stripe" style="background:linear-gradient(90deg,#FF6B6B,#BD93F9)"></div>
-        <div class="card-body">
-          <div class="card-icon" aria-hidden="true">&#x1F9F1;</div>
-          <span class="card-tag">v3.3 &middot; Tension</span>
-          <h2 class="card-title">Evidence Wall</h2>
-          <p class="card-desc">Every classification decision, shown with its source clip, rule, and confidence score. Full traceability.</p>
-          <span class="card-link">Open wall <span aria-hidden="true">&rarr;</span></span>
-        </div>
-      </a>
-
     </div>
   </div>
 </section>
 
-<div class="wrap"><div class="divider"></div></div>
-
-<!-- ═══ CLASSIFICATION ENGINE ═══ -->
-<section>
-  <div class="wrap">
-    <p class="eyebrow" data-reveal>THE ENGINE</p>
-    <div class="engine-card glass" data-reveal>
-      <div class="engine-stats">
-        <div class="engine-stat">
-          <span class="num" data-counter="rules">0</span>
-          <span class="lbl">Rules</span>
+<!-- ══════════════ FOR BRANDS ══════════════ -->
+<section class="card-section" id="brands" data-reveal>
+  <div class="shell">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-brand)"></span> For Brands</div>
+      <div class="sec-title" style="color:var(--t1)">Equipment, sponsors, and market share</div>
+    </div>
+    <div class="card-grid md">
+      <!-- Equipment Performance -->
+      <a href="equipment-performance-v3.1.html" class="portal-card glow-brand">
+        <div class="card-stripe stripe-brand"></div>
+        <div class="card-preview preview-equipment"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Equipment Performance</div>
+          <div class="card-desc">Paddle, shoe, and gear prevalence across the video corpus. Who equips the game.</div>
+          <div class="card-meta"><span>6,164 player equipment</span></div>
         </div>
-        <div class="engine-stat">
-          <span class="num" data-counter="coverage" data-suffix="%">0</span>
-          <span class="lbl">Coverage</span>
+      </a>
+      <!-- Sponsor Intelligence -->
+      <a href="brand-intelligence-v3.2.html#subtypes" class="portal-card glow-brand">
+        <div class="card-stripe stripe-brand"></div>
+        <div class="card-preview preview-sponsor"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Sponsor Intelligence</div>
+          <div class="card-desc">Signage, broadcast overlays, and sponsor presence mapped across every clip.</div>
+          <div class="card-meta"><span>121 sponsor detections</span></div>
         </div>
-        <div class="engine-stat">
-          <span class="num" data-counter="detections">0</span>
-          <span class="lbl">Detections</span>
+      </a>
+      <!-- Brand Constellation -->
+      <a href="brand-intelligence-v3.2.html#constellation" class="portal-card glow-brand">
+        <div class="card-stripe stripe-brand"></div>
+        <div class="card-preview preview-constellation"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Brand Constellation</div>
+          <div class="card-desc">The network graph of brand co-occurrence. Which brands appear together and why.</div>
+          <div class="card-meta"><span id="m-brands-3">358 brands</span><span class="dot"></span><span>4 contexts</span></div>
         </div>
-        <div class="engine-stat">
-          <span class="num" data-counter="verified">0</span>
-          <span class="lbl">Verified</span>
-        </div>
-      </div>
-      <a href="classifier-queue.html" class="engine-link">Open Classifier Queue <span aria-hidden="true">&rarr;</span></a>
+      </a>
     </div>
   </div>
 </section>
 
-<div class="wrap"><div class="divider"></div></div>
-
-<!-- ═══ EXPLORER PAGES ═══ -->
-<section>
-  <div class="wrap">
-    <p class="eyebrow" data-reveal>EXPLORER PAGES</p>
-    <div class="explorer-grid" data-reveal-stagger>
-
-      <a href="equipment-performance-v3.1.html" class="explorer-card glass interactive" data-reveal style="--i:0" tabindex="0">
-        <div class="accent-stripe" style="background:#FFB86C"></div>
+<!-- ══════════════ FOR VENUES ══════════════ -->
+<section class="card-section" id="venues" data-reveal>
+  <div class="shell">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-venue)"></span> For Venues</div>
+      <div class="sec-title" style="color:var(--t1)">Facility intelligence and evidence</div>
+    </div>
+    <div class="card-grid compact" style="max-width:900px">
+      <!-- Venue Intelligence -->
+      <a href="venue-intelligence.html" class="portal-card glow-venue">
+        <div class="card-stripe stripe-venue"></div>
+        <div class="card-preview preview-venue"><div class="preview-shape"></div></div>
         <div class="card-body">
-          <span class="card-tag">Venue</span>
-          <h3 class="card-title">Equipment Performance</h3>
-          <p class="card-desc">Paddle and equipment usage patterns, brand share, and performance correlations.</p>
-          <span class="card-link">Explore <span aria-hidden="true">&rarr;</span></span>
+          <div class="card-title">Venue Intelligence</div>
+          <div class="card-desc">Court surfaces, installed equipment, and facility-level brand data for every venue in the corpus.</div>
+          <div class="card-meta"><span>1,219 venue installs</span></div>
         </div>
       </a>
-
-      <a href="player-intelligence.html" class="explorer-card glass interactive" data-reveal style="--i:1" tabindex="0">
-        <div class="accent-stripe" style="background:#6BA3FF"></div>
+      <!-- Evidence Wall -->
+      <a href="evidence-wall-v3.3.html" class="portal-card glow-venue">
+        <div class="card-stripe stripe-venue"></div>
+        <div class="card-preview preview-evidence"><div class="preview-shape"></div></div>
         <div class="card-body">
-          <span class="card-tag">Player</span>
-          <h3 class="card-title">Player Intelligence</h3>
-          <p class="card-desc">Individual player metrics, style analysis, and match performance breakdowns.</p>
-          <span class="card-link">Explore <span aria-hidden="true">&rarr;</span></span>
+          <div class="card-title">Evidence Wall</div>
+          <div class="card-desc">Visual proof for every brand detection. Thumbnails, timestamps, and rule provenance side by side.</div>
+          <div class="card-meta"><span id="m-det-1">8,327 detections</span><span class="dot"></span><span id="m-ver-1">7,623 verified</span></div>
         </div>
       </a>
-
-      <a href="unified-data-explorer.html" class="explorer-card glass interactive" data-reveal style="--i:2" tabindex="0">
-        <div class="accent-stripe" style="background:#BD93F9"></div>
-        <div class="card-body">
-          <span class="card-tag">Sponsor</span>
-          <h3 class="card-title">Unified Data Explorer</h3>
-          <p class="card-desc">Cross-domain search across clips, brands, players, and venues in one interface.</p>
-          <span class="card-link">Explore <span aria-hidden="true">&rarr;</span></span>
-        </div>
-      </a>
-
-      <a href="player-archetypes.html" class="explorer-card glass interactive" data-reveal style="--i:3" tabindex="0">
-        <div class="accent-stripe" style="background:#6EEFC0"></div>
-        <div class="card-body">
-          <span class="card-tag">Intel</span>
-          <h3 class="card-title">Player Archetypes</h3>
-          <p class="card-desc">Behavioral clustering of play styles. Pattern-based player segmentation.</p>
-          <span class="card-link">Explore <span aria-hidden="true">&rarr;</span></span>
-        </div>
-      </a>
-
     </div>
   </div>
 </section>
 
-<div class="wrap"><div class="divider"></div></div>
-
-<!-- ═══ PREVIOUS VERSIONS ═══ -->
-<section>
-  <div class="wrap">
-    <p class="eyebrow" data-reveal>PREVIOUS VERSIONS</p>
-    <div class="fallback-grid" data-reveal-stagger>
-
-      <a href="brand-intelligence-v3.1.html" class="fallback-card glass" data-reveal style="--i:0" tabindex="0">
-        <span class="f-tag">v3.1</span>
-        <span class="f-title">Brand Intelligence v3.1</span>
+<!-- ══════════════ EXPLORE ══════════════ -->
+<section class="card-section" id="explore" data-reveal>
+  <div class="shell">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-explore)"></span> Explore</div>
+      <div class="sec-title" style="color:var(--t1)">Players, stories, and patterns</div>
+    </div>
+    <div class="card-grid sm">
+      <!-- Player DNA Lab -->
+      <a href="player-archetypes-v3.3.html" class="portal-card glow-explore">
+        <div class="card-stripe stripe-explore"></div>
+        <div class="card-preview preview-player-dna"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Player DNA Lab</div>
+          <div class="card-desc">Archetype clustering, play-style fingerprints, and equipment DNA per player.</div>
+          <div class="card-meta"><span>104 players</span></div>
+        </div>
       </a>
-
-      <a href="investor-walkthrough-v3.1.html" class="fallback-card glass" data-reveal style="--i:1" tabindex="0">
-        <span class="f-tag">v3.1</span>
-        <span class="f-title">Investor Walkthrough v3.1</span>
+      <!-- Player Intelligence -->
+      <a href="player-intelligence.html" class="portal-card glow-explore">
+        <div class="card-stripe stripe-explore"></div>
+        <div class="card-preview preview-player-intel"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Player Intelligence</div>
+          <div class="card-desc">Individual player profiles, shot tendencies, and performance signals.</div>
+          <div class="card-meta"><span>104 players</span><span class="dot"></span><span id="m-clips-2">3,588 clips</span></div>
+        </div>
       </a>
-
-      <a href="evidence-wall-v3.1.html" class="fallback-card glass" data-reveal style="--i:2" tabindex="0">
-        <span class="f-tag">v3.1</span>
-        <span class="f-title">Evidence Wall v3.1</span>
+      <!-- Story Hub -->
+      <a href="story-hub.html" class="portal-card glow-explore">
+        <div class="card-stripe stripe-explore"></div>
+        <div class="card-preview preview-story"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Story Hub</div>
+          <div class="card-desc">Narrative-ready storylines generated from the data. Ready to pitch or publish.</div>
+          <div class="card-meta"><span>Auto-generated narratives</span></div>
+        </div>
       </a>
-
-      <a href="equipment-performance.html" class="fallback-card glass" data-reveal style="--i:3" tabindex="0">
-        <span class="f-tag">v3.1</span>
-        <span class="f-title">Equipment Performance v3.1</span>
-      </a>
-
-      <a href="showcase-portal-v3.1.html" class="fallback-card glass" data-reveal style="--i:4" tabindex="0">
-        <span class="f-tag">v3.1</span>
-        <span class="f-title">Showcase Portal v3.1</span>
-      </a>
-
-      <a href="brand-intelligence-v2.html" class="fallback-card glass" data-reveal style="--i:5" tabindex="0">
-        <span class="f-tag">v2</span>
-        <span class="f-title">Brand Intelligence v2</span>
-      </a>
-
-      <a href="investor-walkthrough.html" class="fallback-card glass" data-reveal style="--i:6" tabindex="0">
-        <span class="f-tag">v2</span>
-        <span class="f-title">Investor Walkthrough v2</span>
-      </a>
-
     </div>
   </div>
 </section>
 
-<!-- ═══ FOOTER ═══ -->
+<!-- ══════════════ TOOLS ══════════════ -->
+<section class="card-section" id="tools" data-reveal>
+  <div class="shell">
+    <div class="sec-head">
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-tools)"></span> Tools</div>
+      <div class="sec-title" style="color:var(--t1)">Under the hood</div>
+    </div>
+    <div class="card-grid compact" style="max-width:900px">
+      <!-- Classifier Queue -->
+      <a href="classifier-queue.html" class="portal-card compact-card glow-tools">
+        <div class="card-stripe stripe-tools"></div>
+        <div class="card-preview preview-classifier" style="height:48px"><div class="preview-shape"></div></div>
+        <div class="card-body compact-body">
+          <div class="card-title">Classifier Queue</div>
+          <div class="card-desc">Rule editor, approval queue, and classification audit trail.</div>
+          <div class="card-meta"><span>54 rules</span><span class="dot"></span><span>91.9% coverage</span></div>
+        </div>
+      </a>
+      <!-- Idea Lab -->
+      <a href="idea-lab.html" class="portal-card compact-card glow-tools">
+        <div class="card-stripe stripe-tools"></div>
+        <div class="card-preview preview-ideas" style="height:48px"><div class="preview-shape"></div></div>
+        <div class="card-body compact-body">
+          <div class="card-title">Idea Lab</div>
+          <div class="card-desc">Research findings, strategic hypotheses, and data-driven product ideas.</div>
+          <div class="card-meta"><span id="m-ideas">37 findings</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════ CLASSIFICATION ENGINE STATS ══════════════ -->
+<section class="card-section" data-reveal>
+  <div class="shell">
+    <div class="sec-head" style="text-align:center">
+      <div class="sec-eyebrow" style="justify-content:center"><span style="display:inline-block;width:16px;height:1px;background:var(--c-inv)"></span> Classification Engine</div>
+    </div>
+    <div class="engine-bar">
+      <div class="eb-cell"><div class="eb-v" data-count="54" id="e-rules">0</div><div class="eb-l">Rules</div></div>
+      <div class="eb-cell"><div class="eb-v" data-count="91.9" data-decimal="true" id="e-cov">0%</div><div class="eb-l">Coverage</div></div>
+      <div class="eb-cell"><div class="eb-v" data-count="8327" id="e-det">0</div><div class="eb-l">Detections</div></div>
+      <div class="eb-cell"><div class="eb-v" data-count="7623" id="e-ver">0</div><div class="eb-l">Verified</div></div>
+    </div>
+    <div class="engine-link"><a href="classifier-queue.html">How was this classified? &rarr; Classifier Queue</a></div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
 <footer class="site-footer">
-  <div class="wrap">
-    <p class="footer-brand">Pickle DaaS &middot; v3.3 &middot; taxonomy v6</p>
-    <div class="footer-links">
-      <a href="classifier-queue.html">How was this classified? &rarr; Classifier Queue</a>
-      <a href="../api/feed.json">Data feed &rarr; GitHub</a>
+  <div class="shell">
+    <div class="footer-top">
+      <span class="footer-brand">Pickle DaaS &middot; v3.3 &middot; Courtana</span>
+      <div class="footer-links">
+        <a href="classifier-queue.html">How was this classified?</a>
+        <a href="https://picklebill.github.io/pickle-daas/" target="_blank" rel="noopener">Data feed &rarr; GitHub</a>
+      </div>
+    </div>
+    <button class="compare-toggle" id="compare-btn">Compare versions &darr;</button>
+    <div class="compare-panel" id="compare-panel">
+      <div class="compare-inner">
+        <strong style="color:var(--t4)">Previous versions (internal)</strong><br>
+        Showcase Portal: <a href="showcase-portal-v3.1.html">v3.1</a> &middot; <a href="showcase-portal.html">v1</a><br>
+        Investor Walkthrough: <a href="investor-walkthrough-v3.2.html">v3.2</a> &middot; <a href="investor-walkthrough-v3.1.html">v3.1</a> &middot; <a href="investor-walkthrough.html">v1</a><br>
+        Brand Intelligence: <a href="brand-intelligence-v3.2.html">v3.2</a> &middot; <a href="brand-intelligence-v3.1.html">v3.1</a> &middot; <a href="brand-intelligence-v2.html">v2</a> &middot; <a href="brand-intelligence-v3.html">v3</a><br>
+        Equipment Performance: <a href="equipment-performance-v3.1.html">v3.1</a> &middot; <a href="equipment-performance.html">v1</a><br>
+        Evidence Wall: <a href="evidence-wall-v3.3.html">v3.3</a> &middot; <a href="evidence-wall-v3.1.html">v3.1</a> &middot; <a href="evidence-wall.html">v1</a>
+      </div>
     </div>
   </div>
 </footer>
+
+</div><!-- .page -->
 
 <script>
 (function(){
   'use strict';
 
-  /* ── DATE ────────────────────────────────────── */
-  var now = new Date();
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('strip-date').textContent = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  /* ── Live date ── */
+  const d = new Date();
+  const fmt = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const el = document.getElementById('status-date');
+  if(el) el.textContent = fmt;
 
-  /* ── DEFAULTS ────────────────────────────────── */
-  var data = {
-    clips: 3570,
-    brands: 368,
-    rules: 54,
-    coverage: 91.9,
-    detections: 8150,
-    verified: 7489
-  };
-
-  /* ── FETCH DATA ──────────────────────────────── */
-  function loadFeed(){
-    return fetch('../api/feed.json')
-      .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-      .then(function(j){
-        if(j.corpus_size) data.clips = j.corpus_size;
-        if(j.total_clips) data.clips = j.total_clips;
-        if(j.brand_count) data.brands = j.brand_count;
-        if(j.brands_detected) data.brands = j.brands_detected;
-      })
-      .catch(function(){});
-  }
-
-  function loadClassification(){
-    return fetch('../classification-stats.json')
-      .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-      .then(function(j){
-        if(j.rules) data.rules = j.rules;
-        if(j.rule_count) data.rules = j.rule_count;
-        if(j.total_rules) data.rules = j.total_rules;
-        if(j.coverage) data.coverage = j.coverage;
-        if(j.coverage_pct) data.coverage = j.coverage_pct;
-        if(j.total_detections) data.detections = j.total_detections;
-        if(j.detections) data.detections = j.detections;
-        if(j.verified) data.verified = j.verified;
-        if(j.verified_count) data.verified = j.verified_count;
-      })
-      .catch(function(){});
-  }
-
-  Promise.all([loadFeed(), loadClassification()]).then(function(){
-    populateStrip();
-    runCounters();
+  /* ── Status strip scroll shadow ── */
+  const status = document.getElementById('status');
+  let ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){
+        status.classList.toggle('scrolled', window.scrollY > 20);
+        ticking = false;
+      });
+      ticking = true;
+    }
   });
 
-  /* ── STRIP POPULATE ──────────────────────────── */
-  function populateStrip(){
-    document.getElementById('strip-clips').textContent = formatNum(data.clips);
-    document.getElementById('strip-rules').textContent = data.rules;
-    document.getElementById('strip-coverage').textContent = data.coverage;
-  }
-
-  /* ── FORMAT NUMBER ───────────────────────────── */
-  function formatNum(n){
-    if(n >= 1000) return (n/1000).toFixed(n%1000===0?0:1) + 'k';
-    return String(n);
-  }
-
-  /* ── COUNTER ANIMATION ───────────────────────── */
-  function runCounters(){
-    var els = document.querySelectorAll('[data-counter]');
-    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    els.forEach(function(el){
-      var key = el.getAttribute('data-counter');
-      var suffix = el.getAttribute('data-suffix') || '';
-      var target = data[key];
-      if(target === undefined) return;
-
-      if(prefersReduced){
-        el.textContent = (key === 'coverage' ? target.toFixed(1) : formatNum(target)) + suffix;
-        return;
-      }
-
-      var duration = 1600;
-      var start = null;
-      var isFloat = (target % 1 !== 0);
-
-      function step(ts){
-        if(!start) start = ts;
-        var progress = Math.min((ts - start) / duration, 1);
-        var ease = 1 - Math.pow(1 - progress, 3);
-        var current = ease * target;
-        if(isFloat){
-          el.textContent = current.toFixed(1) + suffix;
+  /* ── Counter animation ── */
+  function animateCounters(){
+    const counters = document.querySelectorAll('[data-count]');
+    counters.forEach(function(el){
+      const target = parseFloat(el.getAttribute('data-count'));
+      const isDecimal = el.hasAttribute('data-decimal');
+      const duration = 1600;
+      const start = performance.now();
+      function step(now){
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const val = target * eased;
+        if(isDecimal){
+          el.textContent = val.toFixed(1);
         } else {
-          el.textContent = formatNum(Math.round(current)) + suffix;
+          el.textContent = Math.floor(val).toLocaleString();
         }
         if(progress < 1) requestAnimationFrame(step);
+        else {
+          if(isDecimal) el.textContent = target.toFixed(1);
+          else el.textContent = target.toLocaleString();
+        }
       }
       requestAnimationFrame(step);
     });
   }
 
-  /* ── SCROLL REVEAL ───────────────────────────── */
-  if('IntersectionObserver' in window){
-    var obs = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){
-          entry.target.classList.add('revealed');
-          obs.unobserve(entry.target);
-        }
-      });
-    },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  /* ── Scroll reveal ── */
+  const reveals = document.querySelectorAll('[data-reveal]');
+  let countersStarted = false;
+  const revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+  reveals.forEach(function(el){ revealObserver.observe(el); });
 
-    document.querySelectorAll('[data-reveal]').forEach(function(el){ obs.observe(el); });
-  } else {
-    document.querySelectorAll('[data-reveal]').forEach(function(el){ el.classList.add('revealed'); });
+  /* Start counters when hero pills enter view */
+  const heroSection = document.querySelector('.hero-pills');
+  if(heroSection){
+    const counterObserver = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting && !countersStarted){
+        countersStarted = true;
+        animateCounters();
+        counterObserver.disconnect();
+      }
+    }, {threshold:0.3});
+    counterObserver.observe(heroSection);
   }
+
+  /* ── Compare versions toggle ── */
+  const compareBtn = document.getElementById('compare-btn');
+  const comparePanel = document.getElementById('compare-panel');
+  if(compareBtn && comparePanel){
+    compareBtn.addEventListener('click', function(){
+      comparePanel.classList.toggle('open');
+      compareBtn.textContent = comparePanel.classList.contains('open')
+        ? 'Compare versions \u2191'
+        : 'Compare versions \u2193';
+    });
+  }
+
+  /* ── Fetch live data ── */
+  function updateUI(data){
+    const c = data.corpus || {};
+    const clips = c.total_clips || 3588;
+    const brands = c.unique_brands || 358;
+
+    /* Update data-count targets for counters */
+    function setCount(id, val){
+      const e = document.getElementById(id);
+      if(e){ e.setAttribute('data-count', val); }
+    }
+    setCount('h-clips', clips);
+    setCount('h-brands', brands);
+
+    /* Update status strip */
+    const sc = document.getElementById('s-clips');
+    if(sc) sc.textContent = clips.toLocaleString();
+
+    /* Update card metas */
+    function setText(id, t){ const e = document.getElementById(id); if(e) e.textContent = t; }
+    setText('m-clips-1', clips.toLocaleString() + ' clips');
+    setText('m-clips-2', clips.toLocaleString() + ' clips');
+    setText('m-brands-1', brands.toLocaleString() + ' brands');
+    setText('m-brands-2', brands.toLocaleString() + ' brands');
+    setText('m-brands-3', brands.toLocaleString() + ' brands');
+
+    /* Idea lab */
+    if(data.idea_lab){
+      setText('m-ideas', data.idea_lab.total_findings + ' findings');
+    }
+  }
+
+  function updateStats(stats){
+    const det = stats.total_brand_detections || 8327;
+    const ver = stats.human_verified_count || 7623;
+    const cov = stats.coverage_pct || 91.9;
+    const rules = stats.rule_count || 54;
+
+    function setCount(id, val){
+      const e = document.getElementById(id);
+      if(e) e.setAttribute('data-count', val);
+    }
+    setCount('e-rules', rules);
+    setCount('e-cov', cov);
+    setCount('e-det', det);
+    setCount('e-ver', ver);
+    setCount('h-rules', rules);
+    setCount('h-cov', cov);
+
+    function setText(id, t){ const e = document.getElementById(id); if(e) e.textContent = t; }
+    setText('s-rules', rules);
+    setText('s-cov', cov);
+    setText('m-det-1', det.toLocaleString() + ' detections');
+    setText('m-ver-1', ver.toLocaleString() + ' verified');
+  }
+
+  /* Fetch feed.json */
+  fetch('../api/feed.json')
+    .then(function(r){ return r.json(); })
+    .then(updateUI)
+    .catch(function(){ /* fallbacks already in HTML */ });
+
+  /* Fetch classification-stats.json */
+  fetch('../classification-stats.json')
+    .then(function(r){ return r.json(); })
+    .then(updateStats)
+    .catch(function(){ /* fallbacks already in HTML */ });
 
 })();
 </script>
