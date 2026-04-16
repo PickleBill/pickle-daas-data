@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Social Clip Cards v4 · Pickle DaaS</title>
+<meta name="description" content="Instagram-style content portfolio. Every clip gets AI narrative, social caption, quality scoring, and brand intelligence.">
+<meta property="og:title" content="Courtana Social Clips — AI Content Portfolio">
+<meta property="og:description" content="The content your cameras already produce. AI-scored, AI-narrated, ready to share.">
+<meta property="og:image" content="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg">
+<link rel="icon" href="https://courtana.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   SOCIAL CLIP CARDS — v4 Design System
+   Pink/coral accent (#FF79C6) · Near-black bg
+   Glass morphism · noise · 7-tier text
+   Social-media energy · staggered spring anim
+   Hover-to-play · parallax hero · arc badges
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --accent:#FF79C6;--accent-g:rgba(255,121,198,.12);--accent-d:rgba(255,121,198,.06);
+  --accent-b:rgba(255,121,198,.25);--accent-h:rgba(255,121,198,.35);
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+
+  /* Arc colors */
+  --arc-comeback:#6EEFC0;
+  --arc-dominant:#F1C40F;
+  --arc-close:#6BA3FF;
+  --arc-learning:#FFB86C;
+  --arc-viral:#FF79C6;
+  --arc-grind:#BD93F9;
+  --arc-athletic:#00E5FF;
+  --arc-clutch:#FF3366;
+  --arc-error:#FACC15;
+  --arc-teaching:#34D399;
+  --arc-comedy:#F472B6;
+  --arc-fun:#FB923C;
+  --arc-rally:#FF6600;
+  --arc-intensity:#22D3EE;
+  --arc-strategic:#8B93A5;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+
+/* ── Noise overlay ── */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+
+/* ── Ambient blobs ── */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:#FF79C6;opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:#BD93F9;opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:#6BA3FF;opacity:.025;animation:bd3 72s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+/* ── Scroll progress ── */
+.scroll-progress{position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,var(--accent),#BD93F9);z-index:100;pointer-events:none}
+
+/* ── Page shell ── */
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+
+/* ── Status strip ── */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--accent);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--accent);border-color:var(--accent-b)}
+.portal-link{color:var(--t5);transition:color .2s var(--ease)}
+.portal-link:hover{color:var(--accent)}
+
+/* ── HERO CARD ── */
+.hero-section{position:relative;min-height:90vh;display:flex;align-items:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 8s ease-out}
+.hero-bg::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,12,.2) 0%,rgba(8,8,12,.4) 30%,rgba(8,8,12,.85) 70%,rgba(8,8,12,1) 100%)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(270deg,rgba(8,8,12,.6) 0%,transparent 50%)}
+.hero-video-wrap{position:absolute;inset:0;overflow:hidden}
+.hero-video-wrap video{width:100%;height:100%;object-fit:cover;filter:brightness(.45) saturate(1.3)}
+.hero-video-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,12,.1) 0%,rgba(8,8,12,.35) 30%,rgba(8,8,12,.85) 70%,rgba(8,8,12,1) 100%)}
+.hero-content{position:relative;z-index:3;padding:0 0 clamp(40px,6vw,80px);width:100%}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--accent-g);border:1px solid var(--accent-b);border-radius:100px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hero-badge .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;box-shadow:0 0 12px var(--accent)}
+.hero-score-block{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+.hero-score{font-size:clamp(100px,18vw,160px);font-weight:800;line-height:.85;letter-spacing:-.06em;position:relative}
+.hero-score .glow{position:absolute;inset:-20px;filter:blur(60px);opacity:.3;border-radius:50%;z-index:-1}
+.hero-score-label{font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t4);text-transform:uppercase;letter-spacing:.15em;margin-bottom:20px}
+.hero-title{font-size:clamp(1.4rem,3.2vw,2.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;max-width:700px;margin-bottom:12px}
+.hero-espn{font-size:clamp(.88rem,1.4vw,1.05rem);color:var(--t3);line-height:1.65;max-width:640px;margin-bottom:16px;font-style:italic;border-left:2px solid var(--accent-b);padding-left:16px}
+.hero-caption{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:14px;color:var(--t2);margin-bottom:24px}
+.hero-caption svg{flex-shrink:0;color:var(--accent)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:100px;font-weight:700;font-size:14px;border:none;cursor:pointer;letter-spacing:.02em;transition:all .25s var(--ease);background:var(--accent);color:#fff}
+.btn-primary:hover{transform:scale(1.04);box-shadow:0 8px 32px rgba(255,121,198,.35)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:100px;font-weight:700;font-size:14px;border:1px solid rgba(255,255,255,.15);cursor:pointer;letter-spacing:.02em;background:rgba(255,255,255,.06);color:#fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:all .25s var(--ease)}
+.btn-secondary:hover{transform:scale(1.04);background:rgba(255,255,255,.12)}
+.hero-meta-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.meta-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;background:var(--glass);border:1px solid var(--glass-b);color:var(--t3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.meta-pill.brand{border-color:rgba(189,147,249,.15);color:#BD93F9}
+
+/* ── FILTER BAR ── */
+.filter-bar{padding:32px 0 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-label{font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--t5);margin-right:4px}
+.filter-btn{padding:7px 16px;border-radius:100px;border:1px solid var(--bd);background:transparent;color:var(--t4);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);white-space:nowrap}
+.filter-btn:hover{border-color:var(--bd-h);color:var(--t2)}
+.filter-btn.active{background:var(--accent-g);border-color:var(--accent-b);color:var(--accent)}
+.filter-btn.active .pulse-ring{display:inline-block}
+.pulse-ring{display:none;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:4px;animation:ringPulse 1.8s ease-in-out infinite;box-shadow:0 0 0 0 var(--accent)}
+@keyframes ringPulse{0%{box-shadow:0 0 0 0 rgba(255,121,198,.5)}70%{box-shadow:0 0 0 8px rgba(255,121,198,0)}100%{box-shadow:0 0 0 0 rgba(255,121,198,0)}}
+.sort-select{padding:7px 14px;border-radius:100px;border:1px solid var(--bd);background:var(--bg-s);color:var(--t3);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.sort-select:focus{outline:none;border-color:var(--accent-b)}
+.filter-count{font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t5);margin-left:auto}
+
+/* ── CLIP GRID ── */
+.clip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-bottom:48px}
+@media(max-width:1024px){.clip-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.clip-grid{grid-template-columns:1fr}}
+
+/* ── INDIVIDUAL CLIP CARD ── */
+.clip-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;transition:all .35s var(--ease);cursor:pointer;opacity:0;transform:translateY(40px)}
+.clip-card.revealed{opacity:1;transform:none}
+.clip-card:hover{border-color:var(--bd-h);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.clip-card:hover .thumb-wrap img{transform:scale(1.06)}
+.clip-card:hover .thumb-wrap video{opacity:1}
+.clip-card:hover .thumb-play{opacity:1;transform:scale(1)}
+.clip-card:hover .card-glow{opacity:1}
+
+/* Thumbnail */
+.thumb-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0a0a10}
+.thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s var(--ease)}
+.thumb-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s var(--ease)}
+.thumb-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);width:48px;height:48px;border-radius:50%;background:rgba(255,121,198,.2);border:2px solid rgba(255,121,198,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:all .3s var(--ease);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.thumb-play svg{color:#fff;margin-left:2px}
+.card-glow{position:absolute;bottom:-1px;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+
+/* Arc badge on thumbnail */
+.arc-badge{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1)}
+/* Score on thumbnail */
+.thumb-scores{position:absolute;top:12px;right:12px;display:flex;gap:6px}
+.score-pill{padding:4px 10px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+.score-pill .label{font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.08em;margin-right:3px}
+.shot-count{position:absolute;bottom:12px;left:12px;display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;color:var(--t2);background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08)}
+
+/* Card body */
+.card-body{padding:16px}
+.card-caption{font-size:15px;font-weight:600;line-height:1.45;color:var(--t1);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-summary{font-size:13px;color:var(--t3);line-height:1.55;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-brands{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.brand-pill{padding:3px 10px;border-radius:100px;font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:rgba(189,147,249,.08);border:1px solid rgba(189,147,249,.15);color:#BD93F9}
+.card-footer{display:flex;gap:8px}
+.card-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:var(--r);font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all .2s var(--ease);font-family:'Manrope',sans-serif}
+.card-btn-watch{background:var(--accent);color:#fff}
+.card-btn-watch:hover{box-shadow:0 4px 20px rgba(255,121,198,.3);transform:scale(1.03)}
+.card-btn-share{background:var(--glass-h);border:1px solid var(--bd);color:var(--t2)}
+.card-btn-share:hover{border-color:var(--bd-h);transform:scale(1.03)}
+
+/* ── VIDEO MODAL ── */
+.modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);align-items:center;justify-content:center;padding:20px}
+.modal.active{display:flex}
+.modal-inner{position:relative;width:100%;max-width:800px;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 40px 120px rgba(0,0,0,.6)}
+.modal-inner video{width:100%;display:block}
+.modal-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:10;transition:all .2s}
+.modal-close:hover{background:rgba(255,255,255,.1)}
+.modal-info{padding:20px 24px;background:var(--bg-s);border-top:1px solid var(--bd)}
+.modal-caption{font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px}
+.modal-narrative{font-size:13px;color:var(--t3);line-height:1.6;font-style:italic}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);background:var(--bg-r);border:1px solid var(--accent-b);color:var(--accent);padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;z-index:300;transition:bottom .4s var(--spring);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.toast.show{bottom:32px}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--bd);padding:48px 0;margin-top:40px}
+.footer-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px}
+.footer-brand{font-size:20px;font-weight:800;letter-spacing:-.03em}
+.footer-brand span{color:var(--accent)}
+.footer-sub{font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t5);text-transform:uppercase;letter-spacing:.12em;margin-top:6px}
+.footer-links{display:flex;gap:8px;flex-wrap:wrap}
+.footer-links a{padding:6px 14px;border:1px solid var(--bd);border-radius:6px;font-family:'Red Hat Mono',monospace;font-size:11px;color:var(--t4);text-transform:uppercase;letter-spacing:.06em;transition:all .2s var(--ease)}
+.footer-links a:hover{color:var(--accent);border-color:var(--accent-b)}
+.footer-compare{margin-top:24px;font-size:12px;color:var(--t6)}
+.footer-compare a{color:var(--t4);transition:color .2s}
+.footer-compare a:hover{color:var(--accent)}
+
+/* ── Loading state ── */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--bd);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t4);text-transform:uppercase;letter-spacing:.15em}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:80px 20px}
+.empty-state h3{font-size:20px;font-weight:700;color:var(--t2);margin-bottom:8px}
+.empty-state p{color:var(--t4);font-size:14px}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .hero-section{min-height:80vh}
+  .hero-score{font-size:clamp(80px,20vw,120px)!important}
+  .filter-bar{gap:6px}
+  .filter-btn{padding:6px 12px;font-size:11px}
+  .status-inner{justify-content:center;text-align:center}
+  .footer-inner{flex-direction:column;align-items:center;text-align:center}
+}
+@media(max-width:480px){
+  .hero-actions{flex-direction:column;width:100%}
+  .hero-actions .btn-primary,.hero-actions .btn-secondary{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Noise texture -->
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+<!-- Ambient blobs -->
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<!-- Scroll progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="page">
+
+<!-- ══════════════ STATUS STRIP ══════════════ -->
+<header class="status" id="status">
+  <div class="shell">
+    <div class="status-inner">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span><span class="sd"></span> <em>Live</em></span>
+        <span id="status-date"></span>
+        <span><em id="s-clips">--</em> clips</span>
+        <span><em id="s-brands">--</em> brands</span>
+        <span class="v-chip">v4</span>
+      </div>
+      <nav>
+        <a href="showcase-portal-v4.html" class="portal-link">&larr; Portal</a>
+        <a href="brand-intelligence-v4.html">Brands</a>
+        <a href="story-hub-v4.html">Stories</a>
+        <a href="player-lab-v4.html">Players</a>
+        <a href="evidence-wall-v4.html">Evidence</a>
+        <a href="venue-intelligence-v4.html">Venues</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero-section" id="heroSection">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="shell hero-content" id="heroContent">
+    <!-- Populated by JS -->
+    <div class="loading-state" id="heroLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading top clip...</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FILTER + GRID ══════════════ -->
+<section class="shell">
+  <div class="filter-bar" id="filterBar">
+    <span class="filter-label">Arc</span>
+    <button class="filter-btn active" data-arc="all"><span class="pulse-ring"></span>All</button>
+    <!-- Populated by JS -->
+  </div>
+
+  <div class="clip-grid" id="clipGrid">
+    <div class="loading-state" style="grid-column:1/-1" id="gridLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Fetching clips...</div>
+    </div>
+  </div>
+
+  <div class="empty-state" id="emptyState" style="display:none">
+    <h3>No clips match this filter</h3>
+    <p>Try a different arc type or reset filters.</p>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="footer">
+  <div class="shell">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Courtana <span>Clips</span></div>
+        <div class="footer-sub">Powered by Pickle DaaS</div>
+      </div>
+      <div class="footer-links">
+        <a href="showcase-portal-v4.html">&larr; Portal</a>
+        <a href="brand-intelligence-v4.html">Brands</a>
+        <a href="story-hub-v4.html">Stories</a>
+        <a href="player-lab-v4.html">Players</a>
+        <a href="investor-walkthrough-v4.html">Investors</a>
+        <a href="venue-intelligence-v4.html">Venues</a>
+      </div>
+    </div>
+    <div class="footer-compare" style="margin-top:24px">
+      Previous: <a href="social-clip-cards.html">v1</a>
+    </div>
+  </div>
+</footer>
+
+</div><!-- .page -->
+
+<!-- ══════════════ VIDEO MODAL ══════════════ -->
+<div class="modal" id="videoModal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <video id="modalVideo" controls playsinline></video>
+    <div class="modal-info">
+      <div class="modal-caption" id="modalCaption"></div>
+      <div class="modal-narrative" id="modalNarrative"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Link copied to clipboard</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   SOCIAL CLIP CARDS v4 — Runtime
+═══════════════════════════════════════════ */
+
+const CDN_BASE = 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e';
+
+const ARC_MAP = {
+  comeback:                { color:'#6EEFC0', label:'Comeback',    emoji:'&#x1F525;' },
+  dominant_performance:    { color:'#F1C40F', label:'Dominant',    emoji:'&#x1F451;' },
+  close_match:             { color:'#6BA3FF', label:'Close Match', emoji:'&#x26A1;' },
+  learning_moment:         { color:'#FFB86C', label:'Learning',    emoji:'&#x1F4D6;' },
+  viral_moment:            { color:'#FF79C6', label:'Viral',       emoji:'&#x1F680;' },
+  clutch_moment:           { color:'#FF3366', label:'Clutch',      emoji:'&#x1F3AF;' },
+  athletic_highlight:      { color:'#00E5FF', label:'Athletic',    emoji:'&#x1F4AA;' },
+  athletic_rally:          { color:'#FF6600', label:'Rally',       emoji:'&#x1F3D3;' },
+  grind_rally:             { color:'#BD93F9', label:'Grind',       emoji:'&#x269B;' },
+  error_highlight:         { color:'#FACC15', label:'Blooper',     emoji:'&#x1F62C;' },
+  competitive_intensity:   { color:'#22D3EE', label:'Intense',     emoji:'&#x1F525;' },
+  teaching_moment:         { color:'#34D399', label:'Lesson',      emoji:'&#x1F393;' },
+  comedy:                  { color:'#F472B6', label:'Comedy',      emoji:'&#x1F602;' },
+  pure_fun:                { color:'#FB923C', label:'Fun',         emoji:'&#x1F389;' },
+  strategic:               { color:'#8B93A5', label:'Strategic',   emoji:'&#x265F;' }
+};
+
+function getArc(key) {
+  return ARC_MAP[key] || { color:'#888', label: key ? key.replace(/_/g,' ') : 'Unknown', emoji:'&#x1F3AC;' };
+}
+
+function getBrandNames(clip) {
+  if (!clip.brands) return [];
+  if (typeof clip.brands[0] === 'string') return [...new Set(clip.brands)].slice(0,4);
+  const names = clip.brands
+    .filter(b => b.confidence !== 'low')
+    .map(b => b.classification?.canonical_name || b.name);
+  return [...new Set(names)].slice(0,4);
+}
+
+function getSocialCaption(clip) {
+  return clip.social_caption || clip.hype || clip.summary || '';
+}
+
+function getEspn(clip) {
+  return clip.espn || clip.summary || '';
+}
+
+/* ── State ── */
+let ALL_CLIPS = [];
+let FILTERED = [];
+let CURRENT_ARC = 'all';
+let CURRENT_SORT = 'quality';
+let STATS = {};
+
+/* ── Fetch data ── */
+async function init() {
+  let clips = [];
+  let feedOk = false;
+
+  // Fetch corpus
+  try {
+    const res = await fetch('../corpus-export.json');
+    if (res.ok) {
+      const data = await res.json();
+      clips = Array.isArray(data) ? data : [];
+    }
+  } catch(e) { console.warn('Corpus fetch failed, using fallback'); }
+
+  // Fetch feed stats
+  try {
+    const res = await fetch('../api/feed.json');
+    if (res.ok) {
+      const data = await res.json();
+      STATS = data.corpus || {};
+      feedOk = true;
+    }
+  } catch(e) {}
+
+  // Filter to clips that have quality/scores, sort, take top 30
+  clips = clips.filter(c => c.quality != null && c.quality > 0);
+  clips.sort((a,b) => {
+    const sa = (a.quality||0)*3 + (a.viral||0)*2 + (a.watchability||0);
+    const sb = (b.quality||0)*3 + (b.viral||0)*2 + (b.watchability||0);
+    return sb - sa;
+  });
+  ALL_CLIPS = clips.slice(0, 30);
+
+  // Update status strip
+  document.getElementById('s-clips').textContent = STATS.total_clips
+    ? STATS.total_clips.toLocaleString()
+    : ALL_CLIPS.length.toLocaleString();
+  document.getElementById('s-brands').textContent = STATS.unique_brands
+    ? STATS.unique_brands.toLocaleString()
+    : '--';
+  document.getElementById('status-date').textContent = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+
+  // Build filter buttons from actual arc types
+  buildFilters();
+
+  // Render hero
+  if (ALL_CLIPS.length > 0) {
+    renderHero(ALL_CLIPS[0]);
+  }
+
+  // Render grid
+  applyFilters();
+}
+
+/* ── Build arc filter buttons ── */
+function buildFilters() {
+  const arcs = [...new Set(ALL_CLIPS.map(c => c.arc).filter(Boolean))];
+  const bar = document.getElementById('filterBar');
+
+  arcs.forEach(arcKey => {
+    const info = getArc(arcKey);
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.arc = arcKey;
+    btn.innerHTML = `<span class="pulse-ring"></span>${info.label}`;
+    btn.style.setProperty('--arc-c', info.color);
+    btn.addEventListener('click', () => setArcFilter(arcKey));
+    bar.appendChild(btn);
+  });
+
+  // Sort dropdown
+  const sortWrap = document.createElement('div');
+  sortWrap.style.cssText = 'margin-left:auto;display:flex;align-items:center;gap:8px';
+  sortWrap.innerHTML = `
+    <span class="filter-label" style="margin-right:0">Sort</span>
+    <select class="sort-select" id="sortSelect">
+      <option value="quality">Quality</option>
+      <option value="viral">Viral</option>
+      <option value="watchability">Watchability</option>
+      <option value="shots">Most Shots</option>
+    </select>
+    <span class="filter-count" id="filterCount"></span>
+  `;
+  bar.appendChild(sortWrap);
+
+  document.getElementById('sortSelect').addEventListener('change', (e) => {
+    CURRENT_SORT = e.target.value;
+    applyFilters();
+  });
+
+  // Wire "All" button
+  bar.querySelector('[data-arc="all"]').addEventListener('click', () => setArcFilter('all'));
+}
+
+function setArcFilter(arc) {
+  CURRENT_ARC = arc;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.arc === arc);
+  });
+  applyFilters();
+}
+
+function applyFilters() {
+  let clips = [...ALL_CLIPS];
+
+  // Skip hero clip from grid
+  if (clips.length > 0) clips = clips.slice(1);
+
+  // Arc filter
+  if (CURRENT_ARC !== 'all') {
+    clips = clips.filter(c => c.arc === CURRENT_ARC);
+  }
+
+  // Sort
+  clips.sort((a,b) => {
+    switch(CURRENT_SORT) {
+      case 'viral': return (b.viral||0) - (a.viral||0);
+      case 'watchability': return (b.watchability||0) - (a.watchability||0);
+      case 'shots': return (b.total_shots||0) - (a.total_shots||0);
+      default: return (b.quality||0) - (a.quality||0);
+    }
+  });
+
+  FILTERED = clips;
+
+  const count = document.getElementById('filterCount');
+  if (count) count.textContent = `${clips.length} clip${clips.length!==1?'s':''}`;
+
+  renderGrid(clips);
+}
+
+/* ── Render Hero ── */
+function renderHero(clip) {
+  const arc = getArc(clip.arc);
+  const brands = getBrandNames(clip);
+  const caption = getSocialCaption(clip);
+  const espn = getEspn(clip);
+
+  // Background
+  const bg = document.getElementById('heroBg');
+  bg.style.backgroundImage = `url('${clip.thumbnail}')`;
+
+  // Content
+  const content = document.getElementById('heroContent');
+  document.getElementById('heroLoading').style.display = 'none';
+
+  const brandsHtml = brands.map(b =>
+    `<span class="meta-pill brand"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" opacity=".6"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/></svg>${b}</span>`
+  ).join('');
+
+  content.innerHTML = `
+    <div class="hero-eyebrow">Clip of the day</div>
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      ${arc.emoji} ${arc.label.toUpperCase()}
+    </div>
+    <div class="hero-score-block">
+      <div class="hero-score" style="background:linear-gradient(135deg,#fff 0%,${arc.color} 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">
+        <div class="glow" style="background:${arc.color}"></div>
+        ${clip.quality}.${clip.viral||0}
+      </div>
+    </div>
+    <div class="hero-score-label">Quality &middot; Viral</div>
+    <h1 class="hero-title">${caption}</h1>
+    ${espn ? `<div class="hero-espn">${espn.length > 220 ? espn.substring(0,220)+'...' : espn}</div>` : ''}
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="openModal('${clip.video_url}','${caption.replace(/'/g,"\\'")}','${espn.replace(/'/g,"\\'")}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Watch Now
+      </button>
+      <button class="btn-secondary" onclick="shareClip('${clip.video_url}','${caption.replace(/'/g,"\\'")}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </button>
+    </div>
+    <div class="hero-meta-row">
+      <span class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5"><circle cx="12" cy="12" r="10"/></svg>${clip.total_shots||'--'} shots</span>
+      <span class="meta-pill">${clip.dominant_shot || '--'}</span>
+      ${brandsHtml}
+    </div>
+  `;
+}
+
+/* ── Render Grid ── */
+function renderGrid(clips) {
+  const grid = document.getElementById('clipGrid');
+  const empty = document.getElementById('emptyState');
+  const loading = document.getElementById('gridLoading');
+  if (loading) loading.style.display = 'none';
+
+  if (clips.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = clips.map((clip, i) => {
+    const arc = getArc(clip.arc);
+    const brands = getBrandNames(clip);
+    const caption = getSocialCaption(clip);
+    const summary = clip.summary || '';
+
+    const brandsHtml = brands.map(b =>
+      `<span class="brand-pill">${b}</span>`
+    ).join('');
+
+    const safeCaption = caption.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+    const safeEspn = (clip.espn||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+
+    return `
+      <div class="clip-card" style="transition-delay:${Math.min(i * 60, 600)}ms" data-idx="${i}">
+        <div class="thumb-wrap" onmouseenter="hoverPlay(this)" onmouseleave="hoverPause(this)">
+          <img src="${clip.thumbnail}" alt="${safeCaption}" loading="lazy" onerror="this.style.display='none'">
+          <video src="${clip.video_url}" muted loop playsinline preload="none"></video>
+          <div class="arc-badge" style="background:${arc.color}18;color:${arc.color};border-color:${arc.color}30">${arc.emoji} ${arc.label}</div>
+          <div class="thumb-scores">
+            <span class="score-pill" style="color:${arc.color}"><span class="label">Q</span>${clip.quality}</span>
+            <span class="score-pill" style="color:var(--accent)"><span class="label">V</span>${clip.viral||'--'}</span>
+          </div>
+          <div class="shot-count"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity=".6"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> ${clip.total_shots||'--'} shots</div>
+          <div class="thumb-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-glow" style="background:linear-gradient(90deg,${arc.color},var(--accent))"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-caption">${caption}</div>
+          <div class="card-summary">${summary}</div>
+          ${brands.length ? `<div class="card-brands">${brandsHtml}</div>` : ''}
+          <div class="card-footer">
+            <button class="card-btn card-btn-watch" onclick="event.stopPropagation();openModal('${clip.video_url}','${safeCaption}','${safeEspn}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Watch
+            </button>
+            <button class="card-btn card-btn-share" onclick="event.stopPropagation();shareClip('${clip.video_url}','${safeCaption}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Stagger entrance animation
+  requestAnimationFrame(() => {
+    const cards = grid.querySelectorAll('.clip-card');
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('revealed'), Math.min(i * 60, 600));
+    });
+  });
+}
+
+/* ── Hover-to-play ── */
+function hoverPlay(el) {
+  const vid = el.querySelector('video');
+  if (vid && vid.src) {
+    vid.currentTime = 0;
+    vid.play().catch(()=>{});
+  }
+}
+function hoverPause(el) {
+  const vid = el.querySelector('video');
+  if (vid) { vid.pause(); }
+}
+
+/* ── Modal ── */
+function openModal(videoUrl, caption, narrative) {
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  const cap = document.getElementById('modalCaption');
+  const narr = document.getElementById('modalNarrative');
+  video.src = videoUrl;
+  cap.textContent = caption || '';
+  narr.textContent = narrative || '';
+  modal.classList.add('active');
+  video.play().catch(()=>{});
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  video.pause();
+  video.src = '';
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('videoModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ── Share ── */
+function shareClip(videoUrl, caption) {
+  const text = caption || 'Check out this Courtana clip!';
+  if (navigator.share) {
+    navigator.share({ title:'Courtana Clip', text, url:videoUrl }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(videoUrl).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }).catch(()=>{});
+  }
+}
+
+/* ── Scroll progress ── */
+window.addEventListener('scroll', () => {
+  const winH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = winH > 0 ? (window.scrollY / winH) * 100 : 0;
+  document.getElementById('scrollProgress').style.width = pct + '%';
+
+  // Status bar shadow
+  document.getElementById('status').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+/* ── Hero parallax ── */
+window.addEventListener('scroll', () => {
+  const hero = document.getElementById('heroBg');
+  if (hero) {
+    const y = window.scrollY;
+    hero.style.transform = `translateY(${y * 0.25}px) scale(1.05)`;
+  }
+}, { passive: true });
+
+/* ── Init ── */
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courtana Live -- Venue Display</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   COURTANA LOBBY DISPLAY v4 — Design System
+   Near-black bg, glass morphism, noise, ambient blobs
+   Manrope + Red Hat Mono + JetBrains Mono
+   Accent: Courtana green #6EEFC0
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-primary:    #08080C;
+  --bg-secondary:  #0D0D12;
+  --bg-tertiary:   #121218;
+  --bg-elevated:   #16161E;
+  --bg-glass:      rgba(18, 18, 24, 0.65);
+  --bg-glass-strong: rgba(22, 22, 30, 0.80);
+
+  --border-subtle:  rgba(255, 255, 255, 0.04);
+  --border-default: rgba(255, 255, 255, 0.07);
+  --border-strong:  rgba(255, 255, 255, 0.12);
+  --border-accent:  rgba(110, 239, 192, 0.25);
+
+  --accent:        #6EEFC0;
+  --accent-dim:    rgba(110, 239, 192, 0.15);
+  --accent-glow:   rgba(110, 239, 192, 0.30);
+  --accent-deep:   rgba(110, 239, 192, 0.06);
+
+  --text-primary:   rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.60);
+  --text-tertiary:  rgba(255, 255, 255, 0.38);
+  --text-accent:    #6EEFC0;
+
+  --gold:    #FFD54F;
+  --silver:  #B0BEC5;
+  --bronze:  #CD8B62;
+  --red:     #FF5252;
+
+  --font-sans:  'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:  'Red Hat Mono', 'JetBrains Mono', monospace;
+  --font-code:  'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Noise Texture Overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── Scan Lines (subtle CRT feel) ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.015) 2px,
+    rgba(0, 0, 0, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Ambient Blobs ── */
+.ambient-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+.blob-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(110, 239, 192, 0.12) 0%, transparent 70%);
+  top: -200px; left: 30%;
+  animation: blobDrift1 25s ease-in-out infinite;
+}
+.blob-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(110, 239, 192, 0.08) 0%, transparent 70%);
+  bottom: -150px; right: 10%;
+  animation: blobDrift2 30s ease-in-out infinite;
+}
+.blob-3 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(90, 130, 255, 0.06) 0%, transparent 70%);
+  top: 50%; left: -100px;
+  animation: blobDrift3 20s ease-in-out infinite;
+}
+
+@keyframes blobDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, 30px) scale(1.1); }
+  66% { transform: translate(-40px, -20px) scale(0.95); }
+}
+@keyframes blobDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-50px, -30px) scale(1.05); }
+  66% { transform: translate(30px, 20px) scale(0.9); }
+}
+@keyframes blobDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -40px) scale(1.15); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.display-root {
+  display: grid;
+  grid-template-rows: 64px 1fr 52px;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-bottom: 1px solid var(--border-default);
+  z-index: 10;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.header-logo {
+  height: 28px;
+  opacity: 0.9;
+}
+.header-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-strong);
+}
+.venue-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 82, 82, 0.12);
+  border: 1px solid rgba(255, 82, 82, 0.25);
+  border-radius: 100px;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: livePulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(255, 82, 82, 0.6);
+}
+.live-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.corpus-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--accent-deep);
+  border: 1px solid var(--border-accent);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-accent);
+  letter-spacing: 0.5px;
+}
+.corpus-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: corpusPulse 3s ease-in-out infinite;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.clock {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+.clock-seconds {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+/* ── Main Three-Panel Grid ── */
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(400px, 1.6fr) minmax(320px, 1fr);
+  gap: 0;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px 20px 12px;
+  position: relative;
+}
+.panel + .panel {
+  border-left: 1px solid var(--border-subtle);
+}
+.panel-center {
+  padding: 20px 24px 12px;
+}
+
+/* Panel Header */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.panel-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--text-tertiary);
+}
+.panel-label-bar {
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.panel-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LEFT PANEL — LEADERBOARD
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.leaderboard-scroll {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: rowSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  flex-shrink: 0;
+}
+.lb-row:nth-child(1) { animation-delay: 0.05s; }
+.lb-row:nth-child(2) { animation-delay: 0.10s; }
+.lb-row:nth-child(3) { animation-delay: 0.15s; }
+.lb-row:nth-child(4) { animation-delay: 0.20s; }
+.lb-row:nth-child(5) { animation-delay: 0.25s; }
+.lb-row:nth-child(6) { animation-delay: 0.30s; }
+.lb-row:nth-child(7) { animation-delay: 0.35s; }
+.lb-row:nth-child(8) { animation-delay: 0.40s; }
+.lb-row:nth-child(9) { animation-delay: 0.45s; }
+.lb-row:nth-child(10) { animation-delay: 0.50s; }
+
+/* Podium Styling */
+.lb-row.rank-1 {
+  background: linear-gradient(135deg, rgba(255, 213, 79, 0.08), rgba(255, 213, 79, 0.02));
+  border-color: rgba(255, 213, 79, 0.20);
+  box-shadow: 0 0 20px rgba(255, 213, 79, 0.05), inset 0 1px 0 rgba(255, 213, 79, 0.08);
+}
+.lb-row.rank-2 {
+  background: linear-gradient(135deg, rgba(176, 190, 197, 0.08), rgba(176, 190, 197, 0.02));
+  border-color: rgba(176, 190, 197, 0.18);
+  box-shadow: inset 0 1px 0 rgba(176, 190, 197, 0.06);
+}
+.lb-row.rank-3 {
+  background: linear-gradient(135deg, rgba(205, 139, 98, 0.08), rgba(205, 139, 98, 0.02));
+  border-color: rgba(205, 139, 98, 0.18);
+  box-shadow: inset 0 1px 0 rgba(205, 139, 98, 0.06);
+}
+
+.lb-rank {
+  width: 28px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+.rank-1 .lb-rank { color: var(--gold); text-shadow: 0 0 12px rgba(255, 213, 79, 0.4); }
+.rank-2 .lb-rank { color: var(--silver); }
+.rank-3 .lb-rank { color: var(--bronze); }
+
+.lb-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-default);
+  flex-shrink: 0;
+  background: var(--bg-tertiary);
+}
+.rank-1 .lb-avatar { border-color: rgba(255, 213, 79, 0.4); }
+.rank-2 .lb-avatar { border-color: rgba(176, 190, 197, 0.35); }
+.rank-3 .lb-avatar { border-color: rgba(205, 139, 98, 0.35); }
+
+.lb-info {
+  flex: 1;
+  min-width: 0;
+}
+.lb-name {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.2px;
+}
+.lb-detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.lb-archetype {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-accent);
+  opacity: 0.8;
+}
+.lb-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+.lb-skill {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.lb-score {
+  flex-shrink: 0;
+  text-align: right;
+}
+.lb-score-value {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-accent);
+}
+.lb-score-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CENTER PANEL — HIGHLIGHT REEL
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.highlight-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.video-container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  box-shadow:
+    0 0 40px rgba(110, 239, 192, 0.04),
+    0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-primary);
+}
+
+/* Fallback thumbnail when video can't load */
+.video-poster {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-tertiary);
+  z-index: 0;
+  transition: opacity 0.5s ease;
+}
+.video-poster.hidden { opacity: 0; }
+.video-container video { position: relative; z-index: 1; }
+
+/* Video Overlay — ESPN-style narrative bar */
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    to top,
+    rgba(8, 8, 12, 0.95) 0%,
+    rgba(8, 8, 12, 0.75) 50%,
+    transparent 100%
+  );
+  padding: 60px 24px 20px;
+  pointer-events: none;
+}
+
+.overlay-top-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.overlay-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--bg-primary);
+  background: var(--accent);
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.overlay-shot-type {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.overlay-summary {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+  max-width: 90%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.overlay-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+.overlay-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.overlay-stat-val {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Video Progress Bar */
+.video-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.video-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 0 2px 0 0;
+  transition: width 0.3s linear;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Clip Counter */
+.clip-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.clip-pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: all 0.3s ease;
+}
+.clip-pip.active {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* Quality Score Ring (top-right of video) */
+.quality-ring {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 52px;
+  height: 52px;
+  background: rgba(8, 8, 12, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 20px rgba(110, 239, 192, 0.2);
+}
+.quality-ring-value {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.quality-ring-label {
+  font-size: 7px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+/* Shot Count (top-left of video) */
+.shot-count-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(8, 8, 12, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-strong);
+  border-radius: 100px;
+}
+.shot-count-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--accent);
+}
+.shot-count-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.shot-count-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RIGHT PANEL — INTEL FEED
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.intel-feed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* Shared card style for right panel */
+.intel-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  flex-shrink: 0;
+}
+
+.intel-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intel-card-label-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+/* Brand Spotlight Card */
+.brand-spotlight {
+  border-color: var(--border-accent);
+}
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-deep);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.brand-details { flex: 1; min-width: 0; }
+.brand-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.brand-category {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  text-transform: capitalize;
+}
+.brand-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+.brand-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.brand-stat-value {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-accent);
+}
+.brand-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+}
+.brand-bar-track {
+  height: 4px;
+  background: var(--border-subtle);
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.brand-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), rgba(110, 239, 192, 0.5));
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Trivia Card */
+.trivia-card { }
+.trivia-text {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+.trivia-source {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* Quality Badge Card */
+.badge-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.badge-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+.badge-item-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.badge-item-val {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-accent);
+}
+
+/* Player Spotlight Card */
+.spotlight-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.spotlight-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-accent);
+  flex-shrink: 0;
+  background: var(--bg-tertiary);
+}
+.spotlight-info { flex: 1; min-width: 0; }
+.spotlight-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+.spotlight-archetype {
+  font-size: 12px;
+  color: var(--text-accent);
+  opacity: 0.8;
+}
+.spotlight-skills {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.spotlight-skill-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.spotlight-skill-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-accent);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+  z-index: 10;
+}
+
+.footer-stats {
+  display: flex;
+  gap: 32px;
+}
+.footer-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.footer-stat-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-accent);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.footer-brand span {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+.footer-ticker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  animation: tickerScroll 30s linear infinite;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 82, 82, 0.6); }
+  50% { opacity: 0.4; box-shadow: 0 0 4px rgba(255, 82, 82, 0.2); }
+}
+
+@keyframes corpusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+@keyframes rowSlideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-default);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Transition helper for cycling content */
+.cycle-fade-enter {
+  animation: cycleFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes cycleFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- Ambient Blobs -->
+<div class="ambient-blob blob-1"></div>
+<div class="ambient-blob blob-2"></div>
+<div class="ambient-blob blob-3"></div>
+
+<div class="display-root">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header">
+    <div class="header-left">
+      <img class="header-logo"
+           src="https://cdn.courtana.com/assets/logos/fulllogo-dark-transparent-grad.svg"
+           alt="Courtana"
+           onerror="this.style.display='none'">
+      <div class="header-divider"></div>
+      <div class="venue-name" id="venueName">Peak Pickleball</div>
+    </div>
+    <div class="header-center">
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        <div class="live-label">Live</div>
+      </div>
+      <div class="corpus-badge" id="corpusBadge">
+        <div class="corpus-dot"></div>
+        <span id="corpusCount">--</span> clips analyzed
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="clock" id="clock">--:--<span class="clock-seconds">:--</span></div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN THREE-PANEL LAYOUT ═══ -->
+  <div class="main-grid">
+
+    <!-- LEFT PANEL: Leaderboard -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-label">
+          <div class="panel-label-bar"></div>
+          Player Leaderboard
+        </div>
+        <div class="panel-meta" id="playerCount">-- players</div>
+      </div>
+      <div class="leaderboard-scroll" id="leaderboard">
+        <div class="loading-state"><div class="loading-spinner"></div>Loading players...</div>
+      </div>
+    </div>
+
+    <!-- CENTER PANEL: Highlight Reel -->
+    <div class="panel panel-center">
+      <div class="panel-header">
+        <div class="panel-label">
+          <div class="panel-label-bar"></div>
+          Highlight Reel
+        </div>
+        <div class="panel-meta" id="clipMeta">Clip -- / --</div>
+      </div>
+      <div class="highlight-stage">
+        <div class="video-container" id="videoContainer">
+          <div class="video-poster" id="videoPoster"></div>
+          <video id="hlVideo" muted autoplay playsinline></video>
+          <!-- Quality score ring -->
+          <div class="quality-ring" id="qualityRing">
+            <div class="quality-ring-value" id="qualityValue">--</div>
+            <div class="quality-ring-label">QUAL</div>
+          </div>
+          <!-- Shot count -->
+          <div class="shot-count-badge" id="shotBadge">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span class="shot-count-num" id="shotCount">--</span>
+            <span class="shot-count-label">shots</span>
+          </div>
+          <!-- ESPN-style narrative overlay -->
+          <div class="video-overlay" id="videoOverlay">
+            <div class="overlay-top-line">
+              <div class="overlay-badge" id="overlayArc">HIGHLIGHT</div>
+              <div class="overlay-shot-type" id="overlayShot">--</div>
+            </div>
+            <div class="overlay-summary" id="overlaySummary">Loading highlights...</div>
+            <div class="overlay-meta">
+              <div class="overlay-stat">Viral: <span class="overlay-stat-val" id="overlayViral">--</span>/10</div>
+              <div class="overlay-stat">Watch: <span class="overlay-stat-val" id="overlayWatch">--</span>/10</div>
+            </div>
+          </div>
+          <!-- Progress bar -->
+          <div class="video-progress-track">
+            <div class="video-progress-bar" id="progressBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="clip-nav" id="clipNav"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Intel Feed -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-label">
+          <div class="panel-label-bar"></div>
+          Intel Feed
+        </div>
+        <div class="panel-meta" id="intelCycleLabel">Auto-cycling</div>
+      </div>
+      <div class="intel-feed" id="intelFeed">
+        <div class="loading-state"><div class="loading-spinner"></div>Loading intel...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-stats">
+      <div class="footer-stat">Clips <span class="footer-stat-val" id="statClips">--</span></div>
+      <div class="footer-stat">Players <span class="footer-stat-val" id="statPlayers">--</span></div>
+      <div class="footer-stat">Brands <span class="footer-stat-val" id="statBrands">--</span></div>
+    </div>
+    <div class="footer-brand">
+      Powered by <span>Courtana</span> Smart Court Technology
+    </div>
+    <div class="footer-stat">
+      <span style="color: var(--text-tertiary)">courtana.com</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// COURTANA LOBBY DISPLAY v4 — Engine
+// ═══════════════════════════════════════════════════════════════════════════
+
+const API_BASE = '../api';
+const CLIP_CYCLE_MS   = 15000;   // 15s per clip
+const INTEL_CYCLE_MS  = 8000;    // 8s per intel card rotation
+const DATA_REFRESH_MS = 120000;  // 2 min data refresh
+
+// ── State ──
+let playersData  = [];
+let clipsData    = [];
+let brandsData   = [];
+let feedData     = {};
+let currentClipIdx  = 0;
+let currentIntelIdx = 0;
+let clipTimer    = null;
+let intelTimer   = null;
+let progressTimer = null;
+
+// ── Venue config from URL param ──
+const params = new URLSearchParams(location.search);
+if (params.get('venue')) {
+  document.getElementById('venueName').textContent = params.get('venue');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════════════════════════════════
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours();
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  document.getElementById('clock').innerHTML =
+    `${h12}:${m} <span class="clock-seconds">${ampm}</span>`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DATA FETCHING
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function fetchJSON(path) {
+  try {
+    const resp = await fetch(`${API_BASE}/${path}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return await resp.json();
+  } catch (e) {
+    console.warn(`[courtana] Failed to fetch ${path}:`, e.message);
+    return null;
+  }
+}
+
+async function loadAllData() {
+  const [players, clips, brands, feed] = await Promise.all([
+    fetchJSON('players.json'),
+    fetchJSON('clips.json'),
+    fetchJSON('brands.json'),
+    fetchJSON('feed.json'),
+  ]);
+
+  if (players?.players) {
+    playersData = players.players;
+    document.getElementById('statPlayers').textContent = players.total_players?.toLocaleString() || playersData.length;
+    document.getElementById('playerCount').textContent = `${players.total_players || playersData.length} players`;
+  }
+  if (clips?.top_quality) {
+    clipsData = clips.top_quality;
+    document.getElementById('statClips').textContent = clipsData.length + ' highlights';
+  }
+  if (brands?.brands) {
+    brandsData = brands.brands;
+    document.getElementById('statBrands').textContent = brands.total_brands?.toLocaleString() || brandsData.length;
+  }
+  if (feed?.corpus) {
+    feedData = feed;
+    document.getElementById('corpusCount').textContent =
+      feed.corpus.total_clips?.toLocaleString() || '--';
+    document.getElementById('statClips').textContent =
+      feed.corpus.total_clips?.toLocaleString() || '--';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEADERBOARD
+// ═══════════════════════════════════════════════════════════════════════════
+
+function getTopSkill(skills) {
+  if (!skills) return { name: '--', val: 0 };
+  let top = { name: '', val: 0 };
+  const labels = {
+    court_coverage: 'Coverage',
+    kitchen: 'Kitchen',
+    power: 'Power',
+    touch: 'Touch',
+    athleticism: 'Athletic',
+    creativity: 'Creative',
+    court_iq: 'Court IQ',
+    consistency: 'Consistent',
+    composure: 'Composure'
+  };
+  for (const [k, v] of Object.entries(skills)) {
+    if (v > top.val) { top = { name: labels[k] || k, val: v }; }
+  }
+  return top;
+}
+
+function computeOverall(skills) {
+  if (!skills) return 0;
+  const vals = Object.values(skills);
+  if (!vals.length) return 0;
+  return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+}
+
+function renderLeaderboard() {
+  const el = document.getElementById('leaderboard');
+  if (!playersData.length) {
+    el.innerHTML = '<div class="loading-state">No player data</div>';
+    return;
+  }
+
+  // Sort by overall skill average descending
+  const sorted = [...playersData]
+    .map(p => ({ ...p, overall: parseFloat(computeOverall(p.skills)) }))
+    .sort((a, b) => b.overall - a.overall)
+    .slice(0, 8);
+
+  el.innerHTML = sorted.map((p, i) => {
+    const rank = i + 1;
+    const rankClass = rank <= 3 ? `rank-${rank}` : '';
+    const topSkill = getTopSkill(p.skills);
+
+    return `
+      <div class="lb-row ${rankClass}">
+        <div class="lb-rank">${rank}</div>
+        <img class="lb-avatar"
+             src="${p.avatar || ''}"
+             alt="${p.username}"
+             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22><rect fill=%22%2316161E%22 width=%2242%22 height=%2242%22 rx=%2221%22/><text x=%2221%22 y=%2227%22 text-anchor=%22middle%22 fill=%22%236EEFC0%22 font-size=%2216%22>${p.username?.[0] || '?'}</text></svg>'">
+        <div class="lb-info">
+          <div class="lb-name">${p.username}</div>
+          <div class="lb-detail">
+            <span class="lb-archetype">${p.archetype || 'Player'}</span>
+            <span class="lb-dot"></span>
+            <span class="lb-skill">${topSkill.name} ${topSkill.val}</span>
+          </div>
+        </div>
+        <div class="lb-score">
+          <div class="lb-score-value">${p.overall}</div>
+          <div class="lb-score-label">Overall</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HIGHLIGHT REEL
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderClipNav() {
+  const nav = document.getElementById('clipNav');
+  const count = Math.min(clipsData.length, 12);
+  nav.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const pip = document.createElement('div');
+    pip.className = `clip-pip${i === currentClipIdx ? ' active' : ''}`;
+    nav.appendChild(pip);
+  }
+}
+
+function formatArc(arc) {
+  if (!arc) return 'HIGHLIGHT';
+  return arc.replace(/_/g, ' ').toUpperCase();
+}
+
+function formatShot(shot) {
+  if (!shot) return '';
+  return shot.replace(/_/g, ' ').toUpperCase();
+}
+
+function loadClip(idx) {
+  if (!clipsData.length) return;
+  const clip = clipsData[idx % clipsData.length];
+  const video = document.getElementById('hlVideo');
+  const poster = document.getElementById('videoPoster');
+
+  // Update overlay
+  document.getElementById('overlayArc').textContent = formatArc(clip.arc);
+  document.getElementById('overlayShot').textContent = formatShot(clip.dominant_shot);
+  document.getElementById('overlaySummary').textContent = clip.summary || 'Highlight clip';
+  document.getElementById('overlayViral').textContent = clip.viral || '--';
+  document.getElementById('overlayWatch').textContent = clip.watchability || '--';
+  document.getElementById('qualityValue').textContent = clip.quality || '--';
+  document.getElementById('shotCount').textContent = clip.total_shots || '0';
+  document.getElementById('clipMeta').textContent =
+    `Clip ${idx + 1} / ${Math.min(clipsData.length, 12)}`;
+
+  // Show thumbnail poster as fallback
+  if (clip.thumbnail) {
+    poster.style.backgroundImage = `url(${clip.thumbnail})`;
+    poster.classList.remove('hidden');
+  }
+
+  // Load video
+  video.src = clip.video_url || '';
+  video.poster = clip.thumbnail || '';
+  video.load();
+  video.play().then(() => {
+    // Video loaded successfully — hide poster
+    poster.classList.add('hidden');
+  }).catch(() => {
+    // Video failed — keep poster visible
+    poster.classList.remove('hidden');
+  });
+
+  renderClipNav();
+  startProgressBar();
+}
+
+function advanceClip() {
+  const maxClips = Math.min(clipsData.length, 12);
+  currentClipIdx = (currentClipIdx + 1) % maxClips;
+  loadClip(currentClipIdx);
+}
+
+function startProgressBar() {
+  const bar = document.getElementById('progressBar');
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+
+  // Force reflow
+  void bar.offsetWidth;
+
+  bar.style.transition = `width ${CLIP_CYCLE_MS}ms linear`;
+  bar.style.width = '100%';
+}
+
+function startClipCycle() {
+  if (clipTimer) clearInterval(clipTimer);
+  loadClip(currentClipIdx);
+  clipTimer = setInterval(advanceClip, CLIP_CYCLE_MS);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INTEL FEED (Right Panel — Cycling Cards)
+// ═══════════════════════════════════════════════════════════════════════════
+
+const triviaFacts = [
+  "The average rally in our corpus lasts 6.2 shots -- patience wins points.",
+  "Kitchen play accounts for 58% of all analyzed shot types.",
+  "JOOLA paddles appear in nearly 59% of all analyzed footage.",
+  "The highest-rated clip in our system scored a perfect 10 on quality.",
+  "Dink rallies are the most common rally type, appearing in 42% of clips.",
+  "Speed-up shots have a 37% higher viral score than baseline rallies.",
+  "Players who vary shot selection score 1.3 points higher on creativity.",
+  "Consistency is the highest-scoring skill across all players at 7.0 avg.",
+  "Overhead court angles produce the highest quality scores on average.",
+  "The top 10% of clips have a watchability score of 7 or higher.",
+  "Our AI has identified 153 unique brands across the footage corpus.",
+  "Court IQ -- reading the play -- separates 4.0+ players from the rest.",
+];
+
+function buildBrandSpotlightCard() {
+  if (!brandsData.length) return null;
+  const brand = brandsData[Math.floor(Math.random() * Math.min(brandsData.length, 8))];
+  return `
+    <div class="intel-card brand-spotlight cycle-fade-enter">
+      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Brand Spotlight</div>
+      <div class="brand-row">
+        <div class="brand-icon">${brand.name?.[0] || '?'}</div>
+        <div class="brand-details">
+          <div class="brand-name">${brand.name}</div>
+          <div class="brand-category">${brand.primary_category?.replace(/_/g, ' ') || 'Equipment'}</div>
+        </div>
+      </div>
+      <div class="brand-stats">
+        <div class="brand-stat">
+          <div class="brand-stat-value">${brand.detections?.toLocaleString() || '--'}</div>
+          <div class="brand-stat-label">Detections</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-value">${brand.unique_clips?.toLocaleString() || '--'}</div>
+          <div class="brand-stat-label">Clips</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-value">${brand.share_of_court?.toFixed(1) || '--'}%</div>
+          <div class="brand-stat-label">Court Share</div>
+        </div>
+      </div>
+      <div class="brand-bar-track">
+        <div class="brand-bar-fill" style="width: ${Math.min(brand.share_of_court || 0, 100)}%"></div>
+      </div>
+    </div>
+  `;
+}
+
+function buildTriviaCard() {
+  const fact = triviaFacts[Math.floor(Math.random() * triviaFacts.length)];
+  return `
+    <div class="intel-card trivia-card cycle-fade-enter">
+      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Did You Know?</div>
+      <div class="trivia-text">${fact}</div>
+      <div class="trivia-source">Source: Courtana AI Corpus Analysis</div>
+    </div>
+  `;
+}
+
+function buildQualityBadgesCard() {
+  const badges = [
+    { emoji: '&#x1F3AF;', name: 'Perfect 10', val: 'Quality 10/10' },
+    { emoji: '&#x1F525;', name: 'Viral Hit', val: 'Viral 7+' },
+    { emoji: '&#x1F9CA;', name: 'Ice Cold', val: 'Composure 8+' },
+    { emoji: '&#x26A1;', name: 'Speed Demon', val: 'Power 7+' },
+  ];
+  return `
+    <div class="intel-card cycle-fade-enter">
+      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Achievement Badges</div>
+      <div class="badge-grid">
+        ${badges.map(b => `
+          <div class="badge-item">
+            <div class="badge-emoji">${b.emoji}</div>
+            <div class="badge-item-name">${b.name}</div>
+            <div class="badge-item-val">${b.val}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function buildPlayerSpotlightCard() {
+  if (!playersData.length) return null;
+  const pool = playersData.slice(0, 15);
+  const player = pool[Math.floor(Math.random() * pool.length)];
+  const topSkills = player.skills
+    ? Object.entries(player.skills)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 4)
+        .map(([k, v]) => ({
+          name: k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+          val: v
+        }))
+    : [];
+
+  return `
+    <div class="intel-card cycle-fade-enter">
+      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Player Spotlight</div>
+      <div class="spotlight-row">
+        <img class="spotlight-avatar"
+             src="${player.avatar || ''}"
+             alt="${player.username}"
+             onerror="this.style.display='none'">
+        <div class="spotlight-info">
+          <div class="spotlight-name">${player.username}</div>
+          <div class="spotlight-archetype">${player.archetype || 'Player'} &middot; ${player.clip_count || 0} clips</div>
+        </div>
+      </div>
+      <div class="spotlight-skills">
+        ${topSkills.map(s => `
+          <div class="spotlight-skill-chip">
+            ${s.name} <span class="spotlight-skill-val">${s.val}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function buildCorpusStatsCard() {
+  if (!feedData.corpus) return null;
+  const c = feedData.corpus;
+  return `
+    <div class="intel-card cycle-fade-enter">
+      <div class="intel-card-label"><div class="intel-card-label-dot"></div>Corpus Intelligence</div>
+      <div class="badge-grid">
+        <div class="badge-item">
+          <div class="badge-emoji">&#x1F4F9;</div>
+          <div class="badge-item-name">Total Clips</div>
+          <div class="badge-item-val">${c.total_clips?.toLocaleString() || '--'}</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-emoji">&#x1F3AD;</div>
+          <div class="badge-item-name">Unique Brands</div>
+          <div class="badge-item-val">${c.unique_brands?.toLocaleString() || '--'}</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-emoji">&#x1F3C6;</div>
+          <div class="badge-item-name">Avg Quality</div>
+          <div class="badge-item-val">${c.avg_quality?.toFixed(1) || '--'} / 10</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-emoji">&#x1F465;</div>
+          <div class="badge-item-name">Players</div>
+          <div class="badge-item-val">${c.unique_players?.toLocaleString() || '--'}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Card generators in rotation order
+const intelCardBuilders = [
+  buildBrandSpotlightCard,
+  buildTriviaCard,
+  buildQualityBadgesCard,
+  buildPlayerSpotlightCard,
+  buildCorpusStatsCard,
+  buildBrandSpotlightCard,
+  buildTriviaCard,
+  buildPlayerSpotlightCard,
+];
+
+function renderIntelFeed() {
+  const el = document.getElementById('intelFeed');
+
+  // Build two cards at a time to fill the panel
+  const cards = [];
+  for (let i = 0; i < 3; i++) {
+    const idx = (currentIntelIdx + i) % intelCardBuilders.length;
+    const html = intelCardBuilders[idx]();
+    if (html) cards.push(html);
+  }
+
+  if (!cards.length) {
+    el.innerHTML = '<div class="loading-state">No intel data</div>';
+    return;
+  }
+  el.innerHTML = cards.join('');
+}
+
+function advanceIntel() {
+  currentIntelIdx = (currentIntelIdx + 1) % intelCardBuilders.length;
+  renderIntelFeed();
+}
+
+function startIntelCycle() {
+  renderIntelFeed();
+  if (intelTimer) clearInterval(intelTimer);
+  intelTimer = setInterval(advanceIntel, INTEL_CYCLE_MS);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function init() {
+  await loadAllData();
+  renderLeaderboard();
+  if (clipsData.length) startClipCycle();
+  startIntelCycle();
+
+  // Periodic data refresh
+  setInterval(async () => {
+    await loadAllData();
+    renderLeaderboard();
+  }, DATA_REFRESH_MS);
+}
+
+init();
+</script>
+</body>
+</html>

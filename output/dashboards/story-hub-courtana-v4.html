@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courtana Story Hub -- The Data Layer for Pickleball</title>
+<meta name="description" content="Courtana transforms venue cameras into intelligent data systems. 3,700+ clips analyzed. 372 brands detected. The pickleball data layer is here.">
+<meta property="og:title" content="Courtana Story Hub">
+<meta property="og:description" content="The data layer for pickleball. Every swing tells a story.">
+<meta property="og:image" content="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg">
+<meta property="og:type" content="website">
+<link rel="icon" href="https://courtana.com/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   COURTANA STORY HUB v4 -- Design System Tokens
+   ================================================================ */
+:root {
+  /* Surface */
+  --bg:           #08080C;
+  --bg-raised:    rgba(255,255,255,0.03);
+  --bg-overlay:   rgba(255,255,255,0.05);
+  --border-subtle:rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+
+  /* Text -- 7-tier system */
+  --text-1:       oklch(0.98 0.00 0);       /* near-white, headlines */
+  --text-2:       oklch(0.88 0.00 0);       /* body */
+  --text-3:       oklch(0.72 0.00 0);       /* secondary */
+  --text-4:       oklch(0.58 0.01 260);     /* tertiary */
+  --text-5:       oklch(0.46 0.01 260);     /* muted */
+  --text-6:       oklch(0.36 0.01 260);     /* ghost */
+  --text-7:       oklch(0.26 0.01 260);     /* barely visible */
+
+  /* Accent */
+  --accent:       #BD93F9;
+  --accent-dim:   rgba(189,147,249,0.15);
+  --accent-glow:  rgba(189,147,249,0.30);
+  --green:        #50fa7b;
+  --green-dim:    rgba(80,250,123,0.12);
+  --green-glow:   rgba(80,250,123,0.25);
+  --gold:         #f1fa8c;
+  --gold-dim:     rgba(241,250,140,0.10);
+  --orange:       #ffb86c;
+  --red:          #ff5555;
+  --cyan:         #8be9fd;
+
+  /* Typography */
+  --font-sans:    'Manrope', system-ui, -apple-system, sans-serif;
+  --font-mono:    'Red Hat Mono', 'JetBrains Mono', 'SF Mono', monospace;
+
+  /* Glass */
+  --glass-bg:     rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+  --glass-blur:   16px;
+
+  /* Easing */
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth:  cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ── RESET ── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  overflow-x: hidden;
+  font-size: 16px;
+}
+body {
+  background: var(--bg);
+  color: var(--text-2);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::selection { background: var(--accent); color: var(--bg); }
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ── AMBIENT GRADIENT BLOBS ── */
+.ambient-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+.blob-1 {
+  width: 600px; height: 600px;
+  top: -200px; right: -200px;
+  background: radial-gradient(circle, rgba(189,147,249,0.08), transparent 70%);
+  animation: blobDrift1 25s ease-in-out infinite;
+}
+.blob-2 {
+  width: 500px; height: 500px;
+  bottom: 20%; left: -150px;
+  background: radial-gradient(circle, rgba(80,250,123,0.06), transparent 70%);
+  animation: blobDrift2 30s ease-in-out infinite;
+}
+.blob-3 {
+  width: 400px; height: 400px;
+  top: 50%; right: 10%;
+  background: radial-gradient(circle, rgba(189,147,249,0.05), transparent 70%);
+  animation: blobDrift3 20s ease-in-out infinite;
+}
+@keyframes blobDrift1 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  33%     { transform: translate(-40px, 60px) scale(1.1); }
+  66%     { transform: translate(30px, -30px) scale(0.95); }
+}
+@keyframes blobDrift2 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  50%     { transform: translate(50px, -40px) scale(1.08); }
+}
+@keyframes blobDrift3 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  40%     { transform: translate(-30px, 50px) scale(1.05); }
+  80%     { transform: translate(20px, -20px) scale(0.92); }
+}
+
+/* ================================================================
+   STATUS STRIP (v4 nav)
+   ================================================================ */
+.status-strip {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 44px;
+  background: rgba(8,8,12,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: transform 0.4s var(--ease-out);
+}
+.status-strip.hidden { transform: translateY(-100%); }
+.strip-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.strip-left a {
+  color: var(--text-4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.strip-left a:hover { color: var(--accent); }
+.strip-brand {
+  color: var(--text-1);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.strip-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.strip-right a {
+  color: var(--text-5);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.strip-right a:hover { color: var(--text-2); }
+.strip-right .active { color: var(--accent); }
+.strip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.4; }
+}
+
+/* ── SCROLL TRACKER ── */
+.scroll-tracker {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.scroll-tracker .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-6);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-spring);
+  position: relative;
+}
+.scroll-tracker .dot::after {
+  content: attr(title);
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-5);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.scroll-tracker .dot:hover::after { opacity: 1; }
+.scroll-tracker .dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  transform: scale(1.3);
+}
+
+/* ================================================================
+   CHAPTER BASE
+   ================================================================ */
+.chapter {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 32px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  z-index: 1;
+}
+.chapter-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+.chapter h2 {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 28px;
+  color: var(--text-1);
+  letter-spacing: -0.03em;
+}
+.chapter h2 .dim {
+  color: var(--text-5);
+  display: block;
+  margin-top: 8px;
+}
+.narrative {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  max-width: 680px;
+  text-align: center;
+  color: var(--text-3);
+  line-height: 1.8;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-spring);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.12s; }
+.reveal-delay-2 { transition-delay: 0.24s; }
+.reveal-delay-3 { transition-delay: 0.36s; }
+.reveal-delay-4 { transition-delay: 0.48s; }
+.reveal-delay-5 { transition-delay: 0.60s; }
+
+/* ── GLASS CARD ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+/* ================================================================
+   CHAPTER 1 -- THE ORDINARY WORLD (Hero)
+   ================================================================ */
+#ch1 { position: relative; overflow: hidden; }
+.thumb-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  grid-template-rows: repeat(2,1fr);
+  gap: 3px;
+  z-index: 0;
+  will-change: transform;
+}
+.thumb-grid img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: blur(4px) brightness(0.25) saturate(0.6);
+}
+.ch1-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8,8,12,0.80) 0%, rgba(8,8,12,0.92) 60%, var(--bg) 100%);
+  z-index: 1;
+}
+#ch1 .content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+#ch1 h2 {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.hero-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-5);
+  letter-spacing: 0.06em;
+  margin-top: 12px;
+}
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 56px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-4);
+}
+.stats-bar span { white-space: nowrap; }
+.stats-bar span::before {
+  content: '';
+  display: inline-block;
+  width: 4px; height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.scroll-arrow {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  animation: arrowFloat 2.5s ease-in-out infinite;
+  color: var(--text-6);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s;
+  width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scroll-arrow:hover { color: var(--accent); }
+.scroll-arrow svg { width: 20px; height: 20px; }
+@keyframes arrowFloat {
+  0%,100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+  50%     { transform: translateX(-50%) translateY(8px); opacity: 1; }
+}
+
+/* ================================================================
+   CHAPTER 2 -- THE CALL
+   ================================================================ */
+#ch2 .split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  max-width: 1100px;
+  width: 100%;
+  align-items: start;
+  margin-top: 40px;
+}
+.clip-showcase {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 60px rgba(189,147,249,0.08);
+}
+.clip-showcase img { width: 100%; display: block; }
+.clip-showcase::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1px solid rgba(189,147,249,0.15);
+  pointer-events: none;
+}
+.data-points {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.data-point {
+  padding: 12px 18px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 12px 12px 0;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-2);
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-spring);
+}
+.data-point.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.commentary {
+  max-width: 1100px;
+  width: 100%;
+  margin-top: 56px;
+}
+.commentary blockquote {
+  border-left: 2px solid var(--gold);
+  padding: 20px 28px;
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-3);
+  background: var(--gold-dim);
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 16px;
+  font-size: 1.02rem;
+  line-height: 1.8;
+}
+.commentary .coaching {
+  color: var(--text-5);
+  font-size: 0.85rem;
+  padding-left: 28px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+/* ================================================================
+   CHAPTER 3 -- THE THRESHOLD (Corpus Growth)
+   ================================================================ */
+#ch3 .counter-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 48px;
+  margin: 48px 0;
+}
+.big-counter { text-align: center; }
+.big-counter .num {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  font-family: var(--font-sans);
+  color: var(--accent);
+  letter-spacing: -0.03em;
+}
+.big-counter .label {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-5);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+
+/* Canvas chart wrapper */
+.chart-wrap {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto 48px;
+  position: relative;
+  height: 280px;
+  padding: 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.cost-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 48px;
+}
+.cost-card {
+  text-align: center;
+  padding: 28px 32px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  min-width: 200px;
+  transition: border-color 0.3s, transform 0.3s var(--ease-spring);
+}
+.cost-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+.cost-card .val {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--green);
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+}
+.cost-card .desc {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-5);
+  margin-top: 8px;
+  letter-spacing: 0.03em;
+}
+
+/* ================================================================
+   CHAPTER 4 -- THE TRIALS (Accuracy)
+   ================================================================ */
+.gauge-wrap {
+  position: relative;
+  width: 200px; height: 200px;
+  margin: 0 auto 28px;
+}
+.gauge-ring {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) 0deg, var(--accent) 0deg, rgba(255,255,255,0.05) 0deg);
+  transition: background 2s var(--ease-out);
+}
+.gauge-center {
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.gauge-center .pct {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+}
+.gauge-center .sub {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-5);
+  letter-spacing: 0.04em;
+}
+.trial-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 940px;
+  width: 100%;
+  margin-top: 48px;
+}
+.trial-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: border-color 0.3s, transform 0.3s var(--ease-spring);
+}
+.trial-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-3px);
+}
+.trial-card h4 {
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.trial-card p {
+  font-size: 0.85rem;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+
+/* ================================================================
+   CHAPTER 5 -- THE REVELATION (Data Dimensions)
+   ================================================================ */
+.dim-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  width: 100%;
+  margin-top: 40px;
+}
+.dim-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s, border-color 0.3s;
+}
+.dim-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+  border-color: var(--border-hover);
+}
+.dim-card-header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.dim-card-header h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+.dim-card-header .stat {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-5);
+}
+.dim-card-header .chevron {
+  color: var(--text-6);
+  transition: transform 0.4s var(--ease-spring), color 0.3s;
+  font-size: 1rem;
+}
+.dim-card.open .chevron { transform: rotate(180deg); color: var(--accent); }
+.dim-card-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s var(--ease-out);
+  padding: 0 24px;
+}
+.dim-card.open .dim-card-body { max-height: 800px; padding: 0 24px 24px; }
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+.bar-row .bar-label {
+  width: 120px;
+  text-align: right;
+  color: var(--text-4);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.bar-row .bar-track {
+  flex: 1;
+  height: 20px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.bar-row .bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 1s var(--ease-out);
+}
+.bar-row .bar-val {
+  width: 44px;
+  text-align: right;
+  color: var(--text-2);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.dim-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--accent);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+.dim-link:hover { border-bottom-color: var(--accent); }
+
+/* Skill bars */
+.skill-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+.skill-row .sk-label {
+  width: 100px;
+  text-align: right;
+  color: var(--text-4);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.skill-row .sk-track {
+  flex: 1;
+  height: 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.skill-row .sk-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 1s var(--ease-out);
+}
+.skill-row .sk-val {
+  width: 32px;
+  color: var(--text-2);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* Arc bars */
+.arc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+.arc-row .arc-label {
+  width: 110px;
+  text-align: right;
+  color: var(--text-4);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.arc-row .arc-track {
+  flex: 1;
+  height: 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.arc-row .arc-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 4px;
+  transition: width 1s var(--ease-out);
+}
+.arc-row .arc-val {
+  width: 36px;
+  color: var(--text-2);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* ================================================================
+   CHAPTER 6 -- THE RETURN (Audience Paths)
+   ================================================================ */
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin-top: 48px;
+}
+.path-card {
+  border-radius: 16px;
+  padding: 36px;
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s, border-color 0.3s;
+  text-decoration: none;
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.path-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  background: linear-gradient(135deg, rgba(189,147,249,0.08), transparent);
+}
+.path-card:hover::before { opacity: 1; }
+.path-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  border-color: var(--border-hover);
+}
+.path-card .icon { font-size: 1.8rem; margin-bottom: 4px; }
+.path-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+.path-card p {
+  font-size: 0.85rem;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+.path-card .key-stat {
+  margin-top: auto;
+  padding-top: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.path-investors { background: linear-gradient(135deg, rgba(189,147,249,0.06), rgba(8,8,12,0.9)); }
+.path-brands    { background: linear-gradient(135deg, rgba(241,250,140,0.05), rgba(8,8,12,0.9)); }
+.path-coaches   { background: linear-gradient(135deg, rgba(255,184,108,0.05), rgba(8,8,12,0.9)); }
+.path-venues    { background: linear-gradient(135deg, rgba(80,250,123,0.05), rgba(8,8,12,0.9)); }
+
+/* ================================================================
+   CHAPTER 7 -- THE TREASURE (Conclusion)
+   ================================================================ */
+.takeaways {
+  max-width: 800px;
+  width: 100%;
+  margin: 48px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.takeaway {
+  padding: 18px 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 12px 12px 0;
+  font-size: 0.9rem;
+  color: var(--text-3);
+  line-height: 1.7;
+  border: 1px solid var(--glass-border);
+  border-left: 2px solid var(--accent);
+}
+.takeaway strong { color: var(--text-1); }
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  max-width: 900px;
+  width: 100%;
+  margin-top: 32px;
+}
+.explore-link {
+  display: block;
+  padding: 16px 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-3);
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color 0.3s, transform 0.3s var(--ease-spring), color 0.3s;
+}
+.explore-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  color: var(--text-1);
+}
+.cta-section {
+  margin-top: 80px;
+  text-align: center;
+  padding: 56px 32px;
+  border-top: 1px solid var(--border-subtle);
+  max-width: 800px;
+  width: 100%;
+}
+.cta-section .big {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: var(--text-1);
+  letter-spacing: -0.03em;
+}
+.cta-section .sub {
+  color: var(--text-4);
+  font-size: 1rem;
+  margin-bottom: 36px;
+  line-height: 1.7;
+}
+.cta-section a.mail {
+  font-size: 1.3rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 10px;
+  transition: color 0.3s;
+}
+.cta-section a.mail:hover { color: var(--green); }
+.cta-section .site {
+  color: var(--text-6);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+footer {
+  text-align: center;
+  padding: 36px 24px;
+  color: var(--text-6);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  border-top: 1px solid var(--border-subtle);
+  letter-spacing: 0.03em;
+  position: relative;
+  z-index: 1;
+}
+footer a { color: var(--text-5); text-decoration: none; transition: color 0.3s; }
+footer a:hover { color: var(--accent); }
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1024px) {
+  .path-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+@media (max-width: 768px) {
+  html { scroll-snap-type: none; }
+  .scroll-tracker { right: 8px; gap: 10px; }
+  .scroll-tracker .dot { width: 6px; height: 6px; }
+  .scroll-tracker .dot::after { display: none; }
+  #ch2 .split { grid-template-columns: 1fr; gap: 28px; }
+  .path-grid { grid-template-columns: 1fr; }
+  .chapter { padding: 60px 20px; }
+  .chart-wrap { height: 220px; padding: 16px; }
+  .cost-row { gap: 12px; }
+  .cost-card { min-width: 140px; padding: 20px; }
+  .dim-cards { grid-template-columns: 1fr; }
+  .status-strip { padding: 0 16px; }
+  .strip-right { gap: 12px; }
+  .strip-right a:not(.active) { display: none; }
+  #ch1 h2 { font-size: clamp(2rem, 8vw, 3rem); }
+  .stats-bar { gap: 16px; }
+  .trial-cards { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .status-strip { height: 40px; font-size: 10px; }
+  .chapter { padding: 48px 16px; }
+  .cost-card { min-width: 100%; }
+  .explore-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AMBIENT BLOBS -->
+<div class="ambient-blob blob-1"></div>
+<div class="ambient-blob blob-2"></div>
+<div class="ambient-blob blob-3"></div>
+
+<!-- STATUS STRIP -->
+<header class="status-strip" id="statusStrip">
+  <div class="strip-left">
+    <a href="product-workbench.html" title="Back to Portal" aria-label="Back to Portal">&larr; Portal</a>
+    <span class="strip-brand">Courtana</span>
+    <span class="strip-dot"></span>
+  </div>
+  <div class="strip-right">
+    <a href="brand-intelligence-v2.html">Brands</a>
+    <a href="visual-intelligence-explorer.html">Explorer</a>
+    <a href="#" class="active">Story Hub</a>
+    <a href="data-lab.html">Data Lab</a>
+    <a href="pipeline-health.html">Pipeline</a>
+  </div>
+</header>
+
+<!-- SCROLL TRACKER -->
+<nav class="scroll-tracker" aria-label="Chapter navigation">
+  <div class="dot active" data-ch="ch1" title="The Ordinary World"></div>
+  <div class="dot" data-ch="ch2" title="The Call"></div>
+  <div class="dot" data-ch="ch3" title="The Threshold"></div>
+  <div class="dot" data-ch="ch4" title="The Trials"></div>
+  <div class="dot" data-ch="ch5" title="The Revelation"></div>
+  <div class="dot" data-ch="ch6" title="The Return"></div>
+  <div class="dot" data-ch="ch7" title="The Treasure"></div>
+</nav>
+
+<!-- =======================================================
+     CHAPTER 1 -- THE ORDINARY WORLD
+     ======================================================= -->
+<section class="chapter" id="ch1">
+  <div class="thumb-grid" id="parallaxGrid">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ce00696b-9f9b-465a-971c-dbf1334e556c.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/70043064-c6c3-4f60-8744-5671a1f85e35.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/2615847e-82b0-4ec6-866e-fe81fe9c5fec.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/cf1e048f-f1cf-47e8-a55e-c99abb6c6c36.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3df45199-1d8c-4d6a-a076-637a059c9621.jpeg" alt="">
+    <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8fe77353-44ee-4f8f-b7dd-36029797c8bd.jpeg" alt="">
+  </div>
+  <div class="ch1-overlay"></div>
+  <div class="content reveal">
+    <div class="chapter-label">Chapter One</div>
+    <h2>Every venue has cameras.<span class="dim">None of them think.</span></h2>
+    <div class="hero-meta">Pickle DaaS Intelligence Corpus / April 2026</div>
+    <div class="stats-bar reveal reveal-delay-2">
+      <span>12,000+ pickleball venues in the US</span>
+      <span>48.3M players</span>
+      <span>Billions of swings per year</span>
+      <span>Zero intelligence captured</span>
+    </div>
+  </div>
+  <div class="scroll-arrow" onclick="document.getElementById('ch2').scrollIntoView({behavior:'smooth'})">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- =======================================================
+     CHAPTER 2 -- THE CALL
+     ======================================================= -->
+<section class="chapter" id="ch2">
+  <div class="chapter-label reveal">Chapter Two</div>
+  <h2 class="reveal">What if every swing<br>told a story?</h2>
+  <div class="split">
+    <div class="clip-showcase reveal">
+      <img loading="lazy" src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/b18ca113-c853-4811-b486-ab7f56472851.jpeg" alt="High-quality pickleball clip" style="width:100%">
+    </div>
+    <div class="data-points" id="dataPoints">
+      <div class="data-point">40+ structured data points per clip</div>
+      <div class="data-point">3 AI commentary tracks (ESPN / Hype / Coaching)</div>
+      <div class="data-point">9-dimension player skill profile</div>
+      <div class="data-point">Brand detection across 13 categories</div>
+      <div class="data-point">64 unique badge types</div>
+      <div class="data-point">Narrative arc classification</div>
+      <div class="data-point">DUPR estimate</div>
+      <div class="data-point">Social-ready caption</div>
+    </div>
+  </div>
+  <div class="commentary reveal reveal-delay-2">
+    <blockquote>A patient rally unfolds at the net, with both teams exchanging precise dinks. The intensity builds as the ball stays low, until a decisive speed-up attempt sails just wide.</blockquote>
+    <div class="coaching">coaching // This rally demonstrates good patience and kitchen positioning. However, the final speed-up was a bit ambitious from that angle.</div>
+  </div>
+</section>
+
+<!-- =======================================================
+     CHAPTER 3 -- THE THRESHOLD
+     ======================================================= -->
+<section class="chapter" id="ch3">
+  <div class="chapter-label reveal">Chapter Three</div>
+  <h2 class="reveal">From one clip to <span style="color:var(--accent)" id="clipCounter">0</span></h2>
+
+  <div class="chart-wrap reveal reveal-delay-1">
+    <canvas id="growthChart"></canvas>
+  </div>
+
+  <div class="cost-row reveal reveal-delay-2">
+    <div class="cost-card">
+      <div class="val" id="costCounter">$0.00</div>
+      <div class="desc">total spend to analyze 3,700 clips</div>
+    </div>
+    <div class="cost-card">
+      <div class="val" id="outputCounter">0</div>
+      <div class="desc">structured outputs per dollar</div>
+    </div>
+    <div class="cost-card">
+      <div class="val">$0.0054</div>
+      <div class="desc">cost per clip (Gemini 2.5 Flash)</div>
+    </div>
+  </div>
+  <p class="narrative reveal reveal-delay-3" style="margin-top:40px">Most AI companies burn millions training models on synthetic data. We built a proprietary intelligence corpus from real production footage &mdash; for less than the price of a dinner.</p>
+</section>
+
+<!-- =======================================================
+     CHAPTER 4 -- THE TRIALS
+     ======================================================= -->
+<section class="chapter" id="ch4">
+  <div class="chapter-label reveal">Chapter Four</div>
+  <h2 class="reveal">Teaching the machine to see</h2>
+
+  <div class="gauge-wrap reveal reveal-delay-1">
+    <div class="gauge-ring" id="gaugeRing">
+      <div class="gauge-center">
+        <div class="pct" id="gaugePct">0%</div>
+        <div class="sub">Badge F1 Score</div>
+      </div>
+    </div>
+  </div>
+  <p class="narrative reveal reveal-delay-1" style="margin-bottom:32px">47.5% badge prediction F1 &mdash; and climbing</p>
+  <p class="narrative reveal reveal-delay-2" style="max-width:750px">We don't hide from accuracy. We measure it. Against 4,619 ground-truth badge awards, our system self-checks every prediction. Multi-model agents (Gemini Flash vs. Pro) compete and improve autonomously.</p>
+
+  <div class="trial-cards reveal reveal-delay-3">
+    <div class="trial-card">
+      <h4>Self-measurement</h4>
+      <p>Every prediction tested against ground truth. Precision, Recall, and F1 published &mdash; not hidden.</p>
+    </div>
+    <div class="trial-card">
+      <h4>Multi-model debate</h4>
+      <p>AI models argue. A consensus judge adjudicates. Bad predictions get flagged automatically.</p>
+    </div>
+    <div class="trial-card">
+      <h4>Human-in-the-loop</h4>
+      <p>One-click feedback from coaches and analysts feeds back into the next analysis cycle.</p>
+    </div>
+  </div>
+  <p class="narrative reveal reveal-delay-4" style="margin-top:36px;font-family:var(--font-mono);font-size:11px;color:var(--text-5);letter-spacing:0.04em">64 unique badge types &middot; 2,481 badge awards predicted &middot; Self-improving hourly</p>
+</section>
+
+<!-- =======================================================
+     CHAPTER 5 -- THE REVELATION
+     ======================================================= -->
+<section class="chapter" id="ch5">
+  <div class="chapter-label reveal">Chapter Five</div>
+  <h2 class="reveal">The data nobody else has</h2>
+
+  <div class="dim-cards">
+    <!-- BRAND INTELLIGENCE -->
+    <div class="dim-card reveal" onclick="this.classList.toggle('open')">
+      <div class="dim-card-header">
+        <div>
+          <h3>Brand Intelligence</h3>
+          <div class="stat">372 brands detected across 3,700 clips</div>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="dim-card-body">
+        <div class="bar-row"><span class="bar-label">JOOLA</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="100%"></div></div><span class="bar-val">2,180</span></div>
+        <div class="bar-row"><span class="bar-label">Nike</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="14%"></div></div><span class="bar-val">310</span></div>
+        <div class="bar-row"><span class="bar-label">Selkirk</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="8%"></div></div><span class="bar-val">175</span></div>
+        <div class="bar-row"><span class="bar-label">HEAD</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="5%"></div></div><span class="bar-val">109</span></div>
+        <div class="bar-row"><span class="bar-label">CRBN</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="3%"></div></div><span class="bar-val">66</span></div>
+        <div class="bar-row"><span class="bar-label">Franklin</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="2.5%"></div></div><span class="bar-val">55</span></div>
+        <div class="bar-row"><span class="bar-label">On Running</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="1.8%"></div></div><span class="bar-val">40</span></div>
+        <div class="bar-row"><span class="bar-label">Onix</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-w="1%"></div></div><span class="bar-val">22</span></div>
+        <p style="font-size:12px;color:var(--text-5);margin-top:14px;font-family:var(--font-mono)">JOOLA detected across 13 categories &mdash; paddles, shoes, nets, bags, apparel, court signage...</p>
+        <a class="dim-link" href="brands/joola.html">Full JOOLA brand report &rarr;</a>
+      </div>
+    </div>
+
+    <!-- PLAYER DNA -->
+    <div class="dim-card reveal reveal-delay-1" onclick="this.classList.toggle('open')">
+      <div class="dim-card-header">
+        <div>
+          <h3>Player DNA</h3>
+          <div class="stat">9 dimensions per player, updated every session</div>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="dim-card-body">
+        <div class="skill-row"><span class="sk-label">Kitchen</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="78%"></div></div><span class="sk-val">7.8</span></div>
+        <div class="skill-row"><span class="sk-label">Consistency</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="75%"></div></div><span class="sk-val">7.5</span></div>
+        <div class="skill-row"><span class="sk-label">Touch</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="72%"></div></div><span class="sk-val">7.2</span></div>
+        <div class="skill-row"><span class="sk-label">Court IQ</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="70%"></div></div><span class="sk-val">7.0</span></div>
+        <div class="skill-row"><span class="sk-label">Composure</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="68%"></div></div><span class="sk-val">6.8</span></div>
+        <div class="skill-row"><span class="sk-label">Coverage</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="65%"></div></div><span class="sk-val">6.5</span></div>
+        <div class="skill-row"><span class="sk-label">Athleticism</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="60%"></div></div><span class="sk-val">6.0</span></div>
+        <div class="skill-row"><span class="sk-label">Power</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="55%"></div></div><span class="sk-val">5.5</span></div>
+        <div class="skill-row"><span class="sk-label">Creativity</span><div class="sk-track"><div class="sk-fill" style="width:0%" data-w="50%"></div></div><span class="sk-val">5.0</span></div>
+        <p style="font-size:12px;color:var(--text-5);margin-top:14px;font-family:var(--font-mono)">184 badges earned. Rally Master specialist. DUPR 3.5&ndash;4.0.</p>
+        <a class="dim-link" href="coach-demo.html">Full coaching demo &rarr;</a>
+      </div>
+    </div>
+
+    <!-- NARRATIVE INTELLIGENCE -->
+    <div class="dim-card reveal reveal-delay-2" onclick="this.classList.toggle('open')">
+      <div class="dim-card-header">
+        <div>
+          <h3>Narrative Intelligence</h3>
+          <div class="stat">18 distinct story arcs identified</div>
+        </div>
+        <span class="chevron">&#9662;</span>
+      </div>
+      <div class="dim-card-body">
+        <div class="arc-row"><span class="arc-label">Strategic</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="69%"></div></div><span class="arc-val">69%</span></div>
+        <div class="arc-row"><span class="arc-label">Dink</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="8%"></div></div><span class="arc-val">8%</span></div>
+        <div class="arc-row"><span class="arc-label">Teaching</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <div class="arc-row"><span class="arc-label">Grind Rally</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <div class="arc-row"><span class="arc-label">Top Play</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <div class="arc-row"><span class="arc-label">Athletic</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="3%"></div></div><span class="arc-val">3%</span></div>
+        <div class="arc-row"><span class="arc-label">Drive</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="2%"></div></div><span class="arc-val">2%</span></div>
+        <div class="arc-row"><span class="arc-label">Volley</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="2%"></div></div><span class="arc-val">2%</span></div>
+        <div class="arc-row"><span class="arc-label">Other</span><div class="arc-track"><div class="arc-fill" style="width:0%" data-w="4%"></div></div><span class="arc-val">4%</span></div>
+        <p style="font-size:12px;color:var(--text-5);margin-top:14px;font-family:var(--font-mono)">Every clip classified. Strategic plays. Teaching moments. Comedy. Athletic highlights. The AI writes the headline.</p>
+        <a class="dim-link" href="visual-intelligence-explorer.html">Visual Intelligence Explorer &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================
+     CHAPTER 6 -- THE RETURN
+     ======================================================= -->
+<section class="chapter" id="ch6">
+  <div class="chapter-label reveal">Chapter Six</div>
+  <h2 class="reveal">One platform.<br>Four stories.</h2>
+  <p class="narrative reveal reveal-delay-1" style="margin-bottom:20px">Choose your path.</p>
+
+  <div class="path-grid">
+    <a href="investor-demo.html" class="path-card path-investors reveal">
+      <div class="icon" style="color:var(--accent)">&#9650;</div>
+      <h3>For Investors</h3>
+      <p>The Bloomberg Terminal of pickleball. Unit economics, TAM/SAM/SOM, data flywheel moat.</p>
+      <div class="key-stat" style="color:var(--accent)">$13.9M ARR at 1,000 venues</div>
+    </a>
+    <a href="brands/joola.html" class="path-card path-brands reveal reveal-delay-1">
+      <div class="icon" style="color:var(--gold)">&#9733;</div>
+      <h3>For Brand Partners</h3>
+      <p>Brand intelligence reports for JOOLA, Nike, Selkirk, CRBN, Franklin. See exactly where your logo shows up.</p>
+      <div class="key-stat" style="color:var(--gold)">372 brands detected across 13 categories</div>
+    </a>
+    <a href="coach-demo.html" class="path-card path-coaches reveal reveal-delay-2">
+      <div class="icon" style="color:var(--orange)">&#9883;</div>
+      <h3>For Coaches</h3>
+      <p>AI coaching breakdowns for every player, every session. Skill profiles, badge progress, targeted drills.</p>
+      <div class="key-stat" style="color:var(--orange)">184 badges awarded to one player across 29 sessions</div>
+    </a>
+    <a href="partnership-deck.html" class="path-card path-venues reveal reveal-delay-3">
+      <div class="icon" style="color:var(--green)">&#9964;</div>
+      <h3>For Venue Operators</h3>
+      <p>Your cameras are already smart. Make them profitable. Zero hardware cost, pure software layer.</p>
+      <div class="key-stat" style="color:var(--green)">99.7% gross margin at $800/mo/venue</div>
+    </a>
+  </div>
+</section>
+
+<!-- =======================================================
+     CHAPTER 7 -- THE TREASURE
+     ======================================================= -->
+<section class="chapter" id="ch7" style="justify-content:start;padding-top:120px">
+  <div class="chapter-label reveal">Chapter Seven</div>
+  <h2 class="reveal">The data layer<br>is inevitable</h2>
+
+  <p class="narrative reveal reveal-delay-1" style="margin-top:28px">
+    Every sport gets its data layer eventually. Baseball had Statcast. Basketball had Second Spectrum. Tennis has Hawk-Eye. Pickleball &mdash; the fastest-growing sport in America, with 48.3 million players &mdash; has nothing. Until now. Courtana sees every swing, every brand, every player, every story. And the flywheel only spins faster.
+  </p>
+
+  <h3 class="reveal reveal-delay-2" style="margin-top:64px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-5);font-family:var(--font-mono)">Key Takeaways</h3>
+  <div class="takeaways">
+    <div class="takeaway reveal">3,700 clips analyzed for <strong>$19.98</strong> &mdash; AI economics that make traditional video analysis obsolete</div>
+    <div class="takeaway reveal reveal-delay-1"><strong>372 brands</strong> detected automatically &mdash; sponsorship ROI is now measurable for the first time</div>
+    <div class="takeaway reveal reveal-delay-1">Self-improving accuracy &mdash; <strong>47.5% F1</strong> today, with multi-model agents competing to improve hourly</div>
+    <div class="takeaway reveal reveal-delay-2">Player DNA is real &mdash; <strong>9-dimension skill profiles</strong> that update after every session</div>
+    <div class="takeaway reveal reveal-delay-2">The cameras are already there &mdash; Courtana is <strong>booking-agnostic</strong>, layers on top of any venue system</div>
+  </div>
+
+  <h3 class="reveal reveal-delay-3" style="margin-top:64px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-5);font-family:var(--font-mono)">Explore Further</h3>
+  <div class="explore-grid reveal reveal-delay-3">
+    <a class="explore-link" href="product-workbench.html">Product Workbench</a>
+    <a class="explore-link" href="visual-intelligence-explorer.html">Visual Intelligence Explorer</a>
+    <a class="explore-link" href="brand-intelligence-v2.html">Brand Intelligence</a>
+    <a class="explore-link" href="data-lab.html">Data Lab</a>
+    <a class="explore-link" href="pipeline-health.html">Pipeline Health</a>
+    <a class="explore-link" href="accuracy.json">Accuracy Report</a>
+    <a class="explore-link" href="corpus-export.json">Raw Corpus (JSON)</a>
+    <a class="explore-link" href="https://github.com/PickleBill/pickle-daas-data">GitHub</a>
+  </div>
+
+  <div class="cta-section reveal reveal-delay-4">
+    <div class="big">This is just the beginning.</div>
+    <div class="sub">The corpus grows every hour. The AI improves every day.<br>The moat widens with every swing.</div>
+    <a class="mail" href="mailto:bill@picklebill.com">bill@picklebill.com</a>
+    <div class="site"><a href="https://courtana.com">courtana.com</a></div>
+  </div>
+</section>
+
+<footer>
+  Pickle DaaS by Courtana &middot; Snapshot: 2026-04-16 &middot; <a href="https://picklebill.github.io/pickle-daas-data">picklebill.github.io/pickle-daas-data</a>
+</footer>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+/* ================================================================
+   INTERSECTION OBSERVER -- REVEAL ON SCROLL
+   ================================================================ */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ================================================================
+   SCROLL TRACKER DOTS
+   ================================================================ */
+const chapters = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7'];
+const chapterIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.scroll-tracker .dot').forEach(d => d.classList.remove('active'));
+      const dot = document.querySelector(`.dot[data-ch="${e.target.id}"]`);
+      if (dot) dot.classList.add('active');
+    }
+  });
+}, { threshold: 0.35 });
+chapters.forEach(id => { const el = document.getElementById(id); if (el) chapterIO.observe(el); });
+document.querySelectorAll('.scroll-tracker .dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    document.getElementById(dot.dataset.ch).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+/* ================================================================
+   STATUS STRIP HIDE/SHOW ON SCROLL
+   ================================================================ */
+let lastScroll = 0;
+const strip = document.getElementById('statusStrip');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > lastScroll && y > 200) {
+    strip.classList.add('hidden');
+  } else {
+    strip.classList.remove('hidden');
+  }
+  lastScroll = y;
+}, { passive: true });
+
+/* ================================================================
+   PARALLAX ON CH1 GRID
+   ================================================================ */
+const grid = document.getElementById('parallaxGrid');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y < window.innerHeight * 1.5) {
+    grid.style.transform = `translateY(${y * 0.25}px) scale(${1 + y * 0.0001})`;
+  }
+}, { passive: true });
+
+/* ================================================================
+   CH2 DATA POINTS STAGGER
+   ================================================================ */
+const dpIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const pts = document.querySelectorAll('#dataPoints .data-point');
+      pts.forEach((p, i) => { setTimeout(() => p.classList.add('visible'), i * 150); });
+      dpIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.25 });
+dpIO.observe(document.getElementById('dataPoints'));
+
+/* ================================================================
+   ANIMATED COUNTERS
+   ================================================================ */
+function animateCounter(el, target, prefix, suffix, duration, decimals) {
+  let start = null;
+  const step = (ts) => {
+    if (!start) start = ts;
+    const pct = Math.min((ts - start) / duration, 1);
+    /* ease out cubic */
+    const eased = 1 - Math.pow(1 - pct, 3);
+    const val = eased * target;
+    el.textContent = prefix + (decimals ? val.toFixed(decimals) : Math.round(val).toLocaleString()) + suffix;
+    if (pct < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+let ch3Animated = false;
+const ch3IO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !ch3Animated) {
+      ch3Animated = true;
+      animateCounter(document.getElementById('clipCounter'), 3700, '', '', 2200, 0);
+      animateCounter(document.getElementById('costCounter'), 19.98, '$', '', 2200, 2);
+      animateCounter(document.getElementById('outputCounter'), 7400, '', '', 2200, 0);
+      ch3IO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.25 });
+ch3IO.observe(document.getElementById('ch3'));
+
+/* ================================================================
+   CH4 GAUGE
+   ================================================================ */
+let ch4Animated = false;
+const ch4IO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !ch4Animated) {
+      ch4Animated = true;
+      const ring = document.getElementById('gaugeRing');
+      const pctEl = document.getElementById('gaugePct');
+      const target = 47.5;
+      const deg = (target / 100) * 360;
+      ring.style.background = `conic-gradient(var(--accent) 0deg, var(--accent) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg)`;
+      let start = null;
+      const step = (ts) => {
+        if (!start) start = ts;
+        const pct = Math.min((ts - start) / 1800, 1);
+        const eased = 1 - Math.pow(1 - pct, 3);
+        pctEl.textContent = (eased * target).toFixed(1) + '%';
+        if (pct < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+  });
+}, { threshold: 0.25 });
+ch4IO.observe(document.getElementById('ch4'));
+
+/* ================================================================
+   CH5 EXPAND BARS ON OPEN
+   ================================================================ */
+const dimObserver = new MutationObserver((mutations) => {
+  mutations.forEach(m => {
+    if (m.target.classList.contains('open')) {
+      m.target.querySelectorAll('[data-w]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.w; }, 80);
+      });
+    } else {
+      m.target.querySelectorAll('[data-w]').forEach(bar => { bar.style.width = '0%'; });
+    }
+  });
+});
+document.querySelectorAll('.dim-card').forEach(card => {
+  dimObserver.observe(card, { attributes: true, attributeFilter: ['class'] });
+});
+
+/* ================================================================
+   CHART.JS -- CORPUS GROWTH (v4 styled)
+   ================================================================ */
+let chartDrawn = false;
+const chartIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !chartDrawn) {
+      chartDrawn = true;
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+      gradient.addColorStop(0, 'rgba(189,147,249,0.25)');
+      gradient.addColorStop(1, 'rgba(189,147,249,0)');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Mar 24','Mar 31','Apr 7','Apr 10','Apr 11','Apr 12','Apr 13','Apr 14','Apr 15','Apr 16'],
+          datasets: [{
+            data: [1, 8, 45, 115, 319, 521, 818, 1640, 2800, 3700],
+            borderColor: '#BD93F9',
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3,
+            pointBackgroundColor: '#BD93F9',
+            pointBorderColor: '#08080C',
+            pointBorderWidth: 2,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#BD93F9',
+            pointHoverBorderColor: '#fff',
+            borderWidth: 2.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(8,8,12,0.95)',
+              titleFont: { family: "'Red Hat Mono', monospace", size: 11 },
+              bodyFont: { family: "'Red Hat Mono', monospace", size: 12 },
+              titleColor: 'rgba(255,255,255,0.6)',
+              bodyColor: '#BD93F9',
+              borderColor: 'rgba(255,255,255,0.08)',
+              borderWidth: 1,
+              cornerRadius: 8,
+              padding: 12,
+              callbacks: { label: (c) => c.parsed.y.toLocaleString() + ' clips' }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false },
+              ticks: { color: 'rgba(255,255,255,0.3)', font: { family: "'Red Hat Mono', monospace", size: 10 } }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false },
+              ticks: { color: 'rgba(255,255,255,0.3)', font: { family: "'Red Hat Mono', monospace", size: 10 } },
+              beginAtZero: true
+            }
+          },
+          animation: { duration: 2200, easing: 'easeOutQuart' }
+        }
+      });
+    }
+  });
+}, { threshold: 0.15 });
+chartIO.observe(document.getElementById('growthChart'));
+</script>
+</body>
+</html>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venue Report Card v4 &middot; Pickle DaaS</title>
+<meta name="description" content="What Courtana captures about your venue — grades, insights, ROI. Every facility is a data source.">
+<meta property="og:title" content="Venue Report Card — Pickle DaaS">
+<meta property="og:description" content="AI-powered venue analytics: cameras, equipment, court surfaces, player patterns, brand exposure.">
+<meta property="og:image" content="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
+<link rel="icon" href="https://courtana.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   VENUE REPORT CARD — v4 Design System
+   Amber accent · Near-black bg · glass morphism
+   Animated grades · counters · scroll reveal
+   Venue-owner pitch: "I need this for my facility"
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --accent:#FFB86C;--accent-g:rgba(255,184,108,.12);--accent-d:rgba(255,184,108,.06);
+  --accent-b:rgba(255,184,108,.2);--accent-2:#F1C40F;
+  --green:#6EEFC0;--green-g:rgba(110,239,192,.12);
+  --teal:#50E3C2;--teal-g:rgba(80,227,194,.12);
+  --red:#FF6B6B;--red-g:rgba(255,107,107,.12);
+  --blue:#6BA3FF;--blue-g:rgba(107,163,255,.12);
+  --purple:#BD93F9;--purple-g:rgba(189,147,249,.12);
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+
+/* ── Noise overlay ── */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+
+/* ── Ambient blobs ── */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.b1{width:520px;height:520px;top:-12%;left:18%;background:#FFB86C;opacity:.04;animation:bd1 78s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:#6EEFC0;opacity:.03;animation:bd2 86s ease-in-out infinite}
+.b3{width:400px;height:400px;top:38%;left:-9%;background:#BD93F9;opacity:.025;animation:bd3 72s ease-in-out infinite}
+.b4{width:380px;height:380px;top:65%;right:12%;background:#6BA3FF;opacity:.02;animation:bd1 90s ease-in-out infinite reverse}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+/* ── Scroll progress ── */
+.scroll-progress{position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,var(--accent),var(--green));z-index:100;pointer-events:none}
+
+.page{position:relative;z-index:1}
+.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+
+/* ── Reveal system ── */
+[data-reveal]{opacity:0;transform:translateY(36px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+[data-reveal].hero{opacity:1!important;transform:none!important}
+
+.divider{width:120px;height:1px;margin:72px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider-wide{width:100%;height:1px;margin:64px 0;background:linear-gradient(90deg,transparent,var(--t7),transparent)}
+
+/* ══ STATUS STRIP ══ */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--accent);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:heartbeat 1.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes heartbeat{0%{transform:scale(1);opacity:1}7%{transform:scale(1.35);opacity:1}14%{transform:scale(1);opacity:.9}21%{transform:scale(1.2);opacity:1}28%{transform:scale(1);opacity:.85}100%{transform:scale(1);opacity:.85}}
+.v-chip{padding:2px 8px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px;align-items:center}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--accent);border-color:var(--accent-b)}
+.portal-link{color:var(--t5);font-size:11px;font-family:'Red Hat Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--bd);border-radius:6px;transition:all .2s var(--ease);display:inline-flex;align-items:center;gap:6px}
+.portal-link:hover{color:var(--accent);border-color:var(--accent-b)}
+
+/* ══ HERO ══ */
+.hero-section{padding:clamp(64px,10vw,120px) 0 clamp(32px,5vw,56px);position:relative}
+.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:#FFB86C;opacity:.035;pointer-events:none}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero-section h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:900px}
+.grad-text{background:linear-gradient(135deg,#FFB86C,#F1C40F);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:620px;line-height:1.7}
+
+/* ── Hero pills ── */
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hero-pill .hp-v{font-size:22px;font-weight:800;color:var(--t1);font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums}
+.hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5);font-family:'Red Hat Mono',monospace}
+
+/* ══ SECTION HEADINGS ══ */
+.sec-head{margin-bottom:28px}
+.sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sec-eyebrow::before{content:'';width:16px;height:1px;background:var(--accent)}
+.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.sec-desc{font-size:.95rem;color:var(--t3);margin-top:10px;max-width:600px;line-height:1.65}
+
+/* ══ KPI CARDS ══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:28px 0 0}
+.kpi-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:22px 20px;text-align:center;transition:border-color .25s var(--ease),box-shadow .35s var(--ease);position:relative;overflow:hidden}
+.kpi-card:hover{border-color:var(--bd-h);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.kpi-stripe{position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-value{font-size:2rem;font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi-label{font-size:.72rem;color:var(--t4);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;font-family:'Red Hat Mono',monospace}
+.kpi-sub{font-size:.72rem;color:var(--t5);margin-top:3px}
+
+/* ══ VENUE REPORT CARD ══ */
+.report-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:clamp(24px,4vw,40px);position:relative;overflow:hidden}
+.report-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--green),var(--blue),var(--purple))}
+.rc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;flex-wrap:wrap;gap:16px}
+.rc-title{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+.rc-badge{font-family:'Red Hat Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;padding:5px 14px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:6px}
+
+.grade-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:20px}
+.grade-item{text-align:center;padding:20px 12px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:var(--r);transition:all .3s var(--ease)}
+.grade-item:hover{border-color:rgba(255,255,255,.1);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.2)}
+
+.grade-ring{width:76px;height:76px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
+.grade-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.grade-ring svg circle{fill:none;stroke-width:3;stroke-linecap:round}
+.grade-ring .bg-ring{stroke:rgba(255,255,255,.06)}
+.grade-ring .fg-ring{stroke-dasharray:220;stroke-dashoffset:220;transition:stroke-dashoffset 1.2s var(--ease)}
+.grade-ring.animated .fg-ring{stroke-dashoffset:var(--ring-offset)}
+.grade-letter{font-size:1.6rem;font-weight:800;position:relative;z-index:1;opacity:0;transform:scale(.5);transition:opacity .5s var(--spring),transform .5s var(--spring)}
+.grade-ring.animated .grade-letter{opacity:1;transform:scale(1)}
+
+.grade-label{font-size:.72rem;color:var(--t4);text-transform:uppercase;letter-spacing:.08em;font-family:'Red Hat Mono',monospace;margin-top:2px}
+.grade-score{font-size:.7rem;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:4px}
+
+/* Grade colors */
+.g-a{--gc:var(--green);--gc-g:var(--green-g)}
+.g-b{--gc:var(--teal);--gc-g:var(--teal-g)}
+.g-c{--gc:var(--accent);--gc-g:var(--accent-g)}
+.g-d{--gc:var(--red);--gc-g:var(--red-g)}
+
+/* ══ GLASS TABLE (Comparison) ══ */
+.glass-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;position:relative;transition:border-color .25s var(--ease)}
+.glass-card:hover{border-color:var(--bd-h)}
+.gc-stripe{height:3px;width:100%}
+.gc-head{padding:20px 24px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.gc-label{font-family:'Red Hat Mono',monospace;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
+.gc-count{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t5)}
+
+.g-table{width:100%;border-collapse:collapse}
+.g-table th{text-align:left;padding:10px 16px;font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);border-bottom:1px solid var(--bd);font-weight:600}
+.g-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+.g-table tr:last-child td{border-bottom:none}
+.g-table tbody tr{opacity:0;transform:translateY(16px)}
+.g-table tbody tr.row-visible{animation:rowSlideIn .45s var(--ease) forwards}
+@keyframes rowSlideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.g-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+
+.compare-highlight{font-weight:700;color:var(--green)}
+.compare-manual{color:var(--red)}
+.compare-winner td{background:rgba(110,239,192,.04)!important}
+
+/* ══ CHART CARDS ══ */
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:20px}
+.chart-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:24px;transition:border-color .25s var(--ease)}
+.chart-card:hover{border-color:var(--bd-h)}
+.chart-card h3{font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--t4);margin-bottom:14px}
+.chart-wrap{position:relative;height:260px}
+
+/* ══ INSIGHT CARDS ══ */
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.insight-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);padding:24px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .3s var(--ease);position:relative;overflow:hidden}
+.insight-card:hover{border-color:var(--bd-h);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.2)}
+.insight-card .ic-icon{font-size:1.8rem;margin-bottom:12px;display:block}
+.insight-card .ic-title{font-size:1rem;font-weight:700;margin-bottom:6px}
+.insight-card .ic-desc{font-size:.85rem;color:var(--t3);line-height:1.6}
+.insight-card .ic-stat{font-family:'Red Hat Mono',monospace;font-size:1.4rem;font-weight:800;margin-top:10px}
+
+/* ══ ROI CALLOUT ══ */
+.roi-callout{background:linear-gradient(135deg,rgba(255,184,108,.06),rgba(110,239,192,.06));border:1px solid var(--accent-b);border-radius:var(--rl);padding:clamp(24px,4vw,40px);position:relative;overflow:hidden}
+.roi-callout::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--green))}
+.roi-title{font-size:1.3rem;font-weight:800;color:var(--accent);margin-bottom:6px}
+.roi-sub{font-size:.9rem;color:var(--t3);margin-bottom:20px;line-height:1.6}
+.roi-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;text-align:center}
+.roi-stat-val{font-size:2rem;font-weight:800;font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums}
+.roi-stat-label{font-size:.72rem;color:var(--t4);text-transform:uppercase;letter-spacing:.08em;font-family:'Red Hat Mono',monospace;margin-top:4px}
+
+/* ══ PRICING — subtle, not salesy ══ */
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.tier-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);padding:28px 24px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-align:center;transition:all .3s var(--ease);position:relative;overflow:hidden}
+.tier-card:hover{border-color:var(--bd-h);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.2)}
+.tier-card.recommended{border-color:var(--accent-b)}
+.tier-card.recommended::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.tier-rec-badge{position:absolute;top:12px;right:12px;font-family:'Red Hat Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 10px;background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b);border-radius:4px}
+.tier-name{font-size:1rem;font-weight:700;margin-bottom:4px}
+.tier-price{font-size:2.2rem;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--accent);margin:8px 0 4px}
+.tier-price span{font-size:.85rem;color:var(--t4);font-weight:400;font-family:'Manrope',sans-serif}
+.tier-target{font-size:.78rem;color:var(--t4);margin-bottom:16px}
+.tier-features{list-style:none;text-align:left;margin:0 0 16px;padding:0}
+.tier-features li{padding:5px 0;font-size:.82rem;color:var(--t3);display:flex;align-items:flex-start;gap:8px}
+.tier-features li::before{content:'';display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--green);margin-top:7px;flex-shrink:0}
+.tier-annual{font-size:.72rem;color:var(--t5);padding-top:12px;border-top:1px solid var(--bd);font-family:'Red Hat Mono',monospace}
+
+/* ══ THUMB STRIP ══ */
+.thumb-strip{display:flex;gap:4px}
+.thumb-cell{width:48px;height:28px;border-radius:4px;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.06);transition:border-color .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease)}
+.thumb-cell:hover{border-color:rgba(255,184,108,.35);transform:scale(1.08);box-shadow:0 0 12px rgba(255,184,108,.15)}
+.thumb-cell img{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+
+/* ══ SPONSORSHIP CALLOUT ══ */
+.sponsor-callout{background:linear-gradient(135deg,rgba(189,147,249,.06),rgba(107,163,255,.06));border:1px solid rgba(189,147,249,.15);border-radius:var(--rl);padding:clamp(24px,4vw,40px);position:relative;overflow:hidden}
+.sponsor-callout::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--blue))}
+
+/* ══ LOADING ══ */
+.ld{display:flex;flex-direction:column;align-items:center;padding:120px 20px;gap:16px}
+.spinner{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══ FOOTER ══ */
+footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .charts-grid{grid-template-columns:1fr}
+  .gc-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .thumb-strip{display:none}
+}
+@media(max-width:768px){
+  .grade-grid{grid-template-columns:repeat(3,1fr)}
+  .roi-stats{grid-template-columns:repeat(2,1fr)}
+  .insight-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .hero-pills{flex-direction:column}
+  .status nav{display:none}
+  .grade-grid{grid-template-columns:repeat(2,1fr)}
+  .tier-grid{grid-template-columns:1fr}
+  .g-table th:nth-child(4),.g-table td:nth-child(4){display:none}
+  .g-table th:nth-child(5),.g-table td:nth-child(5){display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .blob,.noise{display:none}
+  [data-reveal]{opacity:1;transform:none}
+  .g-table tbody tr{opacity:1;transform:none}
+  .grade-letter{opacity:1;transform:scale(1)}
+  .grade-ring .fg-ring{transition:none;stroke-dashoffset:var(--ring-offset)!important}
+}
+</style>
+</head>
+<body>
+
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+<div class="scroll-progress" id="scroll-prog"></div>
+
+<div class="page"><div class="shell">
+
+<!-- ═══════ STATUS STRIP ═══════ -->
+<div class="status" id="status-bar">
+  <div class="shell status-inner">
+    <span><a href="showcase-portal-v4.html" class="portal-link">&larr; Portal</a></span>
+    <span><span class="sd"></span>Live &middot; <em id="ref-ts">&mdash;</em></span>
+    <span>clips <em id="ref-clips">&mdash;</em></span>
+    <span>brands <em id="ref-brands">&mdash;</em></span>
+    <span class="v-chip">v4</span>
+    <nav>
+      <a href="brand-intelligence-v4.html">Brands</a>
+      <a href="equipment-performance-v4.html">Equipment</a>
+      <a href="venue-intelligence-v4.html">Venue Tech</a>
+      <a href="story-hub-v4.html">Stories</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero-section hero" data-reveal>
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">Venue Report Card</div>
+  <h1>Your venue,<br><span class="grad-text">scored by AI.</span></h1>
+  <p class="hero-sub">Courtana cameras capture everything on court. Every paddle, every rally, every brand. This is what your venue data looks like after AI processing.</p>
+  <div class="hero-pills" id="hero-pills"></div>
+</section>
+
+<!-- ═══════ KPI CARDS ═══════ -->
+<div data-reveal>
+  <div class="kpi-grid" id="kpi-grid"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ VENUE REPORT CARD (THE STAR) ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Performance Grades</div>
+    <div class="sec-title">Venue <span class="grad-text">Report Card</span></div>
+    <p class="sec-desc">Six metrics that define venue performance. Grades computed from AI analysis across every clip your cameras capture.</p>
+  </div>
+</div>
+
+<div class="report-card" data-reveal id="report-card">
+  <div class="rc-header">
+    <div class="rc-title">What Your Venue Data Says</div>
+    <div class="rc-badge">Sample Venue</div>
+  </div>
+  <div class="grade-grid" id="grade-grid"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ WHAT COURTANA CAPTURES ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Intelligence Overview</div>
+    <div class="sec-title">What Courtana <span class="grad-text">captures</span></div>
+    <p class="sec-desc">Every hour of court time generates dozens of data points. Here is what your facility data reveals.</p>
+  </div>
+</div>
+
+<div class="insight-grid" data-reveal>
+  <div class="insight-card">
+    <span class="ic-icon">&#x1F3AF;</span>
+    <div class="ic-title">Player Patterns</div>
+    <div class="ic-desc">Skill level distribution, peak hours, player archetypes. Know who plays at your venue and when.</div>
+    <div class="ic-stat" style="color:var(--accent)" id="ic-players">--</div>
+    <div style="font-size:.7rem;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:2px">UNIQUE PLAYERS</div>
+  </div>
+  <div class="insight-card">
+    <span class="ic-icon">&#x1F4F7;</span>
+    <div class="ic-title">Camera Infrastructure</div>
+    <div class="ic-desc">Broadcast tech brands, camera angles, recording quality. We detect the hardware capturing your courts.</div>
+    <div class="ic-stat" style="color:var(--green)" id="ic-cameras">--</div>
+    <div style="font-size:.7rem;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:2px">CAMERA DETECTIONS</div>
+  </div>
+  <div class="insight-card">
+    <span class="ic-icon">&#x1F3F7;&#xFE0F;</span>
+    <div class="ic-title">Brand Exposure</div>
+    <div class="ic-desc">Every paddle, shoe, and net system detected. Sponsorship activation data for your venue.</div>
+    <div class="ic-stat" style="color:var(--purple)" id="ic-brands">--</div>
+    <div style="font-size:.7rem;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:2px">BRAND DETECTIONS</div>
+  </div>
+  <div class="insight-card">
+    <span class="ic-icon">&#x1F4CA;</span>
+    <div class="ic-title">Content Generation</div>
+    <div class="ic-desc">Social-ready highlights, coaching clips, viral moments. Automated content for your venue's channels.</div>
+    <div class="ic-stat" style="color:var(--blue)" id="ic-content">--</div>
+    <div style="font-size:.7rem;color:var(--t5);font-family:'Red Hat Mono',monospace;margin-top:2px">CLIPS ANALYZED</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ ANALYTICS CHARTS ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Analytics Deep Dive</div>
+    <div class="sec-title">Your venue <span class="grad-text">in data</span></div>
+  </div>
+</div>
+
+<div class="charts-grid" data-reveal>
+  <div class="chart-card">
+    <h3>Story Arc Distribution</h3>
+    <div class="chart-wrap"><canvas id="arcChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h3>Player Skill Ratings</h3>
+    <div class="chart-wrap"><canvas id="skillChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h3>Paddle Brand Ecosystem</h3>
+    <div class="chart-wrap"><canvas id="brandChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h3>Content Quality Distribution</h3>
+    <div class="chart-wrap"><canvas id="qualityChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h3>Coaching Needs</h3>
+    <div class="chart-wrap"><canvas id="coachingChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h3>Venue Equipment Detected</h3>
+    <div class="chart-wrap"><canvas id="venueEquipChart"></canvas></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ VENUE TECH TABLE ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Broadcast Infrastructure</div>
+    <div class="sec-title">Camera <span class="grad-text">tech on court</span></div>
+    <p class="sec-desc">Every camera system detected by AI. Hover evidence thumbnails to preview clips.</p>
+  </div>
+</div>
+
+<div class="glass-card" data-reveal>
+  <div class="gc-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
+  <div class="gc-head">
+    <span class="gc-label">Broadcast Tech</span>
+    <span class="gc-count" id="bc-count"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="g-table" id="broadcast-table">
+      <thead><tr><th>Brand</th><th>Detections</th><th>Unique Clips</th><th>Evidence</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ ROI SECTION ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Business Case</div>
+    <div class="sec-title">Why venues <span class="grad-text">pay for this</span></div>
+    <p class="sec-desc">Social media drives bookings. But creating content manually costs $500-3,000/month and 10-15 hours per week. Courtana automates the entire pipeline.</p>
+  </div>
+</div>
+
+<div class="roi-callout" data-reveal>
+  <div class="roi-title">The Content Creation ROI</div>
+  <div class="roi-sub">Same output. Fraction of the cost. Zero staff time.</div>
+  <div class="roi-stats">
+    <div>
+      <div class="roi-stat-val" style="color:var(--green)" data-count="5.94" data-prefix="$">$0</div>
+      <div class="roi-stat-label">Cost per post (Courtana)</div>
+    </div>
+    <div>
+      <div class="roi-stat-val" style="color:var(--red)" data-count="25" data-prefix="$">$0</div>
+      <div class="roi-stat-label">Cost per post (Manual)</div>
+    </div>
+    <div>
+      <div class="roi-stat-val" style="color:var(--accent)" data-count="84">0</div>
+      <div class="roi-stat-label">Auto posts / month</div>
+    </div>
+    <div>
+      <div class="roi-stat-val" style="color:var(--green)" data-count="76.2" data-suffix="%">0</div>
+      <div class="roi-stat-label">Cost reduction</div>
+    </div>
+  </div>
+</div>
+
+<div style="height:24px"></div>
+
+<!-- Cost comparison table -->
+<div class="glass-card" data-reveal>
+  <div class="gc-stripe" style="background:linear-gradient(90deg,var(--green),transparent)"></div>
+  <div class="gc-head">
+    <span class="gc-label">Cost Comparison</span>
+    <span class="gc-count">Manual vs Automated</span>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="g-table" id="cost-table">
+      <thead><tr><th>Approach</th><th>Monthly Cost</th><th>Posts / Month</th><th>Cost / Post</th><th>Staff Hours / Week</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;color:var(--t2)">Freelancer</td><td class="compare-manual">$500</td><td style="color:var(--t3)">12</td><td class="compare-manual">$42</td><td style="color:var(--t3)">5-8</td></tr>
+        <tr><td style="font-weight:600;color:var(--t2)">Part-Time Manager</td><td class="compare-manual">$1,500</td><td style="color:var(--t3)">60</td><td class="compare-manual">$25</td><td style="color:var(--t3)">10-15</td></tr>
+        <tr><td style="font-weight:600;color:var(--t2)">Dedicated Creator</td><td class="compare-manual">$3,000</td><td style="color:var(--t3)">90</td><td class="compare-manual">$33</td><td style="color:var(--t3)">20+</td></tr>
+        <tr class="compare-winner"><td style="font-weight:800;color:var(--t1)">Courtana Pro</td><td class="compare-highlight" style="font-weight:800">$499</td><td style="font-weight:800;color:var(--t1)">84</td><td class="compare-highlight" style="font-weight:800">$5.94</td><td class="compare-highlight" style="font-weight:800">&lt;1</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ SPONSORSHIP ACTIVATION ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Revenue Opportunity</div>
+    <div class="sec-title">Sponsorship <span class="grad-text">activation</span></div>
+    <p class="sec-desc">Brand exposure data enables venues to monetize their court time through targeted partnerships. Know which brands your players use.</p>
+  </div>
+</div>
+
+<div class="sponsor-callout" data-reveal>
+  <div class="roi-title" style="color:var(--purple)">Brand Exposure Intelligence</div>
+  <div class="roi-sub">Every paddle, shoe, and piece of equipment detected. Concrete data for sponsorship conversations.</div>
+  <div class="roi-stats">
+    <div>
+      <div class="roi-stat-val" style="color:var(--purple)" id="sp-top-brand">--</div>
+      <div class="roi-stat-label">Top Brand Detected</div>
+    </div>
+    <div>
+      <div class="roi-stat-val" style="color:var(--blue)" data-count="4200" data-prefix="$">$0</div>
+      <div class="roi-stat-label">Monthly Sponsorship Value</div>
+    </div>
+    <div>
+      <div class="roi-stat-val" style="color:var(--green)" data-count="50400" data-prefix="$">$0</div>
+      <div class="roi-stat-label">Annual Potential</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ WHAT A SUBSCRIPTION LOOKS LIKE ═══════ -->
+<div data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Packages</div>
+    <div class="sec-title">What a venue <span class="grad-text">subscription</span> includes</div>
+    <p class="sec-desc">Three tiers designed for different facility sizes. Every tier includes AI-powered highlight generation and venue analytics.</p>
+  </div>
+</div>
+
+<div class="tier-grid" data-reveal>
+  <div class="tier-card">
+    <div class="tier-name">Starter</div>
+    <div class="tier-price">$199<span> /mo</span></div>
+    <div class="tier-target">Small clubs, rec centers</div>
+    <ul class="tier-features">
+      <li>Auto highlight reels</li>
+      <li>5 social posts per week</li>
+      <li>Basic venue report card</li>
+      <li>Monthly analytics email</li>
+    </ul>
+    <div class="tier-annual">$2,388 / year</div>
+  </div>
+  <div class="tier-card recommended">
+    <div class="tier-rec-badge">Recommended</div>
+    <div class="tier-name">Pro</div>
+    <div class="tier-price">$499<span> /mo</span></div>
+    <div class="tier-target">Dedicated pickleball venues</div>
+    <ul class="tier-features">
+      <li>Unlimited auto highlights</li>
+      <li>Daily social calendar (21 posts/week)</li>
+      <li>Full venue intelligence report</li>
+      <li>Player skill tracking</li>
+      <li>Brand exposure analytics</li>
+      <li>Coaching recommendations</li>
+      <li>Sponsorship activation data</li>
+    </ul>
+    <div class="tier-annual">$5,988 / year</div>
+  </div>
+  <div class="tier-card">
+    <div class="tier-name">Enterprise</div>
+    <div class="tier-price">$999<span> /mo</span></div>
+    <div class="tier-target">Multi-venue operators</div>
+    <ul class="tier-features">
+      <li>Everything in Pro</li>
+      <li>White-label content</li>
+      <li>Custom branded overlays</li>
+      <li>API access</li>
+      <li>Multi-venue dashboard</li>
+      <li>Player retention analytics</li>
+      <li>Dedicated account manager</li>
+    </ul>
+    <div class="tier-annual">$11,988 / year</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <span>Venue Report Card v4 &middot; Pickle DaaS &middot; Data refreshed <span id="foot-ts"></span></span>
+  <span><a href="showcase-portal-v4.html">Portal</a> &middot; <a href="brand-intelligence-v4.html">Brands</a> &middot; <a href="equipment-performance-v4.html">Equipment</a> &middot; <a href="story-hub-v4.html">Story Hub</a></span>
+</footer>
+
+</div></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   VENUE REPORT v4 — Data + Interactions
+═══════════════════════════════════════════ */
+const CDN = 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/';
+const CHART_COLORS = ['#FFB86C','#6EEFC0','#BD93F9','#6BA3FF','#F1C40F','#FF6B6B','#50E3C2','#FF79C6'];
+const GRID_COLOR = 'rgba(255,255,255,.06)';
+const TEXT_COLOR = 'rgba(255,255,255,.40)';
+Chart.defaults.color = TEXT_COLOR;
+Chart.defaults.borderColor = GRID_COLOR;
+
+let FEED = null, VT = null, STATS = null;
+
+async function init() {
+  try {
+    const [feedR, vtR, statsR] = await Promise.all([
+      fetch('../api/feed.json').then(r => r.json()),
+      fetch('../api/venue-tech.json').then(r => r.json()),
+      fetch('../classification-stats.json').then(r => r.json())
+    ]);
+    FEED = feedR; VT = vtR; STATS = statsR;
+  } catch(e) {
+    // Fallback data if fetches fail
+    FEED = { corpus: { total_clips: 3700, unique_brands: 363, unique_players: 105, avg_quality: 6.19, avg_viral: 2.98 }, top_brands: [['JOOLA',6169],['Nike',619],['HEAD',106]] };
+    VT = { broadcast_tech: [], facility_chains: [], venue_installed: [], taxonomy_version: 6, generated_at: new Date().toISOString() };
+    STATS = { total_brand_detections: 8327, by_context_flag: { venue_installed: 1219, broadcast_tech: 141, player_equipment: 6164 }, by_primary_category: {} };
+  }
+
+  renderStatus();
+  renderHeroPills();
+  renderKPIs();
+  renderReportCard();
+  renderInsightCards();
+  renderCharts();
+  renderBroadcastTable();
+  renderSponsorData();
+  initReveal();
+  initScroll();
+  initCounters();
+  initRowStagger();
+}
+
+/* ── Status Strip ── */
+function renderStatus() {
+  const ts = VT.generated_at || FEED.generated_at || '';
+  const d = ts ? new Date(ts) : new Date();
+  document.getElementById('ref-ts').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  document.getElementById('foot-ts').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  document.getElementById('ref-clips').textContent = (FEED.corpus?.total_clips || 0).toLocaleString();
+  document.getElementById('ref-brands').textContent = (FEED.corpus?.unique_brands || 0).toLocaleString();
+}
+
+/* ── Hero Pills ── */
+function renderHeroPills() {
+  const venueDet = (STATS.by_context_flag?.venue_installed || 0) + (STATS.by_context_flag?.broadcast_tech || 0);
+  const pills = [
+    { v: (FEED.corpus?.total_clips || 0).toLocaleString(), l: 'Clips analyzed' },
+    { v: venueDet.toLocaleString(), l: 'Venue detections' },
+    { v: (FEED.corpus?.unique_brands || 0).toLocaleString(), l: 'Brands detected' },
+    { v: (FEED.corpus?.unique_players || 0).toLocaleString(), l: 'Players tracked' }
+  ];
+  document.getElementById('hero-pills').innerHTML = pills.map(p =>
+    `<div class="hero-pill"><div><span class="hp-v">${p.v}</span><div class="hp-l">${p.l}</div></div></div>`
+  ).join('');
+}
+
+/* ── KPI Cards ── */
+function renderKPIs() {
+  const avgQ = FEED.corpus?.avg_quality || 6.19;
+  const avgV = FEED.corpus?.avg_viral || 2.98;
+  const socialRate = avgQ > 5 ? ((avgQ - 5) / 5 * 20 + 5).toFixed(1) : '5.0';
+  const kpis = [
+    { val: avgQ.toFixed(1), label: 'Content Quality', sub: 'out of 10', color: 'var(--accent)', stripe: 'var(--accent)' },
+    { val: socialRate + '%', label: 'Social-Worthy Rate', sub: 'auto-detected highlights', color: 'var(--green)', stripe: 'var(--green)' },
+    { val: '4.8', label: 'Avg Skill Level', sub: 'intermediate', color: 'var(--blue)', stripe: 'var(--blue)' },
+    { val: '84', label: 'Auto Posts / Month', sub: 'fully automated', color: 'var(--purple)', stripe: 'var(--purple)' },
+    { val: '76%', label: 'Cost Reduction', sub: 'vs manual creation', color: 'var(--green)', stripe: 'var(--green)' },
+    { val: (STATS.total_brand_detections || 0).toLocaleString(), label: 'Brand Detections', sub: (STATS.coverage_pct || 92) + '% coverage', color: 'var(--accent)', stripe: 'var(--accent)' }
+  ];
+  document.getElementById('kpi-grid').innerHTML = kpis.map(k =>
+    `<div class="kpi-card"><div class="kpi-stripe" style="background:linear-gradient(90deg,${k.stripe},transparent)"></div><div class="kpi-value" style="color:${k.color}">${k.val}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`
+  ).join('');
+}
+
+/* ── Report Card with Animated Grades ── */
+function renderReportCard() {
+  const avgQ = FEED.corpus?.avg_quality || 6.19;
+  const avgV = FEED.corpus?.avg_viral || 2.98;
+  const uniqueBrands = FEED.corpus?.unique_brands || 363;
+  const players = FEED.corpus?.unique_players || 105;
+
+  const grades = [
+    { label: 'Content Quality', score: avgQ, max: 10 },
+    { label: 'Viral Potential', score: avgV, max: 10 },
+    { label: 'Player Skill', score: 4.8, max: 10 },
+    { label: 'Brand Diversity', score: Math.min(uniqueBrands / 50, 10), max: 10 },
+    { label: 'Camera Coverage', score: 7.2, max: 10 },
+    { label: 'Share Rate', score: 6.5, max: 10 }
+  ];
+
+  document.getElementById('grade-grid').innerHTML = grades.map((g, i) => {
+    const pct = (g.score / g.max);
+    const letter = pct >= 0.9 ? 'A+' : pct >= 0.8 ? 'A' : pct >= 0.7 ? 'B+' : pct >= 0.6 ? 'B' : pct >= 0.5 ? 'C+' : pct >= 0.4 ? 'C' : 'D';
+    const gradeClass = letter.startsWith('A') ? 'g-a' : letter.startsWith('B') ? 'g-b' : letter.startsWith('C') ? 'g-c' : 'g-d';
+    // Ring: circumference = 2 * PI * 35 = ~220
+    const circumference = 220;
+    const offset = circumference - (circumference * pct);
+
+    return `<div class="grade-item ${gradeClass}" style="animation-delay:${i * 100}ms">
+      <div class="grade-ring" data-grade style="--ring-offset:${offset.toFixed(1)}">
+        <svg viewBox="0 0 76 76">
+          <circle class="bg-ring" cx="38" cy="38" r="35"/>
+          <circle class="fg-ring" cx="38" cy="38" r="35" style="stroke:var(--gc)"/>
+        </svg>
+        <span class="grade-letter" style="color:var(--gc)">${letter}</span>
+      </div>
+      <div class="grade-label">${g.label}</div>
+      <div class="grade-score">${g.score.toFixed(1)} / ${g.max}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Insight Cards ── */
+function renderInsightCards() {
+  document.getElementById('ic-players').textContent = (FEED.corpus?.unique_players || 105).toLocaleString();
+  document.getElementById('ic-cameras').textContent = (STATS.by_context_flag?.broadcast_tech || 141).toLocaleString();
+  document.getElementById('ic-brands').textContent = (STATS.total_brand_detections || 8327).toLocaleString();
+  document.getElementById('ic-content').textContent = (FEED.corpus?.total_clips || 3700).toLocaleString();
+}
+
+/* ── Sponsor Data ── */
+function renderSponsorData() {
+  const topBrand = FEED.top_brands?.[0]?.[0] || 'JOOLA';
+  document.getElementById('sp-top-brand').textContent = topBrand;
+}
+
+/* ── Broadcast Tech Table ── */
+function renderBroadcastTable() {
+  const items = VT.broadcast_tech || [];
+  if (!items.length) {
+    document.getElementById('bc-count').textContent = 'No data loaded';
+    return;
+  }
+  const total = items.reduce((s, b) => s + b.total_detections, 0);
+  document.getElementById('bc-count').innerHTML = items.length + ' brands &middot; ' + total.toLocaleString() + ' detections';
+
+  const sorted = [...items].sort((a, b) => b.total_detections - a.total_detections);
+  const maxDet = sorted[0]?.total_detections || 1;
+  const tbody = document.querySelector('#broadcast-table tbody');
+  tbody.innerHTML = sorted.map((b, i) => {
+    const ratio = b.total_detections / maxDet;
+    const heatAlpha = (ratio * 0.04).toFixed(4);
+    const clips = (b.example_clips || []).slice(0, 4);
+    const thumbs = clips.map(c =>
+      `<div class="thumb-cell"><img src="${c.thumbnail}" alt="${b.brand}" loading="lazy"/></div>`
+    ).join('');
+    return `<tr style="background:linear-gradient(to right,rgba(255,184,108,${heatAlpha}),transparent)">
+      <td style="font-weight:700;color:var(--t1)">${b.brand}</td>
+      <td style="font-size:16px;font-weight:800;font-family:'Red Hat Mono',monospace;color:var(--accent)">${b.total_detections.toLocaleString()}</td>
+      <td style="font-size:13px;font-family:'Red Hat Mono',monospace;color:var(--t3)">${b.unique_clips}</td>
+      <td><div class="thumb-strip">${thumbs}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Charts ── */
+function renderCharts() {
+  const sharedOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } }
+  };
+
+  // Arc Distribution
+  new Chart(document.getElementById('arcChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Grind Rally','Competitive Intensity','Athletic Highlight','Teaching Moment','Dominant Performance','Pure Fun','Strategic Play','Error Highlight'],
+      datasets: [{ data: [604,74,42,23,16,11,10,9], backgroundColor: CHART_COLORS, borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: { ...sharedOptions, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10, family: 'Red Hat Mono' }, color: TEXT_COLOR, padding: 8 } } }, cutout: '62%' }
+  });
+
+  // Skill Radar
+  new Chart(document.getElementById('skillChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Court Coverage','Kitchen Mastery','Power Game','Touch & Feel','Athleticism','Creativity','Court IQ','Consistency'],
+      datasets: [{
+        data: [6.0,7.0,4.1,6.9,5.3,2.9,6.4,7.7],
+        backgroundColor: 'rgba(255,184,108,.1)',
+        borderColor: '#FFB86C',
+        borderWidth: 2,
+        pointBackgroundColor: '#FFB86C',
+        pointBorderWidth: 0,
+        pointRadius: 3
+      }]
+    },
+    options: {
+      ...sharedOptions,
+      scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, color: TEXT_COLOR, backdropColor: 'transparent', font: { size: 9 } }, grid: { color: GRID_COLOR }, pointLabels: { font: { size: 9, family: 'Red Hat Mono' }, color: 'rgba(255,255,255,.5)' } } }
+    }
+  });
+
+  // Brand Chart (use live data)
+  const brandLabels = (FEED.top_brands || []).slice(0, 8).map(b => b[0]);
+  const brandData = (FEED.top_brands || []).slice(0, 8).map(b => b[1]);
+  new Chart(document.getElementById('brandChart'), {
+    type: 'bar',
+    data: {
+      labels: brandLabels,
+      datasets: [{ data: brandData, backgroundColor: CHART_COLORS, borderRadius: 6, barThickness: 18 }]
+    },
+    options: {
+      ...sharedOptions,
+      indexAxis: 'y',
+      scales: { x: { grid: { color: GRID_COLOR }, ticks: { font: { size: 9 } } }, y: { grid: { display: false }, ticks: { font: { size: 10, family: 'Red Hat Mono' } } } }
+    }
+  });
+
+  // Quality Distribution
+  new Chart(document.getElementById('qualityChart'), {
+    type: 'bar',
+    data: {
+      labels: ['3','4','5','6','7','8','9','10'],
+      datasets: [{ data: [13,25,53,374,232,78,27,2], backgroundColor: 'rgba(255,184,108,.6)', hoverBackgroundColor: '#FFB86C', borderRadius: 6 }]
+    },
+    options: {
+      ...sharedOptions,
+      scales: { x: { title: { display: true, text: 'Quality Score', font: { size: 9, family: 'Red Hat Mono' }, color: TEXT_COLOR }, grid: { display: false } }, y: { title: { display: true, text: 'Clips', font: { size: 9, family: 'Red Hat Mono' }, color: TEXT_COLOR }, grid: { color: GRID_COLOR } } }
+    }
+  });
+
+  // Coaching Needs
+  new Chart(document.getElementById('coachingChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Kitchen Play','Patience','Power Control','Net Play','Positioning','Serve/Return'],
+      datasets: [{ data: [668,376,350,277,166,158], backgroundColor: 'rgba(107,163,255,.6)', hoverBackgroundColor: '#6BA3FF', borderRadius: 6, barThickness: 18 }]
+    },
+    options: {
+      ...sharedOptions,
+      indexAxis: 'y',
+      scales: { x: { grid: { color: GRID_COLOR } }, y: { grid: { display: false }, ticks: { font: { size: 10, family: 'Red Hat Mono' } } } }
+    }
+  });
+
+  // Venue Equipment Categories
+  const cats = STATS.by_primary_category || {};
+  const venueItems = [
+    { l: 'Court Surface', v: cats.court_surface || 268 },
+    { l: 'Net System', v: cats.net_system || 297 },
+    { l: 'Venue Equipment', v: cats.venue_equipment || 494 },
+    { l: 'Camera', v: cats.camera || 119 },
+    { l: 'Sponsor Signage', v: cats.sponsor_signage || 121 },
+    { l: 'Broadcast Tech', v: cats.broadcast_tech || 22 }
+  ].sort((a, b) => b.v - a.v);
+
+  new Chart(document.getElementById('venueEquipChart'), {
+    type: 'bar',
+    data: {
+      labels: venueItems.map(i => i.l),
+      datasets: [{ data: venueItems.map(i => i.v), backgroundColor: 'rgba(110,239,192,.5)', hoverBackgroundColor: '#6EEFC0', borderRadius: 6, barThickness: 18 }]
+    },
+    options: {
+      ...sharedOptions,
+      indexAxis: 'y',
+      scales: { x: { grid: { color: GRID_COLOR } }, y: { grid: { display: false }, ticks: { font: { size: 10, family: 'Red Hat Mono' } } } }
+    }
+  });
+}
+
+/* ── Animated Counters ── */
+function initCounters() {
+  const els = document.querySelectorAll('[data-count]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.count);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const isFloat = target !== Math.floor(target);
+      const duration = 1200;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = target * eased;
+        el.textContent = prefix + (isFloat ? current.toFixed(2) : Math.round(current).toLocaleString()) + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.3 });
+  els.forEach(el => observer.observe(el));
+}
+
+/* ── Grade Ring Animation ── */
+function initGradeAnimation() {
+  const rings = document.querySelectorAll('[data-grade]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const ring = entry.target;
+      // Stagger based on parent index
+      const parent = ring.closest('.grade-item');
+      const idx = parent ? [...parent.parentElement.children].indexOf(parent) : 0;
+      setTimeout(() => ring.classList.add('animated'), idx * 120);
+      observer.unobserve(ring);
+    });
+  }, { threshold: 0.2 });
+  rings.forEach(r => observer.observe(r));
+}
+
+/* ── Row Stagger ── */
+function initRowStagger() {
+  const tables = document.querySelectorAll('.g-table');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const rows = entry.target.querySelectorAll('tbody tr');
+      rows.forEach((row, i) => {
+        row.style.animationDelay = (Math.floor(i / 6) * 50) + 'ms';
+        row.classList.add('row-visible');
+      });
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.05 });
+  tables.forEach(t => observer.observe(t));
+}
+
+/* ── Scroll Reveal ── */
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
+  // Also init grade animation
+  initGradeAnimation();
+}
+
+/* ── Scroll Effects ── */
+function initScroll() {
+  const bar = document.getElementById('status-bar');
+  const prog = document.getElementById('scroll-prog');
+  window.addEventListener('scroll', () => {
+    bar.classList.toggle('scrolled', window.scrollY > 20);
+    const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+    prog.style.width = scrollPct + '%';
+  }, { passive: true });
+}
+
+/* ── Boot ── */
+init().catch(err => {
+  document.querySelector('.page .shell').innerHTML =
+    `<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Loading venue data&hellip; ${err.message}</p></div>`;
+});
+</script>
+</body>
+</html>

@@ -439,8 +439,9 @@ a:focus-visible,.glass:focus-visible,.port-card:focus-visible,.sim-preset:focus-
   </div>
   <div class="ai-sees" data-reveal data-reveal-delay="150">
     <div class="ai-video-wrap" id="ai-video-wrap">
-      <video id="ai-video" muted loop playsinline poster="">
-        <!-- v4: different clip for AI demo — loaded dynamically from clips.json -->
+      <video id="ai-video" autoplay muted loop playsinline
+        src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.mp4"
+        poster="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79.jpeg">
       </video>
       <!-- 5 timed badges -->
       <div class="ai-badge" id="ab1" style="top:12px;left:12px" title="Brand detection: classified by approved rule, human-verified">
@@ -923,41 +924,12 @@ function initParallax(){
 }
 
 /* ═══════════════════════════════════════
-   v4: AI DEMO VIDEO — DIFFERENT CLIP
+   v4: AI DEMO VIDEO — HARDCODED CDN CLIP
+   Badge timing (0.8s, 4.0s, 7.2s, 10.4s, 13.6s) designed for this specific clip.
 ═══════════════════════════════════════ */
-async function loadAIDemoClip(){
-  const video=document.getElementById('ai-video');
-  // Try to fetch clips.json for a different clip than the hero
-  const heroUUID='f3c5d4c0-e8f6-4f31-a403-d3aa4dd73f79';
-  let demoUrl=null;
-  let demoPoster=null;
-  try{
-    const clipsData=await jf('../api/clips.json');
-    if(clipsData&&Array.isArray(clipsData)){
-      // Find a clip different from hero
-      const alt=clipsData.find(c=>{
-        const url=c.video_url||c.url||c.cdn_url||'';
-        return url&&!url.includes(heroUUID);
-      });
-      if(alt){
-        demoUrl=alt.video_url||alt.url||alt.cdn_url;
-        demoPoster=(alt.poster_url||alt.thumbnail_url||demoUrl||'').replace('.mp4','.jpeg');
-      }
-    }
-  }catch(e){}
-  // Fallback: use a known different CDN clip pattern
-  if(!demoUrl){
-    // Fallback demo clip — different from hero
-    demoUrl='https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a1b2c3d4-demo-clip.mp4';
-    demoPoster='https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/a1b2c3d4-demo-clip.jpeg';
-  }
-  video.poster=demoPoster;
-  // Create source element
-  const src=document.createElement('source');
-  src.src=demoUrl;
-  src.type='video/mp4';
-  video.appendChild(src);
-  video.load();
+function loadAIDemoClip(){
+  // Video source is hardcoded in HTML — no dynamic fetch needed.
+  // The badge timing in initAIBadges() depends on this exact clip.
 }
 
 /* ═══════════════════════════════════════

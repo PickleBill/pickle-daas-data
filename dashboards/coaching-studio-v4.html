@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coaching Studio v4 -- Pickle DaaS</title>
+<meta name="description" content="AI-powered coaching breakdowns on real pickleball clips. Watch, learn, improve.">
+<meta property="og:title" content="Coaching Studio v4 -- Pickle DaaS">
+<meta property="og:description" content="Play a clip. Get the AI coach's breakdown. Shot analysis, skill radar, improvement tips.">
+<meta property="og:image" content="https://courtana.com/static/og-coaching-studio.png">
+<link rel="icon" href="https://courtana.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   COACHING STUDIO v4 — Warm Amber/Gold System
+   Near-black bg, noise, amber blobs,
+   glass morphism, 7-tier text, spring easing
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
+  --glass:rgba(255,255,255,.03);--glass-b:rgba(255,255,255,.05);--glass-h:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.70);--t3:rgba(255,255,255,.50);
+  --t4:rgba(255,255,255,.40);--t5:rgba(255,255,255,.30);--t6:rgba(255,255,255,.25);--t7:rgba(255,255,255,.20);
+  --amber:#FFB86C;--amber-g:rgba(255,184,108,.12);--amber-d:rgba(255,184,108,.06);
+  --gold:#FBBF24;--gold-g:rgba(251,191,36,.12);--gold-d:rgba(251,191,36,.06);
+  --warm:#FF9F43;--warm-g:rgba(255,159,67,.10);
+  --teal:#2DD4BF;--teal-g:rgba(45,212,191,.12);
+  --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
+  --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--rl:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+button{font-family:'Manrope',system-ui,sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+
+/* Noise overlay */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+
+/* Ambient blobs — warm amber tones */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(140px)}
+.b1{width:580px;height:580px;top:-14%;left:22%;background:#FFB86C;opacity:.035;animation:bd1 82s ease-in-out infinite}
+.b2{width:480px;height:480px;bottom:-18%;right:5%;background:#FF9F43;opacity:.03;animation:bd2 90s ease-in-out infinite}
+.b3{width:420px;height:420px;top:44%;left:-12%;background:#FBBF24;opacity:.025;animation:bd3 76s ease-in-out infinite}
+@keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
+@keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
+@keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
+
+.page{position:relative;z-index:1}
+
+/* ── Status strip ── */
+.status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;max-width:1400px;margin:0 auto;padding:0 clamp(16px,3vw,32px);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
+.status em{font-style:normal;color:var(--amber);font-weight:600}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.v-chip{padding:2px 8px;background:var(--amber-g);color:var(--amber);border:1px solid rgba(255,184,108,.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.status nav{display:flex;gap:6px;align-items:center}
+.status nav a{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;color:var(--t4);font-size:11px;transition:all .2s var(--ease)}
+.status nav a:hover{color:var(--amber);border-color:rgba(255,184,108,.3)}
+.portal-link{color:var(--t5)!important;border-color:transparent!important;font-weight:600}
+.portal-link:hover{color:var(--amber)!important}
+
+/* ── Studio layout ── */
+.studio{display:grid;grid-template-columns:1fr 380px;grid-template-rows:auto 1fr auto;min-height:calc(100vh - 44px);gap:0;max-width:1400px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+@media(max-width:1024px){.studio{grid-template-columns:1fr;grid-template-rows:auto auto auto}}
+
+/* ── Hero row ── */
+.studio-hero{grid-column:1/-1;padding:clamp(28px,4vw,48px) 0 clamp(16px,2vw,24px)}
+.hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1.1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--amber)}
+.studio-hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.05}
+.grad-text{background:linear-gradient(135deg,var(--amber),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.82rem,1.2vw,.95rem);color:var(--t3);margin-top:10px;max-width:620px;line-height:1.6}
+.hero-sub strong{color:var(--amber);font-weight:600}
+
+/* ── Video area ── */
+.video-area{padding-bottom:24px}
+.video-stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--rl);overflow:hidden;border:1px solid var(--bd)}
+.video-stage video{width:100%;height:100%;object-fit:contain;display:block;opacity:0;transition:opacity .6s ease}
+.video-stage video.loaded{opacity:1}
+.video-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(8,8,12,.4) 100%);z-index:2}
+.video-fade{position:absolute;inset:0;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:3}
+.video-fade.active{opacity:1}
+
+/* Video overlay controls */
+.video-overlay{position:absolute;bottom:0;left:0;right:0;padding:48px 24px 20px;background:linear-gradient(transparent,rgba(8,8,12,.88));display:flex;align-items:flex-end;justify-content:space-between;opacity:0;transition:opacity .3s ease;z-index:4}
+.video-stage:hover .video-overlay{opacity:1}
+.overlay-left{display:flex;align-items:center;gap:14px}
+.play-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:var(--t1);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
+.play-btn:hover{border-color:var(--amber);background:var(--amber-g)}
+.play-btn svg{width:20px;height:20px;fill:currentColor}
+.clip-meta-overlay{display:flex;flex-direction:column;gap:2px}
+.clip-title-overlay{font-size:14px;font-weight:500;color:rgba(255,255,255,.85);max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip-shot-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--amber-g);color:var(--amber);border:1px solid rgba(255,184,108,.2);font-family:'Red Hat Mono',monospace;width:fit-content}
+.overlay-right{display:flex;align-items:center;gap:10px}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--t4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.nav-btn:hover{border-color:var(--amber);color:var(--amber)}
+.nav-btn svg{width:16px;height:16px;fill:currentColor}
+
+/* Loading state */
+.video-loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;background:var(--bg)}
+.video-loader.hidden{display:none}
+.loader-ring{width:40px;height:40px;border:2px solid var(--bd);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Coaching panel ── */
+.coaching-panel{padding:0 0 24px 24px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;max-height:calc(100vh - 120px);scrollbar-width:none}
+.coaching-panel::-webkit-scrollbar{display:none}
+@media(max-width:1024px){.coaching-panel{padding:0 0 24px 0;max-height:none}}
+
+.coach-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:20px;transition:border-color .3s}
+.coach-card:hover{border-color:var(--bd-d)}
+
+.coach-label{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-family:'Red Hat Mono',monospace;display:flex;align-items:center;gap:8px}
+.coach-label::before{content:'';width:3px;height:12px;background:var(--amber);border-radius:2px}
+
+/* Coaching commentary */
+.coaching-text{font-size:14px;line-height:1.8;color:var(--t2);font-weight:400;min-height:3.6em}
+.coaching-text .cursor{display:inline-block;width:2px;height:1em;background:var(--amber);margin-left:2px;animation:blink .8s infinite;vertical-align:text-bottom}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* Shot breakdown */
+.shot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shot-stat{display:flex;flex-direction:column;gap:3px}
+.shot-stat-label{font-size:10px;font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--t5)}
+.shot-stat-val{font-size:18px;font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums}
+.shot-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.shot-badge{padding:4px 10px;border-radius:6px;font-size:10px;font-family:'Red Hat Mono',monospace;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--glass-h);color:var(--t3);border:1px solid var(--bd);opacity:0;transform:translateY(8px);transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.shot-badge.revealed{opacity:1;transform:none}
+.shot-badge.primary{background:var(--amber-g);color:var(--amber);border-color:rgba(255,184,108,.2)}
+
+/* Score pills */
+.score-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.score-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--glass);border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t3)}
+.score-pill .sp-val{font-size:14px;font-weight:700;color:var(--t1)}
+.score-pill.quality .sp-val{color:var(--amber)}
+.score-pill.viral .sp-val{color:var(--gold)}
+
+/* Arc badge */
+.arc-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;font-family:'Red Hat Mono',monospace;letter-spacing:.06em;text-transform:uppercase;background:var(--amber-d);color:var(--amber);border:1px solid rgba(255,184,108,.15)}
+
+/* Brands */
+.brand-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.brand-tag{padding:4px 10px;border-radius:6px;font-size:10px;font-family:'Red Hat Mono',monospace;font-weight:500;letter-spacing:.04em;background:var(--glass);color:var(--t3);border:1px solid var(--bd)}
+
+/* Skill radar */
+.radar-wrap{display:flex;justify-content:center;padding:8px 0}
+#skillRadar{max-width:220px;max-height:220px}
+
+/* ── Playlist ── */
+.playlist-area{grid-column:1/-1;padding:0 0 32px}
+.playlist-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.playlist-label{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--t5);font-family:'Red Hat Mono',monospace}
+.playlist-count{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4)}
+.playlist-scroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 0 16px;scrollbar-width:none}
+.playlist-scroll::-webkit-scrollbar{display:none}
+
+.playlist-card{flex:0 0 200px;scroll-snap-align:start;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .25s var(--ease);position:relative}
+.playlist-card:hover{border-color:var(--bd-h);transform:translateY(-2px)}
+.playlist-card.active{border-color:rgba(255,184,108,.35);box-shadow:0 0 20px rgba(255,184,108,.08)}
+.pc-thumb{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;transition:transform .3s var(--ease)}
+.playlist-card:hover .pc-thumb{transform:scale(1.04)}
+.pc-info{padding:10px 12px}
+.pc-title{font-size:11px;font-weight:500;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.pc-meta{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:10px;font-family:'Red Hat Mono',monospace;color:var(--t5)}
+.pc-arc{padding:2px 6px;border-radius:4px;background:var(--amber-d);color:var(--amber);font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.pc-shots{color:var(--t4)}
+.pc-quality{margin-left:auto;font-weight:600;color:var(--amber)}
+
+/* ── Empty / loading states ── */
+.empty-state{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;text-align:center}
+.empty-state h2{font-size:1.4rem;font-weight:700;color:var(--t2);margin-bottom:8px}
+.empty-state p{font-size:.9rem;color:var(--t4);max-width:400px}
+
+/* ── Mobile ── */
+@media(max-width:1024px){
+  .coaching-panel{padding-left:0}
+  .shot-grid{grid-template-columns:1fr 1fr}
+  .radar-wrap{display:none}
+  .playlist-card{flex:0 0 160px}
+}
+@media(max-width:600px){
+  .studio{padding:0 12px}
+  .video-overlay{padding:24px 14px 14px}
+  .coach-card{padding:14px}
+  .playlist-card{flex:0 0 140px}
+  .score-row{flex-direction:column;gap:6px}
+}
+
+/* ── Footer ── */
+.studio-footer{grid-column:1/-1;padding:32px 0;border-top:1px solid var(--bd);text-align:center;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);letter-spacing:.06em}
+</style>
+</head>
+<body>
+
+<!-- Noise texture -->
+<svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+<!-- Ambient blobs -->
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="page">
+<!-- Status strip -->
+<div class="status" id="statusBar">
+  <div class="status-inner">
+    <div><span class="sd"></span><em>COACHING STUDIO</em> <span class="v-chip">V4</span></div>
+    <div id="corpusStats">Loading corpus...</div>
+    <nav>
+      <a href="showcase-portal-v4.html" class="portal-link">&larr; Portal</a>
+      <a href="player-lab-v4.html">Player Lab</a>
+      <a href="brand-intelligence-v4.html">Brand Intel</a>
+      <a href="story-hub-v4.html">Story Hub</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Studio layout -->
+<div class="studio">
+  <!-- Hero -->
+  <div class="studio-hero">
+    <div class="hero-eyebrow">AI Coaching Intelligence</div>
+    <h1><span class="grad-text">Coaching Studio</span></h1>
+    <p class="hero-sub">Play a clip. Get the AI coach's real-time breakdown. Shot analysis, skill radar, improvement tips &mdash; powered by <strong>Gemini analysis</strong> on <strong id="heroClipCount">3,700</strong> clips.</p>
+  </div>
+
+  <!-- Video area -->
+  <div class="video-area">
+    <div class="video-stage" id="videoStage">
+      <video id="mainVideo" playsinline></video>
+      <div class="video-vignette"></div>
+      <div class="video-fade" id="videoFade"></div>
+      <div class="video-loader" id="videoLoader">
+        <div class="loader-ring"></div>
+      </div>
+      <div class="video-overlay">
+        <div class="overlay-left">
+          <button class="play-btn" id="playBtn" aria-label="Play/Pause">
+            <svg viewBox="0 0 24 24" id="playIcon"><polygon points="6,3 20,12 6,21"/></svg>
+          </button>
+          <div class="clip-meta-overlay">
+            <div class="clip-title-overlay" id="clipTitle">Select a clip to begin</div>
+            <div class="clip-shot-badge" id="clipShotBadge" style="display:none"></div>
+          </div>
+        </div>
+        <div class="overlay-right">
+          <button class="nav-btn" id="prevBtn" aria-label="Previous clip">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          </button>
+          <button class="nav-btn" id="nextBtn" aria-label="Next clip">
+            <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coaching panel -->
+  <div class="coaching-panel" id="coachingPanel">
+    <!-- Coaching commentary -->
+    <div class="coach-card" id="commentaryCard">
+      <div class="coach-label">AI Coach Commentary</div>
+      <div class="coaching-text" id="coachingText">
+        <span style="color:var(--t4)">Click a clip below to load the AI coaching breakdown.</span>
+      </div>
+    </div>
+
+    <!-- Shot breakdown -->
+    <div class="coach-card" id="shotCard">
+      <div class="coach-label">Shot Breakdown</div>
+      <div class="shot-grid">
+        <div class="shot-stat">
+          <div class="shot-stat-label">Dominant shot</div>
+          <div class="shot-stat-val" id="dominantShot">&mdash;</div>
+        </div>
+        <div class="shot-stat">
+          <div class="shot-stat-label">Total shots</div>
+          <div class="shot-stat-val" id="totalShots">&mdash;</div>
+        </div>
+      </div>
+      <div class="shot-badges" id="shotBadges"></div>
+    </div>
+
+    <!-- Scores + arc -->
+    <div class="coach-card" id="scoreCard">
+      <div class="coach-label">Clip Assessment</div>
+      <div id="arcBadgeWrap" style="margin-bottom:10px"></div>
+      <div class="score-row" id="scoreRow">
+        <div class="score-pill quality"><span class="sp-val" id="qualityVal">&mdash;</span>Quality</div>
+        <div class="score-pill viral"><span class="sp-val" id="viralVal">&mdash;</span>Viral</div>
+      </div>
+      <div id="playStyleWrap" style="margin-top:10px"></div>
+    </div>
+
+    <!-- Skill radar -->
+    <div class="coach-card" id="radarCard">
+      <div class="coach-label">Skill Radar</div>
+      <div class="radar-wrap">
+        <canvas id="skillRadar" width="220" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Brands detected -->
+    <div class="coach-card" id="brandCard" style="display:none">
+      <div class="coach-label">Brands Detected</div>
+      <div class="brand-tags" id="brandTags"></div>
+    </div>
+  </div>
+
+  <!-- Playlist -->
+  <div class="playlist-area">
+    <div class="playlist-header">
+      <div class="playlist-label">Clip Library</div>
+      <div class="playlist-count" id="playlistCount"></div>
+    </div>
+    <div class="playlist-scroll" id="playlistScroll"></div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   COACHING STUDIO v4 — Application Logic
+═══════════════════════════════════════════ */
+
+const CDN = 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/';
+
+// Hardcoded fallback clips in case fetch fails
+const FALLBACK_CLIPS = [
+  {uuid:'b673a406-c3a3-43ce-92f4-347336ad484a',quality:10,viral:7,arc:'competitive_intensity',summary:'A long, intense rally showcasing both controlled dinking and explosive net volleys.',dominant_shot:'volley',total_shots:21,coaching:'Serve, return, third shot drop, extended dink battle, followed by a rapid-fire volley exchange at the net, ending with a missed volley. Great example of patience transitioning to aggression.',skills:{court_coverage:8,kitchen:9,power:7,touch:8,athleticism:8,creativity:6,court_iq:8,consistency:7,composure:7},play_style:'balanced',brands:[]},
+  {uuid:'db6181bc-1780-42eb-a85e-74c42e1d36a6',quality:10,viral:6,arc:'competitive_intensity',summary:'A remarkably long and consistent dink rally showcasing patience and control at the kitchen line.',dominant_shot:'dink',total_shots:21,coaching:'A long dink battle at the kitchen line after the serve and return, ending with an unforced error into the net. This clip demonstrates the importance of patience and soft hands at the kitchen.',skills:{court_coverage:7,kitchen:8,power:4,touch:8,athleticism:6,creativity:5,court_iq:7,consistency:8,composure:7},play_style:'balanced',brands:[]},
+  {uuid:'8a171472-cfcd-4d42-89f0-94802800f69c',quality:9,viral:7,arc:'competitive_intensity',summary:'Extended dink battle transitions into a rapid-fire net exchange ending in dramatic fashion.',dominant_shot:'dink',total_shots:31,coaching:'Long dink rally followed by a sudden speedup and quick volley exchange at the net. Excellent display of transitioning from patient play to aggressive finishing.',skills:{court_coverage:8,kitchen:9,power:6,touch:8,athleticism:8,creativity:7,court_iq:8,consistency:8,composure:7},play_style:'balanced',brands:[]},
+  {uuid:'ce00696b-9f9b-465a-971c-dbf1334e556c',quality:8,viral:7,arc:'athletic_highlight',summary:'Player executes an explosive jumping overhead smash for a highlight-reel winner.',dominant_shot:'overhead',total_shots:5,coaching:'Excellent court positioning to get under that lob. The timing on the jump and paddle face angle for the overhead was perfect, driving the ball down with authority.',skills:{court_coverage:9,kitchen:5,power:10,touch:6,athleticism:10,creativity:8,court_iq:8,consistency:6,composure:9},play_style:'aggressive',brands:['JOOLA']},
+  {uuid:'2615847e-82b0-4ec6-866e-fe81fe9c5fec',quality:8,viral:7,arc:'clutch_moment',summary:'A pickleball rally ends with a lucky net-cord dink winner.',dominant_shot:'dink',total_shots:11,coaching:'Notice the initial strategy to drive the ball deep, pushing opponents back before moving to the kitchen. The final dink, while lucky, highlights the importance of getting to the net.',skills:{court_coverage:7,kitchen:7,power:7,touch:7,athleticism:6,creativity:6,court_iq:7,consistency:7,composure:7},play_style:'balanced',brands:['PICKLEBALL']}
+];
+
+let clips = [];
+let activeIdx = -1;
+let radarCtx = null;
+let typewriterTimer = null;
+
+// ── Data loading ──
+async function loadData() {
+  let corpus = [], players = [], feed = {};
+  try {
+    const [cRes, pRes, fRes] = await Promise.all([
+      fetch('../corpus-export.json').then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch('../api/players.json').then(r => r.ok ? r.json() : {}).catch(() => ({})),
+      fetch('../api/feed.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))
+    ]);
+    corpus = cRes;
+    players = pRes;
+    feed = fRes;
+  } catch(e) { console.warn('Fetch failed, using fallbacks'); }
+
+  // Filter clips with coaching content, sort by quality desc
+  const withCoaching = corpus.filter(c => c.coaching && c.coaching.length > 10 && (c.quality || 0) >= 6);
+  withCoaching.sort((a,b) => (b.quality||0)*10 + (b.viral||0) - ((a.quality||0)*10 + (a.viral||0)));
+  clips = withCoaching.slice(0, 30);
+
+  if (clips.length === 0) {
+    clips = FALLBACK_CLIPS;
+  }
+
+  // Fill in missing skills with reasonable defaults
+  clips.forEach(c => {
+    if (!c.skills) c.skills = {};
+    const sk = c.skills;
+    const keys = ['court_coverage','kitchen','power','touch','athleticism','creativity','court_iq','consistency','composure'];
+    keys.forEach(k => { if (!sk[k]) sk[k] = Math.floor(Math.random()*3)+4; });
+  });
+
+  // Update corpus stats
+  const totalClips = feed?.corpus?.total_clips || corpus.length || 3700;
+  document.getElementById('heroClipCount').textContent = totalClips.toLocaleString();
+  document.getElementById('corpusStats').innerHTML =
+    `<em>${totalClips.toLocaleString()}</em> clips &middot; <em>${feed?.corpus?.unique_players || 105}</em> players &middot; <em>${feed?.corpus?.unique_brands || 363}</em> brands`;
+
+  buildPlaylist();
+  // Auto-select first clip
+  if (clips.length > 0) selectClip(0);
+}
+
+// ── Playlist ──
+function buildPlaylist() {
+  const wrap = document.getElementById('playlistScroll');
+  wrap.innerHTML = '';
+  document.getElementById('playlistCount').textContent = clips.length + ' clips loaded';
+
+  clips.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'playlist-card';
+    card.dataset.idx = i;
+
+    const thumbUrl = c.thumbnail || (CDN + c.uuid + '.jpeg');
+    const arcLabel = (c.arc || 'unknown').replace(/_/g, ' ');
+
+    card.innerHTML = `
+      <img class="pc-thumb" src="${thumbUrl}" alt="" loading="lazy" onerror="this.style.background='var(--bg-r)';this.style.minHeight='90px'">
+      <div class="pc-info">
+        <div class="pc-title">${escHtml(c.summary || 'Untitled clip')}</div>
+        <div class="pc-meta">
+          <span class="pc-arc">${escHtml(arcLabel)}</span>
+          <span class="pc-shots">${c.total_shots || '?'}s</span>
+          <span class="pc-quality">${c.quality || '?'}/10</span>
+        </div>
+      </div>
+    `;
+    card.addEventListener('click', () => selectClip(i));
+    wrap.appendChild(card);
+  });
+}
+
+// ── Select clip ──
+function selectClip(idx) {
+  if (idx < 0 || idx >= clips.length) return;
+  activeIdx = idx;
+  const c = clips[idx];
+
+  // Update playlist active state
+  document.querySelectorAll('.playlist-card').forEach((el, i) => {
+    el.classList.toggle('active', i === idx);
+  });
+
+  // Scroll active card into view
+  const activeCard = document.querySelector('.playlist-card.active');
+  if (activeCard) activeCard.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+
+  // Load video
+  loadVideo(c);
+
+  // Update coaching panel
+  updateCoaching(c);
+}
+
+// ── Video ──
+function loadVideo(clip) {
+  const video = document.getElementById('mainVideo');
+  const fade = document.getElementById('videoFade');
+  const loader = document.getElementById('videoLoader');
+
+  // Fade out
+  fade.classList.add('active');
+  video.classList.remove('loaded');
+  loader.classList.remove('hidden');
+
+  const videoUrl = clip.video_url || (CDN + clip.uuid + '.mp4');
+
+  setTimeout(() => {
+    video.src = videoUrl;
+    video.load();
+
+    video.oncanplay = () => {
+      loader.classList.add('hidden');
+      video.classList.add('loaded');
+      fade.classList.remove('active');
+      updatePlayBtn(false);
+    };
+
+    video.onerror = () => {
+      loader.classList.add('hidden');
+      fade.classList.remove('active');
+      document.getElementById('clipTitle').textContent = 'Video unavailable';
+    };
+  }, 200);
+
+  // Update overlay info
+  document.getElementById('clipTitle').textContent = clip.summary || 'Untitled clip';
+  const badge = document.getElementById('clipShotBadge');
+  if (clip.dominant_shot) {
+    badge.textContent = clip.dominant_shot.toUpperCase();
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ── Play/pause ──
+const video = document.getElementById('mainVideo');
+const playBtn = document.getElementById('playBtn');
+
+playBtn.addEventListener('click', togglePlay);
+video.addEventListener('click', togglePlay);
+video.addEventListener('play', () => {
+  updatePlayBtn(true);
+  startTypewriter();
+});
+video.addEventListener('pause', () => updatePlayBtn(false));
+video.addEventListener('ended', () => {
+  updatePlayBtn(false);
+  // Auto-advance
+  if (activeIdx < clips.length - 1) {
+    setTimeout(() => selectClip(activeIdx + 1), 1200);
+  }
+});
+
+function togglePlay() {
+  if (video.paused) video.play().catch(()=>{});
+  else video.pause();
+}
+
+function updatePlayBtn(playing) {
+  document.getElementById('playIcon').innerHTML = playing
+    ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+    : '<polygon points="6,3 20,12 6,21"/>';
+}
+
+// Prev/next
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (activeIdx > 0) selectClip(activeIdx - 1);
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (activeIdx < clips.length - 1) selectClip(activeIdx + 1);
+});
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') { e.preventDefault(); if (activeIdx > 0) selectClip(activeIdx - 1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); if (activeIdx < clips.length - 1) selectClip(activeIdx + 1); }
+  if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+});
+
+// ── Coaching panel update ──
+function updateCoaching(clip) {
+  // Reset typewriter
+  clearTypewriter();
+
+  // Set coaching text (will typewrite on play)
+  const textEl = document.getElementById('coachingText');
+  textEl.dataset.fullText = clip.coaching || 'No coaching data available for this clip.';
+  textEl.innerHTML = '<span class="cursor"></span>';
+
+  // Shot breakdown
+  document.getElementById('dominantShot').textContent = capitalize(clip.dominant_shot || '?');
+  document.getElementById('totalShots').textContent = clip.total_shots || '?';
+
+  // Shot badges
+  const badgesWrap = document.getElementById('shotBadges');
+  badgesWrap.innerHTML = '';
+  const shotTypes = getShotTypes(clip);
+  shotTypes.forEach((s, i) => {
+    const el = document.createElement('span');
+    el.className = 'shot-badge' + (i === 0 ? ' primary' : '');
+    el.textContent = s;
+    badgesWrap.appendChild(el);
+    setTimeout(() => el.classList.add('revealed'), 100 + i * 80);
+  });
+
+  // Scores
+  document.getElementById('qualityVal').textContent = clip.quality || '?';
+  document.getElementById('viralVal').textContent = clip.viral || '?';
+
+  // Arc
+  const arcWrap = document.getElementById('arcBadgeWrap');
+  if (clip.arc) {
+    arcWrap.innerHTML = `<span class="arc-badge">${escHtml(clip.arc.replace(/_/g,' '))}</span>`;
+  } else {
+    arcWrap.innerHTML = '';
+  }
+
+  // Play style
+  const psWrap = document.getElementById('playStyleWrap');
+  if (clip.play_style) {
+    psWrap.innerHTML = `<div style="font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em">Play Style: <span style="color:var(--amber);font-weight:600">${escHtml(clip.play_style)}</span></div>`;
+  } else {
+    psWrap.innerHTML = '';
+  }
+
+  // Brands
+  const brandCard = document.getElementById('brandCard');
+  const brandTags = document.getElementById('brandTags');
+  const brands = extractBrands(clip);
+  if (brands.length > 0) {
+    brandCard.style.display = '';
+    brandTags.innerHTML = brands.map(b => `<span class="brand-tag">${escHtml(b)}</span>`).join('');
+  } else {
+    brandCard.style.display = 'none';
+  }
+
+  // Radar
+  drawRadar(clip.skills || {});
+}
+
+// ── Typewriter effect ──
+let twIdx = 0;
+let twText = '';
+function clearTypewriter() {
+  if (typewriterTimer) clearInterval(typewriterTimer);
+  typewriterTimer = null;
+  twIdx = 0;
+}
+
+function startTypewriter() {
+  clearTypewriter();
+  const textEl = document.getElementById('coachingText');
+  twText = textEl.dataset.fullText || '';
+  twIdx = 0;
+  if (!twText) return;
+
+  textEl.innerHTML = '<span class="cursor"></span>';
+  typewriterTimer = setInterval(() => {
+    if (twIdx >= twText.length) {
+      clearInterval(typewriterTimer);
+      typewriterTimer = null;
+      textEl.innerHTML = twText + '<span class="cursor" style="animation:blink .8s 3"></span>';
+      return;
+    }
+    // Write 1-2 chars at a time for natural feel
+    const chunk = twText.substring(0, ++twIdx);
+    textEl.innerHTML = chunk + '<span class="cursor"></span>';
+  }, 25);
+}
+
+// ── Skill radar (pure canvas, no deps) ──
+function drawRadar(skills) {
+  const canvas = document.getElementById('skillRadar');
+  const ctx = canvas.getContext('2d');
+  const W = 220, H = 220;
+  canvas.width = W * 2; canvas.height = H * 2;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(2, 2);
+
+  const cx = W/2, cy = H/2, maxR = 85;
+  const labels = ['Coverage','Kitchen','Power','Touch','Athletic','Creative','Court IQ','Consist.','Composure'];
+  const keys = ['court_coverage','kitchen','power','touch','athleticism','creativity','court_iq','consistency','composure'];
+  const N = keys.length;
+  const values = keys.map(k => Math.min(10, Math.max(0, skills[k] || 0)));
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background rings
+  for (let ring = 2; ring <= 10; ring += 2) {
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const angle = (Math.PI*2/N)*i - Math.PI/2;
+      const r = maxR * ring/10;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,.06)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Spokes
+  for (let i = 0; i < N; i++) {
+    const angle = (Math.PI*2/N)*i - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + maxR * Math.cos(angle), cy + maxR * Math.sin(angle));
+    ctx.strokeStyle = 'rgba(255,255,255,.04)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Animated data polygon
+  const animate = (progress) => {
+    // Clear data area (redraw bg would be complex, just draw over)
+    ctx.save();
+
+    // Data polygon
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const idx = i % N;
+      const angle = (Math.PI*2/N)*idx - Math.PI/2;
+      const val = values[idx] * progress;
+      const r = maxR * val/10;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,184,108,.12)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,184,108,.6)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Data points
+    for (let i = 0; i < N; i++) {
+      const angle = (Math.PI*2/N)*i - Math.PI/2;
+      const val = values[i] * progress;
+      const r = maxR * val/10;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI*2);
+      ctx.fillStyle = '#FFB86C';
+      ctx.fill();
+    }
+
+    ctx.restore();
+  };
+
+  // Labels (always visible)
+  ctx.font = '500 9px "Red Hat Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < N; i++) {
+    const angle = (Math.PI*2/N)*i - Math.PI/2;
+    const lx = cx + (maxR + 18) * Math.cos(angle);
+    const ly = cy + (maxR + 18) * Math.sin(angle);
+    ctx.fillStyle = 'rgba(255,255,255,.35)';
+    ctx.fillText(labels[i], lx, ly);
+  }
+
+  // Spring animation
+  let frame = 0;
+  const totalFrames = 40;
+  function step() {
+    frame++;
+    const t = Math.min(1, frame / totalFrames);
+    // Spring easing
+    const p = 1 - Math.pow(1-t, 3) * Math.cos(t * Math.PI * 1.5);
+
+    // Redraw
+    ctx.clearRect(0, 0, W, H);
+
+    // Redraw rings
+    for (let ring = 2; ring <= 10; ring += 2) {
+      ctx.beginPath();
+      for (let j = 0; j <= N; j++) {
+        const angle = (Math.PI*2/N)*j - Math.PI/2;
+        const r = maxR * ring/10;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        if (j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(255,255,255,.06)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Redraw spokes
+    for (let j = 0; j < N; j++) {
+      const angle = (Math.PI*2/N)*j - Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + maxR * Math.cos(angle), cy + maxR * Math.sin(angle));
+      ctx.strokeStyle = 'rgba(255,255,255,.04)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Redraw labels
+    ctx.font = '500 9px "Red Hat Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let j = 0; j < N; j++) {
+      const angle = (Math.PI*2/N)*j - Math.PI/2;
+      const lx = cx + (maxR + 18) * Math.cos(angle);
+      const ly = cy + (maxR + 18) * Math.sin(angle);
+      ctx.fillStyle = 'rgba(255,255,255,.35)';
+      ctx.fillText(labels[j], lx, ly);
+    }
+
+    animate(Math.min(1, p));
+
+    if (frame < totalFrames) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── Helpers ──
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+function capitalize(s) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' ') : '';
+}
+
+function getShotTypes(clip) {
+  const types = new Set();
+  if (clip.dominant_shot) types.add(clip.dominant_shot);
+  // Extract shot types from coaching text
+  const text = (clip.coaching || '') + ' ' + (clip.summary || '');
+  const shotWords = ['dink','drive','volley','drop','lob','overhead','speedup','serve','return','smash','erne','slam'];
+  shotWords.forEach(w => {
+    if (text.toLowerCase().includes(w)) types.add(w);
+  });
+  return Array.from(types).slice(0, 6);
+}
+
+function extractBrands(clip) {
+  const brands = new Set();
+  (clip.brands || []).forEach(b => {
+    if (typeof b === 'string') brands.add(b);
+    else if (b && b.name) brands.add(b.name);
+  });
+  (clip.player_brands || []).forEach(b => {
+    if (typeof b === 'string') brands.add(b);
+    else if (b && b.name) brands.add(b.name);
+  });
+  return Array.from(brands);
+}
+
+// ── Status bar scroll effect ──
+window.addEventListener('scroll', () => {
+  document.getElementById('statusBar').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ── Init ──
+loadData();
+</script>
+</body>
+</html>

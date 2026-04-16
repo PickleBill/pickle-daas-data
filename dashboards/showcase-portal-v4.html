@@ -17,6 +17,7 @@
    glass morphism · 7-tier text · color chapters
    Animated mesh bg · particle field · 3D tilt ·
    scroll progress · heartbeat · shimmer · glow
+   v4.1 — reorganized narrative flow
 ═══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -27,7 +28,7 @@
   --c-inv:#6EEFC0;--c-inv-g:rgba(110,239,192,.12);--c-inv-d:rgba(110,239,192,.06);
   --c-brand:#BD93F9;--c-brand-g:rgba(189,147,249,.12);--c-brand-d:rgba(189,147,249,.06);
   --c-venue:#FFB86C;--c-venue-g:rgba(255,184,108,.12);--c-venue-d:rgba(255,184,108,.06);
-  --c-explore:#6BA3FF;--c-explore-g:rgba(107,163,255,.12);--c-explore-d:rgba(107,163,255,.06);
+  --c-exp:#6BA3FF;--c-exp-g:rgba(107,163,255,.12);--c-exp-d:rgba(107,163,255,.06);
   --c-tools:#F1C40F;--c-tools-g:rgba(241,196,15,.12);--c-tools-d:rgba(241,196,15,.06);
   --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
   --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
@@ -40,7 +41,7 @@ a{color:inherit;text-decoration:none}
 .code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
 
 /* ── Scroll progress indicator ── */
-.scroll-progress{position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,var(--c-inv),var(--c-explore));z-index:100;transition:none;pointer-events:none}
+.scroll-progress{position:fixed;top:0;left:0;width:0%;height:2px;background:linear-gradient(90deg,var(--c-inv),var(--c-exp));z-index:100;transition:none;pointer-events:none}
 
 /* ── Noise overlay ── */
 .noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
@@ -49,7 +50,7 @@ a{color:inherit;text-decoration:none}
 .blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .blob{position:absolute;border-radius:50%;filter:blur(120px)}
 .b1{width:520px;height:520px;top:-12%;left:18%;background:var(--c-inv);opacity:.04;animation:bd1 78s ease-in-out infinite}
-.b2{width:460px;height:460px;bottom:-16%;right:3%;background:var(--c-explore);opacity:.035;animation:bd2 86s ease-in-out infinite}
+.b2{width:460px;height:460px;bottom:-16%;right:3%;background:var(--c-exp);opacity:.035;animation:bd2 86s ease-in-out infinite}
 .b3{width:400px;height:400px;top:38%;left:-9%;background:var(--c-brand);opacity:.03;animation:bd3 72s ease-in-out infinite}
 @keyframes bd1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(65px,45px) scale(1.06)}66%{transform:translate(-45px,20px) scale(.94)}}
 @keyframes bd2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-55px,-35px) scale(1.08)}50%{transform:translate(35px,-65px) scale(.92)}75%{transform:translate(-25px,45px) scale(1.04)}}
@@ -59,19 +60,19 @@ a{color:inherit;text-decoration:none}
 .hero-mesh{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .hero-mesh::before,.hero-mesh::after{content:'';position:absolute;border-radius:50%;filter:blur(100px);opacity:0;animation-fill-mode:both}
 .hero-mesh::before{
-  width:600px;height:600px;top:-20%;left:-5%;
-  background:radial-gradient(circle,rgba(110,239,192,.08) 0%,transparent 70%);
+  width:700px;height:700px;top:-25%;left:-8%;
+  background:radial-gradient(circle,rgba(110,239,192,.1) 0%,transparent 70%);
   animation:meshDrift1 20s ease-in-out infinite;
 }
 .hero-mesh::after{
-  width:500px;height:500px;bottom:-10%;right:-5%;
-  background:radial-gradient(circle,rgba(107,163,255,.07) 0%,transparent 70%);
+  width:600px;height:600px;bottom:-15%;right:-8%;
+  background:radial-gradient(circle,rgba(107,163,255,.09) 0%,transparent 70%);
   animation:meshDrift2 24s ease-in-out infinite;
 }
 .hero-mesh-inner{position:absolute;inset:0}
 .hero-mesh-inner::before{
-  content:'';position:absolute;width:450px;height:450px;top:10%;right:20%;border-radius:50%;filter:blur(90px);
-  background:radial-gradient(circle,rgba(189,147,249,.05) 0%,transparent 70%);
+  content:'';position:absolute;width:550px;height:550px;top:5%;right:15%;border-radius:50%;filter:blur(100px);
+  background:radial-gradient(circle,rgba(189,147,249,.06) 0%,transparent 70%);
   animation:meshDrift3 18s ease-in-out infinite;
 }
 @keyframes meshDrift1{
@@ -136,17 +137,18 @@ a{color:inherit;text-decoration:none}
 .status-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
 /* ══ HERO ══ */
-.hero{padding:clamp(40px,5vw,64px) 0 clamp(20px,3vw,32px);position:relative}
+.hero{padding:clamp(48px,6vw,80px) 0 clamp(24px,4vw,40px);position:relative}
 .hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px;position:relative;z-index:1}
 .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--c-inv)}
-.hero h1{font-size:clamp(3rem,6.8vw,5.3rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;max-width:920px;position:relative;z-index:1}
-.grad-text{background:linear-gradient(135deg,var(--c-inv),var(--c-explore));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:620px;line-height:1.7;position:relative;z-index:1}
+.hero h1{font-size:clamp(3.2rem,7.5vw,5.8rem);font-weight:800;letter-spacing:-.045em;line-height:1.02;max-width:960px;position:relative;z-index:1}
+.grad-text{background:linear-gradient(135deg,var(--c-inv),var(--c-exp));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.95rem,1.6vw,1.15rem);color:var(--t3);margin-top:22px;max-width:640px;line-height:1.7;position:relative;z-index:1}
 .hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;position:relative;z-index:1}
-.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .3s var(--ease),box-shadow .3s var(--ease)}
+.hero-pill:hover{border-color:var(--bd-h);box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .hero-pill .hp-v{font-size:26px;font-weight:800;color:var(--t1);font-family:'Red Hat Mono',monospace;font-variant-numeric:tabular-nums}
 .hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5);font-family:'Red Hat Mono',monospace}
-.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:var(--c-inv);opacity:.035;pointer-events:none;z-index:0}
+.hero-glow{position:absolute;width:700px;height:700px;border-radius:50%;filter:blur(180px);top:-25%;right:-12%;background:var(--c-inv);opacity:.04;pointer-events:none;z-index:0}
 
 /* Hero CTA with shimmer sweep */
 .hero-cta{display:inline-flex;align-items:center;gap:8px;margin-top:32px;padding:14px 32px;background:linear-gradient(135deg,rgba(110,239,192,.12),rgba(107,163,255,.12));border:1px solid rgba(110,239,192,.25);border-radius:var(--r);color:var(--c-inv);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s var(--ease);letter-spacing:.02em;position:relative;z-index:1;overflow:hidden}
@@ -166,19 +168,29 @@ a{color:inherit;text-decoration:none}
 .hero-cta span{transition:transform .2s var(--ease)}
 .hero-cta:hover span{transform:translateX(4px)}
 
+/* ══ THE PITCH — glass summary cards ══ */
+.pitch-section{margin-bottom:56px}
+.pitch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pitch-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);padding:clamp(20px,3vw,32px) clamp(16px,2.5vw,24px);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;overflow:hidden;transition:border-color .3s var(--ease),box-shadow .3s var(--ease)}
+.pitch-card:hover{border-color:var(--bd-h);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.pitch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c-inv),transparent);opacity:.5}
+.pitch-num{font-family:'Red Hat Mono',monospace;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--t1);line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.pitch-label{font-family:'Red Hat Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--t4);line-height:1.5}
+
 /* ══ SECTION HEADINGS ══ */
 .sec-head{margin-bottom:28px}
 .sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .sec-eyebrow::before{content:'';width:16px;height:1px}
 .sec-title{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.sec-sub{font-size:14px;color:var(--t4);margin-top:8px;max-width:560px;line-height:1.6}
 
 /* ══ CARD GRID ══ */
 .card-section{margin-bottom:56px}
 .card-grid{display:grid;gap:16px}
 .card-grid.lg{grid-template-columns:repeat(2,1fr)}
 .card-grid.md{grid-template-columns:repeat(3,1fr)}
-.card-grid.sm{grid-template-columns:repeat(3,1fr)}
-.card-grid.compact{grid-template-columns:repeat(2,1fr)}
+.card-grid.sm{grid-template-columns:repeat(2,1fr)}
+.card-grid.compact{grid-template-columns:repeat(3,1fr)}
 
 /* ══ INDIVIDUAL CARDS — with 3D tilt ══ */
 .portal-card{display:flex;flex-direction:column;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;position:relative;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);text-decoration:none;color:inherit;transform-style:preserve-3d;perspective:800px;will-change:transform}
@@ -186,20 +198,22 @@ a{color:inherit;text-decoration:none}
 .portal-card.glow-inv:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(110,239,192,.08)}
 .portal-card.glow-brand:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(189,147,249,.08)}
 .portal-card.glow-venue:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(255,184,108,.08)}
-.portal-card.glow-explore:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(107,163,255,.08)}
+.portal-card.glow-exp:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(107,163,255,.08)}
 .portal-card.glow-tools:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(241,196,15,.08)}
 
 .card-stripe{height:3px;width:100%}
 .stripe-inv{background:linear-gradient(90deg,var(--c-inv),transparent)}
 .stripe-brand{background:linear-gradient(90deg,var(--c-brand),transparent)}
 .stripe-venue{background:linear-gradient(90deg,var(--c-venue),transparent)}
-.stripe-explore{background:linear-gradient(90deg,var(--c-explore),transparent)}
+.stripe-exp{background:linear-gradient(90deg,var(--c-exp),transparent)}
 .stripe-tools{background:linear-gradient(90deg,var(--c-tools),transparent)}
 
 /* Visual preview area */
 .card-preview{height:80px;position:relative;overflow:hidden}
 .card-preview.lg-preview{height:100px}
 .card-preview .preview-shape{position:absolute;inset:0}
+
+/* ── Preview shapes ── */
 
 /* Investor: sweeping teal-to-blue arcs */
 .preview-investor-walk .preview-shape{
@@ -276,6 +290,54 @@ a{color:inherit;text-decoration:none}
   background:rgba(255,184,108,.15);
   box-shadow:30px 0 0 rgba(255,184,108,.12),60px 0 0 rgba(255,184,108,.1),0 24px 0 rgba(255,184,108,.1),30px 24px 0 rgba(255,184,108,.13),60px 24px 0 rgba(255,184,108,.08);
 }
+/* Lobby Display: three vertical panels (TV screens) */
+.preview-lobby .preview-shape{
+  background:rgba(255,184,108,.03);
+}
+.preview-lobby .preview-shape::after{
+  content:'';position:absolute;top:18%;left:10%;width:22%;height:64%;border-radius:4px;
+  background:rgba(255,184,108,.12);border:1px solid rgba(255,184,108,.08);
+  box-shadow:calc(22% + 14px + 10%) 0 0 -1px rgba(255,184,108,.1),
+             calc(22% + 14px + 10%) 0 0 0 rgba(255,184,108,.06),
+             calc(2*(22% + 14px) + 10% - 4px) 0 0 -1px rgba(255,184,108,.08),
+             calc(2*(22% + 14px) + 10% - 4px) 0 0 0 rgba(255,184,108,.05);
+}
+/* Alternate lobby with explicit rects */
+.preview-lobby .preview-shape{
+  background:rgba(255,184,108,.02);
+}
+.preview-lobby .preview-shape::before{
+  content:'';position:absolute;top:16%;left:8%;width:24%;height:68%;border-radius:4px;
+  border:1px solid rgba(255,184,108,.12);background:rgba(255,184,108,.06);
+}
+.preview-lobby .preview-shape::after{
+  content:'';position:absolute;top:16%;left:38%;width:24%;height:68%;border-radius:4px;
+  border:1px solid rgba(255,184,108,.1);background:rgba(255,184,108,.05);
+  box-shadow:calc(24% + 8px) 0 0 -1px rgba(255,184,108,.04), calc(24% + 8px) 0 0 0 rgba(255,184,108,.08);
+}
+/* Coaching Studio: video frame + text lines */
+.preview-coaching .preview-shape{
+  background:rgba(107,163,255,.03);
+}
+.preview-coaching .preview-shape::before{
+  content:'';position:absolute;top:14%;left:8%;width:44%;height:72%;border-radius:5px;
+  border:1px solid rgba(107,163,255,.12);background:rgba(107,163,255,.06);
+}
+.preview-coaching .preview-shape::after{
+  content:'';position:absolute;top:20%;right:10%;width:30%;height:3px;border-radius:2px;
+  background:rgba(107,163,255,.15);
+  box-shadow:0 12px 0 rgba(107,163,255,.1),0 24px 0 rgba(107,163,255,.08),0 36px 0 rgba(107,163,255,.06),0 48px 0 rgba(107,163,255,.04);
+}
+/* Social Clip Cards: stacked phone stories */
+.preview-social .preview-shape{
+  background:rgba(107,163,255,.02);
+}
+.preview-social .preview-shape::before{
+  content:'';position:absolute;top:10%;left:50%;transform:translateX(-50%);width:28%;height:80%;border-radius:8px;
+  border:1px solid rgba(107,163,255,.15);background:rgba(107,163,255,.07);
+  box-shadow:-36px 4px 0 rgba(107,163,255,.04),-36px 4px 0 1px rgba(107,163,255,.06),
+             36px 4px 0 rgba(107,163,255,.04),36px 4px 0 1px rgba(107,163,255,.06);
+}
 /* Player Lab: double helix hint */
 .preview-player-lab .preview-shape{
   background:
@@ -291,6 +353,18 @@ a{color:inherit;text-decoration:none}
   background:
     linear-gradient(135deg, transparent 40%, rgba(107,163,255,.06) 50%, transparent 60%),
     linear-gradient(225deg, transparent 30%, rgba(110,239,192,.05) 45%, transparent 55%);
+}
+/* Data Explorer: split panel comparison */
+.preview-explorer .preview-shape{
+  background:rgba(241,196,15,.02);
+}
+.preview-explorer .preview-shape::before{
+  content:'';position:absolute;top:12%;left:6%;width:42%;height:76%;border-radius:4px;
+  border:1px solid rgba(241,196,15,.1);background:rgba(241,196,15,.05);
+}
+.preview-explorer .preview-shape::after{
+  content:'';position:absolute;top:12%;right:6%;width:42%;height:76%;border-radius:4px;
+  border:1px solid rgba(241,196,15,.08);background:rgba(241,196,15,.04);
 }
 /* Classifier: queue dots */
 .preview-classifier .preview-shape{
@@ -321,6 +395,10 @@ a{color:inherit;text-decoration:none}
 .compact-card .card-desc{font-size:12px;-webkit-line-clamp:1}
 .compact-card .card-preview{height:48px}
 
+/* ══ SECTION TRANSITION DIVIDERS ══ */
+.divider{width:120px;height:1px;margin:0 auto 56px;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider-wide{width:200px;height:1px;margin:0 auto 48px;background:linear-gradient(90deg,transparent,var(--t7),transparent)}
+
 /* ══ CLASSIFICATION ENGINE STATS ══ */
 .engine-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:12px}
 .eb-cell{background:var(--bg-s);padding:clamp(16px,2.5vw,24px) 12px;text-align:center}
@@ -346,19 +424,18 @@ a{color:inherit;text-decoration:none}
 .compare-inner a{color:var(--t4);text-decoration:underline;text-underline-offset:3px;transition:color .2s}
 .compare-inner a:hover{color:var(--c-inv)}
 
-/* ══ DIVIDER ══ */
-.divider{width:120px;height:1px;margin:0 auto 56px;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
-
 /* ══ RESPONSIVE ══ */
 @media(max-width:1024px){
   .card-grid.lg,.card-grid.md{grid-template-columns:repeat(2,1fr)}
-  .card-grid.sm{grid-template-columns:repeat(2,1fr)}
+  .card-grid.compact{grid-template-columns:repeat(2,1fr)}
+  .pitch-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:768px){
   .card-grid.lg,.card-grid.md,.card-grid.sm,.card-grid.compact{grid-template-columns:1fr}
+  .pitch-grid{grid-template-columns:1fr}
   .engine-bar{grid-template-columns:repeat(2,1fr)}
   .status-inner{justify-content:center;text-align:center}
-  .hero h1{font-size:clamp(2.2rem,7vw,3.6rem)}
+  .hero h1{font-size:clamp(2.4rem,7.5vw,3.8rem)}
   .footer-top{flex-direction:column;text-align:center}
 }
 @media(max-width:480px){
@@ -378,6 +455,7 @@ a{color:inherit;text-decoration:none}
   .hero-mesh::before,.hero-mesh::after,.hero-mesh-inner::before{animation:none!important}
   .hero-particle{animation:none!important}
   .scroll-progress{display:none}
+  .pitch-card{transition:none}
 }
 </style>
 </head>
@@ -401,7 +479,7 @@ a{color:inherit;text-decoration:none}
       <div class="status-left">
         <span><span class="sd"></span> <em>Live</em></span>
         <span id="status-date"></span>
-        <span><em id="s-clips">3,588</em> clips</span>
+        <span><em id="s-clips">3,700</em> clips</span>
         <span><em id="s-rules">54</em> rules</span>
         <span><em id="s-cov">91.9</em>% coverage</span>
         <span class="v-chip">v4</span>
@@ -410,7 +488,8 @@ a{color:inherit;text-decoration:none}
         <a href="#investors">Investors</a>
         <a href="#brands">Brands</a>
         <a href="#venues">Venues</a>
-        <a href="#explore">Explore</a>
+        <a href="#experience">Experience</a>
+        <a href="#research">Research</a>
       </nav>
     </div>
   </div>
@@ -424,25 +503,46 @@ a{color:inherit;text-decoration:none}
     <div class="hero-glow"></div>
     <div class="hero-eyebrow">Pickle DaaS</div>
     <h1>Pickleball video, <span class="grad-text">classified into intelligence.</span></h1>
-    <p class="hero-sub">Three revenue lanes. 54 rules. Every detection traceable.</p>
+    <p class="hero-sub">Every clip analyzed. Every brand detected. Every insight traceable back to its source frame.</p>
     <div class="hero-pills">
-      <div class="hero-pill"><div><div class="hp-v" data-count="3588" id="h-clips">0</div><div class="hp-l">Clips</div></div></div>
-      <div class="hero-pill"><div><div class="hp-v" data-count="358" id="h-brands">0</div><div class="hp-l">Brands</div></div></div>
-      <div class="hero-pill"><div><div class="hp-v" data-count="54" id="h-rules">0</div><div class="hp-l">Rules</div></div></div>
+      <div class="hero-pill"><div><div class="hp-v" data-count="3700" id="h-clips">0</div><div class="hp-l">Clips analyzed</div></div></div>
+      <div class="hero-pill"><div><div class="hp-v" data-count="358" id="h-brands">0</div><div class="hp-l">Brands detected</div></div></div>
+      <div class="hero-pill"><div><div class="hp-v" data-count="54" id="h-rules">0</div><div class="hp-l">Classification rules</div></div></div>
       <div class="hero-pill"><div><div class="hp-v" data-count="91.9" data-decimal="true" id="h-cov">0</div><div class="hp-l">% Coverage</div></div></div>
     </div>
     <a href="#investors" class="hero-cta">Start exploring <span>&rarr;</span></a>
   </div>
 </section>
 
+<!-- ══════════════ THE PITCH ══════════════ -->
+<section class="pitch-section" data-reveal>
+  <div class="shell">
+    <div class="pitch-grid">
+      <div class="pitch-card">
+        <div class="pitch-num" data-count="3700" id="p-clips">0</div>
+        <div class="pitch-label">clips analyzed at $0.005 each</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-num">54</div>
+        <div class="pitch-label">human-approved classification rules</div>
+      </div>
+      <div class="pitch-card">
+        <div class="pitch-num">100%</div>
+        <div class="pitch-label">of brand detections traceable to source</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="divider"></div>
 
-<!-- ══════════════ FOR INVESTORS ══════════════ -->
+<!-- ══════════════ 1. FOR INVESTORS ══════════════ -->
 <section class="card-section" id="investors" data-reveal>
   <div class="shell">
     <div class="sec-head">
-      <div class="sec-eyebrow" style="--ey-color:var(--c-inv)"><span style="display:inline-block;width:16px;height:1px;background:var(--c-inv)"></span> For Investors</div>
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-inv)"></span> For Investors</div>
       <div class="sec-title" style="color:var(--t1)">The full picture, end to end</div>
+      <div class="sec-sub">Start here. Two flagship views that tell the entire DaaS story.</div>
     </div>
     <div class="card-grid lg">
       <!-- Investor Walkthrough -->
@@ -452,7 +552,7 @@ a{color:inherit;text-decoration:none}
         <div class="card-body">
           <div class="card-title">Investor Walkthrough</div>
           <div class="card-desc">Guided tour of the classification engine, revenue model, and proof points. Start here for the full thesis.</div>
-          <div class="card-meta"><span id="m-clips-1">3,588 clips</span><span class="dot"></span><span id="m-brands-1">358 brands</span></div>
+          <div class="card-meta"><span id="m-clips-1">3,700 clips</span><span class="dot"></span><span id="m-brands-1">358 brands</span></div>
         </div>
       </a>
       <!-- Brand Intelligence -->
@@ -469,12 +569,13 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
-<!-- ══════════════ FOR BRANDS ══════════════ -->
+<!-- ══════════════ 2. FOR BRANDS ══════════════ -->
 <section class="card-section" id="brands" data-reveal>
   <div class="shell">
     <div class="sec-head">
       <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-brand)"></span> For Brands</div>
       <div class="sec-title" style="color:var(--t1)">Equipment, sponsors, and market share</div>
+      <div class="sec-sub">Deep brand analytics across equipment, sponsorships, and co-occurrence patterns.</div>
     </div>
     <div class="card-grid md">
       <!-- Equipment Performance -->
@@ -511,14 +612,15 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
-<!-- ══════════════ FOR VENUES ══════════════ -->
+<!-- ══════════════ 3. FOR VENUES ══════════════ -->
 <section class="card-section" id="venues" data-reveal>
   <div class="shell">
     <div class="sec-head">
       <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-venue)"></span> For Venues</div>
       <div class="sec-title" style="color:var(--t1)">Facility intelligence and evidence</div>
+      <div class="sec-sub">Court-level data, visual proof, and lobby-ready displays for every venue in the corpus.</div>
     </div>
-    <div class="card-grid compact" style="max-width:900px">
+    <div class="card-grid md">
       <!-- Venue Intelligence -->
       <a href="venue-intelligence-v4.html" class="portal-card glow-venue" data-tilt>
         <div class="card-stripe stripe-venue"></div>
@@ -539,31 +641,66 @@ a{color:inherit;text-decoration:none}
           <div class="card-meta"><span id="m-det-1">8,327 detections</span><span class="dot"></span><span id="m-ver-1">7,623 verified</span></div>
         </div>
       </a>
+      <!-- Lobby Display -->
+      <a href="lobby-display-v4.html" class="portal-card glow-venue" data-tilt>
+        <div class="card-stripe stripe-venue"></div>
+        <div class="card-preview preview-lobby"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Lobby Display</div>
+          <div class="card-desc">Full-screen venue dashboard for lobby TVs. Live stats, leaderboards, and highlight reels.</div>
+          <div class="card-meta"><span>Venue-ready</span><span class="dot"></span><span>Full screen</span></div>
+        </div>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ EXPLORE ══════════════ -->
-<section class="card-section" id="explore" data-reveal>
+<div class="divider-wide"></div>
+
+<!-- ══════════════ 4. EXPERIENCE ══════════════ -->
+<section class="card-section" id="experience" data-reveal>
   <div class="shell">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-explore)"></span> Explore</div>
-      <div class="sec-title" style="color:var(--t1)">Players, stories, and patterns</div>
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-exp)"></span> Experience</div>
+      <div class="sec-title" style="color:var(--t1)">Coaching, social, players, and stories</div>
+      <div class="sec-sub">The player-facing side of the intelligence layer. Watch, learn, share, compete.</div>
     </div>
-    <div class="card-grid compact" style="max-width:900px">
-      <!-- Player Lab (merged from Player DNA Lab + Player Intelligence) -->
-      <a href="player-lab-v4.html" class="portal-card glow-explore" data-tilt>
-        <div class="card-stripe stripe-explore"></div>
+    <div class="card-grid sm">
+      <!-- Coaching Studio -->
+      <a href="coaching-studio-v4.html" class="portal-card glow-exp" data-tilt>
+        <div class="card-stripe stripe-exp"></div>
+        <div class="card-preview preview-coaching"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Coaching Studio</div>
+          <div class="card-desc">AI-generated coaching notes layered over video clips. Watch, learn, improve.</div>
+          <div class="card-meta"><span>Video + AI analysis</span></div>
+        </div>
+      </a>
+      <!-- Social Clip Cards -->
+      <a href="social-clip-cards-v4.html" class="portal-card glow-exp" data-tilt>
+        <div class="card-stripe stripe-exp"></div>
+        <div class="card-preview preview-social"><div class="preview-shape"></div></div>
+        <div class="card-body">
+          <div class="card-title">Social Clip Cards</div>
+          <div class="card-desc">Shareable, branded clip cards designed for social feeds. Stats, style, and highlight in one frame.</div>
+          <div class="card-meta"><span>Share-ready</span><span class="dot"></span><span>Mobile-first</span></div>
+        </div>
+      </a>
+    </div>
+    <div class="card-grid sm" style="margin-top:16px">
+      <!-- Player Lab -->
+      <a href="player-lab-v4.html" class="portal-card glow-exp" data-tilt>
+        <div class="card-stripe stripe-exp"></div>
         <div class="card-preview preview-player-lab"><div class="preview-shape"></div></div>
         <div class="card-body">
           <div class="card-title">Player Lab</div>
           <div class="card-desc">Archetype clustering, play-style fingerprints, equipment DNA, and individual performance profiles.</div>
-          <div class="card-meta"><span>104 players</span><span class="dot"></span><span id="m-clips-2">3,588 clips</span></div>
+          <div class="card-meta"><span>104 players</span><span class="dot"></span><span id="m-clips-2">3,700 clips</span></div>
         </div>
       </a>
       <!-- Story Hub -->
-      <a href="story-hub-v4.html" class="portal-card glow-explore" data-tilt>
-        <div class="card-stripe stripe-explore"></div>
+      <a href="story-hub-v4.html" class="portal-card glow-exp" data-tilt>
+        <div class="card-stripe stripe-exp"></div>
         <div class="card-preview preview-story"><div class="preview-shape"></div></div>
         <div class="card-body">
           <div class="card-title">Story Hub</div>
@@ -575,14 +712,27 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
-<!-- ══════════════ TOOLS ══════════════ -->
-<section class="card-section" id="tools" data-reveal>
+<div class="divider-wide"></div>
+
+<!-- ══════════════ 5. RESEARCH & TOOLS ══════════════ -->
+<section class="card-section" id="research" data-reveal>
   <div class="shell">
     <div class="sec-head">
-      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-tools)"></span> Tools</div>
+      <div class="sec-eyebrow"><span style="display:inline-block;width:16px;height:1px;background:var(--c-tools)"></span> Research &amp; Tools</div>
       <div class="sec-title" style="color:var(--t1)">Under the hood</div>
+      <div class="sec-sub">The classification engine, research findings, and raw data exploration.</div>
     </div>
-    <div class="card-grid compact" style="max-width:900px">
+    <div class="card-grid compact">
+      <!-- Idea Lab -->
+      <a href="idea-lab.html" class="portal-card compact-card glow-tools" data-tilt>
+        <div class="card-stripe stripe-tools"></div>
+        <div class="card-preview preview-ideas" style="height:48px"><div class="preview-shape"></div></div>
+        <div class="card-body compact-body">
+          <div class="card-title">Idea Lab</div>
+          <div class="card-desc">Research findings, strategic hypotheses, and data-driven product ideas.</div>
+          <div class="card-meta"><span id="m-ideas">37 findings</span></div>
+        </div>
+      </a>
       <!-- Classifier Queue -->
       <a href="classifier-queue.html" class="portal-card compact-card glow-tools" data-tilt>
         <div class="card-stripe stripe-tools"></div>
@@ -593,14 +743,14 @@ a{color:inherit;text-decoration:none}
           <div class="card-meta"><span>54 rules</span><span class="dot"></span><span>91.9% coverage</span></div>
         </div>
       </a>
-      <!-- Idea Lab -->
-      <a href="idea-lab.html" class="portal-card compact-card glow-tools" data-tilt>
+      <!-- Data Explorer -->
+      <a href="unified-data-explorer-v4.html" class="portal-card compact-card glow-tools" data-tilt>
         <div class="card-stripe stripe-tools"></div>
-        <div class="card-preview preview-ideas" style="height:48px"><div class="preview-shape"></div></div>
+        <div class="card-preview preview-explorer" style="height:48px"><div class="preview-shape"></div></div>
         <div class="card-body compact-body">
-          <div class="card-title">Idea Lab</div>
-          <div class="card-desc">Research findings, strategic hypotheses, and data-driven product ideas.</div>
-          <div class="card-meta"><span id="m-ideas">37 findings</span></div>
+          <div class="card-title">Data Explorer</div>
+          <div class="card-desc">Side-by-side data comparison, filtering, and raw corpus exploration.</div>
+          <div class="card-meta"><span>Full corpus</span><span class="dot"></span><span>Compare mode</span></div>
         </div>
       </a>
     </div>
@@ -690,13 +840,13 @@ a{color:inherit;text-decoration:none}
   /* ── Generate hero particles (CSS-only drift) ── */
   var particleContainer = document.getElementById('hero-particles');
   if(particleContainer){
-    for(var i = 0; i < 40; i++){
+    for(var i = 0; i < 50; i++){
       var p = document.createElement('div');
       p.className = 'hero-particle';
       p.style.left = Math.random() * 100 + '%';
       p.style.top = Math.random() * 100 + '%';
-      p.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
-      p.style.setProperty('--dy', (Math.random() * 60 - 30) + 'px');
+      p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+      p.style.setProperty('--dy', (Math.random() * 80 - 40) + 'px');
       p.style.animationDuration = (12 + Math.random() * 18) + 's';
       p.style.animationDelay = (Math.random() * 15) + 's';
       p.style.width = (1.5 + Math.random() * 1.5) + 'px';
@@ -752,6 +902,17 @@ a{color:inherit;text-decoration:none}
             card.classList.add('card-visible');
           }, idx * 80);
         });
+        /* Stagger pitch cards too */
+        var pitchCards = entry.target.querySelectorAll('.pitch-card');
+        pitchCards.forEach(function(card, idx){
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          card.style.transition = 'opacity .5s var(--spring), transform .5s var(--spring)';
+          setTimeout(function(){
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, idx * 120);
+        });
         revealObserver.unobserve(entry.target);
       }
     });
@@ -804,7 +965,7 @@ a{color:inherit;text-decoration:none}
   /* ── Fetch live data ── */
   function updateUI(data){
     var c = data.corpus || {};
-    var clips = c.total_clips || 3588;
+    var clips = c.total_clips || 3700;
     var brands = c.unique_brands || 358;
 
     function setCount(id, val){
@@ -813,6 +974,7 @@ a{color:inherit;text-decoration:none}
     }
     setCount('h-clips', clips);
     setCount('h-brands', brands);
+    setCount('p-clips', clips);
 
     var sc = document.getElementById('s-clips');
     if(sc) sc.textContent = clips.toLocaleString();

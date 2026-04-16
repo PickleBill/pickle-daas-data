@@ -3,19 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Story Hub v4 · Pickle DaaS</title>
+<title>Story Hub v4 — Pickle DaaS</title>
 <meta name="description" content="We don't just detect — we narrate. Every clip gets ESPN-style storytelling, coaching breakdown, and social caption.">
+<meta property="og:title" content="Story Hub v4 — Pickle DaaS">
+<meta property="og:description" content="We don't just detect — we narrate. ESPN-style narratives, coaching breakdowns, and social captions for every clip.">
 <meta property="og:image" content="https://courtana.com/og-story-hub.png">
+<meta property="og:type" content="website">
 <link rel="icon" href="https://courtana.com/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════
-   V4 DESIGN SYSTEM — Story Hub
-   Purple accent (#BD93F9) · Near-black bg · glass
-   Arc-type color system · Typewriter · Animations
-═══════════════════════════════════════════ */
+/* ===========================================================
+   STORY HUB v4 — DESIGN SYSTEM
+   Near-black (#08080C) · Glass morphism · Noise texture
+   Manrope + Red Hat Mono + JetBrains Mono
+   Purple accent (#BD93F9) primary
+   Arc-type color system
+=========================================================== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#08080C;--bg-s:#0E0E14;--bg-r:#14141C;--bg-o:#1A1A24;
@@ -27,21 +32,28 @@
   --bd:rgba(255,255,255,.05);--bd-d:rgba(255,255,255,.08);--bd-h:rgba(255,255,255,.14);
   --ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1);
   --r:12px;--rl:16px;
-
   /* Arc type colors */
   --arc-comeback:#6EEFC0;
   --arc-dominant:#F1C40F;
   --arc-close:#6BA3FF;
   --arc-learning:#FFB86C;
   --arc-viral:#FF79C6;
+  --arc-strategic:#BD93F9;
+  --arc-athletic:#6EEFC0;
+  --arc-grind:#F1C40F;
+  --arc-teaching:#FFB86C;
+  --arc-competitive:#FF79C6;
+  --arc-top:#6BA3FF;
   --arc-unknown:#BD93F9;
 }
-html{scroll-behavior:smooth}
-body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-.mono{font-family:'Red Hat Mono',monospace}.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
+.mono{font-family:'Red Hat Mono',monospace}
+.code{font-family:'JetBrains Mono','Red Hat Mono',monospace}
 
-.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04}
+/* --- Noise + Blobs --- */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035}
 .blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .blob{position:absolute;border-radius:50%;filter:blur(120px)}
 .b1{width:520px;height:520px;top:-12%;left:18%;background:#BD93F9;opacity:.04;animation:bd1 78s ease-in-out infinite}
@@ -52,15 +64,17 @@ a{color:inherit;text-decoration:none}
 @keyframes bd3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(45px,-55px) scale(1.07)}80%{transform:translate(-35px,35px) scale(.96)}}
 
 .page{position:relative;z-index:1}
-.shell{max-width:1320px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
-[data-reveal]{opacity:0;transform:translateY(40px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+.shell{max-width:1340px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+
+/* --- Scroll reveal --- */
+[data-reveal]{opacity:0;transform:translateY(36px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 [data-reveal].revealed{opacity:1;transform:none}
 .hero{opacity:1!important;transform:none!important}
-.divider{width:120px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--t6),transparent)}
+.divider{width:140px;height:1px;margin:80px auto;background:linear-gradient(90deg,transparent,var(--accent-b),transparent)}
 
-/* Status strip */
+/* ====== STATUS STRIP ====== */
 .status{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:10px 0;transition:box-shadow .3s}
-.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.status.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.5)}
 .status-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t4);text-transform:uppercase;letter-spacing:.08em}
 .status em{font-style:normal;color:var(--accent);font-weight:600}
 .sd{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2.5s ease-in-out infinite;display:inline-block;margin-right:6px;vertical-align:middle}
@@ -72,96 +86,100 @@ a{color:inherit;text-decoration:none}
 .portal-link{color:var(--t5);transition:color .2s var(--ease)}
 .portal-link:hover{color:var(--accent)}
 
-/* Hero */
-.hero{padding:clamp(64px,10vw,120px) 0 clamp(32px,5vw,56px);position:relative}
+/* ====== HERO ====== */
+.hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(72px,12vw,140px) 0 clamp(40px,6vw,64px);position:relative;overflow:hidden}
 .hero-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.65rem,1.2vw,.78rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
 .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent)}
-.hero h1{font-size:clamp(2.6rem,5.8vw,5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:900px}
-.grad-text{background:linear-gradient(135deg,#BD93F9,#6BA3FF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--t3);margin-top:20px;max-width:680px;line-height:1.7}
-.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
-.hero-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t3)}
-.hero-pill .hp-v{font-size:20px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
+.hero h1{font-size:clamp(2.8rem,6.5vw,5.5rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;max-width:960px}
+.grad-text{background:linear-gradient(135deg,#BD93F9 0%,#6BA3FF 50%,#FF79C6 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.95rem,1.6vw,1.15rem);color:var(--t3);margin-top:24px;max-width:720px;line-height:1.8}
+.hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;filter:blur(200px);top:-30%;right:-15%;background:linear-gradient(135deg,#BD93F9,#FF79C6);opacity:.03;pointer-events:none}
+.hero-glow2{position:absolute;width:500px;height:500px;border-radius:50%;filter:blur(160px);bottom:-20%;left:-10%;background:#6BA3FF;opacity:.025;pointer-events:none}
+.hero-pills{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.hero-pill{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-family:'Red Hat Mono',monospace;font-size:12px;color:var(--t3);transition:border-color .2s var(--ease)}
+.hero-pill:hover{border-color:var(--bd-h)}
+.hero-pill .hp-v{font-size:22px;font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums}
 .hero-pill .hp-l{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--t5)}
-.hero-glow{position:absolute;width:650px;height:650px;border-radius:50%;filter:blur(160px);top:-20%;right:-10%;background:#BD93F9;opacity:.035;pointer-events:none}
 
-/* Section heading */
-.sec-head{margin-bottom:28px}
+/* ====== SECTION HEADS ====== */
+.sec-head{margin-bottom:32px}
 .sec-eyebrow{font-family:'Red Hat Mono',monospace;font-size:clamp(.6rem,1vw,.72rem);font-weight:600;text-transform:uppercase;letter-spacing:.25em;color:var(--t5);margin-bottom:10px}
-.sec-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.sec-title{font-size:clamp(1.8rem,3.8vw,3rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
 
-/* Featured clip */
-.featured-video{width:100%;aspect-ratio:16/9;border-radius:var(--rl);overflow:hidden;background:#000;margin-bottom:20px;position:relative}
+/* ====== FEATURED CLIP ====== */
+.feat-layout{display:grid;grid-template-columns:1fr;gap:24px}
+.featured-video{width:100%;aspect-ratio:16/9;border-radius:var(--rl);overflow:hidden;background:#000;position:relative;border:1px solid var(--bd)}
 .featured-video video{width:100%;height:100%;object-fit:cover;display:block}
-.featured-video .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);cursor:pointer;transition:background .2s}
-.featured-video .play-overlay:hover{background:rgba(0,0,0,.15)}
-.play-btn{width:64px;height:64px;border-radius:50%;background:rgba(189,147,249,.25);border:2px solid rgba(189,147,249,.5);display:flex;align-items:center;justify-content:center;color:white;font-size:22px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .2s;animation:breathe 3s ease-in-out infinite}
-.play-overlay:hover .play-btn{background:rgba(189,147,249,.4);transform:scale(1.1);animation:none}
+.featured-video .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);cursor:pointer;transition:background .25s}
+.featured-video .play-overlay:hover{background:rgba(0,0,0,.12)}
+.play-btn{width:72px;height:72px;border-radius:50%;background:rgba(189,147,249,.2);border:2px solid rgba(189,147,249,.5);display:flex;align-items:center;justify-content:center;color:white;font-size:24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:all .25s var(--ease);animation:breathe 3s ease-in-out infinite}
+.play-overlay:hover .play-btn{background:rgba(189,147,249,.45);transform:scale(1.12);animation:none}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.feat-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 20px}
 
 /* Narrative cards */
-.narr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.narr-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:border-color .2s var(--ease),transform .35s var(--ease)}
-.narr-card:hover{border-color:var(--bd-h);transform:translateY(-4px)}
+.narr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.narr-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:border-color .25s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
+.narr-card:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.3)}
 .narr-stripe{height:3px}
-.narr-head{padding:12px 14px 8px;font-family:'Red Hat Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-weight:600}
-.narr-body{padding:0 14px 14px;font-size:13px;color:var(--t3);line-height:1.6}
-.narr-body.italic{font-style:italic}
+.narr-head{padding:14px 16px 8px;font-family:'Red Hat Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);font-weight:600;display:flex;align-items:center;gap:6px}
+.narr-head .narr-icon{font-size:13px}
+.narr-body{padding:0 16px 16px;font-size:13px;color:var(--t3);line-height:1.7}
+.narr-body.italic{font-style:italic;color:var(--t2)}
 
-/* Typewriter effect */
+/* Typewriter */
 .typewriter-text{visibility:hidden}
 .typewriter-text.tw-active{visibility:visible}
-.typewriter-cursor{display:inline-block;width:1px;height:1em;background:var(--accent);margin-left:1px;vertical-align:text-bottom;animation:tw-blink .6s step-end infinite}
+.typewriter-cursor{display:inline-block;width:2px;height:1.1em;background:var(--accent);margin-left:2px;vertical-align:text-bottom;animation:tw-blink .55s step-end infinite;border-radius:1px}
 @keyframes tw-blink{50%{opacity:0}}
 
-/* Quality badges */
+/* ====== QUALITY + ARC BADGES ====== */
 .q-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:700}
 .q-badge.high{background:rgba(110,239,192,.12);color:#6EEFC0;border:1px solid rgba(110,239,192,.2)}
 .q-badge.mid{background:rgba(107,163,255,.12);color:#6BA3FF;border:1px solid rgba(107,163,255,.2)}
 .q-badge.low{background:rgba(255,255,255,.04);color:var(--t5);border:1px solid var(--bd)}
 
-/* Arc badge — colorized per arc type */
 .arc-badge{display:inline-flex;padding:3px 10px;border-radius:8px;font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;text-transform:capitalize}
 .arc-badge[data-arc="comeback"]{background:rgba(110,239,192,.12);color:var(--arc-comeback);border:1px solid rgba(110,239,192,.2)}
 .arc-badge[data-arc="dominant_performance"]{background:rgba(241,196,15,.12);color:var(--arc-dominant);border:1px solid rgba(241,196,15,.2)}
 .arc-badge[data-arc="close_match"]{background:rgba(107,163,255,.12);color:var(--arc-close);border:1px solid rgba(107,163,255,.2)}
 .arc-badge[data-arc="learning_moment"]{background:rgba(255,184,108,.12);color:var(--arc-learning);border:1px solid rgba(255,184,108,.2)}
 .arc-badge[data-arc="viral_moment"]{background:rgba(255,121,198,.12);color:var(--arc-viral);border:1px solid rgba(255,121,198,.2)}
+.arc-badge[data-arc="strategic"]{background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b)}
+.arc-badge[data-arc="athletic"]{background:rgba(110,239,192,.12);color:var(--arc-athletic);border:1px solid rgba(110,239,192,.2)}
+.arc-badge[data-arc="grind_rally"]{background:rgba(241,196,15,.12);color:var(--arc-grind);border:1px solid rgba(241,196,15,.2)}
+.arc-badge[data-arc="teaching_moment"]{background:rgba(255,184,108,.12);color:var(--arc-teaching);border:1px solid rgba(255,184,108,.2)}
+.arc-badge[data-arc="competitive_intensity"]{background:rgba(255,121,198,.12);color:var(--arc-competitive);border:1px solid rgba(255,121,198,.2)}
+.arc-badge[data-arc="top_play"]{background:rgba(107,163,255,.12);color:var(--arc-top);border:1px solid rgba(107,163,255,.2)}
 .arc-badge[data-arc="unknown"],.arc-badge:not([data-arc]){background:var(--accent-g);color:var(--accent);border:1px solid var(--accent-b)}
-.feat-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
 
-/* Arc browser pills — colorized */
-.arc-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.arc-pill{position:relative;padding:8px 16px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-transform:capitalize;overflow:visible}
+/* ====== ARC BROWSER PILLS ====== */
+.arc-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.arc-pill{position:relative;padding:8px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--r);font-size:12px;font-weight:600;color:var(--t4);cursor:pointer;transition:all .15s var(--ease);font-family:'Manrope',sans-serif;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-transform:capitalize;overflow:visible}
 .arc-pill:hover{color:var(--t2);border-color:var(--bd-h)}
 .arc-pill .cnt{font-family:'Red Hat Mono',monospace;font-size:10px;opacity:.7;margin-left:5px}
-
-/* Default "All" pill active state */
 .arc-pill.on{background:var(--accent-g);color:var(--accent);border-color:var(--accent-b)}
-
-/* Arc-specific active states */
-.arc-pill[data-arc="comeback"].on{background:rgba(110,239,192,.12);color:var(--arc-comeback);border-color:rgba(110,239,192,.3)}
-.arc-pill[data-arc="dominant_performance"].on{background:rgba(241,196,15,.12);color:var(--arc-dominant);border-color:rgba(241,196,15,.3)}
-.arc-pill[data-arc="close_match"].on{background:rgba(107,163,255,.12);color:var(--arc-close);border-color:rgba(107,163,255,.3)}
-.arc-pill[data-arc="learning_moment"].on{background:rgba(255,184,108,.12);color:var(--arc-learning);border-color:rgba(255,184,108,.3)}
-.arc-pill[data-arc="viral_moment"].on{background:rgba(255,121,198,.12);color:var(--arc-viral);border-color:rgba(255,121,198,.3)}
-.arc-pill[data-arc="unknown"].on{background:var(--accent-g);color:var(--accent);border-color:var(--accent-b)}
-
-/* Pulse ring on pill click */
+.arc-pill[data-arc="strategic"].on{background:var(--accent-g);color:var(--accent);border-color:var(--accent-b)}
+.arc-pill[data-arc="athletic"].on{background:rgba(110,239,192,.12);color:var(--arc-athletic);border-color:rgba(110,239,192,.3)}
+.arc-pill[data-arc="grind_rally"].on{background:rgba(241,196,15,.12);color:var(--arc-grind);border-color:rgba(241,196,15,.3)}
+.arc-pill[data-arc="teaching_moment"].on{background:rgba(255,184,108,.12);color:var(--arc-teaching);border-color:rgba(255,184,108,.3)}
+.arc-pill[data-arc="competitive_intensity"].on{background:rgba(255,121,198,.12);color:var(--arc-competitive);border-color:rgba(255,121,198,.3)}
+.arc-pill[data-arc="top_play"].on{background:rgba(107,163,255,.12);color:var(--arc-top);border-color:rgba(107,163,255,.3)}
 .arc-pill .pulse-ring{position:absolute;inset:-4px;border-radius:calc(var(--r) + 4px);border:2px solid currentColor;opacity:0;pointer-events:none}
 .arc-pill.pulsing .pulse-ring{animation:pill-pulse .3s var(--ease) forwards}
 @keyframes pill-pulse{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(1.15)}}
+.arc-pill:active{transform:scale(.97)}
 
-/* Clip grid */
-.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.clip-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;cursor:default;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .2s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
+/* ====== CLIP GRID ====== */
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.clip-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);overflow:hidden;cursor:default;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .25s var(--ease),transform .35s var(--ease),box-shadow .35s var(--ease)}
 .clip-card:hover{border-color:var(--bd-h);transform:translateY(-4px);box-shadow:0 20px 56px rgba(0,0,0,.45)}
-.clip-vid{aspect-ratio:16/9;position:relative}
-.clip-vid video,.clip-vid img{width:100%;height:100%;object-fit:cover;display:block;background:#000}
-.clip-vid::after{content:'\25B6';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:18px;transition:all .2s}
-.clip-card:hover .clip-vid::after{background:rgba(0,0,0,.2)}
+.clip-vid{aspect-ratio:16/9;position:relative;overflow:hidden;background:#0a0a0a}
+.clip-vid video,.clip-vid img{width:100%;height:100%;object-fit:cover;display:block}
+.clip-vid::after{content:'\25B6';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:18px;transition:all .25s}
+.clip-card:hover .clip-vid::after{background:rgba(0,0,0,.15)}
 .clip-info{padding:14px 16px}
-.clip-summary{font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:8px}
+.clip-summary{font-size:13px;color:var(--t2);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .clip-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 
 /* Staggered card entrance */
@@ -169,31 +187,69 @@ a{color:inherit;text-decoration:none}
 .clip-card.card-visible{animation:card-enter .5s var(--spring) forwards}
 @keyframes card-enter{to{opacity:1;transform:translateY(0) scale(1)}}
 
-/* Footer */
-footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--bd);font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
-footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)}
-.footer-pitch{font-size:13px;color:var(--t3);line-height:1.6;max-width:700px;margin-bottom:12px}
+/* Load more button */
+.load-more-wrap{text-align:center;margin-top:32px}
+.load-more-btn{padding:12px 40px;background:var(--glass);border:1px solid var(--accent-b);border-radius:var(--r);color:var(--accent);font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.load-more-btn:hover{background:var(--accent-g);border-color:var(--accent);transform:translateY(-2px)}
 
+/* ====== STATS SECTION ====== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:32px}
+.stat-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rl);padding:24px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s var(--ease)}
+.stat-card:hover{border-color:var(--bd-h)}
+.stat-card .stat-val{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;color:var(--t1);font-variant-numeric:tabular-nums;line-height:1.1}
+.stat-card .stat-val .accent-num{color:var(--accent)}
+.stat-card .stat-label{font-family:'Red Hat Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--t5);margin-top:8px}
+.stat-card .stat-sub{font-size:12px;color:var(--t4);margin-top:4px;line-height:1.4}
+
+/* Arc distribution bars */
+.arc-dist{margin-top:24px}
+.arc-dist-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px}
+.arc-dist-label{width:150px;text-align:right;color:var(--t4);font-family:'Red Hat Mono',monospace;font-size:11px;flex-shrink:0;text-transform:capitalize}
+.arc-dist-track{flex:1;height:24px;background:rgba(255,255,255,.03);border-radius:6px;overflow:hidden}
+.arc-dist-fill{height:100%;border-radius:6px;transition:width 1.2s var(--ease);display:flex;align-items:center;padding-left:8px;font-family:'Red Hat Mono',monospace;font-size:10px;color:rgba(0,0,0,.7);font-weight:700;min-width:0}
+.arc-dist-val{width:50px;text-align:right;color:var(--t3);font-family:'Red Hat Mono',monospace;font-size:11px;font-weight:600;flex-shrink:0}
+
+/* ====== FALLBACK ====== */
+.fallback{padding:120px 0;text-align:center}
+.fallback-icon{font-size:48px;margin-bottom:20px;opacity:.4}
+.fallback-title{font-size:1.4rem;font-weight:700;color:var(--t2);margin-bottom:8px}
+.fallback-desc{font-size:.9rem;color:var(--t4);max-width:500px;margin:0 auto 24px;line-height:1.6}
+.fallback-link{display:inline-flex;padding:10px 24px;background:var(--accent-g);border:1px solid var(--accent-b);border-radius:var(--r);color:var(--accent);font-weight:600;font-size:14px;transition:all .2s var(--ease)}
+.fallback-link:hover{background:rgba(189,147,249,.2);transform:translateY(-2px)}
+
+/* ====== FOOTER ====== */
+footer{margin-top:80px;padding:32px 0;border-top:1px solid var(--bd)}
+.footer-inner{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:24px}
+.footer-brand{max-width:500px}
+.footer-pitch{font-size:14px;color:var(--t3);line-height:1.7;margin-bottom:12px}
+.footer-copy{font-size:11px;font-family:'Red Hat Mono',monospace;color:var(--t6)}
+.footer-nav{display:flex;flex-direction:column;gap:6px;font-size:12px;font-family:'Red Hat Mono',monospace}
+.footer-nav a{color:var(--t5);transition:color .2s}
+.footer-nav a:hover{color:var(--accent)}
+
+/* ====== LOADING ====== */
 .ld{display:flex;flex-direction:column;align-items:center;padding:100px 20px;gap:16px}
 .spinner{width:36px;height:36px;border:2.5px solid var(--bd);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ====== RESPONSIVE ====== */
 @media(max-width:900px){
   .narr-grid{grid-template-columns:repeat(2,1fr)}
   .clip-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:600px){
   .narr-grid{grid-template-columns:1fr}
   .hero-pills{flex-direction:column}
   .status nav{display:none}
   .clip-grid{grid-template-columns:1fr}
-  .arc-pills{flex-direction:column}
+  .arc-pills{gap:6px}
+  .stats-grid{grid-template-columns:1fr}
+  .footer-inner{flex-direction:column}
 }
 
-.narr-card:focus-visible,.arc-pill:focus-visible,.clip-card:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:inherit}
-.arc-pill:active{transform:scale(.97)}
-.clip-card:active{transform:scale(.99)!important}
-
+/* ====== ACCESSIBILITY ====== */
+.narr-card:focus-visible,.arc-pill:focus-visible,.clip-card:focus-visible,a:focus-visible,.load-more-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:inherit}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .blob,.noise{display:none}
@@ -202,6 +258,14 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
   .typewriter-text{visibility:visible!important}
   .typewriter-cursor{display:none!important}
 }
+
+/* ====== CHAPTER NAV (scroll tracker from v1) ====== */
+.scroll-tracker{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:10px}
+.scroll-tracker .dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--t6);background:transparent;cursor:pointer;transition:.3s var(--ease);position:relative}
+.scroll-tracker .dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(189,147,249,.5)}
+.scroll-tracker .dot::after{content:attr(title);position:absolute;right:20px;top:50%;transform:translateY(-50%);font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--t4);white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.scroll-tracker .dot:hover::after{opacity:1}
+@media(max-width:600px){.scroll-tracker{display:none}}
 </style>
 </head>
 <body>
@@ -209,347 +273,628 @@ footer a{color:var(--accent);transition:color .2s}footer a:hover{color:var(--t2)
 <svg class="noise" width="100%" height="100%"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
 <div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
+<!-- Scroll tracker (v1 chapter nav) -->
+<nav class="scroll-tracker" id="scroll-tracker" aria-label="Section navigation">
+  <div class="dot active" data-sec="hero-sec" title="Hero"></div>
+  <div class="dot" data-sec="featured-sec" title="Featured"></div>
+  <div class="dot" data-sec="arc-sec" title="Arc Browser"></div>
+  <div class="dot" data-sec="stats-sec" title="Story Stats"></div>
+</nav>
+
 <div class="page"><div class="shell">
 
-<!-- Status strip -->
+<!-- ====== STATUS STRIP ====== -->
 <div class="status" id="status-bar">
   <div class="shell status-inner">
     <span><a href="showcase-portal-v4.html" class="portal-link">&larr; Portal</a></span>
-    <span><span class="sd"></span>Live &middot; <em id="ref-ts">&mdash;</em></span>
-    <span>narrated clips <em id="ref-narr">&mdash;</em></span>
-    <span>arc types <em id="ref-arcs">&mdash;</em></span>
+    <span><span class="sd"></span>Live &middot; <em id="ref-ts">Apr 16, 2026</em></span>
+    <span>narrated clips <em id="ref-narr">3,702</em></span>
+    <span>arc types <em id="ref-arcs">20</em></span>
     <span class="v-chip">v4</span>
     <nav>
       <a href="brand-intelligence-v4.html">Brands</a>
       <a href="equipment-performance-v4.html">Equipment</a>
       <a href="venue-intelligence-v4.html">Venues</a>
+      <a href="evidence-wall-v4.html">Evidence</a>
     </nav>
   </div>
 </div>
 
-<!-- Hero -->
-<section class="hero" data-reveal>
+<!-- ====== HERO ====== -->
+<section class="hero" id="hero-sec" data-reveal>
   <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
   <div class="hero-eyebrow">Story Hub</div>
   <h1>We don't just detect &mdash;<br><span class="grad-text">we narrate.</span></h1>
-  <p class="hero-sub">Every clip in the corpus gets an ESPN-style narrative arc, coaching breakdown, and social caption. Publish-ready content generated at $0.005 per clip.</p>
-  <div class="hero-pills" id="hero-pills"></div>
+  <p class="hero-sub">Every clip in the corpus gets an ESPN-style narrative arc, coaching breakdown, and social caption. Publish-ready content generated at $0.005 per clip. This is the content portfolio.</p>
+  <div class="hero-pills" id="hero-pills">
+    <div class="hero-pill"><div><span class="hp-v" id="hp-total">3,704</span><div class="hp-l">Total clips</div></div></div>
+    <div class="hero-pill"><div><span class="hp-v" id="hp-espn">3,611</span><div class="hp-l">ESPN narratives</div></div></div>
+    <div class="hero-pill"><div><span class="hp-v" id="hp-arcs">20</span><div class="hp-l">Arc types</div></div></div>
+    <div class="hero-pill"><div><span class="hp-v">$0.005</span><div class="hp-l">Cost per clip</div></div></div>
+  </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Featured Clip -->
-<div data-reveal>
+<!-- ====== FEATURED CLIP ====== -->
+<section id="featured-sec" data-reveal>
   <div class="sec-head">
     <div class="sec-eyebrow">Featured Clip</div>
     <div class="sec-title">The <span class="grad-text">narrative stack</span></div>
   </div>
-</div>
-
-<div id="featured-section" data-reveal></div>
+  <div id="featured-content">
+    <!-- Populated by JS; fallback below if fetch fails -->
+    <div class="fallback" id="featured-fallback">
+      <div class="fallback-icon">&#127916;</div>
+      <div class="fallback-title">Loading featured clip...</div>
+      <div class="fallback-desc">The narrative stack generates ESPN commentary, coaching notes, and social captions for every clip in the corpus.</div>
+    </div>
+  </div>
+</section>
 
 <div class="divider"></div>
 
-<!-- Arc Browser -->
-<div data-reveal>
+<!-- ====== ARC BROWSER ====== -->
+<section id="arc-sec" data-reveal>
   <div class="sec-head">
     <div class="sec-eyebrow">Arc Browser</div>
     <div class="sec-title">Filter by <span class="grad-text">narrative arc</span></div>
   </div>
-</div>
-<div class="arc-pills" id="arc-pills" data-reveal></div>
-<div class="clip-grid" id="clip-grid" data-reveal></div>
+  <div class="arc-pills" id="arc-pills">
+    <!-- Populated by JS; fallback pills rendered statically -->
+    <button class="arc-pill on" data-arc="all">All<span class="cnt"></span><span class="pulse-ring"></span></button>
+  </div>
+  <div class="clip-grid" id="clip-grid">
+    <!-- Populated by JS -->
+    <div class="fallback" id="grid-fallback">
+      <div class="fallback-icon">&#128270;</div>
+      <div class="fallback-title">Loading clip grid...</div>
+      <div class="fallback-desc">Browse 3,700+ clips organized by narrative arc type. Each clip has summary, arc badge, and quality score.</div>
+      <a href="../corpus-export.json" class="fallback-link">View Raw Corpus JSON</a>
+    </div>
+  </div>
+  <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+    <button class="load-more-btn" id="load-more-btn">Load more clips</button>
+  </div>
+</section>
 
 <div class="divider"></div>
 
-<!-- Footer -->
-<footer>
-  <div>
-    <div class="footer-pitch">Every clip in the corpus has this narrative layer. At $0.005/clip, that's publish-ready content at scale.</div>
-    <span>Story Hub v4 &middot; Pickle DaaS</span>
+<!-- ====== STORY STATS ====== -->
+<section id="stats-sec" data-reveal>
+  <div class="sec-head">
+    <div class="sec-eyebrow">Story Stats</div>
+    <div class="sec-title">Narrative <span class="grad-text">intelligence at scale</span></div>
   </div>
-  <span><a href="brand-intelligence-v4.html">Brand Intelligence</a> &middot; <a href="equipment-performance-v4.html">Equipment</a> &middot; <a href="venue-intelligence-v4.html">Venues</a></span>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card">
+      <div class="stat-val"><span class="accent-num" id="stat-total">3,704</span></div>
+      <div class="stat-label">Total clips in corpus</div>
+      <div class="stat-sub">Growing hourly via automated pipeline</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val"><span class="accent-num" id="stat-narr">3,702</span></div>
+      <div class="stat-label">Clips with narratives</div>
+      <div class="stat-sub">ESPN + Coaching + Social caption</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val"><span class="accent-num" id="stat-pct">99.9%</span></div>
+      <div class="stat-label">Narrative coverage</div>
+      <div class="stat-sub">Near-complete across entire corpus</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val"><span class="accent-num" id="stat-arc-count">20</span></div>
+      <div class="stat-label">Distinct arc types</div>
+      <div class="stat-sub">Strategic, athletic, grind, teaching...</div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px" data-reveal>
+    <div class="sec-eyebrow" style="margin-bottom:16px">Arc Distribution</div>
+    <div class="arc-dist" id="arc-dist">
+      <!-- Populated by JS; static fallback row -->
+      <div class="arc-dist-row">
+        <span class="arc-dist-label">strategic</span>
+        <div class="arc-dist-track"><div class="arc-dist-fill" style="width:83%;background:var(--accent)">83%</div></div>
+        <span class="arc-dist-val">3,091</span>
+      </div>
+      <div class="arc-dist-row">
+        <span class="arc-dist-label">athletic</span>
+        <div class="arc-dist-track"><div class="arc-dist-fill" style="width:4.3%;background:var(--arc-athletic)"></div></div>
+        <span class="arc-dist-val">159</span>
+      </div>
+      <div class="arc-dist-row">
+        <span class="arc-dist-label">grind rally</span>
+        <div class="arc-dist-track"><div class="arc-dist-fill" style="width:4.3%;background:var(--arc-grind)"></div></div>
+        <span class="arc-dist-val">158</span>
+      </div>
+      <div class="arc-dist-row">
+        <span class="arc-dist-label">teaching moment</span>
+        <div class="arc-dist-track"><div class="arc-dist-fill" style="width:2.7%;background:var(--arc-teaching)"></div></div>
+        <span class="arc-dist-val">101</span>
+      </div>
+      <div class="arc-dist-row">
+        <span class="arc-dist-label">competitive</span>
+        <div class="arc-dist-track"><div class="arc-dist-fill" style="width:2%;background:var(--arc-competitive)"></div></div>
+        <span class="arc-dist-val">74</span>
+      </div>
+      <div class="arc-dist-row">
+        <span class="arc-dist-label">top play</span>
+        <div class="arc-dist-track"><div class="arc-dist-fill" style="width:1.2%;background:var(--arc-top)"></div></div>
+        <span class="arc-dist-val">45</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="shell">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-pitch">Every clip in the corpus has this narrative layer. At $0.005/clip, that's publish-ready ESPN commentary, coaching breakdowns, and social captions at scale. The content portfolio grows every hour.</div>
+        <div class="footer-copy">Story Hub v4 &middot; Pickle DaaS &middot; <a href="https://picklebill.github.io/pickle-daas-data/" style="color:var(--accent)">picklebill.github.io/pickle-daas-data</a></div>
+      </div>
+      <div class="footer-nav">
+        <a href="showcase-portal-v4.html">&larr; Portal</a>
+        <a href="brand-intelligence-v4.html">Brand Intelligence</a>
+        <a href="equipment-performance-v4.html">Equipment</a>
+        <a href="venue-intelligence-v4.html">Venues</a>
+        <a href="evidence-wall-v4.html">Evidence Wall</a>
+        <a href="player-lab-v4.html">Player Lab</a>
+        <a href="investor-walkthrough-v4.html">Investor Walkthrough</a>
+        <a href="../corpus-export.json">Raw Corpus JSON</a>
+      </div>
+    </div>
+  </div>
 </footer>
 
 </div></div>
 
 <script>
-/* ═══════════════════════════════════════════
-   Story Hub v4 — Runtime
-═══════════════════════════════════════════ */
-const CDN='https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/';
-let CORPUS=null, FEED=null;
-let TOP100=[], ARC_MAP={}, currentArc=null;
+/* ===========================================================
+   STORY HUB v4 — Runtime
+   Fetches live data, renders content, fallbacks on failure
+=========================================================== */
+const CDN = 'https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/';
 
-/* Arc color map */
-const ARC_COLORS={
-  comeback:'#6EEFC0',
-  dominant_performance:'#F1C40F',
-  close_match:'#6BA3FF',
-  learning_moment:'#FFB86C',
-  viral_moment:'#FF79C6'
+let CORPUS = null;
+let FEED = null;
+let SORTED = [];
+let ARC_MAP = {};
+let currentArc = null;
+let gridPage = 0;
+const GRID_PAGE_SIZE = 30;
+let currentGridClips = [];
+
+/* Arc color map for dynamic use */
+const ARC_COLORS = {
+  strategic: '#BD93F9',
+  athletic: '#6EEFC0',
+  grind_rally: '#F1C40F',
+  teaching_moment: '#FFB86C',
+  competitive_intensity: '#FF79C6',
+  top_play: '#6BA3FF',
+  social_play: '#FF79C6',
+  error_highlight: '#FF5555',
+  pure_fun: '#F1C40F',
+  funny: '#F1C40F',
+  venue_showcase: '#6BA3FF',
+  comeback: '#6EEFC0',
+  dominant_performance: '#F1C40F',
+  close_match: '#6BA3FF',
+  learning_moment: '#FFB86C',
+  viral_moment: '#FF79C6'
 };
-function arcColor(arc){return ARC_COLORS[arc]||'#BD93F9'}
-function arcKey(arc){return arc&&ARC_COLORS[arc]?arc:'unknown'}
+function arcColor(arc) { return ARC_COLORS[arc] || '#BD93F9'; }
+function arcKey(arc) { return arc || 'unknown'; }
 
-/* ─── Init ─── */
-async function init(){
-  const [corpusR,feedR]=await Promise.all([
-    fetch('../corpus-export.json').then(r=>r.json()),
-    fetch('../api/feed.json').then(r=>r.json())
-  ]);
-  CORPUS=corpusR; FEED=feedR;
+/* ============ INIT ============ */
+async function init() {
+  try {
+    const [corpusR, feedR] = await Promise.allSettled([
+      fetch('../corpus-export.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch('../api/feed.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    ]);
 
-  const sorted=[...CORPUS].sort((a,b)=>(b.quality||0)-(a.quality||0)||(b.viral||0)-(a.viral||0));
-  TOP100=sorted.slice(0,100);
+    if (corpusR.status === 'fulfilled') {
+      CORPUS = corpusR.value;
+    } else {
+      throw new Error('Failed to load corpus: ' + corpusR.reason);
+    }
+    FEED = feedR.status === 'fulfilled' ? feedR.value : null;
 
-  TOP100.forEach(c=>{
-    const arc=c.arc||'unknown';
-    if(!ARC_MAP[arc]) ARC_MAP[arc]=[];
-    ARC_MAP[arc].push(c);
-  });
+    SORTED = [...CORPUS].sort((a, b) =>
+      ((b.quality || 0) * 2 + (b.viral || 0)) - ((a.quality || 0) * 2 + (a.viral || 0))
+    );
 
-  renderStatus();
-  renderHero();
-  renderFeatured();
-  renderArcPills();
-  renderClipGrid(TOP100);
+    /* Build arc map from ALL clips */
+    CORPUS.forEach(c => {
+      const arc = c.arc || 'unknown';
+      if (!ARC_MAP[arc]) ARC_MAP[arc] = [];
+      ARC_MAP[arc].push(c);
+    });
+
+    renderStatus();
+    renderHero();
+    renderFeatured();
+    renderArcPills();
+    currentGridClips = SORTED;
+    gridPage = 0;
+    renderClipGrid();
+    renderStats();
+    renderArcDist();
+    initReveal();
+    initScroll();
+    initTypewriterObserver();
+    initScrollTracker();
+  } catch (err) {
+    console.error('Story Hub init error:', err);
+    showFallback(err);
+  }
+}
+
+/* ============ FALLBACK ============ */
+function showFallback(err) {
+  /* Keep the static content visible -- hero, stats, footer all have hardcoded fallback values */
+  document.getElementById('featured-fallback').innerHTML = `
+    <div class="fallback-icon">&#9888;</div>
+    <div class="fallback-title">Data unavailable</div>
+    <div class="fallback-desc">Could not load corpus data (${err.message || 'network error'}). The page shows cached stats below. For live data, visit the deployed version.</div>
+    <a href="https://picklebill.github.io/pickle-daas-data/dashboards/story-hub-v4.html" class="fallback-link">View on GitHub Pages</a>
+  `;
+  document.getElementById('grid-fallback').innerHTML = `
+    <div class="fallback-icon">&#128270;</div>
+    <div class="fallback-title">Clip grid requires live data</div>
+    <div class="fallback-desc">The clip browser needs corpus-export.json to render. Static stats are shown below.</div>
+    <a href="../corpus-export.json" class="fallback-link">View Raw Corpus JSON</a>
+  `;
   initReveal();
   initScroll();
-  initTypewriterObserver();
 }
 
-/* ─── Status strip ─── */
-function renderStatus(){
-  const ts=FEED.generated_at||'';
-  const d=ts?new Date(ts):new Date();
-  document.getElementById('ref-ts').textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  const withNarr=CORPUS.filter(c=>c.espn||c.coaching||c.social_caption).length;
-  document.getElementById('ref-narr').textContent=withNarr.toLocaleString();
-  const arcSet=new Set(CORPUS.filter(c=>c.arc).map(c=>c.arc));
-  document.getElementById('ref-arcs').textContent=arcSet.size;
+/* ============ STATUS STRIP ============ */
+function renderStatus() {
+  const ts = FEED && FEED.generated_at ? FEED.generated_at : '';
+  const d = ts ? new Date(ts) : new Date();
+  document.getElementById('ref-ts').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const withNarr = CORPUS.filter(c => c.espn || c.coaching || c.social_caption).length;
+  document.getElementById('ref-narr').textContent = withNarr.toLocaleString();
+  const arcSet = new Set(CORPUS.filter(c => c.arc).map(c => c.arc));
+  document.getElementById('ref-arcs').textContent = arcSet.size;
 }
 
-/* ─── Hero ─── */
-function renderHero(){
-  const withEspn=CORPUS.filter(c=>c.espn).length;
-  const arcSet=new Set(CORPUS.filter(c=>c.arc).map(c=>c.arc));
-  const pills=[
-    {v:CORPUS.length.toLocaleString(),l:'Total clips'},
-    {v:withEspn.toLocaleString(),l:'ESPN narratives'},
-    {v:arcSet.size,l:'Arc types'}
-  ];
-  document.getElementById('hero-pills').innerHTML=pills.map(p=>`
-    <div class="hero-pill"><div><span class="hp-v">${p.v}</span><div class="hp-l">${p.l}</div></div></div>
-  `).join('');
+/* ============ HERO ============ */
+function renderHero() {
+  const withEspn = CORPUS.filter(c => c.espn).length;
+  const arcSet = new Set(CORPUS.filter(c => c.arc).map(c => c.arc));
+  document.getElementById('hp-total').textContent = CORPUS.length.toLocaleString();
+  document.getElementById('hp-espn').textContent = withEspn.toLocaleString();
+  document.getElementById('hp-arcs').textContent = arcSet.size;
 }
 
-/* ─── Featured clip ─── */
-function renderFeatured(){
-  const sorted=[...CORPUS].sort((a,b)=>(b.quality||0)-(a.quality||0)||(b.viral||0)-(a.viral||0));
-  let feat=sorted.find(c=>c.espn||c.coaching||c.social_caption)||sorted[0];
-  if(!feat) return;
+/* ============ FEATURED CLIP ============ */
+function renderFeatured() {
+  /* Pick the best clip that has all narrative fields */
+  let feat = SORTED.find(c => c.espn && c.coaching && c.social_caption);
+  if (!feat) feat = SORTED.find(c => c.espn || c.coaching);
+  if (!feat) feat = SORTED[0];
+  if (!feat) return;
 
-  const vid=feat.video_url||CDN+feat.uuid+'.mp4';
-  const poster=feat.thumbnail||CDN+feat.uuid+'.jpeg';
-  const qLevel=feat.quality>=8?'high':feat.quality>=5?'mid':'low';
-  const ak=arcKey(feat.arc);
+  const vid = feat.video_url || CDN + feat.uuid + '.mp4';
+  const poster = feat.thumbnail || CDN + feat.uuid + '.jpeg';
+  const qLevel = (feat.quality || 0) >= 8 ? 'high' : (feat.quality || 0) >= 5 ? 'mid' : 'low';
+  const ak = arcKey(feat.arc);
 
-  let html=`
-    <div class="featured-video" id="feat-vid-wrap">
-      <video id="feat-vid" src="${vid}" poster="${poster}" controls preload="none" playsinline></video>
+  const espnText = feat.espn || '';
+  const coachText = feat.coaching || '';
+  const socialText = feat.social_caption || '';
+
+  document.getElementById('featured-content').innerHTML = `
+    <div class="feat-layout">
+      <div class="featured-video" id="feat-vid-wrap">
+        <video id="feat-vid" src="${vid}" poster="${poster}" controls preload="none" playsinline></video>
+      </div>
+      <div class="feat-meta">
+        <span class="arc-badge" data-arc="${ak}">${(feat.arc || 'unknown').replace(/_/g, ' ')}</span>
+        <span class="q-badge ${qLevel}">Quality ${feat.quality || '\u2014'}/10</span>
+        <span class="q-badge ${(feat.viral || 0) >= 5 ? 'high' : 'mid'}">Viral ${feat.viral || '\u2014'}/10</span>
+        ${feat.total_shots ? `<span class="q-badge mid">${feat.total_shots} shots</span>` : ''}
+        ${feat.dominant_shot ? `<span class="q-badge low" style="text-transform:capitalize">${feat.dominant_shot}</span>` : ''}
+      </div>
+      <div class="narr-grid" id="narr-grid">
+        <div class="narr-card">
+          <div class="narr-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
+          <div class="narr-head"><span class="narr-icon">&#128221;</span> Summary</div>
+          <div class="narr-body">${feat.summary || 'No summary available.'}</div>
+        </div>
+        <div class="narr-card">
+          <div class="narr-stripe" style="background:linear-gradient(90deg,#6BA3FF,transparent)"></div>
+          <div class="narr-head"><span class="narr-icon">&#127908;</span> ESPN Commentary</div>
+          <div class="narr-body italic">${espnText
+            ? `<span class="typewriter-text" data-tw="espn" data-tw-text="${escAttr(espnText)}"></span>`
+            : '<span style="color:var(--t5)">Not yet generated.</span>'
+          }</div>
+        </div>
+        <div class="narr-card">
+          <div class="narr-stripe" style="background:linear-gradient(90deg,#6EEFC0,transparent)"></div>
+          <div class="narr-head"><span class="narr-icon">&#127947;</span> Coaching Notes</div>
+          <div class="narr-body">${coachText
+            ? `<span class="typewriter-text" data-tw="coaching" data-tw-text="${escAttr(coachText)}"></span>`
+            : '<span style="color:var(--t5)">Not yet generated.</span>'
+          }</div>
+        </div>
+        <div class="narr-card">
+          <div class="narr-stripe" style="background:linear-gradient(90deg,#FF79C6,transparent)"></div>
+          <div class="narr-head"><span class="narr-icon">&#128241;</span> Social Caption</div>
+          <div class="narr-body">${socialText
+            ? `<span class="typewriter-text" data-tw="social" data-tw-text="${escAttr(socialText)}"></span>`
+            : '<span style="color:var(--t5)">Not yet generated.</span>'
+          }</div>
+        </div>
+      </div>
     </div>
-    <div class="feat-meta">
-      <span class="arc-badge" data-arc="${ak}">${(feat.arc||'unknown').replace(/_/g,' ')}</span>
-      <span class="q-badge ${qLevel}">Quality ${feat.quality||'\u2014'}/10</span>
-      <span class="q-badge ${feat.viral>=5?'high':'mid'}">Viral ${feat.viral||'\u2014'}/10</span>
-    </div>
-    <div class="narr-grid" id="narr-grid">`;
-
-  // Summary card (no typewriter)
-  html+=`<div class="narr-card">
-    <div class="narr-stripe" style="background:linear-gradient(90deg,var(--accent),transparent)"></div>
-    <div class="narr-head">Summary</div>
-    <div class="narr-body">${feat.summary||'No summary available.'}</div>
-  </div>`;
-
-  // ESPN card — typewriter
-  const espnText=feat.espn||'';
-  html+=`<div class="narr-card">
-    <div class="narr-stripe" style="background:linear-gradient(90deg,#6BA3FF,transparent)"></div>
-    <div class="narr-head">ESPN Commentary</div>
-    <div class="narr-body italic">${espnText?`<span class="typewriter-text" data-tw="espn" data-tw-text="${escAttr(espnText)}"></span>`:'<span style="color:var(--t5)">Not yet generated for this clip.</span>'}</div>
-  </div>`;
-
-  // Coaching card — typewriter
-  const coachText=feat.coaching||'';
-  html+=`<div class="narr-card">
-    <div class="narr-stripe" style="background:linear-gradient(90deg,#6EEFC0,transparent)"></div>
-    <div class="narr-head">Coaching Notes</div>
-    <div class="narr-body">${coachText?`<span class="typewriter-text" data-tw="coaching" data-tw-text="${escAttr(coachText)}"></span>`:'<span style="color:var(--t5)">Not yet generated for this clip.</span>'}</div>
-  </div>`;
-
-  // Social caption card — typewriter
-  const socialText=feat.social_caption||'';
-  html+=`<div class="narr-card">
-    <div class="narr-stripe" style="background:linear-gradient(90deg,#FF79C6,transparent)"></div>
-    <div class="narr-head">Social Caption</div>
-    <div class="narr-body">${socialText?`<span class="typewriter-text" data-tw="social" data-tw-text="${escAttr(socialText)}"></span>`:'<span style="color:var(--t5)">Not yet generated for this clip.</span>'}</div>
-  </div>`;
-
-  html+=`</div>`;
-  document.getElementById('featured-section').innerHTML=html;
+  `;
 }
 
-function escAttr(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escAttr(s) {
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;');
+}
 
-/* ─── Typewriter engine ─── */
-let twTriggered=false;
-function initTypewriterObserver(){
-  const grid=document.getElementById('narr-grid');
-  if(!grid) return;
-  const obs=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting&&!twTriggered){
-        twTriggered=true;
+/* ============ TYPEWRITER ENGINE ============ */
+let twTriggered = false;
+function initTypewriterObserver() {
+  const grid = document.getElementById('narr-grid');
+  if (!grid) return;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !twTriggered) {
+        twTriggered = true;
         obs.unobserve(e.target);
         runTypewriterSequence();
       }
     });
-  },{threshold:.3});
+  }, { threshold: .2 });
   obs.observe(grid);
 }
 
-function runTypewriterSequence(){
-  const espnEl=document.querySelector('[data-tw="espn"]');
-  const coachEl=document.querySelector('[data-tw="coaching"]');
-  const socialEl=document.querySelector('[data-tw="social"]');
-
-  let delay=0;
-  if(espnEl){
-    typewrite(espnEl,espnEl.dataset.twText,30,delay,()=>{
-      if(coachEl){
-        typewrite(coachEl,coachEl.dataset.twText,30,500,()=>{
-          if(socialEl){
-            typewrite(socialEl,socialEl.dataset.twText,30,500);
-          }
-        });
-      } else if(socialEl){
-        typewrite(socialEl,socialEl.dataset.twText,30,500);
-      }
-    });
-  } else if(coachEl){
-    typewrite(coachEl,coachEl.dataset.twText,30,0,()=>{
-      if(socialEl) typewrite(socialEl,socialEl.dataset.twText,30,500);
-    });
-  } else if(socialEl){
-    typewrite(socialEl,socialEl.dataset.twText,30,0);
-  }
-}
-
-function typewrite(el,text,speed,startDelay,onDone){
-  setTimeout(()=>{
-    el.classList.add('tw-active');
-    el.textContent='';
-    const cursor=document.createElement('span');
-    cursor.className='typewriter-cursor';
-    el.appendChild(cursor);
-    let i=0;
-    const iv=setInterval(()=>{
-      if(i<text.length){
-        el.insertBefore(document.createTextNode(text[i]),cursor);
-        i++;
-      } else {
-        clearInterval(iv);
-        // Remove cursor after a beat
-        setTimeout(()=>{if(cursor.parentNode) cursor.remove()},600);
-        if(onDone) onDone();
-      }
-    },speed);
-  },startDelay);
-}
-
-/* ─── Arc pills ─── */
-function renderArcPills(){
-  const arcEntries=Object.entries(ARC_MAP).sort((a,b)=>b[1].length-a[1].length);
-  let html=`<button class="arc-pill on" onclick="filterArc(null,this)" data-arc="all">All<span class="cnt">${TOP100.length}</span><span class="pulse-ring"></span></button>`;
-  arcEntries.forEach(([arc,clips])=>{
-    const label=arc.replace(/_/g,' ');
-    html+=`<button class="arc-pill" onclick="filterArc('${arc}',this)" data-arc="${arc}">${label}<span class="cnt">${clips.length}</span><span class="pulse-ring"></span></button>`;
+function runTypewriterSequence() {
+  const elements = ['espn', 'coaching', 'social'];
+  let chain = Promise.resolve();
+  elements.forEach(key => {
+    const el = document.querySelector(`[data-tw="${key}"]`);
+    if (el && el.dataset.twText) {
+      chain = chain.then(() => new Promise(resolve => {
+        setTimeout(() => typewrite(el, el.dataset.twText, 25, resolve), 300);
+      }));
+    }
   });
-  document.getElementById('arc-pills').innerHTML=html;
 }
 
-function filterArc(arc,btn){
-  currentArc=arc;
-  document.querySelectorAll('.arc-pill').forEach(p=>{
-    p.classList.toggle('on',arc===null?p.dataset.arc==='all':p.dataset.arc===arc);
+function typewrite(el, text, speed, onDone) {
+  el.classList.add('tw-active');
+  el.textContent = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'typewriter-cursor';
+  el.appendChild(cursor);
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < text.length) {
+      /* Type 2-3 chars at a time for longer texts */
+      const chunk = text.length > 200 ? 3 : text.length > 100 ? 2 : 1;
+      const slice = text.slice(i, i + chunk);
+      el.insertBefore(document.createTextNode(slice), cursor);
+      i += chunk;
+    } else {
+      clearInterval(iv);
+      setTimeout(() => { if (cursor.parentNode) cursor.remove(); }, 500);
+      if (onDone) onDone();
+    }
+  }, speed);
+}
+
+/* ============ ARC PILLS ============ */
+function renderArcPills() {
+  const arcEntries = Object.entries(ARC_MAP)
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, 12); /* Top 12 arcs */
+
+  let html = `<button class="arc-pill on" onclick="filterArc(null,this)" data-arc="all">All<span class="cnt">${SORTED.length.toLocaleString()}</span><span class="pulse-ring"></span></button>`;
+  arcEntries.forEach(([arc, clips]) => {
+    const label = arc.replace(/_/g, ' ');
+    html += `<button class="arc-pill" onclick="filterArc('${arc}',this)" data-arc="${arc}">${label}<span class="cnt">${clips.length}</span><span class="pulse-ring"></span></button>`;
+  });
+  document.getElementById('arc-pills').innerHTML = html;
+}
+
+function filterArc(arc, btn) {
+  currentArc = arc;
+  document.querySelectorAll('.arc-pill').forEach(p => {
+    p.classList.toggle('on', arc === null ? p.dataset.arc === 'all' : p.dataset.arc === arc);
   });
 
-  // Pulse ring animation on the clicked button
-  if(btn){
+  if (btn) {
     btn.classList.remove('pulsing');
-    void btn.offsetWidth; // reflow to restart animation
+    void btn.offsetWidth;
     btn.classList.add('pulsing');
-    btn.addEventListener('animationend',()=>btn.classList.remove('pulsing'),{once:true});
+    btn.addEventListener('animationend', () => btn.classList.remove('pulsing'), { once: true });
   }
 
-  const clips=arc?ARC_MAP[arc]||[]:TOP100;
-  renderClipGrid(clips);
+  if (arc) {
+    currentGridClips = (ARC_MAP[arc] || []).sort((a, b) =>
+      ((b.quality || 0) * 2 + (b.viral || 0)) - ((a.quality || 0) * 2 + (a.viral || 0))
+    );
+  } else {
+    currentGridClips = SORTED;
+  }
+  gridPage = 0;
+  renderClipGrid();
 }
 
-/* ─── Clip grid ─── */
-function renderClipGrid(clips){
-  const html=clips.map(c=>{
-    const vid=c.video_url||CDN+c.uuid+'.mp4';
-    const poster=c.thumbnail||CDN+c.uuid+'.jpeg';
-    const qLevel=(c.quality||0)>=8?'high':(c.quality||0)>=5?'mid':'low';
-    const ak=arcKey(c.arc);
-    const arcLabel=(c.arc||'unknown').replace(/_/g,' ');
+/* ============ CLIP GRID with pagination ============ */
+function renderClipGrid() {
+  const start = 0;
+  const end = (gridPage + 1) * GRID_PAGE_SIZE;
+  const visible = currentGridClips.slice(start, end);
+  const hasMore = end < currentGridClips.length;
+
+  const html = visible.map(c => {
+    const vid = c.video_url || CDN + c.uuid + '.mp4';
+    const poster = c.thumbnail || CDN + c.uuid + '.jpeg';
+    const qLevel = (c.quality || 0) >= 8 ? 'high' : (c.quality || 0) >= 5 ? 'mid' : 'low';
+    const ak = arcKey(c.arc);
+    const arcLabel = (c.arc || 'unknown').replace(/_/g, ' ');
+    const summary = c.summary || '';
     return `<div class="clip-card">
       <div class="clip-vid">
         <video src="${vid}" poster="${poster}" muted loop playsinline preload="none"
-          onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>
+          onmouseenter="this.play().catch(()=>{})" onmouseleave="this.pause();this.currentTime=0"></video>
       </div>
       <div class="clip-info">
-        <div class="clip-summary">${c.summary||''}</div>
+        <div class="clip-summary">${summary}</div>
         <div class="clip-meta">
           <span class="arc-badge" data-arc="${ak}" style="font-size:10px;padding:2px 8px">${arcLabel}</span>
-          <span class="q-badge ${qLevel}" style="font-size:10px;padding:2px 8px">Q${c.quality||'?'}</span>
-          ${c.viral>=5?`<span class="q-badge high" style="font-size:10px;padding:2px 8px">V${c.viral}</span>`:''}
+          <span class="q-badge ${qLevel}" style="font-size:10px;padding:2px 8px">Q${c.quality || '?'}</span>
+          ${(c.viral || 0) >= 5 ? `<span class="q-badge high" style="font-size:10px;padding:2px 8px">V${c.viral}</span>` : ''}
+          ${c.total_shots ? `<span class="q-badge low" style="font-size:10px;padding:2px 8px">${c.total_shots} shots</span>` : ''}
         </div>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('clip-grid').innerHTML=html||'<p style="color:var(--t4);text-align:center;padding:40px">No clips for this arc type.</p>';
 
-  // Staggered entrance animation — 6 at a time, 60ms gap
-  requestAnimationFrame(()=>{
-    const cards=document.querySelectorAll('.clip-card');
-    cards.forEach((card,i)=>{
-      const delay=Math.floor(i/6)*60+((i%6)*60);
-      setTimeout(()=>card.classList.add('card-visible'),delay);
+  document.getElementById('clip-grid').innerHTML = html || '<p style="color:var(--t4);text-align:center;padding:60px">No clips found for this arc type.</p>';
+
+  /* Load more button */
+  const wrap = document.getElementById('load-more-wrap');
+  if (hasMore) {
+    wrap.style.display = '';
+    const remaining = currentGridClips.length - end;
+    document.getElementById('load-more-btn').textContent = `Load ${Math.min(GRID_PAGE_SIZE, remaining)} more clips (${remaining.toLocaleString()} remaining)`;
+  } else {
+    wrap.style.display = 'none';
+  }
+
+  /* Staggered entrance animation */
+  requestAnimationFrame(() => {
+    const cards = document.querySelectorAll('.clip-card');
+    cards.forEach((card, i) => {
+      if (card.classList.contains('card-visible')) return;
+      const delay = Math.floor(i / 6) * 50 + ((i % 6) * 50);
+      setTimeout(() => card.classList.add('card-visible'), delay);
     });
   });
 }
 
-/* ─── Scroll reveal ─── */
-function initReveal(){
-  const obs=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target)}});
-  },{threshold:.1});
-  document.querySelectorAll('[data-reveal]').forEach(el=>obs.observe(el));
-}
-
-function initScroll(){
-  const bar=document.getElementById('status-bar');
-  window.addEventListener('scroll',()=>{bar.classList.toggle('scrolled',window.scrollY>20)},{passive:true});
-}
-
-/* ─── Boot ─── */
-init().catch(err=>{
-  document.querySelector('.page .shell').innerHTML=`<div class="ld"><div class="spinner"></div><p style="color:var(--t4)">Loading data&hellip; ${err.message}</p></div>`;
+/* Load more handler */
+document.getElementById('load-more-btn').addEventListener('click', () => {
+  gridPage++;
+  renderClipGrid();
+  /* Scroll to new cards smoothly */
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.clip-card');
+    const newStart = gridPage * GRID_PAGE_SIZE;
+    if (cards[newStart]) {
+      cards[newStart].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 100);
 });
+
+/* ============ STATS ============ */
+function renderStats() {
+  const total = CORPUS.length;
+  const withNarr = CORPUS.filter(c => c.espn || c.coaching || c.social_caption).length;
+  const pct = total > 0 ? ((withNarr / total) * 100).toFixed(1) : '0';
+  const arcSet = new Set(CORPUS.filter(c => c.arc).map(c => c.arc));
+
+  document.getElementById('stat-total').textContent = total.toLocaleString();
+  document.getElementById('stat-narr').textContent = withNarr.toLocaleString();
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-arc-count').textContent = arcSet.size;
+}
+
+/* ============ ARC DISTRIBUTION ============ */
+function renderArcDist() {
+  const entries = Object.entries(ARC_MAP).sort((a, b) => b[1].length - a[1].length).slice(0, 10);
+  const max = entries[0] ? entries[0][1].length : 1;
+
+  const html = entries.map(([arc, clips]) => {
+    const pct = ((clips.length / CORPUS.length) * 100).toFixed(1);
+    const barW = ((clips.length / max) * 100).toFixed(1);
+    const color = arcColor(arc);
+    const label = arc.replace(/_/g, ' ');
+    return `<div class="arc-dist-row">
+      <span class="arc-dist-label">${label}</span>
+      <div class="arc-dist-track"><div class="arc-dist-fill" style="width:0%;background:${color}" data-target-w="${barW}%">${pct > 5 ? pct + '%' : ''}</div></div>
+      <span class="arc-dist-val">${clips.length.toLocaleString()}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('arc-dist').innerHTML = html;
+
+  /* Animate bars when visible */
+  const distEl = document.getElementById('arc-dist');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        obs.unobserve(e.target);
+        setTimeout(() => {
+          distEl.querySelectorAll('[data-target-w]').forEach(bar => {
+            bar.style.width = bar.dataset.targetW;
+          });
+        }, 200);
+      }
+    });
+  }, { threshold: .2 });
+  obs.observe(distEl);
+}
+
+/* ============ SCROLL REVEAL ============ */
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+    });
+  }, { threshold: .08 });
+  document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
+}
+
+function initScroll() {
+  const bar = document.getElementById('status-bar');
+  window.addEventListener('scroll', () => {
+    bar.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+}
+
+/* ============ SCROLL TRACKER (chapter dots from v1) ============ */
+function initScrollTracker() {
+  const sections = ['hero-sec', 'featured-sec', 'arc-sec', 'stats-sec'];
+  const secIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.scroll-tracker .dot').forEach(d => d.classList.remove('active'));
+        const dot = document.querySelector(`.dot[data-sec="${e.target.id}"]`);
+        if (dot) dot.classList.add('active');
+      }
+    });
+  }, { threshold: .3 });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) secIO.observe(el);
+  });
+  document.querySelectorAll('.scroll-tracker .dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const el = document.getElementById(dot.dataset.sec);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+}
+
+/* ============ BOOT ============ */
+init();
 </script>
 </body>
 </html>
