@@ -1,11 +1,11 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-17T06:40:03.033681+00:00_
+_Generated: 2026-04-17T08:37:09.927588+00:00_
 
 ## Summary
 
-- **Corpus on gh-pages:** 4002 clips
-- **Total analysis files on disk:** 5542 (5542 ≥500 bytes)
-- **Minutes since last analysis:** 7.5
+- **Corpus on gh-pages:** 4033 clips
+- **Total analysis files on disk:** 5544 (5544 ≥500 bytes)
+- **Minutes since last analysis:** 72.8
 - **Human flags:** 118 total (111 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
