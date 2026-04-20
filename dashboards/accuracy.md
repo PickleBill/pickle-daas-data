@@ -1,19 +1,19 @@
 # Pickle DaaS — Accuracy Report
-_Generated: 2026-04-19T21:25:45.062188+00:00_
+_Generated: 2026-04-20T07:20:34.921428+00:00_
 
 ## Summary
 
 - **Corpus on gh-pages:** 4302 clips
-- **Total analysis files on disk:** 5811 (5811 ≥500 bytes)
-- **Minutes since last analysis:** 244.2
-- **Human flags:** 132 total (125 real, rest seed)
+- **Total analysis files on disk:** 5819 (5819 ≥500 bytes)
+- **Minutes since last analysis:** 142.8
+- **Human flags:** 143 total (136 real, rest seed)
 
 ## Badge Accuracy (vs. Courtana Ground Truth)
 
 - **Precision:** 28.1%  (1838 TP / 6532 predicted)
 - **Recall:**    70.8%  (1838 TP / 2595 awarded)
 - **F1 Score:**  40.3%
-- **Predictions analyzed:** 11640 across 4084 unique clips
+- **Predictions analyzed:** 11660 across 4090 unique clips
 - **Ground truth awards available:** 4619
 
 ### Per-badge leaderboard (top 10 by volume)
@@ -39,8 +39,8 @@ Sampled 500 most-recent analyses.
 | Field | Populated | Rate |
 |-------|----------:|-----:|
 | analysis_confidence ⚠️ | 0/500 | 0% |
-| brand_detection.brands | 426/500 | 85% |
-| badge_intelligence.predicted_badges | 475/500 | 95% |
+| brand_detection.brands | 424/500 | 85% |
+| badge_intelligence.predicted_badges | 474/500 | 95% |
 | skill_indicators.kitchen_mastery_rating | 499/500 | 100% |
 | commentary.neutral_announcer_espn | 499/500 | 100% |
 | storytelling.story_arc | 499/500 | 100% |
@@ -52,12 +52,12 @@ Sampled 500 most-recent analyses.
 
 ## Human Feedback
 
-- **Total flags captured:** 132
-- **Real (non-seed) flags:** 125
+- **Total flags captured:** 143
+- **Real (non-seed) flags:** 136
 
 Flags by field:
-- `badge_predictions` — 115 flag(s)
-- `overall_accuracy` — 11 flag(s)
+- `badge_predictions` — 125 flag(s)
+- `overall_accuracy` — 12 flag(s)
 - `dupr_estimate` — 2 flag(s)
 - `skill_ratings` — 1 flag(s)
 - `signature_move` — 1 flag(s)
@@ -65,11 +65,11 @@ Flags by field:
 - `coaching_breakdown` — 1 flag(s)
 
 ### Recent flags
-- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 16% precision — 1595 false positives out of 1
-- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 22% precision — 1238 false positives out of 1
-- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 6% precision — 1030 false positives out of 11
-- `_systemic_Ne...` · `badge_predictions` rating 2 · UNDER-DETECTED: 'New Look' was awarded by Courtana 176 times but the model only 
-- `_systemic_Di...` · `badge_predictions` rating 1 · HALLUCINATED BADGE: 'Dink Machine' was predicted 145 times but Courtana never aw
+- `_systemic_Ra...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Rally Master' has 16% precision — 1664 false positives out of 1
+- `_systemic_St...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Steady Eddie' has 21% precision — 1295 false positives out of 1
+- `_systemic_Ki...` · `badge_predictions` rating 2 · OVER-PREDICTED: 'Kitchen King' has 6% precision — 1056 false positives out of 11
+- `_systemic_Di...` · `badge_predictions` rating 1 · HALLUCINATED BADGE: 'Dink Machine' was predicted 146 times but Courtana never aw
+- `005fc717-736...` · `badge_predictions` rating 1 · Example clips where 'Rally Master' was wrongly predicted: 005fc717-736, 0065b84d
 
 ---
 
