@@ -3,11 +3,11 @@
   "run_date": "2026-04-23",
   "version": 4,
   "corpus_stats": {
-    "researchers_run": 9,
+    "researchers_run": 10,
     "raw_findings": 46,
     "unique_findings": 37,
-    "strategic_count": 14,
-    "data_count": 23
+    "strategic_count": 15,
+    "data_count": 26
   },
   "feedback_loop": {
     "active": true,
@@ -110,30 +110,75 @@
       "sample_used": "previous findings",
       "sample_size": 8,
       "findings_count": 6
+    },
+    {
+      "agent": "scene_quality_auditor",
+      "findings_count": 2,
+      "duration_seconds": 0
+    },
+    {
+      "agent": "visual_pattern_detector",
+      "findings_count": 2,
+      "duration_seconds": 0
     }
   ],
   "category_distribution": {
-    "wildcard_idea": 8,
-    "viral_pattern": 5,
     "shot_pattern": 4,
-    "model_accuracy": 4,
-    "revenue_opportunity": 4,
     "prompt_fix": 4,
+    "product_opportunity": 2,
+    "revenue_opportunity": 4,
+    "wildcard_idea": 8,
+    "model_accuracy": 4,
     "brand_insight": 3,
-    "player_insight": 3,
-    "product_opportunity": 2
+    "viral_pattern": 5,
+    "visual_intelligence": 2,
+    "data_quality": 2,
+    "player_insight": 3
   },
   "agent_distribution": {
-    "wildcard": 8,
-    "opportunity_scout": 6,
-    "viral_decoder": 5,
     "shot_scientist": 4,
-    "production_auditor": 4,
     "prompt_engineer": 4,
+    "opportunity_scout": 6,
+    "wildcard": 8,
+    "production_auditor": 4,
     "brand_analyst": 3,
+    "viral_decoder": 5,
+    "visual_pattern_detector": 2,
+    "scene_quality_auditor": 2,
     "player_profiler": 3
   },
   "top_strategic": [
+    {
+      "finding_id": "opportunity_scout-20260423-3828",
+      "agent": "opportunity_scout",
+      "generated_at": "2026-04-23T18:56:58.317341+00:00",
+      "title": "Longitudinal tracking possible: 72 players with 5+ clips",
+      "confidence": 0.75,
+      "evidence_summary": "72 players have enough data for improvement tracking. Top: PickleBill(656), Chintan(186), Tmf(133), Coach_Block(131), Irenefuntila(89)",
+      "business_value": "high",
+      "category": "product_opportunity",
+      "novelty": 0.7,
+      "recommended_action": "Build player improvement trajectory product \u2014 track skill changes over time",
+      "source_clips": [],
+      "raw_data": {
+        "multi_session_players": 72
+      },
+      "composite_score": 1.101,
+      "plausibility": 0.82,
+      "plausibility_note": "Data exists with sufficient sample size, simple dashboard/visualization feasible, but requires defining valuable insights to justify product.",
+      "track": "strategic",
+      "multi_model_check": {
+        "validation": "yes",
+        "change_mind": "This finding is straightforward \u2014 if 72 players have 5+ clips, longitudinal tracking IS possible. The claim is sound.",
+        "blind_spot": "Just because tracking is *possible* doesn't mean it's *valuable*. No evidence provided that players/coaches would pay for improvement analytics, or that the video quality/angles are sufficient for meaningful skill assessment. Selection bias: these 72 may be content creators, not representative players."
+      },
+      "follow_up": {
+        "follow_up_question": "What's the MVP? Who tests it first?",
+        "proposed_action": "Build player improvement trajectory product \u2014 track skill changes over time",
+        "assigned_researcher": "opportunity_scout"
+      },
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-3828.html"
+    },
     {
       "finding_id": "opportunity_scout-20260423-7159",
       "agent": "opportunity_scout",
@@ -251,94 +296,6 @@
       "deep_dive_url": "idea-lab/deep-dives/wildcard-20260423-2934.html"
     },
     {
-      "finding_id": "opportunity_scout-20260423-3828",
-      "agent": "opportunity_scout",
-      "generated_at": "2026-04-23T18:56:58.317341+00:00",
-      "title": "Longitudinal tracking possible: 72 players with 5+ clips",
-      "confidence": 0.75,
-      "evidence_summary": "72 players have enough data for improvement tracking. Top: PickleBill(656), Chintan(186), Tmf(133), Coach_Block(131), Irenefuntila(89)",
-      "business_value": "high",
-      "category": "product_opportunity",
-      "novelty": 0.7,
-      "recommended_action": "Build player improvement trajectory product \u2014 track skill changes over time",
-      "source_clips": [],
-      "raw_data": {
-        "multi_session_players": 72
-      },
-      "composite_score": 1.101,
-      "plausibility": 0.82,
-      "plausibility_note": "Data exists with sufficient sample size, simple dashboard/visualization feasible, but requires defining valuable insights to justify product.",
-      "track": "strategic",
-      "multi_model_check": {
-        "validation": "yes",
-        "change_mind": "This finding is straightforward \u2014 if 72 players have 5+ clips, longitudinal tracking IS possible. The claim is sound.",
-        "blind_spot": "Just because tracking is *possible* doesn't mean it's *valuable*. No evidence provided that players/coaches would pay for improvement analytics, or that the video quality/angles are sufficient for meaningful skill assessment. Selection bias: these 72 may be content creators, not representative players."
-      },
-      "follow_up": {
-        "follow_up_question": "What's the MVP? Who tests it first?",
-        "proposed_action": "Build player improvement trajectory product \u2014 track skill changes over time",
-        "assigned_researcher": "opportunity_scout"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-3828.html"
-    },
-    {
-      "finding_id": "opportunity_scout-20260423-1744",
-      "agent": "opportunity_scout",
-      "generated_at": "2026-04-23T18:56:58.298459+00:00",
-      "title": "Sponsorship whitespace detected in 4182 clips (97.0%) \u2014 sell to brands",
-      "confidence": 0.7,
-      "evidence_summary": "We detect unbranded equipment/space in 4182 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "novelty": 0.8,
-      "recommended_action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-      "source_clips": [
-        {
-          "uuid": "046edc1a-596f-4e88-9005-3e79606a11bc",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/046edc1a-596f-4e88-9005-3e79606a11bc.jpeg",
-          "summary": "A 17-shot driving rally ends with an unforced error into the net.",
-          "quality": 7,
-          "viral": 5
-        },
-        {
-          "uuid": "064ec69b-1d74-4790-89e8-85db34be7976",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/064ec69b-1d74-4790-89e8-85db34be7976.jpeg",
-          "summary": "Players engage in a prolonged kitchen dink rally, demonstrating patience and control.",
-          "quality": 4,
-          "viral": 2
-        },
-        {
-          "uuid": "0741e202-2d48-41d7-a366-a377b2e4f1c4",
-          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.mp4",
-          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/0741e202-2d48-41d7-a366-a377b2e4f1c4.jpeg",
-          "summary": "Players engage in a consistent rally of dinks at the kitchen line.",
-          "quality": 5,
-          "viral": 2
-        }
-      ],
-      "raw_data": {
-        "whitespace_clips": 4182,
-        "fill_rate": 97.0
-      },
-      "composite_score": 0.6434,
-      "plausibility": 0.78,
-      "plausibility_note": "Existing data ready, simple matching logic, but requires brand sales infrastructure and contracts outside technical scope.",
-      "track": "strategic",
-      "multi_model_check": {
-        "validation": "no",
-        "change_mind": "Define 'unbranded equipment' rigorously: Show frame-by-frame examples where equipment is visible but no brand detected, with human verification. Without this, 97% is a statistical artifact of detection thresholds, not a real market gap.",
-        "blind_spot": "Conflates two different concepts: (1) equipment visible in frame, and (2) sponsorship whitespace. Visible equipment \u2260 opportunity. Brands may intentionally avoid pickleball content. No evidence that this 'gap' is actually a pain point brands want to solve. Cost to serve (licensing, agreements) ignored."
-      },
-      "follow_up": {
-        "follow_up_question": "Who is the first buyer? POC in 1 week?",
-        "proposed_action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-        "assigned_researcher": "opportunity_scout"
-      },
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-1744.html"
-    },
-    {
       "finding_id": "opportunity_scout-20260423-5686",
       "agent": "opportunity_scout",
       "generated_at": "2026-04-23T18:56:58.306039+00:00",
@@ -439,6 +396,24 @@
         "assigned_researcher": "opportunity_scout"
       },
       "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-5686.html"
+    },
+    {
+      "finding_id": "opportunity_scout-20260423-8323",
+      "agent": "opportunity_scout",
+      "generated_at": "2026-04-23T18:56:58.315095+00:00",
+      "title": "Social caption generation at 99.9% \u2014 ready to productize",
+      "confidence": 0.8,
+      "evidence_summary": "Social media captions are generated for 4307/4310 clips. This is already a viable content-as-a-service product.",
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "novelty": 0.6,
+      "recommended_action": "Create API endpoint for social caption generation \u2014 charge per clip",
+      "source_clips": [],
+      "raw_data": {},
+      "composite_score": 0.8154,
+      "plausibility": 0.88,
+      "plausibility_note": "Model exists at 99.9% accuracy, straightforward UI wrapper needed, minimal API complexity, immediately productizable.",
+      "track": "strategic"
     }
   ],
   "top_data": [
@@ -2672,6 +2647,145 @@
       "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-5686.html"
     },
     {
+      "finding_id": "visual_pattern_detector-20260423-7765",
+      "agent": "visual_pattern_detector",
+      "generated_at": "2026-04-23T19:20:30.925432+00:00",
+      "title": "Video reveals 60 patterns metadata never saw",
+      "confidence": 0.82,
+      "evidence_summary": "Across 16 clips, Gemini video analysis surfaced 60 visual observations flagged as novel vs the text metadata. Sample: The camera is positioned high and angled down, providing a wide, static view of the pickleball court.; Chairs are set up along the right side of the court, suggesting a spectator or waiting area.; A digital display or scoreboard is visible in the upper right corner of the frame, showing text that is diffic",
+      "business_value": "high",
+      "category": "visual_intelligence",
+      "novelty": 0.85,
+      "recommended_action": "Feed these patterns back into the metadata extraction prompt \u2014 they represent systematic blind spots in text-only analysis.",
+      "source_clips": [
+        {
+          "uuid": "4babec77-9763-4347-96a5-f2192b9eef9b",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4babec77-9763-4347-96a5-f2192b9eef9b.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4babec77-9763-4347-96a5-f2192b9eef9b.jpeg",
+          "summary": "An empty indoor pickleball court is shown, ready for play.",
+          "quality": 5
+        },
+        {
+          "uuid": "4babec77-9763-4347-96a5-f2192b9eef9b",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4babec77-9763-4347-96a5-f2192b9eef9b.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4babec77-9763-4347-96a5-f2192b9eef9b.jpeg",
+          "summary": "An empty indoor pickleball court is shown, ready for play.",
+          "quality": 5
+        },
+        {
+          "uuid": "4babec77-9763-4347-96a5-f2192b9eef9b",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4babec77-9763-4347-96a5-f2192b9eef9b.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/4babec77-9763-4347-96a5-f2192b9eef9b.jpeg",
+          "summary": "An empty indoor pickleball court is shown, ready for play.",
+          "quality": 5
+        },
+        {
+          "uuid": "ba730925-85f6-4f41-bbe3-a8c5379c9bee",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ba730925-85f6-4f41-bbe3-a8c5379c9bee.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ba730925-85f6-4f41-bbe3-a8c5379c9bee.jpeg",
+          "summary": "Players engage in a long, consistent dink rally at the kitchen line.",
+          "quality": 7
+        },
+        {
+          "uuid": "ba730925-85f6-4f41-bbe3-a8c5379c9bee",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ba730925-85f6-4f41-bbe3-a8c5379c9bee.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ba730925-85f6-4f41-bbe3-a8c5379c9bee.jpeg",
+          "summary": "Players engage in a long, consistent dink rally at the kitchen line.",
+          "quality": 7
+        }
+      ],
+      "raw_data": {
+        "novel_observations_count": 60,
+        "clips_analyzed": 16,
+        "sample_observations": [
+          "The camera is positioned high and angled down, providing a wide, static view of the pickleball court.",
+          "Chairs are set up along the right side of the court, suggesting a spectator or waiting area.",
+          "A digital display or scoreboard is visible in the upper right corner of the frame, showing text that is difficult to read.",
+          "The player in the foreground on the left shifts her weight forward and bends her knees slightly before hitting the ball.",
+          "The player in the foreground on the right is positioned deep in the court and moves towards the net after returning the ball.",
+          "The two players on the far court appear to be playing a singles match, with one player at the baseline and the other near the net.",
+          "There are spectators sitting on chairs to the right of the court, watching the game.",
+          "The camera is positioned high above the court, offering a wide, slightly tilted view of the entire playing area."
+        ]
+      },
+      "composite_score": 0.8575,
+      "track": "data"
+    },
+    {
+      "finding_id": "scene_quality_auditor-20260423-7435",
+      "agent": "scene_quality_auditor",
+      "generated_at": "2026-04-23T19:20:30.925832+00:00",
+      "title": "Metadata quality drifts from video reality by 0.5 pts on average",
+      "confidence": 0.85,
+      "evidence_summary": "Across 16 clips, Gemini video-based quality ratings differ from metadata by avg -0.5. 5 clips have metadata OVERSTATING quality (>=2pt lie); 2 UNDERSTATING.",
+      "business_value": "high",
+      "category": "data_quality",
+      "novelty": 0.8,
+      "recommended_action": "Re-train or re-prompt the metadata quality signal \u2014 it's drifting from what humans actually see on screen.",
+      "source_clips": [
+        {
+          "uuid": "86c994a1-d168-499d-99cd-08d9c8aad683",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/86c994a1-d168-499d-99cd-08d9c8aad683.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/86c994a1-d168-499d-99cd-08d9c8aad683.jpeg",
+          "summary": "A well-executed dink battle transitions into a fast-paced volley exchange, showcasing quick reflexes and competitive int",
+          "quality": 9
+        },
+        {
+          "uuid": "bccb8b27-3b6c-4189-86b4-d6677798a50a",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/bccb8b27-3b6c-4189-86b4-d6677798a50a.jpeg",
+          "summary": "Young ice hockey players practice stickhandling and shooting in a snowy outdoor rink with coaching feedback.",
+          "quality": 7
+        },
+        {
+          "uuid": "3d944246-ed64-4050-8628-480895de344e",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3d944246-ed64-4050-8628-480895de344e.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/3d944246-ed64-4050-8628-480895de344e.jpeg",
+          "summary": "Players engage in a consistent dink rally at the kitchen line.",
+          "quality": 5
+        },
+        {
+          "uuid": "8aaedc1a-8827-4740-bf0d-9f1bf1b11e2b",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8aaedc1a-8827-4740-bf0d-9f1bf1b11e2b.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/8aaedc1a-8827-4740-bf0d-9f1bf1b11e2b.jpeg",
+          "summary": "A long, intense kitchen rally showcasing sustained dinking and quick volley exchanges.",
+          "quality": 8
+        },
+        {
+          "uuid": "42520eda-1392-45bc-9b0c-c3c491e32cfd",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.jpeg",
+          "summary": "A patient dink rally culminates in a powerful overhead smash winner after a speed-up.",
+          "quality": 8
+        }
+      ],
+      "raw_data": {
+        "clips_compared": 16,
+        "avg_delta": -0.5,
+        "overstating_metadata_count": 5,
+        "understating_metadata_count": 2,
+        "sample_overstating": [
+          {
+            "metadata_q": 8.0,
+            "video_q": 6.0,
+            "summary": "A long, intense kitchen rally showcasing sustained dinking and quick volley exch"
+          },
+          {
+            "metadata_q": 9.0,
+            "video_q": 6.0,
+            "summary": "A well-executed dink battle transitions into a fast-paced volley exchange, showc"
+          },
+          {
+            "metadata_q": 8.0,
+            "video_q": 6.0,
+            "summary": "A patient dink rally culminates in a powerful overhead smash winner after a spee"
+          }
+        ]
+      },
+      "composite_score": 0.855,
+      "track": "data"
+    },
+    {
       "finding_id": "shot_scientist-20260423-7565",
       "agent": "shot_scientist",
       "generated_at": "2026-04-23T18:56:57.929532+00:00",
@@ -3098,6 +3212,60 @@
       "track": "data"
     },
     {
+      "finding_id": "visual_pattern_detector-20260423-3815",
+      "agent": "visual_pattern_detector",
+      "generated_at": "2026-04-23T19:20:30.925740+00:00",
+      "title": "Body language signals present in 4/16 clips \u2014 untapped signal",
+      "confidence": 0.7,
+      "evidence_summary": "Gemini video flagged body-language cues (celebrations, frustration, gestures) in 4 clips that metadata scores don't capture. These correlate with viral potential beyond shot mechanics.",
+      "business_value": "medium",
+      "category": "visual_intelligence",
+      "novelty": 0.75,
+      "recommended_action": "Add a 'body_language' detection pass to the extraction pipeline \u2014 these signals predict shareability.",
+      "source_clips": [
+        {
+          "uuid": "7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0.jpeg",
+          "summary": "The rally features a sustained kitchen battle with quick hands and strategic dinking, culminating in a powerful overhead",
+          "quality": 9
+        },
+        {
+          "uuid": "42520eda-1392-45bc-9b0c-c3c491e32cfd",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/42520eda-1392-45bc-9b0c-c3c491e32cfd.jpeg",
+          "summary": "A patient dink rally culminates in a powerful overhead smash winner after a speed-up.",
+          "quality": 8
+        },
+        {
+          "uuid": "ac861a5c-0df2-4c74-996a-3a133ea7f0e1",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac861a5c-0df2-4c74-996a-3a133ea7f0e1.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ac861a5c-0df2-4c74-996a-3a133ea7f0e1.jpeg",
+          "summary": "Players engage in a lengthy kitchen rally with consistent dinks.",
+          "quality": 6
+        },
+        {
+          "uuid": "27f9e428-da2b-48f2-aa0a-15a927a0e720",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/27f9e428-da2b-48f2-aa0a-15a927a0e720.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/27f9e428-da2b-48f2-aa0a-15a927a0e720.jpeg",
+          "summary": "Players engage in a consistent pickleball rally with drives and dinks.",
+          "quality": 6
+        }
+      ],
+      "raw_data": {
+        "body_language_clips": 4,
+        "total_analyzed": 16,
+        "examples": [
+          "There's a visible delay in the player in the top right's reaction time to the ball's trajectory after their opponent hits it.",
+          "The player in the foreground right consistently drops their paddle low and slightly behind their body during their swing, indicating a preparatory motion for a powerful hit.",
+          "The player in the white shirt on the right side of the net has a very active stance, with frequent weight shifts and body adjustments, suggesting they are preparing for aggressive play.",
+          "The player in the purple shirt consistently brings her paddle back past her body before swinging forward, suggesting a more powerful but potentially slower stroke."
+        ]
+      },
+      "composite_score": 0.7125,
+      "track": "data"
+    },
+    {
       "finding_id": "production_auditor-20260423-3545",
       "agent": "production_auditor",
       "generated_at": "2026-04-23T18:56:58.137365+00:00",
@@ -3131,6 +3299,57 @@
       },
       "composite_score": 0.6855,
       "track": "data"
+    },
+    {
+      "finding_id": "scene_quality_auditor-20260423-4333",
+      "agent": "scene_quality_auditor",
+      "generated_at": "2026-04-23T19:20:30.925915+00:00",
+      "title": "Production reality: 12/16 clips are 'amateur' \u2014 not broadcast",
+      "confidence": 0.75,
+      "evidence_summary": "Gemini's visual assessment of production level across 16 clips: amateur=12, pro=2, semi-pro=2",
+      "business_value": "medium",
+      "category": "data_quality",
+      "novelty": 0.6,
+      "recommended_action": "Brand pitches should price the actual production tier buyers are seeing, not the aspirational one.",
+      "source_clips": [
+        {
+          "uuid": "ba730925-85f6-4f41-bbe3-a8c5379c9bee",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ba730925-85f6-4f41-bbe3-a8c5379c9bee.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/ba730925-85f6-4f41-bbe3-a8c5379c9bee.jpeg",
+          "summary": "Players engage in a long, consistent dink rally at the kitchen line.",
+          "quality": 7
+        },
+        {
+          "uuid": "aeb8e5d3-0d32-4b62-bf23-6995d24f091f",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/aeb8e5d3-0d32-4b62-bf23-6995d24f091f.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/aeb8e5d3-0d32-4b62-bf23-6995d24f091f.jpeg",
+          "summary": "A sustained pickleball rally ends with a decisive overhead smash.",
+          "quality": 7
+        },
+        {
+          "uuid": "44514737-a071-44d0-b667-7294b0d79343",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/44514737-a071-44d0-b667-7294b0d79343.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/44514737-a071-44d0-b667-7294b0d79343.jpeg",
+          "summary": "Players engage in an intense kitchen volley battle, with the near-side team winning the point with decisive net play.",
+          "quality": 7
+        },
+        {
+          "uuid": "7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0",
+          "video_url": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0.mp4",
+          "thumbnail": "https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/7bc5b1dd-a8ac-4458-b0b2-7d296f3d60a0.jpeg",
+          "summary": "The rally features a sustained kitchen battle with quick hands and strategic dinking, culminating in a powerful overhead",
+          "quality": 9
+        }
+      ],
+      "raw_data": {
+        "production_distribution": {
+          "amateur": 12,
+          "pro": 2,
+          "semi-pro": 2
+        }
+      },
+      "composite_score": 0.685,
+      "track": "strategic"
     },
     {
       "finding_id": "opportunity_scout-20260423-1744",

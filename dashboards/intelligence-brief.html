@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intelligence Brief — 2026-04-20</title>
+<title>Intelligence Brief — 2026-04-23</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -34,13 +34,13 @@
                 color:white;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
       INTELLIGENCE BRIEF
     </div>
-    <div style="font-size:12px;color:#64748b">April 20, 2026 · 08:54</div>
+    <div style="font-size:12px;color:#64748b">April 23, 2026 · 15:20</div>
   </div>
   <h1>Daily Intelligence Brief</h1>
   <div class="subtitle">Pickle DaaS · Curious Analyst System · Auto-generated</div>
   <div class="stat-row">
     <div class="stat">
-      <div class="val">5517</div>
+      <div class="val">5520</div>
       <div class="lbl">Total Clips</div>
     </div>
     <div class="stat">
@@ -50,11 +50,11 @@
       <div class="lbl">New Today</div>
     </div>
     <div class="stat">
-      <div class="val">0</div>
+      <div class="val">6</div>
       <div class="lbl">Findings</div>
     </div>
     <div class="stat">
-      <div class="val">0</div>
+      <div class="val">5</div>
       <div class="lbl">Opportunities</div>
     </div>
     <div class="stat">
@@ -67,9 +67,175 @@
 <div class="main">
 
   <div class="section-title">Top Findings</div>
-  <div class="no-findings">No findings generated this run. Check agent logs.</div>
-
   
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #ef4444;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:11px;color:#ef4444;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
+              #1 · model bias
+            </div>
+            <span style="background:#22c55e;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">HIGH</span>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px;line-height:1.4">
+            Skill badges show extreme prediction variance—perfectly accurate on dances and flairs but zero accuracy on skill-dependent badges (smash, speed, kitchen queen)
+          </div>
+          <div style="background:#1e293b;border-radius:4px;height:6px;width:100%;margin-top:4px"><div style="background:#22c55e;height:6px;border-radius:4px;width:95%"></div></div><div style="font-size:10px;color:#94a3b8;margin-top:2px">95% confidence</div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:12px;line-height:1.6">
+            Dance break, one-handed backhand, and point to the sky achieve F1=1.0, while smash_master, speed_demon, kitchen_queen, and consistency_king all achieve F1=0. The model excels at detecting discrete, visually obvious events but fails entirely on skills requiring temporal pattern recognition or comparison to baselines. This suggests the model relies on pose/motion detection rather than statistical analysis.
+          </div>
+          <div style='margin-top:8px;font-size:11px;color:#64748b'>Buyers: coaching, brand_intelligence</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→ Action:</b> Retrain badge classifier with temporal aggregation features (e.g., average shot speed over 10 rallies, kitchen dwell time distribution) for skill badges; separately validate dance/visual badges as production-ready.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #8b5cf6;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:11px;color:#8b5cf6;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
+              #2 · viral pattern
+            </div>
+            <span style="background:#22c55e;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">HIGH</span>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px;line-height:1.4">
+            Clutch moments are 55x more viral than routine grind rallies, yet represent <0.1% of corpus—massive production gap
+          </div>
+          <div style="background:#1e293b;border-radius:4px;height:6px;width:100%;margin-top:4px"><div style="background:#22c55e;height:6px;border-radius:4px;width:92%"></div></div><div style="font-size:10px;color:#94a3b8;margin-top:2px">92% confidence</div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:12px;line-height:1.6">
+            Clutch_moment clips average viral score of 5.5 (highest observed), but only 6 exist in the corpus. Meanwhile, grind_rally dominates at 89.7% (4484 clips) with typical viral potential scores <2.0. Story arc distribution shows observed grind_rally is 3.59x above expected baseline, suggesting the AI is either miscategorizing or broadcasters/creators are fundamentally underproducing high-stakes moments.
+          </div>
+          <div style='margin-top:8px;font-size:11px;color:#64748b'>Buyers: media_broadcast, coaching, facility_operator</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→ Action:</b> Advise content creators and broadcasters that low-production-value clutch moments (tournament points, match-deciding rallies) outperform polished grind content 5.5x—shift production resources toward capturing competitive tension rather than rally length.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #ef4444;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:11px;color:#ef4444;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
+              #3 · model bias
+            </div>
+            <span style="background:#22c55e;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">HIGH</span>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px;line-height:1.4">
+            Creative play and athletic highlights are nearly invisible in dataset despite being major engagement drivers on social platforms
+          </div>
+          <div style="background:#1e293b;border-radius:4px;height:6px;width:100%;margin-top:4px"><div style="background:#22c55e;height:6px;border-radius:4px;width:89%"></div></div><div style="font-size:10px;color:#94a3b8;margin-top:2px">89% confidence</div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:12px;line-height:1.6">
+            Creative_play observed at 0.0% (expected 5.0%) and athletic_highlight at 4.5% (expected ~15–20% based on viral benchmarks). Quality↔Viral correlation is strong (r=0.643), suggesting high-quality creative plays should exist and perform well, but are either rare in corpus or severely mislabeled by the model as grind_rally.
+          </div>
+          <div style='margin-top:8px;font-size:11px;color:#64748b'>Buyers: media_broadcast, brand_intelligence</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→ Action:</b> Review 100 clips manually labeled as grind_rally to identify misclassified creative/athletic moments; retrain arc classifier with emphasis on trick shots, unorthodox strategies, and highlight-reel plays.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #ef4444;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:11px;color:#ef4444;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
+              #4 · model bias
+            </div>
+            <span style="background:#22c55e;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">HIGH</span>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px;line-height:1.4">
+            JOOLA's extreme market dominance masks potential model bias toward recognizing JOOLA equipment over competitors
+          </div>
+          <div style="background:#1e293b;border-radius:4px;height:6px;width:100%;margin-top:4px"><div style="background:#22c55e;height:6px;border-radius:4px;width:87%"></div></div><div style="font-size:10px;color:#94a3b8;margin-top:2px">87% confidence</div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:12px;line-height:1.6">
+            JOOLA appears in 2987 of ~5000 clips (59.8%), compared to Nike's 372 (7.4%), yet never co-occurs with smaller brands (Foz_Bullet, UG, 4K). This suggests either JOOLA has true 8x market share, or the AI model is systematically overclassifying ambiguous/generic paddles as JOOLA. Kitchen mastery scores are nearly identical across brands (6.92–7.4), indicating the model isn't using skill as a differentiator.
+          </div>
+          <div style='margin-top:8px;font-size:11px;color:#64748b'>Buyers: brand_intelligence, investor, competitive_intel</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→ Action:</b> Conduct manual audit of 200 random JOOLA-tagged clips to validate brand detection precision; compare F1 scores for JOOLA vs Nike/HEAD to quantify systematic bias.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #10b981;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:11px;color:#10b981;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
+              #5 · competitive intel
+            </div>
+            <span style="background:#f59e0b;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">MEDIUM</span>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px;line-height:1.4">
+            Brand co-occurrence is near-zero across ecosystem—suggests either strong player-equipment loyalty or lack of cross-brand play footage
+          </div>
+          <div style="background:#1e293b;border-radius:4px;height:6px;width:100%;margin-top:4px"><div style="background:#22c55e;height:6px;border-radius:4px;width:79%"></div></div><div style="font-size:10px;color:#94a3b8;margin-top:2px">79% confidence</div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:12px;line-height:1.6">
+            JOOLA never appears with Foz_Bullet, 4K, or UG across 2987 clips; Nike never appears with PICKLEBALL brand clips. This extreme segregation is statistically unlikely if brands were randomly distributed. Either players strongly prefer single brands (indicating high brand lock-in), or the corpus lacks footage of recreational play with equipment diversity, or co-brand detection is systematically broken.
+          </div>
+          <div style='margin-top:8px;font-size:11px;color:#64748b'>Buyers: brand_intelligence, investor</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→ Action:</b> Survey content creators and tournament organizers on whether multi-brand play is common; if yes, investigate co-brand detection in model; if no, leverage this finding as evidence of strong brand loyalty in marketing segmentation studies.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #06b6d4;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:11px;color:#06b6d4;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">
+              #6 · archetype discovery
+            </div>
+            <span style="background:#f59e0b;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">MEDIUM</span>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px;line-height:1.4">
+            Power Artist and Artist archetypes are critically rare (<1%), yet kitchen mastery correlation suggests they may drive disproportionate engagement
+          </div>
+          <div style="background:#1e293b;border-radius:4px;height:6px;width:100%;margin-top:4px"><div style="background:#22c55e;height:6px;border-radius:4px;width:71%"></div></div><div style="font-size:10px;color:#94a3b8;margin-top:2px">71% confidence</div>
+          <div style="font-size:13px;color:#94a3b8;margin-top:12px;line-height:1.6">
+            Only 42 clips (0.8%) feature creative or high-creativity players (Power Artist + Artist), while 84.8% are Steady Eddie. Kitchen mastery↔Quality correlation (r=0.386) indicates skill depth matters. The extreme rarity of creative archetypes combined with strong clutch-moment virality suggests undersampling of high-skill creative players in the corpus—either they produce less content or the model is misclassifying them as Hammer/Steady Eddie.
+          </div>
+          <div style='margin-top:8px;font-size:11px;color:#64748b'>Buyers: coaching, brand_intelligence</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→ Action:</b> Identify and profile the 42 Power Artist/Artist clips; analyze demographics, skill progression, and viral outcomes to determine if niche creative players are an untapped market segment for coaching content or brand sponsorships.</div>
+        </div>
+        
+
+  <div class="section-title">New Opportunities</div>
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:11px;color:#22c55e;font-weight:600;text-transform:uppercase">
+              #1 · LOW EFFORT
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px">Shoe Brand + Model Detection</div>
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">Shoes visible in 26.7% of clips (1334/4998); zero model-level specificity despite high visibility on court</div>
+          <div style="font-size:13px;color:#64748b">Footwear brands will pay $50K–$200K/quarter for competitive shoe usage benchmarking (market share by DUPR tier, geography, gender). Nike alone spends millions on racquet sport attribution. At 900+ cli</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→</b> Create shoe brand taxonomy (top 8 brands × 3–5 models each). Commission 50 labeled reference clips. Run pilot extraction on 200-clip sample; measure precision/recall; deploy to full corpus if >85% precision achieved.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:11px;color:#22c55e;font-weight:600;text-transform:uppercase">
+              #2 · LOW EFFORT
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px">Crowd Energy & Spectator Detection</div>
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">crowd_energy_detected boolean is 100% populated but is a binary flag; no crowd size, composition, or engagement metadata</div>
+          <div style="font-size:13px;color:#64748b">Facility operators ($10K–$50K/year) use crowd benchmarking to justify venue investment, premium court pricing, and tournament hosting decisions. Media/broadcast buyers ($5K–$25K/clip) score clips by a</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→</b> Define 4-tier crowd_size rubric with visual examples. Add 3 fields to extraction schema. Retrain on 100 labeled clips. Deploy to 500-clip sample; validate against facility booking data.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:11px;color:#22c55e;font-weight:600;text-transform:uppercase">
+              #3 · LOW EFFORT
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px">Erne & ATP Shot Detection</div>
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">Signature move detection is 99.4% complete but is generic; Erne and ATP (Around-the-Post) plays are not specifically identified despite being high-val</div>
+          <div style="font-size:13px;color:#64748b">Coaching platforms (Courtana, DUPR Insight) pay $20K–$80K/year for shot-specific drill recommendations and player strength profiling. Media/broadcast buyers pay $500–$2K per highlight clip featuring E</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→</b> Collect 30 labeled Erne + ATP clips. Add detection logic to video analysis prompt. Run on 200-clip pilot; measure precision. If >80% precision, deploy to full corpus and create 'Advanced Play' report for coaching buyers.</div>
+        </div>
+        
+        <div style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;
+                    border-left:4px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:11px;color:#22c55e;font-weight:600;text-transform:uppercase">
+              #4 · LOW EFFORT
+            </div>
+          </div>
+          <div style="font-size:16px;font-weight:600;color:#f1f5f9;margin-bottom:8px">Court Surface Brand Identification</div>
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">Court surface type is noted but brand is almost never detected; facility operators and venue-level data are undermonetized</div>
+          <div style="font-size:13px;color:#64748b">Court surface brands pay $30K–$100K/year for usage benchmarking and facility performance correlation (does Har-Tru correlate with higher player ratings? more tournaments?). Facility operators pay $15K</div>
+          <div style='margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;font-size:12px;color:#22c55e'><b>→</b> Map top 8 court surface brands. Collect 40 reference clips per brand. Add court_surface_brand field to schema. Pilot on 300 clips; validate precision >80%. Launch 'Facility Benchmarking' report targeting facility operators.</div>
+        </div>
+        
 
   <div class="section-title">Quality Signal</div>
   
@@ -79,11 +245,11 @@
           </div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center">
             <div>
-              <div style="font-size:28px;font-weight:700;color:#22c55e">1086</div>
+              <div style="font-size:28px;font-weight:700;color:#22c55e">1366</div>
               <div style="font-size:11px;color:#64748b">Linked Clips</div>
             </div>
             <div>
-              <div style="font-size:28px;font-weight:700;color:#f1f5f9">68%</div>
+              <div style="font-size:28px;font-weight:700;color:#f1f5f9">72%</div>
               <div style="font-size:11px;color:#64748b">Avg Match</div>
             </div>
             <div>
@@ -91,8 +257,8 @@
               <div style="font-size:11px;color:#64748b">Badges Tracked</div>
             </div>
           </div>
-          <div style='margin-top:12px;font-size:12px;color:#22c55e'>Best: one-handed backhand (F1=1.0)</div>
-          <div style='margin-top:4px;font-size:12px;color:#ef4444'>Needs work: speed demon (F1=0.0)</div>
+          <div style='margin-top:12px;font-size:12px;color:#22c55e'>Best: dance break (F1=1.0)</div>
+          
         </div>
         
 

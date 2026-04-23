@@ -1,7 +1,20 @@
 {
-  "generated_at": "2026-04-23T19:15:53.724496Z",
+  "generated_at": "2026-04-23T19:21:27.796797Z",
   "version": 4,
   "top_strategic": [
+    {
+      "id": "opportunity_scout-20260423-3828",
+      "title": "Longitudinal tracking possible: 72 players with 5+ clips",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.75,
+      "business_value": "high",
+      "category": "product_opportunity",
+      "evidence": "72 players have enough data for improvement tracking. Top: PickleBill(656), Chintan(186), Tmf(133), Coach_Block(131), Irenefuntila(89)",
+      "action": "Build player improvement trajectory product \u2014 track skill changes over time",
+      "score": 1.101,
+      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-3828.html"
+    },
     {
       "id": "opportunity_scout-20260423-7159",
       "title": "Sponsorship whitespace: 4 equipment categories with ZERO brand detection",
@@ -29,32 +42,6 @@
       "deep_dive_url": "idea-lab/deep-dives/wildcard-20260423-2934.html"
     },
     {
-      "id": "opportunity_scout-20260423-3828",
-      "title": "Longitudinal tracking possible: 72 players with 5+ clips",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.75,
-      "business_value": "high",
-      "category": "product_opportunity",
-      "evidence": "72 players have enough data for improvement tracking. Top: PickleBill(656), Chintan(186), Tmf(133), Coach_Block(131), Irenefuntila(89)",
-      "action": "Build player improvement trajectory product \u2014 track skill changes over time",
-      "score": 1.101,
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-3828.html"
-    },
-    {
-      "id": "opportunity_scout-20260423-1744",
-      "title": "Sponsorship whitespace detected in 4182 clips (97.0%) \u2014 sell to brands",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.7,
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "evidence": "We detect unbranded equipment/space in 4182 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
-      "action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-      "score": 0.6434,
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-1744.html"
-    },
-    {
       "id": "opportunity_scout-20260423-5686",
       "title": "Endorsement intelligence: 194 player-brand pairs with 3+ co-occurrences",
       "agent": "opportunity_scout",
@@ -66,6 +53,19 @@
       "action": "Build 'brand ambassador identification' product for equipment companies",
       "score": 0.8972,
       "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-5686.html"
+    },
+    {
+      "id": "opportunity_scout-20260423-8323",
+      "title": "Social caption generation at 99.9% \u2014 ready to productize",
+      "agent": "opportunity_scout",
+      "track": "strategic",
+      "confidence": 0.8,
+      "business_value": "high",
+      "category": "revenue_opportunity",
+      "evidence": "Social media captions are generated for 4307/4310 clips. This is already a viable content-as-a-service product.",
+      "action": "Create API endpoint for social caption generation \u2014 charge per clip",
+      "score": 0.8154,
+      "deep_dive_url": ""
     }
   ],
   "top_data": [
@@ -267,6 +267,32 @@
       "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-5686.html"
     },
     {
+      "id": "visual_pattern_detector-20260423-7765",
+      "title": "Video reveals 60 patterns metadata never saw",
+      "agent": "visual_pattern_detector",
+      "track": "data",
+      "confidence": 0.82,
+      "business_value": "high",
+      "category": "visual_intelligence",
+      "evidence": "Across 16 clips, Gemini video analysis surfaced 60 visual observations flagged as novel vs the text metadata. Sample: The camera is positioned high and angled down, providing a wide, static view of the pickleball court.; Chairs are set up along the right side of the court, suggesting a spectator or waiting area.; A digital display or scoreboard is visible in the upper right corner of the frame, showing text that is diffic",
+      "action": "Feed these patterns back into the metadata extraction prompt \u2014 they represent systematic blind spots in text-only analysis.",
+      "score": 0.8575,
+      "deep_dive_url": ""
+    },
+    {
+      "id": "scene_quality_auditor-20260423-7435",
+      "title": "Metadata quality drifts from video reality by 0.5 pts on average",
+      "agent": "scene_quality_auditor",
+      "track": "data",
+      "confidence": 0.85,
+      "business_value": "high",
+      "category": "data_quality",
+      "evidence": "Across 16 clips, Gemini video-based quality ratings differ from metadata by avg -0.5. 5 clips have metadata OVERSTATING quality (>=2pt lie); 2 UNDERSTATING.",
+      "action": "Re-train or re-prompt the metadata quality signal \u2014 it's drifting from what humans actually see on screen.",
+      "score": 0.855,
+      "deep_dive_url": ""
+    },
+    {
       "id": "shot_scientist-20260423-7565",
       "title": "Rally length matters: long rallies are more viral (long=3.1 vs short=2.2)",
       "agent": "shot_scientist",
@@ -345,6 +371,19 @@
       "deep_dive_url": ""
     },
     {
+      "id": "visual_pattern_detector-20260423-3815",
+      "title": "Body language signals present in 4/16 clips \u2014 untapped signal",
+      "agent": "visual_pattern_detector",
+      "track": "data",
+      "confidence": 0.7,
+      "business_value": "medium",
+      "category": "visual_intelligence",
+      "evidence": "Gemini video flagged body-language cues (celebrations, frustration, gestures) in 4 clips that metadata scores don't capture. These correlate with viral potential beyond shot mechanics.",
+      "action": "Add a 'body_language' detection pass to the extraction pipeline \u2014 these signals predict shareability.",
+      "score": 0.7125,
+      "deep_dive_url": ""
+    },
+    {
       "id": "production_auditor-20260423-3545",
       "title": "Worst predicted badges: paddle tap celebration (F1=0.967), hustler (F1=0.93)",
       "agent": "production_auditor",
@@ -355,45 +394,6 @@
       "evidence": "Lowest F1 badges: paddle tap celebration (F1=0.967), hustler (F1=0.93). These need prompt improvement.",
       "action": "Add specific examples for these badge types in Gemini prompt",
       "score": 0.6855,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "opportunity_scout-20260423-1744",
-      "title": "Sponsorship whitespace detected in 4182 clips (97.0%) \u2014 sell to brands",
-      "agent": "opportunity_scout",
-      "track": "strategic",
-      "confidence": 0.7,
-      "business_value": "high",
-      "category": "revenue_opportunity",
-      "evidence": "We detect unbranded equipment/space in 4182 clips. This is the gap between what's visible and what's branded \u2014 sellable data.",
-      "action": "Package sponsorship whitespace data as 'brand opportunity report' for equipment companies",
-      "score": 0.6434,
-      "deep_dive_url": "idea-lab/deep-dives/opportunity_scout-20260423-1744.html"
-    },
-    {
-      "id": "player_profiler-20260423-1226",
-      "title": "Skill standout: Ajr averages 8.5 in consistency across 6 clips",
-      "agent": "player_profiler",
-      "track": "data",
-      "confidence": 0.7,
-      "business_value": "medium",
-      "category": "player_insight",
-      "evidence": "Ajr skill profile: consistency=8.5, kitchen=8.2, touch=8.0, composure=7.5, court_iq=7.0, court_coverage=6.2, athleticism=5.2, power=3.0, creativity=3.0",
-      "action": "Feature Ajr in coaching product showcase",
-      "score": 0.6206,
-      "deep_dive_url": ""
-    },
-    {
-      "id": "brand_analyst-20260423-6069",
-      "title": "Emerging brands detected: 133 brands with 2-8 appearances",
-      "agent": "brand_analyst",
-      "track": "data",
-      "confidence": 0.55,
-      "business_value": "medium",
-      "category": "brand_insight",
-      "evidence": "Rare but real brand detections: Dude Clothing (8), LIVE (8), COACH (8), RECOVERY CAFE (8), RECOVERY SAVE (8), FIVE (8), INTERMEDIATE (7), RECOVERY CARE (7). These represent market entrants or niche brands.",
-      "action": "Monitor emerging brand frequency over next 500 clips for trend confirmation",
-      "score": 0.6146,
       "deep_dive_url": ""
     }
   ],
