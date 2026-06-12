@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bill Bricker — Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper: #efe1c4;
+    --paper-deep: #e2cfa5;
+    --paper-shadow: #d4bd8a;
+    --vellum: #f5ecd6;
+    --rule: #b8a47a;
+    --ink: #2b1f10;
+    --ink-2: #4a3a22;
+    --ink-mute: #7a6a4a;
+    --sienna: #a8421d;
+    --sienna-deep: #6e2a12;
+    --ochre: #d8a35a;
+    --river: #2b4a6f;
+    --live: #6e8a2a;            /* mossy green — earthy, not neon */
+    --live-glow: #c8d28a;
+
+    --serif: "Spectral", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --hand: "Caveat", cursive;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--serif)}
+  body{
+    background:
+      radial-gradient(ellipse at 25% 30%, #f5ead0 0%, var(--paper) 45%, var(--paper-deep) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.22  0 0 0 0 0.17  0 0 0 0 0.09  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: multiply;
+  }
+  ::selection{background:var(--ink);color:var(--paper)}
+
+  /* ============ STAGE ============ */
+  .stage{position:relative;width:100vw;height:100vh}
+
+  /* ============ MAP CANVAS (pan-zoomable) ============ */
+  .canvas{
+    position:absolute;
+    inset:0;
+    cursor:grab;
+  }
+  .canvas.dragging{cursor:grabbing}
+  .map{
+    position:absolute;
+    left:50%; top:50%;
+    width:2200px; height:1400px;
+    transform-origin: 0 0;
+    /* base map texture */
+    background:
+      radial-gradient(ellipse at 30% 35%, #f1e3c2 0%, #e8d6ac 55%, #dcc28c 100%);
+    box-shadow:
+      inset 0 0 220px rgba(89,60,20,.18),
+      inset 0 0 0 12px rgba(120,80,30,.05);
+    border-radius: 2px;
+  }
+  .map svg.terrain{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+  /* hand-edge feel on the map sheet */
+  .map::before, .map::after{
+    content:"";position:absolute;left:-1px;right:-1px;height:6px;
+    background: repeating-linear-gradient(90deg, transparent 0 7px, rgba(0,0,0,.08) 7px 8px);
+    opacity:.4;
+  }
+  .map::before{top:-3px}
+  .map::after{bottom:-3px}
+
+  /* ============ PINS / NODES ============ */
+  .node{
+    position:absolute;
+    transform: translate(-50%, -50%);
+    cursor:pointer;
+    pointer-events:auto;
+    user-select:none;
+  }
+  .node .glyph{
+    width:14px;height:14px;border-radius:50%;
+    background: var(--sienna);
+    border: 2.5px solid var(--vellum);
+    box-shadow: 0 0 0 1px var(--sienna-deep), 0 2px 4px rgba(60,30,5,.25);
+    transition: transform .25s ease;
+  }
+  .node .glyph.sq{border-radius:2px}
+  .node .glyph.tri{
+    background:transparent;border:none;width:0;height:0;
+    border-left:9px solid transparent;border-right:9px solid transparent;
+    border-bottom:14px solid var(--sienna);
+    box-shadow:none;
+    filter: drop-shadow(0 1px 0 var(--sienna-deep));
+  }
+  .node:hover .glyph{transform:scale(1.25)}
+
+  .node .label{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:500;
+    font-size:13px;
+    color: var(--ink);
+    background: rgba(245,236,214,.92);
+    border: .5px solid rgba(43,31,16,.3);
+    padding: 2px 7px;
+    border-radius: 1.5px;
+    margin-top:6px;
+    white-space:nowrap;
+    box-shadow: 0 1px 0 rgba(120,80,30,.15);
+    transition: background .2s ease;
+  }
+  .node:hover .label{background: var(--vellum)}
+  .node .yr{
+    display:block;font-family:var(--mono);font-size:9px;
+    color:var(--ink-mute);letter-spacing:.08em;margin-top:1px;
+    font-style:normal;font-weight:400;
+  }
+  .node.live .glyph{
+    background: var(--live);
+    box-shadow: 0 0 0 1px #4d6019, 0 0 0 6px rgba(110,138,42,.18), 0 2px 4px rgba(60,30,5,.2);
+    animation: livepulse 2.4s ease-in-out infinite;
+  }
+  .node.live .label{
+    border-color: var(--live);
+    background: rgba(245,236,214,.98);
+    color: var(--ink);
+  }
+  @keyframes livepulse{
+    0%,100%{box-shadow:0 0 0 1px #4d6019, 0 0 0 4px rgba(110,138,42,.15), 0 2px 4px rgba(60,30,5,.2)}
+    50%{box-shadow:0 0 0 1px #4d6019, 0 0 0 12px rgba(110,138,42,0), 0 2px 4px rgba(60,30,5,.2)}
+  }
+
+  /* hand-drawn ring around the "currently shipping" pin */
+  .node.live::before{
+    content:"";position:absolute;left:50%;top:50%;
+    width:60px;height:56px;
+    transform: translate(-50%,-58%) rotate(-8deg);
+    border: 1.5px solid var(--sienna);
+    border-radius: 50% / 48%;
+    border-top-color: transparent;
+    border-right-color: rgba(168,66,29,.7);
+    opacity:.7;
+    pointer-events:none;
+  }
+
+  /* ============ HAND MARGINALIA ============ */
+  .hand{
+    position:absolute;
+    font-family:var(--hand);
+    color:var(--sienna);
+    font-size: 22px;
+    line-height: 1;
+    transform:translate(-50%,-50%) rotate(-5deg);
+    pointer-events:none;
+    white-space:nowrap;
+  }
+  .hand.small{font-size:18px}
+  .hand.ink{color:var(--ink)}
+
+  /* region labels — engraved */
+  .region{
+    position:absolute;
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:300;
+    color: rgba(43,31,16,.32);
+    font-size: 34px;
+    letter-spacing:.18em;
+    text-transform: uppercase;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    white-space:nowrap;
+  }
+
+  /* ============ FIXED CHROME ============ */
+  /* masthead */
+  .masthead{
+    position:fixed;top:22px;left:24px;z-index:30;
+    display:flex;flex-direction:column;gap:2px;
+    pointer-events:none;
+  }
+  .masthead .name{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;line-height:1;color:var(--ink);
+  }
+  .masthead .sub{
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-mute);margin-top:4px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .masthead .live-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--live);
+    box-shadow:0 0 0 0 rgba(110,138,42,.5);animation:livepulse 2s ease-in-out infinite;
+  }
+  .masthead .tag{
+    font-family:var(--hand);color:var(--sienna);font-size:18px;
+    margin-top:6px;line-height:1;transform:rotate(-1.5deg);
+    transform-origin:left;
+  }
+
+  /* compass (top-right) */
+  .compass{
+    position:fixed;top:24px;right:24px;z-index:30;
+    width:92px;height:92px;
+    border:.75px solid rgba(168,66,29,.7);
+    border-radius:50%;
+    background: rgba(245,236,214,.5);
+    backdrop-filter: blur(.5px);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-style:italic;color:var(--sienna);
+  }
+  .compass::before{content:"";position:absolute;top:8px;left:50%;width:1px;height:76px;background:rgba(168,66,29,.7);transform:translateX(-50%)}
+  .compass::after{content:"";position:absolute;top:50%;left:8px;width:76px;height:1px;background:rgba(168,66,29,.7);transform:translateY(-50%)}
+  .compass .cap{position:absolute;font-size:13px;font-weight:500}
+  .compass .n{top:6px;left:50%;transform:translateX(-50%)}
+  .compass .s{bottom:6px;left:50%;transform:translateX(-50%)}
+  .compass .e{right:6px;top:50%;transform:translateY(-50%)}
+  .compass .w{left:6px;top:50%;transform:translateY(-50%)}
+  .compass .needle{
+    position:absolute;left:50%;top:50%;width:2px;height:30px;
+    background:linear-gradient(to top, var(--sienna), var(--sienna-deep));
+    transform-origin: 50% 100%;
+    transform:translate(-50%,-100%) rotate(18deg);
+  }
+  .compass .needle.s{
+    background:linear-gradient(to top, var(--ink) 0%, var(--ink-mute) 100%);
+    transform:translate(-50%,0%) rotate(-162deg);
+    transform-origin: 50% 0%;
+  }
+
+  /* fast-travel labels under compass */
+  .travel{
+    position:fixed;top:130px;right:24px;z-index:30;
+    display:flex;flex-direction:column;gap:2px;align-items:flex-end;
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .travel button{
+    appearance:none;background:transparent;border:none;
+    color:var(--ink-mute);cursor:pointer;padding:2px 0;
+    font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;
+    transition:color .15s ease;
+  }
+  .travel button:hover{color:var(--sienna)}
+  .travel button.active{color:var(--ink);font-weight:600}
+  .travel button::before{
+    content:"›  ";color:var(--sienna);
+  }
+
+  /* ============ SYSTEM PANEL (right rail, lower) ============ */
+  .panel{
+    position:fixed;
+    right:24px;
+    bottom: 90px;
+    width: 286px;
+    z-index:30;
+    background: rgba(245,236,214,.94);
+    border: .75px solid rgba(43,31,16,.4);
+    box-shadow: 0 6px 24px rgba(60,30,5,.12), inset 0 0 0 .5px rgba(255,255,255,.4);
+    font-size: 12.5px;
+    line-height:1.5;
+    color: var(--ink-2);
+    padding: 0;
+  }
+  .panel::before{
+    content:"";position:absolute;top:-5px;right:14px;width:24px;height:10px;
+    background: repeating-linear-gradient(90deg, var(--ochre) 0 4px, transparent 4px 7px);
+    opacity:.85;
+    /* tape */
+    transform:rotate(-3deg);
+  }
+  .panel-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding: 10px 14px 6px;
+    border-bottom: .5px dotted rgba(43,31,16,.35);
+  }
+  .panel-head .ttl{
+    font-family:var(--serif);font-style:italic;font-weight:500;font-size:15px;color:var(--ink);
+  }
+  .panel-head .meta{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);
+  }
+  .panel-section{padding:10px 14px;border-bottom:.5px dotted rgba(43,31,16,.25)}
+  .panel-section:last-child{border-bottom:none}
+  .panel-section h5{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-mute);margin:0 0 6px;font-weight:500;
+  }
+  .now-line{
+    font-family:var(--serif);font-size:14px;line-height:1.35;color:var(--ink);
+    margin:0;
+  }
+  .now-line em{font-style:italic;color:var(--sienna)}
+
+  .log{
+    font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--ink-2);
+    margin:0;padding:0;list-style:none;
+  }
+  .log li{display:flex;gap:8px;padding:2px 0;border-bottom:.5px dotted transparent}
+  .log .t{color:var(--ink-mute);font-size:10px;letter-spacing:.04em;flex-shrink:0;width:54px}
+  .log .v{flex:1}
+  .log .v b{font-weight:500;color:var(--ink);font-family:var(--mono)}
+  .log .v.ship b{color:var(--live)}
+  .log .v.intro b{color:var(--river)}
+  .log .v.write b{color:var(--sienna)}
+
+  .room{
+    display:flex;align-items:center;gap:10px;
+    padding: 4px 0 2px;
+  }
+  .room .dot{
+    width:9px;height:9px;border-radius:50%;background:var(--live);
+    box-shadow:0 0 0 4px rgba(110,138,42,.18);
+    animation:livepulse 2s ease-in-out infinite;
+  }
+  .room .txt{
+    font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink);
+  }
+
+  /* ============ TERMINAL (bottom strip) ============ */
+  .terminal{
+    position:fixed;
+    left:24px;right:24px;
+    bottom:20px;
+    z-index:30;
+    max-width: 720px;
+    margin: 0 auto;
+    background: rgba(27,20,9,.92);
+    color: var(--paper);
+    font-family:var(--mono);
+    font-size: 12.5px;
+    padding: 10px 14px;
+    border-radius: 3px;
+    border: .5px solid rgba(245,236,214,.15);
+    box-shadow: 0 8px 24px rgba(0,0,0,.18), 0 0 0 1px rgba(168,66,29,.18);
+    display:flex;align-items:center;gap:10px;
+  }
+  .terminal .prompt{color:var(--live-glow);letter-spacing:.05em;flex-shrink:0}
+  .terminal input{
+    flex:1;background:transparent;border:none;outline:none;
+    color:var(--paper);font-family:inherit;font-size:inherit;
+    caret-color: var(--live-glow);
+  }
+  .terminal input::placeholder{color:rgba(245,236,214,.4)}
+  .terminal .kbd{
+    font-size:9.5px;color:rgba(245,236,214,.5);letter-spacing:.1em;text-transform:uppercase;
+    border:.5px solid rgba(245,236,214,.25);padding:2px 5px;border-radius:2px;
+    flex-shrink:0;
+  }
+  .terminal .echo{
+    color:var(--live-glow);font-size:11px;opacity:0;transition:opacity .3s;
+    margin-right:6px;
+  }
+  .terminal .echo.on{opacity:1}
+
+  /* hint above terminal */
+  .term-hint{
+    position:fixed;bottom:74px;left:50%;transform:translateX(-50%);z-index:29;
+    font-family:var(--hand);color:var(--sienna);font-size:18px;
+    pointer-events:none;
+    transform-origin: center;
+  }
+
+  /* ============ ZOOM CONTROLS ============ */
+  .zoom{
+    position:fixed;left:24px;bottom:78px;z-index:30;
+    display:flex;flex-direction:column;gap:0;
+    background: rgba(245,236,214,.94);
+    border:.5px solid rgba(43,31,16,.35);
+  }
+  .zoom button{
+    appearance:none;border:none;background:transparent;
+    width:32px;height:32px;
+    font-family:var(--serif);font-size:18px;color:var(--ink-2);
+    cursor:pointer;
+    border-bottom:.5px solid rgba(43,31,16,.2);
+  }
+  .zoom button:last-child{border-bottom:none}
+  .zoom button:hover{background:rgba(168,66,29,.08);color:var(--sienna)}
+
+  /* legend (bottom-left, above zoom) */
+  .legend{
+    position:fixed;left:24px;bottom: 180px;z-index:30;
+    background: rgba(245,236,214,.92);
+    border:.5px solid rgba(43,31,16,.35);
+    padding: 10px 12px;
+    width: 200px;
+    font-family:var(--mono);font-size:10px;
+    color:var(--ink-2);
+    line-height:1.7;letter-spacing:.04em;
+  }
+  .legend b{
+    display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:13px;
+    color:var(--sienna);letter-spacing:0;margin-bottom:4px;
+  }
+  .legend .gly{display:inline-block;width:14px;text-align:center;color:var(--sienna);font-weight:600}
+
+  /* ============ FIELD CARD OVERLAY ============ */
+  .scrim{
+    position:fixed;inset:0;z-index:40;
+    background: rgba(43,31,16,.36);
+    backdrop-filter: blur(1.5px);
+    display:none;align-items:center;justify-content:center;
+    padding: 24px;
+  }
+  .scrim.on{display:flex}
+  .card{
+    width: min(560px, 92vw);
+    max-height: 80vh;
+    overflow:auto;
+    background: var(--vellum);
+    background-image:
+      linear-gradient(180deg, #f7eed7 0%, #f1e6ca 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2  0 0 0 0 0.15  0 0 0 0 0.07  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: multiply;
+    border:.5px solid rgba(43,31,16,.4);
+    box-shadow:
+      0 14px 40px rgba(40,20,5,.28),
+      0 0 0 6px rgba(245,236,214,.4);
+    padding: 32px 36px 28px;
+    position:relative;
+    transform: rotate(-.5deg);
+  }
+  .card .tape{
+    position:absolute;top:-12px;left:50%;
+    width: 90px;height: 22px;transform:translateX(-50%) rotate(-2deg);
+    background: repeating-linear-gradient(90deg, rgba(216,163,90,.7) 0 5px, rgba(216,163,90,.4) 5px 9px);
+    box-shadow: 0 2px 4px rgba(40,20,5,.15);
+  }
+  .card .num{
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+  .card h3{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size: 30px; line-height:1.1; letter-spacing:-.015em;
+    margin: 6px 0 4px;color:var(--ink);
+  }
+  .card .meta{
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sienna);margin-bottom:14px;
+    display:flex;gap:14px;
+  }
+  .card p{font-family:var(--serif);font-size:15.5px;line-height:1.6;color:var(--ink-2);margin:0 0 10px}
+  .card p em{font-style:italic;color:var(--ink)}
+  .card .ask{
+    margin-top:14px;padding-top:12px;border-top:.5px dotted rgba(43,31,16,.3);
+    font-family:var(--hand);color:var(--sienna);font-size:18px;
+  }
+  .card .ask a{color:inherit;text-decoration:underline;text-decoration-thickness:.5px;text-underline-offset:3px}
+  .card .close{
+    position:absolute;top:10px;right:14px;
+    background:none;border:none;cursor:pointer;
+    font-family:var(--mono);font-size:14px;color:var(--ink-mute);
+  }
+  .card .close:hover{color:var(--sienna)}
+  .card .pull{
+    font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink);
+    border-left:2px solid var(--sienna);padding:2px 0 2px 14px;margin:14px 0;
+  }
+
+  /* ============ TINY HELPERS ============ */
+  .sr{position:absolute;left:-9999px}
+
+  /* mobile fallback */
+  @media (max-width: 760px){
+    .panel{position:fixed;right:8px;left:8px;width:auto;bottom:96px;max-height:38vh;overflow:auto}
+    .legend, .zoom{display:none}
+    .compass{width:64px;height:64px}
+    .compass::before{height:48px;top:8px}
+    .compass::after{width:48px;left:8px}
+    .travel{display:none}
+    .terminal{left:8px;right:8px}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <!-- ============ ATLAS CANVAS ============ -->
+  <div class="canvas" id="canvas">
+    <div class="map" id="map">
+
+      <!-- terrain layer -->
+      <svg class="terrain" viewBox="0 0 2200 1400" preserveAspectRatio="none">
+        <defs>
+          <pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse">
+            <circle cx="1.5" cy="1.5" r=".9" fill="#a8421d" opacity=".25"/>
+          </pattern>
+          <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#a8421d" stroke-width=".5" opacity=".25"/>
+          </pattern>
+        </defs>
+
+        <!-- contour lines (sienna, faint) -->
+        <g fill="none" stroke="#a8421d" stroke-opacity=".18" stroke-width="1">
+          <path d="M -40 1100 Q 380 940 760 1010 T 1480 940 T 2240 870"/>
+          <path d="M -40 1040 Q 380 880 760 950 T 1480 880 T 2240 810"/>
+          <path d="M -40  980 Q 380 820 760 890 T 1480 820 T 2240 750"/>
+          <path d="M -40  920 Q 380 760 760 830 T 1480 760 T 2240 690"/>
+          <path d="M -40  860 Q 380 700 760 770 T 1480 700 T 2240 630"/>
+          <path d="M -40  800 Q 380 640 760 710 T 1480 640 T 2240 570"/>
+          <path d="M -40  740 Q 380 580 760 650 T 1480 580 T 2240 510"/>
+        </g>
+
+        <!-- mountains: Zero-to-One range -->
+        <g fill="none" stroke="#2b1f10" stroke-width="1.2" stroke-linejoin="round" opacity=".85">
+          <path d="M 180 540 L 260 360 L 320 470 L 400 280 L 480 540 Z"/>
+          <path d="M 520 560 L 580 440 L 640 560 Z"/>
+          <path d="M 660 580 L 710 480 L 760 580 Z"/>
+        </g>
+        <g fill="#a8421d" opacity=".12">
+          <path d="M 180 540 L 260 360 L 320 470 L 400 280 L 480 540 Z"/>
+        </g>
+        <!-- summit hatch -->
+        <g stroke="#2b1f10" stroke-width=".5" opacity=".5">
+          <line x1="395" y1="290" x2="395" y2="320"/>
+          <line x1="400" y1="284" x2="408" y2="296"/>
+          <line x1="392" y1="296" x2="384" y2="306"/>
+        </g>
+
+        <!-- river of intros (cool blue) — flows across the middle band -->
+        <path d="M -40 1200 C 280 1080 460 1040 720 1080 S 1100 1180 1380 1080 S 1820 920 2240 880"
+              fill="none" stroke="#2b4a6f" stroke-opacity=".65" stroke-width="3.5"/>
+        <path d="M -40 1200 C 280 1080 460 1040 720 1080 S 1100 1180 1380 1080 S 1820 920 2240 880"
+              fill="none" stroke="#7596b8" stroke-opacity=".5" stroke-width="1.2" stroke-dasharray="0 6 12 0"/>
+
+        <!-- The Long Walk — dotted trail, threads through center -->
+        <path d="M 240 1180 Q 540 980 760 1020 T 1180 880 T 1620 720 T 1980 600"
+              fill="none" stroke="#a8421d" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" opacity=".85"/>
+
+        <!-- forested region (Home) -->
+        <ellipse cx="380" cy="1180" rx="200" ry="60" fill="url(#dots)"/>
+        <g fill="#2b1f10" opacity=".75">
+          <circle cx="280" cy="1180" r="3"/><circle cx="310" cy="1175" r="3"/><circle cx="345" cy="1185" r="3"/>
+          <circle cx="380" cy="1175" r="3"/><circle cx="415" cy="1188" r="3"/><circle cx="450" cy="1180" r="3"/>
+          <circle cx="485" cy="1175" r="3"/>
+        </g>
+
+        <!-- networking region wash -->
+        <ellipse cx="1820" cy="780" rx="240" ry="80" fill="url(#hatch)" opacity=".7"/>
+
+        <!-- small islands / Networking constellation dots -->
+        <g fill="#2b1f10" opacity=".5">
+          <circle cx="1640" cy="740" r="1.5"/><circle cx="1680" cy="760" r="1.5"/>
+          <circle cx="1720" cy="730" r="1.5"/><circle cx="1760" cy="780" r="1.5"/>
+          <circle cx="1800" cy="740" r="1.5"/><circle cx="1840" cy="800" r="1.5"/>
+          <circle cx="1880" cy="760" r="1.5"/><circle cx="1920" cy="790" r="1.5"/>
+          <circle cx="1960" cy="750" r="1.5"/><circle cx="2000" cy="790" r="1.5"/>
+        </g>
+
+        <!-- thin lines connecting nearby projects (graph hint) -->
+        <g stroke="#a8421d" stroke-opacity=".35" stroke-width=".75" stroke-dasharray="3 4" fill="none">
+          <line x1="1080" y1="720" x2="1280" y2="660"/>
+          <line x1="1280" y1="660" x2="1480" y2="780"/>
+          <line x1="1080" y1="720" x2="900" y2="820"/>
+          <line x1="900" y1="820" x2="700" y2="940"/>
+        </g>
+
+        <!-- shaded "now" wedge around the live pin -->
+        <circle cx="1280" cy="660" r="120" fill="#cfe07a" opacity=".08"/>
+      </svg>
+
+      <!-- region labels -->
+      <div class="region" style="left:430px;top:240px">Zero-to-One Range</div>
+      <div class="region" style="left:1280px;top:560px">The Build Plateau</div>
+      <div class="region" style="left:1820px;top:660px">Archipelago of Intros</div>
+      <div class="region" style="left:380px;top:1100px">Home Forest</div>
+      <div class="region" style="left:1100px;top:1240px">River of Intros</div>
+
+      <!-- hand marginalia on the map -->
+      <div class="hand" style="left:400px;top:240px">↑ harder than it looks</div>
+      <div class="hand small ink" style="left:1100px;top:1280px">(carries the signal)</div>
+      <div class="hand small" style="left:1700px;top:660px;transform:translate(-50%,-50%) rotate(4deg)">where most of it gets done</div>
+      <div class="hand small" style="left:1500px;top:780px">still walking.</div>
+
+      <!-- =========== PINS / NODES =========== -->
+
+      <!-- Career history along the river / mountain pass -->
+      <div class="node" data-pin="nwm" style="left:340px;top:680px">
+        <div class="glyph"></div>
+        <div class="label">Northwestern Mutual <span class="yr">2006 · first job</span></div>
+      </div>
+      <div class="node" data-pin="unc" style="left:540px;top:760px">
+        <div class="glyph sq"></div>
+        <div class="label">UNC MBA <span class="yr">2010 · sharpened</span></div>
+      </div>
+      <div class="node" data-pin="ibm" style="left:720px;top:840px">
+        <div class="glyph"></div>
+        <div class="label">IBM / Netezza <span class="yr">2012 · 7-fig deals</span></div>
+      </div>
+      <div class="node" data-pin="wibi" style="left:880px;top:820px">
+        <div class="glyph"></div>
+        <div class="label">WibiData <span class="yr">2014 · data, early</span></div>
+      </div>
+
+      <!-- Networking Manifesto over near the archipelago -->
+      <div class="node" data-pin="manifesto" style="left:1640px;top:820px">
+        <div class="glyph tri"></div>
+        <div class="label">Networking Manifesto <span class="yr">2015 · the operating idea</span></div>
+      </div>
+      <div class="node" data-pin="introstellar" style="left:1820px;top:740px">
+        <div class="glyph"></div>
+        <div class="label">Introstellar <span class="yr">2015</span></div>
+      </div>
+
+      <!-- Play / side-quests -->
+      <div class="node" data-pin="gord" style="left:1120px;top:900px">
+        <div class="glyph sq"></div>
+        <div class="label">GroupOrDare <span class="yr">2016 · the card game</span></div>
+      </div>
+      <div class="node" data-pin="gear" style="left:980px;top:760px">
+        <div class="glyph"></div>
+        <div class="label">GearLaunch <span class="yr">2017</span></div>
+      </div>
+
+      <!-- Build plateau -->
+      <div class="node" data-pin="dreamship" style="left:1080px;top:720px">
+        <div class="glyph"></div>
+        <div class="label">Dreamship <span class="yr">2018–22 · how we won</span></div>
+      </div>
+      <div class="node live" data-pin="courtana" style="left:1280px;top:660px">
+        <div class="glyph"></div>
+        <div class="label"><em>Courtana</em> <span class="yr">2023 · currently shipping</span></div>
+      </div>
+      <div class="node" data-pin="pickle" style="left:1440px;top:740px">
+        <div class="glyph"></div>
+        <div class="label">Pickle DaaS <span class="yr">2026 · $0.0054/clip</span></div>
+      </div>
+      <div class="node" data-pin="lovable" style="left:1380px;top:880px">
+        <div class="glyph sq"></div>
+        <div class="label">Lovable workflows <span class="yr">2026</span></div>
+      </div>
+
+      <!-- Home -->
+      <div class="node" data-pin="home" style="left:380px;top:1180px">
+        <div class="glyph tri"></div>
+        <div class="label">Home · Three kids <span class="yr">why any of this matters</span></div>
+      </div>
+
+      <!-- Long walk milestones (along the trail) -->
+      <div class="node" data-pin="walk1" style="left:760px;top:1020px">
+        <div class="glyph"></div>
+        <div class="label">The diagnosis <span class="yr">2023</span></div>
+      </div>
+      <div class="node" data-pin="walk2" style="left:1180px;top:880px">
+        <div class="glyph"></div>
+        <div class="label">The chemo quarter <span class="yr">2024 · pipeline still moved</span></div>
+      </div>
+      <div class="node" data-pin="walk3" style="left:1620px;top:720px">
+        <div class="glyph"></div>
+        <div class="label">Still walking <span class="yr">2026</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="name">Bill Bricker</div>
+    <div class="sub"><span class="live-dot"></span> Workshop · in session</div>
+    <div class="tag">a living atlas of the work.</div>
+  </header>
+
+  <!-- ============ COMPASS ============ -->
+  <div class="compass" aria-hidden="true">
+    <span class="cap n">N</span><span class="cap s">S</span><span class="cap e">E</span><span class="cap w">W</span>
+    <span class="needle"></span><span class="needle s"></span>
+  </div>
+
+  <!-- ============ FAST-TRAVEL ============ -->
+  <nav class="travel" id="travel">
+    <button data-to="zero">Zero-to-One</button>
+    <button data-to="build" class="active">The Build Plateau</button>
+    <button data-to="net">Archipelago of Intros</button>
+    <button data-to="walk">The Long Walk</button>
+    <button data-to="home">Home</button>
+  </nav>
+
+  <!-- ============ LEGEND ============ -->
+  <aside class="legend" aria-hidden="true">
+    <b>Legend</b>
+    <span class="gly">●</span> a thing I built<br/>
+    <span class="gly">■</span> a thing I wrote / made<br/>
+    <span class="gly">▲</span> a person / a place<br/>
+    <span class="gly">~</span> river of intros<br/>
+    <span class="gly">┄</span> The Long Walk<br/>
+    <span style="display:inline-block;margin-top:6px;color:var(--live);font-family:var(--serif);font-style:italic;letter-spacing:0">○ currently shipping</span>
+  </aside>
+
+  <!-- ============ ZOOM ============ -->
+  <div class="zoom" aria-hidden="true">
+    <button id="zoomIn" title="zoom in">+</button>
+    <button id="zoomOut" title="zoom out">−</button>
+    <button id="zoomReset" title="reset" style="font-size:11px;font-family:var(--mono)">⤢</button>
+  </div>
+
+  <!-- ============ SYSTEM PANEL ============ -->
+  <aside class="panel">
+    <div class="panel-head">
+      <span class="ttl">Now</span>
+      <span class="meta">last edit · 14 min ago</span>
+    </div>
+    <div class="panel-section">
+      <h5>Currently shipping</h5>
+      <p class="now-line">
+        <em>Courtana</em> — venue intel for the people running the room.
+        Pickle DaaS in the next slip. Two advisory slots open.
+      </p>
+    </div>
+    <div class="panel-section">
+      <h5>Recent log</h5>
+      <ul class="log">
+        <li><span class="t">14:32</span><span class="v ship"><b>ship</b> · courtana venue intel → chris@peak</span></li>
+        <li><span class="t">13:08</span><span class="v ship"><b>ship</b> · pickle batch · 20 clips · $0.0054/clip</span></li>
+        <li><span class="t">10:47</span><span class="v intro"><b>intro</b> · mo khan ↔ ted moscovitz</span></li>
+        <li><span class="t">09:14</span><span class="v write"><b>write</b> · field note · the cancer quarter</span></li>
+        <li><span class="t">yest.</span><span class="v ship"><b>ship</b> · coach pro v5d → live</span></li>
+      </ul>
+    </div>
+    <div class="panel-section">
+      <h5>Status</h5>
+      <div class="room">
+        <span class="dot"></span>
+        <span class="txt">in the room. ping me.</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ TERMINAL ============ -->
+  <div class="term-hint">↓ talk to me here</div>
+  <form class="terminal" id="terminal" onsubmit="return sendPing(event)">
+    <span class="prompt">$ ping bill</span>
+    <input id="pingInput" type="text" placeholder="say hi — who you are, what brought you here…" autocomplete="off" />
+    <span class="echo" id="echo">message stored ✓</span>
+    <span class="kbd">↵ send</span>
+  </form>
+
+  <!-- ============ FIELD CARD OVERLAY ============ -->
+  <div class="scrim" id="scrim" onclick="if(event.target===this)closeCard()">
+    <article class="card" id="card">
+      <div class="tape"></div>
+      <button class="close" onclick="closeCard()">close ×</button>
+      <div id="cardBody"></div>
+    </article>
+  </div>
+
+</div>
+
+<script>
+  /* ============ PIN CONTENT ============ */
+  const PINS = {
+    courtana: {
+      num: "Now Shipping · 03 of —",
+      title: "Courtana",
+      meta: ["Venue intel", "live · v0.4", "founder + builder"],
+      pull: "We&rsquo;re building the operating layer for the people who actually run the room — coaches, organizers, club ops.",
+      body: [
+        "Courtana is venue intel: who&rsquo;s playing, who&rsquo;s organizing, what&rsquo;s working, what isn&rsquo;t. It&rsquo;s the dashboard the people running pickleball clubs and tournaments have been pasting together in spreadsheets for five years.",
+        "What I&rsquo;m proving: zero-to-one revenue is faster when the product carries its own GTM — every customer becomes a node in a real network, not an entry in a CRM. AI handles the boring 80% of the operator&rsquo;s week.",
+        "What I want now: a conversation with anyone running a club, a network, or a venue. Or with operators who&rsquo;ve felt the same gap in their corner of the world."
+      ],
+      ask: "want to talk Courtana? → bill@…"
+    },
+    pickle: {
+      num: "Build · 04",
+      title: "Pickle DaaS",
+      meta: ["Data-as-a-service", "2026", "co-built"],
+      pull: "Highlight detection at $0.0054 per clip. Four thousand-plus highlight groups analyzed and counting.",
+      body: [
+        "Pickle DaaS is the rails underneath Courtana &mdash; computer-vision pipeline that ingests amateur sports footage and returns clean, sortable highlight groups at a unit cost that finally makes the math work.",
+        "The interesting bit isn&rsquo;t the model. It&rsquo;s the cost discipline. Most of what passes for &ldquo;AI-native&rdquo; right now is GPT-4 calls hidden behind a UI. Pickle is the opposite: native infra, boring on the surface, ferocious on the unit economics."
+      ],
+      ask: "curious about the stack? ↗"
+    },
+    manifesto: {
+      num: "Field Note · 2015",
+      title: "The Networking Manifesto",
+      meta: ["Essay", "2015", "still operative"],
+      pull: "&ldquo;Who can I introduce you to so you can achieve your goals?&rdquo;",
+      body: [
+        "Eleven years ago I wrote a short essay arguing that the most useful question one person can ask another is the one above. Not &ldquo;what do you do,&rdquo; not &ldquo;how can I help.&rdquo; The intro question.",
+        "It is still the operating system I run my professional life on. The river that cuts across this whole map is made of those intros. Every project pin you see is downstream of one of them."
+      ],
+      ask: "read the original ↗"
+    },
+    dreamship: {
+      num: "Build · 02",
+      title: "Dreamship",
+      meta: ["Co-founder", "2018–22", "exit"],
+      pull: "Print-on-demand for brands that wanted control without the warehouse.",
+      body: [
+        "Four years building the commercial side of Dreamship &mdash; the strategy, the partnerships, the playbook the team called &ldquo;How We Win.&rdquo; We learned how to sell a complicated supply chain story in plain language and we kept the unit economics honest while we did it.",
+        "What I took with me: zero-to-one isn&rsquo;t a phase you graduate from. It&rsquo;s a posture. You either keep the muscle warm or you don&rsquo;t."
+      ],
+      ask: "ask me what worked → and what didn&rsquo;t"
+    },
+    ibm: {
+      num: "Sell · 01",
+      title: "IBM / Netezza",
+      meta: ["Enterprise software", "2012–14", "seven-figure deals"],
+      pull: "Where I learned that complicated things sell only when one human cares enough to make them simple for another human.",
+      body: [
+        "Closed seven-figure enterprise software deals before AI made any of this easier. The selling muscle from this era is what makes the rest of the map possible &mdash; you can&rsquo;t out-build the need to talk to a customer."
+      ],
+      ask: "ask me about enterprise GTM →"
+    },
+    wibi: {
+      num: "Sell · 02",
+      title: "WibiData",
+      meta: ["Data infra", "2014"],
+      pull: "Early big-data, before the wave had a name.",
+      body: [
+        "Joined a small data team early. Sold to the technical buyer when the technical buyer was still figuring out what the question was. That pattern &mdash; selling into the shape of a problem the customer hasn&rsquo;t fully named yet &mdash; has shown up in every job since."
+      ],
+      ask: ""
+    },
+    introstellar: {
+      num: "Side-quest",
+      title: "Introstellar",
+      meta: ["Side-quest", "2015"],
+      pull: "A small thing built to make the networking manifesto into a tool.",
+      body: [
+        "Most things people remember about Introstellar are wrong, and most things I remember about it are charitable. What stuck: a working belief that intros are the most undervalued asset class a working person has."
+      ],
+      ask: ""
+    },
+    gear: {
+      num: "Build · 01",
+      title: "GearLaunch",
+      meta: ["GTM", "2017"],
+      pull: "Built the commercial motion for a custom merchandise platform serving creators.",
+      body: [
+        "Two years before everyone else started talking about &ldquo;creator economy.&rdquo; The team was tiny and the playbook was bespoke. Useful proving ground for the operator muscle that ran Dreamship next."
+      ],
+      ask: ""
+    },
+    gord: {
+      num: "Play · 01",
+      title: "GroupOrDare",
+      meta: ["Card game", "2016", "yes really"],
+      pull: "I designed and shipped a party card game. It exists. It works. People still play it.",
+      body: [
+        "I include this on the map for two reasons. One: it&rsquo;s honest evidence that I will follow a bored idea into the world if it deserves to be followed. Two: it remains the project my kids are most impressed by, which is the correct ranking."
+      ],
+      ask: ""
+    },
+    lovable: {
+      num: "Tooling · 01",
+      title: "Lovable workflows",
+      meta: ["Internal tooling", "2026"],
+      pull: "Half of what I build now starts as a Lovable prompt and ends as a Cursor diff.",
+      body: [
+        "I am AI-native the way an electrician is electrical &mdash; it&rsquo;s not the thing I&rsquo;m selling, it&rsquo;s the thing that lets me move ten times faster than I used to at building, prototyping, and proving. This site is one of those workflows."
+      ],
+      ask: ""
+    },
+    nwm: {
+      num: "Origin",
+      title: "Northwestern Mutual",
+      meta: ["First job", "2006"],
+      pull: "Cold calling. Real ones know.",
+      body: [
+        "Out of college, doors and dials. The most concentrated lesson in selling I ever got, taught by a phone that mostly went to voicemail. I&rsquo;m grateful for it the way you&rsquo;re grateful for a hard winter."
+      ],
+      ask: ""
+    },
+    unc: {
+      num: "Study",
+      title: "UNC Kenan-Flagler MBA",
+      meta: ["Degree", "2010"],
+      pull: "Where the broad operator habits got sharpened into specific ones.",
+      body: [
+        "Two years to stop confusing &ldquo;activity&rdquo; with &ldquo;progress.&rdquo; Two years to learn what a P&amp;L is for. Two years to meet the small handful of people who&rsquo;d show up on this map a dozen more times over the next fifteen years."
+      ],
+      ask: ""
+    },
+    home: {
+      num: "Home",
+      title: "Home · three kids",
+      meta: ["Personal", "ongoing"],
+      pull: "The reason any of this matters.",
+      body: [
+        "Three kids. A house with a real kitchen and an unreal amount of pickleball gear in the garage. The map exists to support this region, not the other way around.",
+        "What I&rsquo;ve learned from them, and from being the parent I had to become in 2023, is the only thing on this map I&rsquo;m willing to call hard-won."
+      ],
+      ask: ""
+    },
+    walk1: {
+      num: "The Long Walk · 01",
+      title: "The diagnosis",
+      meta: ["Personal", "2023"],
+      pull: "A short letter from before chemo started.",
+      body: [
+        "The river didn&rsquo;t stop. The map kept growing. I want to say something profound about it but the honest version is shorter than that: I kept working, mostly because I wanted to, partially because the pipeline didn&rsquo;t care.",
+        "I am leaving this pin here because no one I&rsquo;d want to work with would want me to leave it out."
+      ],
+      ask: "if this is your road too → write me"
+    },
+    walk2: {
+      num: "The Long Walk · 02",
+      title: "The chemo quarter",
+      meta: ["Field note", "2024"],
+      pull: "Pipeline still moved. Two intros, four ships, one chair.",
+      body: [
+        "Twelve weeks of treatment. Most of them tolerable, a few of them not. I learned a lot about what counts as a productive day when the floor of what&rsquo;s possible drops by 60%.",
+        "Mostly I learned that the operator instinct doesn&rsquo;t go away when the body slows down &mdash; it just gets ruthlessly clear about what to spend the day on."
+      ],
+      ask: ""
+    },
+    walk3: {
+      num: "The Long Walk · 03",
+      title: "Still walking",
+      meta: ["Today", "2026"],
+      pull: "Still here. Still building. Still asking who I can introduce you to.",
+      body: [
+        "I don&rsquo;t treat this as a comeback story because that framing skips the part where you keep going during. The pin is here because the trail is here. That&rsquo;s all."
+      ],
+      ask: ""
+    }
+  };
+
+  /* ============ PAN / ZOOM ============ */
+  const canvas = document.getElementById("canvas");
+  const map = document.getElementById("map");
+
+  let tx = -1100, ty = -700, scale = .68;   // initial view roughly centered on the build plateau
+  const MIN = .35, MAX = 1.8;
+
+  function apply(){
+    map.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  }
+  apply();
+
+  // drag to pan
+  let dragging = false, sx=0, sy=0, stx=0, sty=0, moved=false;
+  canvas.addEventListener("pointerdown", e=>{
+    if(e.target.closest(".node")) return;
+    dragging=true;moved=false;sx=e.clientX;sy=e.clientY;stx=tx;sty=ty;
+    canvas.classList.add("dragging");
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", e=>{
+    if(!dragging)return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)+Math.abs(dy) > 4) moved=true;
+    tx = stx+dx; ty = sty+dy;
+    apply();
+  });
+  canvas.addEventListener("pointerup", e=>{
+    dragging=false;canvas.classList.remove("dragging");
+  });
+
+  // wheel zoom (cursor-anchored)
+  canvas.addEventListener("wheel", e=>{
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left - rect.width/2;
+    const my = e.clientY - rect.top  - rect.height/2;
+    const old = scale;
+    const next = Math.max(MIN, Math.min(MAX, scale * (e.deltaY < 0 ? 1.08 : 1/1.08)));
+    // keep point under cursor stable
+    tx = mx - (mx - tx) * (next/old);
+    ty = my - (my - ty) * (next/old);
+    scale = next;
+    apply();
+  }, {passive:false});
+
+  document.getElementById("zoomIn").onclick = ()=>{scale = Math.min(MAX, scale*1.15); apply()};
+  document.getElementById("zoomOut").onclick = ()=>{scale = Math.max(MIN, scale/1.15); apply()};
+  document.getElementById("zoomReset").onclick = ()=>{flyTo(-1100,-700,.68)};
+
+  function flyTo(nx, ny, ns){
+    const start = {tx,ty,scale};
+    const dur = 700;
+    const t0 = performance.now();
+    function step(t){
+      const k = Math.min(1, (t-t0)/dur);
+      const e = k<.5 ? 4*k*k*k : 1 - Math.pow(-2*k+2,3)/2;
+      tx = start.tx + (nx-start.tx)*e;
+      ty = start.ty + (ny-start.ty)*e;
+      scale = start.scale + (ns-start.scale)*e;
+      apply();
+      if(k<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* fast-travel destinations (point in map coords → translate so it lands center) */
+  const DEST = {
+    zero:  {x: 380,  y: 420,  s: .8},
+    build: {x: 1280, y: 720,  s: .72},
+    net:   {x: 1820, y: 780,  s: .8},
+    walk:  {x: 1180, y: 880,  s: .68},
+    home:  {x: 380,  y: 1180, s: .85},
+  };
+  document.querySelectorAll(".travel button").forEach(b=>{
+    b.onclick = ()=>{
+      document.querySelectorAll(".travel button").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      const d = DEST[b.dataset.to];
+      const vw = innerWidth, vh = innerHeight;
+      flyTo( -d.x*d.s + 0, -d.y*d.s + 0, d.s );
+      // adjust to put target roughly center (because translate is from map's local origin)
+      // We applied scale to position too: compute final translate so (x,y) lands at viewport center.
+      const nx = (vw/2) - d.x*d.s;
+      const ny = (vh/2) - d.y*d.s;
+      flyTo(nx - (vw/2), ny - (vh/2), d.s);
+    };
+  });
+
+  /* ============ PIN CLICK → CARD ============ */
+  document.querySelectorAll(".node").forEach(n=>{
+    n.addEventListener("click", e=>{
+      if(moved){moved=false;return}
+      const key = n.dataset.pin;
+      openCard(key);
+    });
+  });
+
+  function openCard(key){
+    const p = PINS[key];
+    if(!p) return;
+    const meta = (p.meta||[]).map(m=>`<span>${m}</span>`).join("");
+    const body = (p.body||[]).map(par=>`<p>${par}</p>`).join("");
+    const pull = p.pull ? `<div class="pull">${p.pull}</div>` : "";
+    const ask  = p.ask  ? `<div class="ask">${p.ask}</div>` : "";
+    document.getElementById("cardBody").innerHTML = `
+      <div class="num">${p.num}</div>
+      <h3>${p.title}</h3>
+      <div class="meta">${meta}</div>
+      ${pull}
+      ${body}
+      ${ask}
+    `;
+    document.getElementById("scrim").classList.add("on");
+  }
+  function closeCard(){ document.getElementById("scrim").classList.remove("on") }
+  window.closeCard = closeCard;
+  document.addEventListener("keydown", e=>{
+    if(e.key==="Escape") closeCard();
+  });
+
+  /* ============ TERMINAL ============ */
+  function sendPing(e){
+    e.preventDefault();
+    const i = document.getElementById("pingInput");
+    if(!i.value.trim()) return false;
+    const echo = document.getElementById("echo");
+    echo.classList.add("on");
+    i.value = "";
+    setTimeout(()=>echo.classList.remove("on"), 1800);
+    return false;
+  }
+  window.sendPing = sendPing;
+</script>
+</body>
+</html>

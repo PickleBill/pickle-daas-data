@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bill Bricker — The Signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Spectral:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:        #060908;
+    --bg-2:      #0a100c;
+    --screen:    #0c1410;
+    --line:      rgba(111,255,122,.10);
+    --line-2:    rgba(111,255,122,.22);
+    --line-strong: rgba(111,255,122,.45);
+
+    --phos:      #6fff7a;          /* primary phosphor green */
+    --phos-bright: #b8ffc4;
+    --phos-mid:  rgba(111,255,122,.65);
+    --phos-dim:  rgba(111,255,122,.42);
+    --phos-faint: rgba(111,255,122,.22);
+
+    --amber:     #ffb04a;          /* CH2 — sidequest */
+    --amber-dim: rgba(255,176,74,.55);
+    --cool:      #5a9aff;          /* CH3 — personal */
+    --cool-dim:  rgba(90,154,255,.55);
+    --warn:      #ff5b3a;          /* live indicator */
+    --bone:      #e8f0e0;
+    --grid:      rgba(111,255,122,.08);
+    --grid-strong: rgba(111,255,122,.18);
+
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --serif: "Spectral", Georgia, serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--bg);color:var(--phos);font-family:var(--mono)}
+  body{
+    background:
+      radial-gradient(ellipse at center, var(--bg-2) 0%, var(--bg) 75%, #020403 100%);
+  }
+  ::selection{background:var(--phos);color:var(--bg)}
+
+  /* ============ STAGE ============ */
+  .stage{position:relative;width:100vw;height:100vh;display:flex;flex-direction:column}
+
+  /* ============ TOP STATUS BAR ============ */
+  .topbar{
+    flex-shrink:0;height:48px;padding: 0 22px;
+    display:flex;align-items:center;gap:24px;
+    border-bottom: 1px solid var(--line-2);
+    background: linear-gradient(180deg, #0a100c, var(--bg));
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+    color:var(--phos-mid);text-transform:uppercase;
+    position:relative;
+    z-index: 10;
+  }
+  .topbar .lights{display:flex;gap:6px}
+  .topbar .lights i{width:8px;height:8px;border-radius:50%;background:var(--phos-dim);display:inline-block}
+  .topbar .lights .live{background:var(--warn);box-shadow:0 0 8px var(--warn);animation:blink 1.4s steps(2) infinite}
+  @keyframes blink{50%{opacity:.35}}
+
+  .topbar .id{color:var(--phos-bright);font-weight:600;letter-spacing:.18em}
+  .topbar .sep{color:var(--phos-faint)}
+  .topbar .clk{margin-left:auto;color:var(--phos-mid);font-variant-numeric: tabular-nums}
+  .topbar .clk b{color:var(--phos-bright);font-weight:600}
+
+  .topbar .cta{
+    appearance:none;border:1px solid var(--phos-dim);background:transparent;
+    color:var(--phos);cursor:pointer;
+    font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    padding: 6px 12px;
+    transition: all .15s;
+  }
+  .topbar .cta:hover{border-color:var(--phos-bright);color:var(--phos-bright);box-shadow: 0 0 12px rgba(111,255,122,.3) inset, 0 0 12px rgba(111,255,122,.2)}
+  .topbar .cta.primary{background:var(--phos);color:var(--bg);border-color:var(--phos);font-weight:700}
+  .topbar .cta.primary:hover{background:var(--phos-bright);box-shadow: 0 0 16px var(--phos)}
+  .topbar .btn-grp{display:flex;gap:4px;margin-left:8px}
+
+  /* ============ SCOPE SCREEN ============ */
+  .scope{
+    flex:1;position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse 1200px 700px at 50% 45%, #0e1b14 0%, var(--screen) 60%, #060c08 100%);
+  }
+
+  /* CRT scanlines */
+  .scope::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:
+      repeating-linear-gradient(180deg, transparent 0px, transparent 2px, rgba(0,0,0,.18) 2px, rgba(0,0,0,.18) 3px);
+    opacity: .55;
+  }
+  /* slight CRT vignette + RGB tint */
+  .scope::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:7;
+    background:
+      radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.5) 100%);
+  }
+  /* grid background */
+  .grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events:none;
+  }
+  .grid-strong{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(to right, var(--grid-strong) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-strong) 1px, transparent 1px);
+    background-size: 240px 240px;
+    pointer-events:none;
+  }
+
+  /* ============ TITLE / READOUT (top-left) ============ */
+  .readout{
+    position:absolute;top: 28px;left: 32px;z-index:4;pointer-events:none;
+    max-width: 600px;
+  }
+  .readout .kk{
+    color: var(--phos-bright);
+    font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;
+    text-shadow: 0 0 8px rgba(111,255,122,.5);
+  }
+  .readout .kk .live{
+    display:inline-flex;align-items:center;gap:6px;color:var(--warn);
+  }
+  .readout .kk .live::before{content:"●";text-shadow:0 0 8px var(--warn);animation:blink 1.4s steps(2) infinite}
+  .readout h1{
+    font-family:var(--mono);font-weight:700;
+    font-size: clamp(36px, 4.8vw, 64px);
+    line-height: .96;letter-spacing:-.04em;color:var(--phos-bright);
+    margin: 8px 0 6px;
+    text-shadow: 0 0 10px rgba(111,255,122,.6), 0 0 24px rgba(111,255,122,.3);
+  }
+  .readout h1 em{
+    font-family:var(--serif);font-style:italic;font-weight:400;color:var(--phos);
+  }
+  .readout .deck{
+    font-family:var(--mono);font-size:13px;line-height:1.5;color:var(--phos-mid);
+    margin: 16px 0 0;max-width: 56ch;letter-spacing:.02em;
+  }
+  .readout .deck b{color:var(--phos-bright);font-weight:600}
+  .readout .deck em{color:var(--amber);font-style:normal;font-weight:500;font-family:var(--mono)}
+
+  /* ============ SIDE READOUT (top-right channel summary) ============ */
+  .channels{
+    position:absolute;top: 28px;right: 32px;z-index:4;pointer-events:none;
+    border: 1px solid var(--line-2);
+    background: rgba(6,12,9,.7);
+    backdrop-filter: blur(1px);
+    padding: 10px 14px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--phos-dim);
+    min-width: 232px;
+  }
+  .channels .ch{
+    display:grid;grid-template-columns: 22px 1fr auto auto;
+    align-items:center;gap:8px;
+    padding: 3px 0;
+  }
+  .channels .ch .l{font-weight:600}
+  .channels .ch1 .l{color:var(--phos-bright)}
+  .channels .ch2 .l{color:var(--amber)}
+  .channels .ch3 .l{color:var(--cool)}
+  .channels .ch .name{color:var(--phos-mid)}
+  .channels .ch .ct{color:var(--phos-dim);font-size:9px;letter-spacing:.1em}
+  .channels .ch .sw{
+    width: 18px;height:6px;
+  }
+  .channels .ch1 .sw{background:var(--phos);box-shadow:0 0 6px var(--phos)}
+  .channels .ch2 .sw{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+  .channels .ch3 .sw{background:var(--cool);box-shadow:0 0 6px var(--cool)}
+  .channels .div{border-top: 1px dashed var(--line);padding-top:6px;margin-top:6px;display:flex;justify-content:space-between;color:var(--phos-faint);font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+  .channels .div b{color:var(--phos-bright);font-weight:600}
+
+  /* ============ THE TRACE (SVG) ============ */
+  .trace-layer{
+    position:absolute;inset:0;
+    pointer-events:none;
+  }
+  .trace-layer svg{position:absolute;inset:0;width:100%;height:100%}
+
+  /* sweep animation */
+  .ch1-path{
+    stroke-dasharray: 3000;
+    stroke-dashoffset: 3000;
+    animation: sweep1 2.4s cubic-bezier(.4,.2,.4,1) .3s forwards;
+  }
+  @keyframes sweep1{to{stroke-dashoffset:0}}
+
+  .ch1-forecast{
+    stroke-dasharray: 6 12;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    animation: fadein 1s ease 2.6s forwards, marching 60s linear 2.6s infinite;
+  }
+  @keyframes fadein{to{opacity:.65}}
+  @keyframes marching{to{stroke-dashoffset: -180}}
+
+  .ch3-noise{
+    opacity:0;
+    animation: fadein .9s ease 1s forwards;
+  }
+  .ch3-noise{
+    --fade: .55;
+  }
+
+  /* ============ NODES (clickable) ============ */
+  .blip{
+    position:absolute;
+    cursor:pointer;user-select:none;
+    transform: translate(-50%,-50%);
+    z-index: 8;
+  }
+  .blip .dot{
+    width: 18px;height: 18px;border-radius:50%;
+    background: var(--phos);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--phos-bright), 0 0 24px var(--phos);
+    transition: transform .25s, box-shadow .25s;
+    position:relative;
+  }
+  .blip .dot::after{
+    content:"";position:absolute;inset:5px;border-radius:50%;background:var(--phos-bright);
+  }
+  .blip:hover .dot{transform: scale(1.25);box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--phos-bright), 0 0 32px var(--phos)}
+
+  /* CH2 amber */
+  .blip.ch2 .dot{
+    background: var(--amber);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px #ffd28a, 0 0 24px var(--amber);
+  }
+  .blip.ch2 .dot::after{background:#ffd28a}
+
+  /* CH3 cool blue */
+  .blip.ch3 .dot{
+    background: var(--cool);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px #a4c8ff, 0 0 24px var(--cool);
+  }
+  .blip.ch3 .dot::after{background:#a4c8ff}
+
+  /* live primary node */
+  .blip.live .dot{
+    background: var(--warn);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px #ff8a6a, 0 0 0 16px rgba(255,91,58,.18), 0 0 36px var(--warn);
+    animation: warnpulse 1.6s ease-in-out infinite;
+  }
+  .blip.live .dot::after{background:#ffb8a0}
+  @keyframes warnpulse{
+    0%,100%{box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px #ff8a6a, 0 0 0 12px rgba(255,91,58,.22), 0 0 36px var(--warn)}
+    50%   {box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px #ff8a6a, 0 0 0 24px rgba(255,91,58,0),    0 0 36px var(--warn)}
+  }
+
+  /* vertical drop line */
+  .blip .drop{
+    position:absolute;left:50%;top:9px;
+    width:1px;height: 80px;
+    background: linear-gradient(180deg, var(--phos-mid), transparent);
+    pointer-events:none;
+  }
+  .blip.ch2 .drop{background: linear-gradient(0deg, transparent, var(--amber-dim))}
+  .blip.ch2 .drop{top:auto;bottom:9px}
+  .blip.ch3 .drop{background: linear-gradient(180deg, var(--cool-dim), transparent)}
+  .blip.ch3 .drop{display:none}
+
+  /* labels */
+  .blip .lbl{
+    position:absolute;
+    background: rgba(6,12,9,.92);
+    border: 1px solid var(--phos-dim);
+    padding: 5px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--phos-bright);
+    letter-spacing: -.005em;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-shadow: 0 0 4px rgba(111,255,122,.4);
+    transition: all .2s;
+  }
+  .blip .lbl .y{
+    display:inline-block;font-weight:500;color:var(--phos-mid);
+    margin-left: 8px;font-size: 10px;letter-spacing: .04em;
+  }
+  .blip.ch2 .lbl{
+    border-color: var(--amber-dim);color:var(--amber);text-shadow: 0 0 4px rgba(255,176,74,.4);
+  }
+  .blip.ch2 .lbl .y{color:#d8902a}
+  .blip.ch3 .lbl{
+    border-color: var(--cool-dim);color:var(--cool);text-shadow: 0 0 4px rgba(90,154,255,.4);
+  }
+  .blip.ch3 .lbl .y{color:#7ab0ff}
+  .blip.live .lbl{
+    border-color: var(--warn);color:#ffb8a0;text-shadow: 0 0 4px rgba(255,91,58,.5);
+  }
+  .blip.live .lbl .y{color:var(--warn)}
+
+  .blip:hover .lbl{background: rgba(20,30,22,.95)}
+
+  /* label positions */
+  .blip.lp-top    .lbl{left:50%;top: -52px;transform: translateX(-50%)}
+  .blip.lp-bot    .lbl{left:50%;bottom: -52px;transform: translateX(-50%)}
+  .blip.lp-right  .lbl{left: 28px;top: 50%;transform: translateY(-50%)}
+  .blip.lp-left   .lbl{right: 28px;top: 50%;transform: translateY(-50%)}
+  .blip.lp-tr     .lbl{left: 22px;bottom: 22px}
+  .blip.lp-br     .lbl{left: 22px;top: 22px}
+  .blip.lp-tl     .lbl{right: 22px;bottom: 22px;text-align:right}
+  .blip.lp-bl     .lbl{right: 22px;top: 22px;text-align:right}
+
+  /* entry */
+  .blip{opacity:0;transform: translate(-50%,-50%) scale(.4)}
+  .blip.in{
+    opacity:1;transform: translate(-50%,-50%) scale(1);
+    transition: opacity .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  /* ============ FORECAST BAND OVERLAY ============ */
+  .forecast{
+    position:absolute;top:80px;bottom:32px;
+    border-left: 1px dashed var(--phos-dim);
+    background: linear-gradient(90deg, transparent, rgba(111,255,122,.04) 30%, rgba(111,255,122,.08) 100%);
+    pointer-events:none;
+  }
+  .forecast .lbl{
+    position:absolute;top: 24px;left: 16px;
+    font-family: var(--mono);font-size: 10px;font-weight: 600;color: var(--phos-bright);letter-spacing: .2em;text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(111,255,122,.4);
+  }
+  .forecast .lbl::before{content:"⌒  "}
+  .forecast .sub{
+    position:absolute;top: 48px;left: 16px;
+    font-family: var(--mono);font-size: 9.5px;color: var(--phos-mid);letter-spacing: .14em;text-transform: uppercase;
+  }
+  .forecast .term{
+    position:absolute;bottom: 24px;right: 24px;
+    font-family: var(--mono);font-size: 10px;color: var(--amber);letter-spacing: .2em;text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(255,176,74,.4);
+    animation: blink 1.6s steps(2) infinite;
+  }
+
+  /* ============ X AXIS (time scale, oscilloscope style) ============ */
+  .xaxis{
+    position:absolute;left:0;right:0;bottom:32px;height: 28px;
+    border-top: 1px solid var(--line-2);
+    pointer-events:none;
+    z-index:5;
+  }
+  .xtick{
+    position:absolute;top:8px;transform:translateX(-50%);
+    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.06em;color:var(--phos-dim);
+  }
+  .xtick::before{
+    content:"";position:absolute;top:-9px;left:50%;width:1px;height:5px;background:var(--phos-dim);
+  }
+  .xtick.now{color:var(--warn);font-weight:700}
+  .xtick.now::before{background:var(--warn);height:8px}
+
+  /* ============ BOTTOM STATUS BAR ============ */
+  .botbar{
+    flex-shrink:0;height:32px;
+    border-top: 1px solid var(--line-2);
+    background: linear-gradient(180deg, var(--bg), #020403);
+    display:flex;align-items:center;gap:18px;padding: 0 22px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--phos-dim);
+    position:relative;z-index:9;
+  }
+  .botbar .field b{color:var(--phos-bright);font-weight:600}
+  .botbar .field em{color:var(--amber);font-style:normal}
+  .botbar .right{margin-left:auto;color:var(--phos-mid)}
+
+  /* ============ OVERLAY — TERMINAL WINDOW ============ */
+  .scrim{
+    position:fixed;inset:0;z-index:80;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(2px);
+    display:none;align-items:center;justify-content:center;padding:32px;
+  }
+  .scrim.on{display:flex;animation: fadein2 .25s ease}
+  @keyframes fadein2{from{opacity:0}to{opacity:1}}
+
+  .term-card{
+    width: min(560px, 96vw);max-height: 84vh;overflow:auto;
+    background: var(--bg);
+    border: 1px solid var(--phos);
+    box-shadow:
+      0 0 0 1px var(--bg),
+      0 0 24px rgba(111,255,122,.28),
+      0 24px 60px rgba(0,0,0,.6);
+    font-family:var(--mono);
+    color: var(--phos);
+    position:relative;
+    animation: termin .3s cubic-bezier(.3,.7,.4,1);
+  }
+  @keyframes termin{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+  .term-card .hdr{
+    display:flex;justify-content:space-between;align-items:center;
+    background: rgba(111,255,122,.08);
+    border-bottom: 1px solid var(--phos-dim);
+    padding: 8px 16px;
+    font-size: 10px;letter-spacing: .16em;text-transform: uppercase;color:var(--phos-bright);
+  }
+  .term-card .hdr .l{display:flex;align-items:center;gap:10px}
+  .term-card .hdr .l::before{content:"▸";color:var(--phos-bright)}
+  .term-card .hdr .l .lane{color:var(--phos)}
+  .term-card[data-lane="ch2"] .hdr{background:rgba(255,176,74,.08);border-bottom-color:var(--amber-dim)}
+  .term-card[data-lane="ch2"] .hdr .l{color:var(--amber)}
+  .term-card[data-lane="ch3"] .hdr{background:rgba(90,154,255,.08);border-bottom-color:var(--cool-dim)}
+  .term-card[data-lane="ch3"] .hdr .l{color:var(--cool)}
+  .term-card[data-lane="live"] .hdr{background:rgba(255,91,58,.10);border-bottom-color:var(--warn);color:var(--warn)}
+
+  .term-card .hdr .x{
+    background:none;border:none;color:inherit;cursor:pointer;
+    font:inherit;letter-spacing:inherit;padding:0;
+  }
+  .term-card .hdr .x:hover{color:var(--phos-bright)}
+
+  .term-card .body{padding: 18px 22px 14px}
+  .term-card .ascii-frame{
+    color:var(--phos-dim);font-size:10px;line-height:1;margin: 0 0 8px;letter-spacing:0;
+    white-space: pre;
+  }
+  .term-card .id-row{
+    display:flex;gap:14px;font-size:10px;color:var(--phos-mid);
+    margin-bottom: 10px;letter-spacing:.06em;
+  }
+  .term-card .id-row b{color:var(--phos-bright);font-weight:600}
+  .term-card h2{
+    font-family:var(--mono);font-weight:700;
+    font-size: 30px;line-height: 1;letter-spacing:-.025em;
+    color: var(--phos-bright);
+    margin: 4px 0 4px;
+    text-shadow: 0 0 8px rgba(111,255,122,.45);
+  }
+  .term-card[data-lane="ch2"] h2{color:var(--amber);text-shadow:0 0 8px rgba(255,176,74,.45)}
+  .term-card[data-lane="ch3"] h2{color:var(--cool);text-shadow:0 0 8px rgba(90,154,255,.45)}
+  .term-card[data-lane="live"] h2{color:#ffb8a0;text-shadow:0 0 8px rgba(255,91,58,.45)}
+
+  .term-card .period{
+    font-family:var(--mono);font-size:11px;color:var(--phos-mid);letter-spacing:.12em;text-transform:uppercase;
+    margin-bottom: 14px;
+  }
+  .term-card .pull{
+    font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.4;
+    color: var(--phos-bright);
+    border-left: 2px solid var(--phos);
+    padding: 4px 0 4px 16px;margin: 8px 0 14px;
+  }
+  .term-card[data-lane="ch2"] .pull{border-left-color:var(--amber);color:#ffd28a}
+  .term-card[data-lane="ch3"] .pull{border-left-color:var(--cool);color:#a4c8ff}
+  .term-card[data-lane="live"] .pull{border-left-color:var(--warn);color:#ffd0bb}
+
+  .term-card .body p{
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;color:var(--phos-mid);
+    margin: 0 0 10px;letter-spacing:.01em;
+  }
+  .term-card .body p em{color:var(--phos-bright);font-style:italic;font-family:var(--serif);font-size:13.5px}
+
+  .term-card .actions{
+    border-top: 1px dashed var(--phos-dim);
+    padding: 12px 22px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size: 10px;letter-spacing:.14em;text-transform:uppercase;color:var(--phos-dim);
+  }
+  .term-card .actions .ask{color:var(--phos-bright)}
+  .term-card .actions .ask a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+  .term-card[data-lane="ch2"] .actions .ask{color:var(--amber)}
+  .term-card[data-lane="ch3"] .actions .ask{color:var(--cool)}
+  .term-card[data-lane="live"] .actions .ask{color:#ffb8a0}
+  .term-card .actions .nav{display:flex;gap:14px}
+  .term-card .actions .nav button{background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;letter-spacing:inherit}
+  .term-card .actions .nav button:hover{color:var(--phos-bright)}
+
+  @media (max-width: 980px){
+    .channels{display:none}
+    .readout h1{font-size:36px}
+    .blip .lbl{font-size:10px}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <span class="lights"><i></i><i></i><i class="live"></i></span>
+    <span class="id">BRICKER.SIGNAL</span>
+    <span class="sep">::</span>
+    <span>scope.001</span>
+    <span class="sep">::</span>
+    <span style="color:var(--warn);font-weight:600">▸ LIVE TRANSMISSION</span>
+    <span class="sep">::</span>
+    <span>20Y SWEEP</span>
+    <span class="clk">UPTIME <b>07y · 42d · 03:14:<span id="sec">22</span></b></span>
+    <div class="btn-grp">
+      <button class="cta">CV.PDF ↓</button>
+      <button class="cta">→ INTRO</button>
+      <button class="cta primary">▸ BOOK 30M</button>
+    </div>
+  </header>
+
+  <!-- ============ SCOPE ============ -->
+  <div class="scope">
+    <div class="grid"></div>
+    <div class="grid-strong"></div>
+
+    <!-- ============ READOUT (top-left title) ============ -->
+    <div class="readout">
+      <div class="kk">
+        <span>BRICKER.SIGNAL · CH1+CH2+CH3</span>
+        <span class="sep" style="color:var(--phos-faint)">·</span>
+        <span class="live">CARRIER STRONG</span>
+      </div>
+      <h1>Bill Bricker /<br/><em>still transmitting.</em></h1>
+      <p class="deck">A 20-year career on the scope. Twelve events across three channels. <b>Amplitude rising.</b> <em>Forecast: signal strong, direction unwavering.</em></p>
+    </div>
+
+    <!-- ============ CHANNELS (top-right) ============ -->
+    <div class="channels" aria-hidden="true">
+      <div class="ch ch1"><span class="sw"></span><span class="l">CH1</span><span class="name">career</span><span class="ct">7</span></div>
+      <div class="ch ch2"><span class="sw"></span><span class="l">CH2</span><span class="name">sidequest</span><span class="ct">3</span></div>
+      <div class="ch ch3"><span class="sw"></span><span class="l">CH3</span><span class="name">personal</span><span class="ct">2</span></div>
+      <div class="div"><span>T/DIV</span><b>2y</b><span>V/DIV</span><b>scope</b></div>
+    </div>
+
+    <!-- ============ TRACE LAYER (SVG) ============ -->
+    <div class="trace-layer">
+      <svg viewBox="0 0 1440 720" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="ch1gradient" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#6fff7a" stop-opacity="0"/>
+            <stop offset="60%" stop-color="#6fff7a" stop-opacity=".08"/>
+            <stop offset="100%" stop-color="#6fff7a" stop-opacity=".22"/>
+          </linearGradient>
+        </defs>
+
+        <!-- CH1 fill under trace -->
+        <path d="M 80 600 L 240 540 L 360 460 L 480 440 L 680 340 L 800 240 L 1080 140 L 1080 660 L 80 660 Z"
+              fill="url(#ch1gradient)"/>
+
+        <!-- CH1 main trace — step-function rising with subtle smooth bezier curves -->
+        <path class="ch1-path"
+              d="M 60 620
+                 L 80 600
+                 L 240 540
+                 L 360 460
+                 L 480 440
+                 L 680 340
+                 L 800 240
+                 L 1080 140"
+              fill="none" stroke="#6fff7a" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"
+              filter="url(#glow)"/>
+
+        <!-- CH1 forecast continuation -->
+        <path class="ch1-forecast"
+              d="M 1080 140 Q 1200 120, 1320 130 T 1440 110"
+              fill="none" stroke="#6fff7a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+              filter="url(#glow)"/>
+
+        <!-- CH2 sidequest spikes (above the trace) -->
+        <path d="M 540 470 L 568 290 L 596 470" fill="none" stroke="#ffb04a" stroke-width="1.5" filter="url(#glow)" opacity=".75"
+              style="stroke-dasharray:600;stroke-dashoffset:600;animation:sweep1 .8s ease 1.6s forwards"/>
+        <path d="M 594 460 L 622 280 L 650 470" fill="none" stroke="#ffb04a" stroke-width="1.5" filter="url(#glow)" opacity=".75"
+              style="stroke-dasharray:600;stroke-dashoffset:600;animation:sweep1 .8s ease 1.75s forwards"/>
+        <path d="M 1135 170 L 1163 50 L 1191 200" fill="none" stroke="#ffb04a" stroke-width="1.5" filter="url(#glow)" opacity=".75"
+              style="stroke-dasharray:600;stroke-dashoffset:600;animation:sweep1 .8s ease 2.2s forwards"/>
+
+        <!-- CH3 noise floor — gentle wave at bottom -->
+        <path class="ch3-noise"
+              d="M -20 670 Q 60 668, 120 672 T 240 670 T 360 672 T 480 668 T 600 672 T 720 670 T 840 672 T 960 668 T 1080 672 T 1200 670 T 1320 672 T 1460 670"
+              fill="none" stroke="#5a9aff" stroke-width="1.3" opacity=".55" filter="url(#glow)"
+              style="opacity:0;animation: fadein .9s ease 1s forwards"/>
+
+        <!-- CH3 small ticks at personal events -->
+        <line x1="300" y1="650" x2="300" y2="690" stroke="#5a9aff" stroke-width="1.5" opacity=".7" filter="url(#glow)"
+              style="opacity:0;animation: fadein .6s ease 1.2s forwards"/>
+        <line x1="1001" y1="650" x2="1001" y2="690" stroke="#5a9aff" stroke-width="1.5" opacity=".7" filter="url(#glow)"
+              style="opacity:0;animation: fadein .6s ease 1.4s forwards"/>
+      </svg>
+    </div>
+
+    <!-- ============ BLIPS (clickable nodes) ============ -->
+    <!-- positions in SCREEN px on a 1440x720 stage scaled responsively -->
+
+    <!-- CH1 CAREER -->
+    <div class="blip ch1 lp-bot" data-id="nwm"       style="left: calc(60px + (80 / 1440) * (100vw - 0px) * 0); left:80px;top:600px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">NWM<span class="y">'06</span></div>
+    </div>
+    <!-- Use simple px positions — assume the SVG's coord 1:1 maps to the scope area. -->
+    <div class="blip ch1 lp-tr"  data-id="unc"       style="left:240px;top:540px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">UNC MBA<span class="y">'10</span></div>
+    </div>
+    <div class="blip ch1 lp-tr"  data-id="ibm"       style="left:360px;top:460px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">IBM · NETEZZA<span class="y">'12</span></div>
+    </div>
+    <div class="blip ch1 lp-bot" data-id="wibi"      style="left:480px;top:440px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">WIBIDATA<span class="y">'14</span></div>
+    </div>
+    <div class="blip ch1 lp-tr"  data-id="gear"      style="left:680px;top:340px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">GEARLAUNCH<span class="y">'17</span></div>
+    </div>
+    <div class="blip ch1 lp-tr"  data-id="dreamship" style="left:800px;top:240px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">DREAMSHIP<span class="y">'18–'22</span></div>
+    </div>
+    <div class="blip ch1 live lp-tr"  data-id="courtana"  style="left:1080px;top:140px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">COURTANA ●<span class="y">'23+ LIVE</span></div>
+    </div>
+
+    <!-- CH2 SIDEQUEST (above the trace, on spike tips) -->
+    <div class="blip ch2 lp-top" data-id="manifesto" style="left:568px;top:290px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">NETWORKING<span class="y">'15</span></div>
+    </div>
+    <div class="blip ch2 lp-top" data-id="gord"      style="left:622px;top:280px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">GROUPORDARE<span class="y">'16</span></div>
+    </div>
+    <div class="blip ch2 lp-br" data-id="pickle"    style="left:1163px;top:80px">
+      <div class="drop"></div>
+      <div class="dot"></div>
+      <div class="lbl">PICKLE DAAS<span class="y">'26</span></div>
+    </div>
+
+    <!-- CH3 PERSONAL (noise floor) -->
+    <div class="blip ch3 lp-bot" data-id="home" style="left:300px;top:670px">
+      <div class="dot"></div>
+      <div class="lbl">HOME · 3 KIDS<span class="y">ongoing</span></div>
+    </div>
+    <div class="blip ch3 lp-bot" data-id="walk" style="left:1001px;top:670px">
+      <div class="dot"></div>
+      <div class="lbl">THE LONG WALK<span class="y">'23+</span></div>
+    </div>
+
+    <!-- ============ FORECAST OVERLAY ============ -->
+    <div class="forecast" style="left:1080px;right:0">
+      <div class="lbl">forecast band</div>
+      <div class="sub">2026 → 2030 · signal projected</div>
+      <div class="term">▸ waiting for input</div>
+    </div>
+
+    <!-- ============ X AXIS ============ -->
+    <div class="xaxis">
+      <div class="xtick" style="left:80px">'06</div>
+      <div class="xtick" style="left:240px">'10</div>
+      <div class="xtick" style="left:360px">'12</div>
+      <div class="xtick" style="left:480px">'14</div>
+      <div class="xtick" style="left:622px">'16</div>
+      <div class="xtick" style="left:740px">'18</div>
+      <div class="xtick" style="left:920px">'22</div>
+      <div class="xtick now" style="left:1100px">'26 ▸ NOW</div>
+      <div class="xtick" style="left:1380px">'30</div>
+    </div>
+  </div>
+
+  <!-- ============ BOTTOM STATUS BAR ============ -->
+  <footer class="botbar">
+    <span class="field"><b>CH1</b> <span style="color:var(--phos)">CAREER</span> · ON</span>
+    <span class="sep" style="color:var(--phos-faint)">|</span>
+    <span class="field"><b>CH2</b> <span style="color:var(--amber)">SIDEQUEST</span> · ON</span>
+    <span class="sep" style="color:var(--phos-faint)">|</span>
+    <span class="field"><b>CH3</b> <span style="color:var(--cool)">PERSONAL</span> · ON</span>
+    <span class="sep" style="color:var(--phos-faint)">|</span>
+    <span class="field">T/DIV <b>2y</b></span>
+    <span class="field">V/DIV <b>scope</b></span>
+    <span class="right">▸ CARRIER STRONG · <em>amplitude +6, climbing</em></span>
+  </footer>
+
+</div>
+
+<!-- ============ OVERLAY — TERMINAL CARD ============ -->
+<div class="scrim" id="scrim" onclick="if(event.target===this) closeCard()">
+  <article class="term-card" id="termCard" data-lane="ch1">
+    <div class="hdr">
+      <div class="l"><span class="lane" id="cardCh">CH1 · CAREER</span> · TRANSMISSION OPEN</div>
+      <button class="x" onclick="closeCard()">[ × close ]</button>
+    </div>
+    <div class="body">
+      <div class="ascii-frame" id="asciiFrame">╭─────────────────────────────────────╮
+│  SIGNAL ID · 01.A · ENVELOPE OPEN   │
+╰─────────────────────────────────────╯</div>
+      <div class="id-row">
+        <span>ID · <b id="cardNum">01</b></span>
+        <span>OF · <b>12</b></span>
+        <span>TIME · <b id="cardTime">'06</b></span>
+        <span>AMP · <b id="cardAmp">+1.0</b></span>
+      </div>
+      <h2 id="cardTitle">Title</h2>
+      <div class="period" id="cardPeriod">2006</div>
+      <div class="pull" id="cardPull">Pull quote.</div>
+      <div id="cardBody"></div>
+    </div>
+    <div class="actions">
+      <div class="ask" id="cardAsk"></div>
+      <div class="nav">
+        <button onclick="prevNode()">[ ◂ prev ]</button>
+        <button onclick="nextNode()">[ next ▸ ]</button>
+      </div>
+    </div>
+  </article>
+</div>
+
+<script>
+  const NODES = {
+    nwm:       { lane:"ch1", lab:"CH1 · CAREER",   num:"01", title:"NORTHWESTERN MUTUAL",   period:"2006 · first job · cold-call school", time:"'06", amp:"+1.0", pull:"Doors and dials. The most concentrated lesson in selling I ever got.",                     body:["Out of college, taught by a phone that mostly went to voicemail. I&rsquo;m grateful for it the way you&rsquo;re grateful for a hard winter."], ask:"" },
+    unc:       { lane:"ch1", lab:"CH1 · CAREER",   num:"02", title:"UNC KENAN-FLAGLER",     period:"2010 · MBA",                          time:"'10", amp:"+1.5", pull:"Where I stopped confusing activity with progress.",                                       body:["Two years to learn what a P&amp;L is for. Two years to meet the handful of people who&rsquo;d show up on this map a dozen more times."], ask:"" },
+    ibm:       { lane:"ch1", lab:"CH1 · CAREER",   num:"03", title:"IBM / NETEZZA",         period:"2012–14 · 7-fig enterprise deals",    time:"'12", amp:"+2.5", pull:"You cannot out-build the need to talk to a customer.",                                    body:["Closed seven-figure software deals before AI made any of this easier. Complicated things sell only when one human cares enough to make them simple for another."], ask:"ask me about enterprise GTM →" },
+    wibi:      { lane:"ch1", lab:"CH1 · CAREER",   num:"04", title:"WIBIDATA",              period:"2014 · early big-data",                time:"'14", amp:"+3.0", pull:"Selling into a problem the customer hasn&rsquo;t named yet.",                              body:["Joined a small data team early. That pattern of selling into the <em>shape of a problem</em> has shown up in every job since."], ask:"" },
+    gear:      { lane:"ch1", lab:"CH1 · CAREER",   num:"05", title:"GEARLAUNCH",            period:"2017 · creator commerce",              time:"'17", amp:"+3.5", pull:"Two years before everyone else said 'creator economy.'",                                  body:["Tiny team. Bespoke playbook. The right proving ground for the operator muscle that ran Dreamship next."], ask:"" },
+    dreamship: { lane:"ch1", lab:"CH1 · CAREER",   num:"06", title:"DREAMSHIP",             period:"2018–22 · co-founder · GTM & strategy",time:"'18", amp:"+4.5", pull:"How We Win — the playbook the team called it.",                                           body:["Four years building the commercial side of a complicated supply-chain story. Learned how to sell something complex in plain language and keep the unit economics honest.","<em>Zero-to-one is a posture</em>, not a phase."], ask:"ask me what worked — and what didn't →" },
+    courtana:  { lane:"live",lab:"CH1 · COURTANA · LIVE", num:"07", title:"COURTANA",       period:"2023 → now · founder · venue intel · live", time:"'23+", amp:"+6.0 ⤴", pull:"The operating layer for the people who actually run the room.", body:["Coaches, organizers, club ops. The dashboard they&rsquo;ve been pasting together in spreadsheets for five years.","Zero-to-one revenue is <em>faster</em> when the product carries its own GTM."], ask:"want to talk Courtana? →" },
+
+    manifesto: { lane:"ch2", lab:"CH2 · SIDEQUEST", num:"08", title:"NETWORKING MANIFESTO", period:"2015 · essay · still operative",       time:"'15", amp:"spike +4.5", pull:"\"Who can I introduce you to so you can achieve your goals?\"", body:["The one question I&rsquo;ve asked at the top of every working conversation for over a decade. The river of intros is the longest line on my career map."], ask:"read the original →" },
+    gord:      { lane:"ch2", lab:"CH2 · SIDEQUEST", num:"09", title:"GROUPORDARE",          period:"2016 · party card game",                time:"'16", amp:"spike +4.5", pull:"I designed and shipped a party game. It exists. It works.",                                body:["Yes really. My kids think it&rsquo;s the most impressive thing I&rsquo;ve ever done, which is, on reflection, the correct ranking."], ask:"" },
+    pickle:    { lane:"ch2", lab:"CH2 · SIDEQUEST", num:"10", title:"PICKLE DAAS",          period:"2026 · computer-vision rails",          time:"'26", amp:"spike +7.0", pull:"Highlight detection at $0.0054 per clip.",                                                body:["The rails underneath Courtana. Native infra, boring on the surface, <em>ferocious on the unit economics</em>. The model isn&rsquo;t the moat — the math is."], ask:"curious about the stack? →" },
+
+    home:      { lane:"ch3", lab:"CH3 · PERSONAL",  num:"11", title:"HOME · THREE KIDS",     period:"ongoing · the noise floor that matters", time:"ongoing", amp:"baseline", pull:"The reason any of this matters.",                                                          body:["Three kids. A real kitchen and an unreal amount of pickleball gear in the garage. The scope&rsquo;s noise floor is the only signal that really matters."], ask:"" },
+    walk:      { lane:"ch3", lab:"CH3 · PERSONAL",  num:"12", title:"THE LONG WALK",        period:"2023 → now · still walking",            time:"'23+", amp:"baseline", pull:"Cancer, 2023. The pipeline didn&rsquo;t stop. Neither did I.",                              body:["I leave this tick visible because no one I&rsquo;d want to work with would want me to leave it out — and because the operator instinct gets <em>ruthlessly clear</em> when the day is short."], ask:"if this is your road too, write me →" },
+  };
+  const NODE_ORDER = ["nwm","unc","ibm","wibi","gear","dreamship","courtana","manifesto","gord","pickle","home","walk"];
+  let openId = null;
+
+  /* uptime tick */
+  let s = 22;
+  setInterval(()=>{
+    s = (s+1)%60;
+    document.getElementById("sec").textContent = String(s).padStart(2,"0");
+  }, 1000);
+
+  /* entry stagger — sweep order matches the trace direction */
+  const stagger = ["nwm","unc","ibm","wibi","manifesto","gord","gear","dreamship","home","walk","courtana","pickle"];
+  stagger.forEach((id,i)=>{
+    setTimeout(()=>{
+      const el = document.querySelector(`.blip[data-id="${id}"]`);
+      if(el) el.classList.add("in");
+    }, 360 + i*150);
+  });
+
+  /* click */
+  document.querySelectorAll(".blip").forEach(b=>{
+    b.addEventListener("click", ()=> openCard(b.dataset.id));
+  });
+
+  function buildFrame(num, lab){
+    const idline = `SIGNAL ID · ${num}.${lab.split("·")[0].trim().slice(0,3)} · ENVELOPE OPEN`;
+    // pad to 39 chars between the borders
+    const pad = (s) => {
+      const target = 37;
+      const trimmed = s.slice(0, target);
+      const extra = target - trimmed.length;
+      return trimmed + " ".repeat(Math.max(0, extra));
+    };
+    return `╭─────────────────────────────────────╮\n│  ${pad(idline)}│\n╰─────────────────────────────────────╯`;
+  }
+
+  const card = document.getElementById("termCard");
+  function openCard(id){
+    const d = NODES[id];
+    if(!d) return;
+    openId = id;
+    card.dataset.lane = d.lane;
+    document.getElementById("cardCh").textContent = d.lab;
+    document.getElementById("cardNum").textContent = d.num;
+    document.getElementById("cardTime").textContent = d.time;
+    document.getElementById("cardAmp").textContent = d.amp;
+    document.getElementById("asciiFrame").textContent = buildFrame(d.num, d.lab);
+    document.getElementById("cardTitle").textContent = d.title;
+    document.getElementById("cardPeriod").innerHTML = d.period;
+    document.getElementById("cardPull").innerHTML = d.pull;
+    document.getElementById("cardBody").innerHTML = d.body.map(p=>`<p>${p}</p>`).join("");
+    document.getElementById("cardAsk").innerHTML = d.ask ? d.ask.replace(/→/, '<a href="#">▸</a>') : "";
+    document.getElementById("scrim").classList.add("on");
+  }
+  function closeCard(){
+    document.getElementById("scrim").classList.remove("on");
+    openId = null;
+  }
+  function nextNode(){
+    if(!openId) return;
+    const i = NODE_ORDER.indexOf(openId);
+    openCard(NODE_ORDER[(i+1) % NODE_ORDER.length]);
+  }
+  function prevNode(){
+    if(!openId) return;
+    const i = NODE_ORDER.indexOf(openId);
+    openCard(NODE_ORDER[(i-1+NODE_ORDER.length) % NODE_ORDER.length]);
+  }
+  window.closeCard = closeCard;
+  window.nextNode = nextNode;
+  window.prevNode = prevNode;
+  document.addEventListener("keydown", e=>{
+    if(e.key === "Escape") closeCard();
+    if(document.getElementById("scrim").classList.contains("on")){
+      if(e.key === "ArrowRight") nextNode();
+      if(e.key === "ArrowLeft")  prevNode();
+    }
+  });
+</script>
+</body>
+</html>

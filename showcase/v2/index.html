@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bill Bricker — The Climb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper: #efe3c4;
+    --paper-2: #e6d6a8;
+    --paper-3: #d8c282;
+    --vellum: #f5ebd0;
+    --sky:   #f7eed5;
+    --ink: #2b1f10;
+    --ink-2: #4a3a1f;
+    --ink-mute: #7a6a48;
+    --ink-faint: rgba(43,31,16,.32);
+    --rule: rgba(43,31,16,.18);
+    --sienna: #a8421d;
+    --sienna-deep: #6e2a12;
+    --sienna-soft: rgba(168,66,29,.14);
+    --ochre: #d68a2a;
+    --moss: #5e7a2a;
+    --stone: #6a7588;
+    --hand: "Caveat", cursive;
+    --serif: "Spectral", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--serif)}
+  body{
+    background:
+      radial-gradient(ellipse at 25% 15%, var(--sky) 0%, var(--paper) 55%, var(--paper-2) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.13  0 0 0 0 0.06  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: multiply;
+  }
+  ::selection{background:var(--ink);color:var(--paper)}
+
+  /* ============ STAGE ============ */
+  .stage{position:relative;width:100vw;height:100vh;display:flex;flex-direction:column}
+
+  /* ============ MASTHEAD ============ */
+  .mast{
+    flex-shrink:0;height:64px;padding: 0 32px;
+    display:grid;grid-template-columns: 1fr auto 1fr;gap:24px;align-items:center;
+    border-bottom: .5px solid var(--rule);
+    background: linear-gradient(180deg, var(--sky), transparent);
+  }
+  .mast .l{display:flex;align-items:center;gap:14px}
+  .mast .nm{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:22px;color:var(--ink);letter-spacing:-.01em;line-height:1;
+  }
+  .mast .nm small{
+    font-family:var(--mono);font-size:10px;font-weight:500;color:var(--ink-mute);
+    letter-spacing:.18em;text-transform:uppercase;margin-left:10px;font-style:normal;
+  }
+  .mast .status{
+    display:flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);
+  }
+  .mast .status .dot{
+    width:7px;height:7px;border-radius:50%;background:var(--sienna);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(168,66,29,.4)}
+    50%{box-shadow:0 0 0 7px rgba(168,66,29,0)}
+  }
+  .mast .status em{color:var(--ink);font-style:italic;font-family:var(--serif);font-size:12px;letter-spacing:.01em;text-transform:none}
+
+  .mast .c{
+    text-align:center;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);
+  }
+  .mast .c em{color:var(--sienna);font-style:italic;font-family:var(--serif);font-size:12px;letter-spacing:.02em;text-transform:none}
+
+  .mast .r{display:flex;justify-content:flex-end;gap:6px}
+  .cta{
+    appearance:none;border:none;cursor:pointer;
+    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+    padding: 8px 12px;border-radius: 1.5px;
+    border: .5px solid var(--ink-faint);background:transparent;color:var(--ink-2);
+    transition: all .15s;
+  }
+  .cta:hover{border-color:var(--ink);color:var(--ink);background:var(--vellum)}
+  .cta.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .cta.primary:hover{background:var(--sienna);border-color:var(--sienna);color:#fff}
+
+  /* ============ CHART ============ */
+  .chart{
+    flex:1;position:relative;overflow:hidden;
+    padding: 0;
+  }
+
+  .chart svg.scene{
+    position:absolute;inset:0;width:100%;height:100%;
+    display:block;
+  }
+
+  /* y-axis label (vertical) */
+  .yaxis{
+    position:absolute;left:18px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-mute);
+    white-space:nowrap;
+  }
+  .yaxis em{font-family:var(--serif);font-style:italic;letter-spacing:.04em;text-transform:none;font-size:11px;color:var(--ink);margin-right:8px}
+
+  /* x-axis years */
+  .xaxis{
+    position:absolute;left:0;right:0;bottom:0;height:48px;
+    border-top:.5px solid var(--rule);
+    background: linear-gradient(180deg, transparent, rgba(43,31,16,.04));
+    pointer-events:none;
+  }
+  .xtick{
+    position:absolute;bottom:14px;transform:translateX(-50%);
+    font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-mute);
+    text-align:center;
+  }
+  .xtick::before{
+    content:"";position:absolute;bottom:-12px;left:50%;width:1px;height:6px;background:var(--ink-faint);
+  }
+  .xtick.major{color:var(--ink)}
+  .xtick.now{color:var(--sienna);font-weight:600}
+  .xtick.now::before{background:var(--sienna);height:10px}
+
+  /* forecast band */
+  .forecast{
+    position:absolute;top:0;bottom:48px;
+    background: linear-gradient(90deg, transparent, rgba(94,122,42,.08));
+    border-left: .5px dashed var(--sienna);
+    pointer-events:none;
+  }
+  .forecast .label{
+    position:absolute;top:18px;
+    font-family:var(--hand);font-size:22px;color:var(--sienna);
+    transform:rotate(-2deg);transform-origin:left top;
+    white-space:nowrap;
+  }
+  .forecast .sub{
+    position:absolute;top:48px;
+    font-family:var(--mono);font-size:9.5px;color:var(--ink-mute);letter-spacing:.14em;text-transform:uppercase;
+  }
+
+  /* chart title floating */
+  .charttitle{
+    position:absolute;left:60px;top:24px;z-index:2;pointer-events:none;
+    max-width: 540px;
+  }
+  .charttitle h1{
+    font-family:var(--serif);font-style:italic;font-weight:300;
+    font-size: clamp(36px, 4.8vw, 64px);
+    line-height: .95;letter-spacing:-.025em;
+    color:var(--ink);
+    margin: 0 0 4px;
+  }
+  .charttitle h1 em{font-style:normal;color:var(--sienna)}
+  .charttitle .deck{
+    font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.35;color:var(--ink-2);max-width:38ch;
+    margin:6px 0 0;
+  }
+
+  .charttitle .deck em{font-style:italic;color:var(--ink)}
+
+  /* hand annotations on the chart */
+  .marg{
+    position:absolute;font-family:var(--hand);color:var(--sienna);
+    font-size:20px;line-height:1;transform-origin:left top;
+    pointer-events:none;white-space:nowrap;
+  }
+
+  /* ============ NODES ============ */
+  .node{
+    position:absolute;
+    cursor:pointer;user-select:none;
+    transform:translate(-50%,-100%);
+  }
+  .node.career{transform:translate(-50%,-50%)}
+  .node.side  {transform:translate(-50%,-100%)}
+  .node.home  {transform:translate(-50%,-50%)}
+
+  .node .pin-art{
+    display:flex;flex-direction:column;align-items:center;gap:0;
+  }
+  /* career pin = a stake with a flag */
+  .node.career .marker{
+    width:14px;height:14px;border-radius:50%;
+    background: var(--ink);
+    border: 3px solid var(--vellum);
+    box-shadow: 0 0 0 1px var(--ink), 0 4px 8px rgba(43,31,16,.2);
+    position:relative;z-index:2;
+    transition: transform .25s;
+  }
+  .node.live .marker{
+    background: var(--sienna);
+    box-shadow: 0 0 0 1px var(--sienna-deep), 0 0 0 6px var(--sienna-soft), 0 4px 8px rgba(168,66,29,.2);
+    animation: livepulse 2.4s ease-in-out infinite;
+  }
+  @keyframes livepulse{
+    0%,100%{box-shadow: 0 0 0 1px var(--sienna-deep), 0 0 0 6px var(--sienna-soft), 0 4px 8px rgba(168,66,29,.2)}
+    50%   {box-shadow: 0 0 0 1px var(--sienna-deep), 0 0 0 14px rgba(168,66,29,0), 0 4px 8px rgba(168,66,29,.2)}
+  }
+  /* side pin = flagpole sticking up */
+  .node.side .flag-pole{
+    width:1.5px;height:54px;background:var(--sienna);
+    margin-bottom: 0;
+  }
+  .node.side .flag{
+    position:absolute;left:1.5px;top:0;
+    background:var(--ochre);
+    color:var(--ink);
+    padding: 5px 10px 5px 8px;
+    font-family:var(--serif);font-style:italic;font-weight:500;font-size:14px;line-height:1;
+    clip-path: polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%);
+    white-space:nowrap;
+    box-shadow: 1px 1px 0 rgba(43,31,16,.15);
+    padding-right: 22px;
+  }
+  .node.side .flag .yr{
+    font-family:var(--mono);font-style:normal;font-size:9px;color:var(--ink-2);letter-spacing:.08em;
+    margin-left:6px;font-weight:400;
+  }
+  /* home/personal pin = ground marker */
+  .node.home .marker{
+    width:0;height:0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 14px solid var(--moss);
+    filter: drop-shadow(0 1px 0 var(--sienna-deep));
+    position:relative;z-index:2;
+  }
+
+  .node:hover .marker{transform: scale(1.2)}
+  .node:hover .flag{box-shadow: 2px 3px 0 rgba(43,31,16,.2);transform: translateY(-1px)}
+
+  /* label below career pin */
+  .node.career .lbl{
+    margin-top: 12px;
+    background: var(--vellum);
+    border: .5px solid rgba(43,31,16,.4);
+    padding: 5px 10px;
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size: 14px;color:var(--ink);
+    box-shadow: 0 2px 4px rgba(43,31,16,.08);
+    white-space:nowrap;
+    line-height: 1.1;
+    transition: all .25s;
+  }
+  .node.career .lbl .yr{
+    display:block;font-family:var(--mono);font-style:normal;font-weight:400;
+    font-size: 9.5px;letter-spacing:.1em;color:var(--ink-mute);margin-top:2px;
+  }
+  .node.career.live .lbl{border-color: var(--sienna);background: var(--vellum)}
+  .node.career.live .lbl .yr{color: var(--sienna)}
+  .node.career:hover .lbl{
+    border-color:var(--ink);
+    background:#fff;
+    box-shadow: 0 4px 10px rgba(43,31,16,.15);
+  }
+
+  .node.home .lbl{
+    margin-top: 8px;
+    background: var(--vellum);
+    border: .5px solid var(--rule);
+    padding: 4px 8px;
+    font-family:var(--serif);font-style:italic;font-weight:500;font-size: 12px;color:var(--ink-2);
+    white-space:nowrap;line-height:1.1;
+  }
+  .node.home .lbl .yr{font-family:var(--mono);font-style:normal;font-size: 9px;color:var(--ink-mute);margin-left:6px}
+
+  /* entry stagger */
+  .node{opacity:0;transform-origin: bottom center}
+  .node.in{
+    opacity: 1;
+    animation: rise .55s cubic-bezier(.25, .8, .35, 1) forwards;
+  }
+  @keyframes rise{
+    from{opacity:0;transform: translate(-50%,-50%) translateY(8px) scale(.9)}
+    to  {opacity:1;transform: translate(-50%,-50%) translateY(0) scale(1)}
+  }
+  .node.side.in{
+    animation: planted .65s cubic-bezier(.34, 1.56, .64, 1) forwards;
+  }
+  @keyframes planted{
+    from{opacity:0;transform: translate(-50%,-100%) translateY(-10px)}
+    to  {opacity:1;transform: translate(-50%,-100%) translateY(0)}
+  }
+  .node.career.in{
+    animation: pinrise .55s cubic-bezier(.25, .8, .35, 1) forwards;
+  }
+  @keyframes pinrise{
+    from{opacity:0;transform: translate(-50%,-50%) translateY(8px)}
+    to  {opacity:1;transform: translate(-50%,-50%) translateY(0)}
+  }
+
+  /* ============ OVERLAY ============ */
+  .scrim{
+    position:fixed;inset:0;z-index:50;
+    background: rgba(43,31,16,.42);
+    backdrop-filter: blur(2px);
+    display:none;align-items:center;justify-content:center;padding:32px;
+  }
+  .scrim.on{display:flex;animation: fadein .25s ease}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+
+  .card{
+    width: min(580px, 96vw);max-height: 86vh;overflow:auto;
+    background: var(--vellum);
+    background-image:
+      linear-gradient(180deg, #f7eed5 0%, #efe2bf 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2  0 0 0 0 0.15  0 0 0 0 0.07  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-blend-mode: multiply;
+    border: .5px solid var(--ink);
+    box-shadow: 0 18px 50px rgba(43,31,16,.36), 0 0 0 6px rgba(245,235,208,.4);
+    padding: 28px 36px 30px;
+    position:relative;
+    animation: cardin .35s cubic-bezier(.3,.7,.4,1);
+  }
+  @keyframes cardin{from{opacity:0;transform:translateY(12px) rotate(-1deg)}to{opacity:1;transform:translateY(0) rotate(-.4deg)}}
+
+  .card .tape{
+    position:absolute;top:-12px;left:50%;width:96px;height:20px;
+    background: repeating-linear-gradient(90deg, rgba(214,138,42,.7) 0 5px, rgba(214,138,42,.45) 5px 9px);
+    transform: translateX(-50%) rotate(-2deg);
+    box-shadow: 0 2px 4px rgba(43,31,16,.15);
+  }
+  .card .head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mute);
+    margin-bottom: 6px;
+  }
+  .card .head .lane{color:var(--sienna)}
+  .card .close{
+    background:none;border:none;cursor:pointer;font:inherit;color:var(--ink-mute);padding:0;
+  }
+  .card .close:hover{color:var(--sienna)}
+  .card h2{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size: 40px;line-height: 1.02;letter-spacing:-.02em;margin: 4px 0 4px;color: var(--ink);
+  }
+  .card h2 .pd{color: var(--sienna);font-style:normal}
+  .card .period{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+    margin-bottom: 14px;
+  }
+  .card .pull{
+    font-family:var(--serif);font-style:italic;font-size: 18px;line-height: 1.35;color: var(--ink);
+    border-left: 2px solid var(--sienna);padding: 4px 0 4px 14px;margin: 6px 0 18px;
+  }
+  .card p{font-family:var(--serif);font-size:15px;line-height:1.55;color: var(--ink-2);margin: 0 0 10px}
+  .card p em{font-style:italic;color:var(--ink)}
+  .card .actions{
+    margin-top: 18px;padding-top: 12px;border-top: .5px dotted var(--rule);
+    display:flex;justify-content:space-between;align-items:baseline;gap:18px;
+  }
+  .card .actions .ask{font-family:var(--hand);color:var(--sienna);font-size: 19px;line-height:1}
+  .card .actions .ask a{color:inherit;text-decoration: underline;text-decoration-thickness:.5px;text-underline-offset:3px}
+  .card .actions .nav{display:flex;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute)}
+  .card .actions .nav button{background:none;border:none;cursor:pointer;color:inherit;font:inherit;padding:0;transition: color .15s}
+  .card .actions .nav button:hover{color:var(--sienna)}
+
+  /* ============ LEGEND (bottom-left mini) ============ */
+  .legend{
+    position:absolute;left:32px;bottom:64px;z-index:3;
+    display:flex;gap:18px;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink-mute);
+    pointer-events:none;
+  }
+  .legend .lrow{display:flex;align-items:center;gap:6px}
+  .legend .gly{display:inline-block}
+  .legend .gly.career{width:9px;height:9px;border-radius:50%;background:var(--ink);border:2px solid var(--vellum);box-shadow: 0 0 0 1px var(--ink)}
+  .legend .gly.side  {width:1.5px;height:14px;background:var(--sienna);position:relative}
+  .legend .gly.side::after{content:"";position:absolute;left:1.5px;top:0;width:9px;height:6px;background:var(--ochre)}
+  .legend .gly.home  {width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid var(--moss)}
+
+  @media (max-width: 980px){
+    .charttitle h1{font-size:32px}
+    .mast .c{display:none}
+    .mast{grid-template-columns: 1fr auto}
+    .yaxis{display:none}
+    .marg{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="mast">
+    <div class="l">
+      <div class="nm">Bill Bricker <small>Vol I · The Climb</small></div>
+      <div class="status"><span class="dot"></span><em>in the room.</em> open to founder · GTM · advisory · board</div>
+    </div>
+    <div class="c">A 20-year route &middot; <em>2006 → still rising</em></div>
+    <div class="r">
+      <a class="cta" href="work.html">The Work →</a>
+      <a class="cta" href="resume.html">Résumé ↓</a>
+      <a class="cta primary" href="mailto:bricker3@gmail.com">Email →</a>
+    </div>
+  </header>
+
+  <!-- ============ CHART ============ -->
+  <div class="chart" id="chart">
+
+    <!-- chart title -->
+    <div class="charttitle">
+      <h1>The Climb<em>.</em></h1>
+      <p class="deck">Twenty years on a steady upward grade. <em>The trend isn&rsquo;t finished.</em> Built by selling, by shipping, by introducing. Still walking.</p>
+    </div>
+
+    <!-- y axis label -->
+    <div class="yaxis"><em>Altitude</em> scope · stakes · leverage</div>
+
+    <!-- SCENE SVG: terrain, ridge, trails -->
+    <svg class="scene" viewBox="0 0 1440 840" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="ridgeFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#a8421d" stop-opacity=".22"/>
+          <stop offset="60%" stop-color="#a8421d" stop-opacity=".08"/>
+          <stop offset="100%" stop-color="#a8421d" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="forecastFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5e7a2a" stop-opacity=".25"/>
+          <stop offset="100%" stop-color="#5e7a2a" stop-opacity="0"/>
+        </linearGradient>
+        <pattern id="dotwash" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="1.5" cy="1.5" r=".7" fill="#a8421d" opacity=".22"/>
+        </pattern>
+      </defs>
+
+      <!-- horizontal contour lines (faint) -->
+      <g stroke="#a8421d" stroke-opacity=".18" stroke-width=".75" fill="none">
+        <path d="M 0 700 Q 360 695 720 698 T 1440 690"/>
+        <path d="M 0 620 Q 360 610 720 615 T 1440 600"/>
+        <path d="M 0 540 Q 360 525 720 530 T 1440 510"/>
+        <path d="M 0 440 Q 360 420 720 425 T 1440 400"/>
+        <path d="M 0 340 Q 360 318 720 320 T 1440 290"/>
+        <path d="M 0 240 Q 360 218 720 220 T 1440 180"/>
+        <path d="M 0 160 Q 360 138 720 138 T 1440 90"/>
+      </g>
+
+      <!-- MAIN RIDGE — step-function rise -->
+      <!-- ridge top y-coordinates anchored to career years -->
+      <!-- 2006:560, 2010:480, 2012:430, 2014:400, 2017:320, 2018:260, 2023:160, 2030:80 -->
+      <path d="M -20 760
+               L 60 700  L 80 600
+               L 220 580  L 240 500
+               L 340 480  L 360 440
+               L 460 420  L 480 410
+               L 660 360  L 680 330
+               L 780 290  L 800 270
+               L 1060 200 L 1080 170
+               L 1180 120
+               L 1280 100
+               L 1460 80
+               L 1460 840 L -20 840 Z"
+            fill="url(#ridgeFill)" />
+      <!-- ridge line (top edge, hand-drawn feel) -->
+      <path d="M -20 760
+               L 60 700  L 80 600
+               L 220 580  L 240 500
+               L 340 480  L 360 440
+               L 460 420  L 480 410
+               L 660 360  L 680 330
+               L 780 290  L 800 270
+               L 1060 200 L 1080 170
+               L 1180 120"
+            fill="none" stroke="#2b1f10" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
+
+      <!-- summit triangle marker before 2030 -->
+      <g transform="translate(1180 120)" stroke="#2b1f10" stroke-width="1" fill="none">
+        <path d="M -5 -2 L 0 -8 L 5 -2"/>
+      </g>
+
+      <!-- forecast continuation -->
+      <path d="M 1180 120 L 1280 100 L 1460 80"
+            fill="none" stroke="#5e7a2a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+            stroke-dasharray="3 8"/>
+      <!-- forecast fill (rising green) -->
+      <path d="M 1180 120 L 1280 100 L 1460 80 L 1460 792 L 1180 792 Z" fill="url(#forecastFill)"/>
+
+      <!-- TRAIL — dotted route along the ridge -->
+      <path d="M 80 600 L 240 500 L 360 440 L 480 410 L 680 330 L 800 270 L 1080 170"
+            fill="none" stroke="#a8421d" stroke-width="1.6" stroke-dasharray="1 6" stroke-linecap="round"/>
+
+      <!-- foundation strata band (home/network) -->
+      <rect x="-20" y="752" width="1480" height="40" fill="url(#dotwash)" opacity=".55"/>
+
+      <!-- the long walk dotted thread -->
+      <path d="M 1001 770 Q 1100 760 1200 740 Q 1300 712 1400 680"
+            fill="none" stroke="#a8421d" stroke-width="1.3" stroke-dasharray="2 7" stroke-linecap="round" opacity=".8"/>
+
+      <!-- foundation hatching (very faint) -->
+      <g stroke="#2b1f10" stroke-width=".5" opacity=".25">
+        <line x1="0"   y1="780" x2="1440" y2="780"/>
+        <line x1="0"   y1="800" x2="1440" y2="800"/>
+      </g>
+
+      <!-- registration ticks at corners -->
+      <g stroke="#2b1f10" stroke-width=".75" fill="none" opacity=".4">
+        <path d="M 20 20 L 50 20 M 20 20 L 20 50"/>
+        <path d="M 1420 20 L 1390 20 M 1420 20 L 1420 50"/>
+      </g>
+    </svg>
+
+    <!-- forecast band overlay -->
+    <div class="forecast" style="left: 1080px;right:0">
+      <div class="label" style="left:24px">↗ next ascent →</div>
+      <div class="sub" style="left:24px">forecast · 2026–2030</div>
+    </div>
+
+    <!-- hand marginalia on the chart -->
+    <div class="marg" style="left:120px;top:540px;transform:rotate(-3deg)">doors &amp; dials</div>
+    <div class="marg" style="left:540px;top:300px;transform:rotate(-2deg)">↓ the muscle compounds</div>
+    <div class="marg" style="left:920px;top:200px;transform:rotate(-4deg)">posture, not phase</div>
+    <div class="marg" style="left:1200px;top:60px;transform:rotate(2deg)">summit unset.</div>
+    <div class="marg" style="left:1240px;top:710px;transform:rotate(-2deg)">still walking ↗</div>
+
+    <!-- ============ CAREER NODES ============ -->
+    <!-- 7 career pins along the ridge -->
+    <div class="node career" data-id="nwm"       style="left:80px;top:600px">
+      <div class="marker"></div>
+      <div class="lbl">Northwestern Mutual<span class="yr">2006 · first job</span></div>
+    </div>
+    <div class="node career" data-id="unc"       style="left:240px;top:500px">
+      <div class="marker"></div>
+      <div class="lbl">UNC Kenan-Flagler<span class="yr">2010 · MBA</span></div>
+    </div>
+    <div class="node career" data-id="ibm"       style="left:360px;top:440px">
+      <div class="marker"></div>
+      <div class="lbl">IBM / Netezza<span class="yr">2012–14 · 7-fig deals</span></div>
+    </div>
+    <div class="node career" data-id="wibi"      style="left:480px;top:410px">
+      <div class="marker"></div>
+      <div class="lbl">WibiData<span class="yr">2014 · early data</span></div>
+    </div>
+    <div class="node career" data-id="gear"      style="left:680px;top:330px">
+      <div class="marker"></div>
+      <div class="lbl">GearLaunch<span class="yr">2017 · creator commerce</span></div>
+    </div>
+    <div class="node career" data-id="dreamship" style="left:800px;top:270px">
+      <div class="marker"></div>
+      <div class="lbl">Dreamship<span class="yr">2018–22 · co-founder</span></div>
+    </div>
+    <div class="node career live" data-id="courtana"  style="left:1080px;top:170px">
+      <div class="marker"></div>
+      <div class="lbl">Courtana<span class="yr">2023+ · founder · live</span></div>
+    </div>
+
+    <!-- ============ SIDE PROJECT FLAGS ============ -->
+    <div class="node side" data-id="manifesto" style="left:568px;top:430px">
+      <div class="flag-pole"></div>
+      <div class="flag">Networking Manifesto<span class="yr">2015</span></div>
+    </div>
+    <div class="node side" data-id="gord" style="left:622px;top:400px">
+      <div class="flag-pole"></div>
+      <div class="flag">GroupOrDare<span class="yr">2016</span></div>
+    </div>
+    <div class="node side" data-id="pickle" style="left:1163px;top:200px">
+      <div class="flag-pole"></div>
+      <div class="flag">Pickle DaaS<span class="yr">2026</span></div>
+    </div>
+    <div class="node side" data-id="vibeco" style="left:1258px;top:118px">
+      <div class="flag-pole"></div>
+      <div class="flag">VibeCo<span class="yr">2026</span></div>
+    </div>
+
+    <!-- ============ HOME/PERSONAL NODES (basecamp) ============ -->
+    <div class="node home" data-id="home" style="left:300px;top:772px">
+      <div class="marker"></div>
+      <div class="lbl">Home · three kids<span class="yr">ongoing</span></div>
+    </div>
+    <div class="node home" data-id="walk" style="left:1001px;top:772px">
+      <div class="marker"></div>
+      <div class="lbl">The Long Walk<span class="yr">2023+</span></div>
+    </div>
+
+    <!-- ============ X AXIS YEARS ============ -->
+    <div class="xaxis">
+      <div class="xtick"          style="left: 80px">2006</div>
+      <div class="xtick major"    style="left: 240px">2010</div>
+      <div class="xtick"          style="left: 360px">2012</div>
+      <div class="xtick"          style="left: 480px">2014</div>
+      <div class="xtick major"    style="left: 622px">2016</div>
+      <div class="xtick"          style="left: 730px">2018</div>
+      <div class="xtick major"    style="left: 947px">2022</div>
+      <div class="xtick now"      style="left: 1163px">2026 · now</div>
+      <div class="xtick"          style="left: 1380px">2030</div>
+    </div>
+
+    <!-- ============ LEGEND ============ -->
+    <div class="legend">
+      <div class="lrow"><span class="gly career"></span><span>CAREER · 7</span></div>
+      <div class="lrow"><span class="gly side"></span><span>SIDEQUEST · 3</span></div>
+      <div class="lrow"><span class="gly home"></span><span>HOME · 2</span></div>
+    </div>
+
+  </div>
+
+  <!-- ============ FIELD CARD OVERLAY ============ -->
+  <div class="scrim" id="scrim" onclick="if(event.target===this) closeCard()">
+    <article class="card">
+      <div class="tape"></div>
+      <div class="head">
+        <span><span class="lane" id="cardLane">CAREER</span> · <span id="cardIx">01 / 12</span></span>
+        <button class="close" onclick="closeCard()">close · esc</button>
+      </div>
+      <h2 id="cardTitle">Title<span class="pd">.</span></h2>
+      <div class="period" id="cardPeriod">2006</div>
+      <div class="pull" id="cardPull">Pull quote.</div>
+      <div id="cardBody"></div>
+      <div class="actions">
+        <div class="ask" id="cardAsk"></div>
+        <div class="nav">
+          <button onclick="prevNode()">◂ prev</button>
+          <button onclick="nextNode()">next ▸</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+</div>
+
+<script>
+  /* ============ NODES DATA ============ */
+  const NODES = {
+    nwm:       { lane:"career", num:"01", title:"Northwestern Mutual",  period:"2006 · first job · cold-call school",          pull:"Doors and dials. The most concentrated lesson in selling I ever got.",                     body:["Out of college: doors and dials. Ranked top 10 nationally, $6M+ in total contract value across 150+ accounts — taught by a phone that mostly went to voicemail.","I&rsquo;m grateful for it the way you&rsquo;re grateful for a hard winter."], ask:"" },
+    unc:       { lane:"career", num:"02", title:"UNC Kenan-Flagler",    period:"2010 · MBA · GMAT 730",                       pull:"Where I stopped confusing activity with progress.",                                       body:["Two years to learn what a P&amp;L is for, and to meet the handful of people who&rsquo;d show up on this map a dozen more times over the next fifteen years."], ask:"" },
+    ibm:       { lane:"career", num:"03", title:"IBM / Netezza",        period:"2012–14 · seven-figure enterprise deals",     pull:"You cannot out-build the need to talk to a customer.",                                    body:["Closed high-six-figure analytics deals with <em>Zillow</em> and <em>Avalara</em>, contributed to an 8-figure McKesson deal, and finished above 100% of quota — selling Big Data into mid-market and Fortune 500 accounts before AI made any of this easier.","Complicated things sell only when one human cares enough to make them simple for another."], ask:"ask me about enterprise GTM →" },
+    wibi:      { lane:"career", num:"04", title:"WibiData",             period:"2014 · early big-data",                       pull:"Selling into a problem the customer hasn&rsquo;t named yet.",                                  body:["Structured Big Data pilots with <em>Macy&rsquo;s</em>, <em>Nordstrom</em>, and other Fortune 500 retailers at an NEA/Canaan/Eric-Schmidt-backed startup.","That pattern — selling into the <em>shape</em> of a problem the customer can&rsquo;t fully name yet — has shown up in every job since."], ask:"" },
+    gear:      { lane:"career", num:"05", title:"GearLaunch",           period:"2017 · creator commerce",                     pull:"Two years before everyone else said \"creator economy.\"",                                body:["VP Sales &amp; Marketing for a 360° ecommerce / print-on-demand platform. Tiny team, bespoke playbook — the right proving ground for the operator muscle that ran Dreamship next."], ask:"" },
+    dreamship: { lane:"career", num:"06", title:"Dreamship",            period:"2018–25 · cofounder &amp; CEO → board chair",   pull:"Zero to $35M+ — and 11x in a single year.",                                           body:["Led as CEO from zero to <em>$35M+ cumulative revenue</em>, ~$85M GMV, 2.3M+ units — including <em>11x growth in one year</em> ($1.6M→$17M) — on just $2.2M raised; EBITDA-profitable 4 of 8 years.","As a sub-one-year-old startup I personally sold <em>Google</em>: built an AI IP-compliance checker, drove it through 5–6 internal teams to director+ sign-off, and unlocked an 8-figure ad-spend channel that ran 5+ years — then sequenced Stripe, PayPal, Meta &amp; Payoneer off it.","Zero-to-one is a <em>posture</em>, not a phase you graduate from."], ask:"ask me what worked — and what didn&rsquo;t →", link:{url:"https://dreamship.com", label:"Dreamship.com ↗"} },
+    courtana:  { lane:"career", num:"07", title:"Courtana",             period:"2023 → now · founder / CEO · live",   pull:"AI smart-court tech for the people who actually run the room.",                            body:["Raised <em>$350K</em>; took the platform from concept to <em>36 courts live or piloting</em>, anchored by a flagship customer with a 44-court expansion LOI. Computer vision, edge compute, instant highlights, AI coaching, Stripe billing — across 11+ sports.","Ran the full zero-to-one loop solo, on an AI-native build system that compressed iteration from weeks to days."], ask:"want to talk Courtana? →", link:{url:"https://courtana.com", label:"Courtana.com ↗"} },
+
+    manifesto: { lane:"side",   num:"08", title:"The Networking Manifesto",period:"2015 · essay · still operative",            pull:"&ldquo;Who can I introduce you to so you can achieve your goals?&rdquo;",                        body:["The one question I&rsquo;ve asked at the top of nearly every working conversation for over a decade. The river of intros is the longest line on my career map and the highest-leverage asset class a working person owns."], ask:"" },
+    gord:      { lane:"side",   num:"09", title:"GroupOrDare",          period:"2016 · party card game · still in homes",     pull:"I designed and shipped a party game. It exists. It works.",                                body:["Yes really. My kids think it&rsquo;s the most impressive thing I&rsquo;ve ever done, which is, on reflection, the correct ranking.","I keep it on the map because evidence beats résumé — a bored idea followed all the way into the world is evidence."], ask:"" },
+    pickle:    { lane:"side",   num:"10", title:"Pickle DaaS",          period:"2026 · computer-vision rails",                pull:"Highlight intelligence at $0.0054 per clip.",                                                body:["A 4,097-clip corpus analyzed at <em>$0.0054 / clip</em> — ~7x cheaper than GPT-4o — into player-DNA profiles, brand-exposure registries, and coaching feedback, run by autonomous agents with spend caps and a ground-truth validation loop.","Native infra, boring on the surface, <em>ferocious on the unit economics</em>. The model isn&rsquo;t the moat — the math is."], ask:"see the dashboards →", link:{url:"https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal-v4.html", label:"Pickle DaaS dashboards ↗"} },
+    vibeco:    { lane:"side",   num:"11", title:"VibeCo",               period:"2026 · multi-agent product simulator",       pull:"The workshop the rest of these builds came out of.",                                       body:["An 11-agent AI simulator that turns a plain-English idea into a business brief, build prompts, and concept art — tool-calling, multi-model routing, a parallel critique &ldquo;Thunderdome,&rdquo; and a synthesis flywheel.","It&rsquo;s the engine behind 40+ one-shot apps across 31 repos — the reason I can go idea-to-proof in an afternoon."], ask:"open the simulator →", link:{url:"https://vibeco.lovable.app/simulate", label:"vibeco.lovable.app ↗"} },
+
+    home:      { lane:"home",   num:"12", title:"Home · three kids",    period:"ongoing · home base",                         pull:"The reason any of this matters.",                                                          body:["Three kids. A real kitchen and an unreal amount of pickleball gear in the garage. The map exists to support this region — not the other way around."], ask:"" },
+    walk:      { lane:"home",   num:"13", title:"The Long Walk",        period:"2023 → now · still walking",                  pull:"Cancer, 2023. The pipeline didn&rsquo;t stop. Neither did I.",                              body:["Diagnosed in 2023. Twelve weeks of chemo, most tolerable, a few not. The pipeline kept moving — partly because I wanted it to, partly because it didn&rsquo;t care.","I leave this here because no one I&rsquo;d want to work with would want me to leave it out — and because the operator instinct gets <em>ruthlessly clear</em> when the day is short. Still walking. Still building. Still asking who I can introduce you to."], ask:"if this is your road too, write me →", link:{url:"mailto:bricker3@gmail.com", label:"write me ↗"} },
+  };
+
+  const NODE_ORDER = ["nwm","unc","ibm","wibi","gear","dreamship","courtana","manifesto","gord","pickle","vibeco","home","walk"];
+  let openId = null;
+
+  /* ============ ENTRY STAGGER ============ */
+  const order = ["home","nwm","unc","ibm","wibi","manifesto","gord","gear","dreamship","courtana","pickle","vibeco","walk"];
+  order.forEach((id, i)=>{
+    setTimeout(()=>{
+      const el = document.querySelector(`.node[data-id="${id}"]`);
+      if(el) el.classList.add("in");
+    }, 220 + i*90);
+  });
+
+  /* ============ CLICK NODE ============ */
+  document.querySelectorAll(".node").forEach(n=>{
+    n.addEventListener("click", ()=> openCard(n.dataset.id));
+  });
+
+  function openCard(id){
+    const d = NODES[id];
+    if(!d) return;
+    openId = id;
+    document.getElementById("cardLane").textContent = d.lane.toUpperCase();
+    document.getElementById("cardIx").textContent = `${d.num} / 13`;
+    document.getElementById("cardTitle").innerHTML = `${d.title}<span class="pd">.</span>`;
+    document.getElementById("cardPeriod").innerHTML = d.period;
+    document.getElementById("cardPull").innerHTML = d.pull;
+    document.getElementById("cardBody").innerHTML = d.body.map(p=>`<p>${p}</p>`).join("");
+    const _ask = d.ask ? d.ask.replace(/→/,'') : "";
+    const _lnk = d.link ? `<a href="${d.link.url}" target="_blank" rel="noopener" style="color:var(--sienna);text-decoration:underline;text-underline-offset:3px">${d.link.label}</a>` : "";
+    document.getElementById("cardAsk").innerHTML = [_ask, _lnk].filter(Boolean).join(" &nbsp;·&nbsp; ");
+    document.getElementById("scrim").classList.add("on");
+  }
+  function closeCard(){
+    document.getElementById("scrim").classList.remove("on");
+    openId = null;
+  }
+  function nextNode(){
+    if(!openId) return;
+    const i = NODE_ORDER.indexOf(openId);
+    openCard(NODE_ORDER[(i+1) % NODE_ORDER.length]);
+  }
+  function prevNode(){
+    if(!openId) return;
+    const i = NODE_ORDER.indexOf(openId);
+    openCard(NODE_ORDER[(i-1+NODE_ORDER.length) % NODE_ORDER.length]);
+  }
+  window.closeCard = closeCard;
+  window.nextNode = nextNode;
+  window.prevNode = prevNode;
+  document.addEventListener("keydown", e=>{
+    if(e.key === "Escape") closeCard();
+    if(document.getElementById("scrim").classList.contains("on")){
+      if(e.key === "ArrowRight") nextNode();
+      if(e.key === "ArrowLeft")  prevNode();
+    }
+  });
+</script>
+</body>
+</html>
