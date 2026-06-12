@@ -292,7 +292,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCard();exitFs(
 // ===== scaling =====
 const W=1240,H=620;
 const vp=document.getElementById('vp'),canvas=document.getElementById('canvas');
-let fitWidth=false; // mobile toggle: fit whole width vs readable scroll
+let fitWidth=(window.innerWidth<=820); // default: show the whole chart on mobile
 function fit(){
   if(vp.classList.contains('fs')){
     const s=Math.min((window.innerWidth-12)/W,(window.innerHeight-60)/H);
@@ -304,10 +304,8 @@ function fit(){
     vp.style.height=(H*s)+'px'; vp.classList.remove('scroll');
     canvas.style.marginLeft = s<1?'0':((cw-W)/2)+'px';
   } else {
-    const s = fitWidth ? cw/W : 0.62;
-    canvas.style.transform=`scale(${s})`; canvas.style.marginLeft='0';
-    if(fitWidth){vp.classList.remove('scroll');vp.style.height=(H*s)+'px';}
-    else{vp.classList.add('scroll');vp.style.height='64vh';}
+    if(fitWidth){const s=cw/W;canvas.style.transform='scale('+s+')';canvas.style.transformOrigin='top left';canvas.style.marginLeft='0';vp.classList.remove('scroll');vp.style.height=(H*s)+'px';}
+    else{canvas.style.transform='none';canvas.style.marginLeft='0';vp.classList.add('scroll');vp.style.height='66vh';}
   }
 }
 document.getElementById('fitBtn').onclick=()=>{fitWidth=!fitWidth;document.getElementById('fitBtn').textContent=fitWidth?'⤢ Readable':'⤢ Fit width';fit();};
@@ -316,9 +314,8 @@ function exitFs(){if(vp.classList.contains('fs')){vp.classList.remove('fs');docu
 document.getElementById('fsBtn').onclick=enterFs;
 document.getElementById('fsClose').onclick=exitFs;
 window.addEventListener('resize',fit);
+if(fitWidth)document.getElementById('fitBtn').textContent='⤢ Readable';
 fit();
-// nudge mobile scroll to show the rise
-if(window.innerWidth<=820){setTimeout(()=>{vp.scrollLeft=vp.scrollWidth;},400);}
 </script>
 </body>
 </html>
