@@ -36,7 +36,9 @@
   /* nav */
   nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.72);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
-  .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.01em;white-space:nowrap;flex-shrink:0}
+  .brand .pk{animation:pkpulse 3s ease-in-out infinite}
+  @keyframes pkpulse{0%,100%{filter:drop-shadow(0 0 4px rgba(140,240,160,.6))}50%{filter:drop-shadow(0 0 10px rgba(140,240,160,.95))}}
   .brand svg{width:25px;height:25px;flex-shrink:0}
   .nl{display:flex;gap:3px;align-items:center;font-size:13px;color:var(--mute)}
   .nl a{padding:8px 13px;border-radius:99px;transition:.15s}
@@ -45,8 +47,28 @@
   @media(max-width:680px){.nl{gap:0;font-size:11.5px}.nl a{padding:7px 9px}}
 
   /* hero — single column, lots of air */
-  .hero{padding:96px 0 80px;max-width:760px}
-  @media(max-width:680px){.hero{padding:60px 0 48px}}
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;padding-top:80px;padding-bottom:64px}
+  @media(max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding-top:42px;padding-bottom:34px}}
+  /* operator card */
+  .profile{padding:22px;animation:floaty 6s ease-in-out infinite}
+  .profile::before{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);transform:skewX(-18deg);animation:sheen 6.5s ease-in-out infinite;pointer-events:none;z-index:3}
+  @keyframes sheen{0%,100%{left:-70%}55%{left:130%}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .profile .ph{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.04em}
+  .profile .ph .live{display:inline-flex;align-items:center;gap:6px;color:var(--sage);font-weight:600}
+  .profile .ph .live i{width:6px;height:6px;border-radius:50%;background:var(--sage);animation:pulse 1.8s infinite}
+  .ringbox{position:relative;height:158px;display:flex;align-items:center;justify-content:center;margin:8px 0 6px}
+  .ringbox svg{filter:drop-shadow(0 0 9px rgba(140,240,160,.4))}
+  .ringbox .ctr{position:absolute;text-align:center}
+  .ringbox .ctr .n{font-size:42px;font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(120deg,var(--sage),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .ringbox .ctr .l{font-size:10.5px;color:var(--mute);letter-spacing:.05em;margin-top:3px}
+  .ring-fg{stroke-dasharray:440;stroke-dashoffset:440;animation:draw 1.8s cubic-bezier(.4,0,.2,1) .3s forwards}
+  @keyframes draw{to{stroke-dashoffset:88}}
+  .bars{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .bar{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:12px}
+  .bar .t{color:var(--text)}.bar .v{font-size:10.5px;color:var(--mute);text-align:right}
+  .bar .track{grid-column:1/-1;height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+  .bar .track i{display:block;height:100%;border-radius:99px;width:0;transition:width 1.4s cubic-bezier(.25,1,.3,1);box-shadow:0 0 10px rgba(140,240,160,.5)}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line);padding:8px 14px;border-radius:99px;background:var(--glass2)}
   .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 0 var(--sage2);animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 var(--sage2)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
@@ -63,17 +85,18 @@
   .pill.ghost:hover{transform:translateY(-2px);border-color:var(--sage);box-shadow:0 0 0 1px var(--sage2)}
 
   /* stat band (the count-ups he liked) */
-  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin:8px 0 0;padding:30px;border-radius:22px}
-  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:26px 18px}.stats .st:last-child{grid-column:1/-1}}
-  .st .n{font-size:clamp(26px,3.6vw,36px);font-weight:900;letter-spacing:-.03em;background:linear-gradient(120deg,var(--sage),var(--cyan) 50%,var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin:8px 0 0;padding:30px;border-radius:22px}
+  @media(max-width:920px){.stats{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr);gap:24px 16px}}
+  .st .n{font-size:clamp(24px,3.2vw,33px);font-weight:900;letter-spacing:-.03em;background:linear-gradient(120deg,var(--sage),var(--cyan) 50%,var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(140,240,160,.3))}
   .st .l{font-size:11.5px;color:var(--mute);margin-top:8px;line-height:1.45}
 
   /* glass */
   .glass{background:var(--glass);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(20px);box-shadow:0 30px 70px -34px rgba(0,0,0,.8);position:relative;overflow:hidden}
 
   /* sections — generous spacing, no divider lines */
-  section{padding:92px 0 0}
-  @media(max-width:680px){section{padding:64px 0 0}}
+  section{padding-top:92px}
+  @media(max-width:680px){section{padding-top:64px}}
   .kick{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--sage)}
   .kick .num{color:var(--faint);margin-right:8px}
   h2{font-size:clamp(27px,4vw,40px);font-weight:800;letter-spacing:-.03em;margin:14px 0 6px;line-height:1.05}
@@ -81,7 +104,7 @@
   .sub em{color:var(--text);font-style:normal;font-weight:600}
 
   /* screenshot frame */
-  .shot{position:relative;aspect-ratio:16/10;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(135deg,#15171b,#0d0f12)}
+  .shot{position:relative;aspect-ratio:16/11;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(135deg,#15171b,#0d0f12)}
   .shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s}
   .shot .ph{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.1em}
   a.card:hover .shot img{transform:scale(1.04)}
@@ -148,11 +171,11 @@
   .story{padding:30px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}
   @media(max-width:680px){.story{grid-template-columns:1fr;gap:18px}}
   .story svg{width:100%;height:110px}
-  .contact{text-align:center;padding:96px 0 36px}
+  .contact{text-align:center;padding-top:96px;padding-bottom:36px}
   .contact h2{font-size:clamp(28px,5vw,46px)}
   .contact .g{background:linear-gradient(100deg,var(--sage),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .contact .ctas{display:flex;justify-content:center;flex-wrap:wrap;gap:11px;margin-top:26px}
-  .archive{margin-top:64px;padding:32px 0 72px;border-top:1px solid var(--line)}
+  .archive{margin-top:64px;padding-top:32px;padding-bottom:72px;border-top:1px solid var(--line)}
   .ah{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);text-align:center;margin-bottom:18px}
   .archrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
   .arch{font-size:12.5px;color:var(--mute);border:1px solid var(--line);background:var(--glass2);padding:9px 15px;border-radius:99px;transition:.15s}
@@ -168,11 +191,10 @@
 
 <nav><div class="wrap">
   <a class="brand" href="index.html">
-    <svg viewBox="0 0 30 30" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#5ee0d6"/><stop offset="1" stop-color="#8cf0a0"/></linearGradient></defs>
-      <polyline points="3,25 10,19 15,21 21,12" fill="none" stroke="url(#lg)" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-      <g transform="rotate(-40 23 9)"><ellipse cx="23" cy="9" rx="5.4" ry="3.1" fill="#8cf0a0"/>
-        <circle cx="21.4" cy="9" r=".5" fill="#1c7a3a"/><circle cx="23" cy="8.1" r=".5" fill="#1c7a3a"/><circle cx="24.4" cy="9.6" r=".5" fill="#1c7a3a"/></g>
-    </svg>Bill Bricker</a>
+    <svg viewBox="0 0 30 30" class="pk" aria-hidden="true"><g transform="rotate(-38 15 15)">
+      <ellipse cx="15" cy="15" rx="10" ry="5" fill="#8cf0a0"/><ellipse cx="15" cy="15" rx="10" ry="5" fill="none" stroke="#3fae5a" stroke-width=".8"/>
+      <circle cx="12" cy="15" r=".7" fill="#1c7a3a"/><circle cx="15" cy="13.6" r=".7" fill="#1c7a3a"/><circle cx="18" cy="15.4" r=".7" fill="#1c7a3a"/><circle cx="15.5" cy="16.6" r=".7" fill="#1c7a3a"/>
+    </g></svg>Bill Bricker</a>
   <div class="nl">
     <a href="index.html" class="here">Home</a>
     <a href="climb.html">Story</a>
@@ -183,12 +205,33 @@
 </div></nav>
 
 <header class="wrap hero rv">
-  <span class="eyebrow"><span class="dot"></span>In the room · open to founder, GTM &amp; advisory</span>
-  <h1>I sell frontier technology — <span class="g">and I build it myself.</span></h1>
-  <p class="lede">Enterprise seller turned founder-CEO. I <b>sold Google</b> as a sub-one-year-old startup, led <b>Dreamship</b> to <b>$35M+</b> (11x in a single year), and now run <b>Courtana</b> while shipping production AI daily. Father of three. Still walking.</p>
-  <div class="hctas">
-    <a class="pill cream" href="work.html">Run the proof →</a>
-    <a class="pill ghost" href="climb.html">Read the story</a>
+  <div class="hcopy">
+    <span class="eyebrow"><span class="dot"></span>Pickle-Bill Bricker · fka DJ Billygoat</span>
+    <h1>Frontier tech evangelist,<br><span class="g">vibe pusher · 0→1 builder.</span></h1>
+    <p class="lede">Enterprise seller turned founder-CEO. I <b>sold Google</b> as a sub-one-year-old startup, scaled <b>Dreamship</b> to <b>$35M+</b> — <b>11x in a single year</b> — and now build <b>Courtana</b> while shipping production AI daily. Father of three.</p>
+    <div class="hctas">
+      <a class="pill cream" href="work.html">Run the proof →</a>
+      <a class="pill ghost" href="climb.html">Read the story</a>
+    </div>
+  </div>
+  <div class="hcard">
+    <div class="glass profile">
+      <div class="ph"><span>OPERATOR PROFILE</span><span class="live"><i></i> in the room</span></div>
+      <div class="ringbox">
+        <svg width="158" height="158" viewBox="0 0 158 158" style="transform:rotate(-90deg)">
+          <circle cx="79" cy="79" r="70" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="10"/>
+          <circle class="ring-fg" cx="79" cy="79" r="70" fill="none" stroke="var(--sage)" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+        <div class="ctr"><div class="n" data-count="20">20</div><div class="l">years operating</div></div>
+      </div>
+      <div class="bars">
+        <div class="bar"><span class="t">Enterprise &amp; partnership GTM</span><span class="v">IBM · Google</span><span class="track"><i data-w="95" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
+        <div class="bar"><span class="t">Zero-to-one building</span><span class="v">11x · $35M+</span><span class="track"><i data-w="92" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
+        <div class="bar"><span class="t">AI-native product</span><span class="v">40+ apps</span><span class="track"><i data-w="88" style="background:linear-gradient(90deg,#5ee0d6,#a78bfa)"></i></span></div>
+        <div class="bar"><span class="t">Founder-led sales</span><span class="v">$6M+ TCV</span><span class="track"><i data-w="90" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
+        <div class="bar"><span class="t">Connector &amp; BD</span><span class="v">intro economy</span><span class="track"><i data-w="85" style="background:linear-gradient(90deg,#ff8a5c,#a78bfa)"></i></span></div>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -198,6 +241,7 @@
   <div class="st"><div class="n">8-fig</div><div class="l">Google channel sold</div></div>
   <div class="st"><div class="n" data-count="40" data-suf="+">40+</div><div class="l">AI apps shipped solo</div></div>
   <div class="st"><div class="n" data-count="20" data-suf="K+">20K+</div><div class="l">video clips analyzed</div></div>
+  <div class="st"><div class="n" data-count="3">3</div><div class="l">startups founded</div></div>
 </div></div>
 
 <!-- 01 OPERATING COMPANIES -->
@@ -211,7 +255,7 @@
         <span class="logo-chip"><img src="https://logo.clearbit.com/courtana.com" alt="Courtana" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="mono" style="background:linear-gradient(120deg,var(--teal),var(--cyan))">C</span></span>
         <div><div class="oname">Courtana <span class="live-tag">Live</span></div><div class="otag">Founder / CEO · 2023–now</div></div>
       </div>
-      <div class="shot"><img src="https://image.thum.io/get/width/760/crop/470/noanimate/https://courtana.com" alt="Courtana" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">courtana.com</div></div>
+      <div class="shot"><img src="https://image.thum.io/get/width/900/noanimate/https://courtana.com" alt="Courtana" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">courtana.com</div></div>
       <div class="oline">AI smart-court SaaS — live video, AI coaching, 36 courts live or piloting, 11+ sports.</div>
       <span class="ogo">Visit courtana.com <span class="ar">→</span></span>
     </a>
@@ -220,7 +264,7 @@
         <span class="logo-chip"><img src="https://logo.clearbit.com/dreamship.com" alt="Dreamship" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="mono" style="background:linear-gradient(120deg,var(--purple),var(--violet))">D</span></span>
         <div><div class="oname">Dreamship <span class="live-tag">Live</span></div><div class="otag">Cofounder &amp; CEO · 2018–25</div></div>
       </div>
-      <div class="shot"><img src="https://image.thum.io/get/width/760/crop/470/noanimate/https://dreamship.com" alt="Dreamship" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">dreamship.com</div></div>
+      <div class="shot"><img src="https://image.thum.io/get/width/900/noanimate/https://dreamship.com" alt="Dreamship" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">dreamship.com</div></div>
       <div class="oline">API fulfillment platform — $35M+ revenue, 11x in a year, the Google partnership I sold &amp; ran 5+ years.</div>
       <span class="ogo">Visit dreamship.com <span class="ar">→</span></span>
     </a>
@@ -234,7 +278,7 @@
     <span class="vbadge">11 AI agents · multi-model · Gemini + Claude</span>
     <div class="vname">VibeCo</div>
     <div class="vvp">Type an idea. Get a business brief, build prompts, and a working app. <span class="mut">The simulator that lets one operator ship like a team — 40+ apps across 31 repos.</span></div>
-    <div class="vshot shot"><img src="https://image.thum.io/get/width/900/crop/560/noanimate/https://vibeco.lovable.app/" alt="VibeCo" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">vibeco.lovable.app</div></div>
+    <div class="vshot shot"><img src="https://image.thum.io/get/width/1100/noanimate/https://vibeco.lovable.app/" alt="VibeCo" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">vibeco.lovable.app</div></div>
     <div class="vctas">
       <a class="pill cream" href="https://vibeco.lovable.app/simulate" target="_blank" rel="noopener">Run the simulator →</a>
       <a class="pill ghost" href="https://vibeco.lovable.app/" target="_blank" rel="noopener">Visit VibeCo</a>
@@ -243,15 +287,15 @@
 
   <div class="gallery rv">
     <a class="card glass" href="https://courtana-venue-connect.lovable.app/" target="_blank" rel="noopener">
-      <div class="shot"><img src="https://image.thum.io/get/width/560/crop/350/noanimate/https://courtana-venue-connect.lovable.app/" alt="Venue Connect" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">Venue Connect</div></div>
+      <div class="shot"><img src="https://image.thum.io/get/width/640/noanimate/https://courtana-venue-connect.lovable.app/" alt="Venue Connect" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">Venue Connect</div></div>
       <div class="cinfo"><div class="ck" style="color:var(--coral)">GTM collateral · closed a partner</div><h3>Venue Connect</h3><p>Next-gen sales asset — proposal, analytics &amp; onboarding in one.</p><span class="cgo" style="color:var(--coral)">open →</span></div>
     </a>
     <a class="card glass" href="https://naughtydata.lovable.app/" target="_blank" rel="noopener">
-      <div class="shot"><img src="https://image.thum.io/get/width/560/crop/350/noanimate/https://naughtydata.lovable.app/" alt="NaughtyData" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">NaughtyData</div></div>
+      <div class="shot"><img src="https://image.thum.io/get/width/640/noanimate/https://naughtydata.lovable.app/" alt="NaughtyData" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">NaughtyData</div></div>
       <div class="cinfo"><div class="ck">Enterprise · marine analytics</div><h3>NaughtyData</h3><p>CTO rebrand for Europe's largest marine-analytics firm.</p><span class="cgo">open →</span></div>
     </a>
     <a class="card glass" href="https://litigator.lovable.app/dashboard" target="_blank" rel="noopener">
-      <div class="shot"><img src="https://image.thum.io/get/width/560/crop/350/noanimate/https://litigator.lovable.app/dashboard" alt="Litigator" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">Litigator</div></div>
+      <div class="shot"><img src="https://image.thum.io/get/width/640/noanimate/https://litigator.lovable.app/dashboard" alt="Litigator" loading="lazy" onerror="this.parentElement.querySelector('.ph').style.display='flex';this.style.display='none'"><div class="ph">Litigator</div></div>
       <div class="cinfo"><div class="ck">Enterprise · legal</div><h3>Litigator</h3><p>Mass-arbitration intelligence for law firms.</p><span class="cgo">open →</span></div>
     </a>
   </div>
@@ -333,6 +377,7 @@ const cio=new IntersectionObserver(es=>es.forEach(e=>{
   const iv=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(iv)}el.textContent=pre+c+suf;},26);cio.unobserve(el);
 },{threshold:.6});
 document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+setTimeout(()=>document.querySelectorAll('.track i').forEach(i=>{i.style.width=i.dataset.w+'%';}),450);
 </script>
 </body>
 </html>

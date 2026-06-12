@@ -43,7 +43,7 @@
   @media(max-width:680px){.nl{gap:1px;font-size:11.5px}.nl a{padding:6px 9px}}
 
   /* hero */
-  .top{padding:26px 0 8px;text-align:center}
+  .top{padding:14px 0 2px;text-align:center}
   .kick{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line);padding:7px 13px;border-radius:99px;background:var(--glass)}
   .kick .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(134,224,164,.5)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
@@ -52,7 +52,7 @@
   .sub{font-size:15px;color:var(--mute);margin:12px auto 0;max-width:48ch}
 
   /* terminal */
-  .term{margin:24px auto 14px;border-radius:16px;border:1px solid var(--line);overflow:hidden;
+  .term{margin:8px auto 14px;border-radius:16px;border:1px solid var(--line);overflow:hidden;
     background:linear-gradient(180deg,#0d0f12,#0a0c0e);box-shadow:0 40px 90px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05)}
   .tbar{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
   .tbar .dots{display:flex;gap:7px}.tbar .dots i{width:11px;height:11px;border-radius:50%}
@@ -82,14 +82,24 @@
   .ibar input::placeholder{color:var(--faint)}
   .ibar .run{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);padding:5px 9px;border-radius:6px;flex-shrink:0}
 
-  /* command chips */
-  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:2px 0 14px}
-  .chips .lbl{width:100%;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:6px;animation:bob 2.4s ease-in-out infinite}
-  @keyframes bob{0%,100%{opacity:.7}50%{opacity:1}}
-  .chip{font-family:var(--mono);font-size:11.5px;color:var(--mute);border:1px solid var(--line);background:var(--glass);padding:7px 13px;border-radius:99px;cursor:pointer;transition:.15s}
-  .chip:hover{color:#08090a;background:var(--sage);border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(168,201,142,.6)}
+  /* command marquee */
+  .cmdwrap{margin:0 0 10px}
+  .cmdlbl{text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);margin-bottom:8px;animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{opacity:.65}50%{opacity:1}}
+  .cmdbar{overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+  .cmdrow{display:flex;gap:8px;width:max-content;animation:marq 34s linear infinite}
+  .cmdrow.r2{animation-duration:40s;animation-direction:reverse;margin-top:8px}
+  .cmdbar:hover .cmdrow{animation-play-state:paused}
+  @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .chip{font-family:var(--mono);font-size:11.5px;color:var(--mute);border:1px solid var(--line);background:var(--glass);padding:7px 13px;border-radius:99px;cursor:pointer;transition:.15s;white-space:nowrap;flex-shrink:0}
+  .chip:hover{color:#08090a;background:var(--sage);border-color:transparent}
   .chip:hover .s{color:#08090a}
   .chip .s{color:var(--green)}
+  .chip.glow{border-color:var(--green);box-shadow:0 0 12px rgba(134,224,164,.45);animation:gp 2.2s ease-in-out infinite}
+  @keyframes gp{0%,100%{box-shadow:0 0 7px rgba(134,224,164,.3)}50%{box-shadow:0 0 16px rgba(134,224,164,.65)}}
+  .flash{animation:flash .8s ease}
+  @keyframes flash{0%{background:rgba(134,224,164,.16)}100%{background:transparent}}
+  .cur{display:inline-block;width:9px;height:15px;background:var(--green);vertical-align:-2px;animation:blink 1s steps(2) infinite}
 
   footer{text-align:center;color:var(--faint);font-size:12px;font-family:var(--mono);padding:10px 0 60px;letter-spacing:.04em}
   footer a{color:var(--mute)}
@@ -115,19 +125,9 @@
 </div>
 
 <div class="wrap">
-  <div class="chips" id="chips">
-    <span class="lbl">↓ tap a command to run it — or type your own ↓</span>
-    <span class="chip" data-c="whoami"><span class="s">$</span> whoami</span>
-    <span class="chip" data-c="ls"><span class="s">$</span> ls</span>
-    <span class="chip" data-c="companies"><span class="s">$</span> companies</span>
-    <span class="chip" data-c="google-deal"><span class="s">$</span> google-deal</span>
-    <span class="chip" data-c="sales"><span class="s">$</span> sales-gtm</span>
-    <span class="chip" data-c="enterprise"><span class="s">$</span> enterprise</span>
-    <span class="chip" data-c="builds"><span class="s">$</span> builds</span>
-    <span class="chip" data-c="pickle"><span class="s">$</span> pickle-daas</span>
-    <span class="chip" data-c="stats"><span class="s">$</span> stats</span>
-    <span class="chip" data-c="git"><span class="s">$</span> git log</span>
-    <span class="chip" data-c="contact"><span class="s">$</span> contact</span>
+  <div class="cmdwrap">
+    <div class="cmdlbl">↓ tap a command — or type your own ↓</div>
+    <div class="cmdbar"><div class="cmdrow" id="row1"></div><div class="cmdrow r2" id="row2"></div></div>
   </div>
   <div class="term">
     <div class="tbar">
@@ -239,7 +239,7 @@ const ALIAS={'sales-gtm':'sales','pickle-daas':'pickle','git log':'git','ls -la'
 
 function print(html,echo){
   if(echo!==undefined){
-    const e=document.createElement('div');e.className='ln echo reveal';
+    const e=document.createElement('div');e.className='ln echo reveal flash';
     e.innerHTML=`<span class="p">➜ ~</span> <span class="c">${echo}</span>`;screen.appendChild(e);
   }
   const lines=html.split('\n');
@@ -250,16 +250,26 @@ function print(html,echo){
 function run(raw){
   const cmd=(raw||'').trim().toLowerCase();
   if(!cmd)return;
+  const _w=document.getElementById('waiting');if(_w)_w.remove();
   if(cmd==='clear'||cmd==='cls'){screen.innerHTML='';boot(true);return;}
   const key=ALIAS[cmd]||cmd;
   if(CMDS[key]){print(CMDS[key](),raw.trim());}
   else{print(`<span class="warn">command not found: ${cmd}</span>\n<span class="cmt">// try</span> <span class="key">help</span>`,raw.trim());}
 }
 function boot(short){
-  print(`<span class="cmt">bricker-os 2026.6 — interactive proof shell. ${short?'cleared.':'type <span class="key">help</span>, or tap a command below.'}</span>`);
-  if(!short)run('whoami');
+  if(short){print('<span class="cmt">// cleared.</span>');return;}
+  screen.innerHTML='';
+  const w=document.createElement('div');w.className='ln';w.id='waiting';
+  w.innerHTML='<span class="cmt">// bricker-os ready — tap a command above, or type one below</span><br><span class="p" style="color:var(--green)">➜ ~</span> <span class="cur"></span>';
+  screen.appendChild(w);
 }
 document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const i=document.getElementById('cmd');run(i.value);i.value='';});
+const GLOW=['whoami','google-deal'];
+function chip(c,l){return `<span class="chip${GLOW.includes(c)?' glow':''}" data-c="${c}"><span class="s">$</span> ${l}</span>`;}
+const R1=[['whoami','whoami'],['ls','ls'],['companies','companies'],['google-deal','google-deal'],['sales','sales-gtm']];
+const R2=[['enterprise','enterprise'],['builds','builds'],['pickle','pickle-daas'],['stats','stats'],['git','git log'],['contact','contact']];
+function fill(id,arr){const h=arr.map(([c,l])=>chip(c,l)).join('');document.getElementById(id).innerHTML=h+h;}
+fill('row1',R1);fill('row2',R2);
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{run(c.dataset.c);if(window.innerWidth>680)document.getElementById('cmd').focus();}));
 boot();
 </script>
