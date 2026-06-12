@@ -16,135 +16,116 @@
     --hand:"Caveat",cursive;--serif:"Spectral",Georgia,serif;--mono:"JetBrains Mono",monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-height:1.55;
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-height:1.5;
     background:radial-gradient(ellipse at 30% 0%, var(--sky) 0%, var(--paper) 55%, var(--paper2) 100%),
       url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.13  0 0 0 0 0.06  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    background-blend-mode:multiply;background-attachment:fixed}
+    background-blend-mode:multiply}
   ::selection{background:var(--ink);color:var(--paper)}
   a{color:inherit}
-  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 22px}
 
-  /* ===== consistent nav ===== */
-  nav{position:sticky;top:0;z-index:50;background:rgba(245,238,213,.9);backdrop-filter:blur(8px);border-bottom:.5px solid var(--rule)}
-  nav .wrap{max-width:1060px;display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 22px}
+  /* nav with strong active state */
+  nav{position:sticky;top:0;z-index:60;background:rgba(245,238,213,.92);backdrop-filter:blur(8px);border-bottom:.5px solid var(--rule)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
   .brand{font-style:italic;font-weight:500;font-size:19px;text-decoration:none}
-  .nl{display:flex;gap:20px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
-  .nl a{color:var(--mute);text-decoration:none;transition:.15s;padding:4px 0;border-bottom:1.5px solid transparent}
+  .nl{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+  .nl a{color:var(--mute);text-decoration:none;transition:.15s;padding:7px 11px;border-radius:7px}
   .nl a:hover{color:var(--sienna)}
-  .nl a.here{color:var(--ink);border-bottom-color:var(--sienna)}
-  .nl a.email{border:.5px solid var(--ink);border-bottom-width:.5px;padding:6px 12px;color:var(--ink)}
+  .nl a.here{color:var(--paper);background:var(--ink)}
+  .nl a.email{border:.5px solid var(--ink);color:var(--ink)}
   .nl a.email:hover{background:var(--ink);color:var(--paper)}
-  @media(max-width:640px){.nl{gap:12px;font-size:9px}.nl a.email{padding:5px 9px}}
+  @media(max-width:640px){.nl{gap:2px;font-size:9px}.nl a{padding:6px 7px}}
 
-  /* ===== hero ===== */
-  header{padding:54px 0 8px;text-align:center}
+  header{text-align:center;padding:40px 0 6px}
   .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
-  h1{font-style:italic;font-weight:300;font-size:clamp(40px,9vw,72px);line-height:.95;letter-spacing:-.025em;margin:12px 0 0}
+  h1{font-style:italic;font-weight:300;font-size:clamp(38px,8vw,66px);line-height:.95;letter-spacing:-.025em;margin:10px 0 0}
   h1 em{font-style:normal;color:var(--sienna)}
-  .deck{font-size:clamp(15px,3.6vw,18px);font-style:italic;color:var(--ink2);max-width:46ch;margin:18px auto 0;line-height:1.45}
-  .scrollcue{font-family:var(--hand);color:var(--sienna);font-size:20px;margin-top:24px;display:inline-block;animation:bob 2.4s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .deck{font-size:clamp(14px,3.4vw,17px);font-style:italic;color:var(--ink2);max-width:48ch;margin:14px auto 0}
 
-  /* ===== timeline ===== */
-  .tl{position:relative;margin:36px auto 20px;max-width:760px;padding:10px 0 40px}
-  .tl::before{content:"";position:absolute;top:0;bottom:0;left:38px;width:2px;
-    background:linear-gradient(180deg,var(--sienna),var(--ochre) 40%,var(--rule));border-radius:2px}
-  @media(min-width:760px){.tl::before{left:50%;transform:translateX(-50%)}}
+  /* chart viewport */
+  .vphint{display:none;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--sienna);text-align:center;margin:14px 0 4px}
+  .vptools{display:flex;justify-content:center;gap:8px;margin:16px 0 6px}
+  .tbtn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);
+    border:.5px solid var(--ink);background:var(--vellum);padding:7px 12px;cursor:pointer;border-radius:6px}
+  .tbtn:hover{background:var(--ink);color:var(--paper)}
+  .vp{position:relative;overflow:hidden;margin:6px auto 10px;border:.5px solid var(--rule);background:rgba(245,235,208,.4);
+    border-radius:4px}
+  .vp.scroll{overflow:auto;-webkit-overflow-scrolling:touch}
+  .vp.fs{position:fixed;inset:0;z-index:90;margin:0;border:none;border-radius:0;background:var(--paper);overflow:auto;
+    display:flex;align-items:center;justify-content:center}
+  .fsbar{display:none;position:fixed;top:0;left:0;right:0;z-index:91;padding:10px 16px;
+    background:rgba(245,238,213,.95);border-bottom:.5px solid var(--rule);
+    justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  .vp.fs ~ .fsbar{display:flex}
+  .fsbar .x{cursor:pointer;color:var(--ink);border:.5px solid var(--ink);padding:6px 12px;border-radius:6px}
 
-  .row{position:relative;padding:0 0 26px 84px;min-height:64px}
-  @media(min-width:760px){
-    .row{width:50%;padding:0;margin-bottom:30px;min-height:0}
-    .row.r{margin-left:50%;padding-left:62px}
-    .row.l{padding-right:62px;text-align:right}
-  }
+  /* the fixed-size canvas (1240x620 design space) */
+  .canvas{position:relative;width:1240px;height:620px;transform-origin:top left;flex:0 0 auto}
+  .canvas svg.scene{position:absolute;inset:0;width:1240px;height:620px;pointer-events:none}
+  .yhint{position:absolute;left:14px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center;
+    font-family:var(--mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--mute)}
+  .marg{position:absolute;font-family:var(--hand);color:var(--sienna);font-size:19px;line-height:1;pointer-events:none;white-space:nowrap}
+  .xtick{position:absolute;bottom:8px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--mute)}
+  .xtick.now{color:var(--sienna);font-weight:600}
 
-  /* medallion */
-  .med{position:absolute;left:8px;top:0;width:62px;height:62px;cursor:pointer;z-index:2}
-  @media(min-width:760px){
-    .row.r .med{left:-31px}
-    .row.l .med{left:auto;right:-31px}
-  }
-  .med .ring{position:absolute;inset:0;border-radius:50%;background:var(--vellum);
-    border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
-    box-shadow:0 3px 10px rgba(43,31,16,.18);transition:transform .25s, box-shadow .25s;overflow:hidden}
-  .med .mono{font-family:var(--mono);font-weight:600;font-size:15px;letter-spacing:-.02em;color:var(--ink)}
-  .med .gly{font-size:24px;line-height:1}
-  .med::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--sienna);
-    opacity:0;animation:halo 2.8s ease-in-out infinite}
-  @keyframes halo{0%,100%{opacity:0;transform:scale(.9)}50%{opacity:.45;transform:scale(1.05)}}
-  .med:hover .ring{transform:scale(1.12);box-shadow:0 6px 18px rgba(168,66,29,.3)}
+  /* medallion pins */
+  .pin{position:absolute;transform:translate(-50%,-50%);cursor:pointer;z-index:3;text-align:center}
+  .pin .med{width:50px;height:50px;border-radius:50%;background:var(--vellum);border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative;
+    box-shadow:0 3px 9px rgba(43,31,16,.22);transition:transform .22s,box-shadow .22s}
+  .pin .med .mono{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:-.02em;color:var(--ink)}
+  .pin .med .gly{font-size:22px;line-height:1}
+  .pin .med::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--sienna);opacity:0;animation:halo 2.8s ease-in-out infinite}
+  @keyframes halo{0%,100%{opacity:0;transform:scale(.85)}50%{opacity:.5;transform:scale(1.08)}}
+  .pin:hover .med{transform:scale(1.16);box-shadow:0 6px 16px rgba(168,66,29,.35)}
+  .pin.side .med{border-color:var(--ochre);background:#f7eecb}.pin.side .mono{color:var(--sienna-deep)}
+  .pin.personal .med{border-color:var(--moss)}.pin.personal .mono{color:var(--moss)}
+  .pin.live .med{border-color:var(--sienna)}.pin.live .mono{color:var(--sienna)}
+  .pin.live .med::after{border-color:var(--sienna);animation:haloLive 1.9s ease-in-out infinite}
+  @keyframes haloLive{0%,100%{opacity:.25;transform:scale(.9);box-shadow:0 0 0 0 rgba(168,66,29,.4)}
+    50%{opacity:.85;transform:scale(1.14);box-shadow:0 0 24px 4px rgba(168,66,29,.28)}}
+  .pin .lbl{font-family:var(--serif);font-style:italic;font-weight:500;font-size:13px;color:var(--ink);
+    background:rgba(245,236,214,.92);border:.5px solid rgba(43,31,16,.35);padding:2px 7px;border-radius:2px;
+    margin-top:6px;white-space:nowrap;display:inline-block;line-height:1.2}
+  .pin .lbl .y{display:block;font-family:var(--mono);font-style:normal;font-size:8.5px;color:var(--mute);letter-spacing:.06em}
+  .pin.above .lbl{margin-top:0;margin-bottom:6px;order:-1}
+  .pin.above{display:flex;flex-direction:column}
+  .pin .live-pill{font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;background:var(--sienna);color:var(--paper);padding:1px 5px;margin-left:5px;text-transform:uppercase}
 
-  .med.career .ring{border-color:var(--ink)}
-  .med.side .ring{border-color:var(--ochre);background:#f7eecb}
-  .med.side .mono{color:var(--sienna-deep)}
-  .med.personal .ring{border-color:var(--moss)}
-  .med.personal .mono{color:var(--moss)}
-  .med.live .ring{border-color:var(--sienna);background:var(--vellum)}
-  .med.live .mono{color:var(--sienna)}
-  .med.live::after{border-color:var(--sienna);animation:haloLive 2s ease-in-out infinite}
-  @keyframes haloLive{0%,100%{opacity:.2;transform:scale(.92);box-shadow:0 0 0 0 rgba(168,66,29,.35)}
-    50%{opacity:.8;transform:scale(1.12);box-shadow:0 0 26px 4px rgba(168,66,29,.25)}}
-
-  /* card stub on the timeline */
-  .stub{cursor:pointer;display:inline-block;max-width:100%}
-  .stub .yr{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--mute)}
-  .stub .live-pill{display:inline-block;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;
-    background:var(--sienna);color:var(--paper);padding:1px 7px;margin-left:7px;vertical-align:1.5px;text-transform:uppercase}
-  .stub h3{font-style:italic;font-weight:500;font-size:21px;letter-spacing:-.01em;margin:2px 0 3px;line-height:1.05}
-  .stub .one{font-size:13.5px;color:var(--ink2);line-height:1.4;max-width:42ch}
-  @media(min-width:760px){.row.l .stub .one{margin-left:auto}}
-  .stub .tap{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sienna);margin-top:7px;display:inline-block}
-  .stub:hover .tap{text-decoration:underline;text-underline-offset:3px}
-  .stub:hover h3{color:var(--sienna)}
-
-  .row{opacity:0;transform:translateY(20px);transition:.6s cubic-bezier(.16,1,.3,1)}
-  .row.in{opacity:1;transform:none}
-  .no-js .row{opacity:1;transform:none}
-
-  .climbfoot{text-align:center;padding:24px 0 70px}
-  .climbfoot .hand{font-family:var(--hand);color:var(--sienna);font-size:24px}
-  .climbfoot .ctas{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .climbfoot{text-align:center;padding:8px 0 64px}
+  .climbfoot .hand{font-family:var(--hand);color:var(--sienna);font-size:22px}
+  .climbfoot .ctas{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px}
   .btn{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     padding:11px 18px;border:.5px solid var(--ink);color:var(--ink);text-decoration:none;transition:.15s}
-  .btn:hover{background:var(--vellum)}
-  .btn.primary{background:var(--ink);color:var(--paper)}
-  .btn.primary:hover{background:var(--sienna);border-color:var(--sienna)}
+  .btn:hover{background:var(--vellum)}.btn.primary{background:var(--ink);color:var(--paper)}.btn.primary:hover{background:var(--sienna);border-color:var(--sienna)}
 
-  /* ===== card overlay (bottom-sheet on mobile) ===== */
-  .scrim{position:fixed;inset:0;z-index:80;background:rgba(43,31,16,.46);backdrop-filter:blur(2px);
-    display:none;align-items:flex-end;justify-content:center;padding:0}
+  /* card overlay (bottom sheet on mobile) */
+  .scrim{position:fixed;inset:0;z-index:95;background:rgba(43,31,16,.46);backdrop-filter:blur(2px);display:none;align-items:flex-end;justify-content:center}
   .scrim.on{display:flex}
   @media(min-width:640px){.scrim{align-items:center;padding:24px}}
-  .card{width:min(560px,100%);max-height:88vh;overflow:auto;
-    background:linear-gradient(180deg,#f7eed5,#efe2bf);
-    border:.5px solid var(--ink);box-shadow:0 -10px 40px rgba(43,31,16,.4);
-    padding:30px 24px 26px;position:relative;animation:up .3s cubic-bezier(.3,.7,.4,1)}
+  .card{width:min(560px,100%);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#f7eed5,#efe2bf);
+    border:.5px solid var(--ink);box-shadow:0 -10px 40px rgba(43,31,16,.4);padding:30px 24px 26px;position:relative;animation:up .3s cubic-bezier(.3,.7,.4,1)}
   @media(min-width:640px){.card{border-radius:2px;box-shadow:0 18px 50px rgba(43,31,16,.4)}}
-  @keyframes up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
-  .card .tape{position:absolute;top:-11px;left:50%;width:90px;height:20px;transform:translateX(-50%) rotate(-2deg);
-    background:repeating-linear-gradient(90deg,rgba(214,138,42,.7) 0 5px,rgba(214,138,42,.45) 5px 9px)}
-  .card .close{position:absolute;top:12px;right:16px;background:none;border:none;cursor:pointer;
-    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
-  .card .close:hover{color:var(--sienna)}
+  @keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+  .card .tape{position:absolute;top:-11px;left:50%;width:90px;height:20px;transform:translateX(-50%) rotate(-2deg);background:repeating-linear-gradient(90deg,rgba(214,138,42,.7) 0 5px,rgba(214,138,42,.45) 5px 9px)}
+  .card .close{position:absolute;top:12px;right:16px;background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
   .card .emblem{display:flex;align-items:center;gap:12px;margin-bottom:2px}
-  .card .emblem .e{width:46px;height:46px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);
-    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:13px;flex-shrink:0}
-  .card .emblem .e .gly{font-size:22px}
+  .card .emblem .e{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:13px;flex-shrink:0}
+  .card .emblem .e .gly{font-size:21px}
   .card .lane{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-  .card h2{font-style:italic;font-weight:500;font-size:32px;line-height:1.02;letter-spacing:-.02em;margin:8px 0 4px}
+  .card h2{font-style:italic;font-weight:500;font-size:31px;line-height:1.02;letter-spacing:-.02em;margin:8px 0 4px}
   .card .period{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sienna);margin-bottom:14px}
-  .card .pull{font-style:italic;font-size:18px;line-height:1.35;border-left:2px solid var(--sienna);padding:3px 0 3px 14px;margin:6px 0 16px}
-  .card p{font-size:14.5px;color:var(--ink2);line-height:1.6;margin:0 0 11px}
-  .card p em{font-style:italic;color:var(--ink)}
+  .card .pull{font-style:italic;font-size:17px;line-height:1.35;border-left:2px solid var(--sienna);padding:3px 0 3px 14px;margin:6px 0 16px}
+  .card p{font-size:14.5px;color:var(--ink2);line-height:1.6;margin:0 0 11px}.card p em{font-style:italic;color:var(--ink)}
   .card .actions{margin-top:16px;padding-top:13px;border-top:.5px dotted var(--rule);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
   .card .actions a.lnk{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--sienna);text-decoration:underline;text-underline-offset:3px}
   .card .nav-btns{display:flex;gap:10px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
-  .card .nav-btns button{background:none;border:none;cursor:pointer;color:inherit;font:inherit;padding:0}
-  .card .nav-btns button:hover{color:var(--sienna)}
+  .card .nav-btns button{background:none;border:none;cursor:pointer;color:inherit;font:inherit}
+
+  @media(max-width:820px){ .vphint{display:block} }
 </style>
 </head>
-<body class="no-js">
+<body>
 
 <nav><div class="wrap">
   <a class="brand" href="index.html">Bill Bricker</a>
@@ -152,7 +133,7 @@
     <a href="index.html">Home</a>
     <a href="climb.html" class="here">Story</a>
     <a href="work.html">Work</a>
-    <a href="resume.html">Résumé</a>
+    <a href="resume-v2.html">Résumé</a>
     <a href="mailto:bricker3@gmail.com" class="email">Email</a>
   </div>
 </div></nav>
@@ -160,17 +141,71 @@
 <header><div class="wrap">
   <div class="eyebrow">2006 → now · still rising</div>
   <h1>The <em>Climb</em></h1>
-  <p class="deck">Twenty years of selling, shipping, and introducing — told as one ascent. Tap any marker to read its story.</p>
-  <div class="scrollcue">↓</div>
+  <p class="deck">Twenty years of selling, shipping, and introducing — one ascent. Tap any marker for its story.</p>
 </div></header>
 
-<div class="wrap"><div class="tl" id="tl"></div></div>
+<div class="wrap">
+  <div class="vphint">← swipe across the climb · or tap “Full view” ↓</div>
+  <div class="vptools">
+    <button class="tbtn" id="fitBtn">⤢ Fit width</button>
+    <button class="tbtn" id="fsBtn">⛶ Full view</button>
+  </div>
+  <div class="vp" id="vp">
+    <div class="canvas" id="canvas">
+      <div class="yhint">altitude · scope · stakes</div>
+      <svg class="scene" viewBox="0 0 1240 620" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="ridgeFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#a8421d" stop-opacity=".22"/><stop offset="70%" stop-color="#a8421d" stop-opacity=".06"/><stop offset="100%" stop-color="#a8421d" stop-opacity="0"/>
+          </linearGradient>
+          <pattern id="dotwash" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".7" fill="#a8421d" opacity=".2"/></pattern>
+        </defs>
+        <!-- contour lines -->
+        <g stroke="#a8421d" stroke-opacity=".16" stroke-width=".75" fill="none">
+          <path d="M0 520 Q 320 510 640 514 T 1240 506"/>
+          <path d="M0 440 Q 320 426 640 430 T 1240 410"/>
+          <path d="M0 360 Q 320 342 640 346 T 1240 320"/>
+          <path d="M0 270 Q 320 250 640 252 T 1240 218"/>
+          <path d="M0 180 Q 320 158 640 158 T 1240 120"/>
+        </g>
+        <!-- ridge fill + line through career nodes -->
+        <path d="M110 470 L250 410 L330 372 L410 352 L600 300 L690 250 L950 150 L950 600 L110 600 Z" fill="url(#ridgeFill)"/>
+        <path d="M110 470 L250 410 L330 372 L410 352 L600 300 L690 250 L950 150" fill="none" stroke="#2b1f10" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+        <!-- summit marker + forecast -->
+        <g transform="translate(950 150)" stroke="#2b1f10" stroke-width="1" fill="none"><path d="M-5 -3 L0 -10 L5 -3"/></g>
+        <path d="M950 150 L1050 120 L1180 86" fill="none" stroke="#5e7a2a" stroke-width="1.8" stroke-dasharray="3 8" stroke-linecap="round"/>
+        <!-- dotted trail along ridge -->
+        <path d="M110 470 L250 410 L330 372 L410 352 L600 300 L690 250 L950 150" fill="none" stroke="#a8421d" stroke-width="1.4" stroke-dasharray="1 6" stroke-linecap="round"/>
+        <!-- base band + the long walk -->
+        <rect x="0" y="540" width="1240" height="46" fill="url(#dotwash)" opacity=".6"/>
+        <path d="M700 560 Q 850 552 1000 540 Q 1110 530 1180 516" fill="none" stroke="#a8421d" stroke-width="1.2" stroke-dasharray="2 7" stroke-linecap="round" opacity=".8"/>
+      </svg>
+
+      <div class="marg" style="left:150px;top:452px;transform:rotate(-3deg)">doors &amp; dials</div>
+      <div class="marg" style="left:520px;top:340px;transform:rotate(-2deg)">↓ the muscle compounds</div>
+      <div class="marg" style="left:760px;top:190px;transform:rotate(-3deg)">posture, not phase</div>
+      <div class="marg" style="left:1000px;top:74px;transform:rotate(2deg)">summit unset.</div>
+      <div class="marg" style="left:1010px;top:506px;transform:rotate(-2deg)">still walking ↗</div>
+
+      <div class="xtick" style="left:110px">2006</div>
+      <div class="xtick" style="left:250px">2010</div>
+      <div class="xtick" style="left:410px">2014</div>
+      <div class="xtick" style="left:600px">2017</div>
+      <div class="xtick" style="left:760px">2020</div>
+      <div class="xtick now" style="left:950px">2023 · now</div>
+      <div class="xtick" style="left:1150px">2026 →</div>
+
+      <div id="pins"></div>
+    </div>
+  </div>
+</div>
+<div class="fsbar"><span>The Climb · pinch / scroll · rotate for the full view</span><span class="x" id="fsClose">✕ close</span></div>
 
 <div class="climbfoot">
   <div class="hand">summit unset. still walking ↗</div>
   <div class="ctas">
     <a class="btn primary" href="work.html">See the work →</a>
-    <a class="btn" href="resume.html">Résumé</a>
+    <a class="btn" href="resume-v2.html">Résumé</a>
     <a class="btn" href="mailto:bricker3@gmail.com">Email Bill</a>
   </div>
 </div>
@@ -180,118 +215,110 @@
     <span class="tape"></span>
     <button class="close" onclick="closeCard()">close ✕</button>
     <div class="emblem"><span class="e" id="cE"></span><div><div class="lane" id="cLane"></div></div></div>
-    <h2 id="cTitle"></h2>
-    <div class="period" id="cPeriod"></div>
-    <div class="pull" id="cPull"></div>
-    <div id="cBody"></div>
-    <div class="actions">
-      <span id="cLink"></span>
-      <div class="nav-btns"><button onclick="step(-1)">◂ prev</button><button onclick="step(1)">next ▸</button></div>
-    </div>
+    <h2 id="cTitle"></h2><div class="period" id="cPeriod"></div><div class="pull" id="cPull"></div><div id="cBody"></div>
+    <div class="actions"><span id="cLink"></span><div class="nav-btns"><button onclick="step(-1)">◂ prev</button><button onclick="step(1)">next ▸</button></div></div>
   </article>
 </div>
 
 <script>
 const N = [
-  {id:"courtana",lane:"career",cls:"live",mono:"C",laneLabel:"Now shipping · live",title:"Courtana",period:"2023 → now · founder / CEO",
-   one:"AI smart-court SaaS — 36 courts live or piloting, $350K raised.",
-   pull:"AI smart-court tech for the people who actually run the room.",
-   body:["Raised <em>$350K</em>; concept to <em>36 courts live or piloting</em>, anchored by a flagship with a 44-court expansion LOI. Computer vision, edge compute, instant highlights, AI coaching, Stripe — across 11+ sports.","Ran the full zero-to-one loop solo, on an AI-native build system that compressed iteration from weeks to days."],
-   link:{u:"https://courtana.com",t:"courtana.com ↗"}},
-  {id:"vibeco",lane:"side",gly:"⚙",laneLabel:"The engine · 2026",title:"VibeCo",period:"2026 · 11-agent product simulator",
-   one:"The workshop behind 40+ apps across 31 repos.",
-   pull:"The workshop the rest of these builds came out of.",
-   body:["An 11-agent simulator that turns a plain-English idea into a brief, build prompts, and concept art — tool-calling, multi-model routing, a parallel critique “Thunderdome,” and a synthesis flywheel.","The reason one operator can go idea-to-proof in an afternoon."],
-   link:{u:"https://vibeco.lovable.app/simulate",t:"run the simulator ↗"}},
-  {id:"pickle",lane:"side",mono:"P",laneLabel:"The tech proof · 2026",title:"Pickle DaaS",period:"2026 · computer-vision rails",
-   one:"4,097 clips analyzed at $0.0054 each.",
-   pull:"Highlight intelligence at $0.0054 per clip.",
-   body:["A 4,097-clip corpus at <em>$0.0054/clip</em> — ~7x cheaper than GPT-4o — into player-DNA profiles, brand-exposure registries, and coaching feedback, run by autonomous agents with spend caps and a ground-truth loop.","The model isn’t the moat — <em>the math is.</em>"],
-   link:{u:"https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal-v4.html",t:"the dashboards ↗"}},
-  {id:"walk",lane:"personal",gly:"↑",laneLabel:"The long walk",title:"The Long Walk",period:"2023 → now · still walking",
-   one:"Cancer, 2023. The pipeline didn't stop. Neither did I.",
-   pull:"Cancer, 2023. The pipeline didn’t stop. Neither did I.",
-   body:["Diagnosed in 2023. Twelve weeks of chemo, most tolerable, a few not. The pipeline kept moving — partly because I wanted it to, partly because it didn’t care.","I leave this here because no one I’d want to work with would want me to leave it out — and because the operator instinct gets <em>ruthlessly clear</em> when the day is short. Still walking."],
-   link:{u:"mailto:bricker3@gmail.com",t:"if this is your road too, write me ↗"}},
-  {id:"dreamship",lane:"career",mono:"DS",laneLabel:"Build · the big one",title:"Dreamship",period:"2018–25 · cofounder &amp; CEO → board chair",
-   one:"Zero to $35M+ — 11x in a single year. Sold Google.",
-   pull:"Zero to $35M+ — and 11x in a single year.",
-   body:["Led as CEO from zero to <em>$35M+ revenue</em>, ~$85M GMV, 2.3M+ units — including <em>11x growth in one year</em> — on $2.2M raised; EBITDA-profitable 4 of 8 years.","As a sub-one-year-old startup I personally sold <em>Google</em>: built an AI IP-compliance checker, drove it through 5–6 internal teams to director+ sign-off, unlocking an 8-figure channel that ran 5+ years — then sequenced Stripe, PayPal, Meta &amp; Payoneer off it.","Zero-to-one is a <em>posture</em>, not a phase you graduate from."],
-   link:{u:"https://dreamship.com",t:"dreamship.com ↗"}},
-  {id:"gear",lane:"career",mono:"GL",laneLabel:"Sell · 2017",title:"GearLaunch",period:"2017 · VP Sales &amp; Marketing",
-   one:"Creator commerce, before it had a name.",
-   pull:"Two years before everyone else said “creator economy.”",
-   body:["VP Sales &amp; Marketing for a 360° ecommerce / print-on-demand platform. Tiny team, bespoke playbook — the proving ground for the operator muscle that ran Dreamship next."],link:null},
-  {id:"gord",lane:"side",gly:"♠",laneLabel:"Play · 2016",title:"GroupOrDare",period:"2016 · party card game",
-   one:"I shipped a party card game. It exists. It works.",
-   pull:"I designed and shipped a party game. It exists. It works.",
-   body:["Yes really. My kids think it’s the most impressive thing I’ve ever done, which is, on reflection, the correct ranking.","Evidence beats résumé — a bored idea followed all the way into the world is evidence."],link:null},
-  {id:"manifesto",lane:"side",gly:"✎",laneLabel:"Field note · 2015",title:"The Networking Manifesto",period:"2015 · essay · still operative",
-   one:"“Who can I introduce you to?” — the operating question.",
-   pull:"“Who can I introduce you to so you can achieve your goals?”",
-   body:["The one question I’ve asked at the top of nearly every working conversation for over a decade. The river of intros is the longest line on my career map and the highest-leverage asset class a working person owns."],link:null},
-  {id:"wibi",lane:"career",mono:"Wd",laneLabel:"Sell · 2014",title:"WibiData",period:"2014 · Director of Sales",
-   one:"F500 Big Data pilots — Macy's, Nordstrom.",
-   pull:"Selling into a problem the customer hasn’t named yet.",
-   body:["Structured Big Data pilots with <em>Macy’s</em>, <em>Nordstrom</em>, and other Fortune 500 retailers at an NEA/Canaan/Eric-Schmidt-backed startup. Selling into the <em>shape</em> of a problem the customer can’t fully name has shown up in every job since."],link:null},
-  {id:"ibm",lane:"career",mono:"IBM",laneLabel:"Sell · the foundation",title:"IBM / Netezza",period:"2012–14 · seven-figure enterprise deals",
-   one:"Zillow, Avalara, an 8-fig McKesson deal. &gt;100% quota.",
-   pull:"You cannot out-build the need to talk to a customer.",
-   body:["Closed high-six-figure analytics deals with <em>Zillow</em> and <em>Avalara</em>, contributed to an 8-figure McKesson deal, and finished above 100% of quota — selling Big Data into mid-market and Fortune 500 before AI made any of this easier.","Complicated things sell only when one human cares enough to make them simple for another."],
-   link:{u:"work.html",t:"ask me about enterprise GTM →"}},
-  {id:"unc",lane:"career",mono:"UNC",laneLabel:"Study · 2010",title:"UNC Kenan-Flagler",period:"2010 · MBA · GMAT 730",
-   one:"Where activity stopped masquerading as progress.",
-   pull:"Where I stopped confusing activity with progress.",
-   body:["Two years to learn what a P&amp;L is for, and to meet the handful of people who’d show up on this map a dozen more times over the next fifteen years."],link:null},
-  {id:"nwm",lane:"career",mono:"NM",laneLabel:"Origin · 2006",title:"Northwestern Mutual",period:"2006 · first job · cold-call school",
-   one:"Doors and dials. Top 10 nationally, $6M+ TCV.",
+  {x:110,y:470,pos:"below",lane:"career",mono:"NM",laneLabel:"Origin · 2006",title:"Northwestern Mutual",yr:"2006",period:"2006 · first job · cold-call school",
    pull:"The most concentrated lesson in selling I ever got.",
-   body:["Out of college: doors and dials. Ranked top 10 nationally, $6M+ total contract value across 150+ accounts — taught by a phone that mostly went to voicemail.","Grateful for it the way you’re grateful for a hard winter."],link:null},
-  {id:"home",lane:"personal",gly:"♥",laneLabel:"Home base",title:"Home · three kids",period:"ongoing · the why",
-   one:"The reason any of this matters.",
+   body:["Out of college: doors and dials. Top 10 nationally, $6M+ total contract value across 150+ accounts — taught by a phone that mostly went to voicemail.","Grateful for it the way you’re grateful for a hard winter."],link:null},
+  {x:250,y:410,pos:"below",lane:"career",mono:"UNC",laneLabel:"Study · 2010",title:"UNC Kenan-Flagler",yr:"2010 · MBA",period:"2010 · MBA · GMAT 730",
+   pull:"Where I stopped confusing activity with progress.",
+   body:["Two years to learn what a P&amp;L is for, and to meet the handful of people who’d show up on this map a dozen more times."],link:null},
+  {x:330,y:372,pos:"below",lane:"career",mono:"IBM",laneLabel:"Sell · the foundation",title:"IBM / Netezza",yr:"2012–14",period:"2012–14 · seven-figure enterprise deals",
+   pull:"You cannot out-build the need to talk to a customer.",
+   body:["Closed high-six-figure analytics deals with <em>Zillow</em> and <em>Avalara</em>, contributed to an 8-figure McKesson deal, and finished above 100% of quota — selling Big Data into Fortune 500 before AI made any of this easier."],link:{u:"work.html",t:"enterprise GTM →"}},
+  {x:410,y:352,pos:"below",lane:"career",mono:"Wd",laneLabel:"Sell · 2014",title:"WibiData",yr:"2014",period:"2014 · Director of Sales",
+   pull:"Selling into a problem the customer hasn’t named yet.",
+   body:["Structured Big Data pilots with <em>Macy’s</em>, <em>Nordstrom</em>, and other F500 retailers at an NEA/Canaan/Eric-Schmidt-backed startup."],link:null},
+  {x:470,y:300,pos:"above",lane:"side",gly:"✎",laneLabel:"Field note · 2015",title:"The Networking Manifesto",yr:"2015",period:"2015 · essay · still operative",
+   pull:"“Who can I introduce you to so you can achieve your goals?”",
+   body:["The one question I’ve asked at the top of nearly every working conversation for over a decade. The river of intros is the longest line on my career map."],link:null},
+  {x:540,y:282,pos:"above",lane:"side",gly:"♠",laneLabel:"Play · 2016",title:"GroupOrDare",yr:"2016",period:"2016 · party card game",
+   pull:"I shipped a party card game. It exists. It works.",
+   body:["My kids think it’s the most impressive thing I’ve ever done — which is, on reflection, the correct ranking. Evidence beats résumé."],link:null},
+  {x:600,y:300,pos:"below",lane:"career",mono:"GL",laneLabel:"Sell · 2017",title:"GearLaunch",yr:"2017",period:"2017 · VP Sales &amp; Marketing",
+   pull:"Two years before everyone else said “creator economy.”",
+   body:["VP Sales &amp; Marketing for a 360° ecommerce / print-on-demand platform — the proving ground for the operator muscle that ran Dreamship next."],link:null},
+  {x:690,y:250,pos:"below",lane:"career",mono:"DS",laneLabel:"Build · the big one",title:"Dreamship",yr:"2018–25",period:"2018–25 · cofounder &amp; CEO → board chair",
+   pull:"Zero to $35M+ — and 11x in a single year.",
+   body:["Led as CEO from zero to <em>$35M+ revenue</em>, ~$85M GMV, 2.3M+ units — including <em>11x in one year</em> — on $2.2M raised.","As a sub-one-year-old startup I personally sold <em>Google</em>: an AI IP-compliance checker through 5–6 internal teams to director+ sign-off, unlocking an 8-figure channel that ran 5+ years — then sequenced Stripe, PayPal, Meta &amp; Payoneer off it."],link:{u:"https://dreamship.com",t:"dreamship.com ↗"}},
+  {x:950,y:150,pos:"below",lane:"live",mono:"C",laneLabel:"Now shipping · live",title:"Courtana",yr:"2023 → now",period:"2023 → now · founder / CEO",live:true,
+   pull:"AI smart-court tech for the people who run the room.",
+   body:["Raised <em>$350K</em>; concept to <em>36 courts live or piloting</em>, with a 44-court expansion LOI. Computer vision, edge compute, instant highlights, AI coaching, Stripe — across 11+ sports.","Ran the full zero-to-one loop solo, on an AI-native build system that compressed iteration from weeks to days."],link:{u:"https://courtana.com",t:"courtana.com ↗"}},
+  {x:1095,y:120,pos:"above",lane:"side",gly:"⚙",laneLabel:"The engine · 2026",title:"VibeCo",yr:"2026",period:"2026 · 11-agent product simulator",
+   pull:"The workshop the rest of these builds came out of.",
+   body:["An 11-agent simulator: idea → brief → build prompts → concept art. Tool-calling, multi-model routing, a parallel critique “Thunderdome,” and a synthesis flywheel — the engine behind 40+ apps across 31 repos."],link:{u:"https://vibeco.lovable.app/simulate",t:"run the simulator ↗"}},
+  {x:1150,y:178,pos:"below",lane:"side",mono:"P",laneLabel:"The tech proof · 2026",title:"Pickle DaaS",yr:"2026",period:"2026 · computer-vision rails",
+   pull:"Highlight intelligence at $0.0054 per clip.",
+   body:["A 4,097-clip corpus at <em>$0.0054/clip</em> — ~7x cheaper than GPT-4o — into player-DNA, brand-exposure, and coaching data, run by autonomous agents. The model isn’t the moat — <em>the math is.</em>"],link:{u:"https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal-v4.html",t:"the dashboards ↗"}},
+  {x:250,y:560,pos:"below",lane:"personal",gly:"♥",laneLabel:"Home base",title:"Home · three kids",yr:"ongoing",period:"ongoing · the why",
    pull:"The reason any of this matters.",
    body:["Three kids. A real kitchen and an unreal amount of pickleball gear in the garage. The whole climb exists to support this — not the other way around."],link:null},
+  {x:885,y:560,pos:"below",lane:"personal",gly:"↑",laneLabel:"The long walk",title:"The Long Walk",yr:"2023 → now",period:"2023 → now · still walking",
+   pull:"Cancer, 2023. The pipeline didn’t stop. Neither did I.",
+   body:["Diagnosed in 2023. Twelve weeks of chemo. The pipeline kept moving — partly because I wanted it to, partly because it didn’t care.","I leave this here because no one I’d want to work with would want me to leave it out — and because the operator instinct gets <em>ruthlessly clear</em> when the day is short. Still walking."],link:{u:"mailto:bricker3@gmail.com",t:"if this is your road too, write me ↗"}},
 ];
 
-const tl = document.getElementById('tl');
-tl.innerHTML = N.map((n,i)=>{
-  const side = i%2===0 ? 'r' : 'l';
+document.getElementById('pins').innerHTML = N.map((n,i)=>{
   const emb = n.gly ? `<span class="gly">${n.gly}</span>` : `<span class="mono">${n.mono}</span>`;
-  const live = n.cls==='live' ? '<span class="live-pill">live</span>' : '';
-  return `<div class="row ${side}" data-i="${i}">
-    <div class="med ${n.lane} ${n.cls||''}" data-i="${i}"><div class="ring">${emb}</div></div>
-    <div class="stub" data-i="${i}">
-      <div class="yr">${n.period.split('·')[0].trim()}${live}</div>
-      <h3>${n.title}</h3>
-      <div class="one">${n.one}</div>
-      <span class="tap">read →</span>
-    </div>
+  const live = n.live ? '<span class="live-pill">live</span>' : '';
+  return `<div class="pin ${n.lane} ${n.pos} ${n.live?'live':''}" style="left:${n.x}px;top:${n.y}px" data-i="${i}">
+    <div class="med">${emb}</div>
+    <span class="lbl">${n.title}<span class="y">${n.yr}${live}</span></span>
   </div>`;
 }).join('');
 
-let openI = null;
-function openCard(i){
-  const n = N[i]; if(!n) return; openI = i;
-  document.getElementById('cE').innerHTML = n.gly ? `<span class="gly">${n.gly}</span>` : n.mono;
-  document.getElementById('cLane').innerHTML = n.laneLabel;
-  document.getElementById('cTitle').innerHTML = n.title;
-  document.getElementById('cPeriod').innerHTML = n.period;
-  document.getElementById('cPull').innerHTML = n.pull;
-  document.getElementById('cBody').innerHTML = n.body.map(p=>`<p>${p}</p>`).join('');
-  document.getElementById('cLink').innerHTML = n.link ? `<a class="lnk" href="${n.link.u}" ${n.link.u.startsWith('http')?'target="_blank" rel="noopener"':''}>${n.link.t}</a>` : '<span></span>';
-  document.getElementById('scrim').classList.add('on');
-}
+let openI=null;
+function openCard(i){const n=N[i];if(!n)return;openI=i;
+  document.getElementById('cE').innerHTML=n.gly?`<span class="gly">${n.gly}</span>`:n.mono;
+  document.getElementById('cLane').innerHTML=n.laneLabel;
+  document.getElementById('cTitle').innerHTML=n.title;
+  document.getElementById('cPeriod').innerHTML=n.period;
+  document.getElementById('cPull').innerHTML=n.pull;
+  document.getElementById('cBody').innerHTML=n.body.map(p=>`<p>${p}</p>`).join('');
+  document.getElementById('cLink').innerHTML=n.link?`<a class="lnk" href="${n.link.u}" ${n.link.u.startsWith('http')?'target="_blank" rel="noopener"':''}>${n.link.t}</a>`:'<span></span>';
+  document.getElementById('scrim').classList.add('on');}
 function closeCard(){document.getElementById('scrim').classList.remove('on');openI=null}
 function step(d){if(openI===null)return;openCard((openI+d+N.length)%N.length)}
 window.closeCard=closeCard;window.step=step;
-document.body.classList.remove('no-js');
-document.querySelectorAll('[data-i]').forEach(el=>el.addEventListener('click',()=>{const i=+el.dataset.i;if(!isNaN(i))openCard(i)}));
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeCard();
-  if(document.getElementById('scrim').classList.contains('on')){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);}
-});
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
-document.querySelectorAll('.row').forEach(r=>io.observe(r));
+document.querySelectorAll('.pin').forEach(p=>p.addEventListener('click',()=>openCard(+p.dataset.i)));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCard();exitFs();}
+  if(document.getElementById('scrim').classList.contains('on')){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);}});
+
+// ===== scaling =====
+const W=1240,H=620;
+const vp=document.getElementById('vp'),canvas=document.getElementById('canvas');
+let fitWidth=false; // mobile toggle: fit whole width vs readable scroll
+function fit(){
+  if(vp.classList.contains('fs')){
+    const s=Math.min((window.innerWidth-12)/W,(window.innerHeight-60)/H);
+    canvas.style.transform=`scale(${s})`; return;
+  }
+  const cw=vp.clientWidth;
+  if(window.innerWidth>820){
+    const s=Math.min(1,cw/W); canvas.style.transform=`scale(${s})`;
+    vp.style.height=(H*s)+'px'; vp.classList.remove('scroll');
+    canvas.style.marginLeft = s<1?'0':((cw-W)/2)+'px';
+  } else {
+    const s = fitWidth ? cw/W : 0.62;
+    canvas.style.transform=`scale(${s})`; canvas.style.marginLeft='0';
+    if(fitWidth){vp.classList.remove('scroll');vp.style.height=(H*s)+'px';}
+    else{vp.classList.add('scroll');vp.style.height='64vh';}
+  }
+}
+document.getElementById('fitBtn').onclick=()=>{fitWidth=!fitWidth;document.getElementById('fitBtn').textContent=fitWidth?'⤢ Readable':'⤢ Fit width';fit();};
+function enterFs(){vp.classList.add('fs');document.body.style.overflow='hidden';fit();}
+function exitFs(){if(vp.classList.contains('fs')){vp.classList.remove('fs');document.body.style.overflow='';fit();}}
+document.getElementById('fsBtn').onclick=enterFs;
+document.getElementById('fsClose').onclick=exitFs;
+window.addEventListener('resize',fit);
+fit();
+// nudge mobile scroll to show the rise
+if(window.innerWidth<=820){setTimeout(()=>{vp.scrollLeft=vp.scrollWidth;},400);}
 </script>
 </body>
 </html>
