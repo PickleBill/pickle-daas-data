@@ -23,13 +23,14 @@
 
   nav{position:sticky;top:0;z-index:60;background:rgba(245,238,213,.92);backdrop-filter:blur(8px);border-bottom:.5px solid var(--rule)}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
-  .brand{font-style:italic;font-weight:500;font-size:19px;text-decoration:none}
+  .brand{font-style:italic;font-weight:500;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand .pk{font-style:normal;font-size:18px;filter:drop-shadow(0 0 5px rgba(168,66,29,.5))}
   .nl{display:flex;gap:5px;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
   .nl a{color:var(--mute);text-decoration:none;transition:.15s;padding:7px 11px;border-radius:7px}
   .nl a:hover{color:var(--sienna)}
   .nl a.here{color:var(--paper);background:var(--ink)}
   .nl a.email{border:.5px solid var(--ink);color:var(--ink)}
-  @media(max-width:640px){.nl{gap:1px;font-size:9px}.nl a{padding:6px 7px}}
+  @media(max-width:600px){nav .wrap{flex-direction:column;height:auto;gap:7px;padding:9px 0 11px}.nl{gap:2px;font-size:10px}.nl a{padding:6px 9px}}
 
   header{text-align:center;padding:30px 0 6px}
   .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
@@ -97,7 +98,7 @@
 </head>
 <body>
 <nav><div class="wrap">
-  <a class="brand" href="index.html">Bill Bricker</a>
+  <a class="brand" href="index.html"><span class="pk">🥒</span> Bill Bricker</a>
   <div class="nl">
     <a href="index.html">Home</a><a href="climb.html" class="here">Story</a><a href="work.html">Work</a><a href="resume-v2.html">Résumé</a><a href="mailto:bricker3@gmail.com" class="email">Email</a>
   </div>

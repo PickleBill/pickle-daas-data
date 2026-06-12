@@ -37,14 +37,14 @@
   nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.72);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
   .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.01em;white-space:nowrap;flex-shrink:0}
-  .brand .pk{animation:pkpulse 3s ease-in-out infinite}
+  .brand .pk{font-size:21px;line-height:1;animation:pkpulse 3s ease-in-out infinite}
   @keyframes pkpulse{0%,100%{filter:drop-shadow(0 0 4px rgba(140,240,160,.6))}50%{filter:drop-shadow(0 0 10px rgba(140,240,160,.95))}}
   .brand svg{width:25px;height:25px;flex-shrink:0}
   .nl{display:flex;gap:3px;align-items:center;font-size:13px;color:var(--mute)}
   .nl a{padding:8px 13px;border-radius:99px;transition:.15s}
   .nl a:hover{color:var(--text);background:rgba(255,255,255,.05)}
   .nl a.here,.nl a.email{color:#08090a;background:var(--cream);font-weight:600}
-  @media(max-width:680px){.nl{gap:0;font-size:11.5px}.nl a{padding:7px 9px}}
+  @media(max-width:600px){nav .wrap{flex-direction:column;height:auto;gap:8px;padding-top:9px;padding-bottom:11px}.nl{gap:3px;font-size:12px}.nl a{padding:7px 11px}}
 
   /* hero — single column, lots of air */
   .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;padding-top:80px;padding-bottom:64px}
@@ -65,7 +65,11 @@
   .ring-fg{stroke-dasharray:440;stroke-dashoffset:440;animation:draw 1.8s cubic-bezier(.4,0,.2,1) .3s forwards}
   @keyframes draw{to{stroke-dashoffset:88}}
   .bars{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-  .bar{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:12px}
+  .bar{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:12px;cursor:pointer;border-radius:9px;padding:3px 7px;margin:0 -7px;transition:background .2s}
+  .bar:hover,.bar.on{background:rgba(140,240,160,.09)}
+  .bar.on .t{color:var(--sage);font-weight:600}
+  .bar.on .track i{box-shadow:0 0 16px rgba(140,240,160,.85)}
+  .ringbox .ctr .n{transition:opacity .2s}
   .bar .t{color:var(--text)}.bar .v{font-size:10.5px;color:var(--mute);text-align:right}
   .bar .track{grid-column:1/-1;height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
   .bar .track i{display:block;height:100%;border-radius:99px;width:0;transition:width 1.4s cubic-bezier(.25,1,.3,1);box-shadow:0 0 10px rgba(140,240,160,.5)}
@@ -77,7 +81,7 @@
   @keyframes flow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   .lede{font-size:clamp(15.5px,2vw,18.5px);color:var(--mute);margin-top:24px;max-width:54ch;line-height:1.6}
   .lede b{color:var(--text);font-weight:600}
-  .hctas{display:flex;flex-wrap:wrap;gap:11px;margin-top:32px}
+  .hctas{display:flex;flex-wrap:wrap;gap:11px;margin-top:32px;position:relative;z-index:6}
   .pill{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:99px;transition:.18s;cursor:pointer;border:1px solid transparent}
   .pill.cream{background:var(--cream);color:#08090a}
   .pill.cream:hover{transform:translateY(-2px);box-shadow:0 16px 36px -14px rgba(243,236,220,.5)}
@@ -190,11 +194,7 @@
 <div class="mesh"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
 
 <nav><div class="wrap">
-  <a class="brand" href="index.html">
-    <svg viewBox="0 0 30 30" class="pk" aria-hidden="true"><g transform="rotate(-38 15 15)">
-      <ellipse cx="15" cy="15" rx="10" ry="5" fill="#8cf0a0"/><ellipse cx="15" cy="15" rx="10" ry="5" fill="none" stroke="#3fae5a" stroke-width=".8"/>
-      <circle cx="12" cy="15" r=".7" fill="#1c7a3a"/><circle cx="15" cy="13.6" r=".7" fill="#1c7a3a"/><circle cx="18" cy="15.4" r=".7" fill="#1c7a3a"/><circle cx="15.5" cy="16.6" r=".7" fill="#1c7a3a"/>
-    </g></svg>Bill Bricker</a>
+  <a class="brand" href="index.html"><span class="pk">🥒</span><span class="bn">Bill Bricker</span></a>
   <div class="nl">
     <a href="index.html" class="here">Home</a>
     <a href="climb.html">Story</a>
@@ -207,7 +207,7 @@
 <header class="wrap hero rv">
   <div class="hcopy">
     <span class="eyebrow"><span class="dot"></span>Pickle-Bill Bricker · fka DJ Billygoat</span>
-    <h1>Frontier tech evangelist,<br><span class="g">vibe pusher · 0→1 builder.</span></h1>
+    <h1>Frontier tech evangelist,<br><span class="g">vibe pusher,<br>0→1 builder.</span></h1>
     <p class="lede">Enterprise seller turned founder-CEO. I <b>sold Google</b> as a sub-one-year-old startup, scaled <b>Dreamship</b> to <b>$35M+</b> — <b>11x in a single year</b> — and now build <b>Courtana</b> while shipping production AI daily. Father of three.</p>
     <div class="hctas">
       <a class="pill cream" href="work.html">Run the proof →</a>
@@ -222,14 +222,14 @@
           <circle cx="79" cy="79" r="70" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="10"/>
           <circle class="ring-fg" cx="79" cy="79" r="70" fill="none" stroke="var(--sage)" stroke-width="10" stroke-linecap="round"/>
         </svg>
-        <div class="ctr"><div class="n" data-count="20">20</div><div class="l">years operating</div></div>
+        <div class="ctr"><div class="n" id="ringN">20</div><div class="l" id="ringL">years operating</div></div>
       </div>
       <div class="bars">
-        <div class="bar"><span class="t">Enterprise &amp; partnership GTM</span><span class="v">IBM · Google</span><span class="track"><i data-w="95" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
-        <div class="bar"><span class="t">Zero-to-one building</span><span class="v">11x · $35M+</span><span class="track"><i data-w="92" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
-        <div class="bar"><span class="t">AI-native product</span><span class="v">40+ apps</span><span class="track"><i data-w="88" style="background:linear-gradient(90deg,#5ee0d6,#a78bfa)"></i></span></div>
-        <div class="bar"><span class="t">Founder-led sales</span><span class="v">$6M+ TCV</span><span class="track"><i data-w="90" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
-        <div class="bar"><span class="t">Connector &amp; BD</span><span class="v">intro economy</span><span class="track"><i data-w="85" style="background:linear-gradient(90deg,#ff8a5c,#a78bfa)"></i></span></div>
+        <div class="bar" data-m="8-fig" data-ml="Google channel"><span class="t">Enterprise &amp; partnership GTM</span><span class="v">IBM · Google</span><span class="track"><i data-w="95" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
+        <div class="bar" data-m="11x" data-ml="in one year"><span class="t">Zero-to-one building</span><span class="v">11x · $35M+</span><span class="track"><i data-w="92" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
+        <div class="bar" data-m="0→40+" data-ml="AI apps shipped"><span class="t">AI-native product</span><span class="v">0 → 40+ apps</span><span class="track"><i data-w="88" style="background:linear-gradient(90deg,#5ee0d6,#a78bfa)"></i></span></div>
+        <div class="bar" data-m="$6M+" data-ml="total contract value"><span class="t">Founder-led sales</span><span class="v">$6M+ TCV</span><span class="track"><i data-w="90" style="background:linear-gradient(90deg,#8cf0a0,#5ee0d6)"></i></span></div>
+        <div class="bar" data-m="5+" data-ml="big-tech partners"><span class="t">Connector &amp; BD</span><span class="v">Stripe · Meta · PayPal</span><span class="track"><i data-w="85" style="background:linear-gradient(90deg,#ff8a5c,#a78bfa)"></i></span></div>
       </div>
     </div>
   </div>
@@ -308,7 +308,7 @@
   <h2>I built a self-serve sports-data warehouse from raw video.</h2></div>
   <div class="glass pick rv">
     <div class="pimg">
-      <img src="https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg" alt="Pickle DaaS clip" loading="lazy" onerror="this.style.display='none'">
+      <img src="https://image.thum.io/get/width/900/noanimate/https://picklebill.github.io/pickle-daas-data/dashboards/brand-intelligence-v4.html" alt="Pickle DaaS analytics" loading="lazy" onerror="this.onerror=null;this.src='https://cdn.courtana.com/files/production/u/01915c59-9bb7-4683-bd53-e28bddcae12e/139453f3-8ac3-4687-922e-214cc15490df.jpeg'">
       <div class="ov"><span class="badge">▸ computer-vision pipeline</span></div>
     </div>
     <div class="pbody">
@@ -378,6 +378,12 @@ const cio=new IntersectionObserver(es=>es.forEach(e=>{
 },{threshold:.6});
 document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
 setTimeout(()=>document.querySelectorAll('.track i').forEach(i=>{i.style.width=i.dataset.w+'%';}),450);
+const _b=[...document.querySelectorAll('.bar')],_rn=document.getElementById('ringN'),_rl=document.getElementById('ringL');
+let _ai=-1,_t;
+function _set(i){_b.forEach((b,j)=>b.classList.toggle('on',j===i));if(i<0){_rn.textContent='20';_rl.textContent='years operating';}else{_rn.textContent=_b[i].dataset.m;_rl.textContent=_b[i].dataset.ml;}}
+function _go(){_t=setInterval(()=>{_ai=(_ai+1)%_b.length;_set(_ai);},2600);}
+_b.forEach((b,i)=>{b.addEventListener('mouseenter',()=>{clearInterval(_t);_set(i);});b.addEventListener('mouseleave',_go);b.addEventListener('click',()=>{clearInterval(_t);_ai=i;_set(i);});});
+setTimeout(()=>{_set(0);_ai=0;_go();},1600);
 </script>
 </body>
 </html>
