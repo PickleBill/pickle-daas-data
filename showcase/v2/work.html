@@ -139,7 +139,7 @@
     <div class="screen" id="screen"></div>
     <form class="ibar" id="form" autocomplete="off">
       <span class="pr">➜&nbsp;~</span>
-      <input id="cmd" placeholder="type a command (try: help) …" aria-label="terminal command"/>
+      <input id="cmd" placeholder="ask me anything — or type a command…" aria-label="terminal command"/>
       <span class="run">↵ run</span>
     </form>
   </div>
@@ -166,6 +166,7 @@ const CMDS={
 <span class="key">pickle-daas</span>  the tech proof · $0.0054/clip
 <span class="key">stats</span>        the numbers
 <span class="key">git log</span>      the 20-year commit history
+<span class="key">ask &lt;anything&gt;</span> plain-English Q&amp;A
 <span class="key">contact</span>      let's talk · clear · resets`,
 
   whoami:()=>`<span class="h">Bill Bricker — I sell frontier tech, and I build it myself.</span>Enterprise seller turned founder-CEO. <span class="ok">&gt;100% quota</span> at IBM, <span class="ok">$35M+</span> &amp; <span class="ok">11x</span> as a founder, sold <span class="ok">Google</span> as a sub-1-yr-old startup. Now I ship production AI daily. Father of three. Still walking.
@@ -231,12 +232,37 @@ prompts &amp; art. Everything else falls out of it.
 <span class="warn">0001f00</span> Northwestern Mutual — doors &amp; dials, top 10           <span class="cmt">2006</span>
    ${L('climb.html','▸ walk the full climb ↗',false)}`,
 
+  ask:()=>`<span class="h">ask me anything — plain English works.</span>Try one of these, or type your own:
+<span class="key">"why do you want to work at a frontier lab?"</span>
+<span class="key">"what's the biggest deal you ever closed?"</span>
+<span class="key">"what is vibe coding?"</span>  <span class="key">"why pickleball?"</span>  <span class="key">"what's your superpower?"</span>`,
+
   contact:()=>`<span class="h">let's talk.</span>Open to founder roles, GTM &amp; partnership leadership, fractional, board.
 <span class="key">email</span>  ${L('mailto:bricker3@gmail.com','bricker3@gmail.com',false)}
 <span class="key">phone</span>  ${L('tel:+19086018152','908 · 601 · 8152',false)}
 <span class="key">in</span>     ${L('https://linkedin.com/in/williambricker','linkedin.com/in/williambricker')}`,
 };
-const ALIAS={'sales-gtm':'sales','pickle-daas':'pickle','git log':'git','ls -la':'ls','cat google-deal.md':'google-deal','companies/':'companies'};
+const ALIAS={'sales-gtm':'sales','pickle-daas':'pickle','git log':'git','ls -la':'ls','cat google-deal.md':'google-deal','companies/':'companies','ask me anything':'ask','ask-me':'ask'};
+const QA=[
+ {k:['lab','anthropic','openai','frontier','why now','why a lab','join'],r:`<span class="h">why a frontier lab, why now</span>Because the gap I fill is the one labs feel most: people who can stand in front of an enterprise buyer <em>and</em> have personally shipped with the technology. I've sold the hardest room there is (Google, as a no-name startup) and I build with AI every single day. I want to do my best work where the frontier is actually being made.`},
+ {k:['biggest deal','best deal','google','hardest sale'],r:`<span class="h">the biggest deal</span>Google, when Dreamship was less than a year old. Built an AI IP-compliance checker to solve <em>their</em> trust problem, then carried it through 5-6 internal teams to director+ sign-off. 8-figure channel, ran 5+ years. Type <span class="key">google-deal</span> for the full STAR story.`},
+ {k:['vibe coding','vibe code','vibeco','vibe-coding'],r:`<span class="h">what is vibe coding?</span>Describing what you want in plain English and shipping working software the same day. I built <span class="val">VibeCo</span> — an 11-agent simulator — to industrialize it: idea → brief → build prompts → working app. 40+ apps across 31 repos came out of that motion. Type <span class="key">builds</span> to see them.`},
+ {k:['pickleball','courtana','why pickle','sports'],r:`<span class="h">why pickleball?</span>Fastest-growing sport in America, venues drowning in analog ops, and nobody owning the video layer. Courtana puts AI on the court — live video, instant highlights, coaching — and Pickle DaaS turns that footage into a data business. Type <span class="key">companies</span> or <span class="key">pickle-daas</span>.`},
+ {k:['superpower','strength','best at','why hire','why you'],r:`<span class="h">the honest answer</span>Translation. I make complicated things simple enough that one human buys them from another — and now I can <em>build</em> the demo before the second meeting. Sellers who build are rare; builders who can carry a quota are rarer.`},
+ {k:['cancer','long walk','health','chemo'],r:`<span class="h">the long walk</span>Diagnosed 2023. Twelve weeks of chemo. The pipeline kept moving. I keep it on the record because no one I'd want to work with would want it left out — and the operator instinct gets ruthlessly clear when the day is short.`},
+ {k:['kids','family','father','three'],r:`<span class="h">the why</span>Three kids, a real kitchen, and an unreal amount of pickleball gear in the garage. The whole map exists to support that — not the other way around.`},
+ {k:['available','hire','role','open to','looking for','work with'],r:`<span class="h">what I'm open to</span>Founder roles, GTM &amp; partnership leadership (frontier AI labs especially), fractional/advisory, board. Type <span class="key">contact</span> — or just email <a class="lnk" href="mailto:bricker3@gmail.com">bricker3@gmail.com</a>.`},
+ {k:['dreamship','fulfillment','print'],r:`<span class="h">dreamship, short version</span>Cofounded, led as CEO: zero → $35M+, 11x in one year, on $2.2M raised. EBITDA-profitable 4 of 8 years. Sold Google, then Stripe/PayPal/Meta/Payoneer off it. Type <span class="key">companies</span> for links.`},
+ {k:['ibm','quota','enterprise sales','netezza'],r:`<span class="h">enterprise pedigree</span>IBM/Netezza 2012-14: Zillow, Avalara, part of an 8-figure McKesson deal, &gt;100% of quota. The selling muscle everything else is built on.`},
+ {k:['stack','tools','claude','how do you build'],r:`<span class="h">the stack</span>Claude (Code + Design), Codex, Lovable, Gemini, Supabase, Stripe, GitHub. This site — terminal included — was built with the stack it describes.`},
+ {k:['dj','billygoat','fka'],r:`<span class="h">fka DJ Billygoat</span>A past life behind the decks. The set lists are sealed; the crowd-reading skills transferred directly to enterprise sales.`},
+];
+function answerQ(q){
+  const ql=q.toLowerCase();let best=null,bs=0;
+  QA.forEach(a=>{let sc=0;a.k.forEach(k=>{if(ql.includes(k))sc++});if(sc>bs){bs=sc;best=a}});
+  if(best){print(best.r,q);return;}
+  print(`<span class="h">good question.</span>I don't have a canned answer for that — which probably means it deserves a real conversation.\n<span class="cmt">// try</span> <span class="key">help</span> <span class="cmt">for what I can answer here, or email</span> <a class="lnk" href="mailto:bricker3@gmail.com">bricker3@gmail.com</a> <span class="cmt">and ask me directly.</span>`,q);
+}
 
 function print(html,echo){
   if(echo!==undefined){
@@ -253,25 +279,26 @@ function run(raw){
   if(!cmd)return;
   const _w=document.getElementById('waiting');if(_w)_w.remove();
   if(cmd==='clear'||cmd==='cls'){screen.innerHTML='';boot(true);return;}
+  if(cmd.startsWith('ask ')){answerQ(raw.trim().slice(4));return;}
   const key=ALIAS[cmd]||cmd;
   if(CMDS[key]){print(CMDS[key](),raw.trim());}
-  else{print(`<span class="warn">command not found: ${cmd}</span>\n<span class="cmt">// try</span> <span class="key">help</span>`,raw.trim());}
+  else{answerQ(raw.trim());}
 }
 function boot(short){
   if(short){print('<span class="cmt">// cleared.</span>');return;}
   screen.innerHTML='';
   print("<span class='h' style='font-size:17px;margin-top:0'>Hi — I'm Bill's operating system.</span>"+
         "<span class='cmt'>20 years selling &amp; building · enterprise GTM · 3 startups · 40+ AI apps.</span>\n"+
-        "<span class='cmt'>Every claim here is a file you can open. Tap a command, or type one ↓</span>");
+        "<span class='cmt'>Tap a command — or ask me anything in plain English ↓</span>");
   const w=document.createElement('div');w.className='ln';w.id='waiting';
   w.innerHTML="<span class='p' style='color:var(--green)'>➜ ~</span> <span class='cur'></span>";
   screen.appendChild(w);
 }
 document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const i=document.getElementById('cmd');run(i.value);i.value='';});
-const GLOW=['whoami','google-deal'];
+const GLOW=['whoami','ask'];
 function chip(c,l){return `<span class="chip${GLOW.includes(c)?' glow':''}" data-c="${c}"><span class="s">$</span> ${l}</span>`;}
-const R1=[['whoami','whoami'],['ls','ls'],['companies','companies'],['google-deal','google-deal'],['sales','sales-gtm']];
-const R2=[['enterprise','enterprise'],['builds','builds'],['pickle','pickle-daas'],['stats','stats'],['git','git log'],['contact','contact']];
+const R1=[['whoami','whoami'],['ask','ask me anything'],['companies','companies'],['google-deal','google-deal'],['sales','sales-gtm']];
+const R2=[['enterprise','enterprise'],['builds','builds'],['pickle','pickle-daas'],['ls','ls'],['stats','stats'],['git','git log'],['contact','contact']];
 function fill(id,arr){const h=arr.map(([c,l])=>chip(c,l)).join('');document.getElementById(id).innerHTML=h+h;}
 fill('row1',R1);fill('row2',R2);
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{run(c.dataset.c);if(window.innerWidth>680)document.getElementById('cmd').focus();}));

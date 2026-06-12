@@ -39,6 +39,16 @@
   .deck{font-size:14px;font-style:italic;color:var(--ink2);margin:10px auto 0}
   .hint{font-family:var(--hand);color:var(--sienna);font-size:18px;margin-top:8px}
 
+  .scwrap{position:relative}
+  .scwrap::before,.scwrap::after{content:"";position:absolute;top:0;bottom:14px;width:42px;z-index:5;pointer-events:none;transition:opacity .3s}
+  .scwrap::before{left:0;background:linear-gradient(90deg,var(--paper),transparent)}
+  .scwrap::after{right:0;background:linear-gradient(-90deg,var(--paper),transparent)}
+  .edge{position:absolute;top:50%;transform:translateY(-50%);z-index:6;width:38px;height:38px;border-radius:50%;
+    background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;
+    font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(43,31,16,.35);transition:opacity .3s;user-select:none}
+  .edge.l{left:10px}.edge.r{right:10px;animation:nudge 2s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(-50%) translateX(5px)}}
+  .edge.off{opacity:0;pointer-events:none}
   /* full-bleed horizontal scroller */
   .scroller{width:100vw;margin-left:calc(50% - 50vw);overflow-x:auto;overflow-y:hidden;
     -webkit-overflow-scrolling:touch;scrollbar-width:thin;padding:6px 0 14px;cursor:grab}
@@ -107,9 +117,12 @@
 <header><div class="wrap">
   <div class="eyebrow">2006 → now</div>
   <h1>The <em>Climb</em></h1>
-  <div class="hint">← drag across twenty years · tap a marker →</div>
+  <div class="hint">drag → tap a marker</div>
 </div></header>
 
+<div class="scwrap">
+  <div class="edge l" id="edgeL">‹</div>
+  <div class="edge r" id="edgeR">›</div>
 <div class="scroller" id="scroller">
   <div class="canvas" id="canvas">
     <svg class="scene" viewBox="0 0 1240 560" preserveAspectRatio="xMidYMid meet">
@@ -127,8 +140,7 @@
     </svg>
 
     <div class="marg" style="left:150px;top:424px;transform:rotate(-3deg)">doors &amp; dials</div>
-    <div class="marg" style="left:760px;top:178px;transform:rotate(-3deg)">posture, not phase</div>
-    <div class="marg" style="left:1000px;top:66px;transform:rotate(2deg)">summit unset.</div>
+        <div class="marg" style="left:1000px;top:66px;transform:rotate(2deg)">summit unset.</div>
 
     <div class="xtick" style="left:110px">2006</div><div class="xtick" style="left:330px">2012</div>
     <div class="xtick" style="left:600px">2017</div><div class="xtick now" style="left:950px">2023 · now</div>
@@ -136,6 +148,7 @@
 
     <div id="pins"></div>
   </div>
+</div>
 </div>
 
 <div class="climbfoot">
@@ -187,10 +200,16 @@ function step(d){if(openI===null)return;openCard((openI+d+N.length)%N.length)}
 window.closeCard=closeCard;window.step=step;
 document.querySelectorAll('.pin').forEach(p=>p.addEventListener('click',()=>openCard(+p.dataset.i)));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCard();if(document.getElementById('scrim').classList.contains('on')){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);}});
-// center the scroll on load + drag-to-pan
+// start at the beginning + edge cues + drag-to-pan
 const sc=document.getElementById('scroller');
-function center(){sc.scrollLeft=(sc.scrollWidth-sc.clientWidth)/2;}
-center();window.addEventListener('resize',center);
+const eL=document.getElementById('edgeL'),eR=document.getElementById('edgeR');
+function edges(){const max=sc.scrollWidth-sc.clientWidth-4;
+  eL.classList.toggle('off',sc.scrollLeft<=4);
+  eR.classList.toggle('off',sc.scrollLeft>=max);}
+sc.scrollLeft=0;edges();
+sc.addEventListener('scroll',edges);window.addEventListener('resize',edges);
+eL.onclick=()=>sc.scrollBy({left:-sc.clientWidth*.7,behavior:'smooth'});
+eR.onclick=()=>sc.scrollBy({left:sc.clientWidth*.7,behavior:'smooth'});
 let down=false,sx=0,sl=0;
 sc.addEventListener('pointerdown',e=>{if(e.target.closest('.pin'))return;down=true;sx=e.clientX;sl=sc.scrollLeft;sc.classList.add('drag')});
 sc.addEventListener('pointermove',e=>{if(down)sc.scrollLeft=sl-(e.clientX-sx)});
