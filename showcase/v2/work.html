@@ -1,1129 +1,265 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Bill Bricker — The Work</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root{
-    /* slate workspace */
-    --bg:        #161c24;
-    --bg-2:      #1c232c;
-    --surface:   #232a33;
-    --surface-2: #2a323d;
-    --line:      rgba(232,227,214,.08);
-    --line-2:    rgba(232,227,214,.16);
+    --bg:#08090a;--bg2:#0c0e10;--panel:#101316;
+    --glass:rgba(255,255,255,.05);--line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.18);
+    --text:#f4f2ec;--mute:#9aa0a3;--faint:#5c6164;
+    --sage:#a8c98e;--coral:#e69270;--blue:#7fb0e8;--green:#86e0a4;--amber:#e6b86e;--cream:#f3ecdc;
+    --term:#d8ddd6;
+    --sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--sage);color:#08090a}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px;position:relative;z-index:2}
+  .mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.42;mix-blend-mode:screen}
+  .b1{width:600px;height:600px;background:radial-gradient(circle,#2f6f7a,transparent 65%);top:-180px;right:-140px;animation:drift 24s ease-in-out infinite}
+  .b2{width:520px;height:520px;background:radial-gradient(circle,#6a7a44,transparent 65%);top:520px;left:-160px;animation:drift2 28s ease-in-out infinite}
+  @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,40px) scale(1.1)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,-30px) scale(1.08)}}
 
-    /* type colors */
-    --bone:      #e8e3d6;
-    --bone-2:    rgba(232,227,214,.78);
-    --bone-mute: rgba(232,227,214,.42);
-    --bone-faint: rgba(232,227,214,.22);
+  /* ===== consistent nav (identical across site) ===== */
+  nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.7);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .brand .logo{width:24px;height:24px;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,var(--sage) 0 1.5px,transparent 1.5px 4.5px);animation:spin 16s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .nl{display:flex;gap:4px;align-items:center;font-size:13px;color:var(--mute)}
+  .nl a{padding:7px 12px;border-radius:99px;transition:.15s}
+  .nl a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+  .nl a.here{color:#08090a;background:var(--cream);font-weight:600}
+  .nl a.email{color:#08090a;background:var(--cream);font-weight:600}
+  @media(max-width:680px){.nl{gap:1px;font-size:11.5px}.nl a{padding:6px 9px}}
 
-    /* signal colors */
-    --live:      #b5d04a;        /* signal lime — live states only */
-    --terra:     #e88a5a;        /* warm accent — CTAs */
-    --terra-deep: #c66a3a;
-    --sea:       #7aaac4;        /* info / cool tertiary */
-    --sienna:    #d97a4a;        /* warm tertiary */
-    --gold:      #d6b66a;
+  /* hero */
+  .top{padding:46px 0 18px;text-align:center}
+  .kick{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line);padding:7px 13px;border-radius:99px;background:var(--glass)}
+  .kick .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(134,224,164,.5)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  h1{font-size:clamp(30px,5.4vw,46px);font-weight:800;letter-spacing:-.03em;margin:16px 0 0;line-height:1.04}
+  h1 .g{background:linear-gradient(100deg,var(--sage),var(--coral));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{font-size:15px;color:var(--mute);margin:12px auto 0;max-width:48ch}
 
-    --serif: "Spectral", Georgia, serif;
-    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
-  }
-
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--bone);font-family:var(--serif)}
-  body{
-    overflow:hidden;
-    background:
-      radial-gradient(ellipse at 20% 0%, #1f2731 0%, var(--bg) 60%, var(--bg-2) 100%),
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  }
-  ::selection{background:var(--bone);color:var(--bg)}
-
-  /* ============================================
-     OS CHROME — top bar
-     ============================================ */
-  .topbar{
-    height: 36px;
-    display:flex;align-items:center;gap:14px;
-    padding: 0 18px;
-    border-bottom: .5px solid var(--line-2);
-    background: linear-gradient(180deg, #1f2731 0%, var(--bg) 100%);
-    flex-shrink:0;
-    user-select:none;
-  }
-  .lights{display:flex;gap:7px}
-  .lights i{width:11px;height:11px;border-radius:50%;display:inline-block}
-  .lights .r{background:#e06c54}
-  .lights .y{background:#d8b25a}
-  .lights .g{background:#7ea66a}
-  .topbar .label{
-    font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--bone-mute);
-  }
-  .topbar .label b{color:var(--bone);font-weight:500}
-  .topbar .menus{display:flex;gap:18px;margin-left:14px}
-  .topbar .menus span{
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--bone-mute);
-    cursor:pointer;transition:color .15s;
-  }
-  .topbar .menus span:hover{color:var(--bone)}
-  .topbar .right{
-    margin-left:auto;display:flex;align-items:center;gap:14px;
-    font-family:var(--mono);font-size:10.5px;color:var(--bone-mute);letter-spacing:.05em;
-  }
-  .topbar .live-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--live);
-    box-shadow: 0 0 0 0 rgba(181,208,74,.5);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse{
-    0%,100%{box-shadow:0 0 0 0 rgba(181,208,74,.4)}
-    50%{box-shadow:0 0 0 8px rgba(181,208,74,0)}
-  }
-  .topbar .right b{color:var(--bone);font-weight:500}
-
-  /* ============================================
-     STAGE — full viewport
-     ============================================ */
-  .stage{
-    display:flex;flex-direction:column;
-    width:100vw;height:100vh;
-    overflow:hidden;
-  }
-
-  /* ============================================
-     HEADER — name & CTAs
-     ============================================ */
-  .header{
-    padding: 22px 28px 18px;
-    border-bottom: .5px solid var(--line-2);
-    display:grid;
-    grid-template-columns: 1fr auto;
-    align-items:start;
-    gap: 30px;
-    flex-shrink:0;
-  }
-  .header .nm{
-    font-family:var(--serif);font-style:italic;font-weight:300;
-    font-size: clamp(48px, 5.6vw, 76px);
-    line-height: .9;letter-spacing:-.025em;
-    color:var(--bone);
-    margin: 0 0 8px;
-  }
-  .header .nm .dot{color:var(--terra);font-style:normal}
-  .header .tagline{
-    font-family:var(--serif);font-style:italic;font-weight:300;
-    font-size: 18px;line-height:1.3;color:var(--bone-2);
-    max-width: 640px;
-    margin: 0 0 4px;
-  }
-  .header .tagline em{font-style:normal;color:var(--bone);font-weight:400}
-  .header .meta{
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-mute);
-    display:flex;align-items:center;gap:14px;margin-top:10px;
-  }
-  .header .meta .live-dot{width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 2s ease-in-out infinite;display:inline-block}
-  .header .meta .sep{color:var(--bone-faint)}
-  .header .meta em{color:var(--terra);font-style:italic;letter-spacing:.04em;text-transform:none;font-family:var(--serif);font-size:13px}
-
-  .ctas{
-    display:flex;flex-direction:column;gap:8px;align-items:stretch;min-width:220px;
-  }
-  .cta{
-    appearance:none;cursor:pointer;
-    font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
-    padding: 11px 16px;
-    border-radius: 2px;
-    border:none;
-    display:flex;align-items:center;justify-content:space-between;gap:14px;
-    transition: all .2s ease;
-    text-decoration:none;
-    text-align:left;
-  }
-  .cta .arr{font-family:var(--serif);font-size:18px;line-height:.5}
-  .cta.primary{
-    background: var(--terra);
-    color: #1f1408;
-    font-weight:600;
-  }
-  .cta.primary:hover{background: var(--gold);transform:translateX(2px)}
-  .cta.secondary{
-    background: transparent;
-    color: var(--bone);
-    border: .5px solid var(--bone-faint);
-  }
-  .cta.secondary:hover{border-color:var(--bone);background:rgba(232,227,214,.04)}
-  .cta.ghost{
-    background: transparent;
-    color: var(--bone-mute);
-    border: .5px solid transparent;
-    padding: 8px 16px;
-    font-size:10.5px;
-  }
-  .cta.ghost:hover{color:var(--bone);border-color:var(--bone-faint)}
-
-  /* ============================================
-     MAIN — three columns
-     ============================================ */
-  .main{
-    flex:1;
-    display:grid;
-    grid-template-columns: 260px 1fr 320px;
-    gap: 0;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  /* ============================================
-     TIMELINE — left rail
-     ============================================ */
-  .timeline{
-    border-right: .5px solid var(--line-2);
-    padding: 18px 0 18px 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position:relative;
-  }
-  .timeline::-webkit-scrollbar{width:6px}
-  .timeline::-webkit-scrollbar-thumb{background:rgba(232,227,214,.12);border-radius:3px}
-  .timeline-head{
-    font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-mute);
-    padding: 0 24px 12px;
-    border-bottom: .5px dotted var(--line-2);
-    margin-bottom: 14px;
-    display:flex;justify-content:space-between;align-items:baseline;
-  }
-  .timeline-head .y{color:var(--bone-faint);font-family:var(--serif);font-style:italic;letter-spacing:0;text-transform:none;font-size:11px}
-
-  .t-list{
-    position:relative;
-    padding: 0 24px;
-  }
-  /* vertical spine */
-  .t-list::before{
-    content:"";position:absolute;
-    left:36px;top:6px;bottom:30px;
-    width:.5px;background: var(--line-2);
-  }
-  .t-row{
-    position:relative;
-    display:flex;align-items:flex-start;gap:14px;
-    padding: 9px 0 9px 16px;
-    cursor:pointer;
-    transition: padding .15s ease;
-  }
-  .t-row::before{
-    content:"";position:absolute;left:11px;top:14px;
-    width:7px;height:7px;border-radius:50%;
-    background: var(--bone-faint);
-    border: 1px solid var(--bg);
-    transition: all .2s ease;
-  }
-  .t-row:hover{padding-left:20px}
-  .t-row:hover::before{background:var(--bone-2)}
-  .t-row.live::before{
-    background: var(--live);
-    box-shadow: 0 0 0 3px rgba(181,208,74,.18);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  .t-row.active::before{background:var(--terra);box-shadow:0 0 0 3px rgba(232,138,90,.22)}
-  .t-row.active{padding-left:20px}
-  .t-yr{
-    font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--bone-mute);
-    width:54px;flex-shrink:0;padding-top:1px;
-  }
-  .t-row.active .t-yr{color:var(--terra)}
-  .t-row.live .t-yr{color:var(--live)}
-  .t-body{flex:1;min-width:0}
-  .t-ttl{
-    font-family:var(--serif);font-style:italic;font-weight:400;
-    font-size:14.5px;color:var(--bone);line-height:1.2;margin:0;
-    transition: color .15s ease;
-  }
-  .t-row:hover .t-ttl{color:var(--terra)}
-  .t-row.active .t-ttl{color:var(--terra)}
-  .t-sub{
-    font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--bone-mute);
-    text-transform:uppercase;margin-top:2px;
-  }
-
-  /* ============================================
-     TERMINAL — center
-     ============================================ */
-  .terminal{
-    background: var(--bg-2);
-    overflow:hidden;
-    display:flex;flex-direction:column;
-    min-height:0;
-  }
-  .term-head{
-    height: 32px;
-    padding: 0 20px;
-    display:flex;align-items:center;justify-content:space-between;
-    border-bottom: .5px solid var(--line-2);
-    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-mute);
-    background: var(--surface);
-    flex-shrink:0;
-  }
-  .term-head .file{display:flex;align-items:center;gap:8px}
-  .term-head .file b{color:var(--bone);font-weight:500}
-  .term-head .file .dot{color:var(--bone-faint)}
-  .term-head .stamp{color:var(--bone-faint)}
-
-  .term-body{
-    flex: 1;
-    padding: 20px 28px 16px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.65;
-    color: var(--bone-2);
-    scroll-behavior: smooth;
-  }
-  .term-body::-webkit-scrollbar{width:6px}
-  .term-body::-webkit-scrollbar-thumb{background:rgba(232,227,214,.12);border-radius:3px}
-
-  /* terminal content tokens */
-  .term-body .h{
-    font-family:var(--serif);font-style:italic;font-weight:400;
-    font-size: 26px;color:var(--bone);
-    margin: 0 0 12px;
-    letter-spacing:-.01em;
-  }
-  .term-body .h em{font-style:normal;color:var(--terra)}
-  .term-body .prose{
-    font-family:var(--serif);font-size: 15.5px;line-height:1.55;color:var(--bone-2);
-    margin: 4px 0 18px;
-    max-width: 64ch;
-  }
-  .term-body .prose em{font-style:italic;color:var(--bone)}
-  .term-body .cmd{
-    color: var(--live);
-    font-weight: 500;
-    margin: 18px 0 6px;
-  }
-  .term-body .cmd .pr{color:var(--terra);margin-right:6px}
-  .term-body .cmd .com{color:var(--bone)}
-  .term-body .out{padding: 1px 0;color:var(--bone-2)}
-  .term-body .out .k{color:var(--bone-mute);width:14px;display:inline-block}
-  .term-body .out.dim{color:var(--bone-mute)}
-  .term-body .out b{color:var(--bone);font-weight:500}
-  .term-body .out i{color:var(--terra);font-style:normal}
-  .term-body .out u{color:var(--live);text-decoration:none}
-  .term-body .out s{color:var(--sea);text-decoration:none}
-  .term-body .checkrow{
-    display:flex;align-items:baseline;gap:10px;padding:2px 0;
-  }
-  .term-body .checkrow .box{
-    color: var(--live);font-weight: 600;
-    width: 18px;flex-shrink:0;
-  }
-  .term-body .checkrow b{color: var(--bone);font-weight: 500;font-family: var(--mono)}
-  .term-body .checkrow .desc{color:var(--bone-mute);margin-left:6px;font-style:italic;font-family:var(--serif);font-size:13.5px}
-
-  .term-body .row-live{
-    color: var(--live);font-weight: 500;
-  }
-  .term-body .row-live::before{
-    content:"▸ ";color:var(--live);
-  }
-  .term-body .row-info::before{
-    content:"▸ ";color:var(--sea);
-  }
-  .term-body .row-info{color:var(--bone-2)}
-  .term-body .row-info b{color:var(--bone)}
-
-  .term-body .divider{
-    border-top: .5px dotted var(--line-2);
-    margin: 20px 0 14px;
-  }
-  .term-body .blink{
-    display:inline-block;width:8px;height:14px;background:var(--live);
-    vertical-align:-2px;animation: blink 1s steps(2) infinite;
-  }
+  /* terminal */
+  .term{margin:24px auto 14px;border-radius:16px;border:1px solid var(--line);overflow:hidden;
+    background:linear-gradient(180deg,#0d0f12,#0a0c0e);box-shadow:0 40px 90px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05)}
+  .tbar{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .tbar .dots{display:flex;gap:7px}.tbar .dots i{width:11px;height:11px;border-radius:50%}
+  .tbar .dots .r{background:#ff5f57}.tbar .dots .y{background:#febc2e}.tbar .dots .g{background:#28c840}
+  .tbar .ttl{font-family:var(--mono);font-size:12px;color:var(--mute);letter-spacing:.02em}
+  .tbar .live{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:6px}
+  .tbar .live i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+  .screen{height:min(60vh,520px);overflow-y:auto;padding:18px 18px 8px;font-family:var(--mono);font-size:13.5px;line-height:1.65;color:var(--term);scroll-behavior:smooth}
+  .screen::-webkit-scrollbar{width:8px}.screen::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:99px}
+  @media(max-width:560px){.screen{font-size:12.5px;height:62vh}}
+  .ln{padding:1px 0;white-space:pre-wrap;word-break:break-word}
+  .echo{color:var(--text)}.echo .p{color:var(--green)}.echo .c{color:var(--sage)}
+  .cmt{color:var(--faint)}
+  .h{color:var(--text);font-weight:600;font-family:var(--sans);font-size:16px;display:block;margin:4px 0 2px}
+  .key{color:var(--blue)}.val{color:var(--term)}.ok{color:var(--green)}.warn{color:var(--amber)}.pink{color:var(--coral)}
+  .lnk{color:var(--sage);border-bottom:1px solid rgba(168,201,142,.4)}.lnk:hover{color:#cfe6b8}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .reveal{opacity:0;transform:translateY(6px);animation:rin .32s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  .cur{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;animation:blink 1s steps(2) infinite}
   @keyframes blink{50%{opacity:0}}
 
-  .term-body .quote{
-    font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.4;
-    color: var(--bone);
-    border-left: 2px solid var(--terra);
-    padding: 4px 0 4px 14px;
-    margin: 8px 0 18px;
-    max-width: 56ch;
-  }
+  /* input bar */
+  .ibar{display:flex;align-items:center;gap:9px;padding:12px 15px;border-top:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .ibar .pr{font-family:var(--mono);font-size:13.5px;color:var(--green);flex-shrink:0}
+  .ibar input{flex:1;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:13.5px;color:var(--text);caret-color:var(--green)}
+  .ibar input::placeholder{color:var(--faint)}
+  .ibar .run{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);padding:5px 9px;border-radius:6px;flex-shrink:0}
 
-  /* ============================================
-     VISUALS — right rail
-     ============================================ */
-  .visuals{
-    border-left: .5px solid var(--line-2);
-    padding: 18px 22px 18px;
-    overflow-y: auto;
-    background: rgba(0,0,0,.08);
-  }
-  .visuals::-webkit-scrollbar{width:6px}
-  .visuals::-webkit-scrollbar-thumb{background:rgba(232,227,214,.12);border-radius:3px}
+  /* command chips */
+  .chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:4px 0 30px}
+  .chips .lbl{width:100%;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+  .chip{font-family:var(--mono);font-size:11.5px;color:var(--mute);border:1px solid var(--line);background:var(--glass);padding:7px 13px;border-radius:99px;cursor:pointer;transition:.15s}
+  .chip:hover{color:var(--text);border-color:var(--sage);transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(168,201,142,.5)}
+  .chip .s{color:var(--green)}
 
-  .v-section{margin-bottom: 22px}
-  .v-section h4{
-    font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--bone-mute);margin: 0 0 10px;font-weight:500;
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .v-section h4 .count{
-    color:var(--bone-faint);font-family:var(--serif);font-style:italic;letter-spacing:0;text-transform:none;font-size:11px;
-  }
-
-  /* project tiles */
-  .proj{
-    background: var(--surface);
-    border:.5px solid var(--line-2);
-    border-radius: 2px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    cursor:pointer;
-    transition: all .2s ease;
-    position:relative;
-  }
-  .proj:hover{border-color: var(--bone-faint);transform:translateX(-2px)}
-  .proj.live{border-left: 2px solid var(--live)}
-  .proj .pttl{
-    font-family:var(--serif);font-style:italic;font-weight:500;
-    font-size:17px;color:var(--bone);line-height:1.1;margin: 0 0 4px;
-  }
-  .proj .pmeta{
-    font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--bone-mute);
-    display:flex;gap:10px;align-items:center;
-  }
-  .proj .pmeta .ld{color:var(--live)}
-  .proj .pmeta .tr{color:var(--terra)}
-  .proj .pdesc{
-    font-family:var(--serif);font-size:13px;line-height:1.35;color:var(--bone-2);
-    margin: 6px 0 0;
-  }
-
-  /* pills */
-  .pills{display:flex;flex-wrap:wrap;gap:5px}
-  .pill{
-    font-family:var(--mono);font-size:10px;letter-spacing:.05em;
-    border:.5px solid var(--bone-faint);
-    color: var(--bone-2);
-    padding: 3px 8px;border-radius:99px;
-    background: transparent;
-    cursor:default;
-    transition: all .2s;
-  }
-  .pill:hover{border-color:var(--bone);color:var(--bone)}
-  .pill.warm{border-color:rgba(232,138,90,.45);color:var(--terra)}
-  .pill.live{border-color:rgba(181,208,74,.45);color:var(--live)}
-  .pill.cool{border-color:rgba(122,170,196,.4);color:var(--sea)}
-
-  /* ask-me list */
-  .ask{font-family:var(--serif);font-size:13.5px;line-height:1.7;color:var(--bone-2);margin:0;padding:0;list-style:none}
-  .ask li{display:flex;align-items:baseline;gap:8px}
-  .ask li::before{content:"·";color:var(--terra);font-weight:600}
-  .ask li em{font-style:italic;color:var(--bone)}
-
-  /* big metric */
-  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-  .met{
-    background: var(--surface);
-    border:.5px solid var(--line-2);
-    padding: 10px 12px;
-    border-radius: 2px;
-  }
-  .met .num{
-    font-family:var(--serif);font-style:italic;font-weight:300;
-    font-size:30px;line-height:.95;letter-spacing:-.02em;
-    color: var(--terra);display:block;
-  }
-  .met .lab{
-    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-mute);
-    margin-top:3px;display:block;
-  }
-
-  /* visuals CTAs */
-  .vctas{display:flex;flex-direction:column;gap:6px}
-  .vctas .cta{padding:9px 12px;font-size:10.5px}
-  .vctas .cta .arr{font-size:14px}
-
-  /* ============================================
-     PING BAR — bottom
-     ============================================ */
-  .pingbar{
-    height: 56px;
-    flex-shrink:0;
-    border-top: .5px solid var(--line-2);
-    background: linear-gradient(180deg, var(--bg) 0%, #131820 100%);
-    display:flex;align-items:center;gap:14px;
-    padding: 0 24px;
-    position:relative;
-  }
-  .pingbar .prompt{
-    font-family:var(--mono);font-size:13px;color:var(--live);font-weight:500;
-    letter-spacing:.04em;
-    flex-shrink:0;
-  }
-  .pingbar input{
-    flex:1;background:transparent;border:none;outline:none;
-    font-family:var(--mono);font-size:13px;
-    color:var(--bone);
-    caret-color: var(--live);
-    padding: 8px 0;
-    letter-spacing:.01em;
-  }
-  .pingbar input::placeholder{color:var(--bone-mute);font-style:italic;font-family:var(--serif)}
-  .pingbar .help{
-    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);
-    flex-shrink:0;
-    display:flex;align-items:center;gap:14px;
-  }
-  .pingbar .help span{
-    border:.5px solid var(--bone-faint);padding:3px 7px;border-radius:2px;cursor:pointer;
-    transition: all .15s ease;
-  }
-  .pingbar .help span:hover{color:var(--bone);border-color:var(--bone-2)}
-  .pingbar .help span kbd{
-    font-family:var(--mono);color:var(--terra);margin-right:5px;
-  }
-
-  /* echo flash */
-  .echo{
-    position:absolute;left:50%;top: -34px;transform: translateX(-50%);
-    font-family:var(--mono);font-size:11px;color:var(--live);
-    background: var(--surface);
-    border:.5px solid var(--live);
-    padding: 5px 12px;border-radius:2px;
-    opacity:0;pointer-events:none;
-    transition: opacity .25s ease;
-  }
-  .echo.on{opacity:1}
-
-  /* ============================================
-     RESPONSIVE
-     ============================================ */
-  @media (max-width: 1180px){
-    .main{grid-template-columns: 220px 1fr 280px}
-    .header .nm{font-size: 56px}
-  }
-  @media (max-width: 940px){
-    body{overflow:auto}
-    html,body{height:auto;overflow:auto}
-    .stage{height:auto}
-    .main{grid-template-columns: 1fr;overflow:visible}
-    .timeline,.visuals{border:none;border-top: .5px solid var(--line-2);max-height:none}
-    .terminal{border-top: .5px solid var(--line-2);min-height: 500px}
-    .header{grid-template-columns: 1fr}
-    .ctas{flex-direction:row;flex-wrap:wrap}
-    .cta{flex:1;min-width:140px}
-  }
-  a.proj{display:block;text-decoration:none;color:inherit}
-  .visuals .ext{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--sea)}
-  .proj .pmeta .live2{color:var(--live)}
-  .grp-note{font-family:var(--serif);font-size:12.5px;color:var(--bone-mute);line-height:1.5;margin:2px 0 0}
-  .topbar .menus a{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--bone-mute);text-decoration:none;cursor:pointer;transition:color .15s}
-  .topbar .menus a:hover{color:var(--bone)}
-  .topbar .menus a.active{color:var(--bg);background:var(--bone);padding:3px 9px;border-radius:5px}
-  /* ---- mobile: make it read like a single terminal column, less repetitive ---- */
-  @media(max-width:940px){
-    .topbar .menus{display:flex;gap:14px;margin-left:8px;overflow-x:auto}
-    .header{padding:18px 18px 14px}
-    .timeline{display:none}                 /* hide left rail; terminal leads on mobile */
-    .terminal{min-height:auto;border-radius:10px;margin:0 14px;border:1px solid var(--line-2)}
-    .term-head{border-radius:10px 10px 0 0}
-    .visuals{background:transparent;padding:18px 14px 28px}
-    .v-section h4{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2}
-    .proj{border-left:2px solid var(--line-2)}
-    .proj.live{border-left:2px solid var(--live)}
-  }
+  footer{text-align:center;color:var(--faint);font-size:12px;font-family:var(--mono);padding:10px 0 60px;letter-spacing:.04em}
+  footer a{color:var(--mute)}
 </style>
 </head>
 <body>
+<div class="mesh"><div class="blob b1"></div><div class="blob b2"></div></div>
 
-<div class="stage">
-
-  <!-- ============ OS CHROME ============ -->
-  <div class="topbar">
-    <span class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></span>
-    <span class="label"><b>bricker</b>.os &nbsp; <span style="color:var(--bone-faint)">v2026.05</span></span>
-    <div class="menus">
-      <a href="index.html">Home</a><a href="climb.html">Story</a><a href="work.html" class="active">Work</a><a href="resume-v2.html">Résumé</a><a href="mailto:bricker3@gmail.com">Email</a>
-    </div>
-    <div class="right">
-      <span class="live-dot"></span><b>in the room</b>
-      <span style="color:var(--bone-faint)">·</span>
-      <span>uptime <b>7y · 42d · 03:14:<span id="sec">22</span></b></span>
-    </div>
+<nav><div class="wrap">
+  <a class="brand" href="index.html"><span class="logo"></span>Bill Bricker</a>
+  <div class="nl">
+    <a href="index.html">Home</a>
+    <a href="climb.html">Story</a>
+    <a href="work.html" class="here">Work</a>
+    <a href="resume-v2.html">Résumé</a>
+    <a href="mailto:bricker3@gmail.com" class="email">Email</a>
   </div>
+</div></nav>
 
-  <!-- ============ HEADER ============ -->
-  <header class="header">
-    <div>
-      <h1 class="nm">Bill Bricker<span class="dot">.</span></h1>
-      <p class="tagline">AI-native founder &middot; <em>zero-to-one</em> builder &middot; GTM operator &middot; connector. Currently shipping <em>Courtana</em> &amp; <em>Pickle DaaS</em>. Father of three. Still walking.</p>
-      <div class="meta">
-        <span class="live-dot"></span>
-        <span>STATUS · <em>in the room. ping me.</em></span>
-        <span class="sep">/</span>
-        <span>OPEN FOR · founder roles · fractional · board · partners</span>
-      </div>
-    </div>
-    <div class="ctas">
-      <a class="cta primary" href="mailto:bricker3@gmail.com?subject=Let%27s%20talk">Email Bill <span class="arr">→</span></a>
-      <a class="cta secondary" href="index.html">← Home <span class="arr"></span></a>
-      <a class="cta ghost" href="climb.html">The Climb <span class="arr">→</span></a>
-      <a class="cta ghost" href="resume-v2.html">Résumé <span class="arr">↓</span></a>
-    </div>
-  </header>
-
-  <!-- ============ MAIN ============ -->
-  <div class="main">
-
-    <!-- =========== TIMELINE =========== -->
-    <aside class="timeline">
-      <div class="timeline-head">
-        <span>The timeline</span>
-        <span class="y">20 years</span>
-      </div>
-      <div class="t-list">
-        <!-- timeline rows injected by JS -->
-      </div>
-    </aside>
-
-    <!-- =========== TERMINAL =========== -->
-    <main class="terminal">
-      <div class="term-head">
-        <div class="file">
-          <span>~/</span><b id="termFile">readme.mdx</b><span class="dot">·</span><span>editable</span>
-        </div>
-        <div class="stamp"><span id="termStamp">last edit · 14 min ago</span></div>
-      </div>
-      <div class="term-body" id="termBody"></div>
-    </main>
-
-    <!-- =========== VISUALS =========== -->
-    <aside class="visuals">
-
-      <div class="v-section">
-        <h4>Operating companies <span class="count">2 live</span></h4>
-        <a class="proj live" href="https://courtana.com" target="_blank" rel="noopener">
-          <div class="pttl">Courtana <span class="ext">↗ live</span></div>
-          <div class="pmeta"><span class="live2">● founder / CEO</span> · 2023–now</div>
-          <p class="pdesc">AI smart-court SaaS — live video, AI badge-scoring across 11+ sports, hardware orchestration, Stripe. 36 courts live or piloting.</p>
-        </a>
-        <a class="proj" href="https://dreamship.com" target="_blank" rel="noopener">
-          <div class="pttl">Dreamship <span class="ext">↗ live</span></div>
-          <div class="pmeta"><span class="tr">cofounder / CEO</span> · 2018–25</div>
-          <p class="pdesc">API fulfillment platform. $35M+ revenue, 11x in a year, the Google partnership I sold &amp; ran 5+ years.</p>
-        </a>
-      </div>
-
-      <div class="v-section">
-        <h4>Sales / GTM &amp; AI-ignited collateral <span class="count">flagship</span></h4>
-        <a class="proj" href="https://courtana-venue-connect.lovable.app/" target="_blank" rel="noopener">
-          <div class="pttl">Courtana Venue Connect <span class="ext">↗ demo</span></div>
-          <div class="pmeta"><span class="tr">closed venue partner</span></div>
-          <p class="pdesc">One dynamic asset that spans presentation, proposal, analytics, client success &amp; ecosystem — a connected-AI way to sell, onboard, and go to market. My single best example of how I think.</p>
-        </a>
-      </div>
-
-      <div class="v-section">
-        <h4>Enterprise-grade builds <span class="count">3</span></h4>
-        <a class="proj" href="https://headsuptime.lovable.app" target="_blank" rel="noopener">
-          <div class="pttl">HeadsUpTime <span class="ext">↗</span></div>
-          <div class="pmeta"><span class="tr">industrial AI/ML camera co.</span></div>
-          <p class="pdesc">POC for a 25-yr AI/ML camera company: industry identification &amp; prioritization with tailored value props off their showcase use case.</p>
-        </a>
-        <a class="proj" href="https://naughtydata.lovable.app/" target="_blank" rel="noopener">
-          <div class="pttl">NaughtyData <span class="ext">↗</span></div>
-          <div class="pmeta"><span class="tr">Europe&#39;s largest marine-analytics co.</span></div>
-          <p class="pdesc">Full rebrand for the CTO in a handful of prompts — an internal asset for sales collateral &amp; messaging.</p>
-        </a>
-        <a class="proj" href="https://litigator.lovable.app/dashboard" target="_blank" rel="noopener">
-          <div class="pttl">Litigator <span class="ext">↗</span></div>
-          <div class="pmeta"><span class="tr">legal · mass arbitration</span></div>
-          <p class="pdesc">Mass-arbitration intelligence app to streamline and optimize collective-action cases for legal firms.</p>
-        </a>
-      </div>
-
-      <div class="v-section">
-        <h4>VibeCo &amp; the build ecosystem <span class="count">40+ apps</span></h4>
-        <a class="proj" href="https://vibeco.lovable.app/" target="_blank" rel="noopener">
-          <div class="pttl">VibeCo <span class="ext">↗ live</span></div>
-          <div class="pmeta"><span class="tr">11-agent product simulator</span></div>
-          <p class="pdesc">Idea → business brief → build prompts → concept art. Multi-model, tool-calling, a parallel critique &ldquo;Thunderdome&rdquo; + synthesis flywheel.</p>
-        </a>
-        <a class="proj" href="https://vibeco.lovable.app/simulate" target="_blank" rel="noopener">
-          <div class="pttl">▸ Try the simulator <span class="ext">↗</span></div>
-          <div class="pmeta">the main draw — run an idea through 11 agents</div>
-        </a>
-        <a class="proj" href="https://layuplab.lovable.app/app/dashboard" target="_blank" rel="noopener">
-          <div class="pttl">LayupLab <span class="ext">↗</span></div>
-          <div class="pmeta">sports training &amp; analytics dashboard</div>
-        </a>
-        <a class="proj" href="https://freakfosho.lovable.app/" target="_blank" rel="noopener">
-          <div class="pttl">FreakFoSho <span class="ext">↗</span></div>
-          <div class="pmeta">consumer · one build cycle</div>
-        </a>
-        <a class="proj" href="https://vibeco.lovable.app/#model" target="_blank" rel="noopener">
-          <div class="pttl">▸ Full build ecosystem <span class="ext">↗</span></div>
-          <div class="pmeta">all 40+ apps, browsable on VibeCo</div>
-        </a>
-        <p class="grp-note">+ 40 one-shot apps across 31 repos — analytics, coaching, venue ops, and consumer apps (FactFudge, The Load, an AI cooking platform, plus landscaping / real-estate / therapist / lobbyist sites). <a href="https://github.com/PickleBill" target="_blank" rel="noopener" style="color:var(--terra)">browse the lab ↗</a></p>
-      </div>
-
-      <div class="v-section">
-        <h4>Pickle DaaS <span class="count">$0.0054/clip</span></h4>
-        <a class="proj live" href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html" target="_blank" rel="noopener">
-          <div class="pttl">Investor walkthrough <span class="ext">↗ best</span></div>
-          <div class="pmeta"><span class="live2">most visual</span> · 4,097-clip corpus</div>
-          <p class="pdesc">Zero-to-one sports-data line of business: video analysis, brand sponsorship, investor dashboards.</p>
-        </a>
-        <a class="proj" href="https://picklebill.github.io/pickle-daas-data/dashboards/brand-intelligence-v4.html" target="_blank" rel="noopener">
-          <div class="pttl">Brand intelligence <span class="ext">↗</span></div>
-          <div class="pmeta">real brand-exposure data</div>
-        </a>
-        <a class="proj" href="https://picklebill.github.io/pickle-daas-data/dashboards/coaching-studio-v4.html" target="_blank" rel="noopener">
-          <div class="pttl">Coaching studio <span class="ext">↗</span></div>
-        </a>
-        <a class="proj" href="https://picklebill.github.io/pickle-daas-data/dashboards/venue-report-v4.html" target="_blank" rel="noopener">
-          <div class="pttl">Venue report <span class="ext">↗</span></div>
-        </a>
-        <a class="proj" href="https://picklebill.github.io/pickle-daas-data/dashboards/idea-lab.html" target="_blank" rel="noopener">
-          <div class="pttl">Idea lab <span class="ext">↗</span></div>
-        </a>
-        <a class="proj" href="https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal-v4.html" target="_blank" rel="noopener">
-          <div class="pttl">▸ All dashboards (portal) <span class="ext">↗</span></div>
-        </a>
-      </div>
-
-      <div class="v-section">
-        <h4>By the numbers</h4>
-        <div class="metrics">
-          <div class="met"><span class="num">11x</span><span class="lab">revenue in one year</span></div>
-          <div class="met"><span class="num">$35M+</span><span class="lab">revenue led (Dreamship)</span></div>
-          <div class="met"><span class="num">8-fig</span><span class="lab">Google channel sold</span></div>
-          <div class="met"><span class="num">40+</span><span class="lab">AI apps shipped</span></div>
-        </div>
-      </div>
-
-      <div class="v-section">
-        <h4>The stack</h4>
-        <div class="pills">
-          <span class="pill warm">Claude</span>
-          <span class="pill warm">Codex</span>
-          <span class="pill">Lovable</span>
-          <span class="pill cool">Gemini</span>
-          <span class="pill cool">Supabase</span>
-          <span class="pill">Stripe</span>
-          <span class="pill">GitHub</span>
-          <span class="pill">FFmpeg</span>
-        </div>
-      </div>
-
-      <div class="v-section">
-        <h4>Ask me about</h4>
-        <ul class="ask">
-          <li><em>zero-to-one</em> revenue motions</li>
-          <li>founder-led &amp; partnership <em>GTM</em></li>
-          <li>selling <em>complicated things</em> in plain language</li>
-          <li>building with <em>AI as the OS</em></li>
-          <li>connected-AI ecosystems &amp; the future of selling</li>
-        </ul>
-      </div>
-
-      <div class="v-section">
-        <h4>Get in touch</h4>
-        <div class="vctas">
-          <a class="cta primary" href="mailto:bricker3@gmail.com">Email me <span class="arr">→</span></a>
-          <a class="cta secondary" href="tel:+19086018152">908 · 601 · 8152 <span class="arr">→</span></a>
-        </div>
-      </div>
-
-    </aside>
-  </div>
-
-  <!-- ============ PING BAR ============ -->
-  <form class="pingbar" id="pingForm" onsubmit="return runCmd(event)">
-    <div class="echo" id="echo">stored. bill will see this within the day.</div>
-    <span class="prompt">$ ping bill</span>
-    <input id="cmdInput" type="text" placeholder="say hi — or type a command: help, book, ls, intro, cv…" autocomplete="off" autofocus />
-    <div class="help">
-      <span data-suggest="help"><kbd>?</kbd>help</span>
-      <span data-suggest="book"><kbd>b</kbd>book</span>
-      <span data-suggest="intro"><kbd>i</kbd>intro</span>
-      <span data-suggest="cv"><kbd>↓</kbd>cv</span>
-    </div>
-  </form>
-
+<div class="wrap top">
+  <span class="kick"><span class="dot"></span>The Work · interactive terminal</span>
+  <h1>Don't take my word for it. <span class="g">Run the commands.</span></h1>
+  <p class="sub">Every claim is a file you can open. Tap a command — or type your own.</p>
 </div>
 
-<script>
-  /* ============================================
-     TIMELINE DATA
-     ============================================ */
-  const TIMELINE = [
-    { id:"now",        yr:"2026",      ttl:"Currently",            sub:"Courtana · Pickle DaaS · this site", live:true },
-    { id:"courtana",   yr:"2023+",     ttl:"Courtana",             sub:"Founder · venue intel" },
-    { id:"walk",       yr:"2023",      ttl:"The Long Walk",        sub:"Diagnosis · the road resumed" },
-    { id:"dreamship",  yr:"2018-22",   ttl:"Dreamship",            sub:"Co-founder · GTM & strategy" },
-    { id:"gearlaunch", yr:"2017",      ttl:"GearLaunch",           sub:"Commercial lead" },
-    { id:"gord",       yr:"2016",      ttl:"GroupOrDare",          sub:"Designer · card game · yes really" },
-    { id:"manifesto",  yr:"2015",      ttl:"Networking Manifesto", sub:"Wrote · still operative" },
-    { id:"introstellar",yr:"2015",     ttl:"Introstellar",         sub:"Side-quest" },
-    { id:"wibi",       yr:"2014",      ttl:"WibiData",             sub:"Early data infra" },
-    { id:"ibm",        yr:"2012-14",   ttl:"IBM / Netezza",        sub:"7-fig enterprise deals" },
-    { id:"unc",        yr:"2010",      ttl:"UNC Kenan-Flagler",    sub:"MBA" },
-    { id:"nwm",        yr:"2006",      ttl:"Northwestern Mutual",  sub:"First job · cold call school" },
-  ];
-
-  /* ============================================
-     TERMINAL "FILES" — content per timeline entry
-     ============================================ */
-  const FILES = {
-    now: {
-      name: "readme.mdx",
-      stamp: "last edit · 14 min ago",
-      html: `
-        <h1 class="h">Hi. I'm Bill <em>—</em></h1>
-        <p class="prose">AI-native founder, GTM operator, connector. Father of three. Cancer survivor, <em>still walking</em>. Currently shipping Courtana &amp; Pickle DaaS — and the site you're reading.</p>
-        <p class="prose">I&rsquo;m AI-native the way an electrician is electrical — it isn't the thing I sell, it's the thing that lets me move ten times the pace I used to at building, proving, and selling.</p>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">ls</span> /scope_of_work</div>
-        <div class="checkrow"><span class="box">▢</span><b>founder roles</b><span class="desc">— zero-to-one, GTM, or full stack</span></div>
-        <div class="checkrow"><span class="box">▢</span><b>fractional / advisory</b><span class="desc">— 2 slots open · founder GTM, AI-native ops</span></div>
-        <div class="checkrow"><span class="box">▢</span><b>board / strategic partner</b><span class="desc">— for the right thesis</span></div>
-        <div class="checkrow"><span class="box">▢</span><b>technical-cofounder swap</b><span class="desc">— if you have the rails, I have the room</span></div>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">cat</span> /now_playing</div>
-        <p class="out row-live">shipping <b>Courtana</b> &mdash; venue intel for the people running the room</p>
-        <p class="out row-live">breaking ground on <b>Pickle DaaS</b> &mdash; the rails underneath</p>
-        <p class="out row-info">talking with <b>3 founders</b>, <b>2 VCs</b>, <b>1 family office</b> this week</p>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">status</span></div>
-        <p class="out row-live"><b>in the room.</b> ping me. <span class="blink"></span></p>
-      `
-    },
-    courtana: {
-      name: "courtana.mdx",
-      stamp: "now shipping · v0.4",
-      html: `
-        <h1 class="h">Courtana <em>—</em> 2023+</h1>
-        <p class="prose">The operating layer for the people who actually run the room: coaches, club ops, tournament organizers, league managers. The dashboard they have been pasting together in spreadsheets for five years.</p>
-        <div class="quote">We're building the OS for the network. Every customer becomes a node — not an entry in a CRM.</div>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">cat</span> /what_im_proving</div>
-        <p class="out">▸ zero-to-one revenue is <b>faster</b> when the product carries its own GTM</p>
-        <p class="out">▸ AI handles the boring 80% of the operator's week</p>
-        <p class="out">▸ the math is the moat — see <i>Pickle DaaS</i></p>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">looking_for</span></div>
-        <p class="out row-info"><b>conversations</b> with people running clubs, networks, or venues</p>
-        <p class="out row-info"><b>operators</b> who&rsquo;ve felt the same gap in their corner of the world</p>
-        <p class="out row-live"><b>$350K</b> raised · <b>36 courts</b> live or piloting · 44-court LOI</p>
-        <p class="out"><a href="https://courtana.com" target="_blank" rel="noopener" style="color:var(--live)">▸ courtana.com →</a></p>
-      `
-    },
-    walk: {
-      name: "long_walk.mdx",
-      stamp: "personal · ongoing",
-      html: `
-        <h1 class="h">The Long Walk <em>—</em> 2023+</h1>
-        <p class="prose">Cancer, diagnosed 2023. Twelve weeks of chemo. The pipeline did not stop. Neither did I.</p>
-        <div class="quote">I leave this file open because no one I&rsquo;d want to work with would want me to leave it out — and because the operator instinct gets ruthlessly clear when the day is short.</div>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">what_it_taught_me</span></div>
-        <p class="out">▸ pipeline doesn&rsquo;t care about your week. it cares about whether you ship.</p>
-        <p class="out">▸ when bandwidth drops 60%, the right 20% of work suddenly becomes obvious</p>
-        <p class="out">▸ being honest about this is the work, not a footnote to the work</p>
-
-        <p class="prose" style="margin-top:18px">Still walking. Still building. Still asking who I can introduce you to.</p>
-      `
-    },
-    dreamship: {
-      name: "dreamship.mdx",
-      stamp: "build · 2018–2022",
-      html: `
-        <h1 class="h">Dreamship <em>—</em> 2018–2022</h1>
-        <p class="prose">Co-founded a print-on-demand platform for brands that wanted control without the warehouse. Built the commercial side — strategy, partnerships, the playbook the team called <em>&ldquo;How We Win.&rdquo;</em></p>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">cat</span> /what_i_learned</div>
-        <p class="out">▸ how to sell a complicated supply chain story in plain language</p>
-        <p class="out">▸ how to keep unit economics <b>honest</b> while the team races to scale</p>
-        <p class="out">▸ zero-to-one is a <i>posture</i>, not a phase you graduate from</p>
-        <p class="out row-live"><b>$35M+</b> revenue · <b>11x</b> in one year · sold <b>Google</b> as a sub-1-yr-old startup</p>
-        <p class="out"><a href="https://dreamship.com" target="_blank" rel="noopener" style="color:var(--live)">▸ dreamship.com →</a></p>
-      `
-    },
-    gearlaunch: {
-      name: "gearlaunch.mdx",
-      stamp: "build · 2017",
-      html: `
-        <h1 class="h">GearLaunch <em>—</em> 2017</h1>
-        <p class="prose">Built the commercial motion for a custom merchandise platform serving creators &mdash; two years before everyone else started saying &ldquo;creator economy.&rdquo;</p>
-        <p class="prose">Tiny team. Bespoke playbook. The right proving ground for the operator muscle that ran Dreamship next.</p>
-      `
-    },
-    gord: {
-      name: "groupordare.mdx",
-      stamp: "play · 2016",
-      html: `
-        <h1 class="h">GroupOrDare <em>—</em> 2016</h1>
-        <p class="prose">I designed and shipped a party card game. It exists. It works. People still play it.</p>
-        <div class="quote">My kids think it&rsquo;s the most impressive thing I&rsquo;ve ever done — which is, on reflection, the correct ranking.</div>
-        <p class="prose">I include this because evidence beats résumé. A bored idea followed into the world is evidence.</p>
-      `
-    },
-    manifesto: {
-      name: "networking_manifesto.mdx",
-      stamp: "essay · 2015 · still operative",
-      html: `
-        <h1 class="h">The Networking Manifesto <em>—</em> 2015</h1>
-        <div class="quote">&ldquo;Who can I introduce you to so you can achieve your goals?&rdquo;</div>
-        <p class="prose">The single question I have asked at the top of nearly every working conversation for over a decade. <em>The river of intros</em> is the longest line on my career map and the highest-leverage asset class a working person owns.</p>
-
-        <div class="cmd"><span class="pr">$</span> <span class="com">stats</span></div>
-        <p class="out"><b>11</b> years operative · counting</p>
-        <p class="out">if you&rsquo;d like an intro, <i>ask</i>. it&rsquo;s the question.</p>
-      `
-    },
-    introstellar: {
-      name: "introstellar.mdx",
-      stamp: "side-quest · 2015",
-      html: `
-        <h1 class="h">Introstellar <em>—</em> 2015</h1>
-        <p class="prose">A small tool built to make the Networking Manifesto into a product. Most things people remember about it are wrong; most things I remember about it are charitable.</p>
-        <p class="prose">What stuck: a working belief that intros are the most undervalued asset class a working person has.</p>
-      `
-    },
-    wibi: {
-      name: "wibidata.mdx",
-      stamp: "sell · 2014",
-      html: `
-        <h1 class="h">WibiData <em>—</em> 2014</h1>
-        <p class="prose">Early big-data, before the wave had a name. Sold to the technical buyer when the technical buyer was still figuring out what the question was.</p>
-        <p class="prose">That pattern &mdash; selling into a problem the customer hasn&rsquo;t fully named yet &mdash; has shown up in every job since.</p>
-      `
-    },
-    ibm: {
-      name: "ibm_netezza.mdx",
-      stamp: "sell · 2012–14",
-      html: `
-        <h1 class="h">IBM / Netezza <em>—</em> 2012–14</h1>
-        <p class="prose">Closed <em>seven-figure</em> enterprise software deals before AI made any of this easier. The selling muscle from this era is what makes everything downstream of it possible.</p>
-        <div class="quote">You cannot out-build the need to talk to a customer.</div>
-      `
-    },
-    unc: {
-      name: "unc_mba.mdx",
-      stamp: "study · 2010",
-      html: `
-        <h1 class="h">UNC Kenan-Flagler &mdash; MBA <em>—</em> 2010</h1>
-        <p class="prose">Two years to stop confusing &ldquo;activity&rdquo; with &ldquo;progress.&rdquo; Two years to learn what a P&amp;L is for. Two years to meet the small handful of people who&rsquo;d show up on this map a dozen more times over the next fifteen years.</p>
-      `
-    },
-    nwm: {
-      name: "northwestern_mutual.mdx",
-      stamp: "origin · 2006",
-      html: `
-        <h1 class="h">Northwestern Mutual <em>—</em> 2006</h1>
-        <p class="prose">Out of college, doors and dials. The most concentrated lesson in selling I ever got, taught by a phone that mostly went to voicemail.</p>
-        <p class="prose">I&rsquo;m grateful for it the way you&rsquo;re grateful for a hard winter.</p>
-      `
-    },
-  };
-
-  /* ============================================
-     RENDER TIMELINE
-     ============================================ */
-  const tlist = document.querySelector(".t-list");
-  tlist.innerHTML = TIMELINE.map(t=>`
-    <div class="t-row ${t.live?'live':''}" data-id="${t.id}">
-      <div class="t-yr">${t.yr}</div>
-      <div class="t-body">
-        <div class="t-ttl">${t.ttl}</div>
-        <div class="t-sub">${t.sub}</div>
-      </div>
+<div class="wrap">
+  <div class="term">
+    <div class="tbar">
+      <span class="dots"><i class="r"></i><i class="y"></i><i class="g"></i></span>
+      <span class="ttl">bill@bricker-os: ~/work</span>
+      <span class="live"><i></i> session live</span>
     </div>
-  `).join("");
+    <div class="screen" id="screen"></div>
+    <form class="ibar" id="form" autocomplete="off">
+      <span class="pr">➜&nbsp;~</span>
+      <input id="cmd" placeholder="type a command (try: help) …" aria-label="terminal command"/>
+      <span class="run">↵ run</span>
+    </form>
+  </div>
 
-  tlist.querySelectorAll(".t-row").forEach(row=>{
-    row.addEventListener("click", ()=>openFile(row.dataset.id));
-  });
+  <div class="chips" id="chips">
+    <span class="lbl">— tap to run —</span>
+    <span class="chip" data-c="whoami"><span class="s">$</span> whoami</span>
+    <span class="chip" data-c="ls"><span class="s">$</span> ls</span>
+    <span class="chip" data-c="companies"><span class="s">$</span> companies</span>
+    <span class="chip" data-c="google-deal"><span class="s">$</span> google-deal</span>
+    <span class="chip" data-c="sales"><span class="s">$</span> sales-gtm</span>
+    <span class="chip" data-c="enterprise"><span class="s">$</span> enterprise</span>
+    <span class="chip" data-c="builds"><span class="s">$</span> builds</span>
+    <span class="chip" data-c="pickle"><span class="s">$</span> pickle-daas</span>
+    <span class="chip" data-c="stats"><span class="s">$</span> stats</span>
+    <span class="chip" data-c="git"><span class="s">$</span> git log</span>
+    <span class="chip" data-c="contact"><span class="s">$</span> contact</span>
+  </div>
+</div>
 
-  /* ============================================
-     OPEN FILE
-     ============================================ */
-  const termBody = document.getElementById("termBody");
-  const termFile = document.getElementById("termFile");
-  const termStamp = document.getElementById("termStamp");
+<footer>bill@bricker-os · <a href="index.html">home</a> · <a href="climb.html">the story</a> · <a href="resume-v2.html">résumé</a> · type <span style="color:var(--sage)">help</span> for all commands</footer>
 
-  function openFile(id){
-    const f = FILES[id];
-    if(!f){ return }
-    termFile.textContent = f.name;
-    termStamp.textContent = f.stamp;
-    // animated transition
-    termBody.style.opacity = 0;
-    setTimeout(()=>{
-      termBody.innerHTML = f.html;
-      termBody.scrollTop = 0;
-      termBody.style.opacity = 1;
-    }, 140);
-    // highlight row
-    tlist.querySelectorAll(".t-row").forEach(r=>r.classList.toggle("active", r.dataset.id===id));
+<script>
+const screen=document.getElementById('screen');
+const A='target="_blank" rel="noopener"';
+const L=(u,t,ext=true)=>`<a class="lnk" href="${u}" ${ext?A:''}>${t}</a>`;
+
+const CMDS={
+  help:()=>`<span class="cmt">// available commands — tap a chip or type one</span>
+<span class="key">whoami</span>       who I am, in one line
+<span class="key">ls</span>           the proof, as a directory
+<span class="key">companies</span>    Courtana &amp; Dreamship — both live
+<span class="key">google-deal</span>  the deal I lead interviews with
+<span class="key">sales-gtm</span>    connected-AI selling (Venue Connect)
+<span class="key">enterprise</span>   client-grade builds in days
+<span class="key">builds</span>       VibeCo + 40 apps across 31 repos
+<span class="key">pickle-daas</span>  the tech proof · $0.0054/clip
+<span class="key">stats</span>        the numbers
+<span class="key">git log</span>      the 20-year commit history
+<span class="key">contact</span>      let's talk · clear · resets`,
+
+  whoami:()=>`<span class="h">Bill Bricker — I sell frontier tech, and I build it myself.</span>Enterprise seller turned founder-CEO. <span class="ok">&gt;100% quota</span> at IBM, <span class="ok">$35M+</span> &amp; <span class="ok">11x</span> as a founder, sold <span class="ok">Google</span> as a sub-1-yr-old startup. Now I ship production AI daily. Father of three. Still walking.
+<span class="cmt">// next: try</span> <span class="key">ls</span> <span class="cmt">to see the proof</span>`,
+
+  ls:()=>`<span class="cmt">drwx</span>  <span class="key">companies/</span>      <span class="cmt"># 2 live operating companies</span>
+<span class="cmt">-rw-</span>  <span class="key">google-deal.md</span>  <span class="cmt"># the 8-figure partnership</span>
+<span class="cmt">drwx</span>  <span class="key">sales-gtm/</span>      <span class="cmt"># connected-AI selling</span>
+<span class="cmt">drwx</span>  <span class="key">enterprise/</span>     <span class="cmt"># client-grade builds</span>
+<span class="cmt">drwx</span>  <span class="key">builds/</span>         <span class="cmt"># 40+ apps · 31 repos</span>
+<span class="cmt">drwx</span>  <span class="key">pickle-daas/</span>    <span class="cmt"># the tech proof</span>
+<span class="cmt">-rw-</span>  <span class="key">stats</span> · <span class="key">git log</span> · <span class="key">contact</span>`,
+
+  companies:()=>`<span class="h">Two operating companies — both live.</span><span class="ok">●</span> <span class="val">Courtana</span> — AI smart-court SaaS · founder/CEO · 36 courts live/piloting · 11+ sports
+   ${L('https://courtana.com','courtana.com ↗')}
+<span class="pink">●</span> <span class="val">Dreamship</span> — API fulfillment · cofounder/CEO · $35M+ · 11x in a year · the Google deal
+   ${L('https://dreamship.com','dreamship.com ↗')}`,
+
+  'google-deal':()=>`<span class="h">google-deal.md — the one I lead interviews with</span><span class="warn">SITUATION</span>  A sub-one-year-old startup. No logo, no track record.
+<span class="warn">TASK</span>       Get Google to open an 8-figure ad-spend channel to our merchants.
+<span class="warn">ACTION</span>     Built a first-of-its-kind AI trademark/IP-compliance checker, then
+           navigated 5–6 internal teams — trust &amp; safety, business integrity,
+           commercial — to director+ sign-off.
+<span class="warn">RESULT</span>     An 8-figure channel that ran <span class="ok">5+ years</span>; then sequenced Stripe,
+           PayPal, Meta &amp; Payoneer off the credibility.
+<span class="cmt">// this is how I think about partnership GTM. ask me about it.</span>`,
+
+  sales:()=>`<span class="h">sales-gtm/ — selling in a connected-AI future</span>The single best example of how I think about GTM after AI: one dynamic asset
+that spans presentation, proposal, analytics, client success &amp; ecosystem —
+built for a venue partner we <span class="ok">closed</span>.
+   ${L('https://courtana-venue-connect.lovable.app/','▸ Courtana Venue Connect ↗')}
+<span class="cmt">// proposals that are products. onboarding that sells itself.</span>`,
+
+  enterprise:()=>`<span class="h">enterprise/ — client-grade builds, in days not quarters</span>${L('https://headsuptime.lovable.app','▸ HeadsUpTime ↗')}   <span class="cmt">25-yr industrial AI/ML camera co. — industry ID + value-prop POC</span>
+${L('https://naughtydata.lovable.app/','▸ NaughtyData ↗')}  <span class="cmt">Europe's largest marine-analytics co. — CTO rebrand in a few prompts</span>
+${L('https://litigator.lovable.app/dashboard','▸ Litigator ↗')}    <span class="cmt">legal · mass-arbitration intelligence app</span>`,
+
+  builds:()=>`<span class="h">builds/ — 40+ apps across 31 repos</span><span class="val">VibeCo</span> is the engine: 11 AI agents that turn an idea into briefs, build
+prompts &amp; art. Everything else falls out of it.
+   ${L('https://vibeco.lovable.app/simulate','▸ run the simulator ↗')}
+   ${L('https://layuplab.lovable.app/app/dashboard','▸ LayupLab ↗')} <span class="cmt">sports training</span>   ${L('https://freakfosho.lovable.app/','▸ FreakFoSho ↗')} <span class="cmt">consumer</span>
+   ${L('https://vibeco.lovable.app/#model','▸ the full ecosystem ↗')} <span class="cmt">FactFudge, The Load, an AI cooking app, a 12-yr-old's first build…</span>`,
+
+  pickle:()=>`<span class="h">pickle-daas/ — the tech proof, tied back to Courtana</span><span class="key">cost/clip</span>     <span class="ok">$0.0054</span>  <span class="cmt">(~7x cheaper than GPT-4o)</span>
+<span class="key">corpus</span>        4,097+ clips analyzed
+<span class="key">output</span>        player-DNA · brand-exposure · coaching feedback
+<span class="key">infra</span>         autonomous agents w/ spend caps + ground-truth validation
+   ${L('https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html','▸ investor walkthrough ↗')}
+   ${L('https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal-v4.html','▸ all dashboards ↗')}
+<span class="cmt">// the model isn't the moat — the math is.</span>`,
+
+  stats:()=>`<span class="h">the numbers</span><span class="ok">20</span>      years operating          <span class="ok">11x</span>     revenue in one year
+<span class="ok">$35M+</span>   cumulative revenue led   <span class="ok">8-fig</span>   Google channel sold
+<span class="ok">&gt;100%</span>   IBM enterprise quota     <span class="ok">40+</span>     AI apps shipped solo
+<span class="ok">$0.0054</span> per-clip AI analysis     <span class="ok">3</span>       kids · the why`,
+
+  git:()=>`<span class="cmt">git log --oneline --career</span>
+<span class="warn">a37f63e</span> <span class="ok">(HEAD → now)</span> Courtana — AI smart-court SaaS, live          <span class="cmt">2023→</span>
+<span class="warn">8b9de71</span> Pickle DaaS + VibeCo — 40+ apps, $0.0054/clip          <span class="cmt">2026</span>
+<span class="warn">b3bb973</span> The Long Walk — diagnosed; pipeline kept moving        <span class="cmt">2023</span>
+<span class="warn">7a1a46f</span> Dreamship — $35M+, 11x, sold Google                    <span class="cmt">2018–25</span>
+<span class="warn">18b8b3f</span> IBM/Netezza — 7-fig deals, &gt;100% quota               <span class="cmt">2012–14</span>
+<span class="warn">0001f00</span> Northwestern Mutual — doors &amp; dials, top 10           <span class="cmt">2006</span>
+   ${L('climb.html','▸ walk the full climb ↗',false)}`,
+
+  contact:()=>`<span class="h">let's talk.</span>Open to founder roles, GTM &amp; partnership leadership, fractional, board.
+<span class="key">email</span>  ${L('mailto:bricker3@gmail.com','bricker3@gmail.com',false)}
+<span class="key">phone</span>  ${L('tel:+19086018152','908 · 601 · 8152',false)}
+<span class="key">in</span>     ${L('https://linkedin.com/in/williambricker','linkedin.com/in/williambricker')}`,
+};
+const ALIAS={'sales-gtm':'sales','pickle-daas':'pickle','git log':'git','ls -la':'ls','cat google-deal.md':'google-deal','companies/':'companies'};
+
+function print(html,echo){
+  if(echo!==undefined){
+    const e=document.createElement('div');e.className='ln echo reveal';
+    e.innerHTML=`<span class="p">➜ ~</span> <span class="c">${echo}</span>`;screen.appendChild(e);
   }
-  termBody.style.transition = "opacity .22s ease";
-
-  // boot
-  openFile("now");
-
-  /* ============================================
-     PROJECT TILES → open file
-     ============================================ */
-  document.querySelectorAll(".proj").forEach(p=>{
-    p.addEventListener("click", ()=>{
-      const pin = p.dataset.pin;
-      if(pin==="courtana") openFile("courtana");
-      else if(pin==="pickle"){
-        // synthesize a quick file on the fly
-        FILES.pickle = FILES.pickle || {
-          name:"pickle_daas.mdx",
-          stamp:"build · 2026",
-          html:`
-            <h1 class="h">Pickle DaaS <em>—</em> 2026</h1>
-            <p class="prose">Highlight detection at <em>$0.0054 per clip</em>. 4,097+ highlight groups analyzed and counting.</p>
-            <div class="quote">The interesting bit isn't the model. It's the cost discipline.</div>
-            <p class="prose">Most of what passes for &ldquo;AI-native&rdquo; right now is GPT-4 calls hidden behind a UI. Pickle is the opposite: native infra, boring on the surface, ferocious on the unit economics. <em>The math is the moat.</em></p>
-          `
-        };
-        openFile("pickle");
-      }
-    });
-  });
-
-  /* ============================================
-     UPTIME TICK
-     ============================================ */
-  let s = 22;
-  setInterval(()=>{
-    s = (s+1) % 60;
-    document.getElementById("sec").textContent = String(s).padStart(2,"0");
-  }, 1000);
-
-  /* ============================================
-     COMMAND PARSER
-     ============================================ */
-  const input = document.getElementById("cmdInput");
-  const echo  = document.getElementById("echo");
-
-  function flashEcho(msg, color){
-    echo.textContent = msg;
-    if(color){ echo.style.borderColor = color; echo.style.color = color }
-    else     { echo.style.borderColor = "var(--live)"; echo.style.color = "var(--live)" }
-    echo.classList.add("on");
-    setTimeout(()=>echo.classList.remove("on"), 2200);
-  }
-
-  function runCmd(e){
-    e && e.preventDefault();
-    const raw = input.value.trim();
-    if(!raw) return false;
-    const cmd = raw.toLowerCase();
-
-    // route commands
-    if(cmd === "help" || cmd === "?"){
-      flashEcho("commands: book · intro · ls · cat <file> · cv · whoami · status · ping <msg>");
-    }
-    else if(cmd === "book" || cmd === "b"){
-      flashEcho("opening calendar…","var(--terra)");
-      setTimeout(()=>window.open("mailto:bricker3@gmail.com?subject=Book%20a%2030-min%20call","_blank"), 200);
-    }
-    else if(cmd === "intro" || cmd === "i"){
-      flashEcho("intro form opened — tell me about both sides","var(--terra)");
-      setTimeout(()=>window.open("mailto:bricker3@gmail.com?subject=Warm%20intro&body=Two%20parties%2C%20why%20they%20should%20meet%3A","_blank"), 200);
-    }
-    else if(cmd === "cv" || cmd === "resume" || cmd === "résumé" || cmd === "download"){
-      flashEcho("résumé brief queued for download (placeholder)","var(--gold)");
-    }
-    else if(cmd === "email" || cmd === "contact"){
-      flashEcho("opening email…","var(--terra)");
-      setTimeout(()=>window.open("mailto:bricker3@gmail.com","_blank"), 200);
-    }
-    else if(cmd === "ls" || cmd === "ls /"){
-      // show a listing in the terminal
-      termFile.textContent = "/ (root)";
-      termStamp.textContent = "listing";
-      termBody.innerHTML = `
-        <h1 class="h">~/ <em>—</em> directory</h1>
-        <p class="out">drwx  /now           — what i'm shipping today</p>
-        <p class="out">drwx  /archive       — what i've shipped before</p>
-        <p class="out">drwx  /life          — the long walk &amp; the home forest</p>
-        <p class="out">-rw-  readme.mdx     — start here</p>
-        <p class="out">-rw-  scope.mdx      — what i'm open to right now</p>
-        <p class="out">-rw-  contact.mdx    — say hi</p>
-        <p class="prose" style="margin-top:18px">Type <em>cat &lt;file&gt;</em> to open any file. Or click the timeline.</p>
-      `;
-    }
-    else if(cmd.startsWith("cat ")){
-      const fname = cmd.replace("cat ","").replace(".mdx","").trim();
-      const map = {readme:"now", scope:"now", courtana:"courtana", "long_walk":"walk", walk:"walk", dreamship:"dreamship", manifesto:"manifesto", networking_manifesto:"manifesto", gord:"gord", groupordare:"gord", ibm:"ibm", netezza:"ibm", wibi:"wibi", wibidata:"wibi", unc:"unc", mba:"unc", nwm:"nwm"};
-      if(map[fname]) openFile(map[fname]);
-      else flashEcho(`file not found: ${fname}`, "var(--sienna)");
-    }
-    else if(cmd === "whoami"){
-      openFile("now");
-    }
-    else if(cmd === "status"){
-      flashEcho("● in the room. ping me.","var(--live)");
-    }
-    else if(cmd.startsWith("ping ")){
-      flashEcho("stored. bill will see this within the day.","var(--live)");
-    }
-    else if(cmd === "clear" || cmd === "cls"){
-      termBody.innerHTML = "<p class='out dim'>cleared. type help, or open a file.</p>";
-      termFile.textContent = "terminal";
-    }
-    else {
-      // treat as a plain message
-      flashEcho("stored. bill will see this within the day.","var(--live)");
-    }
-
-    input.value = "";
-    return false;
-  }
-  window.runCmd = runCmd;
-
-  // CTA buttons run commands too
-  document.querySelectorAll("[data-cmd]").forEach(b=>{
-    b.addEventListener("click", e=>{
-      input.value = b.dataset.cmd;
-      runCmd();
-    });
-  });
-
-  // suggestion chips
-  document.querySelectorAll("[data-suggest]").forEach(b=>{
-    b.addEventListener("click", ()=>{
-      input.value = b.dataset.suggest;
-      input.focus();
-    });
-  });
-
-  // keyboard shortcuts
-  document.addEventListener("keydown", e=>{
-    if(e.target.tagName === "INPUT") return;
-    if(e.key === "?") { e.preventDefault(); input.value="help"; runCmd(); input.focus() }
-    if(e.key === "b") { e.preventDefault(); input.value="book"; runCmd() }
-    if(e.key === "i") { e.preventDefault(); input.value="intro"; runCmd() }
-    if(e.key === "/") { e.preventDefault(); input.focus() }
-  });
+  const lines=html.split('\n');
+  lines.forEach((l,i)=>{const d=document.createElement('div');d.className='ln reveal';d.style.animationDelay=(i*22)+'ms';d.innerHTML=l||'&nbsp;';screen.appendChild(d);});
+  const sp=document.createElement('div');sp.className='ln';sp.innerHTML='&nbsp;';screen.appendChild(sp);
+  screen.scrollTop=screen.scrollHeight;
+}
+function run(raw){
+  const cmd=(raw||'').trim().toLowerCase();
+  if(!cmd)return;
+  if(cmd==='clear'||cmd==='cls'){screen.innerHTML='';boot(true);return;}
+  const key=ALIAS[cmd]||cmd;
+  if(CMDS[key]){print(CMDS[key](),raw.trim());}
+  else{print(`<span class="warn">command not found: ${cmd}</span>\n<span class="cmt">// try</span> <span class="key">help</span>`,raw.trim());}
+}
+function boot(short){
+  print(`<span class="cmt">bricker-os 2026.6 — interactive proof shell. ${short?'cleared.':'type <span class="key">help</span>, or tap a command below.'}</span>`);
+  if(!short)run('whoami');
+}
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const i=document.getElementById('cmd');run(i.value);i.value='';});
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{run(c.dataset.c);if(window.innerWidth>680)document.getElementById('cmd').focus();}));
+boot();
 </script>
 </body>
 </html>

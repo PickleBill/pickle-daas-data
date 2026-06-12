@@ -169,6 +169,28 @@
   .arch:hover{color:var(--text);border-color:var(--line2);background:rgba(255,255,255,.05)}
   .foot{text-align:center;color:var(--faint);font-size:12px;font-family:var(--mono);margin-top:24px;letter-spacing:.04em}
 
+  /* collapsible panels */
+  .acc{display:flex;flex-direction:column;gap:12px}
+  .panel{border:1px solid var(--line);border-radius:18px;background:var(--glass);backdrop-filter:blur(20px);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+  .panel:hover{border-color:var(--line2)}
+  .panel.open{box-shadow:0 24px 60px -34px rgba(168,201,142,.35)}
+  .phead{width:100%;display:flex;align-items:center;gap:15px;padding:17px 20px;background:none;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit}
+  .logo-chip{width:48px;height:48px;border-radius:12px;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+  .logo-chip img{width:100%;height:100%;object-fit:contain;padding:7px;background:#fff}
+  .logo-chip .mono{display:none;width:100%;height:100%;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#08090a;background:linear-gradient(120deg,var(--sage),var(--coral))}
+  .pinfo{flex:1;min-width:0}
+  .pn{font-weight:700;font-size:19px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  .pm{display:block;font-family:var(--mono);font-size:11px;color:var(--mute);margin-top:3px;letter-spacing:.02em}
+  .pchev{font-family:var(--mono);font-size:22px;color:var(--mute);transition:transform .3s,color .2s;flex-shrink:0}
+  .panel.open .pchev{transform:rotate(45deg);color:var(--sage)}
+  .pbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.4,0,.2,1)}
+  .panel.open .pbody{grid-template-rows:1fr}
+  .pinner{overflow:hidden}
+  .pinner p{font-size:14px;color:var(--mute);line-height:1.6;padding:2px 20px 0}
+  .panel.open .pinner p{padding-top:6px}
+  .pinner .go{margin:12px 20px 18px}
+  .jcue{text-align:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:34px}
+  @media(max-width:760px){section{padding:48px 0 0}.hero{padding:32px 0 16px}}
   .rv{opacity:0;transform:translateY(22px);transition:.75s cubic-bezier(.16,1,.3,1)}
   .rv.in{opacity:1;transform:none}.no-js .rv{opacity:1;transform:none}
 </style>
@@ -232,24 +254,33 @@
   <div class="rv"><div class="kick"><span class="num">01</span> Proof of work</div>
   <h2>Two operating companies.</h2>
   <p class="sub">Not side projects — real companies with revenue, customers, and scar tissue. Both live right now.</p></div>
-  <div class="g2">
-    <a class="card glass rv" href="https://courtana.com" target="_blank" rel="noopener">
-      <div class="k">Founder / CEO · 2023–now</div>
-      <h3>Courtana <span class="live-tag">Live</span></h3>
-      <div class="m">AI smart-court technology · 11+ sports</div>
-      <p>Computer vision, edge compute, instant highlights, AI coaching, and Stripe billing for racquet-sport venues. $350K raised; concept to 36 courts live or piloting, with a 44-court expansion LOI.</p>
-      <span class="go">courtana.com <span class="ar">→</span></span>
-    </a>
-    <a class="card glass c rv" href="https://dreamship.com" target="_blank" rel="noopener">
-      <div class="k c">Cofounder &amp; CEO 2018–24 · Board Chair 2024–25</div>
-      <h3>Dreamship <span class="live-tag" style="background:var(--coral)">Live</span></h3>
-      <div class="m">API-driven on-demand fulfillment</div>
-      <p>Zero to $35M+ revenue, ~$85M GMV, 2.3M+ units, on $2.2M raised — including 11x growth in one year. Personally sold and ran the Google partnership for 5+ years, then sequenced Stripe, PayPal, Meta &amp; Payoneer off it.</p>
-      <span class="go">dreamship.com <span class="ar">→</span></span>
-    </a>
+  <div class="acc rv">
+    <div class="panel open" data-p>
+      <button class="phead" type="button">
+        <span class="logo-chip"><img src="https://logo.clearbit.com/courtana.com" alt="Courtana logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="mono">C</span></span>
+        <span class="pinfo"><span class="pn">Courtana <span class="live-tag">Live</span></span><span class="pm">AI smart-court SaaS · Founder / CEO · 2023–now</span></span>
+        <span class="pchev">+</span>
+      </button>
+      <div class="pbody"><div class="pinner">
+        <p>Computer vision, edge compute, instant highlights, AI coaching, and Stripe billing for racquet-sport venues. $350K raised; concept to <b>36 courts live or piloting</b>, anchored by a 44-court expansion LOI. Across 11+ sports.</p>
+        <a class="go" href="https://courtana.com" target="_blank" rel="noopener">Visit courtana.com <span class="ar">→</span></a>
+      </div></div>
+    </div>
+    <div class="panel" data-p>
+      <button class="phead" type="button">
+        <span class="logo-chip"><img src="https://logo.clearbit.com/dreamship.com" alt="Dreamship logo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="mono" style="background:linear-gradient(120deg,var(--coral),var(--sage))">D</span></span>
+        <span class="pinfo"><span class="pn">Dreamship <span class="live-tag" style="background:var(--coral)">Live</span></span><span class="pm">API fulfillment · Cofounder &amp; CEO 2018–24 · Board Chair 2024–25</span></span>
+        <span class="pchev">+</span>
+      </button>
+      <div class="pbody"><div class="pinner">
+        <p>Zero to <b>$35M+ revenue</b>, ~$85M GMV, 2.3M+ units, on $2.2M raised — including <b>11x growth in one year</b>. Personally sold and ran the Google partnership for 5+ years, then sequenced Stripe, PayPal, Meta &amp; Payoneer off it.</p>
+        <a class="go" style="color:var(--coral)" href="https://dreamship.com" target="_blank" rel="noopener">Visit dreamship.com <span class="ar">→</span></a>
+      </div></div>
+    </div>
   </div>
 </section>
 
+<div class="wrap"><div class="jcue">↓ but companies are only as good as what powers them</div></div>
 <!-- 02 VIBECO -->
 <section class="wrap">
   <div class="rv"><div class="kick"><span class="num">02</span> The engine</div>
@@ -304,6 +335,7 @@
   </div>
 </section>
 
+<div class="wrap"><div class="jcue">↓ and the engine has to prove it can build hard tech</div></div>
 <!-- 03 PICKLE DAAS -->
 <section class="wrap">
   <div class="rv"><div class="kick"><span class="num">03</span> The tech proof</div>
@@ -331,6 +363,7 @@
   </div>
 </section>
 
+<div class="wrap"><div class="jcue">↓ behind all of it — one person, one climb</div></div>
 <!-- 04 STORY -->
 <section class="wrap">
   <div class="rv"><div class="kick"><span class="num">04</span> The person</div></div>
@@ -352,7 +385,7 @@
 <section class="wrap contact">
   <div class="rv">
     <h2>Let's build something <span class="g">that matters.</span></h2>
-    <p class="sub" style="margin:14px auto 0;text-align:center">Open to founder roles, GTM &amp; partnership leadership, fractional, board, and the right strategic partners.</p>
+    <p class="sub" style="margin:14px auto 0;text-align:center">I bring frontier tech to enterprise — and build it myself. Open to founder, GTM &amp; partnership leadership, fractional, board, and the right partners.</p>
     <div class="ctas">
       <a class="pill cream" href="mailto:bricker3@gmail.com">bricker3@gmail.com →</a>
       <a class="pill ghost" href="tel:+19086018152">908 · 601 · 8152</a>
@@ -387,6 +420,7 @@ const cio=new IntersectionObserver(es=>es.forEach(e=>{
   const iv=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(iv)}el.textContent=pre+c+suf;},26);cio.unobserve(el);
 },{threshold:.6});
 document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+document.querySelectorAll('.phead').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
 </script>
 </body>
 </html>

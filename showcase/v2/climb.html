@@ -147,8 +147,7 @@
 <div class="wrap">
   <div class="vphint">← swipe across the climb · or tap “Full view” ↓</div>
   <div class="vptools">
-    <button class="tbtn" id="fitBtn">⤢ Fit width</button>
-    <button class="tbtn" id="fsBtn">⛶ Full view</button>
+    <button class="tbtn" id="fsBtn">⛶ Expand to full screen</button>
   </div>
   <div class="vp" id="vp">
     <div class="canvas" id="canvas">
@@ -308,13 +307,11 @@ function fit(){
     else{canvas.style.transform='none';canvas.style.marginLeft='0';vp.classList.add('scroll');vp.style.height='66vh';}
   }
 }
-document.getElementById('fitBtn').onclick=()=>{fitWidth=!fitWidth;document.getElementById('fitBtn').textContent=fitWidth?'⤢ Readable':'⤢ Fit width';fit();};
 function enterFs(){vp.classList.add('fs');document.body.style.overflow='hidden';fit();}
 function exitFs(){if(vp.classList.contains('fs')){vp.classList.remove('fs');document.body.style.overflow='';fit();}}
 document.getElementById('fsBtn').onclick=enterFs;
 document.getElementById('fsClose').onclick=exitFs;
 window.addEventListener('resize',fit);
-if(fitWidth)document.getElementById('fitBtn').textContent='⤢ Readable';
 fit();
 </script>
 </body>
