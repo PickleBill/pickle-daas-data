@@ -1,51 +1,53 @@
-# Bill Bricker — Living Portfolio (v2) · Plan & Architecture
+# Bill Bricker — Living Portfolio v3 · Architecture & Roadmap
 
-The magical roll-up: one home that lets each visitor **take their own journey** — skim the story,
-or open the workshop and dig into the proof. Editorial/literary/warm world (Spectral serif, paper,
-ridge-lines), not the cinematic-dark anti-pattern.
+## What changed in v3 (the rethink)
+- **One coalesced home** (`index.html`) replacing the Climb-as-front-door: hero + stat strip →
+  operating companies (Courtana.com, Dreamship.com) → **VibeCo front and center as "the engine"**
+  with its three downstream lanes (GTM collateral / enterprise builds / the wider lab) →
+  **Pickle DaaS as the tech proof, explicitly tied back to Courtana's corpus** → story band → contact.
+- **The Climb preserved** at `climb.html` as the narrative deep-dive (nav: "The Story").
+- **The OS engine room** stays at `work.html`, now with LayupLab, FreakFoSho, and the ecosystem link.
+- **Fully-baked résumé** at `resume.html`: complete V7 spine (all 7 Dreamship bullets, GearLaunch,
+  IntroStellar, WibiData, IBM, RivalHealth/NWM, education, tools) + 3 new "builder" bullets under
+  Courtana linking to Pickle DaaS, VibeCo, and Venue Connect. Print-to-PDF ready.
 
-## The journey architecture
-
+## The user journey
 ```
-        THE CLIMB  (index.html)              ← front door · the story
-        a 20-year ascent you click through
-        ┌───────────────┬───────────────┐
-        ▼               ▼               ▼
-   THE WORK         RÉSUMÉ          DESIGN LAB
-   (work.html)      (resume.html)   (design-lab/)
-   proof engine     copy + links    the 5 directions
-   room (bricker.os)                as reference
-        │
-        ├─ Operating companies   → Courtana.com · Dreamship.com
-        ├─ Sales/GTM & AI collateral → Courtana Venue Connect
-        ├─ Enterprise builds     → HeadsUpTime · NaughtyData · Litigator
-        ├─ VibeCo & ecosystem    → vibeco.lovable.app (+ /simulate) · 40 apps
-        └─ Pickle DaaS           → 6 v4 dashboards + intel card
+index.html (90-sec read, every claim clickable)
+ ├── climb.html      — the 20-year story, pin by pin (incl. The Long Walk)
+ ├── work.html       — the engine room: all proof, by theme
+ ├── resume.html     — full V7 résumé + live links + Save-as-PDF
+ └── design-lab/     — the five design directions (reference)
 ```
 
-Three reader speeds, one site:
-- **90 seconds** (recruiter/investor): The Climb's rising ridge-line + the live pins.
-- **The wanderer**: clicks pins, reads the human + professional stories (incl. The Long Walk).
-- **The deep-diver** (an interviewer who's hooked): opens The Work, explores real proof by theme.
+## Production-readiness roadmap (prioritized)
 
-## Done (v2.0)
-- [x] Pivoted to the editorial/warm world the samples point to.
-- [x] The Climb wired with real metrics + live links (Courtana, Dreamship, Pickle, VibeCo) + a VibeCo flag.
-- [x] The Work (bricker.os) rebuilt as the proof engine room — every real asset linked, by theme.
-- [x] Résumé updated: contact (bricker3@gmail.com · 908-601-8152), asset links, nav.
-- [x] Design Lab: all 5 sample directions saved + a navigable, annotated index.
-- [x] content.json source of truth (this folder).
+### Blocked on Bill (do these first)
+1. **Custom domain** — buy `billbricker.com`, point DNS at GitHub Pages; I add the CNAME.
+   The single biggest credibility upgrade; the github.io path reads as borrowed real estate.
+2. **Dedicated repo** — create empty public repo `bill-bricker` under PickleBill (my access can't
+   create repos); I push this exact site there → cleaner URL even without a domain.
+3. **Verify external links render logged-out** — LayupLab links to `/app/dashboard` (may require
+   auth on Lovable), Venue Connect, NaughtyData, Litigator `/dashboard`. Open each in an incognito
+   window; tell me which gate and I'll swap in screenshots or public routes.
+4. **Remaining build URLs** (lower priority): FactFudge, The Load, AI cooking platform, the
+   12-year-old's app — or confirm the VibeCo #model wall covers them.
 
-## Next (in priority order)
-1. **Real URLs** for the missing builds (see content.json open_questions): ecommerce build, the 12-yr-old's app, FactFudge, The Load, AI cooking, the VibeCo build-ecosystem gallery.
-2. **Clean domain** — billbricker.com (or a dedicated repo) to replace the github.io path.
-3. **VibeCo guided journey** — a pre-populated walkthrough of the 11-agent simulator (Bill's stated intention).
-4. **Mobile polish** on The Climb (the chart is desktop-first; verify pins/labels on phones).
-5. **The Work → richer case studies** for the two interview-critical assets (Venue Connect, the Google deal).
-6. **LinkedIn + outreach**, generated from this same source.
+### On me (next build session)
+5. **VibeCo guided journey** — pre-populated walkthrough of the simulator so a visitor gets the
+   11-agent flow in 30 seconds without typing anything.
+6. **Two interview-grade case studies** in work.html — the Google deal (full STAR) and Venue
+   Connect (the connected-AI selling thesis). These are the two sharpest interview weapons.
+7. **Mobile pass on climb.html** — chart is desktop-first; pins need a phone layout.
+8. **OG/social cards** — preview image + meta so the link unfurls well in DMs/LinkedIn.
+9. **LinkedIn package** — headline, About, experience blurbs generated from content.json.
+10. **PDF résumé artifact** — exported one-pager pinned in the repo for ATS uploads.
 
-## Editing notes
-- Regenerate by editing `content.json`, then re-running the transforms (or hand-edit the data blocks
-  in index.html / work.html — the `NODES` object and the `.visuals` rail respectively).
-- Keep `modeled_DO_NOT_PUBLISH` figures out of every public artifact.
-- The five design-lab files are frozen reference; the live site is index/work/resume.
+### Connectors worth enabling (in Claude settings)
+- **Google Drive** — so I can pull decks/screenshots (e.g., Dreamship metrics, Courtana photos)
+  directly into case studies.
+- **Gmail** (optional, later) — for the outreach-engine phase of the Frontier 2026 playbook.
+
+## Editing
+All facts live in `source/content.json`. The modeled Pickle revenue projections stay excluded
+from public artifacts.

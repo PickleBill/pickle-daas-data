@@ -12,18 +12,18 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;padding:40px 0 80px}
   a{color:var(--accent);text-decoration:none}
-  .page{max-width:820px;margin:0 auto;padding:0 28px}
+  .page{max-width:840px;margin:0 auto;padding:0 28px}
   h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
   .top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px}
   h1{font-size:34px;font-weight:700}
   .role{color:var(--accent2);font-weight:600;font-size:14.5px;margin-top:4px;font-family:'Space Grotesk'}
   .contact{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.8}
   .contact a{color:var(--muted);border-bottom:1px solid var(--border)}
-  .actions{display:flex;gap:10px;flex-shrink:0}
-  .btn{font-size:13px;font-weight:600;padding:9px 15px;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer;transition:.15s}
+  .actions{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
+  .btn{font-size:13px;font-weight:600;padding:9px 15px;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer;transition:.15s;text-decoration:none}
   .btn:hover{border-color:var(--accent)}
   .btn.primary{background:var(--grad);color:#06121f;border:none}
-  .summary{font-size:14px;color:var(--muted);margin:20px 0 4px;max-width:72ch}
+  .summary{font-size:14px;color:var(--muted);margin:20px 0 4px;max-width:74ch}
   h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:26px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
   .hl{display:flex;gap:10px;font-size:13.5px;margin-bottom:7px}
   .hl b{color:var(--text)} .hl span{color:var(--muted)}
@@ -34,8 +34,8 @@
   .bd .n{font-family:'Space Grotesk';font-weight:600;font-size:15px}
   .bd .m{font-size:11.5px;color:var(--accent2);margin:3px 0 5px;font-family:'Space Grotesk'}
   .bd .d{font-size:12.5px;color:var(--muted)}
-  .bd a.src{font-size:11.5px;color:var(--accent);display:inline-block;margin-top:7px}
-  .job{margin-bottom:16px}
+  .bd a.src{font-size:11.5px;color:var(--accent);display:inline-block;margin-top:7px;margin-right:12px}
+  .job{margin-bottom:18px}
   .jhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
   .jhead .l{font-size:15px;font-weight:600;font-family:'Space Grotesk'} .jhead .l .org{color:var(--accent)}
   .jhead .yr{font-size:12px;color:var(--faint);font-family:'Space Grotesk'}
@@ -43,7 +43,7 @@
   .b{display:flex;gap:9px;font-size:13px;color:var(--muted);margin-bottom:5px}
   .b::before{content:"▪";color:var(--accent);flex-shrink:0}
   .b b{color:var(--text)}
-  .earlier{font-size:12.5px;color:var(--faint)}
+  .b.new::before{content:"▸";color:var(--accent2)}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   @media(max-width:640px){.two{grid-template-columns:1fr}}
   .meta{font-size:12.5px;color:var(--muted)} .meta b{color:var(--text)}
@@ -63,61 +63,88 @@
   <div class="top">
     <div>
       <h1>Bill Bricker</h1>
-      <div class="role">GTM Leader · Founder-CEO · AI-Native Operator</div>
+      <div class="role">GTM Leader &amp; Founder-CEO · Enterprise &amp; Partnership Sales · AI-Native Operator</div>
       <div class="contact">
         Raleigh, NC &nbsp;·&nbsp; <a href="mailto:bricker3@gmail.com">bricker3@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+19086018152">908·601·8152</a> &nbsp;·&nbsp;
         <a href="https://linkedin.com/in/williambricker" target="_blank" rel="noopener">linkedin.com/in/williambricker</a><br>
-        Portfolio: <a href="index.html">The Climb — story</a> &nbsp;·&nbsp; <a href="work.html">The Work — proof</a>
+        Portfolio: <a href="index.html">home</a> &nbsp;·&nbsp; <a href="climb.html">the story</a> &nbsp;·&nbsp; <a href="work.html">the work — clickable proof</a>
       </div>
     </div>
     <div class="actions">
       <button class="btn primary" onclick="window.print()">⤓ Save as PDF</button>
-      <a class="btn" href="index.html">← The Climb</a>
+      <a class="btn" href="index.html">← Home</a>
       <a class="btn" href="work.html">The Work</a>
     </div>
   </div>
 
-  <div class="summary">Enterprise seller turned founder-CEO. Closed six- and seven-figure analytics deals at IBM (&gt;100% quota; Zillow, Avalara, part of an 8-figure McKesson deal), then cofounded and led Dreamship as CEO from zero to $35M+ cumulative revenue — including 11x growth in a single year — anchored by a Google partnership I sold and ran for 5+ years. Today I ship production AI daily (Claude, Codex, Lovable, Gemini): a video-analytics pipeline running at $0.0054/clip and an 11-agent product simulator among 40+ builds. I want to bring frontier technology to enterprise buyers from inside the lab.</div>
+  <div class="summary">Enterprise seller turned founder-CEO. Closed six- and seven-figure analytics deals at IBM (&gt;100% quota; Zillow, Avalara, part of an 8-figure McKesson deal), then cofounded and led Dreamship as CEO from zero to $35M+ cumulative revenue — including 11x growth in a single year — anchored by a Google partnership I sold and ran for 5+ years. Today I ship production AI daily (Claude, Codex, Lovable, Gemini): a video-analytics pipeline running at $0.0054/clip, an 11-agent product simulator, and 40+ shipped apps spanning enterprise tools to consumer products. I bring frontier technology to enterprise buyers — and I can build it myself.</div>
 
   <h2>Selected Highlights</h2>
   <div class="hl"><span><b>Sold Google as a &lt;1-year-old startup</b> — led the deal end-to-end through 5–6 internal teams (trust &amp; safety, business integrity, commercial) to director+ sign-off, unlocking an 8-figure ad-spend channel that ran 5+ years.</span></div>
   <div class="hl"><span><b>11x topline growth in one year as CEO</b> — $1.6M → $17M (2020–21); $35M+ cumulative revenue, ~$85M GMV, 2.3M+ units, on just $2.2M raised; EBITDA-profitable 4 of 8 years.</span></div>
   <div class="hl"><span><b>Quota-carrying enterprise pedigree</b> — &gt;100% attainment at IBM (2013) selling Big Data/analytics into mid-market and Fortune 500 accounts.</span></div>
-  <div class="hl"><span><b>AI-native operator</b> — founded an AI computer-vision sports-tech company; ship daily with Claude, Codex, and Lovable; 40+ one-shot AI apps across 31 repos.</span></div>
+  <div class="hl"><span><b>AI-native operator</b> — founded an AI computer-vision sports-tech company; ship daily with Claude, Codex, and Lovable; 40+ one-shot AI apps across 31 repos, including enterprise builds for a 25-year industrial-AI company, Europe's largest marine-analytics firm, and legal mass-arbitration teams.</span></div>
 
-  <h2>Selected AI Builds &nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint);font-size:11px">— links live</span></h2>
+  <h2>Selected AI Builds &nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint);font-size:11px">— every link live</span></h2>
   <div class="builds">
-    <div class="bd"><div class="n">Pickle DaaS</div><div class="m">$0.0054 / clip · 4,097-clip corpus</div><div class="d">Autonomous AI pipeline → player-DNA profiles, brand-exposure registries, coaching feedback at ~7× lower cost than GPT-4o.</div><a class="src" href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html" target="_blank" rel="noopener">▶ live investor dashboard</a></div>
-    <div class="bd"><div class="n">VibeCo</div><div class="m">11 LLM agents · multi-model</div><div class="d">Idea → brief → build prompts → art. 11 Gemini/Claude agents with tool-calling, parallel critique &amp; synthesis flywheel.</div><a class="src" href="https://github.com/PickleBill/vibeco" target="_blank" rel="noopener">▶ github.com/PickleBill/vibeco</a></div>
-    <div class="bd"><div class="n">Courtana</div><div class="m">36 courts live/piloting · 11+ sports</div><div class="d">Production smart-court SaaS: live HLS video, Gemini badge-scoring, hardware orchestration, Stripe billing.</div><a class="src" href="https://courtana.com" target="_blank" rel="noopener">▶ courtana.com</a></div>
-    <div class="bd"><div class="n">NiceAce</div><div class="m">concept → playable in 1 build</div><div class="d">Consumer hole-in-one jackpot prototype, spun out of VibeCo — idea to demo-able product in a single build.</div><a class="src" href="https://picklebill.github.io/pickle-daas-data/showcase/niceace/" target="_blank" rel="noopener">▶ play the prototype</a></div>
+    <div class="bd"><div class="n">VibeCo</div><div class="m">11 LLM agents · the engine behind 40+ apps</div><div class="d">Multi-agent simulator: idea → business brief → build prompts → concept art. Tool-calling, multi-model routing, parallel critique &amp; synthesis flywheel.</div><a class="src" href="https://vibeco.lovable.app/simulate" target="_blank" rel="noopener">▶ run the simulator</a><a class="src" href="https://vibeco.lovable.app/#model" target="_blank" rel="noopener">build ecosystem</a></div>
+    <div class="bd"><div class="n">Pickle DaaS</div><div class="m">$0.0054 / clip · 4,097-clip corpus</div><div class="d">AI video-analytics pipeline (~7x cheaper than GPT-4o): player-DNA profiles, brand intelligence, coaching feedback, autonomous ingest agents + ground-truth validation.</div><a class="src" href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html" target="_blank" rel="noopener">▶ investor walkthrough</a><a class="src" href="https://picklebill.github.io/pickle-daas-data/dashboards/showcase-portal-v4.html" target="_blank" rel="noopener">all dashboards</a></div>
+    <div class="bd"><div class="n">Courtana Venue Connect</div><div class="m">GTM collateral that closed a venue partner</div><div class="d">One dynamic asset spanning presentation, proposal, analytics, and client success — a connected-AI way of selling and onboarding.</div><a class="src" href="https://courtana-venue-connect.lovable.app/" target="_blank" rel="noopener">▶ open the asset</a></div>
+    <div class="bd"><div class="n">Enterprise builds</div><div class="m">3 client-grade builds, days not quarters</div><div class="d">HeadsUpTime (industrial AI/ML camera co. POC), NaughtyData (marine-analytics CTO rebrand), Litigator (mass-arbitration intel for law firms).</div><a class="src" href="https://headsuptime.lovable.app" target="_blank" rel="noopener">▶ HeadsUpTime</a><a class="src" href="https://naughtydata.lovable.app/" target="_blank" rel="noopener">NaughtyData</a><a class="src" href="https://litigator.lovable.app/dashboard" target="_blank" rel="noopener">Litigator</a></div>
   </div>
 
   <h2>Experience</h2>
   <div class="job">
     <div class="jhead"><div class="l"><span class="org">Dreamship</span> — Cofounder &amp; CEO (2018–24); Board Chair (2024–25)</div><div class="yr">2018 – 2025</div></div>
-    <div class="jsub">API-driven on-demand fulfillment platform for ecommerce, creator, gifting, rewards, and enterprise print-on-demand.</div>
-    <div class="b"><span>Cofounded and led as CEO from zero to <b>$35M+ cumulative revenue</b>, ~$85M GMV, and 2.3M+ units — including <b>11x YoY growth</b> ($1.6M → $17M, 2020–21) — on $2.2M raised from 500 Startups, Earl Grey, and operator funds.</span></div>
-    <div class="b"><span>Personally led the <b>Google partnership</b> end-to-end as a &lt;1-year-old startup: built a first-of-its-kind AI trademark/IP-compliance checker, navigated 5–6 internal Google teams to director+ sign-off — unlocking an 8-figure ad-spend channel that ran 5+ years.</span></div>
-    <div class="b"><span>Positioned the company as the connector between big-tech platforms and underserved international merchants; sequenced partnerships with <b>Stripe, PayPal, Meta, and Payoneer</b> off the Google credibility.</span></div>
-    <div class="b"><span>Built a US supply network of 20+ partners and 400+ products with 1.4-day avg production; cut return rate from 3.5% to under 1%. Restructured a 24-person team to &lt;10 (automating two cofounder roles); ~50% YoY growth post-transition.</span></div>
+    <div class="jsub">API-driven on-demand fulfillment platform for ecommerce, creator, gifting, rewards, and enterprise print-on-demand. <a href="https://dreamship.com" target="_blank" rel="noopener">dreamship.com</a></div>
+    <div class="b"><span>Cofounded and led as CEO from zero to <b>$35M+ cumulative revenue</b>, ~$85M GMV, and 2.3M+ units sold — including <b>11x YoY growth</b> ($1.6M → $17M, 2020–21) — on $2.2M raised from 500 Startups, Earl Grey, and operator funds (several investors were also $1M+ clients).</span></div>
+    <div class="b"><span>Personally led the <b>Google partnership</b> end-to-end as a &lt;1-year-old startup: built a first-of-its-kind AI trademark/IP-compliance checker, navigated 5–6 internal Google teams (trust &amp; safety, business integrity, commercial) to director+ sign-off — unlocking an 8-figure ad-spend channel that ran as a win-win BD arrangement for 5+ years.</span></div>
+    <div class="b"><span>Positioned the company as the connector between big-tech platforms and underserved international merchants ($10–50M annual-revenue sellers); sequenced partnerships with <b>Stripe, PayPal, Meta, and Payoneer</b> off the Google credibility, alongside US brand clients including Goody and Snappy.</span></div>
+    <div class="b"><span>Hosted client-facing events at Google's Singapore HQ that helped rearchitect platform rules for high-volume international merchants.</span></div>
+    <div class="b"><span>Built a US-based supply network of 20+ print-on-demand partners and 400+ products with 1.4-day average production; cut aggregate return rate from 3.5% to under 1%.</span></div>
+    <div class="b"><span>Recruited and led a globally distributed team of 24; later restructured to &lt;10 — automating two cofounder roles — to drive profitability; business now growing ~50% YoY post-transition.</span></div>
+    <div class="b"><span>Authored "How We Win," the company operating framework (first principles, partner quality, ownership-based leadership, the DREAM rule — Data Rules Everything Around Me); navigated 6 M&amp;A processes generating 3 offers.</span></div>
   </div>
+
   <div class="job">
     <div class="jhead"><div class="l"><span class="org">Courtana / PickleBills</span> — Founder / CEO</div><div class="yr">2023 – Present</div></div>
-    <div class="jsub">AI smart-court technology (computer vision, edge compute, instant highlights, AI coaching) for racquet-sport venues.</div>
-    <div class="b"><span>Raised <b>$350K</b>; took the platform from concept to <b>36 courts live or piloting</b>, anchored by a flagship customer with a <b>44-court expansion LOI</b>. Ran the full zero-to-one loop solo — product, founder-led venue sales, pricing, sponsor data products.</span></div>
-    <div class="b"><span>Built <b>Pickle DaaS</b> and a 40+ app AI-native build system (see Selected AI Builds) that compressed iteration from weeks to days.</span></div>
+    <div class="jsub">AI smart-court technology (computer vision, edge compute, instant highlights, AI coaching) for racquet-sport venues. <a href="https://courtana.com" target="_blank" rel="noopener">courtana.com</a></div>
+    <div class="b"><span>Raised <b>$350K</b> from sports-tech operators and industry experts; took the platform from concept to <b>36 courts live or piloting</b>, anchored by a flagship customer with a 44-court expansion LOI (~$120K ARR motion).</span></div>
+    <div class="b"><span>Ran the full zero-to-one loop solo — hardware + software product design, founder-led venue sales, pricing, and sponsor/brand data products — using an AI-native build system (Claude, Codex, Lovable) that compressed iteration from weeks to days.</span></div>
+    <div class="b new"><span><b>Built Pickle DaaS</b>, the data line of business on Courtana's video corpus: 4,097+ clips analyzed at $0.0054/clip into player profiles, brand-exposure registries, and coaching intelligence — <a href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html" target="_blank" rel="noopener">investor walkthrough ↗</a></span></div>
+    <div class="b new"><span><b>Built VibeCo</b>, an 11-agent AI product simulator, and used it to ship 40+ apps across 31 repos — enterprise builds (industrial AI, marine analytics, legal), next-gen sales collateral that closed a venue partner, and consumer products — <a href="https://vibeco.lovable.app/" target="_blank" rel="noopener">vibeco.lovable.app ↗</a></span></div>
+    <div class="b new"><span><b>Pioneered connected-AI selling</b>: hyper-personalized, dynamic GTM assets (presentation + proposal + analytics + onboarding in one product) — <a href="https://courtana-venue-connect.lovable.app/" target="_blank" rel="noopener">Venue Connect ↗</a></span></div>
   </div>
+
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">GearLaunch</span> — VP Sales &amp; Marketing</div><div class="yr">2017 – 2018</div></div>
+    <div class="b"><span>Led sales and marketing across seller acquisition, platform growth, and partner positioning for a 360° ecommerce / print-on-demand platform.</span></div>
+  </div>
+
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">IntroStellar</span> — CEO / Cofounder</div><div class="yr">2015 – 2017</div></div>
+    <div class="b"><span>Built three product versions of a network-proximity referral product for diversity recruiting on $150K in lean funding; advised Pledge 1% as it grew from ~1,200 to 1,800+ member companies.</span></div>
+  </div>
+
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">WibiData</span> — Director of Sales</div><div class="yr">2014 – 2015</div></div>
+    <div class="b"><span>Designed enterprise sales strategy and structured Big Data pilots with Macy's, Nordstrom, and other Fortune 500 retailers at an NEA/Canaan/Eric Schmidt-backed startup; converted field learning into product-roadmap feedback.</span></div>
+  </div>
+
   <div class="job">
     <div class="jhead"><div class="l"><span class="org">IBM / Netezza</span> — Watson Foundations AE / Netezza Brand Specialist</div><div class="yr">2012 – 2014</div></div>
     <div class="b"><span>Closed high-six-figure analytics deals with Zillow, Avalara, and other mid-market accounts; contributed to an 8-figure McKesson deal; attained <b>&gt;100% of quota (2013)</b>.</span></div>
   </div>
-  <div class="earlier"><b style="color:var(--muted)">Earlier:</b> GearLaunch (VP Sales &amp; Marketing) · WibiData (Director of Sales — F500 Big Data pilots: Macy's, Nordstrom) · IntroStellar (CEO/Cofounder) · Pledge 1% (advisor) · Northwestern Mutual (top-10 nationally, $6M+ TCV across 150+ accounts).</div>
+
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">RivalHealth + Northwestern Mutual</span> — BD; Financial Advisor / College Unit Director</div><div class="yr">2006 – 2012</div></div>
+    <div class="b"><span>Supported a $500K Blue Cross / Blue Shield of NC partnership; earlier ranked top 10 nationally at Northwestern Mutual with $6M+ total contract value across 150+ client accounts.</span></div>
+  </div>
 
   <h2>Education &amp; Tools</h2>
   <div class="two">
-    <div class="meta"><b>MBA, Entrepreneurship</b> — UNC Kenan-Flagler<br><span style="color:var(--faint)">GMAT 730 · Carolina Entrepreneurial Fellow</span><br><br><b>BS, Finance</b> — The College of New Jersey<br><span style="color:var(--faint)">Captain, Men's Rugby</span></div>
-    <div class="meta" style="color:var(--faint)">Enterprise &amp; partnership GTM · founder-led sales · AI commercialization · pilot design · product narrative · multi-agent systems &amp; LLM orchestration · data products · video intelligence · ecommerce infrastructure · Claude · Codex · Lovable · Gemini · GitHub</div>
+    <div class="meta"><b>MBA, Entrepreneurship</b> — UNC Kenan-Flagler Business School<br><span style="color:var(--faint)">GMAT 730 · Carolina Entrepreneurial Fellow · VP, Entrepreneurship &amp; VC Club</span><br><br><b>BS, Finance</b> — The College of New Jersey<br><span style="color:var(--faint)">Captain, Men's Rugby Team</span></div>
+    <div class="meta" style="color:var(--faint)">Enterprise &amp; partnership GTM · founder-led sales · AI commercialization · pilot design · product narrative · multi-agent systems &amp; LLM orchestration · data products · video intelligence · ecommerce infrastructure · Claude · Codex · ChatGPT · Lovable · Gemini · GitHub</div>
   </div>
 </div>
 </body>
