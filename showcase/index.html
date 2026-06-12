@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Bricker — GTM Leader · Founder-CEO · AI-Native Operator</title>
+<meta name="description" content="Enterprise seller turned founder-CEO. Sold Google as a sub-one-year-old startup, led Dreamship to $35M+ (11x in one year), now ships production AI daily.">
+<meta property="og:title" content="Bill Bricker — GTM Leader · Founder-CEO · AI-Native Operator">
+<meta property="og:description" content="I sell frontier technology to enterprise — and I build it myself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0B0D;--bg2:#0E1013;--panel:#121519;--panel2:#161A20;
+    --border:#22272F;--border2:#2C333D;--text:#EDEFF2;--muted:#9BA3AE;--faint:#646C77;
+    --accent:#4D8DFF;--accent2:#43E5C7;--grad:linear-gradient(120deg,#4D8DFF 0%,#43E5C7 100%);--maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:rgba(77,141,255,.3)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em;line-height:1.08}
+  .ambient{position:fixed;inset:0;z-index:-1;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22}
+  .orb.a{width:520px;height:520px;background:#4D8DFF;top:-120px;left:-80px}
+  .orb.b{width:460px;height:460px;background:#43E5C7;top:340px;right:-120px;opacity:.14}
+  .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%)}
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,11,13,.6);border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{font-family:'Space Grotesk';font-weight:700;font-size:16px}
+  .brand .dot{color:var(--accent)}
+  .navlinks{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+  .navlinks a:hover{color:var(--text)}
+  .nav-cta{font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:8px;background:var(--grad);color:#06121f !important}
+  @media(max-width:680px){.navlinks{display:none}}
+  header{padding:96px 0 60px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);border:1px solid var(--border2);padding:7px 14px;border-radius:100px;background:var(--panel)}
+  .eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 0 rgba(67,229,199,.6);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(67,229,199,.5)}70%{box-shadow:0 0 0 10px rgba(67,229,199,0)}100%{box-shadow:0 0 0 0 rgba(67,229,199,0)}}
+  h1{font-size:clamp(38px,6.5vw,68px);font-weight:700;margin:26px 0 0;max-width:16ch}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lede{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:60ch;margin-top:24px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:13px;margin-top:34px}
+  .btn{font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:10px;border:1px solid var(--border2);background:var(--panel);transition:.18s;display:inline-flex;align-items:center;gap:9px}
+  .btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .btn.primary{background:var(--grad);color:#06121f;border:none}
+  .btn.primary:hover{box-shadow:0 10px 30px -8px rgba(77,141,255,.5)}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:70px;padding:30px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .stat .num{font-family:'Space Grotesk';font-size:clamp(28px,3.6vw,40px);font-weight:700}
+  .stat .num .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat .lbl{font-size:12.5px;color:var(--faint);margin-top:6px;line-height:1.35}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:24px}.stat:last-child{grid-column:1/-1}}
+  section{padding:78px 0}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px}
+  .sec-num{font-family:'Space Grotesk';font-size:13px;color:var(--accent);font-weight:600}
+  .sec-title{font-size:clamp(24px,3.4vw,34px);font-weight:600}
+  .sec-sub{color:var(--muted);font-size:15px;margin-bottom:36px;max-width:62ch}
+  .builds{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:720px){.builds{grid-template-columns:1fr}}
+  .card{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:26px;transition:.22s;overflow:hidden}
+  .card::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.22s}
+  .card:hover{transform:translateY(-4px);border-color:transparent;background:var(--panel2)}
+  .card:hover::before{opacity:1}
+  .card .ctag{font-size:12px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .card h3{font-size:23px;font-weight:600;margin:10px 0 0}
+  .chip{display:inline-block;font-size:12.5px;color:var(--text);background:var(--bg2);border:1px solid var(--border2);padding:5px 11px;border-radius:8px;margin:14px 0 12px;font-family:'Space Grotesk';font-weight:500}
+  .card p{font-size:14.5px;color:var(--muted)}
+  .links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;align-items:center}
+  .lnk{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--accent)}
+  .lnk.live{color:var(--accent2)}
+  .lnk .badge{font-size:10px;color:#06121f;background:var(--accent2);padding:2px 7px;border-radius:6px;font-weight:700;letter-spacing:.04em}
+  .lnk.ghost{color:var(--faint);font-weight:500}
+  .card:hover .arrow{transform:translateX(4px)}
+  .arrow{transition:.18s}
+  .tl{position:relative;margin-left:8px;padding-left:30px;border-left:1px solid var(--border2)}
+  .tl-item{position:relative;padding-bottom:38px}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-dot{position:absolute;left:-37px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+  .tl-item:first-child .tl-dot{background:var(--grad);border:none;box-shadow:0 0 0 4px rgba(77,141,255,.15)}
+  .tl-year{font-family:'Space Grotesk';font-size:13px;color:var(--faint);font-weight:600}
+  .tl-role{font-size:18px;font-weight:600;margin:3px 0 2px}
+  .tl-role .org{color:var(--accent)}
+  .tl-win{font-size:14.5px;color:var(--muted);margin-top:8px;max-width:72ch}
+  .tl-metric{display:inline-block;font-family:'Space Grotesk';font-size:12.5px;font-weight:500;color:var(--text);background:var(--panel);border:1px solid var(--border2);padding:5px 11px;border-radius:8px;margin-top:12px}
+  .earlier{margin-top:30px;font-size:14px;color:var(--faint);padding-left:30px}
+  .earlier b{color:var(--muted)}
+  .os{background:linear-gradient(180deg,var(--panel) 0%,var(--bg2) 100%);border:1px solid var(--border);border-radius:18px;padding:40px}
+  .os h3{font-size:26px;font-weight:600}
+  .os p{color:var(--muted);font-size:15px;margin-top:10px;max-width:60ch}
+  .repos{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+  .repo{font-family:'Space Grotesk';font-size:12.5px;color:var(--muted);background:var(--bg);border:1px solid var(--border2);padding:6px 12px;border-radius:8px;transition:.16s}
+  .repo:hover{color:var(--text);border-color:var(--accent);transform:translateY(-2px)}
+  .repo .h{color:var(--faint)}
+  footer{padding:90px 0 60px;text-align:center;border-top:1px solid var(--border);margin-top:40px}
+  footer h2{font-size:clamp(26px,4vw,40px);font-weight:700}
+  footer h2 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  footer p{color:var(--muted);margin:14px auto 0;max-width:48ch}
+  .foot-meta{margin-top:46px;font-size:12.5px;color:var(--faint)}
+  .built{margin-top:10px;font-size:12px;color:var(--faint);opacity:.8}
+  .rv{opacity:0;transform:translateY(24px);transition:.7s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  .no-js .rv{opacity:1;transform:none}
+</style>
+</head>
+<body class="no-js">
+<div class="ambient"><div class="grid-bg"></div><div class="orb a"></div><div class="orb b"></div></div>
+
+<nav><div class="wrap">
+  <div class="brand">Bill Bricker<span class="dot">.</span></div>
+  <div class="navlinks">
+    <a href="#builds">Builds</a><a href="#record">Track record</a><a href="#os">Operating system</a>
+    <a href="resume.html">Résumé</a><a href="#contact">Contact</a>
+  </div>
+  <a class="nav-cta" href="#contact">Get in touch</a>
+</div></nav>
+
+<header><div class="wrap">
+  <span class="eyebrow rv"><span class="pulse"></span>GTM Leader · Founder-CEO · AI-Native Operator</span>
+  <h1 class="rv">I sell frontier technology to enterprise — <span class="g">and I build it myself.</span></h1>
+  <p class="lede rv">Enterprise seller turned founder-CEO. I closed seven-figure analytics deals at IBM, sold Google as a sub-one-year-old startup, and led Dreamship from zero to $35M+ revenue — 11x in a single year. Now I ship production AI daily. I want to bring frontier technology to enterprise buyers from inside the lab.</p>
+  <div class="cta-row rv">
+    <a class="btn primary" href="#contact">Let's talk &nbsp;→</a>
+    <a class="btn" href="resume.html">View résumé</a>
+    <a class="btn" href="https://linkedin.com/in/williambricker" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div class="stats">
+    <div class="stat rv"><div class="num"><span class="g" data-count="11" data-suffix="x">11x</span></div><div class="lbl">revenue growth in one year (as CEO)</div></div>
+    <div class="stat rv"><div class="num"><span class="g" data-prefix="$" data-count="35" data-suffix="M+">$35M+</span></div><div class="lbl">cumulative revenue led</div></div>
+    <div class="stat rv"><div class="num"><span class="g">8-fig</span></div><div class="lbl">Google ad-spend channel sold</div></div>
+    <div class="stat rv"><div class="num"><span class="g" data-count="40" data-suffix="+">40+</span></div><div class="lbl">AI apps shipped solo</div></div>
+    <div class="stat rv"><div class="num"><span class="g" data-count="100" data-suffix="%+">100%+</span></div><div class="lbl">IBM enterprise quota</div></div>
+  </div>
+</div></header>
+
+<section id="builds"><div class="wrap">
+  <div class="sec-head rv"><span class="sec-num">01</span><span class="sec-title">Selected AI builds</span></div>
+  <p class="sec-sub rv">Production systems and prototypes built solo with AI-native tooling — Claude, Codex, Lovable, Gemini. Links live.</p>
+  <div class="builds">
+
+    <a class="card rv" href="https://picklebill.github.io/pickle-daas-data/pickle-daas-investor-demo.html" target="_blank" rel="noopener">
+      <div class="ctag">Autonomous AI data pipeline</div>
+      <h3>Pickle DaaS</h3>
+      <div class="chip">$0.0054 / clip · 4,097-clip corpus</div>
+      <p>Turns match video into player-DNA profiles, brand-exposure registries, and coaching feedback at ~7× lower cost than GPT-4o — run by autonomous ingest agents with spend caps and a prediction-vs-ground-truth validation loop.</p>
+      <div class="links">
+        <span class="lnk live">Investor dashboard <span class="badge">LIVE</span><span class="arrow">→</span></span>
+        <a class="lnk ghost" href="https://picklebill.github.io/pickle-daas-data/picklebill-intel-card.html" target="_blank" rel="noopener">player intel card</a>
+        <a class="lnk ghost" href="https://github.com/PickleBill/pickle-daas-data" target="_blank" rel="noopener">code</a>
+      </div>
+    </a>
+
+    <a class="card rv" href="https://github.com/PickleBill/vibeco" target="_blank" rel="noopener">
+      <div class="ctag">Multi-agent product simulator</div>
+      <h3>VibeCo</h3>
+      <div class="chip">11 LLM agents · multi-model</div>
+      <p>Idea → business brief → build prompts → concept art. 11 specialized Gemini/Claude agents with tool-calling, a 7-agent parallel critique (“Thunderdome”), and a synthesis flywheel.</p>
+      <div class="links">
+        <span class="lnk">View on GitHub <span class="arrow">→</span></span>
+        <a class="lnk ghost" href="niceace/" target="_blank" rel="noopener">playable spin-out → NiceAce</a>
+      </div>
+    </a>
+
+    <a class="card rv" href="https://courtana.com" target="_blank" rel="noopener">
+      <div class="ctag">Production smart-court SaaS</div>
+      <h3>Courtana</h3>
+      <div class="chip">36 courts live/piloting · 11+ sports</div>
+      <p>Django + React platform: live HLS video, Gemini badge-scoring across 11+ sports, court-side hardware orchestration, and Stripe billing. The company behind the build practice.</p>
+      <div class="links"><span class="lnk live">Visit live product <span class="badge">LIVE</span><span class="arrow">→</span></span></div>
+    </a>
+
+    <a class="card rv" href="niceace/" target="_blank" rel="noopener">
+      <div class="ctag">Consumer prototype · spun out of VibeCo</div>
+      <h3>NiceAce</h3>
+      <div class="chip">concept → playable in 1 build</div>
+      <p>Hole-in-one jackpot experience — proof of how fast an idea becomes a demo-able product on an AI-native build stack.</p>
+      <div class="links"><span class="lnk live">Play the prototype <span class="badge">LIVE</span><span class="arrow">→</span></span></div>
+    </a>
+
+  </div>
+</div></section>
+
+<section id="record"><div class="wrap">
+  <div class="sec-head rv"><span class="sec-num">02</span><span class="sec-title">GTM track record</span></div>
+  <p class="sec-sub rv">The deals and the company-building behind the builder.</p>
+  <div class="tl">
+    <div class="tl-item rv"><div class="tl-dot"></div>
+      <div class="tl-year">2018–25</div>
+      <div class="tl-role"><span class="org">Dreamship</span> — Cofounder &amp; CEO → Board Chair</div>
+      <div class="tl-win">Sold Google as a sub-one-year-old startup — built an AI IP-compliance checker, drove it through 5–6 internal teams (trust &amp; safety, business integrity, commercial) to director+ sign-off, unlocking an 8-figure ad-spend channel that ran 5+ years. Then scaled the company to $35M+ revenue (11x in one year) on $2.2M raised; sequenced Stripe, PayPal, Meta &amp; Payoneer off the Google credibility.</div>
+      <div class="tl-metric">11x · $35M+ · EBITDA-profitable 4/8 yrs</div>
+    </div>
+    <div class="tl-item rv"><div class="tl-dot"></div>
+      <div class="tl-year">2023–now</div>
+      <div class="tl-role"><span class="org">Courtana / PickleBills</span> — Founder / CEO</div>
+      <div class="tl-win">Zero-to-one solo: hardware + software product, founder-led venue sales, pricing, and sponsor data products. Raised $350K; concept to 36 courts live or piloting with a 44-court expansion LOI. Built an AI-native operating system that compressed iteration from weeks to days.</div>
+      <div class="tl-metric">$350K raised · 44-court LOI</div>
+    </div>
+    <div class="tl-item rv"><div class="tl-dot"></div>
+      <div class="tl-year">2012–14</div>
+      <div class="tl-role"><span class="org">IBM / Netezza</span> — Watson Foundations AE</div>
+      <div class="tl-win">Closed high-six-figure analytics deals (Zillow, Avalara), contributed to an 8-figure McKesson deal, selling Big Data into mid-market and Fortune 500 accounts.</div>
+      <div class="tl-metric">&gt;100% quota (2013)</div>
+    </div>
+  </div>
+  <div class="earlier rv"><b>Earlier:</b> GearLaunch (VP Sales &amp; Mktg) · WibiData (Dir. Sales — F500 Big Data pilots: Macy's, Nordstrom) · IntroStellar (CEO/Cofounder) · Northwestern Mutual (top-10 nationally, $6M+ TCV).</div>
+</div></section>
+
+<section id="os"><div class="wrap">
+  <div class="sec-head rv"><span class="sec-num">03</span><span class="sec-title">An AI-native operating system</span></div>
+  <div class="os rv">
+    <h3>40+ apps. 31 repos. One operator.</h3>
+    <p>A living lab for AI build speed — analytics, coaching, venue ops, and consumer experiences, generated and shipped on an AI-native stack that compresses idea-to-proof from weeks to days.</p>
+    <div class="repos">
+      <span class="repo"><span class="h">PickleBill/</span>pickle-daas-data</span><span class="repo"><span class="h">PickleBill/</span>vibeco</span><span class="repo"><span class="h">PickleBill/</span>courtana</span><span class="repo"><span class="h">PickleBill/</span>picklestats-hub</span><span class="repo"><span class="h">PickleBill/</span>racketscience</span><span class="repo"><span class="h">PickleBill/</span>court-sense-live</span><span class="repo"><span class="h">PickleBill/</span>courtana-pulse</span><span class="repo"><span class="h">PickleBill/</span>courtana-coach-pro</span><span class="repo"><span class="h">PickleBill/</span>layuplab</span><span class="repo"><span class="h">PickleBill/</span>player-pathways</span><span class="repo"><span class="h">PickleBill/</span>courtana-venue-connect</span><span class="repo"><span class="h">PickleBill/</span>aces-only</span><span class="repo"><span class="h">PickleBill/</span>niceace-vibeco-prototype</span><span class="repo"><span class="h">PickleBill/</span>freak-flow-hub</span><span class="repo"><span class="h">PickleBill/</span>peakcourtana</span><span class="repo"><span class="h">PickleBill/</span>headsuptime</span><span class="repo"><span class="h">PickleBill/</span>the-sanctuary</span><span class="repo"><span class="h">PickleBill/</span>storm-smart-leads</span>
+    </div>
+  </div>
+</div></section>
+
+<footer id="contact"><div class="wrap">
+  <h2 class="rv">Bring frontier tech to enterprise — <span class="g">from inside the lab.</span></h2>
+  <p class="rv">Open to GTM, partnerships, and product-commercialization roles at frontier AI labs.</p>
+  <div class="cta-row rv" style="justify-content:center;margin-top:30px">
+    <a class="btn primary" href="mailto:bill@courtana.com">bill@courtana.com</a>
+    <a class="btn" href="https://linkedin.com/in/williambricker" target="_blank" rel="noopener">linkedin.com/in/williambricker</a>
+    <a class="btn" href="resume.html">Résumé</a>
+  </div>
+  <div class="foot-meta">Raleigh, NC &nbsp;·&nbsp; MBA, UNC Kenan-Flagler (GMAT 730) &nbsp;·&nbsp; BS Finance, TCNJ</div>
+  <div class="built">Built solo with the same AI-native stack it describes — Claude, Codex, Lovable.</div>
+</div></footer>
+
+<script>
+  document.body.classList.remove('no-js');
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(Math.min(i,6)*55)+'ms';io.observe(el)});
+  const cio=new IntersectionObserver((es)=>es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,target=+el.dataset.count,pre=el.dataset.prefix||'',suf=el.dataset.suffix||'';
+    let cur=0,step=Math.max(1,Math.ceil(target/40));el.textContent=pre+'0'+suf;
+    const t=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(t)}el.textContent=pre+cur+suf;},26);
+    cio.unobserve(el);
+  },{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+</script>
+</body>
+</html>
