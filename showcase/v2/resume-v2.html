@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Bill Bricker — Résumé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#f6f2ea;--card:#ffffff;--ink:#211d18;--ink2:#4d473e;--mute:#857c6e;--faint:#a89e8d;
+    --line:#e7e0d3;--accent:#c4623d;--accent2:#5e7a55;--accent-soft:#f3e3da;
+    --disp:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--disp);font-weight:500}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(246,242,234,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{max-width:1040px;display:flex;align-items:center;justify-content:space-between;height:58px}
+  .brand{font-family:var(--disp);font-weight:600;font-size:18px;text-decoration:none;color:var(--ink)}
+  .nl{display:flex;gap:20px;font-size:13px;color:var(--mute)}
+  .nl a{text-decoration:none;transition:.15s}.nl a:hover{color:var(--ink)}.nl a.here{color:var(--ink);font-weight:600}
+  .nl a.email{background:var(--ink);color:var(--bg);padding:7px 14px;border-radius:99px;font-weight:600}
+  @media(max-width:640px){.nl{gap:12px;font-size:11.5px}}
+
+  .hero{padding:48px 0 28px}
+  .hero .switch{font-size:12px;color:var(--mute);margin-bottom:18px}
+  .hero .switch a{text-decoration:none;border-bottom:1px solid var(--line)}
+  h1{font-size:clamp(40px,7vw,66px);letter-spacing:-.025em;line-height:.98}
+  .role{font-size:clamp(15px,2.4vw,18px);color:var(--accent);font-weight:600;margin-top:10px;font-family:var(--sans)}
+  .contact{font-size:13.5px;color:var(--mute);margin-top:12px;line-height:1.9}
+  .contact a{color:var(--ink2);text-decoration:none;border-bottom:1px solid var(--line)}
+  .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .btn{font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}.btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  .summary{font-size:16px;color:var(--ink2);max-width:70ch;margin:6px 0 4px;line-height:1.6}
+  h2.sec{font-family:var(--sans);font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:38px 0 16px;font-weight:600}
+
+  .hl{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;margin-bottom:11px;font-size:14.5px;color:var(--ink2)}
+  .hl .dot{width:7px;height:7px;border-radius:99px;background:var(--accent);margin-top:6px}
+  .hl b{color:var(--ink);font-weight:600;font-family:var(--disp)}
+
+  .builds{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.builds{grid-template-columns:1fr}}
+  .bd{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  .bd .n{font-family:var(--disp);font-weight:600;font-size:18px}
+  .bd .m{font-size:12px;color:var(--accent2);font-weight:600;margin:3px 0 7px}
+  .bd .d{font-size:13px;color:var(--ink2);line-height:1.5}
+  .bd a.src{font-size:12px;color:var(--accent);display:inline-block;margin-top:9px;margin-right:14px;text-decoration:none;font-weight:600}
+  .bd a.src:hover{text-decoration:underline}
+
+  .job{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:14px}
+  .jhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .jhead .l{font-family:var(--disp);font-size:19px;font-weight:600}.jhead .l .org{color:var(--accent)}
+  .jhead .yr{font-size:12.5px;color:var(--faint);font-family:var(--sans);font-weight:500}
+  .jsub{font-size:13px;color:var(--mute);font-style:italic;margin:3px 0 12px}.jsub a{color:var(--mute)}
+  .b{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:baseline;font-size:13.5px;color:var(--ink2);margin-bottom:8px;line-height:1.5}
+  .b .dot{width:5px;height:5px;border-radius:99px;background:var(--line);margin-top:7px;border:1px solid var(--faint)}
+  .b.new .dot{background:var(--accent);border-color:var(--accent)}
+  .b b{color:var(--ink);font-weight:600}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:640px){.two{grid-template-columns:1fr}}
+  .meta{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;font-size:13.5px;color:var(--ink2)}
+  .meta b{color:var(--ink);font-family:var(--disp)}
+  footer{padding:30px 0 70px;text-align:center;color:var(--faint);font-size:12.5px}
+
+  @media print{
+    nav,.actions,.switch,footer{display:none}
+    body{background:#fff}.wrap{max-width:100%;padding:0}
+    .job,.bd,.meta{box-shadow:none;border-color:#ddd;break-inside:avoid}
+    .hero{padding:0 0 12px}
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="index.html">Bill Bricker</a>
+  <div class="nl">
+    <a href="index.html">Home</a><a href="climb.html">Story</a><a href="work.html">Work</a>
+    <a href="resume-v2.html" class="here">Résumé</a>
+    <a href="mailto:bricker3@gmail.com" class="email">Email</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="switch">Warm edition · <a href="resume.html">switch to the clean dark résumé →</a></div>
+    <h1>Bill Bricker</h1>
+    <div class="role">GTM Leader &amp; Founder-CEO · Enterprise &amp; Partnership Sales · AI-Native Operator</div>
+    <div class="contact">
+      Raleigh, NC &nbsp;·&nbsp; <a href="mailto:bricker3@gmail.com">bricker3@gmail.com</a> &nbsp;·&nbsp; <a href="tel:+19086018152">908·601·8152</a> &nbsp;·&nbsp;
+      <a href="https://linkedin.com/in/williambricker" target="_blank" rel="noopener">linkedin.com/in/williambricker</a><br/>
+      Portfolio: <a href="index.html">home</a> · <a href="climb.html">the story</a> · <a href="work.html">the work — clickable proof</a>
+    </div>
+    <div class="actions">
+      <button class="btn primary" onclick="window.print()">⤓ Save as PDF</button>
+      <a class="btn" href="work.html">The Work</a>
+    </div>
+  </div>
+
+  <p class="summary">Enterprise seller turned founder-CEO. Closed six- and seven-figure analytics deals at IBM (&gt;100% quota; Zillow, Avalara, part of an 8-figure McKesson deal), then cofounded and led Dreamship as CEO from zero to $35M+ cumulative revenue — including 11x growth in a single year — anchored by a Google partnership I sold and ran for 5+ years. Today I ship production AI daily (Claude, Codex, Lovable, Gemini): a video-analytics pipeline at $0.0054/clip, an 11-agent product simulator, and 40+ shipped apps from enterprise tools to consumer products. I bring frontier technology to enterprise buyers — and I can build it myself.</p>
+
+  <h2 class="sec">Selected Highlights</h2>
+  <div class="hl"><span class="dot"></span><span><b>Sold Google as a &lt;1-year-old startup</b> — led the deal end-to-end through 5–6 internal teams to director+ sign-off, unlocking an 8-figure ad-spend channel that ran 5+ years.</span></div>
+  <div class="hl"><span class="dot"></span><span><b>11x topline growth in one year as CEO</b> — $1.6M → $17M; $35M+ cumulative revenue, ~$85M GMV, 2.3M+ units, on just $2.2M raised; EBITDA-profitable 4 of 8 years.</span></div>
+  <div class="hl"><span class="dot"></span><span><b>Quota-carrying enterprise pedigree</b> — &gt;100% attainment at IBM (2013) selling Big Data/analytics into mid-market and Fortune 500 accounts.</span></div>
+  <div class="hl"><span class="dot"></span><span><b>AI-native operator</b> — 40+ one-shot AI apps across 31 repos, including enterprise builds for a 25-year industrial-AI company, Europe's largest marine-analytics firm, and legal mass-arbitration teams.</span></div>
+
+  <h2 class="sec">Selected AI Builds — every link live</h2>
+  <div class="builds">
+    <div class="bd"><div class="n">VibeCo</div><div class="m">11 LLM agents · the engine behind 40+ apps</div><div class="d">Multi-agent simulator: idea → brief → build prompts → concept art. Tool-calling, multi-model routing, parallel critique &amp; synthesis.</div><a class="src" href="https://vibeco.lovable.app/simulate" target="_blank" rel="noopener">▶ run it</a><a class="src" href="https://vibeco.lovable.app/#model" target="_blank" rel="noopener">ecosystem</a></div>
+    <div class="bd"><div class="n">Pickle DaaS</div><div class="m">$0.0054 / clip · 4,097-clip corpus</div><div class="d">AI video-analytics pipeline (~7x cheaper than GPT-4o): player-DNA, brand intelligence, coaching, autonomous agents + ground-truth validation.</div><a class="src" href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html" target="_blank" rel="noopener">▶ walkthrough</a></div>
+    <div class="bd"><div class="n">Courtana Venue Connect</div><div class="m">GTM collateral that closed a venue partner</div><div class="d">One dynamic asset — presentation, proposal, analytics, client success — a connected-AI way of selling and onboarding.</div><a class="src" href="https://courtana-venue-connect.lovable.app/" target="_blank" rel="noopener">▶ open</a></div>
+    <div class="bd"><div class="n">Enterprise builds</div><div class="m">3 client-grade builds, days not quarters</div><div class="d">HeadsUpTime (industrial AI POC), NaughtyData (marine-analytics CTO rebrand), Litigator (mass-arbitration intel).</div><a class="src" href="https://headsuptime.lovable.app" target="_blank" rel="noopener">▶ HeadsUpTime</a><a class="src" href="https://naughtydata.lovable.app/" target="_blank" rel="noopener">NaughtyData</a><a class="src" href="https://litigator.lovable.app/dashboard" target="_blank" rel="noopener">Litigator</a></div>
+  </div>
+
+  <h2 class="sec">Experience</h2>
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">Dreamship</span> — Cofounder &amp; CEO (2018–24); Board Chair (2024–25)</div><div class="yr">2018 – 2025</div></div>
+    <div class="jsub">API-driven on-demand fulfillment for ecommerce, creator, gifting, rewards, and enterprise print-on-demand. <a href="https://dreamship.com" target="_blank" rel="noopener">dreamship.com</a></div>
+    <div class="b"><span class="dot"></span><span>Led as CEO from zero to <b>$35M+ cumulative revenue</b>, ~$85M GMV, and 2.3M+ units — including <b>11x YoY growth</b> ($1.6M → $17M) — on $2.2M raised from 500 Startups, Earl Grey, and operator funds.</span></div>
+    <div class="b"><span class="dot"></span><span>Personally led the <b>Google partnership</b> end-to-end as a &lt;1-year-old startup: built a first-of-its-kind AI trademark/IP-compliance checker, navigated 5–6 internal Google teams to director+ sign-off — unlocking an 8-figure ad-spend channel that ran 5+ years.</span></div>
+    <div class="b"><span class="dot"></span><span>Positioned the company as the connector between big-tech platforms and underserved international merchants; sequenced partnerships with <b>Stripe, PayPal, Meta, and Payoneer</b> off the Google credibility, alongside US brand clients including Goody and Snappy.</span></div>
+    <div class="b"><span class="dot"></span><span>Hosted client-facing events at Google's Singapore HQ that helped rearchitect platform rules for high-volume international merchants.</span></div>
+    <div class="b"><span class="dot"></span><span>Built a US supply network of 20+ partners and 400+ products with 1.4-day average production; cut return rate from 3.5% to under 1%.</span></div>
+    <div class="b"><span class="dot"></span><span>Recruited and led a globally distributed team of 24; later restructured to &lt;10 — automating two cofounder roles — to drive profitability; ~50% YoY growth post-transition.</span></div>
+    <div class="b"><span class="dot"></span><span>Authored "How We Win," the company operating framework (first principles, partner quality, ownership-based leadership, the DREAM rule); navigated 6 M&amp;A processes generating 3 offers.</span></div>
+  </div>
+
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">Courtana / PickleBills</span> — Founder / CEO</div><div class="yr">2023 – Present</div></div>
+    <div class="jsub">AI smart-court technology (computer vision, edge compute, instant highlights, AI coaching) for racquet-sport venues. <a href="https://courtana.com" target="_blank" rel="noopener">courtana.com</a></div>
+    <div class="b"><span class="dot"></span><span>Raised <b>$350K</b>; took the platform from concept to <b>36 courts live or piloting</b>, anchored by a flagship customer with a 44-court expansion LOI (~$120K ARR motion).</span></div>
+    <div class="b"><span class="dot"></span><span>Ran the full zero-to-one loop solo — product design, founder-led venue sales, pricing, and sponsor/brand data products — on an AI-native build system that compressed iteration from weeks to days.</span></div>
+    <div class="b new"><span class="dot"></span><span><b>Built Pickle DaaS</b>, the data line of business: 4,097+ clips analyzed at $0.0054/clip into player profiles, brand intelligence, and coaching data — <a href="https://picklebill.github.io/pickle-daas-data/dashboards/investor-walkthrough-v4.html" target="_blank" rel="noopener">walkthrough ↗</a></span></div>
+    <div class="b new"><span class="dot"></span><span><b>Built VibeCo</b>, an 11-agent AI product simulator, and shipped 40+ apps across 31 repos — enterprise builds (industrial AI, marine analytics, legal), sales collateral that closed a venue partner, consumer products — <a href="https://vibeco.lovable.app/" target="_blank" rel="noopener">vibeco.lovable.app ↗</a></span></div>
+    <div class="b new"><span class="dot"></span><span><b>Pioneered connected-AI selling</b>: hyper-personalized dynamic GTM assets (presentation + proposal + analytics + onboarding in one) — <a href="https://courtana-venue-connect.lovable.app/" target="_blank" rel="noopener">Venue Connect ↗</a></span></div>
+  </div>
+
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">GearLaunch</span> — VP Sales &amp; Marketing</div><div class="yr">2017 – 2018</div></div>
+    <div class="b"><span class="dot"></span><span>Led sales and marketing across seller acquisition, platform growth, and partner positioning for a 360° ecommerce / print-on-demand platform.</span></div>
+  </div>
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">IntroStellar</span> — CEO / Cofounder</div><div class="yr">2015 – 2017</div></div>
+    <div class="b"><span class="dot"></span><span>Built three product versions of a network-proximity referral product for diversity recruiting on $150K in lean funding; advised Pledge 1% as it grew from ~1,200 to 1,800+ member companies.</span></div>
+  </div>
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">WibiData</span> — Director of Sales</div><div class="yr">2014 – 2015</div></div>
+    <div class="b"><span class="dot"></span><span>Designed enterprise sales strategy and structured Big Data pilots with Macy's, Nordstrom, and other Fortune 500 retailers at an NEA/Canaan/Eric Schmidt-backed startup.</span></div>
+  </div>
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">IBM / Netezza</span> — Watson Foundations AE / Netezza Brand Specialist</div><div class="yr">2012 – 2014</div></div>
+    <div class="b"><span class="dot"></span><span>Closed high-six-figure analytics deals with Zillow, Avalara, and other mid-market accounts; contributed to an 8-figure McKesson deal; attained <b>&gt;100% of quota (2013)</b>.</span></div>
+  </div>
+  <div class="job">
+    <div class="jhead"><div class="l"><span class="org">RivalHealth + Northwestern Mutual</span> — BD; Financial Advisor / College Unit Director</div><div class="yr">2006 – 2012</div></div>
+    <div class="b"><span class="dot"></span><span>Supported a $500K Blue Cross / Blue Shield of NC partnership; earlier ranked top 10 nationally at Northwestern Mutual with $6M+ total contract value across 150+ client accounts.</span></div>
+  </div>
+
+  <h2 class="sec">Education &amp; Tools</h2>
+  <div class="two">
+    <div class="meta"><b>MBA, Entrepreneurship</b> — UNC Kenan-Flagler Business School<br><span style="color:var(--mute)">GMAT 730 · Carolina Entrepreneurial Fellow · VP, Entrepreneurship &amp; VC Club</span><br><br><b>BS, Finance</b> — The College of New Jersey<br><span style="color:var(--mute)">Captain, Men's Rugby Team</span></div>
+    <div class="meta" style="color:var(--mute)">Enterprise &amp; partnership GTM · founder-led sales · AI commercialization · pilot design · product narrative · multi-agent systems &amp; LLM orchestration · data products · video intelligence · ecommerce infrastructure · Claude · Codex · ChatGPT · Lovable · Gemini · GitHub</div>
+  </div>
+</div>
+
+<footer>Bill Bricker · Two résumé editions: <a href="resume-v2.html" style="color:var(--mute)">warm</a> · <a href="resume.html" style="color:var(--mute)">clean dark</a></footer>
+</body>
+</html>
