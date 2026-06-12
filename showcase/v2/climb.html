@@ -51,12 +51,11 @@
   .vp{position:relative;overflow:hidden;margin:6px auto 10px;border:.5px solid var(--rule);background:rgba(245,235,208,.4);
     border-radius:4px}
   .vp.scroll{overflow:auto;-webkit-overflow-scrolling:touch}
-  .vp.fs{position:fixed;inset:0;z-index:90;margin:0;border:none;border-radius:0;background:var(--paper);overflow:auto;
-    display:flex;align-items:center;justify-content:center}
+  .vp.fs{position:fixed;inset:0;z-index:90;margin:0;border:none;border-radius:0;background:var(--paper);overflow:auto;padding:54px 12px 16px}
   .fsbar{display:none;position:fixed;top:0;left:0;right:0;z-index:91;padding:10px 16px;
     background:rgba(245,238,213,.95);border-bottom:.5px solid var(--rule);
     justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
-  .vp.fs ~ .fsbar{display:flex}
+  body.fsmode .fsbar{display:flex}
   .fsbar .x{cursor:pointer;color:var(--ink);border:.5px solid var(--ink);padding:6px 12px;border-radius:6px}
 
   /* the fixed-size canvas (1240x620 design space) */
@@ -294,8 +293,7 @@ const vp=document.getElementById('vp'),canvas=document.getElementById('canvas');
 let fitWidth=(window.innerWidth<=820); // default: show the whole chart on mobile
 function fit(){
   if(vp.classList.contains('fs')){
-    const s=Math.min((window.innerWidth-12)/W,(window.innerHeight-60)/H);
-    canvas.style.transform=`scale(${s})`; return;
+    canvas.style.transform='none';canvas.style.marginLeft='0';return;
   }
   const cw=vp.clientWidth;
   if(window.innerWidth>820){
@@ -307,8 +305,8 @@ function fit(){
     else{canvas.style.transform='none';canvas.style.marginLeft='0';vp.classList.add('scroll');vp.style.height='66vh';}
   }
 }
-function enterFs(){vp.classList.add('fs');document.body.style.overflow='hidden';fit();}
-function exitFs(){if(vp.classList.contains('fs')){vp.classList.remove('fs');document.body.style.overflow='';fit();}}
+function enterFs(){vp.classList.add('fs');document.body.classList.add('fsmode');document.body.style.overflow='hidden';fit();}
+function exitFs(){if(vp.classList.contains('fs')){vp.classList.remove('fs');document.body.classList.remove('fsmode');document.body.style.overflow='';fit();}}
 document.getElementById('fsBtn').onclick=enterFs;
 document.getElementById('fsClose').onclick=exitFs;
 window.addEventListener('resize',fit);
