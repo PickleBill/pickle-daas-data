@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-display="bricolage">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bill Bricker — The Google Partnership (case study)</title>
+<meta name="description" content="Not an acquisition — a first-of-its-kind cross-division Google partnership, closed by a sub-one-year-old startup. The BD architecture behind Dreamship's 11x year." />
+<meta property="og:title" content="The Google Partnership — a case study" />
+<meta property="og:description" content="We didn't sell to Google. We built something Google hadn't done before — then Stripe, PayPal, Payoneer & Meta wanted in." />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="https://picklebill.github.io/pickle-daas-data/showcase/v2/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://picklebill.github.io/pickle-daas-data/showcase/v2/og.png" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🥒</text></svg>"/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#08090a;--bg2:#0d0f11;--glass:rgba(255,255,255,.045);--glass2:rgba(255,255,255,.026);
+    --line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.17);
+    --text:#f4f2ec;--mute:#9aa0a3;--faint:#6a7178;--accent:#6fefb4;--accent-dim:#4cc890;--accent-soft:rgba(111,239,180,.5);--cream:#f3ecdc;--coral:#ff8a5c;
+    --spectrum:linear-gradient(100deg,#5be8a0 0%,#36c6e0 33%,#8b7cf0 66%,#ff8a6b 100%);
+    --display:'Bricolage Grotesque',system-ui,sans-serif;--body:'Hanken Grotesk',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+    --maxw:780px;--ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--accent);color:#08090a}
+  a{color:inherit;text-decoration:none}
+  .mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(82px);mix-blend-mode:screen}
+  .b1{width:560px;height:560px;background:radial-gradient(circle,#16a88a,transparent 64%);top:-160px;right:-130px;opacity:.42;animation:d1 26s ease-in-out infinite}
+  .b2{width:520px;height:520px;background:radial-gradient(circle,#7b5be0,transparent 64%);top:900px;left:-160px;opacity:.34;animation:d2 30s ease-in-out infinite}
+  @keyframes d1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,40px) scale(1.1)}}
+  @keyframes d2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-34px) scale(1.08)}}
+  @media (prefers-reduced-motion:reduce){.blob{animation:none}}
+  .wrap{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto;padding:0 30px}
+  @media(max-width:560px){.wrap{padding:0 22px}}
+
+  header.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(15px);background:rgba(8,9,10,.64);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:1140px;margin:0 auto;padding:14px 30px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+  .brand{font-family:var(--mono);font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .brand .pk{font-size:18px;animation:pk 3s ease-in-out infinite}
+  @keyframes pk{0%,100%{filter:drop-shadow(0 0 4px rgba(140,240,160,.55))}50%{filter:drop-shadow(0 0 10px rgba(140,240,160,.95))}}
+  .brand .sl{color:var(--faint)}
+  .navlinks{display:flex;gap:3px;align-items:center;font-size:13.5px;color:var(--mute)}
+  .navlinks a{padding:8px 13px;border-radius:99px;transition:.15s}
+  .navlinks a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+  .navlinks a.email{color:#08090a;background:var(--cream);font-weight:600}
+  @media(max-width:640px){.navlinks .hideable{display:none}.nav-in{padding:11px 22px}}
+
+  .article{padding:54px 0 0}
+  .kick{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-dim)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,5.6vw,58px);line-height:1.0;letter-spacing:-.035em;margin:16px 0 0}
+  h1 .sp{background:var(--spectrum);background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:drift 9s linear infinite;display:block}
+  @keyframes drift{to{background-position:280% 0}}
+  .standfirst{font-size:18px;color:var(--mute);margin-top:22px;line-height:1.6}
+  .standfirst b{color:var(--text);font-weight:600}
+  .meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em;margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;gap:18px;flex-wrap:wrap}
+  .meta b{color:var(--accent-dim);font-weight:500}
+
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,30px);letter-spacing:-.025em;margin:52px 0 0;display:flex;align-items:baseline;gap:12px}
+  h2 .n{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+  .article p{font-size:17px;color:#d7dad6;margin-top:18px;line-height:1.7}
+  .article p b{color:var(--text);font-weight:600}
+  .article p .hl{color:var(--accent)}
+  .pull{font-family:var(--display);font-weight:600;font-size:clamp(22px,3.2vw,30px);line-height:1.22;letter-spacing:-.02em;color:var(--text);border-left:2px solid var(--accent);padding:6px 0 6px 22px;margin:36px 0}
+  .pull span{color:var(--accent)}
+  .stamp{display:flex;gap:30px;flex-wrap:wrap;margin:30px 0 4px;padding:22px 24px;border:1px solid var(--line);border-radius:18px;background:var(--glass)}
+  .stamp .s .v{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;color:var(--accent);filter:drop-shadow(0 0 10px var(--accent-soft))}
+  .stamp .s .k{font-family:var(--mono);font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;margin-top:5px}
+
+  .close{margin:56px 0 0;padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--glass);backdrop-filter:blur(20px)}
+  .close .ck{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-dim)}
+  .close h3{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.02em;margin:10px 0 0}
+  .close p{font-size:15.5px;color:var(--mute);margin-top:10px}
+  .ctas{display:flex;flex-wrap:wrap;gap:11px;margin-top:22px}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:12px 20px;border-radius:99px;transition:.18s var(--ease);border:1px solid transparent}
+  .pill.solid{background:var(--cream);color:#08090a}.pill.solid:hover{transform:translateY(-2px)}
+  .pill.ghost{background:var(--glass);color:var(--text);border-color:var(--line2)}.pill.ghost:hover{transform:translateY(-2px);border-color:var(--accent)}
+  footer{margin-top:64px;padding:26px 0 70px;border-top:1px solid var(--line)}
+  .foot-in{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+  .foot-in a{color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="mesh"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<header class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><span class="pk">🥒</span>bill<span class="sl">@</span>bricker-os</a>
+  <nav class="navlinks">
+    <a href="index.html">Home</a>
+    <a href="climb.html" class="hideable">Story</a>
+    <a href="work.html">Work</a>
+    <a href="resume-v2.html" class="hideable">Résumé</a>
+    <a href="mailto:bricker3@gmail.com" class="email">Email</a>
+  </nav>
+</div></header>
+
+<main class="wrap article">
+  <div class="kick">Case study · the partnership</div>
+  <h1>We didn't sell to Google.<span class="sp">We built something it hadn't done.</span></h1>
+  <p class="standfirst">As a <b>sub-one-year-old startup</b>, Dreamship closed a first-of-its-kind, cross-division Google <b>partnership</b> — not an acquisition, not a vendor contract. A BD deal that built Dreamship's brand, protected Google's, and gave underserved merchants access. Then Stripe, PayPal, Payoneer and Meta wanted in.</p>
+  <div class="meta"><span>Role · <b>Cofounder &amp; CEO, in the room from first contact</b></span><span>Company · <b>Dreamship</b></span></div>
+
+  <h2><span class="n">01</span> The opening</h2>
+  <p>First contact came through an executive connection — a director — and I was in the room from the start. Dreamship had built a <b>trademark &amp; IP checker on Google Vision</b>. Google wanted access to a large, untapped merchant market <b>in a way that protected the Google brand</b>. We brought the other half: <b>high-volume merchants, verified and validated</b>, driving real revenue for Google through Dreamship's trust layer.</p>
+
+  <div class="pull">The job wasn't a pitch. It was <span>organizing the incentives so everyone in the room won</span> — Google, the merchants, and us.</div>
+
+  <h2><span class="n">02</span> The room</h2>
+  <p>The deal never almost died. As a startup nobody had heard of, I navigated <b>5–6 internal Google teams</b> — trust &amp; safety, business integrity, commercial — to director-plus sign-off. What I carried into each room was the same: a message that was passionate, persuasive, and <b>committed</b>, and a structure that made it <span class="hl">win-win-win</span>. Proof of commitment and aligned business incentives did the rest.</p>
+
+  <div class="stamp">
+    <div class="s"><div class="v">8-figure</div><div class="k">ad-spend channel</div></div>
+    <div class="s"><div class="v">5+ yrs</div><div class="k">the partnership ran</div></div>
+    <div class="s"><div class="v">5–6</div><div class="k">internal teams aligned</div></div>
+  </div>
+
+  <h2><span class="n">03</span> The flywheel</h2>
+  <p>The Google partnership became credibility you could spend. <b>Stripe, PayPal, Payoneer, Meta</b> — and others — wanted the same access on the same terms. That's the thesis I keep coming back to: <span class="hl">there's real edge in building business-development deals that are multi-party, complex, and have the right incentives aligned.</span> Most people can sell one party. Far fewer can make three parties win at once.</p>
+
+  <h2><span class="n">04</span> The 11x year</h2>
+  <p>It showed up in the numbers. Our first full year of business — a little COVID tailwind, mostly capitalizing on the opening in front of us: take in the orders, figure out the supply routes, meet the demand, and turn it into a <b>trusted source for reliable shipping</b>. Not one decision — a set of decisions, made fast, by a highly capable team. <b>$35M+</b> revenue, <b>11x in a single year</b>.</p>
+
+  <h2><span class="n">05</span> From the chemo chair</h2>
+  <p>The clearest proof of the muscle came at the worst possible time. Mid-treatment — aggressive chemo at <b>Duke hospital</b> — I used my connections to get into Microsoft just as it began working with ChatGPT, and built a <b>rev-share / go-to-market partnership</b>: Dreamship merchants got ChatGPT access via Bing, Microsoft put real money behind the push, and we graduated into a higher partner tier on volume. <b>Negotiated literally from a hospital chair, during treatment.</b></p>
+
+  <div class="pull"><span>"I cut the Microsoft deal from a chair at Duke, mid-chemo."</span> The pipeline didn't care that I was sick. Neither did I.</div>
+
+  <div class="close">
+    <div class="ck">What this proves</div>
+    <h3>I close complex, multi-party partnerships — and I'm still in the room.</h3>
+    <p>Enterprise GTM that survives trust &amp; safety, legal, and commercial review. Incentive design that makes everyone win. And the will to do it through anything. That's the work I want to bring inside a frontier lab.</p>
+    <div class="ctas">
+      <a class="pill solid" href="mailto:bricker3@gmail.com">Let's talk →</a>
+      <a class="pill ghost" href="work.html">Run the terminal</a>
+      <a class="pill ghost" href="climb.html">Walk the climb</a>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap" style="max-width:1140px"><div class="foot-in">
+  <span>Bill Bricker · Raleigh, NC · the Google partnership, told straight.</span>
+  <span><a href="index.html">Home</a> · <a href="climb.html">The Climb</a> · <a href="resume-v2.html">Résumé</a></span>
+</div></div></footer>
+</body>
+</html>
